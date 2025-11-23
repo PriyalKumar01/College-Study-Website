@@ -124,7 +124,7 @@ const ThirdSemesterETNotes = () => {
           transition={{ duration: 0.5 }}
           className="text-center mb-12"
         >
-          <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-primary via-purple-500 to-pink-500 bg-clip-text text-transparent">
+          <h1 className="text-4xl md:text-5xl font-bold mb-4 text-foreground">
             3rd Semester - ET Notes
           </h1>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
