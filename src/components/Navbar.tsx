@@ -1,17 +1,10 @@
 import { useState } from 'react';
-import { Menu, X, Moon, Sun, LogOut, User } from 'lucide-react';
+import { Menu, X, Moon, Sun, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { 
-  DropdownMenu, 
-  DropdownMenuContent, 
-  DropdownMenuItem, 
-  DropdownMenuLabel, 
-  DropdownMenuSeparator, 
-  DropdownMenuTrigger 
-} from '@/components/ui/dropdown-menu';
 import { useTheme } from '@/providers/ThemeProvider';
 import { useAuth } from '@/contexts/AuthContext';
 import { Link, useLocation } from 'react-router-dom';
+import ProfileDropdown from './ProfileDropdown';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -82,31 +75,18 @@ const Navbar = () => {
               {theme === 'dark' ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
             </Button>
 
-            {user ? (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="outline" size="sm" className="hidden md:flex">
+            <div className="hidden md:block">
+              {user ? (
+                <ProfileDropdown />
+              ) : (
+                <Button variant="default" size="sm" asChild>
+                  <Link to="/auth">
                     <User className="h-4 w-4 mr-2" />
-                    Account
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuLabel>My Account</DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={() => signOut()}>
-                    <LogOut className="h-4 w-4 mr-2" />
-                    Sign Out
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            ) : (
-              <Button variant="default" size="sm" asChild className="hidden md:flex">
-                <Link to="/auth">
-                  <User className="h-4 w-4 mr-2" />
-                  Sign In
-                </Link>
-              </Button>
-            )}
+                    Sign In
+                  </Link>
+                </Button>
+              )}
+            </div>
 
             <button
               onClick={() => setIsOpen(!isOpen)}
@@ -150,10 +130,9 @@ const Navbar = () => {
                   {theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
                 </Button>
                 {user ? (
-                  <Button variant="outline" onClick={() => signOut()} className="w-full justify-start">
-                    <LogOut className="h-4 w-4 mr-2" />
-                    Sign Out
-                  </Button>
+                  <div className="space-y-2">
+                    <ProfileDropdown />
+                  </div>
                 ) : (
                   <Button variant="default" asChild className="w-full justify-start">
                     <Link to="/auth">

@@ -5,8 +5,10 @@ import { ArrowLeft, BookOpen } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import Navbar from "@/components/Navbar";
 import { motion } from "framer-motion";
-import thirdSemImg from "@/assets/3rd-sem-thumbnail.jpg";
-import fourthSemImg from "@/assets/4th-sem-thumbnail.jpg";
+import thirdSemImg from "@/assets/3rd-sem-thumbnail-new.jpg";
+import fourthSemImg from "@/assets/4th-sem-thumbnail-new.jpg";
+import fifthSemImg from "@/assets/5th-sem-thumbnail.jpg";
+import sixthSemImg from "@/assets/6th-sem-thumbnail.jpg";
 
 const BTechSemesters = () => {
   const navigate = useNavigate();
@@ -37,7 +39,7 @@ const BTechSemesters = () => {
         description: "Specialization courses and electives",
         available: true,
         route: "/btech-notes/third-year/semester-5",
-        thumbnail: thirdSemImg,
+        thumbnail: fifthSemImg,
         branches: ["CSE/IT", "ME", "CE", "CHE", "ET", "EE", "BE", "LFT"],
       },
       {
@@ -45,7 +47,7 @@ const BTechSemesters = () => {
         description: "Advanced specialization and project work",
         available: false,
         route: "/btech-notes/third-year/semester-6",
-        thumbnail: fourthSemImg,
+        thumbnail: sixthSemImg,
         branches: ["CSE/IT", "ME", "CE", "CHE", "ET", "EE", "BE", "LFT"],
       },
     ],
@@ -98,7 +100,7 @@ const BTechSemesters = () => {
           transition={{ duration: 0.5 }}
           className="text-center mb-12"
         >
-          <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-primary via-purple-500 to-pink-500 bg-clip-text text-transparent">
+          <h1 className="text-4xl md:text-5xl font-bold mb-4 text-foreground">
             {yearName} B.Tech Notes
           </h1>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">

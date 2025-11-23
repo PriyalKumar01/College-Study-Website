@@ -152,11 +152,11 @@ const FifthSemesterCSENotes = () => {
           transition={{ duration: 0.5 }}
           className="text-center mb-12"
         >
-          <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-primary via-purple-500 to-pink-500 bg-clip-text text-transparent">
+          <h1 className="text-4xl md:text-5xl font-bold mb-4 text-foreground">
             5th Semester - CSE/IT Notes
           </h1>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Comprehensive study materials for Computer Science & IT - 5th Semester
+            Computer Science & IT - Comprehensive study materials and resources
           </p>
         </motion.div>
 
