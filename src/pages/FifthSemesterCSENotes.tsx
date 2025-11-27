@@ -61,6 +61,7 @@ const FifthSemesterCSENotes = () => {
       notes: [
         { title: 'DBMS Book', url: 'https://drive.google.com/uc?export=download&id=1GMdDx-BuR3pcnla16xVJ4mOx4JMrxlTd' },
         { title: 'Complete DBMS Notes', url: 'https://drive.google.com/uc?export=download&id=15lUt9NLdShn6fTg4QaRiGRyUWJJ3K4Z5' },
+        { title: 'DBMS Practical File- Priyal Kumar', url: 'https://drive.google.com/file/d/1FhsohpFS5j91ykfH350X90VezA2u9_ZT/view?usp=drivesdk' },
         { title: 'Unit-1 Part-1 Navathe', url: 'https://drive.google.com/uc?export=download&id=1Njok356K8ftqy6IfELlH2LoYh4ncX0Kx' },
         { title: 'Unit-1 Part-2 Navathe', url: 'https://drive.google.com/uc?export=download&id=1il-V1xgTxz0cRdiVzhYqdpE4hrWIA_Kw' },
         { title: 'Unit-2 Part-3 Navathe', url: 'https://drive.google.com/uc?export=download&id=1xK0r9BkxR3BtA0iM9zJdcM5UNe7duy8S' },
@@ -74,7 +75,11 @@ const FifthSemesterCSENotes = () => {
       description: 'Data analysis, machine learning, and statistical modeling',
       notes: [
         { title: 'FULL Unit-1 Notes', url: 'https://drive.google.com/uc?export=download&id=1tevE9l-E44Jd3l2lL9YlDY1qrXfEBhDA' },
+        { title: 'Statistics Notes', url: 'https://drive.google.com/file/d/1NV6lQsVOTc2c4OpMt6VykRZvMvtYe8DT/view?usp=drivesdk' },
         { title: 'Unit-2 Part-1 Notes', url: 'https://drive.google.com/uc?export=download&id=1LXSfbvhVZbJDUI6eivtySq7b98bKWZac' },
+        { title: 'All DS Notes from Data Modeling Onwards', url: 'https://drive.google.com/file/d/1MavBmoF6Ayn2OX6-JEtjXSj-8B0lQa7V/view?usp=drivesdk' },
+        { title: 'DS Practical File- Priyal', url: 'https://drive.google.com/file/d/19RsKe9Aw3FT1_m35r9kOhqSKsA5tF1jg/view?usp=drivesdk' },
+        { title: 'DS Practical Exam PYQs(2025-26)', url: 'https://drive.google.com/file/d/1V7Un3Ye1MEQvx_LEY-3QHvYKJyUEUfuZ/view?usp=drivesdk' },
       ]
     },
     {
@@ -87,6 +92,9 @@ const FifthSemesterCSENotes = () => {
         { title: 'CN Book - Tanenbaum', url: 'https://drive.google.com/uc?export=download&id=17Lzpfbjp_TUzirEfqEwBujBRpwGlM_1x' },
         { title: 'FULL Unit-1 & 2 Handwritten Notes', url: 'https://drive.google.com/uc?export=download&id=1FdlyWmdpcePy9ON19EckOpM32MATHk1W' },
         { title: 'CN Quantum Book (best)', url: 'https://drive.google.com/uc?export=download&id=135ML5uks26wJiAKR9oOQ4kOK8CO6aBAC' },
+        { title: 'CN Complete Notes', url: 'https://drive.google.com/file/d/1L3WfHCH893Xr6LGOeS8uXPhFloVP6xMB/view?usp=drivesdk' },
+        { title: 'CN Practical File- Priyal', url: 'https://drive.google.com/file/d/1YpEVjHMbPVa8nIXD1yhSHPAwV5FmAcWe/view?usp=drivesdk' },
+        
       ]
     },
     {
