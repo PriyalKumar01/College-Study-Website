@@ -286,9 +286,10 @@ Generated on: ${new Date().toLocaleDateString()}
                             type="number"
                             min="1"
                             max="6"
+                            step="1"
                             placeholder="Credits"
                             value={subject.credits || ''}
-                            onChange={(e) => updateSubject(semester.id, subject.id, 'credits', parseInt(e.target.value) || 0)}
+                            onChange={(e) => updateSubject(semester.id, subject.id, 'credits', Math.floor(Number(e.target.value)) || 0)}
                           />
                         </div>
                         <div>
@@ -298,10 +299,10 @@ Generated on: ${new Date().toLocaleDateString()}
                             type="number"
                             min="0"
                             max="10"
-                            step="0.1"
+                            step="1"
                             placeholder="0-10"
                             value={subject.gradePoint || ''}
-                            onChange={(e) => updateSubject(semester.id, subject.id, 'gradePoint', parseFloat(e.target.value) || 0)}
+                            onChange={(e) => updateSubject(semester.id, subject.id, 'gradePoint', Math.floor(Number(e.target.value)) || 0)}
                           />
                         </div>
                         <div className="flex items-end">
