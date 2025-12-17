@@ -88,8 +88,11 @@ const FifthSemesterCSENotes = () => {
         ]
       },
       notes: [
-        { title: 'DBMS Book', url: 'https://drive.google.com/uc?export=download&id=1GMdDx-BuR3pcnla16xVJ4mOx4JMrxlTd' },
-        { title: 'Complete DBMS Notes', url: 'https://drive.google.com/uc?export=download&id=15lUt9NLdShn6fTg4QaRiGRyUWJJ3K4Z5' },
+        { title: 'DBMS-Quantum Book', url: 'https://drive.google.com/uc?export=download&id=1DNKGyHci5Du4yjaL2Mf3EYHSADPz13la' },
+        { title: 'DBMS Complete Notes - KnowledgeGATE', url: 'https://drive.google.com/uc?export=download&id=1oubD7Ov62JD1SOwhx-XsWqqK3TbOHAbn' },
+        { title: 'DBMS Complete Notes-MultiAtoms', url: 'https://drive.google.com/uc?export=download&id=1O399cHUYpgAFswLIIzZjJuZ_Se98_oby' },
+        { title: 'DBMS Complete Notes-5 min. Engg.', url: 'https://drive.google.com/uc?export=download&id=15lUt9NLdShn6fTg4QaRiGRyUWJJ3K4Z5' },
+        { title: 'DBMS Book-Henry Korth', url: 'https://drive.google.com/uc?export=download&id=1GMdDx-BuR3pcnla16xVJ4mOx4JMrxlTd' },
         { title: 'DBMS Practical File- Priyal Kumar', url: 'https://drive.google.com/file/d/1FhsohpFS5j91ykfH350X90VezA2u9_ZT/view?usp=drivesdk' },
         { title: 'Unit-1 Part-1 Navathe', url: 'https://drive.google.com/uc?export=download&id=1Njok356K8ftqy6IfELlH2LoYh4ncX0Kx' },
         { title: 'Unit-1 Part-2 Navathe', url: 'https://drive.google.com/uc?export=download&id=1il-V1xgTxz0cRdiVzhYqdpE4hrWIA_Kw' },
@@ -115,9 +118,13 @@ const FifthSemesterCSENotes = () => {
         { title: 'FULL Unit-1 Notes', url: 'https://drive.google.com/uc?export=download&id=1tevE9l-E44Jd3l2lL9YlDY1qrXfEBhDA' },
         { title: 'Statistics Notes', url: 'https://drive.google.com/file/d/1NV6lQsVOTc2c4OpMt6VykRZvMvtYe8DT/view?usp=drivesdk' },
         { title: 'Unit-2 Part-1 Notes', url: 'https://drive.google.com/uc?export=download&id=1LXSfbvhVZbJDUI6eivtySq7b98bKWZac' },
-        { title: 'All DS Notes from Data Modeling Onwards', url: 'https://drive.google.com/file/d/1MavBmoF6Ayn2OX6-JEtjXSj-8B0lQa7V/view?usp=drivesdk' },
-        { title: 'DS Practical File- Priyal', url: 'https://drive.google.com/file/d/19RsKe9Aw3FT1_m35r9kOhqSKsA5tF1jg/view?usp=drivesdk' },
-        { title: 'DS Practical Exam PYQs(2025-26)', url: 'https://drive.google.com/file/d/1V7Un3Ye1MEQvx_LEY-3QHvYKJyUEUfuZ/view?usp=drivesdk' },
+        { title: 'Full DS Notes from Data Modeling Onwards', url: 'https://drive.google.com/file/d/1MavBmoF6Ayn2OX6-JEtjXSj-8B0lQa7V/view?usp=drivesdk' },
+        { title: 'DS -last Min. Revision Notes', url: 'https://drive.google.com/file/d/1Wm4dpAN2nI39nNSIK-7jx3H8htZaqssM/view?usp=drivesdk' },
+        { title: 'DS -Complete Notes', url: 'https://drive.google.com/file/d/1ZiIw217rbI2IKt6HO_3WePIQ5caos3Od/view?usp=drivesdk' },
+        { title: 'Numpy Cheat Sheet', url: 'https://drive.google.com/file/d/1lN2L0jdfTdFLuOCcaxDtja3JLly0t1rm/view?usp=drivesdk' },
+        { title: 'Pandas Cheat Sheet', url: 'https://drive.google.com/file/d/1_hLM3xGLJ4VHFrMVjtPw2kjHZsX0zOk0/view?usp=drivesdk' },
+        { title: 'DS Practical File- Priyal(CSE)', url: 'https://drive.google.com/file/d/19RsKe9Aw3FT1_m35r9kOhqSKsA5tF1jg/view?usp=drivesdk' },
+        { title: 'DS -Practical Exam PYQs(2025-26)', url: 'https://drive.google.com/file/d/1V7Un3Ye1MEQvx_LEY-3QHvYKJyUEUfuZ/view?usp=drivesdk' },
       ]
     },
     {
@@ -135,12 +142,43 @@ const FifthSemesterCSENotes = () => {
         ]
       },
       notes: [
-        { title: 'CN Forouzan Book', url: 'https://drive.google.com/uc?export=download&id=1kLMlKMA0AZ1saBEmQzYJv-8OZjYp04G0' },
-        { title: 'CN Book - Tanenbaum', url: 'https://drive.google.com/uc?export=download&id=17Lzpfbjp_TUzirEfqEwBujBRpwGlM_1x' },
+        { title: 'CN -Forouzan Book', url: 'https://drive.google.com/uc?export=download&id=1kLMlKMA0AZ1saBEmQzYJv-8OZjYp04G0' },
+        { title: 'CN -Tanenbaum Book', url: 'https://drive.google.com/uc?export=download&id=17Lzpfbjp_TUzirEfqEwBujBRpwGlM_1x' },
+        { title: 'CN -Quantum Book', url: 'https://drive.google.com/uc?export=download&id=135ML5uks26wJiAKR9oOQ4kOK8CO6aBAC' },
         { title: 'FULL Unit-1 & 2 Handwritten Notes', url: 'https://drive.google.com/uc?export=download&id=1FdlyWmdpcePy9ON19EckOpM32MATHk1W' },
-        { title: 'CN Quantum Book (best)', url: 'https://drive.google.com/uc?export=download&id=135ML5uks26wJiAKR9oOQ4kOK8CO6aBAC' },
-        { title: 'CN Complete Notes', url: 'https://drive.google.com/file/d/1L3WfHCH893Xr6LGOeS8uXPhFloVP6xMB/view?usp=drivesdk' },
+        { title: 'CN Complete Notes (best)', url: 'https://drive.google.com/file/d/1L3WfHCH893Xr6LGOeS8uXPhFloVP6xMB/view?usp=drivesdk' },
         { title: 'CN Practical File- Priyal', url: 'https://drive.google.com/file/d/1YpEVjHMbPVa8nIXD1yhSHPAwV5FmAcWe/view?usp=drivesdk' },
+        { title: 'CH-1 (Prof. Lecture PDF)', url: 'https://drive.google.com/file/d/1dOdNZ3FfsRM9cOKbyvqwQVpk3oHe51YP/view?usp=drivesdk' },
+        { title: 'CH-2 (Prof. Lecture PDF)', url: 'https://drive.google.com/file/d/14S8oSaSzeiMdBjGhB5wlGN3deyF7vgUK/view?usp=drivesdk' },
+        { title: 'CH-3 (Prof. Lecture PDF)', url: 'https://drive.google.com/file/d/1T7WtlX_uqy8CsgtrPPoRzojV1lr9yqz5/view?usp=drivesdk' },
+        { title: 'CH-4 (Prof. Lecture PDF)', url: 'https://drive.google.com/file/d/19thdrTwUKTbagPX5Yi1AsmYDv938YA76/view?usp=drivesdk' },
+        { title: 'CH-5 (Prof. Lecture PDF)', url: 'https://drive.google.com/file/d/1fweOgN6kQI6_HEdAW5ZFsJg7HsTmolJy/view?usp=drivesdk' },
+        { title: 'CH-6 (Prof. Lecture PDF)', url: 'https://drive.google.com/file/d/1gmFl-4xoUvz6BreneM23zm8_z5OobqRs/view?usp=drivesdk' },
+        { title: 'CH-7 (Prof. Lecture PDF)', url: 'https://drive.google.com/file/d/1H_JHkidn2TrEQxjhs5_yZ1QSIIOa1X5Y/view?usp=drivesdk' },
+        { title: 'CH-8 (Prof. Lecture PDF)', url: 'https://drive.google.com/file/d/1zceqjuMFJvh-uOFZ6jvCv551PKrtKvnO/view?usp=drivesdk' },
+        { title: 'CH-9 (Prof. Lecture PDF)', url: 'https://drive.google.com/file/d/1xJH2ZX60D0eK2fIB-SYRkiJdQWG-cP-D/view?usp=drivesdk' },
+        { title: 'CH-10 (Prof. Lecture PDF)', url: 'https://drive.google.com/file/d/1t1O0BDJJZpLdoQ4otTGrsjIZxUFXRvId/view?usp=drivesdk' },
+        { title: 'CH-11 (Prof. Lecture PDF)', url: 'https://drive.google.com/file/d/1AARuEcWjx88472RzeGIF-wxRf7h1k5_7/view?usp=drivesdk' },
+        { title: 'CH-12 (Prof. Lecture PDF)', url: 'https://drive.google.com/file/d/1HbZSaeNJPu9lUG7tLVOQ_4AbXitT8fEv/view?usp=drivesdk' },
+        { title: 'CH-13 (Prof. Lecture PDF)', url: 'https://drive.google.com/file/d/1RysuSt_NhF-LZY2iTD_hpgR50PxMUsmY/view?usp=drivesdk' },
+        { title: 'CH-14 (Prof. Lecture PDF)', url: 'https://drive.google.com/file/d/1PxTAIazka1oX5MjSeyS-19TaB3iRnJPN/view?usp=drivesdk' },
+        { title: 'CH-15 (Prof. Lecture PDF)', url: 'https://drive.google.com/file/d/1eDAAiFwrH7iy4GN5jrPrLmFJruXlNFZk/view?usp=drivesdk' },
+        { title: 'CH-16 (Prof. Lecture PDF)', url: 'https://drive.google.com/file/d/1geAtQLRbHf9wlRkFnB5IOuKztr8x0A0J/view?usp=drivesdk' },
+        { title: 'CH-19 (*17th & 18th pdf is not in syllabus )', url: 'https://drive.google.com/file/d/14fESRsqsXSMgJb1z07KO3ehB0_jqr7qx/view?usp=drivesdk' },
+        { title: 'CH-20 (Prof. Lecture PDF)', url: 'https://drive.google.com/file/d/1_dMYKuNyPfQZ4BYS5Xr_Uxl9wzO0any6/view?usp=drivesdk' },
+        { title: 'CH-21 (Prof. Lecture PDF)', url: 'https://drive.google.com/file/d/163aOxOTx67ViY9p9ruFPoI4MPTGBCC64/view?usp=drivesdk' },
+        { title: 'CH-22 (Prof. Lecture PDF)', url: 'https://drive.google.com/file/d/18GqmVKynljQJT_yuMWzjIRp2pYpPmdBz/view?usp=drivesdk' },
+        { title: 'CH-23 (Prof. Lecture PDF)', url: 'https://drive.google.com/file/d/1qSPvU_lDg896jhxgez9ZEVcj7O1MdL3C/view?usp=drivesdk' },
+        { title: 'CH-24 (Prof. Lecture PDF)', url: 'https://drive.google.com/file/d/1s8TEx5g0CMWbcUz4pbQywa2dweBTwYo-/view?usp=drivesdk' },
+        { title: 'CH-25 (Prof. Lecture PDF)', url: 'https://drive.google.com/file/d/1B45I-setY6TKy4KASaOzQvenmcV1qB25/view?usp=drivesdk' },
+        { title: 'CH-26 (Prof. Lecture PDF)', url: 'https://drive.google.com/file/d/1B8954jXkFSoJ5FhZcvZpIZbfD4p52eiU/view?usp=drivesdk' },
+        { title: 'CH-27 (Prof. Lecture PDF)', url: 'https://drive.google.com/file/d/1D_ggHdoGfLTuBB8uBEEZCF0QZKixCTXw/view?usp=drivesdk' },
+        { title: 'CH-28 (Prof. Lecture PDF)', url: 'https://drive.google.com/file/d/1xD7cmGzPr0dfOqB71xKv4nyswFVIMl8h/view?usp=drivesdk' },
+        { title: 'CH-29 (Prof. Lecture PDF)', url: 'https://drive.google.com/file/d/1N-c6cThH9Kd_AO8yrseeIfzyIyeNQ5ga/view?usp=drivesdk' },
+        { title: 'CH-30 (Prof. Lecture PDF)', url: 'https://drive.google.com/file/d/1Ervot1e8P9uaroZqn-CQ8myzThDWYiZr/view?usp=drivesdk' },
+        { title: 'CH-31 (Prof. Lecture PDF)', url: 'https://drive.google.com/file/d/12heVyuBQXsmHMd-lA9P7rc4wLJyUHiz_/view?usp=drivesdk' },
+        { title: 'CH-32 (Last Prof. Lec. PDF)', url: 'https://drive.google.com/file/d/1LxbWvmZfbuiLaT9f3W5WMPzUBqYxw_-e/view?usp=drivesdk' },
+
       ]
     },
     {
@@ -158,7 +196,13 @@ const FifthSemesterCSENotes = () => {
         ]
       },
       notes: [
-        { title: 'Complete DAA Notes', url: 'https://drive.google.com/uc?export=download&id=1D9ElRUV9QF6Ri3x5aRxyEeeQ3VUfdNYv' },
+          { title: 'DAA Unit-1 Notes', url: 'https://drive.google.com/file/d/14Trs7Ge_xdaGCLUA6Lh1cpLD-EHWUEbT/view?usp=drivesdk' },
+          { title: 'DAA Unit-2 Notes', url: 'https://drive.google.com/file/d/18rKTgtSxtn7p6RTWzDka8CSiLF-6Pow2/view?usp=drivesdk' },
+          { title: 'DAA Unit-3 Notes', url: 'https://drive.google.com/file/d/1VNo796SOhr3PUejZW0kdqubUmyxapH30/view?usp=drivesdk' },
+          { title: 'DAA Unit-4 Notes', url: 'https://drive.google.com/file/d/1Dd_61x5YnAj2EWD_auhXFmXv2OLSBgy8/view?usp=drivesdk' },
+          { title: 'DAA Unit-5 Notes', url: 'https://drive.google.com/file/d/1PrMeHxGMgrQhWc4asCs00UJ3XSNw3sdk/view?usp=drivesdk' },
+          { title: 'DAA All Unit Notes', url: 'https://drive.google.com/file/d/1AtK4hZ9wHSZ-pSlN8fd36zmZp7o-u60q/view?usp=drivesdk' },
+          { title: 'Complete DAA Notes-5 Min.Engg. (best)', url: 'https://drive.google.com/uc?export=download&id=1D9ElRUV9QF6Ri3x5aRxyEeeQ3VUfdNYv' },
       ]
     },
     {
@@ -188,6 +232,7 @@ const FifthSemesterCSENotes = () => {
         { title: 'Unit-3 Part-4', url: 'https://drive.google.com/uc?export=download&id=12alClJeKBTeE_1XIRJvJPkQ-Un9tS4X4' },
         { title: 'Unit-4 Part-1', url: 'https://drive.google.com/uc?export=download&id=1I_1P84wI9Ke8bUuptcCsQq7iSXprJEzT' },
         { title: 'Unit-4 Part-2', url: 'https://drive.google.com/uc?export=download&id=1tHs6ovfZ8dFwsV516_gGRvu4rvtAz899' },
+        { title: 'Unit-5 Corporate Governance', url: 'https://drive.google.com/file/d/1h8x6Md6_4X2jn35_W07yCrBpOEfy-OM5/view?usp=drivesdk' },
       ]
     },
     {
