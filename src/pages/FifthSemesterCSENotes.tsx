@@ -364,10 +364,6 @@ const FifthSemesterCSENotes = () => {
       fullName: 'PYQs for 5th Semester CSE',
       icon: '❓',
       color: 'bg-red-600',
-      playlists: {
-        detailed: [],
-        oneshot: []
-      },
       notes: [
         { title: 'Mid Sem-1 PYQs (2025-26)', url: 'https://drive.google.com/uc?export=download&id=1hwZUf4FxQfW8EoLcWR2XWjWroxvFz_As' },
         { title: 'Mid Sem-2 PYQs (2025-26)', url: 'https://drive.google.com/file/d/1PZ-P27xJkvH3FCj_fv_QrC88HrJAD5SA/view?usp=drivesdk' },
