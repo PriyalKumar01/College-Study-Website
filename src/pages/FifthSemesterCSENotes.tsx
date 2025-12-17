@@ -38,10 +38,13 @@ const FifthSemesterCSENotes = () => {
       color: 'bg-purple-500',
       playlists: {
         detailed: [
-          { title: 'TOAFL Complete Playlist', url: '#', recommended: true }
+          { title: 'TOAFL Playlist -Gate Smashers', url: 'https://youtube.com/playlist?list=PLxCzCOWd7aiFM9Lj5G9G_76adtyb4ef7i&si=RnlhLn9QVUpKRBWj', recommended: true },
+          { title: 'TOAFL Playlist -Gate Hub', url: 'https://youtube.com/playlist?list=PL1QH9gyQXfgsUBfYUR0WirJASgif4pHVX&si=ErI3w0QFAdHp0vik', recommended: true },
+          { title: 'TOAFL Playlist -CSE Academy', url: 'https://youtube.com/playlist?list=PLS6nugESt9lKS5TYU6VgqUgT1uPbYH9eE&si=3vXsmMfhOZK-FiGY', recommended: false },
         ],
         oneshot: [
-          { title: 'TOAFL One Shot', url: '#' }
+          { title: 'TOAFL-by 5 Min.Engg.', url: 'https://youtu.be/acCztqcZi_Q?si=u77gG3cBgxXyi94Q' , recommended: true},
+          { title: 'TOAFL-by Knowledge GATE', url: 'https://youtu.be/9kuynHcM3UA?si=S0ZoakGy81zG1-r2', recommended: true },
         ]
       },
       notes: [
@@ -81,10 +84,19 @@ const FifthSemesterCSENotes = () => {
       color: 'bg-blue-500',
       playlists: {
         detailed: [
-          { title: 'DBMS Complete Playlist', url: '#', recommended: true }
+          { title: 'DBMS -Neso Academy', url: 'https://youtube.com/playlist?list=PLBlnK6fEyqRiyryTrbKHX1Sh9luYI0dhX&si=LX8H6EbBHJjR3iH-', recommended: true },
+          { title: 'DBMS Unitwise Oneshot Playlist -Multi Atoms', url: 'https://youtube.com/playlist?list=PL49mRA0Y_C8sApWY0hYEaO-GldGwPE6Yo&si=OYP3sxnYZh53izrw', recommended: true },
+          { title: 'DBMS -Gate Smashers', url: 'https://youtube.com/playlist?list=PLxCzCOWd7aiFAN6I8CuViBuCdJgiOkT2Y&si=729UvQmL-7UcJw0x', recommended: false },
         ],
         oneshot: [
-          { title: 'DBMS One Shot', url: '#' }
+          { title: 'Unit 1 Oneshot', url: 'https://youtu.be/ptlIJiIByMc?si=WI-U-oZcuwaqnK_I', recommended: true },
+          { title: 'Unit 2 Oneshot', url: 'https://youtu.be/jRReZoQi1hw?si=amSvqZu4LJ_mrU6S', recommended: true },
+          { title: 'Unit 3 Oneshot', url: 'https://youtu.be/VAd8Audkxro?si=Q7AAnCx5Suu2ctiv', recommended: true },
+          { title: 'Unit 4 Oneshot', url: 'https://youtu.be/0Skq_YqrHjg?si=Ox5vgpaxUKE5MOmS', recommended: true },
+          { title: 'Unit 5 Oneshot', url: 'https://youtu.be/oR6IXFrJBEk?si=7DzaF2QkfEhv12yL', recommended: true },
+          { title: 'All Unit Imp. Ques.', url: 'https://youtu.be/Jl3gLo2fUYM?si=7OSKmeps1gQ-xBmB', recommended: true },
+          { title: 'DBMS One Shot -5 Min. Engg.', url: 'https://youtu.be/jzuzxEFoiss?si=keewHhai6mXkNmOg', recommended: true },
+          { title: 'DBMS One Shot -Knowledge Gate', url: 'https://youtu.be/YRnjGeQbsHQ?si=mgvvNkChOHukHobq', recommended: true },
         ]
       },
       notes: [
@@ -108,10 +120,10 @@ const FifthSemesterCSENotes = () => {
       color: 'bg-green-500',
       playlists: {
         detailed: [
-          { title: 'Data Science Complete', url: '#', recommended: true }
+          { title: 'Data Science (Statistics)', url: 'https://youtu.be/1Cg9-KUqoUI?si=FyDOyUrgQEP-mUxE', recommended: true }
         ],
         oneshot: [
-          { title: 'Data Science One Shot', url: '#' }
+          { title: 'Data Science One Shot', url: 'https://youtu.be/1Cg9-KUqoUI?si=FyDOyUrgQEP-mUxE', recommended: true }
         ]
       },
       notes: [
@@ -135,10 +147,13 @@ const FifthSemesterCSENotes = () => {
       color: 'bg-orange-500',
       playlists: {
         detailed: [
-          { title: 'CN Complete Playlist', url: '#', recommended: true }
+          { title: 'CN Oneshot Playlist -Multi Atoms', url: 'https://youtube.com/playlist?list=PLh11ucJN276IL28KPahyHA5orDh4dYaJt&si=Pw-g5ySBMgOZxkEk', recommended: true },
+          { title: 'CN Playlist -Neso Academy', url: 'https://youtube.com/playlist?list=PLBlnK6fEyqRgMCUAG0XRw78UA8qnv6jEx&si=hFzQqIYH4m4bNQD0', recommended: true },
+          { title: 'CN Playlist -Gate Smashers', url: 'https://youtube.com/playlist?list=PLxCzCOWd7aiGFBD2-2joCpWOLUrDLvVV_&si=lLZUzL2F1Us0kbL4', recommended: false },
         ],
         oneshot: [
-          { title: 'CN One Shot', url: '#' }
+          { title: 'CN Oneshot -Knowledge Gate', url: 'https://youtu.be/q3Z3Qa1UNBA?si=aAM7JKTpm_hPjTW6', recommended: true },
+          { title: 'CN Oneshot -5 Min. Engg.', url: 'https://youtu.be/1V9mhVgVH3A?si=KvEkmDtyEnhJGFMS', recommended: true },
         ]
       },
       notes: [
@@ -189,10 +204,13 @@ const FifthSemesterCSENotes = () => {
       color: 'bg-red-500',
       playlists: {
         detailed: [
-          { title: 'DAA Complete Playlist', url: '#', recommended: true }
+          { title: 'DAA Playlist -Gate Hub', url: 'https://youtube.com/playlist?list=PL1QH9gyQXfgs7foRxIbIH8wmJyDh5QzAm&si=vo60TQy-DFTAaQ7Z', recommended: true },
+          { title: 'Unitwise Oneshot Playlist -Multi Atoms', url: 'https://youtube.com/playlist?list=PL49mRA0Y_C8tP7SvFD3zS8zxRYfKWg_yf&si=uoCCPq2VIigQ5cNj', recommended: true },
+          { title: 'DAA Playlist -University Academy', url: 'https://youtube.com/playlist?list=PL-JvKqQx2Atd--1Gs3WB8nmWOWRbEM7WW&si=Cs-dTfF4-xdHYysV', recommended: true },
         ],
         oneshot: [
-          { title: 'DAA One Shot', url: '#' }
+          { title: 'DAA One Shot -Knowledge Gate', url: 'https://youtu.be/z6DY_YSdyww?si=_vhMIt9WJPoAkhKV' },
+          { title: 'DAA One Shot -5 Min. Engg.', url: 'https://youtu.be/h1mAUcDXCG0?si=Kvqf4Vmk6hwOnb4x', recommended: true },
         ]
       },
       notes: [
@@ -213,9 +231,18 @@ const FifthSemesterCSENotes = () => {
       color: 'bg-indigo-500',
       playlists: {
         detailed: [
-          { title: 'Business Ethics Playlist', url: '#' }
+          { title: 'Business Ethics Playlist', url: 'https://youtube.com/playlist?list=PLsh2FvSr3n7ejgPDoJZW9Q22qJgXDB8IA&si=pDbk-4sUa5AdafNx' , recommended: true },
+          { title: 'Playlist -Only watch related topics Videos', url: 'https://youtube.com/playlist?list=PLI8rtkxfMUYVuC_POmiWKTlRutAdGWfSq&si=KjP_lyImdrxB37mk' },
+          { title: 'Playlist -Only watch topics-wise Videos', url: 'https://youtube.com/playlist?list=PLeUIXA68NobWnEOojETHpolPkR6qXszU2&si=AoNt743N0d1I3_A7' , recommended: true  },
         ],
-        oneshot: []
+        oneshot: [
+          { title: 'Business Ethics', url: 'https://youtu.be/ltW7KVYJ1go?si=VNMtqFzwF6Ge7wq3' },
+          { title: 'Ethical Decision Making', url: 'https://youtu.be/73MnDxDPv6w?si=Q9EnJRn2xxf-vpSw' },
+          { title: 'Corporate Social Responsibility', url: 'https://youtu.be/BWQ56WOMTT4?si=GoS-gd2AdrgKY5a2' },
+          { title: 'Marketing Ethics', url: 'https://youtu.be/rfAWVcORC_M?si=pDupNteELaSY3L3P' },
+          { title: 'Corporate Governance', url: 'https://youtu.be/hVOkmReERiE?si=CihY_vL13DjYlj14' },
+          { title: 'Theories of Corporate Governance', url: 'https://youtu.be/SZAHAXYxX34?si=OEhJaTeZ3Y_a8I4k' },
+        ]
       },
       notes: [
         { title: 'Syllabus', url: 'https://drive.google.com/uc?export=download&id=1Q7abTYsAJ14M2VgXaKWKYWYKZ1VHzR7O' },
