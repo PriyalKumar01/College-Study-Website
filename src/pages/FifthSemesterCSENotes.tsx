@@ -378,7 +378,7 @@ const FifthSemesterCSENotes = () => {
 
   const syllabus = {
     title: '5th Semester CSE Syllabus',
-    url: '#'
+    url: 'https://drive.google.com/file/d/1FLX3oeRQM_jGcT1NvsY85EtygH6Lxtkf/view?usp=drivesdk'
   };
 
   const handleDownload = (url: string, title: string) => {
@@ -539,7 +539,7 @@ const FifthSemesterCSENotes = () => {
                 📚 Open Elective Subjects
               </h3>
               <p className="text-sm text-yellow-700 dark:text-yellow-300">
-                Students choose ONE open elective from the available options. Scroll down to find notes for all open elective subjects.
+                Students have to only fill preferences,top prefered ONE "Open Elective" subject will be alloted from the available options as per your last year GPA. Scroll down to find notes for all open elective subjects.
               </p>
             </div>
           </div>
