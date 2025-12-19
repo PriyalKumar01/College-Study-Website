@@ -100,6 +100,11 @@ export const navItems = [
     page: <FourthSemesterCSENotes />,
   },
   {
+    to: "/fifth-semester-cse-open-electives",
+    page: <FifthSemesterCSEOpenElectives />,
+  }
+  ,
+  {
     to: "/fifth-semester-cse",
     page: <FifthSemesterCSENotes />,
   },
