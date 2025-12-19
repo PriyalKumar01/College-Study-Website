@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Download, ArrowLeft, FileText, Play, ChevronRight } from 'lucide-react';
+import { Download, ArrowLeft, FileText, Play, ChevronDown, ChevronRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import { PlaylistModal } from '@/components/PlaylistModal';
@@ -14,6 +14,15 @@ const FifthSemesterCSENotes = () => {
   const [showPlaylistModal, setShowPlaylistModal] = useState(false);
   const [selectedPlaylistType, setSelectedPlaylistType] = useState<'detailed' | 'oneshot'>('detailed');
   const [selectedSubjectForPlaylist, setSelectedSubjectForPlaylist] = useState<string>('');
+  const [expandedSubjects, setExpandedSubjects] = useState<string[]>([]);
+
+  const toggleSubjectExpansion = (subjectId: string) => {
+    setExpandedSubjects(prev => 
+      prev.includes(subjectId) 
+        ? prev.filter(id => id !== subjectId)
+        : [...prev, subjectId]
+    );
+  };
 
   const handlePlaylistClick = (subjectId: string, type: 'detailed' | 'oneshot') => {
     const subject = subjects.find(s => s.id === subjectId);
@@ -168,32 +177,6 @@ const FifthSemesterCSENotes = () => {
         { title: 'CH-3 (Prof. Lecture PDF)', url: 'https://drive.google.com/file/d/1T7WtlX_uqy8CsgtrPPoRzojV1lr9yqz5/view?usp=drivesdk' },
         { title: 'CH-4 (Prof. Lecture PDF)', url: 'https://drive.google.com/file/d/19thdrTwUKTbagPX5Yi1AsmYDv938YA76/view?usp=drivesdk' },
         { title: 'CH-5 (Prof. Lecture PDF)', url: 'https://drive.google.com/file/d/1fweOgN6kQI6_HEdAW5ZFsJg7HsTmolJy/view?usp=drivesdk' },
-        { title: 'CH-6 (Prof. Lecture PDF)', url: 'https://drive.google.com/file/d/1gmFl-4xoUvz6BreneM23zm8_z5OobqRs/view?usp=drivesdk' },
-        { title: 'CH-7 (Prof. Lecture PDF)', url: 'https://drive.google.com/file/d/1H_JHkidn2TrEQxjhs5_yZ1QSIIOa1X5Y/view?usp=drivesdk' },
-        { title: 'CH-8 (Prof. Lecture PDF)', url: 'https://drive.google.com/file/d/1zceqjuMFJvh-uOFZ6jvCv551PKrtKvnO/view?usp=drivesdk' },
-        { title: 'CH-9 (Prof. Lecture PDF)', url: 'https://drive.google.com/file/d/1xJH2ZX60D0eK2fIB-SYRkiJdQWG-cP-D/view?usp=drivesdk' },
-        { title: 'CH-10 (Prof. Lecture PDF)', url: 'https://drive.google.com/file/d/1t1O0BDJJZpLdoQ4otTGrsjIZxUFXRvId/view?usp=drivesdk' },
-        { title: 'CH-11 (Prof. Lecture PDF)', url: 'https://drive.google.com/file/d/1AARuEcWjx88472RzeGIF-wxRf7h1k5_7/view?usp=drivesdk' },
-        { title: 'CH-12 (Prof. Lecture PDF)', url: 'https://drive.google.com/file/d/1HbZSaeNJPu9lUG7tLVOQ_4AbXitT8fEv/view?usp=drivesdk' },
-        { title: 'CH-13 (Prof. Lecture PDF)', url: 'https://drive.google.com/file/d/1RysuSt_NhF-LZY2iTD_hpgR50PxMUsmY/view?usp=drivesdk' },
-        { title: 'CH-14 (Prof. Lecture PDF)', url: 'https://drive.google.com/file/d/1PxTAIazka1oX5MjSeyS-19TaB3iRnJPN/view?usp=drivesdk' },
-        { title: 'CH-15 (Prof. Lecture PDF)', url: 'https://drive.google.com/file/d/1eDAAiFwrH7iy4GN5jrPrLmFJruXlNFZk/view?usp=drivesdk' },
-        { title: 'CH-16 (Prof. Lecture PDF)', url: 'https://drive.google.com/file/d/1geAtQLRbHf9wlRkFnB5IOuKztr8x0A0J/view?usp=drivesdk' },
-        { title: 'CH-19 (*17th & 18th pdf is not in syllabus )', url: 'https://drive.google.com/file/d/14fESRsqsXSMgJb1z07KO3ehB0_jqr7qx/view?usp=drivesdk' },
-        { title: 'CH-20 (Prof. Lecture PDF)', url: 'https://drive.google.com/file/d/1_dMYKuNyPfQZ4BYS5Xr_Uxl9wzO0any6/view?usp=drivesdk' },
-        { title: 'CH-21 (Prof. Lecture PDF)', url: 'https://drive.google.com/file/d/163aOxOTx67ViY9p9ruFPoI4MPTGBCC64/view?usp=drivesdk' },
-        { title: 'CH-22 (Prof. Lecture PDF)', url: 'https://drive.google.com/file/d/18GqmVKynljQJT_yuMWzjIRp2pYpPmdBz/view?usp=drivesdk' },
-        { title: 'CH-23 (Prof. Lecture PDF)', url: 'https://drive.google.com/file/d/1qSPvU_lDg896jhxgez9ZEVcj7O1MdL3C/view?usp=drivesdk' },
-        { title: 'CH-24 (Prof. Lecture PDF)', url: 'https://drive.google.com/file/d/1s8TEx5g0CMWbcUz4pbQywa2dweBTwYo-/view?usp=drivesdk' },
-        { title: 'CH-25 (Prof. Lecture PDF)', url: 'https://drive.google.com/file/d/1B45I-setY6TKy4KASaOzQvenmcV1qB25/view?usp=drivesdk' },
-        { title: 'CH-26 (Prof. Lecture PDF)', url: 'https://drive.google.com/file/d/1B8954jXkFSoJ5FhZcvZpIZbfD4p52eiU/view?usp=drivesdk' },
-        { title: 'CH-27 (Prof. Lecture PDF)', url: 'https://drive.google.com/file/d/1D_ggHdoGfLTuBB8uBEEZCF0QZKixCTXw/view?usp=drivesdk' },
-        { title: 'CH-28 (Prof. Lecture PDF)', url: 'https://drive.google.com/file/d/1xD7cmGzPr0dfOqB71xKv4nyswFVIMl8h/view?usp=drivesdk' },
-        { title: 'CH-29 (Prof. Lecture PDF)', url: 'https://drive.google.com/file/d/1N-c6cThH9Kd_AO8yrseeIfzyIyeNQ5ga/view?usp=drivesdk' },
-        { title: 'CH-30 (Prof. Lecture PDF)', url: 'https://drive.google.com/file/d/1Ervot1e8P9uaroZqn-CQ8myzThDWYiZr/view?usp=drivesdk' },
-        { title: 'CH-31 (Prof. Lecture PDF)', url: 'https://drive.google.com/file/d/12heVyuBQXsmHMd-lA9P7rc4wLJyUHiz_/view?usp=drivesdk' },
-        { title: 'CH-32 (Last Prof. Lec. PDF)', url: 'https://drive.google.com/file/d/1LxbWvmZfbuiLaT9f3W5WMPzUBqYxw_-e/view?usp=drivesdk' },
-
       ]
     },
     {
@@ -214,148 +197,13 @@ const FifthSemesterCSENotes = () => {
         ]
       },
       notes: [
-          { title: 'DAA Unit-1 Notes', url: 'https://drive.google.com/file/d/14Trs7Ge_xdaGCLUA6Lh1cpLD-EHWUEbT/view?usp=drivesdk' },
-          { title: 'DAA Unit-2 Notes', url: 'https://drive.google.com/file/d/18rKTgtSxtn7p6RTWzDka8CSiLF-6Pow2/view?usp=drivesdk' },
-          { title: 'DAA Unit-3 Notes', url: 'https://drive.google.com/file/d/1VNo796SOhr3PUejZW0kdqubUmyxapH30/view?usp=drivesdk' },
-          { title: 'DAA Unit-4 Notes', url: 'https://drive.google.com/file/d/1Dd_61x5YnAj2EWD_auhXFmXv2OLSBgy8/view?usp=drivesdk' },
-          { title: 'DAA Unit-5 Notes', url: 'https://drive.google.com/file/d/1PrMeHxGMgrQhWc4asCs00UJ3XSNw3sdk/view?usp=drivesdk' },
-          { title: 'DAA All Unit Notes', url: 'https://drive.google.com/file/d/1AtK4hZ9wHSZ-pSlN8fd36zmZp7o-u60q/view?usp=drivesdk' },
-          { title: 'Complete DAA Notes-5 Min.Engg. (best)', url: 'https://drive.google.com/uc?export=download&id=1D9ElRUV9QF6Ri3x5aRxyEeeQ3VUfdNYv' },
-      ]
-    },
-    {
-      id: 'business-ethics',
-      name: 'Business Ethics',
-      fullName: 'Business Ethics (Open Elective)',
-      icon: '📋',
-      color: 'bg-indigo-500',
-      playlists: {
-        detailed: [
-          { title: 'Business Ethics Playlist', url: 'https://youtube.com/playlist?list=PLsh2FvSr3n7ejgPDoJZW9Q22qJgXDB8IA&si=pDbk-4sUa5AdafNx' , recommended: true },
-          { title: 'Playlist -Only watch related topics Videos', url: 'https://youtube.com/playlist?list=PLI8rtkxfMUYVuC_POmiWKTlRutAdGWfSq&si=KjP_lyImdrxB37mk' },
-          { title: 'Playlist -Only watch topics-wise Videos', url: 'https://youtube.com/playlist?list=PLeUIXA68NobWnEOojETHpolPkR6qXszU2&si=AoNt743N0d1I3_A7' , recommended: true  },
-        ],
-        oneshot: [
-          { title: 'Business Ethics', url: 'https://youtu.be/ltW7KVYJ1go?si=VNMtqFzwF6Ge7wq3' },
-          { title: 'Ethical Decision Making', url: 'https://youtu.be/73MnDxDPv6w?si=Q9EnJRn2xxf-vpSw' },
-          { title: 'Corporate Social Responsibility', url: 'https://youtu.be/BWQ56WOMTT4?si=GoS-gd2AdrgKY5a2' },
-          { title: 'Marketing Ethics', url: 'https://youtu.be/rfAWVcORC_M?si=pDupNteELaSY3L3P' },
-          { title: 'Corporate Governance', url: 'https://youtu.be/hVOkmReERiE?si=CihY_vL13DjYlj14' },
-          { title: 'Theories of Corporate Governance', url: 'https://youtu.be/SZAHAXYxX34?si=OEhJaTeZ3Y_a8I4k' },
-        ]
-      },
-      notes: [
-        { title: 'Syllabus', url: 'https://drive.google.com/uc?export=download&id=1Q7abTYsAJ14M2VgXaKWKYWYKZ1VHzR7O' },
-        { title: 'Unit-1 Notes', url: 'https://drive.google.com/uc?export=download&id=1JIhpotQbWbC_ryy7H-fyZOgMmqwXewsA' },
-        { title: 'Unit-2 Part-1', url: 'https://drive.google.com/uc?export=download&id=1BG0eCO9jLeoLR68sBreMSxUCPA-DOmSI' },
-        { title: 'Unit-2 Part-2', url: 'https://drive.google.com/uc?export=download&id=1BF7V9tNpAK8i3awM6zU8UtW9QDJvkUeV' },
-        { title: 'Unit-2 Part-3', url: 'https://drive.google.com/uc?export=download&id=1enrdv3TDcXVAAXOd8zoNAFsBOMi58eNC' },
-        { title: 'Unit-2 Part-4', url: 'https://drive.google.com/uc?export=download&id=14C3hUK3bPYA1KpNuBqr7HnQ6pFP8g410' },
-        { title: 'Unit-2 Part-5', url: 'https://drive.google.com/uc?export=download&id=1D0QrnqjcONsYvDtyoiZKS4ueGSIMbgAT' },
-        { title: 'Unit-2 Case Study: On Dilemma', url: 'https://drive.google.com/uc?export=download&id=1Dp1NF-RIATPr6CU-yQrTka2ibaowWw_l' },
-        { title: 'Unit-3 Part-1', url: 'https://drive.google.com/uc?export=download&id=1pB5cQ7iJ_NPiDs-w77Xw0KIIVeEGGLNv' },
-        { title: 'Unit-3 Part-2', url: 'https://drive.google.com/uc?export=download&id=1zgzoyye9-shZCxCNYWcP8n5HwJiN09cd' },
-        { title: 'Unit-3 Part-3', url: 'https://drive.google.com/uc?export=download&id=1WzQMBm4wG1aUwulXKUeNXMNjmeqX_zFy' },
-        { title: 'Unit-3 Part-4', url: 'https://drive.google.com/uc?export=download&id=12alClJeKBTeE_1XIRJvJPkQ-Un9tS4X4' },
-        { title: 'Unit-4 Part-1', url: 'https://drive.google.com/uc?export=download&id=1I_1P84wI9Ke8bUuptcCsQq7iSXprJEzT' },
-        { title: 'Unit-4 Part-2', url: 'https://drive.google.com/uc?export=download&id=1tHs6ovfZ8dFwsV516_gGRvu4rvtAz899' },
-        { title: 'Unit-5 Corporate Governance', url: 'https://drive.google.com/file/d/1h8x6Md6_4X2jn35_W07yCrBpOEfy-OM5/view?usp=drivesdk' },
-      ]
-    },
-    {
-      id: 'env-ecology',
-      name: 'Environment & Ecology',
-      fullName: 'Environment & Ecology (Open Elective)',
-      icon: '🌿',
-      color: 'bg-emerald-500',
-      playlists: {
-        detailed: [
-          { title: 'Environment & Ecology Playlist', url: '#' }
-        ],
-        oneshot: []
-      },
-      notes: [
-        { title: 'Notes Coming Soon', url: '#' },
-      ]
-    },
-    {
-      id: 'soft-skills',
-      name: 'Soft Skills & PD',
-      fullName: 'Soft Skills & Personality Development (Open Elective)',
-      icon: '🎯',
-      color: 'bg-pink-500',
-      playlists: {
-        detailed: [
-          { title: 'Soft Skills Playlist', url: '#' }
-        ],
-        oneshot: []
-      },
-      notes: [
-        { title: 'Notes Coming Soon', url: '#' },
-      ]
-    },
-    {
-      id: 'critical-thinking',
-      name: 'Critical & Logical Thinking',
-      fullName: 'Critical & Logical Thinking (Open Elective)',
-      icon: '🧠',
-      color: 'bg-cyan-500',
-      playlists: {
-        detailed: [
-          { title: 'Critical Thinking Playlist', url: '#' }
-        ],
-        oneshot: []
-      },
-      notes: [
-        { title: 'Notes Coming Soon', url: '#' },
-      ]
-    },
-    {
-      id: 'solar-energy',
-      name: 'Solar Energy',
-      fullName: 'Solar Energy (Open Elective)',
-      icon: '☀️',
-      color: 'bg-yellow-500',
-      playlists: {
-        detailed: [
-          { title: 'Solar Energy Playlist', url: '#' }
-        ],
-        oneshot: []
-      },
-      notes: [
-        { title: 'Notes Coming Soon', url: '#' },
-      ]
-    },
-    {
-      id: 'non-conventional-energy',
-      name: 'Non-Conventional Energy',
-      fullName: 'Non-Conventional Energy Resources (Open Elective)',
-      icon: '⚡',
-      color: 'bg-amber-500',
-      playlists: {
-        detailed: [
-          { title: 'Non-Conventional Energy Playlist', url: '#' }
-        ],
-        oneshot: []
-      },
-      notes: [
-        { title: 'Notes Coming Soon', url: '#' },
-      ]
-    },
-    {
-      id: 'discrete-maths',
-      name: 'Discrete Maths',
-      fullName: 'Discrete Mathematics (Open Elective)',
-      icon: '🔢',
-      color: 'bg-violet-500',
-      playlists: {
-        detailed: [
-          { title: 'Discrete Maths Playlist', url: '#' }
-        ],
-        oneshot: []
-      },
-      notes: [
-        { title: 'Notes Coming Soon', url: '#' },
+        { title: 'DAA Unit-1 Notes', url: 'https://drive.google.com/file/d/14Trs7Ge_xdaGCLUA6Lh1cpLD-EHWUEbT/view?usp=drivesdk' },
+        { title: 'DAA Unit-2 Notes', url: 'https://drive.google.com/file/d/18rKTgtSxtn7p6RTWzDka8CSiLF-6Pow2/view?usp=drivesdk' },
+        { title: 'DAA Unit-3 Notes', url: 'https://drive.google.com/file/d/1VNo796SOhr3PUejZW0kdqubUmyxapH30/view?usp=drivesdk' },
+        { title: 'DAA Unit-4 Notes', url: 'https://drive.google.com/file/d/1Dd_61x5YnAj2EWD_auhXFmXv2OLSBgy8/view?usp=drivesdk' },
+        { title: 'DAA Unit-5 Notes', url: 'https://drive.google.com/file/d/1PrMeHxGMgrQhWc4asCs00UJ3XSNw3sdk/view?usp=drivesdk' },
+        { title: 'DAA All Unit Notes', url: 'https://drive.google.com/file/d/1AtK4hZ9wHSZ-pSlN8fd36zmZp7o-u60q/view?usp=drivesdk' },
+        { title: 'Complete DAA Notes-5 Min.Engg. (best)', url: 'https://drive.google.com/uc?export=download&id=1D9ElRUV9QF6Ri3x5aRxyEeeQ3VUfdNYv' },
       ]
     },
     {
@@ -500,53 +348,32 @@ const FifthSemesterCSENotes = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1, duration: 0.5 }}
-          className="mb-8 p-6 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-lg border-2 border-blue-200 dark:border-blue-800"
+          className="mb-8"
         >
-          <div className="flex items-center justify-between flex-wrap gap-4">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white">
+          <Card className="gradient-card border-2 border-primary/20 shadow-lg">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
                 <FileText className="h-5 w-5" />
-              </div>
-              <div>
-                <h3 className="text-lg font-semibold text-foreground">{syllabus.title}</h3>
-                <p className="text-sm text-muted-foreground">Official syllabus for 5th semester CSE/IT</p>
-              </div>
-            </div>
-            <Button 
-              onClick={() => handleDownload(syllabus.url, syllabus.title)} 
-              className="btn-hero"
-              disabled={syllabus.url === '#'}
-            >
-              <Download className="h-4 w-4 mr-2" />
-              {syllabus.url === '#' ? 'Coming Soon' : 'Download Syllabus'}
-            </Button>
-          </div>
-        </motion.div>
-
-        {/* Open Electives Info */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.15, duration: 0.5 }}
-          className="mb-8 p-4 bg-gradient-to-r from-yellow-50 to-amber-50 dark:from-yellow-900/20 dark:to-amber-900/20 rounded-lg border-2 border-yellow-200 dark:border-yellow-800"
-        >
-          <div className="flex items-start gap-3">
-            <div className="flex-shrink-0 w-8 h-8 bg-yellow-500 rounded-full flex items-center justify-center">
-              <span className="text-white text-sm font-bold">!</span>
-            </div>
-            <div>
-              <h3 className="text-lg font-semibold text-yellow-800 dark:text-yellow-200 mb-1">
-                📚 Open Elective Subjects
-              </h3>
-              <p className="text-sm text-yellow-700 dark:text-yellow-300">
-                Students have to only fill preferences,top prefered ONE "Open Elective" subject will be alloted from the available options as per your last year GPA. Scroll down to find notes for all open elective subjects.
-              </p>
-            </div>
-          </div>
+                5th Semester CSE Syllabus
+              </CardTitle>
+              <CardDescription>
+                Official syllabus for 5th semester CSE/IT
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Button
+                onClick={() => handleDownload(syllabus.url, syllabus.title)}
+                className="btn-hero"
+              >
+                <Download className="h-4 w-4 mr-2" />
+                Download Syllabus
+              </Button>
+            </CardContent>
+          </Card>
         </motion.div>
 
         {/* Subjects Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {subjects.map((subject, index) => {
             const playlists = getSubjectPlaylists(subject.id);
             const hasDetailedPlaylist = playlists.detailed && playlists.detailed.length > 0;
@@ -557,47 +384,78 @@ const FifthSemesterCSENotes = () => {
                 key={subject.id}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.05, duration: 0.5 }}
+                transition={{ delay: (index + 1) * 0.1, duration: 0.5 }}
                 whileHover={{ scale: 1.02 }}
               >
-                <Card className="feature-card h-full border-2 border-transparent hover:border-primary/20 shadow-lg hover:shadow-xl transition-all duration-300">
-                  <CardHeader className="text-center pb-2">
-                    <div className={`w-16 h-16 ${subject.color} rounded-full flex items-center justify-center text-3xl mx-auto mb-3`}>
+                <Card 
+                  className="feature-card h-full cursor-pointer transition-all duration-300 border-2 border-transparent hover:border-primary/20 shadow-lg hover:shadow-xl"
+                  onClick={() => setSelectedSubject(subject.id)}
+                >
+                  <CardHeader>
+                    <div className={`w-16 h-16 ${subject.color} rounded-full flex items-center justify-center text-white text-2xl mb-4 mx-auto shadow-lg`}>
                       {subject.icon}
                     </div>
-                    <CardTitle className="text-lg">{subject.name}</CardTitle>
-                    <CardDescription className="text-sm">
+                    <CardTitle className="text-lg text-center">{subject.name}</CardTitle>
+                    <CardDescription className="text-center">
                       {subject.notes.length} notes available
                     </CardDescription>
                   </CardHeader>
-                  <CardContent className="space-y-3">
-                    <div className="flex items-center gap-2">
-                      <Badge className="bg-primary text-primary-foreground">
-                        {subject.notes.length} Files
-                      </Badge>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => setSelectedSubject(subject.id)}
-                        className="flex-1"
-                      >
-                        View Notes
-                      </Button>
+                  <CardContent>
+                    <div className="flex items-center justify-between mb-4">
+                      <Badge className="bg-green-500 text-white">{subject.notes.length} Files</Badge>
+                      <Button variant="outline" size="sm">View Notes</Button>
                     </div>
                     
-                    {/* Playlists Section */}
-                    {(hasDetailedPlaylist || hasOneshotPlaylist) && (
-                      <div className="pt-2 border-t">
-                        <button
-                          onClick={() => handlePlaylistClick(subject.id, 'detailed')}
-                          className="w-full flex items-center justify-between p-2 text-sm text-muted-foreground hover:text-foreground hover:bg-secondary/50 rounded-md transition-colors"
+                    {/* Study Playlists Section - Collapsible like FirstSemesterNotes */}
+                    {subject.id !== 'pyqs' && (hasDetailedPlaylist || hasOneshotPlaylist) && (
+                      <div className="border-t pt-4">
+                        <div 
+                          className="flex items-center justify-between cursor-pointer hover:bg-muted/50 rounded p-2 -m-2"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            toggleSubjectExpansion(subject.id);
+                          }}
                         >
-                          <span className="flex items-center gap-2">
-                            <Play className="h-4 w-4" />
-                            Study Playlists
-                          </span>
-                          <ChevronRight className="h-4 w-4" />
-                        </button>
+                          <div className="flex items-center gap-2">
+                            <Play className="h-4 w-4 text-primary" />
+                            <span className="text-sm font-medium">Study Playlists</span>
+                          </div>
+                          {expandedSubjects.includes(subject.id) ? 
+                            <ChevronDown className="h-4 w-4" /> : 
+                            <ChevronRight className="h-4 w-4" />
+                          }
+                        </div>
+                        
+                        {expandedSubjects.includes(subject.id) && (
+                          <div className="mt-3 space-y-2 pl-2">
+                            {hasDetailedPlaylist && (
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                className="w-full justify-start text-xs h-8"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handlePlaylistClick(subject.id, 'detailed');
+                                }}
+                              >
+                                📚 Detailed Playlists ({playlists.detailed.length})
+                              </Button>
+                            )}
+                            {hasOneshotPlaylist && (
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                className="w-full justify-start text-xs h-8"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handlePlaylistClick(subject.id, 'oneshot');
+                                }}
+                              >
+                                ⚡ One Shot Videos ({playlists.oneshot.length})
+                              </Button>
+                            )}
+                          </div>
+                        )}
                       </div>
                     )}
                   </CardContent>
@@ -605,6 +463,38 @@ const FifthSemesterCSENotes = () => {
               </motion.div>
             );
           })}
+
+          {/* Open Elective Card - Navigate to separate page */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: (subjects.length + 1) * 0.1, duration: 0.5 }}
+            whileHover={{ scale: 1.02 }}
+          >
+            <Card 
+              className="feature-card h-full cursor-pointer transition-all duration-300 border-2 border-yellow-500/50 hover:border-yellow-500 shadow-lg hover:shadow-xl bg-gradient-to-br from-yellow-50 to-amber-50 dark:from-yellow-900/20 dark:to-amber-900/20"
+              onClick={() => navigate('/fifth-semester-cse-open-electives')}
+            >
+              <CardHeader>
+                <div className="w-16 h-16 bg-gradient-to-br from-yellow-500 to-amber-500 rounded-full flex items-center justify-center text-white text-2xl mb-4 mx-auto shadow-lg">
+                  📚
+                </div>
+                <CardTitle className="text-lg text-center">Open Electives</CardTitle>
+                <CardDescription className="text-center">
+                  7 elective subjects available
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="flex items-center justify-between mb-4">
+                  <Badge className="bg-yellow-500 text-white">7 Subjects</Badge>
+                  <Button variant="outline" size="sm">View All</Button>
+                </div>
+                <p className="text-xs text-muted-foreground text-center">
+                  Choose from Business Ethics, Environment & Ecology, Soft Skills, and more...
+                </p>
+              </CardContent>
+            </Card>
+          </motion.div>
         </div>
       </div>
 

@@ -14,6 +14,7 @@ import SecondSemesterNotes from "./pages/SecondSemesterNotes";
 import ThirdSemesterCSENotes from "./pages/ThirdSemesterCSENotes";
 import FourthSemesterCSENotes from "./pages/FourthSemesterCSENotes";
 import FifthSemesterCSENotes from "./pages/FifthSemesterCSENotes";
+import FifthSemesterCSEOpenElectives from "./pages/FifthSemesterCSEOpenElectives";
 import ThirdSemesterMENotes from "./pages/ThirdSemesterMENotes";
 import ThirdSemesterCHENotes from "./pages/ThirdSemesterCHENotes";
 import ThirdSemesterCENotes from "./pages/ThirdSemesterCENotes";
