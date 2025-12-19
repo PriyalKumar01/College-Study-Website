@@ -1,0 +1,242 @@
+import { useState } from 'react';
+import { motion } from 'framer-motion';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Download, ArrowLeft, FileText, Play, ChevronDown, ChevronRight } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import Navbar from '@/components/Navbar';
+import { PlaylistModal } from '@/components/PlaylistModal';
+
+const FifthSemesterCSEOpenElectives = () => {
+  const navigate = useNavigate();
+  const [selectedSubject, setSelectedSubject] = useState<string | null>(null);
+  const [showPlaylistModal, setShowPlaylistModal] = useState(false);
+  const [selectedPlaylistType, setSelectedPlaylistType] = useState<'detailed' | 'oneshot'>('detailed');
+  const [selectedSubjectForPlaylist, setSelectedSubjectForPlaylist] = useState<string>('');
+  const [expandedSubjects, setExpandedSubjects] = useState<string[]>([]);
+
+  const toggleSubjectExpansion = (subjectId: string) => {
+    setExpandedSubjects(prev => 
+      prev.includes(subjectId) 
+        ? prev.filter(id => id !== subjectId)
+        : [...prev, subjectId]
+    );
+  };
+
+  const handlePlaylistClick = (subjectId: string, type: 'detailed' | 'oneshot') => {
+    const subject = subjects.find(s => s.id === subjectId);
+    if (subject?.playlists?.[type]?.length > 0) {
+      setSelectedSubjectForPlaylist(subjectId);
+      setSelectedPlaylistType(type);
+      setShowPlaylistModal(true);
+    }
+  };
+
+  const getSubjectPlaylists = (subjectId: string) => {
+    const subject = subjects.find(s => s.id === subjectId);
+    return subject?.playlists || { detailed: [], oneshot: [] };
+  };
+
+  const subjects = [
+    {
+      id: 'business-ethics',
+      name: 'Business Ethics',
+      fullName: 'Business Ethics (Open Elective)',
+      icon: '📋',
+      color: 'bg-indigo-500',
+      playlists: {
+        detailed: [
+          { title: 'Business Ethics Playlist', url: 'https://youtube.com/playlist?list=PLsh2FvSr3n7ejgPDoJZW9Q22qJgXDB8IA&si=pDbk-4sUa5AdafNx', recommended: true },
+          { title: 'Playlist -Only watch related topics', url: 'https://youtube.com/playlist?list=PLI8rtkxfMUYVuC_POmiWKTlRutAdGWfSq&si=KjP_lyImdrxB37mk' },
+          { title: 'Playlist -Only watch topics-wise', url: 'https://youtube.com/playlist?list=PLeUIXA68NobWnEOojETHpolPkR6qXszU2&si=AoNt743N0d1I3_A7', recommended: true },
+        ],
+        oneshot: [
+          { title: 'Business Ethics', url: 'https://youtu.be/ltW7KVYJ1go?si=VNMtqFzwF6Ge7wq3' },
+          { title: 'Ethical Decision Making', url: 'https://youtu.be/73MnDxDPv6w?si=Q9EnJRn2xxf-vpSw' },
+          { title: 'Corporate Social Responsibility', url: 'https://youtu.be/BWQ56WOMTT4?si=GoS-gd2AdrgKY5a2' },
+          { title: 'Marketing Ethics', url: 'https://youtu.be/rfAWVcORC_M?si=pDupNteELaSY3L3P' },
+          { title: 'Corporate Governance', url: 'https://youtu.be/hVOkmReERiE?si=CihY_vL13DjYlj14' },
+        ]
+      },
+      notes: [
+        { title: 'Syllabus', url: 'https://drive.google.com/uc?export=download&id=1Q7abTYsAJ14M2VgXaKWKYWYKZ1VHzR7O' },
+        { title: 'Unit-1 Notes', url: 'https://drive.google.com/uc?export=download&id=1JIhpotQbWbC_ryy7H-fyZOgMmqwXewsA' },
+        { title: 'Unit-2 Part-1', url: 'https://drive.google.com/uc?export=download&id=1BG0eCO9jLeoLR68sBreMSxUCPA-DOmSI' },
+        { title: 'Unit-2 Part-2', url: 'https://drive.google.com/uc?export=download&id=1BF7V9tNpAK8i3awM6zU8UtW9QDJvkUeV' },
+        { title: 'Unit-3 Part-1', url: 'https://drive.google.com/uc?export=download&id=1pB5cQ7iJ_NPiDs-w77Xw0KIIVeEGGLNv' },
+        { title: 'Unit-4 Part-1', url: 'https://drive.google.com/uc?export=download&id=1I_1P84wI9Ke8bUuptcCsQq7iSXprJEzT' },
+        { title: 'Unit-5 Corporate Governance', url: 'https://drive.google.com/file/d/1h8x6Md6_4X2jn35_W07yCrBpOEfy-OM5/view?usp=drivesdk' },
+      ]
+    },
+    {
+      id: 'env-ecology',
+      name: 'Environment & Ecology',
+      fullName: 'Environment & Ecology (Open Elective)',
+      icon: '🌿',
+      color: 'bg-emerald-500',
+      playlists: { detailed: [{ title: 'Playlist Coming Soon', url: '#' }], oneshot: [] },
+      notes: [{ title: 'Notes Coming Soon', url: '#' }]
+    },
+    {
+      id: 'soft-skills',
+      name: 'Soft Skills & PD',
+      fullName: 'Soft Skills & Personality Development (Open Elective)',
+      icon: '🎯',
+      color: 'bg-pink-500',
+      playlists: { detailed: [{ title: 'Playlist Coming Soon', url: '#' }], oneshot: [] },
+      notes: [{ title: 'Notes Coming Soon', url: '#' }]
+    },
+    {
+      id: 'critical-thinking',
+      name: 'Critical & Logical Thinking',
+      fullName: 'Critical & Logical Thinking (Open Elective)',
+      icon: '🧠',
+      color: 'bg-cyan-500',
+      playlists: { detailed: [{ title: 'Playlist Coming Soon', url: '#' }], oneshot: [] },
+      notes: [{ title: 'Notes Coming Soon', url: '#' }]
+    },
+    {
+      id: 'solar-energy',
+      name: 'Solar Energy',
+      fullName: 'Solar Energy (Open Elective)',
+      icon: '☀️',
+      color: 'bg-yellow-500',
+      playlists: { detailed: [{ title: 'Playlist Coming Soon', url: '#' }], oneshot: [] },
+      notes: [{ title: 'Notes Coming Soon', url: '#' }]
+    },
+    {
+      id: 'non-conventional-energy',
+      name: 'Non-Conventional Energy',
+      fullName: 'Non-Conventional Energy Resources (Open Elective)',
+      icon: '⚡',
+      color: 'bg-amber-500',
+      playlists: { detailed: [{ title: 'Playlist Coming Soon', url: '#' }], oneshot: [] },
+      notes: [{ title: 'Notes Coming Soon', url: '#' }]
+    },
+    {
+      id: 'discrete-maths',
+      name: 'Discrete Maths',
+      fullName: 'Discrete Mathematics (Open Elective)',
+      icon: '🔢',
+      color: 'bg-violet-500',
+      playlists: { detailed: [{ title: 'Playlist Coming Soon', url: '#' }], oneshot: [] },
+      notes: [{ title: 'Notes Coming Soon', url: '#' }]
+    },
+  ];
+
+  const handleDownload = (url: string, title: string) => {
+    if (url === '#') return;
+    const fileId = url.match(/\/d\/([a-zA-Z0-9-_]+)/)?.[1];
+    if (fileId) {
+      window.open(`https://drive.google.com/uc?export=download&id=${fileId}`, '_blank');
+    } else {
+      window.open(url, '_blank');
+    }
+  };
+
+  if (selectedSubject) {
+    const subject = subjects.find(s => s.id === selectedSubject);
+    if (!subject) return null;
+
+    return (
+      <div className="min-h-screen bg-gradient-hero">
+        <Navbar />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
+            <Button onClick={() => setSelectedSubject(null)} variant="outline" className="mb-4">
+              <ArrowLeft className="h-4 w-4 mr-2" />Back to Open Electives
+            </Button>
+            <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-2">{subject.name} 📚</h1>
+            <p className="text-muted-foreground text-lg">{subject.fullName}</p>
+          </motion.div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {subject.notes.map((note, index) => (
+              <motion.div key={index} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.05 }} whileHover={{ scale: 1.02 }}>
+                <Card className="feature-card h-full border-2 border-transparent hover:border-primary/20 shadow-lg">
+                  <CardHeader>
+                    <div className="flex items-center gap-3 mb-2">
+                      <div className={`w-10 h-10 ${subject.color} rounded-full flex items-center justify-center text-white`}><FileText className="h-5 w-5" /></div>
+                      <Badge variant="secondary">PDF</Badge>
+                    </div>
+                    <CardTitle className="text-lg leading-tight">{note.title}</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <Button onClick={() => handleDownload(note.url, note.title)} className="w-full btn-hero" disabled={note.url === '#'}>
+                      <Download className="h-4 w-4 mr-2" />{note.url === '#' ? 'Coming Soon' : 'Download PDF'}
+                    </Button>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-gradient-hero">
+      <Navbar />
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
+          <Button onClick={() => navigate('/fifth-semester-cse')} variant="outline" className="mb-4">
+            <ArrowLeft className="h-4 w-4 mr-2" />Back to 5th Sem CSE
+          </Button>
+          <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-2">Open Elective Subjects 📖</h1>
+          <p className="text-muted-foreground text-lg mb-6">Choose your preferred open elective subject - One will be allotted based on GPA</p>
+        </motion.div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {subjects.map((subject, index) => {
+            const playlists = getSubjectPlaylists(subject.id);
+            const hasPlaylists = (playlists.detailed?.length > 0 && playlists.detailed[0].url !== '#') || (playlists.oneshot?.length > 0);
+
+            return (
+              <motion.div key={subject.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.1 }} whileHover={{ scale: 1.02 }}>
+                <Card className="feature-card h-full cursor-pointer border-2 border-transparent hover:border-primary/20 shadow-lg" onClick={() => setSelectedSubject(subject.id)}>
+                  <CardHeader>
+                    <div className={`w-16 h-16 ${subject.color} rounded-full flex items-center justify-center text-2xl mb-4 mx-auto shadow-lg`}>{subject.icon}</div>
+                    <CardTitle className="text-lg text-center">{subject.name}</CardTitle>
+                    <CardDescription className="text-center">{subject.notes.length} notes available</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="flex items-center justify-between mb-4">
+                      <Badge className="bg-green-500 text-white">{subject.notes.length} Files</Badge>
+                      <Button variant="outline" size="sm">View Notes</Button>
+                    </div>
+                    {hasPlaylists && (
+                      <div className="border-t pt-4">
+                        <div className="flex items-center justify-between cursor-pointer hover:bg-muted/50 rounded p-2 -m-2" onClick={(e) => { e.stopPropagation(); toggleSubjectExpansion(subject.id); }}>
+                          <div className="flex items-center gap-2"><Play className="h-4 w-4 text-primary" /><span className="text-sm font-medium">Study Playlists</span></div>
+                          {expandedSubjects.includes(subject.id) ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
+                        </div>
+                        {expandedSubjects.includes(subject.id) && (
+                          <div className="mt-3 space-y-2 pl-2">
+                            {playlists.detailed?.length > 0 && playlists.detailed[0].url !== '#' && (
+                              <Button variant="ghost" size="sm" className="w-full justify-start text-xs h-8" onClick={(e) => { e.stopPropagation(); handlePlaylistClick(subject.id, 'detailed'); }}>
+                                📚 Detailed Playlists ({playlists.detailed.length})
+                              </Button>
+                            )}
+                            {playlists.oneshot?.length > 0 && (
+                              <Button variant="ghost" size="sm" className="w-full justify-start text-xs h-8" onClick={(e) => { e.stopPropagation(); handlePlaylistClick(subject.id, 'oneshot'); }}>
+                                ⚡ One Shot Videos ({playlists.oneshot.length})
+                              </Button>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              </motion.div>
+            );
+          })}
+        </div>
+      </div>
+      <PlaylistModal isOpen={showPlaylistModal} onClose={() => setShowPlaylistModal(false)} playlists={getSubjectPlaylists(selectedSubjectForPlaylist)[selectedPlaylistType] || []} type={selectedPlaylistType} title={subjects.find(s => s.id === selectedSubjectForPlaylist)?.name || ''} />
+    </div>
+  );
+};
+
+export default FifthSemesterCSEOpenElectives;
