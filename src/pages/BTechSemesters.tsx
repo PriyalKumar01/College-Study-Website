@@ -45,7 +45,7 @@ const BTechSemesters = () => {
       {
         name: "6th Semester",
         description: "Advanced specialization and project work",
-        available: false,
+        available: true,
         route: "/btech-notes/third-year/semester-6",
         thumbnail: sixthSemImg,
         branches: ["CSE/IT", "ME", "CE", "CHE", "ET", "EE", "BE", "LFT"],
