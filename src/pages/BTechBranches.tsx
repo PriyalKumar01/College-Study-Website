@@ -24,45 +24,52 @@ const BTechBranches = () => {
         'semester-3': '/third-semester-cse',
         'semester-4': '/fourth-semester-cse',
         'semester-5': '/fifth-semester-cse',
-      },
-      'IT': {
-        'semester-5': '/fifth-semester-it',
+        'semester-6': '/sixth-semester-cse',
       },
       'CHE': {
         'semester-3': '/third-semester-che',
         'semester-4': '/fourth-semester-che',
         'semester-5': '/fifth-semester-che',
+        'semester-6': '/sixth-semester-che',
       },
       'ME': {
         'semester-3': '/third-semester-me',
         'semester-4': '/fourth-semester-me',
         'semester-5': '/fifth-semester-me',
+        'semester-6': '/sixth-semester-me',
       },
       'CE': {
         'semester-3': '/third-semester-ce',
         'semester-4': '/fourth-semester-ce',
         'semester-5': '/fifth-semester-ce',
+        'semester-6': '/sixth-semester-ce',
       },
       'ET': {
         'semester-3': '/third-semester-et',
         'semester-4': '/fourth-semester-et',
         'semester-5': '/fifth-semester-et',
+        'semester-6': '/sixth-semester-et',
       },
       'EE': {
         'semester-4': '/fourth-semester-ee',
         'semester-5': '/fifth-semester-ee',
+        'semester-6': '/sixth-semester-ee',
       },
       'BE': {
         'semester-3': '/third-semester-be',
         'semester-4': '/fourth-semester-be',
+        'semester-5': '/fifth-semester-be',
+        'semester-6': '/sixth-semester-be',
       },
       'LFT': {
         'semester-3': '/third-semester-lft',
         'semester-4': '/fourth-semester-lft',
+        'semester-5': '/fifth-semester-lft',
+        'semester-6': '/sixth-semester-lft',
       },
-      'PT': { 'semester-3': '/third-semester-pt' },
-      'FT': { 'semester-3': '/third-semester-ft' },
-      'OT': { 'semester-3': '/third-semester-ot' },
+      'PT': { 'semester-3': '/third-semester-pt', 'semester-4': '/fourth-semester-pt', 'semester-5': '/fifth-semester-pt', 'semester-6': '/sixth-semester-pt' },
+      'FT': { 'semester-3': '/third-semester-ft', 'semester-4': '/fourth-semester-ft', 'semester-5': '/fifth-semester-ft', 'semester-6': '/sixth-semester-ft' },
+      'OT': { 'semester-3': '/third-semester-ot', 'semester-4': '/fourth-semester-ot', 'semester-5': '/fifth-semester-ot', 'semester-6': '/sixth-semester-ot' },
     };
     return routes[branchKey]?.[semester || ''] || '#';
   };
