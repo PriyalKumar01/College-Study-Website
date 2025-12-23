@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
-import { Trash2, Plus, Calculator, Download, GraduationCap } from 'lucide-react';
+import { Trash2, Plus, Calculator, Download, GraduationCap, ArrowRight, ArrowLeft } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import Navbar from '@/components/Navbar';
 
@@ -23,22 +23,88 @@ interface Semester {
   sgpa: number;
 }
 
+interface PreviousSemesterData {
+  semesterNumber: number;
+  sgpa: number;
+  totalCredits: number;
+}
+
 const CGPACalculator = () => {
   const { toast } = useToast();
-  const [semesters, setSemesters] = useState<Semester[]>([]);
-  const [currentSemester, setCurrentSemester] = useState(1);
+  const [currentYear, setCurrentYear] = useState<number | null>(null);
+  const [previousSemesters, setPreviousSemesters] = useState<PreviousSemesterData[]>([]);
+  const [currentSemesterSubjects, setCurrentSemesterSubjects] = useState<Subject[]>([]);
   const [showResults, setShowResults] = useState(false);
   const [overallCGPA, setOverallCGPA] = useState(0);
+  const [currentSGPA, setCurrentSGPA] = useState(0);
+  
+  // For 1st year students - traditional view
+  const [semesters, setSemesters] = useState<Semester[]>([]);
+  const [nextSemesterNumber, setNextSemesterNumber] = useState(1);
 
+  const years = [
+    { value: 1, label: '1st Year', semesters: [1, 2] },
+    { value: 2, label: '2nd Year', semesters: [3, 4] },
+    { value: 3, label: '3rd Year', semesters: [5, 6] },
+    { value: 4, label: '4th Year', semesters: [7, 8] },
+  ];
+
+  const handleYearSelect = (year: number) => {
+    setCurrentYear(year);
+    setShowResults(false);
+    
+    if (year === 1) {
+      // Traditional view for 1st year
+      setSemesters([]);
+      setNextSemesterNumber(1);
+    } else {
+      // Quick SGPA input for 2nd, 3rd, 4th year
+      const prevSemCount = (year - 1) * 2;
+      const prevSems: PreviousSemesterData[] = [];
+      for (let i = 1; i <= prevSemCount; i++) {
+        prevSems.push({ semesterNumber: i, sgpa: 0, totalCredits: 0 });
+      }
+      setPreviousSemesters(prevSems);
+      setCurrentSemesterSubjects([]);
+    }
+  };
+
+  const updatePreviousSemester = (index: number, field: 'sgpa' | 'totalCredits', value: number) => {
+    setPreviousSemesters(prev => prev.map((sem, i) => 
+      i === index ? { ...sem, [field]: value } : sem
+    ));
+  };
+
+  const addCurrentSubject = () => {
+    const newSubject: Subject = {
+      id: `current-subject-${Date.now()}`,
+      name: '',
+      credits: 0,
+      gradePoint: 0
+    };
+    setCurrentSemesterSubjects(prev => [...prev, newSubject]);
+  };
+
+  const updateCurrentSubject = (subjectId: string, field: keyof Subject, value: string | number) => {
+    setCurrentSemesterSubjects(prev => prev.map(subject =>
+      subject.id === subjectId ? { ...subject, [field]: value } : subject
+    ));
+  };
+
+  const removeCurrentSubject = (subjectId: string) => {
+    setCurrentSemesterSubjects(prev => prev.filter(subject => subject.id !== subjectId));
+  };
+
+  // Traditional semester methods for 1st year
   const addSemester = () => {
     const newSemester: Semester = {
-      id: `sem-${currentSemester}`,
-      number: currentSemester,
+      id: `sem-${nextSemesterNumber}`,
+      number: nextSemesterNumber,
       subjects: [],
       sgpa: 0
     };
     setSemesters(prev => [...prev, newSemester]);
-    setCurrentSemester(prev => prev + 1);
+    setNextSemesterNumber(prev => prev + 1);
   };
 
   const addSubject = (semesterId: string) => {
@@ -48,34 +114,25 @@ const CGPACalculator = () => {
       credits: 0,
       gradePoint: 0
     };
-
     setSemesters(prev => prev.map(sem => 
-      sem.id === semesterId 
-        ? { ...sem, subjects: [...sem.subjects, newSubject] }
-        : sem
+      sem.id === semesterId ? { ...sem, subjects: [...sem.subjects, newSubject] } : sem
     ));
   };
 
   const updateSubject = (semesterId: string, subjectId: string, field: keyof Subject, value: string | number) => {
     setSemesters(prev => prev.map(sem => 
-      sem.id === semesterId 
-        ? {
-            ...sem,
-            subjects: sem.subjects.map(subject =>
-              subject.id === subjectId 
-                ? { ...subject, [field]: value }
-                : subject
-            )
-          }
-        : sem
+      sem.id === semesterId ? {
+        ...sem,
+        subjects: sem.subjects.map(subject =>
+          subject.id === subjectId ? { ...subject, [field]: value } : subject
+        )
+      } : sem
     ));
   };
 
   const removeSubject = (semesterId: string, subjectId: string) => {
     setSemesters(prev => prev.map(sem => 
-      sem.id === semesterId 
-        ? { ...sem, subjects: sem.subjects.filter(subject => subject.id !== subjectId) }
-        : sem
+      sem.id === semesterId ? { ...sem, subjects: sem.subjects.filter(subject => subject.id !== subjectId) } : sem
     ));
   };
 
@@ -83,7 +140,47 @@ const CGPACalculator = () => {
     setSemesters(prev => prev.filter(sem => sem.id !== semesterId));
   };
 
-  const calculateResults = () => {
+  const calculateResultsAdvanced = () => {
+    // Calculate previous semesters contribution
+    let totalPreviousCredits = 0;
+    let totalPreviousGradePoints = 0;
+    
+    previousSemesters.forEach(sem => {
+      if (sem.sgpa > 0 && sem.totalCredits > 0) {
+        totalPreviousCredits += sem.totalCredits;
+        totalPreviousGradePoints += sem.sgpa * sem.totalCredits;
+      }
+    });
+
+    // Calculate current semester
+    let currentCredits = 0;
+    let currentGradePoints = 0;
+    
+    currentSemesterSubjects.forEach(subject => {
+      if (subject.credits > 0 && subject.gradePoint >= 0) {
+        currentCredits += subject.credits;
+        currentGradePoints += subject.credits * subject.gradePoint;
+      }
+    });
+
+    const currentSgpa = currentCredits > 0 ? currentGradePoints / currentCredits : 0;
+    setCurrentSGPA(parseFloat(currentSgpa.toFixed(3)));
+
+    // Calculate overall CGPA
+    const totalCredits = totalPreviousCredits + currentCredits;
+    const totalGradePoints = totalPreviousGradePoints + currentGradePoints;
+    const cgpa = totalCredits > 0 ? totalGradePoints / totalCredits : 0;
+    
+    setOverallCGPA(parseFloat(cgpa.toFixed(3)));
+    setShowResults(true);
+
+    toast({
+      title: "CGPA Calculated! 🎉",
+      description: `Your overall CGPA is ${cgpa.toFixed(3)}`,
+    });
+  };
+
+  const calculateResultsTraditional = () => {
     let totalCredits = 0;
     let totalGradePoints = 0;
 
@@ -133,22 +230,22 @@ const CGPACalculator = () => {
   };
 
   const downloadResults = () => {
-    const results = `
-🎓 CGPA Calculator Results
-========================
-
-Overall CGPA: ${overallCGPA} (${getCGPALabel(overallCGPA)})
-
-Semester-wise Results:
-${semesters.map((sem, index) => `
-Semester ${sem.number}:
-SGPA: ${sem.sgpa}
-Subjects:
-${sem.subjects.map(subject => `  • ${subject.name || 'Subject'}: ${subject.credits} credits, GP: ${subject.gradePoint}`).join('\n')}
-`).join('\n')}
-
-Generated on: ${new Date().toLocaleDateString()}
-`;
+    let results = `🎓 CGPA Calculator Results\n========================\n\nOverall CGPA: ${overallCGPA} (${getCGPALabel(overallCGPA)})\n`;
+    
+    if (currentYear && currentYear > 1) {
+      results += `\nPrevious Semesters:\n`;
+      previousSemesters.forEach(sem => {
+        results += `  Semester ${sem.semesterNumber}: SGPA ${sem.sgpa.toFixed(3)}, Credits: ${sem.totalCredits}\n`;
+      });
+      results += `\nCurrent Semester SGPA: ${currentSGPA}\n`;
+    } else {
+      results += `\nSemester-wise Results:\n`;
+      semesters.forEach(sem => {
+        results += `  Semester ${sem.number}: SGPA ${sem.sgpa.toFixed(3)}\n`;
+      });
+    }
+    
+    results += `\nGenerated on: ${new Date().toLocaleDateString()}`;
 
     const blob = new Blob([results], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
@@ -166,33 +263,220 @@ Generated on: ${new Date().toLocaleDateString()}
     });
   };
 
+  // Year selection screen
+  if (currentYear === null) {
+    return (
+      <div className="min-h-screen bg-gradient-hero">
+        <Navbar />
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-8 text-center">
+            <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-2 flex items-center justify-center gap-3">
+              <GraduationCap className="h-8 w-8" /> CGPA Calculator 🎓
+            </h1>
+            <p className="text-muted-foreground text-lg">Select your current year to get started</p>
+          </motion.div>
+
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {years.map((year, index) => (
+              <motion.div key={year.value} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.1 }}>
+                <Card className="feature-card cursor-pointer hover:border-primary transition-all" onClick={() => handleYearSelect(year.value)}>
+                  <CardHeader className="text-center">
+                    <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-2">
+                      <span className="text-2xl font-bold text-primary">{year.value}</span>
+                    </div>
+                    <CardTitle>{year.label}</CardTitle>
+                    <CardDescription>Sem {year.semesters[0]} & {year.semesters[1]}</CardDescription>
+                  </CardHeader>
+                  <CardContent className="text-center">
+                    <Button className="w-full btn-hero">
+                      Select <ArrowRight className="h-4 w-4 ml-2" />
+                    </Button>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Advanced view for 2nd, 3rd, 4th year students
+  if (currentYear > 1) {
+    const currentSemNumber = currentYear * 2;
+    
+    return (
+      <div className="min-h-screen bg-gradient-hero">
+        <Navbar />
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
+            <Button onClick={() => { setCurrentYear(null); setShowResults(false); }} variant="outline" className="mb-4">
+              <ArrowLeft className="h-4 w-4 mr-2" /> Change Year
+            </Button>
+            <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-2 flex items-center gap-3">
+              <GraduationCap className="h-7 w-7" /> {years.find(y => y.value === currentYear)?.label} CGPA Calculator
+            </h1>
+            <p className="text-muted-foreground">Enter your previous semester SGPAs and current semester details</p>
+          </motion.div>
+
+          {/* Previous Semesters SGPA Input */}
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="mb-8">
+            <Card className="feature-card">
+              <CardHeader>
+                <CardTitle>📊 Previous Semesters (1 to {(currentYear - 1) * 2})</CardTitle>
+                <CardDescription>Enter SGPA (up to 3 decimal places) and total credits for each completed semester</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {previousSemesters.map((sem, index) => (
+                    <div key={index} className="p-4 bg-muted/30 rounded-lg">
+                      <Label className="font-medium mb-2 block">Semester {sem.semesterNumber}</Label>
+                      <div className="grid grid-cols-2 gap-3">
+                        <div>
+                          <Label className="text-xs text-muted-foreground">SGPA</Label>
+                          <Input
+                            type="number"
+                            min="0"
+                            max="10"
+                            step="0.001"
+                            placeholder="e.g., 8.234"
+                            value={sem.sgpa || ''}
+                            onChange={(e) => updatePreviousSemester(index, 'sgpa', parseFloat(e.target.value) || 0)}
+                          />
+                        </div>
+                        <div>
+                          <Label className="text-xs text-muted-foreground">Total Credits</Label>
+                          <Input
+                            type="number"
+                            min="1"
+                            max="40"
+                            placeholder="e.g., 24"
+                            value={sem.totalCredits || ''}
+                            onChange={(e) => updatePreviousSemester(index, 'totalCredits', parseInt(e.target.value) || 0)}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
+
+          {/* Current Semester Subject-wise Input */}
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="mb-8">
+            <Card className="feature-card">
+              <CardHeader>
+                <CardTitle>📚 Current Semester {currentSemNumber}</CardTitle>
+                <CardDescription>Enter subject details for your current semester</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {currentSemesterSubjects.map((subject) => (
+                    <div key={subject.id} className="grid grid-cols-1 md:grid-cols-4 gap-3 p-4 bg-muted/30 rounded-lg">
+                      <div>
+                        <Label>Subject Name</Label>
+                        <Input
+                          placeholder="Enter subject name"
+                          value={subject.name}
+                          onChange={(e) => updateCurrentSubject(subject.id, 'name', e.target.value)}
+                        />
+                      </div>
+                      <div>
+                        <Label>Credits</Label>
+                        <Input
+                          type="number"
+                          min="1"
+                          max="6"
+                          placeholder="Credits"
+                          value={subject.credits || ''}
+                          onChange={(e) => updateCurrentSubject(subject.id, 'credits', Math.floor(Number(e.target.value)) || 0)}
+                        />
+                      </div>
+                      <div>
+                        <Label>Grade Point</Label>
+                        <Input
+                          type="number"
+                          min="0"
+                          max="10"
+                          step="1"
+                          placeholder="0-10"
+                          value={subject.gradePoint || ''}
+                          onChange={(e) => updateCurrentSubject(subject.id, 'gradePoint', Math.floor(Number(e.target.value)) || 0)}
+                        />
+                      </div>
+                      <div className="flex items-end">
+                        <Button variant="outline" size="sm" onClick={() => removeCurrentSubject(subject.id)} className="text-red-600 hover:bg-red-50">
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </div>
+                  ))}
+                  <Button variant="outline" onClick={addCurrentSubject} className="w-full">
+                    <Plus className="h-4 w-4 mr-2" /> Add Subject
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
+
+          {/* Calculate Button */}
+          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
+            <Button onClick={calculateResultsAdvanced} className="btn-hero">
+              <Calculator className="h-4 w-4 mr-2" /> Calculate CGPA
+            </Button>
+            {showResults && (
+              <Button onClick={downloadResults} variant="outline">
+                <Download className="h-4 w-4 mr-2" /> Download Results
+              </Button>
+            )}
+          </div>
+
+          {/* Results */}
+          {showResults && (
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+              <Card className={`gradient-card border-2 ${getCGPAColor(overallCGPA)} shadow-lg`}>
+                <CardHeader className="text-center">
+                  <CardTitle className="text-2xl">🎯 Results</CardTitle>
+                  <div className="space-y-2">
+                    <div>
+                      <p className="text-sm text-muted-foreground">Current Semester SGPA</p>
+                      <div className="text-2xl font-bold text-primary">{currentSGPA}</div>
+                    </div>
+                    <div>
+                      <p className="text-sm text-muted-foreground">Overall CGPA</p>
+                      <div className="text-4xl font-bold text-primary">{overallCGPA}</div>
+                    </div>
+                  </div>
+                  <Badge className={`text-lg px-4 py-2 ${getCGPAColor(overallCGPA)}`}>
+                    {getCGPALabel(overallCGPA)}
+                  </Badge>
+                </CardHeader>
+              </Card>
+            </motion.div>
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  // Traditional view for 1st year students
   return (
     <div className="min-h-screen bg-gradient-hero">
       <Navbar />
-      
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="mb-8"
-        >
-          <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-2 flex items-center gap-3">
-            <GraduationCap className="h-8 w-8" />
-            CGPA Calculator 🎓
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
+          <Button onClick={() => { setCurrentYear(null); setShowResults(false); }} variant="outline" className="mb-4">
+            <ArrowLeft className="h-4 w-4 mr-2" /> Change Year
+          </Button>
+          <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-2 flex items-center gap-3">
+            <GraduationCap className="h-7 w-7" /> 1st Year CGPA Calculator
           </h1>
-          <p className="text-muted-foreground text-lg">
-            Calculate your Semester Grade Point Average (SGPA) and Cumulative Grade Point Average (CGPA)
-          </p>
+          <p className="text-muted-foreground">Add semesters and enter subject details</p>
         </motion.div>
 
         {/* Instructions */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1, duration: 0.5 }}
-          className="mb-8"
-        >
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="mb-8">
           <Card className="gradient-card border-2 border-primary/20">
             <CardHeader>
               <CardTitle className="text-lg">How to Use</CardTitle>
@@ -228,20 +512,14 @@ Generated on: ${new Date().toLocaleDateString()}
         {/* Add Semester Button */}
         <div className="mb-6">
           <Button onClick={addSemester} className="btn-hero">
-            <Plus className="h-4 w-4 mr-2" />
-            Add Semester {currentSemester}
+            <Plus className="h-4 w-4 mr-2" /> Add Semester {nextSemesterNumber}
           </Button>
         </div>
 
         {/* Semesters */}
         <div className="grid grid-cols-1 gap-6 mb-8">
           {semesters.map((semester, semIndex) => (
-            <motion.div
-              key={semester.id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: semIndex * 0.1, duration: 0.5 }}
-            >
+            <motion.div key={semester.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: semIndex * 0.1 }}>
               <Card className="feature-card border-2 border-transparent hover:border-primary/20">
                 <CardHeader>
                   <div className="flex items-center justify-between">
@@ -256,19 +534,14 @@ Generated on: ${new Date().toLocaleDateString()}
                         </Badge>
                       )}
                     </CardTitle>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => removeSemester(semester.id)}
-                      className="text-red-600 hover:bg-red-50"
-                    >
+                    <Button variant="outline" size="sm" onClick={() => removeSemester(semester.id)} className="text-red-600 hover:bg-red-50">
                       <Trash2 className="h-4 w-4" />
                     </Button>
                   </div>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
-                    {semester.subjects.map((subject, subIndex) => (
+                    {semester.subjects.map((subject) => (
                       <div key={subject.id} className="grid grid-cols-1 md:grid-cols-4 gap-3 p-4 bg-muted/30 rounded-lg">
                         <div>
                           <Label htmlFor={`subject-name-${subject.id}`}>Subject Name</Label>
@@ -306,25 +579,14 @@ Generated on: ${new Date().toLocaleDateString()}
                           />
                         </div>
                         <div className="flex items-end">
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => removeSubject(semester.id, subject.id)}
-                            className="text-red-600 hover:bg-red-50"
-                          >
+                          <Button variant="outline" size="sm" onClick={() => removeSubject(semester.id, subject.id)} className="text-red-600 hover:bg-red-50">
                             <Trash2 className="h-4 w-4" />
                           </Button>
                         </div>
                       </div>
                     ))}
-                    
-                    <Button
-                      variant="outline"
-                      onClick={() => addSubject(semester.id)}
-                      className="w-full"
-                    >
-                      <Plus className="h-4 w-4 mr-2" />
-                      Add Subject
+                    <Button variant="outline" onClick={() => addSubject(semester.id)} className="w-full">
+                      <Plus className="h-4 w-4 mr-2" /> Add Subject
                     </Button>
                   </div>
                 </CardContent>
@@ -336,14 +598,12 @@ Generated on: ${new Date().toLocaleDateString()}
         {/* Calculate Button */}
         {semesters.length > 0 && (
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
-            <Button onClick={calculateResults} className="btn-hero">
-              <Calculator className="h-4 w-4 mr-2" />
-              Calculate CGPA
+            <Button onClick={calculateResultsTraditional} className="btn-hero">
+              <Calculator className="h-4 w-4 mr-2" /> Calculate CGPA
             </Button>
             {showResults && (
               <Button onClick={downloadResults} variant="outline">
-                <Download className="h-4 w-4 mr-2" />
-                Download Results
+                <Download className="h-4 w-4 mr-2" /> Download Results
               </Button>
             )}
           </div>
@@ -351,11 +611,7 @@ Generated on: ${new Date().toLocaleDateString()}
 
         {/* Results */}
         {showResults && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-          >
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
             <Card className={`gradient-card border-2 ${getCGPAColor(overallCGPA)} shadow-lg`}>
               <CardHeader className="text-center">
                 <CardTitle className="text-2xl">🎯 Final CGPA</CardTitle>
@@ -366,24 +622,7 @@ Generated on: ${new Date().toLocaleDateString()}
               </CardHeader>
               <CardContent>
                 <div className="text-center space-y-2">
-                  <p className="text-muted-foreground">
-                    Based on {semesters.length} semester{semesters.length !== 1 ? 's' : ''} of academic performance
-                  </p>
-                  {overallCGPA >= 8.5 && (
-                    <p className="text-green-600 font-medium">
-                      🎉 Great job! You're eligible for most competitive opportunities!
-                    </p>
-                  )}
-                  {overallCGPA >= 7.0 && overallCGPA < 8.5 && (
-                    <p className="text-blue-600 font-medium">
-                      👍 Good performance! Keep up the consistent work!
-                    </p>
-                  )}
-                  {overallCGPA < 7.0 && (
-                    <p className="text-orange-600 font-medium">
-                      💪 Focus on improvement in upcoming semesters!
-                    </p>
-                  )}
+                  <p className="text-muted-foreground">Based on {semesters.length} semester{semesters.length !== 1 ? 's' : ''}</p>
                 </div>
               </CardContent>
             </Card>

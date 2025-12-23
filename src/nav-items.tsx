@@ -58,6 +58,7 @@ import FifthSemesterPTNotes from "./pages/FifthSemesterPTNotes";
 import FifthSemesterOTNotes from "./pages/FifthSemesterOTNotes";
 import FifthSemesterFTNotes from "./pages/FifthSemesterFTNotes";
 import SixthSemesterCSENotes from "./pages/SixthSemesterCSENotes";
+import SixthSemesterCSEOpenElectives from "./pages/SixthSemesterCSEOpenElectives";
 
 export const navItems = [
   { to: "/", page: <Index /> },
@@ -107,6 +108,7 @@ export const navItems = [
   { to: "/fifth-semester-ot", page: <FifthSemesterOTNotes /> },
   { to: "/fifth-semester-ft", page: <FifthSemesterFTNotes /> },
   { to: "/sixth-semester-cse", page: <SixthSemesterCSENotes /> },
+  { to: "/sixth-semester-cse-open-electives", page: <SixthSemesterCSEOpenElectives /> },
   { to: "/sixth-semester-me", page: <SixthSemesterCSENotes /> },
   { to: "/sixth-semester-ce", page: <SixthSemesterCSENotes /> },
   { to: "/sixth-semester-che", page: <SixthSemesterCSENotes /> },
