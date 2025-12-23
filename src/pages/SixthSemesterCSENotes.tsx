@@ -78,15 +78,6 @@ const SixthSemesterCSENotes = () => {
         oneshot: []
       },
       notes: [{ title: 'XYZ Notes', url: '#' }]
-    },
-    {
-      id: 'open-elective',
-      name: 'Open Elective',
-      icon: '📚',
-      color: 'bg-yellow-400',
-      isOpenElective: true,
-      playlists: { detailed: [], oneshot: [] },
-      notes: []
     }
   ];
 
@@ -161,7 +152,7 @@ const SixthSemesterCSENotes = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {subjects.map((subject, index) => (
             <motion.div key={subject.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: (index + 1) * 0.1, duration: 0.5 }} whileHover={{ scale: 1.02 }}>
-              <Card className={`feature-card h-full transition-all duration-300 ${subject.isOpenElective ? 'border-2 border-yellow-400 bg-yellow-50/50 dark:bg-yellow-900/20' : ''}`}>
+              <Card className="feature-card h-full transition-all duration-300">
                 <CardHeader>
                   <div className="flex items-center justify-between mb-3">
                     <div className={`w-16 h-16 ${subject.color} rounded-full flex items-center justify-center text-white text-2xl`}>
@@ -173,13 +164,13 @@ const SixthSemesterCSENotes = () => {
                   </div>
                   <CardTitle className="text-lg text-center mb-2">{subject.name}</CardTitle>
                   <CardDescription className="text-center">
-                    {subject.isOpenElective ? 'Click to view Open Elective subjects' : `${subject.notes.length} notes available`}
+                    {subject.notes.length} notes available
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="flex flex-col gap-3">
                     {/* Study Playlists Section */}
-                    {!subject.isOpenElective && subject.id !== 'pyqs' && subject.id !== 'assignments' && (
+                    {subject.id !== 'pyqs' && subject.id !== 'assignments' && (
                       <div className="border-t pt-4">
                         <div 
                           className="flex items-center justify-between cursor-pointer hover:bg-muted/50 rounded p-2 -m-2"
@@ -212,14 +203,13 @@ const SixthSemesterCSENotes = () => {
                     )}
 
                     <div className="flex items-center justify-between">
-                      {!subject.isOpenElective && <Badge variant="secondary">{subject.notes.length} Files</Badge>}
+                      <Badge variant="secondary">{subject.notes.length} Files</Badge>
                       <Button 
                         variant="outline" 
                         size="sm"
-                        className={subject.isOpenElective ? 'w-full' : ''}
-                        onClick={() => subject.isOpenElective ? navigate('/sixth-semester-cse-open-electives') : setSelectedSubject(subject.id)}
+                        onClick={() => setSelectedSubject(subject.id)}
                       >
-                        {subject.isOpenElective ? 'View Open Electives' : 'View Notes'}
+                        View Notes
                       </Button>
                     </div>
                   </div>

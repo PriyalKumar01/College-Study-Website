@@ -29,24 +29,29 @@ interface PreviousSemesterData {
   totalCredits: number;
 }
 
+interface CurrentSemesterData {
+  semesterNumber: number;
+  subjects: Subject[];
+}
+
 const CGPACalculator = () => {
   const { toast } = useToast();
   const [currentYear, setCurrentYear] = useState<number | null>(null);
   const [previousSemesters, setPreviousSemesters] = useState<PreviousSemesterData[]>([]);
-  const [currentSemesterSubjects, setCurrentSemesterSubjects] = useState<Subject[]>([]);
+  const [currentSemesters, setCurrentSemesters] = useState<CurrentSemesterData[]>([]);
   const [showResults, setShowResults] = useState(false);
   const [overallCGPA, setOverallCGPA] = useState(0);
-  const [currentSGPA, setCurrentSGPA] = useState(0);
+  const [currentSGPAs, setCurrentSGPAs] = useState<number[]>([]);
   
   // For 1st year students - traditional view
   const [semesters, setSemesters] = useState<Semester[]>([]);
   const [nextSemesterNumber, setNextSemesterNumber] = useState(1);
 
   const years = [
-    { value: 1, label: '1st Year', semesters: [1, 2] },
-    { value: 2, label: '2nd Year', semesters: [3, 4] },
-    { value: 3, label: '3rd Year', semesters: [5, 6] },
-    { value: 4, label: '4th Year', semesters: [7, 8] },
+    { value: 1, label: '1st Year', semesters: [1, 2], currentSemesters: [1, 2] },
+    { value: 2, label: '2nd Year', semesters: [1, 2], currentSemesters: [3, 4] },
+    { value: 3, label: '3rd Year', semesters: [1, 2, 3, 4], currentSemesters: [5, 6] },
+    { value: 4, label: '4th Year', semesters: [1, 2, 3, 4, 5, 6], currentSemesters: [7, 8] },
   ];
 
   const handleYearSelect = (year: number) => {
@@ -65,7 +70,14 @@ const CGPACalculator = () => {
         prevSems.push({ semesterNumber: i, sgpa: 0, totalCredits: 0 });
       }
       setPreviousSemesters(prevSems);
-      setCurrentSemesterSubjects([]);
+      
+      // Initialize current semesters (both semesters for the year)
+      const currentYear = years.find(y => y.value === year);
+      const currSems: CurrentSemesterData[] = currentYear?.currentSemesters.map(semNum => ({
+        semesterNumber: semNum,
+        subjects: []
+      })) || [];
+      setCurrentSemesters(currSems);
     }
   };
 
@@ -75,24 +87,33 @@ const CGPACalculator = () => {
     ));
   };
 
-  const addCurrentSubject = () => {
+  const addCurrentSubject = (semIndex: number) => {
     const newSubject: Subject = {
-      id: `current-subject-${Date.now()}`,
+      id: `current-subject-${Date.now()}-${semIndex}`,
       name: '',
       credits: 0,
       gradePoint: 0
     };
-    setCurrentSemesterSubjects(prev => [...prev, newSubject]);
-  };
-
-  const updateCurrentSubject = (subjectId: string, field: keyof Subject, value: string | number) => {
-    setCurrentSemesterSubjects(prev => prev.map(subject =>
-      subject.id === subjectId ? { ...subject, [field]: value } : subject
+    setCurrentSemesters(prev => prev.map((sem, i) => 
+      i === semIndex ? { ...sem, subjects: [...sem.subjects, newSubject] } : sem
     ));
   };
 
-  const removeCurrentSubject = (subjectId: string) => {
-    setCurrentSemesterSubjects(prev => prev.filter(subject => subject.id !== subjectId));
+  const updateCurrentSubject = (semIndex: number, subjectId: string, field: keyof Subject, value: string | number) => {
+    setCurrentSemesters(prev => prev.map((sem, i) => 
+      i === semIndex ? {
+        ...sem,
+        subjects: sem.subjects.map(subject =>
+          subject.id === subjectId ? { ...subject, [field]: value } : subject
+        )
+      } : sem
+    ));
+  };
+
+  const removeCurrentSubject = (semIndex: number, subjectId: string) => {
+    setCurrentSemesters(prev => prev.map((sem, i) => 
+      i === semIndex ? { ...sem, subjects: sem.subjects.filter(subject => subject.id !== subjectId) } : sem
+    ));
   };
 
   // Traditional semester methods for 1st year
@@ -152,23 +173,34 @@ const CGPACalculator = () => {
       }
     });
 
-    // Calculate current semester
-    let currentCredits = 0;
-    let currentGradePoints = 0;
+    // Calculate current semesters
+    let totalCurrentCredits = 0;
+    let totalCurrentGradePoints = 0;
+    const sgpas: number[] = [];
     
-    currentSemesterSubjects.forEach(subject => {
-      if (subject.credits > 0 && subject.gradePoint >= 0) {
-        currentCredits += subject.credits;
-        currentGradePoints += subject.credits * subject.gradePoint;
-      }
+    currentSemesters.forEach(sem => {
+      let semCredits = 0;
+      let semGradePoints = 0;
+      
+      sem.subjects.forEach(subject => {
+        if (subject.credits > 0 && subject.gradePoint >= 0) {
+          semCredits += subject.credits;
+          semGradePoints += subject.credits * subject.gradePoint;
+        }
+      });
+      
+      const semSgpa = semCredits > 0 ? semGradePoints / semCredits : 0;
+      sgpas.push(parseFloat(semSgpa.toFixed(3)));
+      
+      totalCurrentCredits += semCredits;
+      totalCurrentGradePoints += semGradePoints;
     });
 
-    const currentSgpa = currentCredits > 0 ? currentGradePoints / currentCredits : 0;
-    setCurrentSGPA(parseFloat(currentSgpa.toFixed(3)));
+    setCurrentSGPAs(sgpas);
 
     // Calculate overall CGPA
-    const totalCredits = totalPreviousCredits + currentCredits;
-    const totalGradePoints = totalPreviousGradePoints + currentGradePoints;
+    const totalCredits = totalPreviousCredits + totalCurrentCredits;
+    const totalGradePoints = totalPreviousGradePoints + totalCurrentGradePoints;
     const cgpa = totalCredits > 0 ? totalGradePoints / totalCredits : 0;
     
     setOverallCGPA(parseFloat(cgpa.toFixed(3)));
@@ -237,7 +269,10 @@ const CGPACalculator = () => {
       previousSemesters.forEach(sem => {
         results += `  Semester ${sem.semesterNumber}: SGPA ${sem.sgpa.toFixed(3)}, Credits: ${sem.totalCredits}\n`;
       });
-      results += `\nCurrent Semester SGPA: ${currentSGPA}\n`;
+      results += `\nCurrent Semesters:\n`;
+      currentSemesters.forEach((sem, index) => {
+        results += `  Semester ${sem.semesterNumber}: SGPA ${currentSGPAs[index] || 0}\n`;
+      });
     } else {
       results += `\nSemester-wise Results:\n`;
       semesters.forEach(sem => {
@@ -285,7 +320,7 @@ const CGPACalculator = () => {
                       <span className="text-2xl font-bold text-primary">{year.value}</span>
                     </div>
                     <CardTitle>{year.label}</CardTitle>
-                    <CardDescription>Sem {year.semesters[0]} & {year.semesters[1]}</CardDescription>
+                    <CardDescription>Sem {year.currentSemesters[0]} & {year.currentSemesters[1]}</CardDescription>
                   </CardHeader>
                   <CardContent className="text-center">
                     <Button className="w-full btn-hero">
@@ -303,7 +338,7 @@ const CGPACalculator = () => {
 
   // Advanced view for 2nd, 3rd, 4th year students
   if (currentYear > 1) {
-    const currentSemNumber = currentYear * 2;
+    const yearData = years.find(y => y.value === currentYear);
     
     return (
       <div className="min-h-screen bg-gradient-hero">
@@ -314,7 +349,7 @@ const CGPACalculator = () => {
               <ArrowLeft className="h-4 w-4 mr-2" /> Change Year
             </Button>
             <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-2 flex items-center gap-3">
-              <GraduationCap className="h-7 w-7" /> {years.find(y => y.value === currentYear)?.label} CGPA Calculator
+              <GraduationCap className="h-7 w-7" /> {yearData?.label} CGPA Calculator
             </h1>
             <p className="text-muted-foreground">Enter your previous semester SGPAs and current semester details</p>
           </motion.div>
@@ -363,62 +398,64 @@ const CGPACalculator = () => {
             </Card>
           </motion.div>
 
-          {/* Current Semester Subject-wise Input */}
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="mb-8">
-            <Card className="feature-card">
-              <CardHeader>
-                <CardTitle>📚 Current Semester {currentSemNumber}</CardTitle>
-                <CardDescription>Enter subject details for your current semester</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {currentSemesterSubjects.map((subject) => (
-                    <div key={subject.id} className="grid grid-cols-1 md:grid-cols-4 gap-3 p-4 bg-muted/30 rounded-lg">
-                      <div>
-                        <Label>Subject Name</Label>
-                        <Input
-                          placeholder="Enter subject name"
-                          value={subject.name}
-                          onChange={(e) => updateCurrentSubject(subject.id, 'name', e.target.value)}
-                        />
+          {/* Current Semesters - Both semesters for the year */}
+          {currentSemesters.map((currentSem, semIndex) => (
+            <motion.div key={semIndex} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 + semIndex * 0.1 }} className="mb-8">
+              <Card className="feature-card">
+                <CardHeader>
+                  <CardTitle>📚 Semester {currentSem.semesterNumber}</CardTitle>
+                  <CardDescription>Enter subject details for semester {currentSem.semesterNumber}</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    {currentSem.subjects.map((subject) => (
+                      <div key={subject.id} className="grid grid-cols-1 md:grid-cols-4 gap-3 p-4 bg-muted/30 rounded-lg">
+                        <div>
+                          <Label>Subject Name</Label>
+                          <Input
+                            placeholder="Enter subject name"
+                            value={subject.name}
+                            onChange={(e) => updateCurrentSubject(semIndex, subject.id, 'name', e.target.value)}
+                          />
+                        </div>
+                        <div>
+                          <Label>Credits</Label>
+                          <Input
+                            type="number"
+                            min="1"
+                            max="6"
+                            placeholder="Credits"
+                            value={subject.credits || ''}
+                            onChange={(e) => updateCurrentSubject(semIndex, subject.id, 'credits', Math.floor(Number(e.target.value)) || 0)}
+                          />
+                        </div>
+                        <div>
+                          <Label>Grade Point</Label>
+                          <Input
+                            type="number"
+                            min="0"
+                            max="10"
+                            step="1"
+                            placeholder="0-10"
+                            value={subject.gradePoint || ''}
+                            onChange={(e) => updateCurrentSubject(semIndex, subject.id, 'gradePoint', Math.floor(Number(e.target.value)) || 0)}
+                          />
+                        </div>
+                        <div className="flex items-end">
+                          <Button variant="outline" size="sm" onClick={() => removeCurrentSubject(semIndex, subject.id)} className="text-red-600 hover:bg-red-50">
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
                       </div>
-                      <div>
-                        <Label>Credits</Label>
-                        <Input
-                          type="number"
-                          min="1"
-                          max="6"
-                          placeholder="Credits"
-                          value={subject.credits || ''}
-                          onChange={(e) => updateCurrentSubject(subject.id, 'credits', Math.floor(Number(e.target.value)) || 0)}
-                        />
-                      </div>
-                      <div>
-                        <Label>Grade Point</Label>
-                        <Input
-                          type="number"
-                          min="0"
-                          max="10"
-                          step="1"
-                          placeholder="0-10"
-                          value={subject.gradePoint || ''}
-                          onChange={(e) => updateCurrentSubject(subject.id, 'gradePoint', Math.floor(Number(e.target.value)) || 0)}
-                        />
-                      </div>
-                      <div className="flex items-end">
-                        <Button variant="outline" size="sm" onClick={() => removeCurrentSubject(subject.id)} className="text-red-600 hover:bg-red-50">
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    </div>
-                  ))}
-                  <Button variant="outline" onClick={addCurrentSubject} className="w-full">
-                    <Plus className="h-4 w-4 mr-2" /> Add Subject
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          </motion.div>
+                    ))}
+                    <Button variant="outline" onClick={() => addCurrentSubject(semIndex)} className="w-full">
+                      <Plus className="h-4 w-4 mr-2" /> Add Subject
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+          ))}
 
           {/* Calculate Button */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
@@ -439,18 +476,14 @@ const CGPACalculator = () => {
                 <CardHeader className="text-center">
                   <CardTitle className="text-2xl">🎯 Results</CardTitle>
                   <div className="space-y-2">
-                    <div>
-                      <p className="text-sm text-muted-foreground">Current Semester SGPA</p>
-                      <div className="text-2xl font-bold text-primary">{currentSGPA}</div>
-                    </div>
-                    <div>
-                      <p className="text-sm text-muted-foreground">Overall CGPA</p>
-                      <div className="text-4xl font-bold text-primary">{overallCGPA}</div>
-                    </div>
+                    {currentSGPAs.map((sgpa, index) => (
+                      <div key={index} className="flex items-center justify-center gap-2">
+                        <Badge variant="secondary">Sem {currentSemesters[index]?.semesterNumber} SGPA: {sgpa}</Badge>
+                      </div>
+                    ))}
+                    <p className="text-5xl font-bold mt-4">{overallCGPA}</p>
+                    <p className="text-lg">{getCGPALabel(overallCGPA)}</p>
                   </div>
-                  <Badge className={`text-lg px-4 py-2 ${getCGPAColor(overallCGPA)}`}>
-                    {getCGPALabel(overallCGPA)}
-                  </Badge>
                 </CardHeader>
               </Card>
             </motion.div>
@@ -472,128 +505,102 @@ const CGPACalculator = () => {
           <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-2 flex items-center gap-3">
             <GraduationCap className="h-7 w-7" /> 1st Year CGPA Calculator
           </h1>
-          <p className="text-muted-foreground">Add semesters and enter subject details</p>
-        </motion.div>
-
-        {/* Instructions */}
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="mb-8">
-          <Card className="gradient-card border-2 border-primary/20">
-            <CardHeader>
-              <CardTitle className="text-lg">How to Use</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
-                <div className="flex items-start gap-2">
-                  <span className="bg-primary text-primary-foreground rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold">1</span>
-                  <div>
-                    <p className="font-medium">Add Semesters</p>
-                    <p className="text-muted-foreground">Click "Add Semester" to create a new semester</p>
-                  </div>
-                </div>
-                <div className="flex items-start gap-2">
-                  <span className="bg-primary text-primary-foreground rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold">2</span>
-                  <div>
-                    <p className="font-medium">Enter Subject Details</p>
-                    <p className="text-muted-foreground">Add subjects with their credits (1-6) and grade points (0-10)</p>
-                  </div>
-                </div>
-                <div className="flex items-start gap-2">
-                  <span className="bg-primary text-primary-foreground rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold">3</span>
-                  <div>
-                    <p className="font-medium">Calculate Results</p>
-                    <p className="text-muted-foreground">Click "Calculate CGPA" to see your results</p>
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+          <p className="text-muted-foreground">Add semesters and subjects to calculate your CGPA</p>
         </motion.div>
 
         {/* Add Semester Button */}
-        <div className="mb-6">
-          <Button onClick={addSemester} className="btn-hero">
-            <Plus className="h-4 w-4 mr-2" /> Add Semester {nextSemesterNumber}
-          </Button>
-        </div>
+        {semesters.length < 2 && (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mb-6">
+            <Button onClick={addSemester} className="btn-hero">
+              <Plus className="h-4 w-4 mr-2" /> Add Semester {nextSemesterNumber}
+            </Button>
+          </motion.div>
+        )}
 
         {/* Semesters */}
-        <div className="grid grid-cols-1 gap-6 mb-8">
-          {semesters.map((semester, semIndex) => (
-            <motion.div key={semester.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: semIndex * 0.1 }}>
-              <Card className="feature-card border-2 border-transparent hover:border-primary/20">
-                <CardHeader>
-                  <div className="flex items-center justify-between">
-                    <CardTitle className="flex items-center gap-2">
-                      <span className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">
-                        {semester.number}
-                      </span>
-                      Semester {semester.number}
-                      {showResults && (
-                        <Badge className={`ml-2 ${getCGPAColor(semester.sgpa)}`}>
-                          SGPA: {semester.sgpa.toFixed(3)}
-                        </Badge>
-                      )}
-                    </CardTitle>
-                    <Button variant="outline" size="sm" onClick={() => removeSemester(semester.id)} className="text-red-600 hover:bg-red-50">
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    {semester.subjects.map((subject) => (
-                      <div key={subject.id} className="grid grid-cols-1 md:grid-cols-4 gap-3 p-4 bg-muted/30 rounded-lg">
-                        <div>
-                          <Label htmlFor={`subject-name-${subject.id}`}>Subject Name</Label>
-                          <Input
-                            id={`subject-name-${subject.id}`}
-                            placeholder="Enter subject name"
-                            value={subject.name}
-                            onChange={(e) => updateSubject(semester.id, subject.id, 'name', e.target.value)}
-                          />
-                        </div>
-                        <div>
-                          <Label htmlFor={`credits-${subject.id}`}>Credits</Label>
-                          <Input
-                            id={`credits-${subject.id}`}
-                            type="number"
-                            min="1"
-                            max="6"
-                            step="1"
-                            placeholder="Credits"
-                            value={subject.credits || ''}
-                            onChange={(e) => updateSubject(semester.id, subject.id, 'credits', Math.floor(Number(e.target.value)) || 0)}
-                          />
-                        </div>
-                        <div>
-                          <Label htmlFor={`grade-point-${subject.id}`}>Grade Point</Label>
-                          <Input
-                            id={`grade-point-${subject.id}`}
-                            type="number"
-                            min="0"
-                            max="10"
-                            step="1"
-                            placeholder="0-10"
-                            value={subject.gradePoint || ''}
-                            onChange={(e) => updateSubject(semester.id, subject.id, 'gradePoint', Math.floor(Number(e.target.value)) || 0)}
-                          />
-                        </div>
-                        <div className="flex items-end">
-                          <Button variant="outline" size="sm" onClick={() => removeSubject(semester.id, subject.id)} className="text-red-600 hover:bg-red-50">
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                        </div>
+        {semesters.map((semester, semIndex) => (
+          <motion.div
+            key={semester.id}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: semIndex * 0.1 }}
+            className="mb-6"
+          >
+            <Card className="feature-card">
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <CardTitle>📚 Semester {semester.number}</CardTitle>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => removeSemester(semester.id)}
+                    className="text-red-600 hover:bg-red-50"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                </div>
+                <CardDescription>Add subjects with credits and grade points</CardDescription>
+                {showResults && semester.sgpa > 0 && (
+                  <Badge className="w-fit mt-2" variant="secondary">
+                    SGPA: {semester.sgpa}
+                  </Badge>
+                )}
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {semester.subjects.map((subject) => (
+                    <div key={subject.id} className="grid grid-cols-1 md:grid-cols-4 gap-3 p-4 bg-muted/30 rounded-lg">
+                      <div>
+                        <Label>Subject Name</Label>
+                        <Input
+                          placeholder="Enter subject name"
+                          value={subject.name}
+                          onChange={(e) => updateSubject(semester.id, subject.id, 'name', e.target.value)}
+                        />
                       </div>
-                    ))}
-                    <Button variant="outline" onClick={() => addSubject(semester.id)} className="w-full">
-                      <Plus className="h-4 w-4 mr-2" /> Add Subject
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            </motion.div>
-          ))}
-        </div>
+                      <div>
+                        <Label>Credits</Label>
+                        <Input
+                          type="number"
+                          min="1"
+                          max="6"
+                          placeholder="Credits"
+                          value={subject.credits || ''}
+                          onChange={(e) => updateSubject(semester.id, subject.id, 'credits', Math.floor(Number(e.target.value)) || 0)}
+                        />
+                      </div>
+                      <div>
+                        <Label>Grade Point</Label>
+                        <Input
+                          type="number"
+                          min="0"
+                          max="10"
+                          step="1"
+                          placeholder="0-10"
+                          value={subject.gradePoint || ''}
+                          onChange={(e) => updateSubject(semester.id, subject.id, 'gradePoint', Math.floor(Number(e.target.value)) || 0)}
+                        />
+                      </div>
+                      <div className="flex items-end">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => removeSubject(semester.id, subject.id)}
+                          className="text-red-600 hover:bg-red-50"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </div>
+                  ))}
+                  <Button variant="outline" onClick={() => addSubject(semester.id)} className="w-full">
+                    <Plus className="h-4 w-4 mr-2" /> Add Subject
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
+        ))}
 
         {/* Calculate Button */}
         {semesters.length > 0 && (
@@ -614,17 +621,12 @@ const CGPACalculator = () => {
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
             <Card className={`gradient-card border-2 ${getCGPAColor(overallCGPA)} shadow-lg`}>
               <CardHeader className="text-center">
-                <CardTitle className="text-2xl">🎯 Final CGPA</CardTitle>
-                <div className="text-4xl font-bold text-primary mb-2">{overallCGPA}</div>
-                <Badge className={`text-lg px-4 py-2 ${getCGPAColor(overallCGPA)}`}>
-                  {getCGPALabel(overallCGPA)}
-                </Badge>
-              </CardHeader>
-              <CardContent>
-                <div className="text-center space-y-2">
-                  <p className="text-muted-foreground">Based on {semesters.length} semester{semesters.length !== 1 ? 's' : ''}</p>
+                <CardTitle className="text-2xl">🎯 Your Results</CardTitle>
+                <div className="space-y-2">
+                  <p className="text-5xl font-bold">{overallCGPA}</p>
+                  <p className="text-lg">{getCGPALabel(overallCGPA)}</p>
                 </div>
-              </CardContent>
+              </CardHeader>
             </Card>
           </motion.div>
         )}
