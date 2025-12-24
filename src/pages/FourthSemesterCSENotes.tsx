@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Download, ArrowLeft, FileText, Play, ChevronDown, ChevronRight, Share2 } from 'lucide-react';
+import { Download, ArrowLeft, FileText, Play, ChevronDown, ChevronRight } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import { PlaylistModal } from '@/components/PlaylistModal';
@@ -348,7 +348,7 @@ const FourthSemesterNotes = () => {
             ))}
           </div>
         </div>
-        </div>
+      </div>
     );
   }
 
@@ -455,20 +455,93 @@ const FourthSemesterNotes = () => {
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="flex items-center justify-between">
-                    <Badge variant="secondary"> {subject.notes.length} Files</Badge>
-                    <Button variant="outline" size="sm" >
-                      View Notes
-                    </Button>
+                  <div className="flex flex-col gap-3">
+                    {/* Study Playlists Section */}
+                    {subject.id !== 'pyqs' && subject.id !== "assignments" &&(
+                    <div className="border-t pt-4">
+                      <div
+                        className="flex items-center justify-between cursor-pointer hover:bg-muted/50 rounded p-2 -m-2"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          toggleSubjectExpansion(subject.id);
+                        }}
+                      >
+                        <div className="flex items-center gap-2">
+                          <Play className="h-4 w-4 text-primary" />
+                          <span className="text-sm font-medium">Study Playlists</span>
+                        </div>
+                        {expandedSubjects.includes(subject.id) ?
+                          <ChevronDown className="h-4 w-4" /> :
+                          <ChevronRight className="h-4 w-4" />
+                        }
+                      </div>
+
+                      {expandedSubjects.includes(subject.id) && (
+                        <div className="mt-3 space-y-2 pl-2">
+                          {getSubjectPlaylists(subject.id).detailed.length > 0 && (
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="w-full justify-start text-xs h-8"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handlePlaylistClick(subject.id, 'detailed');
+                              }}
+                            >
+                              📚 Detailed Playlists ({getSubjectPlaylists(subject.id).detailed.length})
+                            </Button>
+                          )}
+                          {getSubjectPlaylists(subject.id).oneshot.length > 0 && (
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="w-full justify-start text-xs h-8"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handlePlaylistClick(subject.id, 'oneshot');
+                              }}
+                            >
+                              ⚡ One Shot Videos ({getSubjectPlaylists(subject.id).oneshot.length})
+                            </Button>
+                          )}
+                          {getSubjectPlaylists(subject.id).detailed.length === 0 &&
+                           getSubjectPlaylists(subject.id).oneshot.length === 0 && (
+                            <p className="text-xs text-muted-foreground pl-2">Not available...</p>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                    <div className="flex items-center justify-between">
+                      <Badge variant="secondary">{subject.notes.length} Files</Badge>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setSelectedSubject(subject.id)}
+                      >
+                        View Notes
+                      </Button>
+                    </div>
                   </div>
                 </CardContent>
               </Card>
             </motion.div>
           ))}
         </div>
+
+        {showPlaylistModal && (
+          <PlaylistModal
+          isOpen={showPlaylistModal}
+          onClose={() => setShowPlaylistModal(false)}
+          title={subjects.find(s => s.id === selectedSubjectForPlaylist)?.name || ''}
+          playlists={selectedSubjectForPlaylist ? getSubjectPlaylists(selectedSubjectForPlaylist)[selectedPlaylistType] : []}
+          type={selectedPlaylistType}
+        />
+        )}
         </div>
       </div>
-  );
-};
+    );
+  }
 
 export default FourthSemesterNotes;
