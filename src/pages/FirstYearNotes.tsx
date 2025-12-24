@@ -1,7 +1,7 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, BookOpen } from "lucide-react";
+import { ArrowLeft, BookOpen, Share2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import Navbar from "@/components/Navbar";
 import { motion } from "framer-motion";
@@ -10,6 +10,13 @@ import secondSemImg from "@/assets/2nd-sem-thumbnail.jpg";
 
 const FirstYearNotes = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const handleWhatsAppShare = (semName: string, route: string) => {
+    const shareUrl = `${window.location.origin}${route}`;
+    const message = `Check out ${semName} B.Tech Notes on College Study Hub: ${shareUrl}`;
+    window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, '_blank');
+  };
 
   const semesters = [
     {
@@ -73,11 +80,22 @@ const FirstYearNotes = () => {
               transition={{ delay: index * 0.1, duration: 0.5 }}
             >
               <Card
-                className={`feature-card h-full ${
+                className={`feature-card h-full relative ${
                   semester.available ? "cursor-pointer" : "opacity-60"
                 } transition-all duration-300`}
                 onClick={() => handleSemesterClick(semester)}
               >
+                {semester.available && (
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="absolute top-2 right-2 z-10 h-8 w-8 text-green-600 hover:text-green-700 hover:bg-green-50 dark:hover:bg-green-900/20"
+                    onClick={(e) => { e.stopPropagation(); handleWhatsAppShare(semester.name, semester.route); }}
+                    title="Share on WhatsApp"
+                  >
+                    <Share2 className="h-4 w-4" />
+                  </Button>
+                )}
                 <CardHeader>
                   <div className="w-full h-48 rounded-lg overflow-hidden mb-4">
                     <img

@@ -3,13 +3,20 @@ import { motion } from 'framer-motion';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Download, ArrowLeft, FileText, Play, ChevronDown, ChevronRight } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { Download, ArrowLeft, FileText, Play, ChevronDown, ChevronRight, Share2 } from 'lucide-react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import { PlaylistModal } from '@/components/PlaylistModal';
 
 const SecondSemesterNotes = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const handleWhatsAppShare = (subjectName: string) => {
+    const shareUrl = `${window.location.origin}${location.pathname}?subject=${encodeURIComponent(subjectName)}`;
+    const message = `Check out ${subjectName} notes for 2nd Semester B.Tech on College Study Hub: ${shareUrl}`;
+    window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, '_blank');
+  };
   const [selectedSubject, setSelectedSubject] = useState<string | null>(null);
   const [showPlaylistModal, setShowPlaylistModal] = useState(false);
   const [selectedPlaylistType, setSelectedPlaylistType] = useState<'detailed' | 'oneshot' | 'workshop'>('detailed');
