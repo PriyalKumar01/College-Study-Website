@@ -3,18 +3,25 @@ import { motion } from 'framer-motion';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Download, ArrowLeft, FileText, Play, ChevronDown, ChevronRight } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { Download, ArrowLeft, FileText, Play, ChevronDown, ChevronRight, Share2 } from 'lucide-react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import { PlaylistModal } from '@/components/PlaylistModal';
 
 const FourthSemesterEENotes = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [selectedSubject, setSelectedSubject] = useState<string | null>(null);
   const [showPlaylistModal, setShowPlaylistModal] = useState(false);
   const [selectedPlaylistType, setSelectedPlaylistType] = useState<'detailed' | 'oneshot'>('detailed');
   const [selectedSubjectForPlaylist, setSelectedSubjectForPlaylist] = useState<string>('');
   const [expandedSubjects, setExpandedSubjects] = useState<string[]>([]);
+
+  const handleWhatsAppShare = (subjectName: string) => {
+    const shareUrl = `${window.location.origin}${location.pathname}?subject=${encodeURIComponent(subjectName)}`;
+    const message = `Check out ${subjectName} notes for 4th Semester EE on College Study Hub: ${shareUrl}`;
+    window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, '_blank');
+  };
 
   const subjectPlaylists: Record<string, { detailed: { title: string; url: string; recommended?: boolean }[]; oneshot: { title: string; url: string; recommended?: boolean }[] }> = {
     math3: {
@@ -116,7 +123,16 @@ const FourthSemesterEENotes = () => {
               
               return (
                 <motion.div key={subject.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.1, duration: 0.5 }}>
-                  <Card className="feature-card h-full">
+                  <Card className="feature-card h-full relative">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="absolute top-2 right-2 h-8 w-8 text-green-600 hover:text-green-700 hover:bg-green-50 dark:hover:bg-green-900/20"
+                      onClick={(e) => { e.stopPropagation(); handleWhatsAppShare(subject.name); }}
+                      title="Share on WhatsApp"
+                    >
+                      <Share2 className="h-4 w-4" />
+                    </Button>
                     <CardHeader>
                       <div className={`w-12 h-12 rounded-full ${subject.color} flex items-center justify-center text-2xl mb-4`}>
                         {subject.icon}
