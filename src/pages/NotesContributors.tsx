@@ -76,9 +76,9 @@ const NotesContributors = () => {
       rank: 7,
       name: "Ananya Kanujiya",
       branch: "CSE",
-      batch: "38",
+      batch: "28",
       
-      coins: 20,
+      coins: 30,
       
     }
     ,
