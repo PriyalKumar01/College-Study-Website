@@ -76,13 +76,73 @@ const NotesContributors = () => {
       rank: 7,
       name: "Ananya Kanujiya",
       branch: "CSE",
-      batch: "28",
+      batch: "38",
       
       coins: 20,
       
-    },
+    }
+    ,
     {
       rank: 8,
+      name: "Amarendra Sengar",
+      branch: "CSE",
+      batch: "27",
+      
+      coins: 15,
+      
+    }
+    ,
+    {
+      rank: 9,
+      name: "Amit Singh",
+      branch: "CSE",
+      batch: "27",
+      
+      coins: 13,
+      
+    }
+    ,
+    {
+      rank: 10,
+      name: "Rachna Sharma",
+      branch: "FT",
+      batch: "28",
+      
+      coins: 5,
+      
+    }
+    ,
+    {
+      rank: 11,
+      name: "Sudhir Kumar Gupta",
+      branch: "CSE",
+      batch: "27",
+      
+      coins: 4,
+      
+    }
+    ,
+    {
+      rank: 12,
+      name: "Vishal Yadav",
+      branch: "CSE",
+      batch: "27",
+      
+      coins: 2,
+      
+    }
+    ,
+    {
+      rank: 12,
+      name: "Tanya Verma",
+      branch: "FT",
+      batch: "28",
+      
+      coins: 2,
+      
+    },
+    {
+      rank: 12,
       name: "Soni Rawat",
       branch: "ME",
       batch: "28",
@@ -91,12 +151,52 @@ const NotesContributors = () => {
       
     },
     {
-      rank: 9,
+      rank: 12,
       name: "Kanishtha Mishra",
       branch: "LFT",
       batch: "28",
      
       coins: 2,
+    }
+    ,
+    {
+      rank: 13,
+      name: "Ankit Yadav",
+      branch: "FT",
+      batch: "27",
+      
+      coins: 1,
+      
+    }
+    ,
+    {
+      rank: 13,
+      name: "Aryan Gaurav",
+      branch: "IT",
+      batch: "27",
+      
+      coins: 1,
+      
+    }
+    ,
+    {
+      rank: 13,
+      name: "Satyam Tripathi",
+      branch: "IT",
+      batch: "28",
+      
+      coins: 1,
+      
+    }
+    ,
+    {
+      rank: 13,
+      name: "Laxita Rajora",
+      branch: "PT",
+      batch: "29",
+      
+      coins: 1,
+      
     },
   ];
 
