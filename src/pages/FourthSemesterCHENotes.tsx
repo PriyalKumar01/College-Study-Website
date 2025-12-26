@@ -38,9 +38,9 @@ const FourthSemesterCHENotes = () => {
 
   const subjects = [
     {
-      id: 'che-subject-1',
-      name: 'Subject 1',
-      fullName: 'Chemical Engineering Subject 1',
+      id: 'che-engg-thermodynamics',
+      name: 'CEM-II',
+      fullName: 'Chemical Engineering Thermodynamics - II',
       icon: '🧪',
       color: 'bg-green-500',
       playlists: {
@@ -49,6 +49,7 @@ const FourthSemesterCHENotes = () => {
       },
       notes: [
         { title: 'Notes Coming Soon', url: '#' },
+        { title: 'Chemistry Lab Notes', url: 'https://drive.google.com/file/d/12v99u53GrcMPG33oW6UMfOohjPeSYbfP/view?usp=drivesdk' },
       ]
     },
     {
@@ -73,21 +74,17 @@ const FourthSemesterCHENotes = () => {
         { title: 'Basic Principles of Polarography Notes', url: 'https://drive.google.com/file/d/162B6Zu6l491A2HyXgr5GY6s4XC0nV3hA/view?usp=drivesdk' },
         { title: 'IR/Vibrational Spectroscopy Notes', url: 'https://drive.google.com/file/d/18-4JVJ80esN9sMfHbjCsSDt_OO3XtMmQ/view?usp=drivesdk' },
         { title: 'Mass Spectroscopy Notes', url: 'https://drive.google.com/file/d/1U0JBO8ZshIAiBcs_nJv0_kW04pWN-TwY/view?usp=drivesdk' },
-        { title: 'Basic Components Of Geo Chromatograph Notes', url: 'https://drive.google.com/file/d/1RRRN9lKSRx394X5b3f2MSK8_i7d7tnfG/view?usp=drivesdk' },
-        { title: 'Notes Coming Soon', url: '#' },
-        { title: 'Notes Coming Soon', url: '#' },
-        { title: 'Notes Coming Soon', url: '#' },
-        { title: 'Notes Coming Soon', url: '#' },
-        { title: 'Notes Coming Soon', url: '#' },
-        { title: 'Notes Coming Soon', url: '#' },
-        { title: 'Notes Coming Soon', url: '#' },
-        { title: 'Notes Coming Soon', url: '#' },
-        { title: 'Notes Coming Soon', url: '#' },
-        { title: 'Notes Coming Soon', url: '#' },
-        { title: 'Notes Coming Soon', url: '#' },
-        { title: 'Notes Coming Soon', url: '#' },
-        { title: 'Notes Coming Soon', url: '#' },
-
+        { title: 'Basic Components Of Geo Chromatography Notes', url: 'https://drive.google.com/file/d/1RRRN9lKSRx394X5b3f2MSK8_i7d7tnfG/view?usp=drivesdk' },
+        { title: 'Liquid Chromatography Notes', url: 'https://drive.google.com/file/d/1YDHvaxeYZgwPtieALrq4oObI9QhYqlEv/view?usp=drivesdk' },
+        { title: 'Chromatography -Intro Notes', url: 'https://drive.google.com/file/d/1gjHkLBLXrZgUsWT0MfDPRsgW4qB8EBNi/view?usp=drivesdk' },
+        { title: 'Polarography pdf Notes', url: 'https://drive.google.com/file/d/1TusWFH_WUF1Hshs5ycVyw8RpdbLjFyHK/view?usp=drivesdk' },
+        { title: 'Gas Chromatography Notes', url: 'https://drive.google.com/file/d/1jh0Re_Uw31d1MQoQqT5evVrFDKaLweu5/view?usp=drivesdk' },
+        { title: 'Nuclear Magnetic Resonance Spectroscopy Notes', url: 'https://drive.google.com/file/d/1yTltHqKtOBREqS26UGayWzTyxaZhsFHM/view?usp=drivesdk' },
+        { title: 'NMR Spectroscopy including CMR Notes', url: 'https://drive.google.com/file/d/1zS_Wi7Ml2eHotb7sLNBMO77L-fLuhAAN/view?usp=drivesdk' },
+        { title: 'Polarography -DME/RPE Notes', url: 'https://drive.google.com/file/d/1-rAD72lQkObeS4K237E9UpzZJ2cugIWk/view?usp=drivesdk' },
+        { title: 'Scanning Electron Microscope Notes', url: 'https://drive.google.com/file/d/1hul-DR8eoWJEowV2jMqLDvqhasnz-ImU/view?usp=drivesdk' },
+        { title: 'TEM Notes (Part-1)', url: 'https://drive.google.com/file/d/1aq7Hc_i6RTgDP_acP8Cuf_8tAWC9v-wb/view?usp=drivesdk' },
+        { title: 'TEM Notes (Part-2)', url: 'https://drive.google.com/file/d/1njbs465mU1L2QVLznoqMYAlsETi9uMXe/view?usp=drivesdk' },
       ]
     },
     {
