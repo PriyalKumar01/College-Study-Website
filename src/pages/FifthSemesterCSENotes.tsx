@@ -242,6 +242,7 @@ const FifthSemesterCSENotes = () => {
       notes: [
         { title: 'Mid Sem-1 PYQs (2025-26)', url: 'https://drive.google.com/uc?export=download&id=1hwZUf4FxQfW8EoLcWR2XWjWroxvFz_As' },
         { title: 'Mid Sem-2 PYQs (2025-26)', url: 'https://drive.google.com/file/d/1PZ-P27xJkvH3FCj_fv_QrC88HrJAD5SA/view?usp=drivesdk' },
+        { title: 'End Sem PYQs (2025-26)', url: 'https://drive.google.com/file/d/1WlsPtaDNmbLESlsuxPj8v3j2imF6eRST/view?usp=drivesdk' },
         { title: 'Mid sem-1 PYQs (2024-25)', url: 'https://drive.google.com/uc?export=download&id=1EazLLUeWlY2BZxFJP25PlcEo5Zu4V1rG' },
         { title: 'ESE PYQs (2024-25)', url: 'https://drive.google.com/uc?export=download&id=1yHRuoCBaTwQ8i32JLiqxFUeiaS38__fp' },
         { title: 'Mid Sem-1 PYQs (2022-23)', url: 'https://drive.google.com/uc?export=download&id=1JuRAwhvJT_CKXeajVgBcFAbq-gc7yeCk' },

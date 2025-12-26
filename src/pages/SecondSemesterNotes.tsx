@@ -226,6 +226,7 @@ const SecondSemesterNotes = () => {
       notes: [
         { title: 'Mid Sem 1 PYQs (2025-26) -ODD SEM', url: 'https://drive.google.com/file/d/1SXPBclZ-Bjv6l9O3iKFRionXUq9iLhkW/view?usp=drivesdk' },
         { title: 'Mid Sem 2 PYQs (2025-26) -ODD SEM', url: 'https://drive.google.com/file/d/1wty3ubMfR4Vyt6ClzFfi0gKi-jNH0EmY/view?usp=drivesdk' },
+        { title: 'End Sem PYQs (2025-26) -ODD SEM', url: 'https://drive.google.com/file/d/1S41rOchlw2VV0JUqd-NA2-lJSv9MvaJM/view?usp=drivesdk' },
         { title: 'Mid Sem 1 PYQs (2024-25) -ODD SEM', url: 'https://drive.google.com/file/d/1SHThDw8j2ar0oJ7huAKSTTBWAqLqgT86/view?usp=drive_link' },
         { title: 'Mid Sem 2 PYQs (2024-25) -ODD SEM', url: 'https://drive.google.com/file/d/1FmF7U7v0GnqSYhEY5V05Sh2nbq5_Io2V/view?usp=drive_link' },
         { title: 'End Sem PYQs (2024-25) -ODD SEM', url: 'https://drive.google.com/file/d/1FoxxXrQZyJYqIWNxgqoix-whiELRM9ap/view?usp=drive_link' },

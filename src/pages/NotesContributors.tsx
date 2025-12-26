@@ -31,6 +31,14 @@ const NotesContributors = () => {
     },
     {
       rank: 2,
+      name: "Raunak Gupta",
+      branch: "EE",
+      batch: "28",
+      coins: 81,
+      
+    },
+    {
+      rank: 3,
       name: "Tanishka Gupta",
       branch: "ET",
       batch: "28",
@@ -39,7 +47,7 @@ const NotesContributors = () => {
       medal: "silver", 
     },
     {
-      rank: 3,
+      rank: 4,
       name: "Smriti Dwivedi",
       branch: "CE",
       batch: "28",
@@ -48,7 +56,7 @@ const NotesContributors = () => {
       medal: "bronze",
     },
     {
-      rank: 4,
+      rank: 5,
       name: "Vrishti Chauhan",
       branch: "ME",
       batch: "28",
@@ -56,7 +64,7 @@ const NotesContributors = () => {
       coins: 70,
     },
      {
-      rank: 5,
+      rank: 6,
       name: "Kanchan Upadhyay",
       branch: "PT",
       batch: "28",
@@ -64,7 +72,7 @@ const NotesContributors = () => {
       coins: 67,
     },
     {
-      rank: 6,
+      rank: 7,
       name: "Bhoomika",
       branch: "MBA",
       batch: "27",
@@ -73,7 +81,7 @@ const NotesContributors = () => {
       
     },
     {
-      rank: 7,
+      rank: 8,
       name: "Ananya Kanujiya",
       branch: "CSE",
       batch: "28",
@@ -83,7 +91,7 @@ const NotesContributors = () => {
     }
     ,
     {
-      rank: 8,
+      rank: 9,
       name: "Amarendra Sengar",
       branch: "CSE",
       batch: "27",
@@ -93,7 +101,7 @@ const NotesContributors = () => {
     }
     ,
     {
-      rank: 9,
+      rank: 10,
       name: "Amit Singh",
       branch: "CSE",
       batch: "27",
@@ -103,7 +111,7 @@ const NotesContributors = () => {
     }
     ,
     {
-      rank: 10,
+      rank: 11,
       name: "Rachna Sharma",
       branch: "FT",
       batch: "28",
@@ -113,7 +121,7 @@ const NotesContributors = () => {
     }
     ,
     {
-      rank: 11,
+      rank: 12,
       name: "Sudhir Kumar Gupta",
       branch: "CSE",
       batch: "27",
@@ -123,7 +131,7 @@ const NotesContributors = () => {
     }
     ,
     {
-      rank: 12,
+      rank: 13,
       name: "Vishal Yadav",
       branch: "CSE",
       batch: "27",
@@ -133,7 +141,7 @@ const NotesContributors = () => {
     }
     ,
     {
-      rank: 12,
+      rank: 13,
       name: "Tanya Verma",
       branch: "FT",
       batch: "28",
@@ -142,7 +150,7 @@ const NotesContributors = () => {
       
     },
     {
-      rank: 12,
+      rank: 13,
       name: "Soni Rawat",
       branch: "ME",
       batch: "28",
@@ -151,7 +159,7 @@ const NotesContributors = () => {
       
     },
     {
-      rank: 12,
+      rank: 13,
       name: "Kanishtha Mishra",
       branch: "LFT",
       batch: "28",
@@ -160,7 +168,7 @@ const NotesContributors = () => {
     }
     ,
     {
-      rank: 13,
+      rank: 14,
       name: "Ankit Yadav",
       branch: "FT",
       batch: "27",
@@ -170,7 +178,7 @@ const NotesContributors = () => {
     }
     ,
     {
-      rank: 13,
+      rank: 14,
       name: "Aryan Gaurav",
       branch: "IT",
       batch: "27",
@@ -180,7 +188,7 @@ const NotesContributors = () => {
     }
     ,
     {
-      rank: 13,
+      rank: 14,
       name: "Satyam Tripathi",
       branch: "IT",
       batch: "28",
@@ -190,7 +198,7 @@ const NotesContributors = () => {
     }
     ,
     {
-      rank: 13,
+      rank: 14,
       name: "Laxita Rajora",
       branch: "PT",
       batch: "29",
@@ -198,6 +206,15 @@ const NotesContributors = () => {
       coins: 1,
       
     },
+    {
+      rank: 14,
+      name: "Jaideep Kumar",
+      branch: "CSE",
+      batch: "28",
+      
+      coins: 1,
+      
+    }
   ];
 
   const getMedalIcon = (medal?: string) => {
