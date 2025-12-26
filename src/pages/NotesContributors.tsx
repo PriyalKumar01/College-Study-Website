@@ -35,25 +35,24 @@ const NotesContributors = () => {
       branch: "EE",
       batch: "28",
       coins: 81,
+      medal: "silver",
       
     },
     {
       rank: 3,
       name: "Tanishka Gupta",
       branch: "ET",
-      batch: "28",
-      
+      batch: "28", 
       coins: 74,
-      medal: "silver", 
+      medal: "bronze",
+       
     },
     {
       rank: 4,
       name: "Smriti Dwivedi",
       branch: "CE",
       batch: "28",
-      
       coins: 72,
-      medal: "bronze",
     },
     {
       rank: 5,
