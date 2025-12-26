@@ -52,9 +52,63 @@ const FourthSemesterCHENotes = () => {
       ]
     },
     {
-      id: 'che-subject-2',
-      name: 'Subject 2',
-      fullName: 'Chemical Engineering Subject 2',
+      id: 'MAT',
+      name: 'Modern Analical Techniques',
+      fullName: 'Modern Analical Techniques Notes',
+      icon: '🧪',
+      color: 'bg-green-500',
+      playlists: {
+        detailed: [{ title: 'Playlist Coming Soon', url: '#' }],
+        oneshot: []
+      },
+      notes: [
+        { title: 'Differential Scanning Calorimetry Notes', url: 'https://drive.google.com/file/d/1wCEqN3tIifwtS_fv5qQl9LVKHykbuLD_/view?usp=drivesdk' },
+        { title: 'Chromatography Notes (Part-1)', url: 'https://drive.google.com/file/d/1iz4Cca_KWzuH7zRhpIBFfUAQ_6nF8NQC/view?usp=drivesdk' },
+        { title: 'Chromatography Notes (Part-2)', url: 'https://drive.google.com/file/d/1MRRbdlVurU5vDqABQSvfT1Q-G6oSH1lS/view?usp=drivesdk' },
+        { title: 'Thermogravimetric Analysis(TGA) Notes', url: 'https://drive.google.com/file/d/10KgYmaFJ7Z1zX6DQn41RFoW-OQu5SO9d/view?usp=drivesdk' },
+        { title: 'Working of TGA Notes', url: 'https://drive.google.com/file/d/1cVe0tAvH_VQt6oi7QBOe91Cut9eUclnj/view?usp=drivesdk' },
+        { title: 'DTA-Differential Thermal Analysis Notes', url: 'https://drive.google.com/file/d/1pSFNT94ho5YjNAH1S2ZNA76hETTuBfsg/view?usp=drivesdk' },
+        { title: 'Patentiometry & Conductometry Notes', url: 'https://drive.google.com/file/d/1mkXkhL6ua74tE8Ufo7uFxKPBha_ACFkb/view?usp=drivesdk' },
+        { title: 'X-ray Diffraction Notes', url: 'https://drive.google.com/file/d/1IWzSzhoYpm-SLShw-N3Xwz2E9OUSgahT/view?usp=drivesdk' },
+        { title: 'Basic Principles of Polarography Notes', url: 'https://drive.google.com/file/d/162B6Zu6l491A2HyXgr5GY6s4XC0nV3hA/view?usp=drivesdk' },
+        { title: 'IR/Vibrational Spectroscopy Notes', url: 'https://drive.google.com/file/d/18-4JVJ80esN9sMfHbjCsSDt_OO3XtMmQ/view?usp=drivesdk' },
+        { title: 'Mass Spectroscopy Notes', url: 'https://drive.google.com/file/d/1U0JBO8ZshIAiBcs_nJv0_kW04pWN-TwY/view?usp=drivesdk' },
+        { title: 'Basic Components Of Geo Chromatograph Notes', url: 'https://drive.google.com/file/d/1RRRN9lKSRx394X5b3f2MSK8_i7d7tnfG/view?usp=drivesdk' },
+        { title: 'Notes Coming Soon', url: '#' },
+        { title: 'Notes Coming Soon', url: '#' },
+        { title: 'Notes Coming Soon', url: '#' },
+        { title: 'Notes Coming Soon', url: '#' },
+        { title: 'Notes Coming Soon', url: '#' },
+        { title: 'Notes Coming Soon', url: '#' },
+        { title: 'Notes Coming Soon', url: '#' },
+        { title: 'Notes Coming Soon', url: '#' },
+        { title: 'Notes Coming Soon', url: '#' },
+        { title: 'Notes Coming Soon', url: '#' },
+        { title: 'Notes Coming Soon', url: '#' },
+        { title: 'Notes Coming Soon', url: '#' },
+        { title: 'Notes Coming Soon', url: '#' },
+
+      ]
+    },
+    {
+      id: 'conm',
+      name: 'Computer Oriented Numerical Methods',
+      fullName: 'Computer Oriented Numerical Methods Notes',
+      icon: '🧪',
+      color: 'bg-green-500',
+      playlists: {
+        detailed: [{ title: 'Playlist Coming Soon', url: '#' }],
+        oneshot: []
+      },
+      notes: [
+        { title: 'CONM Notes (Part-1)', url: 'https://drive.google.com/file/d/12e_ozWRloNzQ1sJdaJkZgkY_LzR-2pC9/view?usp=drivesdk' },
+        { title: 'CONM Notes (Part-2)', url: 'https://drive.google.com/file/d/1bKvMQvMpZz5IotvJ3uteQaxhnSFP-6Zl/view?usp=drivesdk' },
+      ]
+    },
+    {
+      id: 'cre-I',
+      name: 'CRE -I',
+      fullName: 'Chemical Reaction Engineering -I',
       icon: '⚗️',
       color: 'bg-blue-500',
       playlists: {
@@ -62,13 +116,14 @@ const FourthSemesterCHENotes = () => {
         oneshot: []
       },
       notes: [
-        { title: 'Notes Coming Soon', url: '#' },
+        { title: 'CRE Notes (Part-1)', url: 'https://drive.google.com/file/d/1c7fQk_yJRZSXqGGCSc_QqC2stEnpbiBq/view?usp=drivesdk' },
+        { title: 'CRE Notes (Part-2)', url: 'https://drive.google.com/file/d/1HbnmK2R-ldt9h350knkPMQskvz5IKQtD/view?usp=drivesdk' },
       ]
     },
     {
-      id: 'che-subject-3',
-      name: 'Subject 3',
-      fullName: 'Chemical Engineering Subject 3',
+      id: 'process-heat-transfer',
+      name: 'Process Heat Transfer',
+      fullName: 'Process Heat Transfer notes',
       icon: '🔬',
       color: 'bg-purple-500',
       playlists: {
@@ -76,13 +131,17 @@ const FourthSemesterCHENotes = () => {
         oneshot: []
       },
       notes: [
-        { title: 'Notes Coming Soon', url: '#' },
+        { title: 'Boiling Condensation Evaporator Notes', url: 'https://drive.google.com/file/d/1NN3lUUUI4vUfI0S3KnEqjFPUzPfe-TqB/view?usp=drivesdk' },
+        { title: 'Conduction Notes', url: 'https://drive.google.com/file/d/1nNHHP_VwytaZ8BRfhqHzZWaIc_zsv5Pq/view?usp=drivesdk' },
+        { title: 'Convection Notes', url: 'https://drive.google.com/file/d/1ovZoU-PzRqq1ZJ6WMra270wTZUTukg6j/view?usp=drivesdk' },
+        { title: 'Radiation Notes', url: 'https://drive.google.com/file/d/1PmROELGO0Zkcw_H_oZEa6v7_qVRxXhVE/view?usp=drivesdk' },
+        { title: 'Unsteady State Notes', url: 'https://drive.google.com/file/d/14VcXZmBdLY42veDvQWo2RgsicB529Pw0/view?usp=drivesdk' },
       ]
     },
     {
-      id: 'che-subject-4',
-      name: 'Subject 4',
-      fullName: 'Chemical Engineering Subject 4',
+      id: 'mto-I',
+      name: 'MTO -I',
+      fullName: 'Mass Transfer Operations -I',
       icon: '📊',
       color: 'bg-orange-500',
       playlists: {
@@ -90,7 +149,9 @@ const FourthSemesterCHENotes = () => {
         oneshot: []
       },
       notes: [
-        { title: 'Notes Coming Soon', url: '#' },
+        { title: 'Unit-1 Class Notes', url: 'https://drive.google.com/file/d/1o_qt4Fxs49Sozjgme6oA60zTII-sgNc8/view?usp=drivesdk' },
+        { title: 'Membranes & its Processes Fundamentals', url: 'https://drive.google.com/file/d/1JGXKFisxS4RgxZ0_5znlJQ8fpLgyTypr/view?usp=drivesdk' },
+        { title: 'Membrane Separation -Inro.', url: 'https://drive.google.com/file/d/1QqR4h6Q9Co9RdtWNa9tSEOCLwar1fsfc/view?usp=drivesdk' },
       ]
     },
     {
@@ -104,14 +165,18 @@ const FourthSemesterCHENotes = () => {
         oneshot: []
       },
       notes: [
-        { title: 'PYQs Coming Soon', url: '#' },
+        { title: 'Mid Sem-1 PYQs (2023-24)', url: 'https://drive.google.com/file/d/1iVsbl4dLayRJp2u1i3qjGOZSHpJa6Gzc/view?usp=drivesdk' },
+        { title: 'Mid Sem-2 PYQs (2023-24)', url: 'https://drive.google.com/file/d/1xnWaqUUM6dt6F-Vqb-b74Q8AQlarNRh2/view?usp=drivesdk' },
+        { title: 'End Sem PYQS (2023-24)', url: 'https://drive.google.com/file/d/1ljA5It3SXbRsdeEHQLqnwIZMGtSqvgP1/view?usp=drivesdk' },
+        { title: 'All Mid Sem PYQS (2022-23)', url: 'https://drive.google.com/file/d/1kCQYQhGvRwBCi9Ipo_kmfIF5BgI-kHlk/view?usp=drivesdk' },
+        { title: 'End Sem PYQS (2022-23)', url: 'https://drive.google.com/file/d/1Y5AZMMpGoJkuuNTTCy5J9x3ZOQnlWEGj/view?usp=drivesdk' },
       ]
     },
   ];
 
   const syllabus = {
     title: '4th Semester CHE Syllabus',
-    url: '#'
+    url: 'https://drive.google.com/file/d/1MhO63XR0C3lz4ZI7RfuOLLbc4wT2rjkw/view?usp=drivesdk'
   };
 
   const handleDownload = (url: string, title: string) => {
