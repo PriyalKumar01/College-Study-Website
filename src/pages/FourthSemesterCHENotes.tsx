@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Download, ArrowLeft, FileText, Play, ChevronRight, Share2 } from 'lucide-react';
+import { Download, ArrowLeft, FileText, Play, ChevronRight, ChevronDown, Share2 } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import { PlaylistModal } from '@/components/PlaylistModal';
@@ -15,30 +15,63 @@ const FourthSemesterCHENotes = () => {
   const [showPlaylistModal, setShowPlaylistModal] = useState(false);
   const [selectedPlaylistType, setSelectedPlaylistType] = useState<'detailed' | 'oneshot'>('detailed');
   const [selectedSubjectForPlaylist, setSelectedSubjectForPlaylist] = useState<string>('');
-
+ const [expandedSubjects, setExpandedSubjects] = useState<string[]>([]);
+  
   const handleWhatsAppShare = (subjectName: string) => {
     const shareUrl = `${window.location.origin}${location.pathname}?subject=${encodeURIComponent(subjectName)}`;
     const message = `Check out ${subjectName} notes for 4th Semester CHE on College Study Hub: ${shareUrl}`;
     window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, '_blank');
   };
+  const subjectPlaylists = {
+    cem: {
+      detailed: [{ title: 'Playlist Coming Soon', url: '#' }],
+      oneshot: [{ title: 'Playlist Coming Soon', url: '#' }]
+    },
+    mat: {
+     detailed: [{ title: 'Playlist Coming Soon', url: '#' }],
+      oneshot: [{ title: 'Playlist Coming Soon', url: '#' }]
+    },
+    cre: {
+      detailed: [{ title: 'Playlist Coming Soon', url: '#' }],
+      oneshot: [{ title: 'Playlist Coming Soon', url: '#' }]
+    },
+    conm : {
+      detailed: [{ title: 'Playlist Coming Soon', url: '#' }],
+      oneshot: [{ title: 'Playlist Coming Soon', url: '#' }]
+    },
+    pht : {
+      detailed: [{ title: 'Playlist Coming Soon', url: '#' }],
+      oneshot: [{ title: 'Playlist Coming Soon', url: '#' }]
+    },
+    mto : {
+      detailed: [{ title: 'Playlist Coming Soon', url: '#' }],
+      oneshot: [{ title: 'Playlist Coming Soon', url: '#' }]
+    }
+  };
+   const toggleSubjectExpansion = (subjectId: string) => {
+    setExpandedSubjects(prev => 
+      prev.includes(subjectId) 
+        ? prev.filter(id => id !== subjectId)
+        : [...prev, subjectId]
+    );
+  };
 
-  const handlePlaylistClick = (subjectId: string, type: 'detailed' | 'oneshot') => {
-    const subject = subjects.find(s => s.id === subjectId);
-    if (subject?.playlists?.[type]?.length > 0) {
+   const handlePlaylistClick = (subjectId: string, type: 'detailed' | 'oneshot') => {
+    const playlistKey = subjectId as keyof typeof subjectPlaylists;
+    if (subjectPlaylists[playlistKey] && subjectPlaylists[playlistKey][type].length > 0) {
       setSelectedSubjectForPlaylist(subjectId);
       setSelectedPlaylistType(type);
       setShowPlaylistModal(true);
     }
-  };
-
+  }; 
   const getSubjectPlaylists = (subjectId: string) => {
-    const subject = subjects.find(s => s.id === subjectId);
-    return subject?.playlists || { detailed: [], oneshot: [] };
+    const playlistKey = subjectId as keyof typeof subjectPlaylists;
+    return subjectPlaylists[playlistKey] || { detailed: [], oneshot: [] };
   };
 
   const subjects = [
     {
-      id: 'che-engg-thermodynamics',
+      id: 'cem',
       name: 'CEM-II',
       fullName: 'Chemical Engineering Thermodynamics - II',
       icon: '🧪',
@@ -53,15 +86,11 @@ const FourthSemesterCHENotes = () => {
       ]
     },
     {
-      id: 'MAT',
+      id: 'mat',
       name: 'Modern Analical Techniques',
       fullName: 'Modern Analical Techniques Notes',
-      icon: '🧪',
+      icon: '📊',
       color: 'bg-green-500',
-      playlists: {
-        detailed: [{ title: 'Playlist Coming Soon', url: '#' }],
-        oneshot: []
-      },
       notes: [
         { title: 'Differential Scanning Calorimetry Notes', url: 'https://drive.google.com/file/d/1wCEqN3tIifwtS_fv5qQl9LVKHykbuLD_/view?usp=drivesdk' },
         { title: 'Chromatography Notes (Part-1)', url: 'https://drive.google.com/file/d/1iz4Cca_KWzuH7zRhpIBFfUAQ_6nF8NQC/view?usp=drivesdk' },
@@ -88,45 +117,33 @@ const FourthSemesterCHENotes = () => {
       ]
     },
     {
-      id: 'conm',
-      name: 'Computer Oriented Numerical Methods',
-      fullName: 'Computer Oriented Numerical Methods Notes',
-      icon: '🧪',
-      color: 'bg-green-500',
-      playlists: {
-        detailed: [{ title: 'Playlist Coming Soon', url: '#' }],
-        oneshot: []
-      },
-      notes: [
-        { title: 'CONM Notes (Part-1)', url: 'https://drive.google.com/file/d/12e_ozWRloNzQ1sJdaJkZgkY_LzR-2pC9/view?usp=drivesdk' },
-        { title: 'CONM Notes (Part-2)', url: 'https://drive.google.com/file/d/1bKvMQvMpZz5IotvJ3uteQaxhnSFP-6Zl/view?usp=drivesdk' },
-      ]
-    },
-    {
-      id: 'cre-I',
+      id: 'cre',
       name: 'CRE -I',
       fullName: 'Chemical Reaction Engineering -I',
-      icon: '⚗️',
+      icon: '🧪',
       color: 'bg-blue-500',
-      playlists: {
-        detailed: [{ title: 'Playlist Coming Soon', url: '#' }],
-        oneshot: []
-      },
       notes: [
         { title: 'CRE Notes (Part-1)', url: 'https://drive.google.com/file/d/1c7fQk_yJRZSXqGGCSc_QqC2stEnpbiBq/view?usp=drivesdk' },
         { title: 'CRE Notes (Part-2)', url: 'https://drive.google.com/file/d/1HbnmK2R-ldt9h350knkPMQskvz5IKQtD/view?usp=drivesdk' },
       ]
     },
     {
-      id: 'process-heat-transfer',
+      id: 'conm',
+      name: 'Computer Oriented Numerical Methods',
+      fullName: 'Computer Oriented Numerical Methods Notes',
+      icon: '📊',
+      color: 'bg-green-500',
+      notes: [
+        { title: 'CONM Notes (Part-1)', url: 'https://drive.google.com/file/d/12e_ozWRloNzQ1sJdaJkZgkY_LzR-2pC9/view?usp=drivesdk' },
+        { title: 'CONM Notes (Part-2)', url: 'https://drive.google.com/file/d/1bKvMQvMpZz5IotvJ3uteQaxhnSFP-6Zl/view?usp=drivesdk' },
+      ]
+    },
+    {
+      id: 'pht',
       name: 'Process Heat Transfer',
       fullName: 'Process Heat Transfer notes',
-      icon: '🔬',
+      icon: '⚗️',
       color: 'bg-purple-500',
-      playlists: {
-        detailed: [{ title: 'Playlist Coming Soon', url: '#' }],
-        oneshot: []
-      },
       notes: [
         { title: 'Boiling Condensation Evaporator Notes', url: 'https://drive.google.com/file/d/1NN3lUUUI4vUfI0S3KnEqjFPUzPfe-TqB/view?usp=drivesdk' },
         { title: 'Conduction Notes', url: 'https://drive.google.com/file/d/1nNHHP_VwytaZ8BRfhqHzZWaIc_zsv5Pq/view?usp=drivesdk' },
@@ -136,15 +153,11 @@ const FourthSemesterCHENotes = () => {
       ]
     },
     {
-      id: 'mto-I',
+      id: 'mto',
       name: 'MTO -I',
       fullName: 'Mass Transfer Operations -I',
-      icon: '📊',
+      icon: '🔬',
       color: 'bg-orange-500',
-      playlists: {
-        detailed: [{ title: 'Playlist Coming Soon', url: '#' }],
-        oneshot: []
-      },
       notes: [
         { title: 'Unit-1 Class Notes', url: 'https://drive.google.com/file/d/1o_qt4Fxs49Sozjgme6oA60zTII-sgNc8/view?usp=drivesdk' },
         { title: 'Membranes & its Processes Fundamentals', url: 'https://drive.google.com/file/d/1JGXKFisxS4RgxZ0_5znlJQ8fpLgyTypr/view?usp=drivesdk' },
@@ -157,10 +170,6 @@ const FourthSemesterCHENotes = () => {
       fullName: 'PYQs for 4th Semester CHE',
       icon: '❓',
       color: 'bg-red-600',
-      playlists: {
-        detailed: [],
-        oneshot: []
-      },
       notes: [
         { title: 'Mid Sem-1 PYQs (2023-24)', url: 'https://drive.google.com/file/d/1iVsbl4dLayRJp2u1i3qjGOZSHpJa6Gzc/view?usp=drivesdk' },
         { title: 'Mid Sem-2 PYQs (2023-24)', url: 'https://drive.google.com/file/d/1xnWaqUUM6dt6F-Vqb-b74Q8AQlarNRh2/view?usp=drivesdk' },
@@ -317,7 +326,7 @@ const FourthSemesterCHENotes = () => {
         </motion.div>
 
         {/* Subjects Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {subjects.map((subject, index) => {
             const playlists = getSubjectPlaylists(subject.id);
             const hasDetailedPlaylist = playlists.detailed && playlists.detailed.length > 0 && playlists.detailed[0].url !== '#';
@@ -330,69 +339,105 @@ const FourthSemesterCHENotes = () => {
                 transition={{ delay: index * 0.05, duration: 0.5 }}
                 whileHover={{ scale: 1.02 }}
               >
-                <Card className="feature-card h-full border-2 border-transparent hover:border-primary/20 shadow-lg hover:shadow-xl transition-all duration-300 relative">
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="absolute top-2 right-2 h-8 w-8 text-green-600 hover:text-green-700 hover:bg-green-50 dark:hover:bg-green-900/20"
-                    onClick={(e) => { e.stopPropagation(); handleWhatsAppShare(subject.name); }}
-                    title="Share on WhatsApp"
-                  >
-                    <Share2 className="h-4 w-4" />
-                  </Button>
-                  <CardHeader className="text-center pb-2">
-                    <div className={`w-16 h-16 ${subject.color} rounded-full flex items-center justify-center text-3xl mx-auto mb-3`}>
-                      {subject.icon}
+               <Card 
+                className="feature-card h-full cursor-pointer transition-all duration-300 border-2 border-transparent hover:border-primary/20 shadow-lg hover:shadow-xl"
+                onClick={() => setSelectedSubject(subject.id)}
+              >
+                <CardHeader>
+                  <div className={`w-16 h-16 ${subject.color} rounded-full flex items-center justify-center text-white text-2xl mb-4 mx-auto shadow-lg`}>
+                    {subject.icon}
+                  </div>
+                  <CardTitle className="text-lg text-center">{subject.name}</CardTitle>
+                  <CardDescription className="text-center">
+                    {subject.notes.length} notes available
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex flex-col gap-3">
+                    {/* Study Playlists Section */}
+                    {subject.id !== 'pyqs' && subject.id !== "assignments" &&(
+                    <div className="border-t pt-4">
+                      <div
+                        className="flex items-center justify-between cursor-pointer hover:bg-muted/50 rounded p-2 -m-2"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          toggleSubjectExpansion(subject.id);
+                        }}
+                      >
+                        <div className="flex items-center gap-2">
+                          <Play className="h-4 w-4 text-primary" />
+                          <span className="text-sm font-medium">Study Playlists</span>
+                        </div>
+                        {expandedSubjects.includes(subject.id) ?
+                          <ChevronDown className="h-4 w-4" /> :
+                          <ChevronRight className="h-4 w-4" />
+                        }
+                      </div>
+
+                      {expandedSubjects.includes(subject.id) && (
+                        <div className="mt-3 space-y-2 pl-2">
+                          {getSubjectPlaylists(subject.id).detailed.length > 0 && (
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="w-full justify-start text-xs h-8"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handlePlaylistClick(subject.id, 'detailed');
+                              }}
+                            >
+                              📚 Detailed Playlists ({getSubjectPlaylists(subject.id).detailed.length})
+                            </Button>
+                          )}
+                          {getSubjectPlaylists(subject.id).oneshot.length > 0 && (
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="w-full justify-start text-xs h-8"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handlePlaylistClick(subject.id, 'oneshot');
+                              }}
+                            >
+                              ⚡ One Shot Videos ({getSubjectPlaylists(subject.id).oneshot.length})
+                            </Button>
+                          )}
+                          {getSubjectPlaylists(subject.id).detailed.length === 0 &&
+                           getSubjectPlaylists(subject.id).oneshot.length === 0 && (
+                            <p className="text-xs text-muted-foreground pl-2">Not available...</p>
+                          )}
+                        </div>
+                      )}
                     </div>
-                    <CardTitle className="text-lg">{subject.name}</CardTitle>
-                    <CardDescription className="text-sm">
-                      {subject.notes.length} notes available
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="space-y-3">
-                    <div className="flex items-center gap-2">
-                      <Badge className="bg-primary text-primary-foreground">
-                        {subject.notes.length} Files
-                      </Badge>
+                  )}
+
+                    <div className="flex items-center justify-between">
+                      <Badge variant="secondary">{subject.notes.length} Files</Badge>
                       <Button
                         variant="outline"
                         size="sm"
                         onClick={() => setSelectedSubject(subject.id)}
-                        className="flex-1"
                       >
                         View Notes
                       </Button>
                     </div>
-                    
-                    {hasDetailedPlaylist && (
-                      <div className="pt-2 border-t">
-                        <button
-                          onClick={() => handlePlaylistClick(subject.id, 'detailed')}
-                          className="w-full flex items-center justify-between p-2 text-sm text-muted-foreground hover:text-foreground hover:bg-secondary/50 rounded-md transition-colors"
-                        >
-                          <span className="flex items-center gap-2">
-                            <Play className="h-4 w-4" />
-                            Study Playlists
-                          </span>
-                          <ChevronRight className="h-4 w-4" />
-                        </button>
-                      </div>
-                    )}
-                  </CardContent>
-                </Card>
+                  </div>
+                </CardContent>
+              </Card>
               </motion.div>
             );
           })}
         </div>
+        {showPlaylistModal && (
+                  <PlaylistModal
+                  isOpen={showPlaylistModal}
+                  onClose={() => setShowPlaylistModal(false)}
+                  title={subjects.find(s => s.id === selectedSubjectForPlaylist)?.name || ''}
+                  playlists={selectedSubjectForPlaylist ? getSubjectPlaylists(selectedSubjectForPlaylist)[selectedPlaylistType] : []}
+                  type={selectedPlaylistType}
+                />
+                )}
       </div>
-
-      <PlaylistModal
-        isOpen={showPlaylistModal}
-        onClose={() => setShowPlaylistModal(false)}
-        playlists={getSubjectPlaylists(selectedSubjectForPlaylist)[selectedPlaylistType] || []}
-        type={selectedPlaylistType}
-        title={subjects.find(s => s.id === selectedSubjectForPlaylist)?.name || ''}
-      />
     </div>
   );
 };

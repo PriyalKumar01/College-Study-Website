@@ -189,8 +189,8 @@ const FifthSemesterCSEOpenElectives = () => {
       <Navbar />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
-          <Button onClick={() => navigate('/fifth-semester-cse')} variant="outline" className="mb-4">
-            <ArrowLeft className="h-4 w-4 mr-2" />Back to 5th Sem CSE
+          <Button onClick={() => navigate('/btech-notes/third-year/semester-5')} variant="outline" className="mb-4">
+            <ArrowLeft className="h-4 w-4 mr-2" />Back to 5th Sem
           </Button>
           <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-2">Open Elective Subjects 📖</h1>
           <p className="text-muted-foreground text-lg mb-6">Choose your preferred open elective subject - One will be allotted based on GPA</p>
