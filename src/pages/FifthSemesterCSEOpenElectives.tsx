@@ -94,7 +94,13 @@ const FifthSemesterCSEOpenElectives = () => {
       icon: '🎯',
       color: 'bg-pink-500',
       playlists: { detailed: [{ title: 'Playlist Coming Soon', url: '#' }], oneshot: [] },
-      notes: [{ title: 'Notes Coming Soon', url: '#' }]
+      notes: [
+        { title: 'Unit-1 Notes', url: 'https://drive.google.com/file/d/1_SQXLSyKAfmLYXkcYDlR40jldU39WCw2/view?usp=drivesdk' },
+        { title: 'Unit-2 Notes', url: 'https://drive.google.com/file/d/1OW8xUrc3rNGGwJj-Xnlhem4tXjimSw1y/view?usp=drivesdk' },
+        { title: 'Unit-3 Notes', url: 'https://drive.google.com/file/d/1GyQCW3ExIqvL9GwrRT0T0itfb0VTeGmI/view?usp=drivesdk' },
+        { title: 'Unit-4 Notes', url: 'https://drive.google.com/file/d/1BLPEIzV4rmxd-y8QlFcPW9oNMJe-FtAt/view?usp=drivesdk' },
+        { title: 'Unit-5 HR Interview Notes', url: 'https://www.indiabix.com/hr-interview/questions-and-answers/' }
+      ]
     },
     {
       id: 'critical-thinking',

@@ -209,7 +209,7 @@ const NotesContributors = () => {
       rank: 14,
       name: "Jaideep Kumar",
       branch: "CSE",
-      batch: "28",
+      batch: "29",
       
       coins: 1,
       
