@@ -79,15 +79,6 @@ const FifthSemesterCSEOpenElectives = () => {
       ]
     },
     {
-      id: 'env-ecology',
-      name: 'Environment & Ecology',
-      fullName: 'Environment & Ecology (Open Elective)',
-      icon: '🌿',
-      color: 'bg-emerald-500',
-      playlists: { detailed: [{ title: 'Playlist Coming Soon', url: '#' }], oneshot: [] },
-      notes: [{ title: 'Notes Coming Soon', url: '#' }]
-    },
-    {
       id: 'soft-skills',
       name: 'Soft Skills & PD',
       fullName: 'Soft Skills & Personality Development (Open Elective)',
@@ -99,7 +90,8 @@ const FifthSemesterCSEOpenElectives = () => {
         { title: 'Unit-2 Notes', url: 'https://drive.google.com/file/d/1OW8xUrc3rNGGwJj-Xnlhem4tXjimSw1y/view?usp=drivesdk' },
         { title: 'Unit-3 Notes', url: 'https://drive.google.com/file/d/1GyQCW3ExIqvL9GwrRT0T0itfb0VTeGmI/view?usp=drivesdk' },
         { title: 'Unit-4 Notes', url: 'https://drive.google.com/file/d/1BLPEIzV4rmxd-y8QlFcPW9oNMJe-FtAt/view?usp=drivesdk' },
-        { title: 'Unit-5 HR Interview Notes', url: 'https://www.indiabix.com/hr-interview/questions-and-answers/' }
+        { title: 'Unit-5 HR Interview Notes', url: 'https://www.indiabix.com/hr-interview/questions-and-answers/' },
+        { title: 'Soft Skill PYQ\'s(2025-26)', url: 'https://drive.google.com/file/d/16rXmTcUFOuBLqO1Gf_Nzg_xo7I2UthMS/view?usp=drivesdk' },
       ]
     },
     {
@@ -109,7 +101,15 @@ const FifthSemesterCSEOpenElectives = () => {
       icon: '🧠',
       color: 'bg-cyan-500',
       playlists: { detailed: [{ title: 'Playlist Coming Soon', url: '#' }], oneshot: [] },
-      notes: [{ title: 'Notes Coming Soon', url: '#' }]
+      notes: [
+        { title: 'Syllabus (2025-26)', url: 'https://drive.google.com/file/d/1uqzNRJ0DCr6KHeFGFRDr554S-9NqgNC6/view?usp=drivesdk' },
+        { title: 'unit-1 Notes', url: 'https://drive.google.com/file/d/1lUmDZWGrB3fcGQZiW4pcBhZsdbe---mB/view?usp=drivesdk' },
+        { title: 'Unit-2 Notes', url: 'https://drive.google.com/file/d/1BfRMHIibGiWu3D-QUTo6FedJf4QJp11r/view?usp=drivesdk' },
+        { title: 'Unit-3 Notes', url: 'https://drive.google.com/file/d/14fH-6bnIUW5-YXjCp7pW-fL9I1-KG3Ty/view?usp=drivesdk' },
+        { title: 'Unit-4 Notes', url: 'https://drive.google.com/file/d/1qsCpiTxYAqg8p2zkMnqSl0IcszHUYZYv/view?usp=drivesdk' },
+        { title: 'Unit-5 Notes', url: 'https://drive.google.com/file/d/1zmi0qVacaSHXZYALEbIyXAzLL_ZnLGnU/view?usp=drivesdk' },
+
+      ]
     },
     {
       id: 'solar-energy',
@@ -118,16 +118,36 @@ const FifthSemesterCSEOpenElectives = () => {
       icon: '☀️',
       color: 'bg-yellow-500',
       playlists: { detailed: [{ title: 'Playlist Coming Soon', url: '#' }], oneshot: [] },
-      notes: [{ title: 'Notes Coming Soon', url: '#' }]
+      notes: [
+        { title: 'Solar Energy Syallbus', url: 'https://drive.google.com/file/d/1BJe0qZi7wRoM8W10zhAeVkdsct2638cK/view?usp=drivesdk' },
+        { title: 'Unit-2 FPC Notes', url: 'https://drive.google.com/file/d/19v7kKUZbLeCXdzL2GHEUMlEYTcmP--vs/view?usp=drivesdk' },
+        { title: 'Unit-3 Solar air Heater Notes', url: 'https://drive.google.com/file/d/1UUMXTQntr4nQrjaY8l29CrJQhgasuTTh/view?usp=drivesdk' },
+        { title: 'Unit-3 Solar Collector Notes', url: 'https://drive.google.com/file/d/1ACoU5BnJAqPzjyKM91WQXcR4z7GGZuzC/view?usp=drivesdk' },
+        { title: 'Unit-4 Various Coeff. Calculations Notes', url: 'https://drive.google.com/file/d/1pmO3WOItulIDw348_RX1r5bMvfAkqe3A/view?usp=drivesdk' },
+        { title: 'Unit-4 Solar Distillation Notes', url: 'https://drive.google.com/file/d/1CZ3OrOsEqJ_UPvbinc5Ge-Ppff0fjgr3/view?usp=drivesdk' },
+        { title: 'Thermal Energy Storage Notes', url: 'https://drive.google.com/file/d/1XllAfIWX0cevnmjScouebOh4-ToXZ-rt/view?usp=drivesdk' },
+        { title: 'Solar Angles PDF', url: 'https://drive.google.com/file/d/17x7ZXOsJwOLLyY06f5riCIvI57FWuG6C/view?usp=drivesdk' },
+        { title: 'PV Economic Analysis Notes', url: 'https://drive.google.com/file/d/1JAYx_sZhppkXAfBctDStrIXnz9bnN7-i/view?usp=drivesdk' },
+        { title: 'PN Junction Characteristics Notes', url: 'https://drive.google.com/file/d/1swQYtgNu0ZQ9huSkO_xchLNDprm7n6y_/view?usp=drivesdk' },
+        { title: 'Central Receiver System Notes', url: 'https://drive.google.com/file/d/1ua4vQxqB0ZbkTB-bDTYelEMurSjmTmBI/view?usp=drivesdk' },
+        { title: 'Comparision of analysis of collectors Notes', url: 'https://drive.google.com/file/d/1WIwb0YH1wwvG7g2xm3abQ9lYmgQDSiC-/view?usp=drivesdk' },
+        { title: 'All Year - PYQS', url: 'https://drive.google.com/file/d/1QOAVF7JMHNMx98oWkrWkgnZSlGJoAq72/view?usp=drivesdk' },
+        
+
+      ]
     },
     {
-      id: 'non-conventional-energy',
-      name: 'Non-Conventional Energy',
-      fullName: 'Non-Conventional Energy Resources (Open Elective)',
-      icon: '⚡',
-      color: 'bg-amber-500',
+      id: 'env-ecology',
+      name: 'Environment & Ecology',
+      fullName: 'Environment & Ecology (Open Elective)',
+      icon: '🌿',
+      color: 'bg-emerald-500',
       playlists: { detailed: [{ title: 'Playlist Coming Soon', url: '#' }], oneshot: [] },
-      notes: [{ title: 'Notes Coming Soon', url: '#' }]
+      notes: [
+        { title: 'Env. & Ecology Lecture Notes', url: 'https://drive.google.com/file/d/1taWO5of2LSvA1MTtIvI6AdSf3t-ZrVJ-/view?usp=drivesdk' },
+        { title: 'Env. & Ecology Notes', url: 'https://drive.google.com/file/d/12LxbDeBxI4bUNx6lKqct5YCHzuQueCe4/view?usp=drivesdk' },
+
+      ]
     },
     {
       id: 'discrete-maths',
@@ -135,6 +155,19 @@ const FifthSemesterCSEOpenElectives = () => {
       fullName: 'Discrete Mathematics (Open Elective)',
       icon: '🔢',
       color: 'bg-violet-500',
+      playlists: { detailed: [{ title: 'Playlist Coming Soon', url: '#' }], oneshot: [] },
+      notes: [
+        { title: 'Discrete Math Book', url: 'https://drive.google.com/file/d/1qrF_EAftAlDNmb-5AIfTcqxEK1YYqouW/view?usp=drivesdk' },
+        { title: 'Discrete Math Handwritten Notes', url: 'https://drive.google.com/file/d/1s07BRK08It_XdHn3FgNnWpru_DCwYe8Z/view?usp=drivesdk' },
+        
+      ]
+    },
+    {
+      id: 'non-conventional-energy',
+      name: 'Non-Conventional Energy',
+      fullName: 'Non-Conventional Energy Resources (Open Elective)',
+      icon: '⚡',
+      color: 'bg-amber-500',
       playlists: { detailed: [{ title: 'Playlist Coming Soon', url: '#' }], oneshot: [] },
       notes: [{ title: 'Notes Coming Soon', url: '#' }]
     },
