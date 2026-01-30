@@ -1,31 +1,41 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Checkbox } from '@/components/ui/checkbox';
+import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, BookOpen } from 'lucide-react';
+import { Loader2, Eye, EyeOff, CheckCircle2, Mail, ArrowLeft, RefreshCw } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
-import AuthBackground from '@/components/AuthBackground';
-import AvatarSelector from '@/components/AvatarSelector';
 import logoImg from '@/assets/college-study-hub-logo.png';
 
 const Auth = () => {
+  const [mode, setMode] = useState<'signin' | 'signup'>('signin');
+  const [step, setStep] = useState<'form' | 'otp'>('form');
   const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  
+  // Form fields
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
-  const [acceptedTerms, setAcceptedTerms] = useState(false);
-  const [showAvatarSelector, setShowAvatarSelector] = useState(false);
-  const [selectedAvatar, setSelectedAvatar] = useState('👨‍🎓');
+  const [contactNo, setContactNo] = useState('');
   const [college, setCollege] = useState('');
   const [branch, setBranch] = useState('');
   const [year, setYear] = useState('');
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
+  
+  // OTP verification
+  const [otp, setOtp] = useState('');
+  const [generatedOtp, setGeneratedOtp] = useState('');
+  const [emailVerified, setEmailVerified] = useState(false);
+  const [resendTimer, setResendTimer] = useState(0);
+  
   const navigate = useNavigate();
   const { toast } = useToast();
   const { user } = useAuth();
@@ -36,17 +46,160 @@ const Auth = () => {
     }
   }, [user, navigate]);
 
-  const handleSignUp = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
+  // Resend timer countdown
+  useEffect(() => {
+    if (resendTimer > 0) {
+      const timer = setTimeout(() => setResendTimer(resendTimer - 1), 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [resendTimer]);
 
-    if (!email || !password || !firstName || !lastName || !college || !branch || !year) {
+  // Password strength calculation
+  const passwordStrength = useMemo(() => {
+    if (!password) return { score: 0, label: '', color: '' };
+    
+    let score = 0;
+    if (password.length >= 6) score++;
+    if (password.length >= 8) score++;
+    if (/[A-Z]/.test(password)) score++;
+    if (/[0-9]/.test(password)) score++;
+    if (/[^A-Za-z0-9]/.test(password)) score++;
+    
+    if (score <= 2) return { score, label: 'Weak', color: 'bg-red-500' };
+    if (score <= 3) return { score, label: 'Medium', color: 'bg-yellow-500' };
+    if (score <= 4) return { score, label: 'Strong', color: 'bg-green-500' };
+    return { score, label: 'Very Strong', color: 'bg-emerald-500' };
+  }, [password]);
+
+  const generateOTP = () => {
+    return Math.floor(100000 + Math.random() * 900000).toString();
+  };
+
+  const sendOTPEmail = async (emailAddress: string, otpCode: string) => {
+    try {
+      const { data, error } = await supabase.functions.invoke('send-otp-email', {
+        body: {
+          email: emailAddress,
+          otp: otpCode,
+          firstName: firstName || 'Student'
+        }
+      });
+
+      if (error) throw error;
+      return data;
+    } catch (error: any) {
+      console.error('Error sending OTP email:', error);
+      throw error;
+    }
+  };
+
+  const handleSendOTP = async () => {
+    if (!email) {
       toast({
-        title: "Missing information",
-        description: "Please fill in all fields",
+        title: "Email required",
+        description: "Please enter your email address",
         variant: "destructive",
       });
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      const newOtp = generateOTP();
+      setGeneratedOtp(newOtp);
+      
+      await sendOTPEmail(email, newOtp);
+      
+      setStep('otp');
+      setResendTimer(60);
+      
+      toast({
+        title: "Verification code sent",
+        description: `We've sent a 6-digit code to ${email}`,
+      });
+    } catch (error: any) {
+      toast({
+        title: "Failed to send code",
+        description: error.message || "Please try again",
+        variant: "destructive",
+      });
+    } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleVerifyOTP = async () => {
+    if (otp.length !== 6) {
+      toast({
+        title: "Invalid code",
+        description: "Please enter the 6-digit verification code",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (otp !== generatedOtp) {
+      toast({
+        title: "Incorrect code",
+        description: "The code you entered doesn't match. Please try again.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setEmailVerified(true);
+    setStep('form');
+    toast({
+      title: "Email verified! ✓",
+      description: "Your email has been verified successfully",
+    });
+  };
+
+  const handleResendOTP = async () => {
+    if (resendTimer > 0) return;
+    
+    setIsLoading(true);
+    try {
+      const newOtp = generateOTP();
+      setGeneratedOtp(newOtp);
+      setOtp('');
+      
+      await sendOTPEmail(email, newOtp);
+      
+      setResendTimer(60);
+      toast({
+        title: "Code resent",
+        description: "A new verification code has been sent to your email",
+      });
+    } catch (error: any) {
+      toast({
+        title: "Failed to resend",
+        description: error.message || "Please try again",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleSignUp = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!firstName || !lastName || !email || !password || !college || !branch || !year) {
+      toast({
+        title: "Missing information",
+        description: "Please fill in all required fields",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!emailVerified) {
+      toast({
+        title: "Email not verified",
+        description: "Please verify your email first",
+        variant: "destructive",
+      });
       return;
     }
 
@@ -56,7 +209,6 @@ const Auth = () => {
         description: "Please accept the Terms & Conditions to continue",
         variant: "destructive",
       });
-      setIsLoading(false);
       return;
     }
 
@@ -66,10 +218,10 @@ const Auth = () => {
         description: "Password must be at least 6 characters long",
         variant: "destructive",
       });
-      setIsLoading(false);
       return;
     }
 
+    setIsLoading(true);
     try {
       const { data, error } = await supabase.auth.signUp({
         email,
@@ -79,7 +231,7 @@ const Auth = () => {
           data: {
             first_name: firstName,
             last_name: lastName,
-            avatar: selectedAvatar,
+            mobile_number: contactNo || null,
             college: college,
             branch: branch,
             year: year,
@@ -106,7 +258,7 @@ const Auth = () => {
 
       if (data.user) {
         toast({
-          title: "Welcome to College Study Hub!",
+          title: "Welcome to College Study!",
           description: "Your account has been created successfully",
         });
         navigate('/dashboard');
@@ -149,12 +301,6 @@ const Auth = () => {
             description: "Email or password is incorrect",
             variant: "destructive",
           });
-        } else if (error.message.includes('Email not confirmed')) {
-          toast({
-            title: "Email not verified",
-            description: "Please check your email and verify your account first",
-            variant: "destructive",
-          });
         } else {
           toast({
             title: "Sign in failed",
@@ -183,265 +329,422 @@ const Auth = () => {
     }
   };
 
+  const resetForm = () => {
+    setEmail('');
+    setPassword('');
+    setFirstName('');
+    setLastName('');
+    setContactNo('');
+    setCollege('');
+    setBranch('');
+    setYear('');
+    setOtp('');
+    setGeneratedOtp('');
+    setEmailVerified(false);
+    setStep('form');
+    setAcceptedTerms(false);
+  };
+
+  const toggleMode = (newMode: 'signin' | 'signup') => {
+    setMode(newMode);
+    resetForm();
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-primary/5 to-secondary/5 flex items-center justify-center p-4 relative">
-      <AuthBackground />
-      
-      <div className="w-full max-w-md relative z-10">
-        <div className="text-center mb-8">
+    <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white flex items-center justify-center p-4">
+      <div className="w-full max-w-md">
+        {/* Header */}
+        <motion.div 
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-center mb-8"
+        >
           <div className="flex items-center justify-center gap-3 mb-4">
             <img 
               src={logoImg} 
-              alt="College Study Hub" 
-              className="h-14 w-14 animate-pulse"
+              alt="College Study" 
+              className="h-12 w-12"
             />
-            <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text text-transparent">
-              College Study Hub
-            </h1>
+            <div className="text-left">
+              <h1 className="text-2xl font-bold text-slate-800">College Study</h1>
+              <p className="text-xs text-slate-500 uppercase tracking-wider">Your Study Hub</p>
+            </div>
           </div>
-          <p className="text-muted-foreground text-lg">
-            Your Gateway to Academic Excellence
-          </p>
-        </div>
+        </motion.div>
 
-        <Card className="border-border/50 bg-card/98 backdrop-blur-xl shadow-2xl">
-          <CardHeader className="space-y-1">
-            <CardTitle className="flex items-center gap-2 text-2xl">
-              <BookOpen className="h-6 w-6 text-primary" />
-              Get Started
-            </CardTitle>
-            <CardDescription className="text-base">
-              Join thousands of students accessing quality study materials
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Tabs defaultValue="signin" className="w-full">
-              <TabsList className="grid w-full grid-cols-2">
-                <TabsTrigger value="signin">Sign In</TabsTrigger>
-                <TabsTrigger value="signup">Sign Up</TabsTrigger>
-              </TabsList>
-
-              <TabsContent value="signin">
-                <form onSubmit={handleSignIn} className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="signin-email">Email</Label>
-                    <Input
-                      id="signin-email"
-                      type="email"
-                      placeholder="your@email.com"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      disabled={isLoading}
-                      required
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="signin-password">Password</Label>
-                    <Input
-                      id="signin-password"
-                      type="password"
-                      placeholder="••••••••"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      disabled={isLoading}
-                      required
-                    />
-                  </div>
+        <AnimatePresence mode="wait">
+          {step === 'otp' ? (
+            /* OTP Verification Screen */
+            <motion.div
+              key="otp"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+            >
+              <Card className="border-0 shadow-xl bg-white">
+                <CardHeader className="text-center pb-4">
                   <Button
-                    type="submit"
-                    className="w-full"
-                    disabled={isLoading}
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setStep('form')}
+                    className="absolute left-4 top-4"
                   >
-                    {isLoading ? (
-                      <>
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        Signing in...
-                      </>
-                    ) : (
-                      'Sign In'
-                    )}
+                    <ArrowLeft className="h-4 w-4 mr-2" />
+                    Back
                   </Button>
-                </form>
-              </TabsContent>
-
-              <TabsContent value="signup">
-                <form onSubmit={handleSignUp} className="space-y-4">
-                  {/* Avatar Selection */}
-                  <div className="flex items-center justify-center gap-3 p-4 bg-muted/50 rounded-lg">
-                    <div className="w-16 h-16 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-3xl cursor-pointer hover:scale-110 transition-transform" onClick={() => setShowAvatarSelector(true)}>
-                      {selectedAvatar}
-                    </div>
-                    <div className="flex-1">
-                      <p className="text-sm font-medium">Choose Your Avatar</p>
-                      <Button
-                        type="button"
-                        variant="link"
-                        size="sm"
-                        className="p-0 h-auto"
-                        onClick={() => setShowAvatarSelector(true)}
-                      >
-                        Click to change
-                      </Button>
-                    </div>
+                  <div className="w-16 h-16 mx-auto mb-4 bg-primary/10 rounded-full flex items-center justify-center">
+                    <Mail className="w-8 h-8 text-primary" />
                   </div>
-
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="first-name">First Name</Label>
-                      <Input
-                        id="first-name"
-                        type="text"
-                        placeholder="John"
-                        value={firstName}
-                        onChange={(e) => setFirstName(e.target.value)}
-                        disabled={isLoading}
-                        required
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="last-name">Last Name</Label>
-                      <Input
-                        id="last-name"
-                        type="text"
-                        placeholder="Doe"
-                        value={lastName}
-                        onChange={(e) => setLastName(e.target.value)}
-                        disabled={isLoading}
-                        required
-                      />
-                    </div>
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="college">College Name</Label>
-                    <Input
-                      id="college"
-                      type="text"
-                      placeholder="e.g., HBTU"
-                      value={college}
-                      onChange={(e) => setCollege(e.target.value)}
-                      disabled={isLoading}
-                      required
-                    />
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="branch">Branch</Label>
-                      <Input
-                        id="branch"
-                        type="text"
-                        placeholder="e.g., CSE"
-                        value={branch}
-                        onChange={(e) => setBranch(e.target.value)}
-                        disabled={isLoading}
-                        required
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="year">Year</Label>
-                      <Input
-                        id="year"
-                        type="text"
-                        placeholder="e.g., 2nd"
-                        value={year}
-                        onChange={(e) => setYear(e.target.value)}
-                        disabled={isLoading}
-                        required
-                      />
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="signup-email">Email</Label>
-                    <Input
-                      id="signup-email"
-                      type="email"
-                      placeholder="your@email.com or student@hbtu.ac.in"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value.toLowerCase())}
-                      disabled={isLoading}
-                      required
-                    />
-                    <p className="text-xs text-muted-foreground">
-                      Both personal and college emails are accepted
-                    </p>
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="signup-password">Password</Label>
-                    <Input
-                      id="signup-password"
-                      type="password"
-                      placeholder="••••••••"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      disabled={isLoading}
-                      required
-                      minLength={6}
-                    />
-                    <p className="text-xs text-muted-foreground">
-                      Minimum 6 characters
-                    </p>
-                  </div>
-
-                  {/* Terms & Conditions Checkbox */}
-                  <div className="flex items-start space-x-2">
-                    <Checkbox
-                      id="terms"
-                      checked={acceptedTerms}
-                      onCheckedChange={(checked) => setAcceptedTerms(checked as boolean)}
-                      disabled={isLoading}
-                    />
-                    <label
-                      htmlFor="terms"
-                      className="text-sm leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                  <CardTitle className="text-xl">Verify Your Email</CardTitle>
+                  <CardDescription className="text-slate-500">
+                    Enter the 6-digit code sent to<br />
+                    <span className="font-medium text-slate-700">{email}</span>
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  <div className="flex justify-center">
+                    <InputOTP
+                      maxLength={6}
+                      value={otp}
+                      onChange={(value) => setOtp(value)}
                     >
-                      I agree to the{' '}
-                      <Link 
-                        to="/terms-of-service" 
-                        className="text-primary hover:underline font-medium"
-                        target="_blank"
-                      >
-                        Terms & Conditions
-                      </Link>
-                      {' '}and{' '}
-                      <Link 
-                        to="/privacy-policy" 
-                        className="text-primary hover:underline font-medium"
-                        target="_blank"
-                      >
-                        Privacy Policy
-                      </Link>
-                    </label>
+                      <InputOTPGroup>
+                        <InputOTPSlot index={0} className="w-12 h-14 text-xl" />
+                        <InputOTPSlot index={1} className="w-12 h-14 text-xl" />
+                        <InputOTPSlot index={2} className="w-12 h-14 text-xl" />
+                        <InputOTPSlot index={3} className="w-12 h-14 text-xl" />
+                        <InputOTPSlot index={4} className="w-12 h-14 text-xl" />
+                        <InputOTPSlot index={5} className="w-12 h-14 text-xl" />
+                      </InputOTPGroup>
+                    </InputOTP>
                   </div>
 
                   <Button
-                    type="submit"
-                    className="w-full bg-gradient-to-r from-primary to-accent hover:opacity-90 transition-opacity"
-                    disabled={isLoading || !acceptedTerms}
+                    onClick={handleVerifyOTP}
+                    className="w-full h-12 text-base font-medium"
+                    disabled={isLoading || otp.length !== 6}
                   >
                     {isLoading ? (
                       <>
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        Creating account...
+                        Verifying...
                       </>
                     ) : (
-                      'Create Account'
+                      'Verify & Continue'
                     )}
                   </Button>
-                </form>
-              </TabsContent>
-            </Tabs>
-          </CardContent>
-        </Card>
 
+                  <div className="text-center">
+                    <p className="text-sm text-slate-500 mb-2">Didn't receive the code?</p>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={handleResendOTP}
+                      disabled={resendTimer > 0 || isLoading}
+                      className="text-primary"
+                    >
+                      <RefreshCw className={`h-4 w-4 mr-2 ${isLoading ? 'animate-spin' : ''}`} />
+                      {resendTimer > 0 ? `Resend in ${resendTimer}s` : 'Resend Code'}
+                    </Button>
+                  </div>
+
+                  <p className="text-xs text-center text-slate-400">
+                    By continuing, you agree to our{' '}
+                    <Link to="/terms-of-service" className="text-primary hover:underline">Terms of Service</Link>
+                    {' '}and{' '}
+                    <Link to="/privacy-policy" className="text-primary hover:underline">Privacy Policy</Link>
+                  </p>
+                </CardContent>
+              </Card>
+            </motion.div>
+          ) : (
+            /* Sign In / Sign Up Form */
+            <motion.div
+              key="form"
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 20 }}
+            >
+              <Card className="border-0 shadow-xl bg-white">
+                <CardHeader className="pb-4">
+                  <CardTitle className="text-xl text-center">
+                    {mode === 'signin' ? 'Welcome Back' : 'Create Account'}
+                  </CardTitle>
+                  <CardDescription className="text-center text-slate-500">
+                    {mode === 'signin' 
+                      ? 'Sign in to continue your learning journey'
+                      : 'Join thousands of students on College Study'
+                    }
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  {/* Mode Toggle */}
+                  <div className="flex bg-slate-100 rounded-lg p-1 mb-6">
+                    <button
+                      onClick={() => toggleMode('signin')}
+                      className={`flex-1 py-2.5 text-sm font-medium rounded-md transition-all ${
+                        mode === 'signin' 
+                          ? 'bg-white text-slate-800 shadow-sm' 
+                          : 'text-slate-500 hover:text-slate-700'
+                      }`}
+                    >
+                      Sign In
+                    </button>
+                    <button
+                      onClick={() => toggleMode('signup')}
+                      className={`flex-1 py-2.5 text-sm font-medium rounded-md transition-all ${
+                        mode === 'signup' 
+                          ? 'bg-white text-slate-800 shadow-sm' 
+                          : 'text-slate-500 hover:text-slate-700'
+                      }`}
+                    >
+                      Sign Up
+                    </button>
+                  </div>
+
+                  <form onSubmit={mode === 'signin' ? handleSignIn : handleSignUp} className="space-y-4">
+                    {mode === 'signup' && (
+                      <>
+                        {/* Name Fields */}
+                        <div className="grid grid-cols-2 gap-4">
+                          <div className="space-y-2">
+                            <Label htmlFor="firstName" className="text-slate-600">First Name</Label>
+                            <Input
+                              id="firstName"
+                              placeholder="John"
+                              value={firstName}
+                              onChange={(e) => setFirstName(e.target.value)}
+                              disabled={isLoading}
+                              className="h-11"
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="lastName" className="text-slate-600">Last Name</Label>
+                            <Input
+                              id="lastName"
+                              placeholder="Doe"
+                              value={lastName}
+                              onChange={(e) => setLastName(e.target.value)}
+                              disabled={isLoading}
+                              className="h-11"
+                            />
+                          </div>
+                        </div>
+
+                        {/* Contact Number (Optional) */}
+                        <div className="space-y-2">
+                          <Label htmlFor="contactNo" className="text-slate-600">
+                            Contact Number <span className="text-slate-400">(Optional)</span>
+                          </Label>
+                          <Input
+                            id="contactNo"
+                            type="tel"
+                            placeholder="+91 98765 43210"
+                            value={contactNo}
+                            onChange={(e) => setContactNo(e.target.value)}
+                            disabled={isLoading}
+                            className="h-11"
+                          />
+                        </div>
+                      </>
+                    )}
+
+                    {/* Email Field with Verification */}
+                    <div className="space-y-2">
+                      <Label htmlFor="email" className="text-slate-600">Email Address</Label>
+                      <div className="relative">
+                        <Input
+                          id="email"
+                          type="email"
+                          placeholder="you@example.com"
+                          value={email}
+                          onChange={(e) => {
+                            setEmail(e.target.value.toLowerCase());
+                            if (mode === 'signup') setEmailVerified(false);
+                          }}
+                          disabled={isLoading || (mode === 'signup' && emailVerified)}
+                          className={`h-11 pr-24 ${
+                            mode === 'signup' && emailVerified ? 'bg-green-50 border-green-300' : ''
+                          }`}
+                        />
+                        {mode === 'signup' && (
+                          <div className="absolute right-2 top-1/2 -translate-y-1/2">
+                            {emailVerified ? (
+                              <span className="flex items-center gap-1 text-green-600 text-sm font-medium">
+                                <CheckCircle2 className="w-4 h-4" />
+                                Verified
+                              </span>
+                            ) : (
+                              <Button
+                                type="button"
+                                variant="ghost"
+                                size="sm"
+                                onClick={handleSendOTP}
+                                disabled={isLoading || !email}
+                                className="text-primary hover:text-primary/80 h-8"
+                              >
+                                {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Verify'}
+                              </Button>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                      {mode === 'signup' && !emailVerified && (
+                        <p className="text-xs text-slate-500">
+                          Click "Verify" to receive a verification code
+                        </p>
+                      )}
+                    </div>
+
+                    {/* Password Field */}
+                    <div className="space-y-2">
+                      <Label htmlFor="password" className="text-slate-600">Password</Label>
+                      <div className="relative">
+                        <Input
+                          id="password"
+                          type={showPassword ? 'text' : 'password'}
+                          placeholder="••••••••"
+                          value={password}
+                          onChange={(e) => setPassword(e.target.value)}
+                          disabled={isLoading}
+                          className="h-11 pr-10"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowPassword(!showPassword)}
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                        >
+                          {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                        </button>
+                      </div>
+                      
+                      {/* Password Strength Indicator */}
+                      {mode === 'signup' && password && (
+                        <div className="space-y-1">
+                          <div className="flex gap-1">
+                            {[1, 2, 3, 4, 5].map((level) => (
+                              <div
+                                key={level}
+                                className={`h-1 flex-1 rounded-full transition-colors ${
+                                  level <= passwordStrength.score 
+                                    ? passwordStrength.color 
+                                    : 'bg-slate-200'
+                                }`}
+                              />
+                            ))}
+                          </div>
+                          <p className="text-xs text-slate-500">
+                            Password strength: <span className="font-medium">{passwordStrength.label}</span>
+                          </p>
+                        </div>
+                      )}
+                    </div>
+
+                    {mode === 'signup' && (
+                      <>
+                        {/* College Details */}
+                        <div className="space-y-2">
+                          <Label htmlFor="college" className="text-slate-600">College Name</Label>
+                          <Input
+                            id="college"
+                            placeholder="e.g., HBTU Kanpur"
+                            value={college}
+                            onChange={(e) => setCollege(e.target.value)}
+                            disabled={isLoading}
+                            className="h-11"
+                          />
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-4">
+                          <div className="space-y-2">
+                            <Label htmlFor="branch" className="text-slate-600">Branch</Label>
+                            <Input
+                              id="branch"
+                              placeholder="e.g., CSE"
+                              value={branch}
+                              onChange={(e) => setBranch(e.target.value)}
+                              disabled={isLoading}
+                              className="h-11"
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="year" className="text-slate-600">Year</Label>
+                            <Input
+                              id="year"
+                              placeholder="e.g., 2nd Year"
+                              value={year}
+                              onChange={(e) => setYear(e.target.value)}
+                              disabled={isLoading}
+                              className="h-11"
+                            />
+                          </div>
+                        </div>
+
+                        {/* Terms & Conditions */}
+                        <div className="flex items-start space-x-2 pt-2">
+                          <Checkbox
+                            id="terms"
+                            checked={acceptedTerms}
+                            onCheckedChange={(checked) => setAcceptedTerms(checked as boolean)}
+                            disabled={isLoading}
+                            className="mt-0.5"
+                          />
+                          <label
+                            htmlFor="terms"
+                            className="text-sm text-slate-600 leading-tight"
+                          >
+                            I agree to the{' '}
+                            <Link 
+                              to="/terms-of-service" 
+                              className="text-primary hover:underline font-medium"
+                              target="_blank"
+                            >
+                              Terms of Service
+                            </Link>
+                            {' '}and{' '}
+                            <Link 
+                              to="/privacy-policy" 
+                              className="text-primary hover:underline font-medium"
+                              target="_blank"
+                            >
+                              Privacy Policy
+                            </Link>
+                          </label>
+                        </div>
+                      </>
+                    )}
+
+                    <Button
+                      type="submit"
+                      className="w-full h-12 text-base font-medium mt-6"
+                      disabled={isLoading || (mode === 'signup' && (!emailVerified || !acceptedTerms))}
+                    >
+                      {isLoading ? (
+                        <>
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                          {mode === 'signin' ? 'Signing in...' : 'Creating account...'}
+                        </>
+                      ) : (
+                        mode === 'signin' ? 'Sign In' : 'Create Account'
+                      )}
+                    </Button>
+                  </form>
+                </CardContent>
+              </Card>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Footer */}
+        <motion.p 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.3 }}
+          className="text-center text-sm text-slate-500 mt-6"
+        >
+          Made with ❤️ for HBTU Students
+        </motion.p>
       </div>
-
-      <AvatarSelector
-        open={showAvatarSelector}
-        onClose={() => setShowAvatarSelector(false)}
-        onSelect={(avatar) => setSelectedAvatar(avatar)}
-        currentAvatar={selectedAvatar}
-      />
     </div>
   );
 };
