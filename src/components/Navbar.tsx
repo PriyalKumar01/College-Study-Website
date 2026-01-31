@@ -6,7 +6,11 @@ import { useAuth } from '@/contexts/AuthContext';
 import { Link, useLocation } from 'react-router-dom';
 import ProfileDropdown from './ProfileDropdown';
 
-const Navbar = () => {
+interface NavbarProps {
+  onOpenAuth?: (mode: 'signin' | 'signup') => void;
+}
+
+const Navbar = ({ onOpenAuth }: NavbarProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const { theme, toggleTheme } = useTheme();
   const { user, signOut } = useAuth();
@@ -78,6 +82,11 @@ const Navbar = () => {
             <div className="hidden md:block">
               {user ? (
                 <ProfileDropdown />
+              ) : onOpenAuth ? (
+                <Button variant="default" size="sm" onClick={() => onOpenAuth('signin')}>
+                  <User className="h-4 w-4 mr-2" />
+                  Sign In
+                </Button>
               ) : (
                 <Button variant="default" size="sm" asChild>
                   <Link to="/auth">
@@ -133,6 +142,11 @@ const Navbar = () => {
                   <div className="space-y-2">
                     <ProfileDropdown />
                   </div>
+                ) : onOpenAuth ? (
+                  <Button variant="default" className="w-full justify-start" onClick={() => { onOpenAuth('signin'); setIsOpen(false); }}>
+                    <User className="h-4 w-4 mr-2" />
+                    Sign In
+                  </Button>
                 ) : (
                   <Button variant="default" asChild className="w-full justify-start">
                     <Link to="/auth">

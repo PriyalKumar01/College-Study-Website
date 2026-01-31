@@ -254,6 +254,9 @@ export type Database = {
       }
       profiles: {
         Row: {
+          avatar_url: string | null
+          branch: string | null
+          college: string | null
           created_at: string
           email: string
           first_name: string | null
@@ -262,8 +265,12 @@ export type Database = {
           mobile_number: string | null
           updated_at: string
           user_id: string
+          year: string | null
         }
         Insert: {
+          avatar_url?: string | null
+          branch?: string | null
+          college?: string | null
           created_at?: string
           email: string
           first_name?: string | null
@@ -272,8 +279,12 @@ export type Database = {
           mobile_number?: string | null
           updated_at?: string
           user_id: string
+          year?: string | null
         }
         Update: {
+          avatar_url?: string | null
+          branch?: string | null
+          college?: string | null
           created_at?: string
           email?: string
           first_name?: string | null
@@ -282,6 +293,7 @@ export type Database = {
           mobile_number?: string | null
           updated_at?: string
           user_id?: string
+          year?: string | null
         }
         Relationships: []
       }
