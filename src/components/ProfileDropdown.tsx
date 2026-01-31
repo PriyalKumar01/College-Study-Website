@@ -1,4 +1,4 @@
-import { User, LogOut, Mail, GraduationCap, Building2, Calendar } from 'lucide-react';
+import { User, LogOut, Mail, GraduationCap, Building2, Calendar, Settings } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
   DropdownMenu,
@@ -9,6 +9,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { useAuth } from '@/contexts/AuthContext';
+import { Link } from 'react-router-dom';
 
 const ProfileDropdown = () => {
   const { user, signOut } = useAuth();
@@ -68,6 +69,12 @@ const ProfileDropdown = () => {
           </div>
         </div>
         <DropdownMenuSeparator />
+        <DropdownMenuItem asChild className="cursor-pointer">
+          <Link to="/profile">
+            <User className="h-4 w-4 mr-2" />
+            My Profile
+          </Link>
+        </DropdownMenuItem>
         <DropdownMenuItem onClick={() => signOut()} className="cursor-pointer">
           <LogOut className="h-4 w-4 mr-2" />
           Sign Out

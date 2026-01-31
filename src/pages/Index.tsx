@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
@@ -9,9 +10,18 @@ import { BookOpen, Briefcase, UserCheck, TrendingUp, Users, Award,
 } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import AnimatedCounter from '@/components/AnimatedCounter';
+import AuthModal from '@/components/AuthModal';
+
 const Index = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const [authMode, setAuthMode] = useState<'signin' | 'signup'>('signin');
+
+  const openAuth = (mode: 'signin' | 'signup') => {
+    setAuthMode(mode);
+    setShowAuthModal(true);
+  };
 
   const features = [
     {
@@ -98,7 +108,14 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-gradient-hero">
-      <Navbar />
+      <Navbar onOpenAuth={openAuth} />
+      
+      {/* Auth Modal */}
+      <AuthModal 
+        isOpen={showAuthModal} 
+        onClose={() => setShowAuthModal(false)} 
+        defaultMode={authMode}
+      />
       
       {/* Hero Section */}
       <section className="relative overflow-hidden py-20 lg:py-32">

@@ -59,10 +59,12 @@ import FifthSemesterOTNotes from "./pages/FifthSemesterOTNotes";
 import FifthSemesterFTNotes from "./pages/FifthSemesterFTNotes";
 import SixthSemesterCSENotes from "./pages/SixthSemesterCSENotes";
 import SixthSemesterCSEOpenElectives from "./pages/SixthSemesterCSEOpenElectives";
+import Profile from "./pages/Profile";
 
 export const navItems = [
   { to: "/", page: <Index /> },
   { to: "/about", page: <About /> },
+  { to: "/profile", page: <Profile /> },
   { to: "/btech-notes", page: <BTechYears /> },
   { to: "/btech-notes/first-year", page: <FirstYearNotes /> },
   { to: "/btech-notes/:year", page: <BTechSemesters /> },
