@@ -13,6 +13,7 @@ interface OTPEmailRequest {
   email: string;
   otp: string;
   firstName: string;
+  isPasswordReset?: boolean;
 }
 
 const handler = async (req: Request): Promise<Response> => {
@@ -22,7 +23,7 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
-    const { email, otp, firstName }: OTPEmailRequest = await req.json();
+    const { email, otp, firstName, isPasswordReset }: OTPEmailRequest = await req.json();
 
     console.log(`Sending OTP email to: ${email}`);
 
@@ -32,69 +33,85 @@ const handler = async (req: Request): Promise<Response> => {
     }
 
     const userName = firstName || "Student";
+    const subject = isPasswordReset 
+      ? "Reset Your Password - College Study" 
+      : "Your Verification Code - College Study";
+    const heading = isPasswordReset 
+      ? "Reset Your Password" 
+      : "Verify Your Email";
+    const message = isPasswordReset
+      ? `Use the code below to reset your password. This code expires in 2 minutes.`
+      : `Use the code below to verify your email and complete your registration. This code expires in 2 minutes.`;
 
     const emailResponse = await resend.emails.send({
       from: "College Study <noreply@resend.dev>",
       to: [email],
-      subject: "Your Verification Code - College Study",
+      subject,
       html: `
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Verify Your Email</title>
+  <title>${heading}</title>
 </head>
-<body style="margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f8fafc;">
+<body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; background-color: #f5f5f5;">
   <table role="presentation" style="width: 100%; border-collapse: collapse;">
     <tr>
       <td align="center" style="padding: 40px 20px;">
-        <table role="presentation" style="max-width: 480px; width: 100%; background-color: #ffffff; border-radius: 16px; box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);">
+        <table role="presentation" style="max-width: 440px; width: 100%; background-color: #ffffff; border: 1px solid #e5e5e5;">
           
           <!-- Header -->
           <tr>
-            <td style="padding: 40px 40px 24px; text-align: center; border-bottom: 1px solid #e2e8f0;">
-              <div style="display: inline-flex; align-items: center; gap: 12px;">
-                <div style="width: 48px; height: 48px; background: linear-gradient(135deg, #6366f1, #8b5cf6); border-radius: 12px; display: flex; align-items: center; justify-content: center;">
-                  <span style="font-size: 24px;">📚</span>
-                </div>
-                <div style="text-align: left;">
-                  <h1 style="margin: 0; font-size: 22px; font-weight: 700; color: #1e293b;">College Study</h1>
-                  <p style="margin: 0; font-size: 12px; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px;">Your Study Hub</p>
-                </div>
-              </div>
+            <td style="padding: 32px 32px 24px; border-bottom: 1px solid #e5e5e5;">
+              <table role="presentation" style="width: 100%;">
+                <tr>
+                  <td>
+                    <img 
+                      src="https://axalbmmjqdezbkpffore.supabase.co/storage/v1/object/public/assets/college-study-logo.png" 
+                      alt="College Study" 
+                      style="height: 40px; width: auto;"
+                      onerror="this.style.display='none'"
+                    />
+                    <div style="display: inline-block; vertical-align: middle; margin-left: 12px;">
+                      <p style="margin: 0; font-size: 18px; font-weight: 600; color: #1a1a1a;">College Study</p>
+                      <p style="margin: 0; font-size: 11px; color: #666666; text-transform: uppercase; letter-spacing: 0.5px;">Your Study Hub</p>
+                    </div>
+                  </td>
+                </tr>
+              </table>
             </td>
           </tr>
           
           <!-- Content -->
           <tr>
-            <td style="padding: 40px;">
-              <h2 style="margin: 0 0 16px; font-size: 24px; font-weight: 600; color: #1e293b; text-align: center;">
-                Verify Your Email
-              </h2>
+            <td style="padding: 32px;">
+              <h1 style="margin: 0 0 16px; font-size: 22px; font-weight: 600; color: #1a1a1a; text-align: center;">
+                ${heading}
+              </h1>
               
-              <p style="margin: 0 0 24px; font-size: 15px; color: #475569; line-height: 1.6; text-align: center;">
+              <p style="margin: 0 0 24px; font-size: 14px; color: #4a4a4a; line-height: 1.6; text-align: center;">
                 Hi ${userName}! 👋<br><br>
-                Use the code below to verify your email and complete your registration. This code expires in 10 minutes.
+                ${message}
               </p>
               
               <!-- OTP Code Box -->
-              <div style="background: linear-gradient(135deg, #f1f5f9, #e2e8f0); border-radius: 12px; padding: 24px; text-align: center; margin-bottom: 24px;">
-                <p style="margin: 0 0 8px; font-size: 12px; color: #64748b; text-transform: uppercase; letter-spacing: 1px; font-weight: 600;">
+              <div style="background-color: #f9f9f9; border: 1px solid #e5e5e5; padding: 24px; text-align: center; margin-bottom: 24px;">
+                <p style="margin: 0 0 8px; font-size: 11px; color: #666666; text-transform: uppercase; letter-spacing: 1px; font-weight: 600;">
                   Your Verification Code
                 </p>
-                <p style="margin: 0; font-size: 36px; font-weight: 700; color: #6366f1; letter-spacing: 8px; font-family: 'Courier New', monospace;">
+                <p style="margin: 0; font-size: 32px; font-weight: 700; color: #1a1a1a; letter-spacing: 6px; font-family: 'Courier New', monospace;">
                   ${otp}
                 </p>
               </div>
               
-              <p style="margin: 0 0 24px; font-size: 13px; color: #94a3b8; text-align: center;">
+              <p style="margin: 0 0 24px; font-size: 12px; color: #888888; text-align: center;">
                 ⚠️ Please don't share this code with anyone. Our team will never ask for it.
               </p>
               
-              <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 24px 0;">
+              <hr style="border: none; border-top: 1px solid #e5e5e5; margin: 24px 0;">
               
-              <p style="margin: 0; font-size: 13px; color: #94a3b8; text-align: center; line-height: 1.6;">
+              <p style="margin: 0; font-size: 12px; color: #888888; text-align: center; line-height: 1.6;">
                 If you didn't request this code, you can safely ignore this email.
               </p>
             </td>
@@ -102,11 +119,11 @@ const handler = async (req: Request): Promise<Response> => {
           
           <!-- Footer -->
           <tr>
-            <td style="padding: 24px 40px; background-color: #f8fafc; border-radius: 0 0 16px 16px; text-align: center;">
-              <p style="margin: 0 0 8px; font-size: 14px; color: #64748b;">
+            <td style="padding: 20px 32px; background-color: #fafafa; border-top: 1px solid #e5e5e5; text-align: center;">
+              <p style="margin: 0 0 4px; font-size: 13px; color: #4a4a4a;">
                 Made with ❤️ for HBTU Students
               </p>
-              <p style="margin: 0; font-size: 12px; color: #94a3b8;">
+              <p style="margin: 0; font-size: 11px; color: #888888;">
                 © 2025 College Study. All rights reserved.
               </p>
             </td>

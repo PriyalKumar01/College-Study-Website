@@ -1,56 +1,108 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { BookOpen, Briefcase, UserCheck, TrendingUp, Users, Award, 
-  GraduationCap, Star, ArrowRight 
+  GraduationCap, Star, ArrowRight, CheckCircle
 } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import AnimatedCounter from '@/components/AnimatedCounter';
 import AuthModal from '@/components/AuthModal';
+import CookieConsent from '@/components/CookieConsent';
 
 const Index = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [authMode, setAuthMode] = useState<'signin' | 'signup'>('signin');
+  const [hasShownScrollPopup, setHasShownScrollPopup] = useState(false);
+  const [hasClosedInitialPopup, setHasClosedInitialPopup] = useState(false);
+  const scrollListenerRef = useRef<boolean>(false);
+
+  // Auto-show signup popup on first visit
+  useEffect(() => {
+    if (user) return; // Don't show if logged in
+    
+    const hasSignedUp = sessionStorage.getItem('hasSignedUp');
+    const hasSeenInitialPopup = sessionStorage.getItem('hasSeenInitialPopup');
+    
+    if (!hasSignedUp && !hasSeenInitialPopup) {
+      // Show popup after a short delay
+      const timer = setTimeout(() => {
+        setAuthMode('signup');
+        setShowAuthModal(true);
+        sessionStorage.setItem('hasSeenInitialPopup', 'true');
+      }, 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [user]);
+
+  // Handle scroll-based popup (show once after closing initial popup)
+  useEffect(() => {
+    if (user) return;
+    if (!hasClosedInitialPopup) return;
+    if (hasShownScrollPopup) return;
+    if (scrollListenerRef.current) return;
+
+    const handleScroll = () => {
+      const scrollY = window.scrollY;
+      const scrollThreshold = 400; // Show after scrolling 400px
+      
+      if (scrollY > scrollThreshold && !hasShownScrollPopup) {
+        setAuthMode('signup');
+        setShowAuthModal(true);
+        setHasShownScrollPopup(true);
+        sessionStorage.setItem('hasShownScrollPopup', 'true');
+        window.removeEventListener('scroll', handleScroll);
+      }
+    };
+
+    scrollListenerRef.current = true;
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, [user, hasClosedInitialPopup, hasShownScrollPopup]);
 
   const openAuth = (mode: 'signin' | 'signup') => {
     setAuthMode(mode);
     setShowAuthModal(true);
   };
 
+  const handleAuthClose = () => {
+    setShowAuthModal(false);
+    if (!hasClosedInitialPopup) {
+      setHasClosedInitialPopup(true);
+    }
+  };
+
   const features = [
     {
-      icon: <BookOpen className="h-8 w-8" />,
+      icon: <BookOpen className="h-7 w-7" />,
       title: 'Premium Notes',
-      description: 'Access thousands of quality notes for 1st-4th semester with sign-in protection.',
+      description: 'Access thousands of quality notes for 1st-4th semester.',
       href: '/notes',
-      gradient: 'bg-gradient-primary',
     },
     {
-      icon: <Briefcase className="h-8 w-8" />,
+      icon: <Briefcase className="h-7 w-7" />,
       title: 'Opportunities',
-      description: 'Explore internships, jobs, scholarships, hackathons and competitions.',
+      description: 'Explore internships, jobs, scholarships, and hackathons.',
       href: '/opportunities',
-      gradient: 'bg-warning',
     },
     {
-      icon: <UserCheck className="h-8 w-8" />,
+      icon: <UserCheck className="h-7 w-7" />,
       title: 'CGPA Calculator',
-      description: 'Calculate your semester and overall CGPA with our advanced calculator.',
+      description: 'Calculate your semester and overall CGPA easily.',
       href: '/cgpa-calculator',
-      gradient: 'bg-accent',
     },
     {
-      icon: <TrendingUp className="h-8 w-8" />,
+      icon: <TrendingUp className="h-7 w-7" />,
       title: 'AI Tools',
-      description: 'Access useful AI tools for students to enhance learning and productivity.',
+      description: 'Access useful AI tools to enhance learning.',
       href: '/useful-ai-tools',
-      gradient: 'bg-gradient-secondary',
     },
   ];
 
@@ -79,7 +131,7 @@ const Index = () => {
     {
       end: 50,
       suffix: '+',
-      title: 'College Covered',
+      title: 'Colleges Covered',
       description: 'Different engineering branches',
       icon: <GraduationCap className="h-8 w-8" />,
     },
@@ -106,91 +158,93 @@ const Index = () => {
     },
   ];
 
+  const benefitsList = [
+    'Access semester-wise study materials',
+    'Find internships & job opportunities',
+    'Calculate CGPA instantly',
+    'Connect with fellow students',
+  ];
+
   return (
-    <div className="min-h-screen bg-gradient-hero">
+    <div className="min-h-screen bg-background">
       <Navbar onOpenAuth={openAuth} />
       
       {/* Auth Modal */}
       <AuthModal 
         isOpen={showAuthModal} 
-        onClose={() => setShowAuthModal(false)} 
+        onClose={handleAuthClose} 
         defaultMode={authMode}
       />
+
+      {/* Cookie Consent */}
+      <CookieConsent />
       
-      {/* Hero Section */}
-      <section className="relative overflow-hidden py-20 lg:py-32">
+      {/* Hero Section - Clean & Professional */}
+      <section className="relative py-20 lg:py-28 bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-background">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <motion.div
-              initial={{ opacity: 0, x: -50 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8 }}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
             >
-              <Badge className="mb-4 bg-primary/10 text-primary border-primary/20">
-                🎓 Your Academic Success Partner
-              </Badge>
-              <h1 className="text-4xl md:text-6xl font-bold text-foreground mb-6 leading-tight">
-                Your One-Stop
-                <span className="bg-gradient-primary bg-clip-text text-transparent block">
-                  Academic Platform
-                </span>
-              </h1>
-              <p className="text-xl text-muted-foreground mb-8 leading-relaxed">
-                Empowering HBTU students with comprehensive notes sharing, resume building, 
-                and academic resources. Join thousands of students already benefiting from our platform.
-              </p>
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-primary/10 text-primary text-sm font-medium rounded-full mb-6">
+                <GraduationCap className="h-4 w-4" />
+                Your Academic Success Partner
+              </div>
               
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2, duration: 0.8 }}
-                className="flex flex-col sm:flex-row gap-4"
-              >
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-6 leading-tight tracking-tight">
+                Your One-Stop
+                <span className="block text-primary">Academic Platform</span>
+              </h1>
+              
+              <p className="text-lg text-muted-foreground mb-8 leading-relaxed max-w-xl">
+                Empowering students with comprehensive notes, career resources, 
+                and academic tools. Join thousands already benefiting from our platform.
+              </p>
+
+              {/* Benefits list */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-8">
+                {benefitsList.map((benefit, index) => (
+                  <div key={index} className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <CheckCircle className="h-4 w-4 text-green-500 flex-shrink-0" />
+                    <span>{benefit}</span>
+                  </div>
+                ))}
+              </div>
+              
+              <div className="flex flex-col sm:flex-row gap-3">
                 <Button
                   size="lg"
-                  className="btn-hero text-lg px-8 py-6 w-full sm:w-auto"
-                  onClick={() => navigate("/dashboard")}
+                  className="h-12 px-8 bg-gray-900 hover:bg-gray-800 text-white font-medium"
+                  onClick={() => user ? navigate("/dashboard") : openAuth('signup')}
                 >
-                  Get Started Free
-                  <ArrowRight className="ml-2 h-5 w-5" />
+                  {user ? 'Go to Dashboard' : 'Get Started Free'}
+                  <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
                 <Button
                   size="lg"
                   variant="outline"
-                  className="text-lg px-8 py-6 w-full sm:w-auto border-2"
-                  onClick={() => navigate("/learning-platforms")}
+                  className="h-12 px-8 border-gray-300 font-medium"
+                  onClick={() => navigate("/notes")}
                 >
-                  Explore Integrated Platforms
+                  Browse Notes
                 </Button>
-              </motion.div>
-
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3, duration: 0.8 }}
-                className="mt-6"
-              >
-                <Button
-                  size="lg"
-                  className="bg-success hover:bg-success/90 text-white text-lg px-8 py-6 w-full sm:w-auto"
-                  onClick={() => navigate("/notes-contributors")}
-                >
-                  Notes Contributor's list
-                </Button>
-              </motion.div>
+              </div>
             </motion.div>
             
             <motion.div
-              initial={{ opacity: 0, x: 50 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-              className="relative"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="relative hidden lg:block"
             >
-              <div className="relative float-animation">
+              <div className="relative">
+                <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-transparent rounded-3xl blur-3xl"></div>
                 <img 
                   src="/lovable-uploads/f3b6ce00-a0ff-4b44-bbdb-ab5640339741.png" 
                   alt="College Study Hub" 
-                  className="w-full max-w-md mx-auto pulse-glow"
+                  className="w-full max-w-md mx-auto relative z-10"
                 />
               </div>
             </motion.div>
@@ -199,30 +253,15 @@ const Index = () => {
       </section>
 
       {/* Stats Section */}
-      <section className="py-20 bg-background/50">
+      <section className="py-16 border-y border-border/50 bg-muted/30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-            className="text-center mb-16"
-          >
-            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-              Trusted by Thousands of Students
-            </h2>
-            <p className="text-xl text-muted-foreground">
-              Join our growing community of successful students
-            </p>
-          </motion.div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {stats.map((stat, index) => (
               <motion.div
                 key={index}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
+                transition={{ duration: 0.4, delay: index * 0.1 }}
                 viewport={{ once: true }}
               >
                 <AnimatedCounter {...stat} />
@@ -238,111 +277,49 @@ const Index = () => {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
+            transition={{ duration: 0.5 }}
             viewport={{ once: true }}
-            className="text-center mb-16"
+            className="text-center mb-12"
           >
             <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
               Everything You Need to Succeed
             </h2>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              Comprehensive tools and resources designed specifically for HBTU students 
-              to excel in their academic journey.
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              Comprehensive tools and resources designed specifically for students.
             </p>
           </motion.div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {features.map((feature, index) => (
               <motion.div
                 key={index}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
+                transition={{ duration: 0.4, delay: index * 0.1 }}
                 viewport={{ once: true }}
-                whileHover={{ scale: 1.02 }}
               >
-                <div onClick={() => navigate(feature.href)} className="cursor-pointer">
-                  <Card className={`feature-card h-full group ${
-                    feature.title === 'Premium Notes' || feature.title === 'Opportunities'
-                      ? 'bg-gradient-to-br from-primary/5 via-secondary/5 to-primary/5 border-primary/20 hover:border-primary/30 shadow-lg'
-                      : ''
-                  }`}>
-                    <CardHeader>
-                      <div className={`w-16 h-16 ${feature.gradient} rounded-xl flex items-center justify-center text-white mb-4 group-hover:scale-110 transition-transform duration-300`}>
+                <div 
+                  onClick={() => navigate(feature.href)} 
+                  className="cursor-pointer group"
+                >
+                  <Card className="h-full border border-border/50 hover:border-primary/30 hover:shadow-lg transition-all duration-300">
+                    <CardHeader className="pb-3">
+                      <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center text-primary mb-4 group-hover:bg-primary group-hover:text-white transition-colors duration-300">
                         {feature.icon}
                       </div>
-                      <CardTitle className={`text-xl mb-2 ${
-                        feature.title === 'Premium Notes' || feature.title === 'Opportunities'
-                          ? 'text-primary font-bold'
-                          : ''
-                      }`}>{feature.title}</CardTitle>
-                      <CardDescription className="text-base leading-relaxed">
+                      <CardTitle className="text-lg">{feature.title}</CardTitle>
+                      <CardDescription className="text-sm">
                         {feature.description}
                       </CardDescription>
                     </CardHeader>
-                    <CardContent>
-                      <div className="flex items-center text-primary font-medium group-hover:translate-x-2 transition-transform duration-300">
-                        Learn More
-                        <ArrowRight className="ml-2 h-4 w-4" />
+                    <CardContent className="pt-0">
+                      <div className="flex items-center text-primary text-sm font-medium group-hover:translate-x-1 transition-transform duration-300">
+                        Explore
+                        <ArrowRight className="ml-1 h-4 w-4" />
                       </div>
                     </CardContent>
                   </Card>
                 </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* How It Works */}
-      <section className="py-20 bg-background/50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-            className="text-center mb-16"
-          >
-            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-              How It Works
-            </h2>
-            <p className="text-xl text-muted-foreground">
-              Three simple steps to unlock your academic potential
-            </p>
-          </motion.div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {[
-              {
-                icon: <BookOpen className="w-10 h-10" />,
-                title: 'Access Notes Instantly',
-                description: 'Browse semester-wise notes, assignments, and curated study materials - no login required.',
-              },
-              {
-                icon: <TrendingUp className="w-10 h-10" />,
-                title: 'Explore & Learn',
-                description: 'Utilize CGPA calculators, previous year papers, AI tools, and placement resources.',
-              },
-              {
-                icon: <Briefcase className="w-10 h-10" />,
-                title: 'Discover Opportunities',
-                description: 'Find internships, scholarships, hackathons, and career guidance to excel beyond academics.',
-              },
-            ].map((step, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                viewport={{ once: true }}
-                className="text-center"
-              >
-                <div className="w-20 h-20 bg-gradient-to-br from-primary to-accent rounded-2xl flex items-center justify-center text-white mx-auto mb-6 transform hover:scale-110 transition-transform duration-300 shadow-lg">
-                  {step.icon}
-                </div>
-                <h3 className="text-xl font-semibold mb-4">{step.title}</h3>
-                <p className="text-muted-foreground leading-relaxed">{step.description}</p>
               </motion.div>
             ))}
           </div>
@@ -350,100 +327,86 @@ const Index = () => {
       </section>
 
       {/* Testimonials */}
-      <section className="py-20 overflow-hidden">
+      <section className="py-20 bg-muted/30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
+            transition={{ duration: 0.5 }}
             viewport={{ once: true }}
-            className="text-center mb-16"
+            className="text-center mb-12"
           >
             <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
               What Students Say
             </h2>
-            <p className="text-xl text-muted-foreground">
+            <p className="text-lg text-muted-foreground">
               Real feedback from our community members
             </p>
           </motion.div>
           
-          {/* Auto-scrolling testimonials */}
-          <div className="relative">
-            <motion.div 
-              className="flex gap-6"
-              animate={{
-                x: [0, -1800],
-              }}
-              transition={{
-                x: {
-                  repeat: Infinity,
-                  repeatType: "loop",
-                  duration: 30,
-                  ease: "linear",
-                },
-              }}
-            >
-              {/* Repeat testimonials 3 times for seamless loop */}
-              {[...testimonials, ...testimonials, ...testimonials].map((testimonial, index) => (
-                <div
-                  key={index}
-                  className="min-w-[350px]"
-                >
-                  <Card className="gradient-card h-full">
-                    <CardHeader>
-                      <div className="flex items-center gap-1 mb-4">
-                        {[...Array(testimonial.rating)].map((_, i) => (
-                          <Star key={i} className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                        ))}
-                      </div>
-                      <CardDescription className="text-base italic">
-                        "{testimonial.message}"
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <div>
-                        <h4 className="font-semibold">{testimonial.name}</h4>
-                        <p className="text-sm text-muted-foreground">{testimonial.branch}</p>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </div>
-              ))}
-            </motion.div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {testimonials.map((testimonial, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, delay: index * 0.1 }}
+                viewport={{ once: true }}
+              >
+                <Card className="h-full border-border/50">
+                  <CardHeader>
+                    <div className="flex items-center gap-1 mb-3">
+                      {[...Array(testimonial.rating)].map((_, i) => (
+                        <Star key={i} className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                      ))}
+                    </div>
+                    <CardDescription className="text-base text-foreground/80 italic">
+                      "{testimonial.message}"
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div>
+                      <h4 className="font-semibold text-foreground">{testimonial.name}</h4>
+                      <p className="text-sm text-muted-foreground">{testimonial.branch}</p>
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ))}
           </div>
         </div>
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-gradient-primary">
+      <section className="py-20 bg-gray-900 dark:bg-gray-950">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
+            transition={{ duration: 0.5 }}
             viewport={{ once: true }}
           >
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
               Ready to Boost Your Academic Success?
             </h2>
-            <p className="text-xl text-white/90 mb-8">
+            <p className="text-lg text-gray-300 mb-8">
               Join thousands of students who are already benefiting from our comprehensive platform.
             </p>
             
             <Button 
-              variant="secondary" 
-              className="text-lg px-8 py-3"
-              onClick={() => navigate("/dashboard")}
+              size="lg"
+              className="h-12 px-8 bg-white text-gray-900 hover:bg-gray-100 font-medium"
+              onClick={() => user ? navigate("/dashboard") : openAuth('signup')}
             >
               {user ? "Continue to Dashboard" : "Get Started Now - It's Free!"}
-              <ArrowRight className="ml-2 h-5 w-5" />
+              <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
           </motion.div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="bg-background/95 border-t py-12">
+      <footer className="bg-background border-t py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div className="md:col-span-2">
@@ -452,7 +415,7 @@ const Index = () => {
                 alt="College Study Hub" 
                 className="h-12 mb-4"
               />
-              <p className="text-muted-foreground mb-4">
+              <p className="text-muted-foreground mb-4 max-w-sm">
                 Empowering students with comprehensive academic resources and career development tools.
               </p>
               <p className="text-sm text-muted-foreground">
@@ -463,10 +426,10 @@ const Index = () => {
             <div>
               <h3 className="font-semibold mb-4">Quick Links</h3>
               <div className="space-y-2">
-                <div className="block text-muted-foreground hover:text-foreground cursor-pointer" onClick={() => navigate("/notes")}>Notes</div>
-                <div className="block text-muted-foreground hover:text-foreground cursor-pointer" onClick={() => navigate("/opportunities")}>Opportunities</div>
-                <div className="block text-muted-foreground hover:text-foreground cursor-pointer" onClick={() => navigate("/cgpa-calculator")}>CGPA Calculator</div>
-                <div className="block text-muted-foreground hover:text-foreground cursor-pointer" onClick={() => navigate("/about")}>About</div>
+                <div className="text-muted-foreground hover:text-foreground cursor-pointer transition-colors" onClick={() => navigate("/notes")}>Notes</div>
+                <div className="text-muted-foreground hover:text-foreground cursor-pointer transition-colors" onClick={() => navigate("/opportunities")}>Opportunities</div>
+                <div className="text-muted-foreground hover:text-foreground cursor-pointer transition-colors" onClick={() => navigate("/cgpa-calculator")}>CGPA Calculator</div>
+                <div className="text-muted-foreground hover:text-foreground cursor-pointer transition-colors" onClick={() => navigate("/about")}>About</div>
               </div>
             </div>
             
@@ -479,8 +442,8 @@ const Index = () => {
             </div>
           </div>
           
-          <div className="border-t mt-8 pt-8 text-center text-muted-foreground">
-            <p>&copy; 2024 College Study Hub. All rights reserved.</p>
+          <div className="border-t mt-8 pt-8 text-center text-muted-foreground text-sm">
+            <p>&copy; 2025 College Study Hub. All rights reserved.</p>
           </div>
         </div>
       </footer>
