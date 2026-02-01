@@ -437,6 +437,8 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'signin' }: AuthModalProps) 
       }
 
       if (data.user) {
+        // Mark as signed up in session storage
+        sessionStorage.setItem('hasSignedUp', 'true');
         toast({
           title: "Welcome to College Study!",
           description: "Your account has been created successfully",
@@ -504,6 +506,8 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'signin' }: AuthModalProps) 
       }
 
       if (data.user) {
+        // Mark as signed in
+        sessionStorage.setItem('hasSignedUp', 'true');
         toast({
           title: "Welcome back!",
           description: "You have successfully signed in",
@@ -890,14 +894,15 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'signin' }: AuthModalProps) 
         initial={{ opacity: 0, x: 20 }}
         animate={{ opacity: 1, x: 0 }}
         exit={{ opacity: 0, x: -20 }}
-        className="p-6 max-h-[80vh] overflow-y-auto"
+        className="p-6 overflow-y-auto"
+        style={{ maxHeight: 'calc(100% - 120px)' }}
       >
         <div className="text-center mb-6">
           <h2 className="text-xl font-semibold text-gray-900 mb-1">Create Account</h2>
           <p className="text-sm text-gray-500">Join thousands of students on College Study</p>
         </div>
         
-        <form onSubmit={handleSignUp} className="space-y-4">
+        <form onSubmit={handleSignUp} className="space-y-3">
           {/* Name Fields */}
           <div className="grid grid-cols-2 gap-3">
             <div>
@@ -911,9 +916,9 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'signin' }: AuthModalProps) 
                 onChange={(e) => setFirstName(e.target.value)}
                 onBlur={() => setTouched(prev => ({ ...prev, firstName: true }))}
                 disabled={isLoading}
-                className={`h-10 mt-1 border-gray-300 rounded ${touched.firstName && !firstName.trim() ? 'border-red-400' : ''}`}
+                className={`h-9 mt-1 border-gray-300 rounded text-sm ${touched.firstName && !firstName.trim() ? 'border-red-400' : ''}`}
               />
-              {touched.firstName && !firstName.trim() && <InlineError message="First name is required" />}
+              {touched.firstName && !firstName.trim() && <InlineError message="Required" />}
             </div>
             <div>
               <Label htmlFor="lastName" className="text-sm text-gray-700">
@@ -926,16 +931,16 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'signin' }: AuthModalProps) 
                 onChange={(e) => setLastName(e.target.value)}
                 onBlur={() => setTouched(prev => ({ ...prev, lastName: true }))}
                 disabled={isLoading}
-                className={`h-10 mt-1 border-gray-300 rounded ${touched.lastName && !lastName.trim() ? 'border-red-400' : ''}`}
+                className={`h-9 mt-1 border-gray-300 rounded text-sm ${touched.lastName && !lastName.trim() ? 'border-red-400' : ''}`}
               />
-              {touched.lastName && !lastName.trim() && <InlineError message="Last name is required" />}
+              {touched.lastName && !lastName.trim() && <InlineError message="Required" />}
             </div>
           </div>
 
           {/* Contact Number */}
           <div>
             <Label htmlFor="contactNo" className="text-sm text-gray-700">
-              Contact Number <span className="text-gray-400">(Optional)</span>
+              Contact Number <span className="text-gray-400 text-xs">(Optional)</span>
             </Label>
             <Input
               id="contactNo"
@@ -944,7 +949,7 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'signin' }: AuthModalProps) 
               value={contactNo}
               onChange={(e) => setContactNo(e.target.value)}
               disabled={isLoading}
-              className="h-10 mt-1 border-gray-300 rounded"
+              className="h-9 mt-1 border-gray-300 rounded text-sm"
             />
           </div>
 
@@ -965,14 +970,14 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'signin' }: AuthModalProps) 
                 }}
                 onBlur={() => setTouched(prev => ({ ...prev, email: true }))}
                 disabled={isLoading || emailVerified}
-                className={`h-10 pr-20 border-gray-300 rounded ${
+                className={`h-9 pr-20 border-gray-300 rounded text-sm ${
                   emailVerified ? 'bg-green-50 border-green-400' : signUpEmailError ? 'border-red-400' : ''
                 }`}
               />
               <div className="absolute right-2 top-1/2 -translate-y-1/2">
                 {emailVerified ? (
-                  <span className="flex items-center gap-1 text-green-600 text-sm font-medium">
-                    <CheckCircle2 className="w-4 h-4" />
+                  <span className="flex items-center gap-1 text-green-600 text-xs font-medium">
+                    <CheckCircle2 className="w-3 h-3" />
                     Verified
                   </span>
                 ) : (
@@ -982,17 +987,14 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'signin' }: AuthModalProps) 
                     size="sm"
                     onClick={() => handleSendOTP(false)}
                     disabled={!canVerifyEmail || isLoading}
-                    className="text-blue-600 hover:text-blue-700 h-8 px-2 text-sm disabled:text-gray-400"
+                    className="text-blue-600 hover:text-blue-700 h-7 px-2 text-xs disabled:text-gray-400"
                   >
-                    {isSendingOtp ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Verify'}
+                    {isSendingOtp ? <Loader2 className="w-3 h-3 animate-spin" /> : 'Verify'}
                   </Button>
                 )}
               </div>
             </div>
             {signUpEmailError && <InlineError message={signUpEmailError} />}
-            {!emailVerified && !signUpEmailError && email && isEmailValid && (
-              <p className="text-xs text-gray-500 mt-1">Click "Verify" to receive a verification code</p>
-            )}
           </div>
 
           {/* Password */}
@@ -1009,7 +1011,7 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'signin' }: AuthModalProps) 
                 onChange={(e) => setPassword(e.target.value)}
                 onBlur={() => setTouched(prev => ({ ...prev, password: true }))}
                 disabled={isLoading}
-                className={`h-10 pr-10 border-gray-300 rounded ${touched.password && !password.trim() ? 'border-red-400' : ''}`}
+                className={`h-9 pr-10 border-gray-300 rounded text-sm ${touched.password && !password.trim() ? 'border-red-400' : ''}`}
               />
               <button
                 type="button"
@@ -1019,10 +1021,10 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'signin' }: AuthModalProps) 
                 {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
               </button>
             </div>
-            {touched.password && !password.trim() && <InlineError message="Password is required" />}
+            {touched.password && !password.trim() && <InlineError message="Required" />}
             
             {password && (
-              <div className="mt-2 space-y-1">
+              <div className="mt-1.5 space-y-1">
                 <div className="flex gap-1">
                   {[1, 2, 3, 4, 5].map((level) => (
                     <div
@@ -1054,9 +1056,9 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'signin' }: AuthModalProps) 
               onChange={(e) => setCollege(e.target.value)}
               onBlur={() => setTouched(prev => ({ ...prev, college: true }))}
               disabled={isLoading}
-              className={`h-10 mt-1 border-gray-300 rounded ${touched.college && !college.trim() ? 'border-red-400' : ''}`}
+              className={`h-9 mt-1 border-gray-300 rounded text-sm ${touched.college && !college.trim() ? 'border-red-400' : ''}`}
             />
-            {touched.college && !college.trim() && <InlineError message="College name is required" />}
+            {touched.college && !college.trim() && <InlineError message="Required" />}
           </div>
 
           <div className="grid grid-cols-2 gap-3">
@@ -1071,9 +1073,9 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'signin' }: AuthModalProps) 
                 onChange={(e) => setBranch(e.target.value)}
                 onBlur={() => setTouched(prev => ({ ...prev, branch: true }))}
                 disabled={isLoading}
-                className={`h-10 mt-1 border-gray-300 rounded ${touched.branch && !branch.trim() ? 'border-red-400' : ''}`}
+                className={`h-9 mt-1 border-gray-300 rounded text-sm ${touched.branch && !branch.trim() ? 'border-red-400' : ''}`}
               />
-              {touched.branch && !branch.trim() && <InlineError message="Branch is required" />}
+              {touched.branch && !branch.trim() && <InlineError message="Required" />}
             </div>
             <div>
               <Label htmlFor="year" className="text-sm text-gray-700">
@@ -1081,19 +1083,19 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'signin' }: AuthModalProps) 
               </Label>
               <Input
                 id="year"
-                placeholder="e.g., 2nd Year"
+                placeholder="e.g., 2nd"
                 value={year}
                 onChange={(e) => setYear(e.target.value)}
                 onBlur={() => setTouched(prev => ({ ...prev, year: true }))}
                 disabled={isLoading}
-                className={`h-10 mt-1 border-gray-300 rounded ${touched.year && !year.trim() ? 'border-red-400' : ''}`}
+                className={`h-9 mt-1 border-gray-300 rounded text-sm ${touched.year && !year.trim() ? 'border-red-400' : ''}`}
               />
-              {touched.year && !year.trim() && <InlineError message="Year is required" />}
+              {touched.year && !year.trim() && <InlineError message="Required" />}
             </div>
           </div>
 
           {/* Terms */}
-          <div className="flex items-start space-x-2 pt-2">
+          <div className="flex items-start space-x-2 pt-1">
             <Checkbox
               id="terms"
               checked={acceptedTerms}
@@ -1104,7 +1106,7 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'signin' }: AuthModalProps) 
             <label htmlFor="terms" className="text-xs text-gray-600 leading-tight">
               I agree to the{' '}
               <Link to="/terms-of-service" className="text-blue-600 hover:underline" target="_blank">
-                Terms of Service
+                Terms
               </Link>
               {' '}and{' '}
               <Link to="/privacy-policy" className="text-blue-600 hover:underline" target="_blank">
@@ -1116,7 +1118,7 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'signin' }: AuthModalProps) 
 
           <Button
             type="submit"
-            className="w-full h-11 bg-gray-900 hover:bg-gray-800 text-white rounded font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full h-10 bg-gray-900 hover:bg-gray-800 text-white rounded font-medium disabled:opacity-50 disabled:cursor-not-allowed"
             disabled={isLoading || !emailVerified || !acceptedTerms}
           >
             {isLoading ? (
@@ -1130,7 +1132,7 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'signin' }: AuthModalProps) 
           </Button>
         </form>
 
-        <p className="text-sm text-gray-500 text-center mt-4">
+        <p className="text-sm text-gray-500 text-center mt-3">
           Already registered?{' '}
           <button
             onClick={() => switchMode('signin')}
@@ -1145,12 +1147,15 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'signin' }: AuthModalProps) 
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="sm:max-w-md p-0 gap-0 bg-white border border-gray-200 shadow-2xl rounded overflow-hidden">
+      <DialogContent 
+        hideDefaultClose
+        className="sm:max-w-[420px] w-[95vw] h-auto max-h-[90vh] p-0 gap-0 bg-white border border-gray-200 shadow-2xl rounded overflow-hidden flex flex-col"
+      >
         <DialogTitle className="sr-only">Authentication</DialogTitle>
         <DialogDescription className="sr-only">Sign in or create an account</DialogDescription>
         
-        {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+        {/* Header - Fixed */}
+        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 flex-shrink-0">
           <div className="flex items-center gap-3">
             <img src={logoImg} alt="College Study" className="h-8 w-8" />
             <div>
@@ -1166,16 +1171,19 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'signin' }: AuthModalProps) 
           </button>
         </div>
 
-        <AnimatePresence mode="wait">
-          {step === 'otp' && renderOTPScreen()}
-          {step === 'reset-password' && renderResetPasswordScreen()}
-          {step === 'form' && mode === 'signin' && renderSignInForm()}
-          {step === 'form' && mode === 'signup' && renderSignUpForm()}
-          {step === 'form' && mode === 'forgot' && renderForgotPasswordForm()}
-        </AnimatePresence>
+        {/* Content - Scrollable */}
+        <div className="flex-1 overflow-hidden">
+          <AnimatePresence mode="wait">
+            {step === 'otp' && renderOTPScreen()}
+            {step === 'reset-password' && renderResetPasswordScreen()}
+            {step === 'form' && mode === 'signin' && renderSignInForm()}
+            {step === 'form' && mode === 'signup' && renderSignUpForm()}
+            {step === 'form' && mode === 'forgot' && renderForgotPasswordForm()}
+          </AnimatePresence>
+        </div>
 
-        {/* Footer */}
-        <div className="px-6 py-3 bg-gray-50 border-t border-gray-100">
+        {/* Footer - Fixed */}
+        <div className="px-6 py-3 bg-gray-50 border-t border-gray-100 flex-shrink-0">
           <p className="text-xs text-gray-500 text-center">
             Made with ❤️ for HBTU Students
           </p>
