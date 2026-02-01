@@ -1,5 +1,9 @@
-import { User, LogOut, Mail, GraduationCap, Building2, Calendar, Settings } from 'lucide-react';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { User, LogOut, GraduationCap, Building2, Calendar } from 'lucide-react';
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -16,10 +20,12 @@ const ProfileDropdown = () => {
 
   if (!user) return null;
 
+  const avatarUrl = user.user_metadata?.avatar_url;
   const avatarEmoji = user.user_metadata?.avatar || '👤';
   const firstName = user.user_metadata?.first_name || '';
   const lastName = user.user_metadata?.last_name || '';
-  const fullName = `${firstName} ${lastName}`.trim() || 'User';
+  const fullName = `${firstName} ${lastName} `.trim() || 'User';
+
   const email = user.email || '';
   const college = user.user_metadata?.college || 'Not specified';
   const branch = user.user_metadata?.branch || 'Not specified';
@@ -30,8 +36,9 @@ const ProfileDropdown = () => {
       <DropdownMenuTrigger className="focus:outline-none">
         <div className="flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity">
           <Avatar className="h-9 w-9 border-2 border-primary/20">
-            <AvatarFallback className="bg-primary/10 text-2xl">
-              {avatarEmoji}
+            <AvatarImage src={avatarUrl} />
+            <AvatarFallback className="bg-primary/10 text-xl">
+              {firstName ? firstName[0].toUpperCase() : avatarEmoji}
             </AvatarFallback>
           </Avatar>
         </div>
@@ -40,8 +47,9 @@ const ProfileDropdown = () => {
         <DropdownMenuLabel>
           <div className="flex items-center gap-3 py-2">
             <Avatar className="h-12 w-12">
-              <AvatarFallback className="bg-primary/10 text-3xl">
-                {avatarEmoji}
+              <AvatarImage src={avatarUrl} />
+              <AvatarFallback className="bg-primary/10 text-2xl">
+                {firstName ? firstName[0].toUpperCase() : avatarEmoji}
               </AvatarFallback>
             </Avatar>
             <div>

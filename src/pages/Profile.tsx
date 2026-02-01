@@ -9,7 +9,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, ArrowLeft, Edit3, Save, X, User, Mail, Phone, GraduationCap, Calendar } from 'lucide-react';
+import { Loader2, ArrowLeft, Edit3, Save, X, User, Mail, Phone, GraduationCap, Calendar, CheckCircle2 } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 
 interface ProfileData {
@@ -28,11 +28,12 @@ const Profile = () => {
   const { user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
-  
+
   const [isEditing, setIsEditing] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
-  
+  const [uploadingAvatar, setUploadingAvatar] = useState(false);
+
   const [profile, setProfile] = useState<ProfileData>({
     first_name: '',
     last_name: '',
@@ -44,15 +45,10 @@ const Profile = () => {
     avatar_url: '',
     created_at: '',
   });
-  
-  const [editedProfile, setEditedProfile] = useState<ProfileData>(profile);
 
-  // Avatar options
-  const avatarOptions = [
-    '/lovable-uploads/74279ef2-dc77-4aa2-97ca-c05cd96d2b9a.png',
-    '/lovable-uploads/958026bc-6d17-4c26-851b-51683b70eedf.png',
-    '/lovable-uploads/f15f6f50-a4a5-4b2e-b676-422e9520a924.png',
-  ];
+  const [editedProfile, setEditedProfile] = useState<ProfileData>(profile);
+  const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
+  const [avatarFile, setAvatarFile] = useState<File | null>(null);
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -68,7 +64,7 @@ const Profile = () => {
 
   const fetchProfile = async () => {
     if (!user) return;
-    
+
     setIsLoading(true);
     try {
       // First try to get from profiles table
@@ -125,11 +121,68 @@ const Profile = () => {
     }
   };
 
+  const handleAvatarChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (!event.target.files || event.target.files.length === 0) {
+      return;
+    }
+    const file = event.target.files[0];
+    setAvatarFile(file);
+    setAvatarPreview(URL.createObjectURL(file));
+  };
+
+  const uploadAvatar = async (file: File): Promise<string | null> => {
+    try {
+      setUploadingAvatar(true);
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${user?.id}-${Math.random()}.${fileExt}`;
+      const filePath = `${fileName}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('avatars')
+        .upload(filePath, file);
+
+      if (uploadError) {
+        throw uploadError;
+      }
+
+      const { data } = supabase.storage.from('avatars').getPublicUrl(filePath);
+      return data.publicUrl;
+    } catch (error: any) {
+      console.error('Error uploading avatar:', error);
+      // Fallback: If avatars bucket doesn't exist or fails, we can't upload.
+      // For now, let's just return null and notify user.
+      toast({
+        title: "Avatar Upload Failed",
+        description: "Could not upload image. Please check bucket permissions.",
+        variant: "destructive",
+      });
+      return null;
+    } finally {
+      setUploadingAvatar(false);
+    }
+  };
+
+
   const handleSave = async () => {
     if (!user) return;
-    
+
     setIsSaving(true);
+    let uploadFailed = false;
+
     try {
+      let finalAvatarUrl = editedProfile.avatar_url;
+
+      if (avatarFile) {
+        // Attempt upload
+        const publicUrl = await uploadAvatar(avatarFile);
+        if (publicUrl) {
+          finalAvatarUrl = publicUrl;
+        } else {
+          uploadFailed = true;
+          // We continue saving other fields even if upload failed
+        }
+      }
+
       // Check if profile exists
       const { data: existingProfile } = await supabase
         .from('profiles')
@@ -137,17 +190,26 @@ const Profile = () => {
         .eq('user_id', user.id)
         .maybeSingle();
 
+      const profileUpdates = {
+        first_name: editedProfile.first_name,
+        last_name: editedProfile.last_name,
+        mobile_number: editedProfile.mobile_number,
+        college: editedProfile.college,
+        branch: editedProfile.branch,
+        year: editedProfile.year,
+        // Only update avatar_url if we have a valid new one, or if we are just keeping the old one.
+        // If upload failed, we keep the previous URL from editedProfile (which was init from profile)
+        // Wait, if upload failed, `finalAvatarUrl` is `editedProfile.avatar_url`. 
+        // If the user changed the file, they expect a new URL. If we keep the old one, it's fine as fallback.
+        avatar_url: finalAvatarUrl,
+      };
+
       if (existingProfile) {
         // Update existing profile
         const { error } = await supabase
           .from('profiles')
           .update({
-            first_name: editedProfile.first_name,
-            last_name: editedProfile.last_name,
-            college: editedProfile.college,
-            branch: editedProfile.branch,
-            year: editedProfile.year,
-            avatar_url: editedProfile.avatar_url,
+            ...profileUpdates,
             updated_at: new Date().toISOString(),
           })
           .eq('user_id', user.id);
@@ -160,13 +222,7 @@ const Profile = () => {
           .insert({
             user_id: user.id,
             email: user.email || '',
-            first_name: editedProfile.first_name,
-            last_name: editedProfile.last_name,
-            mobile_number: editedProfile.mobile_number,
-            college: editedProfile.college,
-            branch: editedProfile.branch,
-            year: editedProfile.year,
-            avatar_url: editedProfile.avatar_url,
+            ...profileUpdates
           });
 
         if (error) throw error;
@@ -180,23 +236,52 @@ const Profile = () => {
           college: editedProfile.college,
           branch: editedProfile.branch,
           year: editedProfile.year,
+          mobile_number: editedProfile.mobile_number,
+          avatar_url: finalAvatarUrl
         }
       });
 
-      setProfile(editedProfile);
-      setIsEditing(false);
-      
-      toast({
-        title: "Profile updated",
-        description: "Your changes have been saved successfully",
+      setProfile({
+        ...editedProfile,
+        avatar_url: finalAvatarUrl
       });
+      setEditedProfile({
+        ...editedProfile,
+        avatar_url: finalAvatarUrl
+      });
+      setAvatarFile(null);
+      setAvatarPreview(null);
+      setIsEditing(false);
+
+      if (uploadFailed) {
+        toast({
+          title: "Profile saved partially",
+          description: "Details updated, but avatar could not be uploaded due to storage permissions.",
+          variant: "destructive", // Orange/Red waring
+        });
+      } else {
+        toast({
+          title: "Profile updated",
+          description: "Your changes have been saved successfully",
+        });
+      }
     } catch (error: any) {
       console.error('Error saving profile:', error);
-      toast({
-        title: "Error saving profile",
-        description: error.message || "Please try again",
-        variant: "destructive",
-      });
+
+      // Handle duplicate key violation (specifically for mobile number)
+      if (error.code === '23505' || error.message?.includes('profile_mobile_no')) {
+        toast({
+          title: "Contact Number Exists",
+          description: "This mobile number is already linked to another account. Please use a different number.",
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Error saving profile",
+          description: error.message || "Please try again",
+          variant: "destructive",
+        });
+      }
     } finally {
       setIsSaving(false);
     }
@@ -204,6 +289,8 @@ const Profile = () => {
 
   const handleCancel = () => {
     setEditedProfile(profile);
+    setAvatarFile(null);
+    setAvatarPreview(null);
     setIsEditing(false);
   };
 
@@ -222,6 +309,8 @@ const Profile = () => {
     return (first + last).toUpperCase() || 'U';
   };
 
+  const isMobileReadOnly = !!profile.mobile_number; // Read-only if it already has a value saved in DB
+
   if (authLoading || isLoading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
@@ -232,8 +321,6 @@ const Profile = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Navbar />
-      
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Back Button */}
         <button
@@ -255,10 +342,9 @@ const Profile = () => {
                 <CardTitle className="text-2xl font-semibold text-foreground">My Profile</CardTitle>
                 {!isEditing ? (
                   <Button
-                    variant="outline"
                     size="sm"
                     onClick={() => setIsEditing(true)}
-                    className="gap-2"
+                    className="gap-2 bg-blue-600 hover:bg-blue-700 text-white shadow-sm transition-all duration-200"
                   >
                     <Edit3 className="h-4 w-4" />
                     Edit Profile
@@ -278,7 +364,7 @@ const Profile = () => {
                       size="sm"
                       onClick={handleSave}
                       disabled={isSaving}
-                      className="bg-gray-900 hover:bg-gray-800"
+                      className="bg-blue-600 hover:bg-blue-700 text-white shadow-sm transition-all duration-200"
                     >
                       {isSaving ? (
                         <Loader2 className="h-4 w-4 animate-spin mr-1" />
@@ -291,40 +377,36 @@ const Profile = () => {
                 )}
               </div>
             </CardHeader>
-            
+
             <CardContent className="pt-6">
               {/* Avatar Section */}
               <div className="flex flex-col items-center mb-8">
-                <Avatar className="h-24 w-24 border-2 border-border">
-                  <AvatarImage src={editedProfile.avatar_url || profile.avatar_url} />
-                  <AvatarFallback className="text-2xl bg-gray-100 text-gray-600">
-                    {getInitials()}
-                  </AvatarFallback>
-                </Avatar>
-                
-                {isEditing && (
-                  <div className="mt-4">
-                    <p className="text-sm text-muted-foreground mb-2 text-center">Select an avatar:</p>
-                    <div className="flex gap-3">
-                      {avatarOptions.map((url, index) => (
-                        <button
-                          key={index}
-                          onClick={() => setEditedProfile({ ...editedProfile, avatar_url: url })}
-                          className={`rounded-full border-2 transition-all ${
-                            editedProfile.avatar_url === url
-                              ? 'border-blue-500 ring-2 ring-blue-200'
-                              : 'border-gray-200 hover:border-gray-300'
-                          }`}
-                        >
-                          <Avatar className="h-12 w-12">
-                            <AvatarImage src={url} />
-                          </Avatar>
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                )}
-                
+                <div className="relative group">
+                  <Avatar className="h-24 w-24 border-2 border-border cursor-pointer">
+                    <AvatarImage src={avatarPreview || editedProfile.avatar_url || profile.avatar_url} className="object-cover" />
+                    <AvatarFallback className="text-2xl bg-gray-100 text-gray-600">
+                      {getInitials()}
+                    </AvatarFallback>
+                  </Avatar>
+                  {isEditing && (
+                    <>
+                      <label
+                        htmlFor="avatar-upload"
+                        className="absolute inset-0 flex items-center justify-center bg-black/40 text-white opacity-0 group-hover:opacity-100 transition-opacity rounded-full cursor-pointer"
+                      >
+                        <span className="text-xs font-medium">Change</span>
+                      </label>
+                      <input
+                        id="avatar-upload"
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={handleAvatarChange}
+                      />
+                    </>
+                  )}
+                </div>
+
                 <h2 className="text-xl font-semibold text-foreground mt-4">
                   {profile.first_name} {profile.last_name}
                 </h2>
@@ -367,23 +449,66 @@ const Profile = () => {
                   </div>
                 </div>
 
-                {/* Email & Contact - Read Only */}
+                {/* Email & Contact - Read Only Logic */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <Label className="text-sm text-muted-foreground flex items-center gap-2">
                       <Mail className="h-4 w-4" />
                       Email Address
                     </Label>
-                    <p className="mt-1 text-foreground font-medium">{profile.email}</p>
-                    <p className="text-xs text-muted-foreground mt-1">Email cannot be changed</p>
+                    {/* Email is ALWAYS read-only - With Verified Badge */}
+                    <div className="relative">
+                      <Input
+                        value={profile.email}
+                        disabled
+                        className="mt-1 h-10 border-green-200 dark:border-green-800 bg-green-50/50 dark:bg-green-900/20 text-green-700 dark:text-green-300 pr-20 cursor-not-allowed"
+                      />
+                      <div className="absolute right-3 top-1/2 mt-0.5 -translate-y-1/2 flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-400">
+                        <CheckCircle2 className="h-3.5 w-3.5" />
+                        <span className="text-[10px] font-semibold tracking-wide uppercase">Verified</span>
+                      </div>
+                    </div>
+                    <p className="text-[10px] text-muted-foreground mt-1.5 flex items-center gap-1">
+                      <span className="w-1 h-1 rounded-full bg-muted-foreground/50"></span>
+                      Email cannot be changed
+                    </p>
                   </div>
                   <div>
                     <Label className="text-sm text-muted-foreground flex items-center gap-2">
                       <Phone className="h-4 w-4" />
                       Contact Number
                     </Label>
-                    <p className="mt-1 text-foreground font-medium">{profile.mobile_number || 'Not provided'}</p>
-                    <p className="text-xs text-muted-foreground mt-1">Contact cannot be changed</p>
+                    {isEditing && !isMobileReadOnly ? (
+                      <Input
+                        value={editedProfile.mobile_number}
+                        onChange={(e) => setEditedProfile({ ...editedProfile, mobile_number: e.target.value })}
+                        className="mt-1 h-10 border-gray-300 focus:border-primary focus:ring-1 focus:ring-primary"
+                        placeholder="Enter mobile number"
+                      />
+                    ) : (
+                      <div className="mt-1">
+                        {isEditing ? (
+                          <div className="relative">
+                            <Input
+                              value={profile.mobile_number || ''}
+                              disabled
+                              className="h-10 border-gray-300 bg-muted/50 text-muted-foreground cursor-not-allowed"
+                              placeholder="Not provided"
+                            />
+                            {isMobileReadOnly && (
+                              <p className="text-[10px] text-muted-foreground mt-1.5">
+                                Contact number locked after saving
+                              </p>
+                            )}
+                          </div>
+                        ) : (
+                          <p className="text-foreground font-medium">{profile.mobile_number || 'Not provided'}</p>
+                        )}
+                      </div>
+                    )}
+                    {isMobileReadOnly && isEditing && !profile.mobile_number && (
+                      <p className="text-xs text-muted-foreground mt-1">Contact cannot be changed after saving</p>
+                    )}
                   </div>
                 </div>
 

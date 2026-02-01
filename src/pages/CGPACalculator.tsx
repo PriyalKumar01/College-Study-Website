@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Badge } from '@/components/ui/badge';
-import { Trash2, Plus, Calculator, Download, GraduationCap, ArrowRight, ArrowLeft } from 'lucide-react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Trash2, Plus, Calculator, Download, GraduationCap, ArrowLeft, Sparkles } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import Navbar from '@/components/Navbar';
 
@@ -13,618 +13,623 @@ interface Subject {
   id: string;
   name: string;
   credits: number;
-  gradePoint: number;
+  points: number;
+  obtainedMarks?: number;
+  totalMarks?: number;
 }
 
-interface Semester {
-  id: string;
-  number: number;
-  subjects: Subject[];
-  sgpa: number;
-}
-
-interface PreviousSemesterData {
-  semesterNumber: number;
+interface PreviousSemester {
+  semester: number;
   sgpa: number;
   totalCredits: number;
+  percentage?: number;
 }
 
-interface CurrentSemesterData {
-  semesterNumber: number;
-  subjects: Subject[];
-}
+const COURSES = [
+  'BTech',
+  'BSc',
+  'MBA',
+  'BBA',
+  'BCA',
+  'MCA',
+  'MTech',
+  'MSc',
+  'Other'
+];
+
+const DURATIONS = ['2 Years', '3 Years', '4 Years', '5 Years'];
+const SCORE_SYSTEMS = ['GPA (0-10)', 'Percentage (0-100)'];
 
 const CGPACalculator = () => {
   const { toast } = useToast();
-  const [currentYear, setCurrentYear] = useState<number | null>(null);
-  const [previousSemesters, setPreviousSemesters] = useState<PreviousSemesterData[]>([]);
-  const [currentSemesters, setCurrentSemesters] = useState<CurrentSemesterData[]>([]);
+
+  const [selectedCourse, setSelectedCourse] = useState<string>('');
+  const [customCourse, setCustomCourse] = useState('');
+  const [duration, setDuration] = useState<string>('');
+  const [scoreSystem, setScoreSystem] = useState<string>('');
+  const [currentSemester, setCurrentSemester] = useState<number>(0);
+
+  const [previousSemesters, setPreviousSemesters] = useState<PreviousSemester[]>([]);
+  const [currentSubjects, setCurrentSubjects] = useState<Subject[]>([]);
+
   const [showResults, setShowResults] = useState(false);
-  const [overallCGPA, setOverallCGPA] = useState(0);
-  const [currentSGPAs, setCurrentSGPAs] = useState<number[]>([]);
-  
-  // For 1st year students - traditional view
-  const [semesters, setSemesters] = useState<Semester[]>([]);
-  const [nextSemesterNumber, setNextSemesterNumber] = useState(1);
+  const [cgpa, setCgpa] = useState(0);
+  const [currentSGPA, setCurrentSGPA] = useState(0);
 
-  const years = [
-    { value: 1, label: '1st Year', semesters: [1, 2], currentSemesters: [1, 2] },
-    { value: 2, label: '2nd Year', semesters: [1, 2], currentSemesters: [3, 4] },
-    { value: 3, label: '3rd Year', semesters: [1, 2, 3, 4], currentSemesters: [5, 6] },
-    { value: 4, label: '4th Year', semesters: [1, 2, 3, 4, 5, 6], currentSemesters: [7, 8] },
-  ];
+  const [step, setStep] = useState<'config' | 'entry'>('config');
 
-  const handleYearSelect = (year: number) => {
-    setCurrentYear(year);
-    setShowResults(false);
-    
-    if (year === 1) {
-      // Traditional view for 1st year
-      setSemesters([]);
-      setNextSemesterNumber(1);
-    } else {
-      // Quick SGPA input for 2nd, 3rd, 4th year
-      const prevSemCount = (year - 1) * 2;
-      const prevSems: PreviousSemesterData[] = [];
-      for (let i = 1; i <= prevSemCount; i++) {
-        prevSems.push({ semesterNumber: i, sgpa: 0, totalCredits: 0 });
-      }
-      setPreviousSemesters(prevSems);
-      
-      // Initialize current semesters (both semesters for the year)
-      const currentYear = years.find(y => y.value === year);
-      const currSems: CurrentSemesterData[] = currentYear?.currentSemesters.map(semNum => ({
-        semesterNumber: semNum,
-        subjects: []
-      })) || [];
-      setCurrentSemesters(currSems);
-    }
+  const isPercentageSystem = scoreSystem.includes('Percentage');
+
+  const getTotalSemesters = () => {
+    const years = parseInt(duration);
+    return years * 2;
   };
 
-  const updatePreviousSemester = (index: number, field: 'sgpa' | 'totalCredits', value: number) => {
-    setPreviousSemesters(prev => prev.map((sem, i) => 
+  const handleStartCalculation = () => {
+    if (!selectedCourse || !duration || !scoreSystem || currentSemester === 0) {
+      toast({
+        title: "Missing Information",
+        description: "Please fill all required fields",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    const prevSems: PreviousSemester[] = [];
+    for (let i = 1; i < currentSemester; i++) {
+      prevSems.push({ semester: i, sgpa: 0, totalCredits: 0, percentage: 0 });
+    }
+    setPreviousSemesters(prevSems);
+    setCurrentSubjects([]);
+    setStep('entry');
+  };
+
+  const updatePreviousSemester = (index: number, field: 'sgpa' | 'totalCredits' | 'percentage', value: number) => {
+    setPreviousSemesters(prev => prev.map((sem, i) =>
       i === index ? { ...sem, [field]: value } : sem
     ));
   };
 
-  const addCurrentSubject = (semIndex: number) => {
+  const addSubject = () => {
     const newSubject: Subject = {
-      id: `current-subject-${Date.now()}-${semIndex}`,
+      id: `subject-${Date.now()}`,
       name: '',
       credits: 0,
-      gradePoint: 0
+      points: 0,
+      obtainedMarks: 0,
+      totalMarks: 0
     };
-    setCurrentSemesters(prev => prev.map((sem, i) => 
-      i === semIndex ? { ...sem, subjects: [...sem.subjects, newSubject] } : sem
+    setCurrentSubjects(prev => [...prev, newSubject]);
+  };
+
+  const updateSubject = (id: string, field: keyof Subject, value: string | number) => {
+    setCurrentSubjects(prev => prev.map(sub =>
+      sub.id === id ? { ...sub, [field]: value } : sub
     ));
   };
 
-  const updateCurrentSubject = (semIndex: number, subjectId: string, field: keyof Subject, value: string | number) => {
-    setCurrentSemesters(prev => prev.map((sem, i) => 
-      i === semIndex ? {
-        ...sem,
-        subjects: sem.subjects.map(subject =>
-          subject.id === subjectId ? { ...subject, [field]: value } : subject
-        )
-      } : sem
-    ));
+  const removeSubject = (id: string) => {
+    setCurrentSubjects(prev => prev.filter(sub => sub.id !== id));
   };
 
-  const removeCurrentSubject = (semIndex: number, subjectId: string) => {
-    setCurrentSemesters(prev => prev.map((sem, i) => 
-      i === semIndex ? { ...sem, subjects: sem.subjects.filter(subject => subject.id !== subjectId) } : sem
-    ));
-  };
+  const calculateResults = () => {
+    if (isPercentageSystem) {
+      // Percentage System Calculation
+      let prevTotalPercentage = 0;
+      let prevCount = 0;
 
-  // Traditional semester methods for 1st year
-  const addSemester = () => {
-    const newSemester: Semester = {
-      id: `sem-${nextSemesterNumber}`,
-      number: nextSemesterNumber,
-      subjects: [],
-      sgpa: 0
-    };
-    setSemesters(prev => [...prev, newSemester]);
-    setNextSemesterNumber(prev => prev + 1);
-  };
-
-  const addSubject = (semesterId: string) => {
-    const newSubject: Subject = {
-      id: `${semesterId}-subject-${Date.now()}`,
-      name: '',
-      credits: 0,
-      gradePoint: 0
-    };
-    setSemesters(prev => prev.map(sem => 
-      sem.id === semesterId ? { ...sem, subjects: [...sem.subjects, newSubject] } : sem
-    ));
-  };
-
-  const updateSubject = (semesterId: string, subjectId: string, field: keyof Subject, value: string | number) => {
-    setSemesters(prev => prev.map(sem => 
-      sem.id === semesterId ? {
-        ...sem,
-        subjects: sem.subjects.map(subject =>
-          subject.id === subjectId ? { ...subject, [field]: value } : subject
-        )
-      } : sem
-    ));
-  };
-
-  const removeSubject = (semesterId: string, subjectId: string) => {
-    setSemesters(prev => prev.map(sem => 
-      sem.id === semesterId ? { ...sem, subjects: sem.subjects.filter(subject => subject.id !== subjectId) } : sem
-    ));
-  };
-
-  const removeSemester = (semesterId: string) => {
-    setSemesters(prev => prev.filter(sem => sem.id !== semesterId));
-  };
-
-  const calculateResultsAdvanced = () => {
-    // Calculate previous semesters contribution
-    let totalPreviousCredits = 0;
-    let totalPreviousGradePoints = 0;
-    
-    previousSemesters.forEach(sem => {
-      if (sem.sgpa > 0 && sem.totalCredits > 0) {
-        totalPreviousCredits += sem.totalCredits;
-        totalPreviousGradePoints += sem.sgpa * sem.totalCredits;
-      }
-    });
-
-    // Calculate current semesters
-    let totalCurrentCredits = 0;
-    let totalCurrentGradePoints = 0;
-    const sgpas: number[] = [];
-    
-    currentSemesters.forEach(sem => {
-      let semCredits = 0;
-      let semGradePoints = 0;
-      
-      sem.subjects.forEach(subject => {
-        if (subject.credits > 0 && subject.gradePoint >= 0) {
-          semCredits += subject.credits;
-          semGradePoints += subject.credits * subject.gradePoint;
-        }
-      });
-      
-      const semSgpa = semCredits > 0 ? semGradePoints / semCredits : 0;
-      sgpas.push(parseFloat(semSgpa.toFixed(3)));
-      
-      totalCurrentCredits += semCredits;
-      totalCurrentGradePoints += semGradePoints;
-    });
-
-    setCurrentSGPAs(sgpas);
-
-    // Calculate overall CGPA
-    const totalCredits = totalPreviousCredits + totalCurrentCredits;
-    const totalGradePoints = totalPreviousGradePoints + totalCurrentGradePoints;
-    const cgpa = totalCredits > 0 ? totalGradePoints / totalCredits : 0;
-    
-    setOverallCGPA(parseFloat(cgpa.toFixed(3)));
-    setShowResults(true);
-
-    toast({
-      title: "CGPA Calculated! 🎉",
-      description: `Your overall CGPA is ${cgpa.toFixed(3)}`,
-    });
-  };
-
-  const calculateResultsTraditional = () => {
-    let totalCredits = 0;
-    let totalGradePoints = 0;
-
-    const updatedSemesters = semesters.map(semester => {
-      let semesterCredits = 0;
-      let semesterGradePoints = 0;
-
-      semester.subjects.forEach(subject => {
-        if (subject.credits > 0 && subject.gradePoint >= 0) {
-          semesterCredits += subject.credits;
-          semesterGradePoints += subject.credits * subject.gradePoint;
-          totalCredits += subject.credits;
-          totalGradePoints += subject.credits * subject.gradePoint;
+      previousSemesters.forEach(sem => {
+        if ((sem.percentage || 0) > 0) {
+          prevTotalPercentage += sem.percentage || 0;
+          prevCount++;
         }
       });
 
-      const sgpa = semesterCredits > 0 ? semesterGradePoints / semesterCredits : 0;
-      return { ...semester, sgpa: parseFloat(sgpa.toFixed(3)) };
-    });
+      // Calculate current semester percentage
+      let totalObtained = 0;
+      let totalMaxMarks = 0;
 
-    const cgpa = totalCredits > 0 ? totalGradePoints / totalCredits : 0;
-    
-    setSemesters(updatedSemesters);
-    setOverallCGPA(parseFloat(cgpa.toFixed(3)));
-    setShowResults(true);
+      currentSubjects.forEach(sub => {
+        if ((sub.obtainedMarks || 0) > 0 && (sub.totalMarks || 0) > 0) {
+          totalObtained += sub.obtainedMarks || 0;
+          totalMaxMarks += sub.totalMarks || 0;
+        }
+      });
 
-    toast({
-      title: "CGPA Calculated! 🎉",
-      description: `Your overall CGPA is ${cgpa.toFixed(3)}`,
-    });
+      const currPercentage = totalMaxMarks > 0 ? (totalObtained / totalMaxMarks) * 100 : 0;
+      setCurrentSGPA(parseFloat(currPercentage.toFixed(2)));
+
+      // Overall percentage is average of all semesters
+      const overallPercentage = prevCount + 1 > 0 ?
+        (prevTotalPercentage + currPercentage) / (prevCount + 1) : 0;
+
+      setCgpa(parseFloat(overallPercentage.toFixed(2)));
+      setShowResults(true);
+
+      toast({
+        title: "Calculation Complete! 🎉",
+        description: `Your Overall Percentage is ${overallPercentage.toFixed(2)}%`,
+      });
+    } else {
+      // GPA System Calculation (credit-based)
+      let prevTotalCredits = 0;
+      let prevTotalPoints = 0;
+
+      previousSemesters.forEach(sem => {
+        if (sem.sgpa > 0 && sem.totalCredits > 0) {
+          prevTotalCredits += sem.totalCredits;
+          prevTotalPoints += sem.sgpa * sem.totalCredits;
+        }
+      });
+
+      let currCredits = 0;
+      let currPoints = 0;
+
+      currentSubjects.forEach(sub => {
+        if (sub.credits > 0 && sub.points >= 0) {
+          currCredits += sub.credits;
+          currPoints += sub.credits * sub.points;
+        }
+      });
+
+      const currSGPA = currCredits > 0 ? currPoints / currCredits : 0;
+      setCurrentSGPA(parseFloat(currSGPA.toFixed(3)));
+
+      const totalCredits = prevTotalCredits + currCredits;
+      const totalPoints = prevTotalPoints + currPoints;
+      const calculatedCGPA = totalCredits > 0 ? totalPoints / totalCredits : 0;
+
+      setCgpa(parseFloat(calculatedCGPA.toFixed(3)));
+      setShowResults(true);
+
+      toast({
+        title: "Calculation Complete! 🎉",
+        description: `Your CGPA is ${calculatedCGPA.toFixed(3)}`,
+      });
+    }
   };
 
-  const getCGPAColor = (cgpa: number) => {
-    if (cgpa >= 9.0) return 'text-green-600 bg-green-50 border-green-200';
-    if (cgpa >= 8.0) return 'text-blue-600 bg-blue-50 border-blue-200';
-    if (cgpa >= 7.0) return 'text-yellow-600 bg-yellow-50 border-yellow-200';
-    if (cgpa >= 6.0) return 'text-orange-600 bg-orange-50 border-orange-200';
-    return 'text-red-600 bg-red-50 border-red-200';
-  };
+  const getCGPAColor = (value: number) => {
+    const maxValue = isPercentageSystem ? 100 : 10;
+    const percentage = (value / maxValue) * 100;
 
-  const getCGPALabel = (cgpa: number) => {
-    if (cgpa >= 9.0) return 'Excellent! 🌟';
-    if (cgpa >= 8.0) return 'Very Good! 🎯';
-    if (cgpa >= 7.0) return 'Good! 👍';
-    if (cgpa >= 6.0) return 'Average 📚';
-    return 'Need Improvement 💪';
+    if (percentage >= 90) return 'text-emerald-600 dark:text-emerald-400';
+    if (percentage >= 80) return 'text-blue-600 dark:text-blue-400';
+    if (percentage >= 70) return 'text-yellow-600 dark:text-yellow-400';
+    if (percentage >= 60) return 'text-orange-600 dark:text-orange-400';
+    return 'text-red-600 dark:text-red-400';
   };
 
   const downloadResults = () => {
-    let results = `🎓 CGPA Calculator Results\n========================\n\nOverall CGPA: ${overallCGPA} (${getCGPALabel(overallCGPA)})\n`;
-    
-    if (currentYear && currentYear > 1) {
-      results += `\nPrevious Semesters:\n`;
-      previousSemesters.forEach(sem => {
-        results += `  Semester ${sem.semesterNumber}: SGPA ${sem.sgpa.toFixed(3)}, Credits: ${sem.totalCredits}\n`;
-      });
-      results += `\nCurrent Semesters:\n`;
-      currentSemesters.forEach((sem, index) => {
-        results += `  Semester ${sem.semesterNumber}: SGPA ${currentSGPAs[index] || 0}\n`;
-      });
-    } else {
-      results += `\nSemester-wise Results:\n`;
-      semesters.forEach(sem => {
-        results += `  Semester ${sem.number}: SGPA ${sem.sgpa.toFixed(3)}\n`;
-      });
-    }
-    
-    results += `\nGenerated on: ${new Date().toLocaleDateString()}`;
+    const courseName = selectedCourse === 'Other' ? customCourse : selectedCourse;
+    const unit = isPercentageSystem ? '%' : '';
+    let content = `🎓 ${isPercentageSystem ? 'Percentage' : 'CGPA'} Calculator Results\\n`;
+    content += `========================\\n\\n`;
+    content += `Course: ${courseName}\\n`;
+    content += `Duration: ${duration}\\n`;
+    content += `Score System: ${scoreSystem}\\n`;
+    content += `Current Semester: ${currentSemester}\\n\\n`;
+    content += `Overall ${isPercentageSystem ? 'Percentage' : 'CGPA'}: ${cgpa}${unit}\\n`;
+    content += `Current Semester ${isPercentageSystem ? 'Percentage' : 'SGPA'}: ${currentSGPA}${unit}\\n\\n`;
+    content += `Generated on: ${new Date().toLocaleDateString()}`;
 
-    const blob = new Blob([results], { type: 'text/plain' });
+    const blob = new Blob([content], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `CGPA_Results_${new Date().toISOString().split('T')[0]}.txt`;
+    a.download = `${isPercentageSystem ? 'Percentage' : 'CGPA'}_Results_${new Date().toISOString().split('T')[0]}.txt`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
 
     toast({
-      title: "Results Downloaded! 📄",
-      description: "Your CGPA results have been saved to your device.",
+      title: "Downloaded! 📄",
+      description: "Results saved to your device",
     });
   };
 
-  // Year selection screen
-  if (currentYear === null) {
+  // Configuration Screen
+  if (step === 'config') {
     return (
-      <div className="min-h-screen bg-gradient-hero">
+      <div className="min-h-screen bg-gray-50">
         <Navbar />
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-8 text-center">
-            <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-2 flex items-center justify-center gap-3">
-              <GraduationCap className="h-8 w-8" /> CGPA Calculator 🎓
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-center mb-12"
+          >
+            <div className="inline-flex items-center gap-3 px-4 py-2 bg-blue-500/10 rounded-full mb-6 border border-blue-500/20">
+              <GraduationCap className="h-6 w-6 text-blue-400" />
+              <span className="text-blue-400 font-semibold">Professional CGPA Calculator</span>
+            </div>
+            <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
+              Calculate Your <span className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">Academic Score</span>
             </h1>
-            <p className="text-muted-foreground text-lg">Select your current year to get started</p>
+            <p className="text-slate-400 text-lg">
+              Enter your course details to get started
+            </p>
           </motion.div>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {years.map((year, index) => (
-              <motion.div key={year.value} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.1 }}>
-                <Card className="feature-card cursor-pointer hover:border-primary transition-all" onClick={() => handleYearSelect(year.value)}>
-                  <CardHeader className="text-center">
-                    <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-2">
-                      <span className="text-2xl font-bold text-primary">{year.value}</span>
-                    </div>
-                    <CardTitle>{year.label}</CardTitle>
-                    <CardDescription>Sem {year.currentSemesters[0]} & {year.currentSemesters[1]}</CardDescription>
-                  </CardHeader>
-                  <CardContent className="text-center">
-                    <Button className="w-full btn-hero">
-                      Select <ArrowRight className="h-4 w-4 ml-2" />
-                    </Button>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
-          </div>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+          >
+            <Card className="bg-white border-gray-200 shadow-xl">
+              <CardHeader className="border-b border-slate-700">
+                <CardTitle className="text-foreground flex items-center gap-2">
+                  <Sparkles className="h-5 w-5 text-blue-400" />
+                  Course Configuration
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-8 space-y-6">
+
+                <div className="space-y-2">
+                  <Label className="text-foreground font-medium">Select Course *</Label>
+                  <Select value={selectedCourse} onValueChange={setSelectedCourse}>
+                    <SelectTrigger className="bg-slate-900 border-slate-600 text-white">
+                      <SelectValue placeholder="Choose your course" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-slate-900 border-slate-700">
+                      {COURSES.map(course => (
+                        <SelectItem key={course} value={course} className="text-foreground focus:bg-gray-100">
+                          {course}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {selectedCourse === 'Other' && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    className="space-y-2"
+                  >
+                    <Label className="text-slate-300 font-medium">Course Name *</Label>
+                    <Input
+                      placeholder="Enter your course name"
+                      value={customCourse}
+                      onChange={(e) => setCustomCourse(e.target.value)}
+                      className="bg-slate-900 border-slate-600 text-white placeholder:text-slate-500"
+                    />
+                  </motion.div>
+                )}
+
+                <div className="space-y-2">
+                  <Label className="text-slate-300 font-medium">Course Duration *</Label>
+                  <Select value={duration} onValueChange={setDuration}>
+                    <SelectTrigger className="bg-slate-900 border-slate-600 text-white">
+                      <SelectValue placeholder="Select duration" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-slate-900 border-slate-700">
+                      {DURATIONS.map(dur => (
+                        <SelectItem key={dur} value={dur} className="text-white focus:bg-slate-800 focus:text-white">
+                          {dur}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label className="text-slate-300 font-medium">Score System *</Label>
+                  <Select value={scoreSystem} onValueChange={setScoreSystem}>
+                    <SelectTrigger className="bg-slate-900 border-slate-600 text-white">
+                      <SelectValue placeholder="Choose scoring system" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-slate-900 border-slate-700">
+                      {SCORE_SYSTEMS.map(system => (
+                        <SelectItem key={system} value={system} className="text-white focus:bg-slate-800 focus:text-white">
+                          {system}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {duration && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    className="space-y-2"
+                  >
+                    <Label className="text-slate-300 font-medium">Current Semester *</Label>
+                    <Select
+                      value={currentSemester.toString()}
+                      onValueChange={(val) => setCurrentSemester(parseInt(val))}
+                    >
+                      <SelectTrigger className="bg-slate-900 border-slate-600 text-white">
+                        <SelectValue placeholder="Select current semester" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-slate-900 border-slate-700">
+                        {Array.from({ length: getTotalSemesters() }, (_, i) => i + 1).map(sem => (
+                          <SelectItem key={sem} value={sem.toString()} className="text-white focus:bg-slate-800 focus:text-white">
+                            Semester {sem}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </motion.div>
+                )}
+
+                <Button
+                  onClick={handleStartCalculation}
+                  className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold h-12 text-lg shadow-lg shadow-blue-500/25"
+                >
+                  Start Calculation
+                  <Calculator className="ml-2 h-5 w-5" />
+                </Button>
+              </CardContent>
+            </Card>
+          </motion.div>
         </div>
       </div>
     );
   }
 
-  // Advanced view for 2nd, 3rd, 4th year students
-  if (currentYear > 1) {
-    const yearData = years.find(y => y.value === currentYear);
-    
-    return (
-      <div className="min-h-screen bg-gradient-hero">
-        <Navbar />
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
-            <Button onClick={() => { setCurrentYear(null); setShowResults(false); }} variant="outline" className="mb-4">
-              <ArrowLeft className="h-4 w-4 mr-2" /> Change Year
-            </Button>
-            <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-2 flex items-center gap-3">
-              <GraduationCap className="h-7 w-7" /> {yearData?.label} CGPA Calculator
-            </h1>
-            <p className="text-muted-foreground">Enter your previous semester SGPAs and current semester details</p>
-          </motion.div>
+  // Data Entry Screen
+  return (
+    <div className="min-h-screen bg-slate-900">
+      <Navbar />
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
-          {/* Previous Semesters SGPA Input */}
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="mb-8">
-            <Card className="feature-card">
-              <CardHeader>
-                <CardTitle>📊 Previous Semesters (1 to {(currentYear - 1) * 2})</CardTitle>
-                <CardDescription>Enter SGPA (up to 3 decimal places) and total credits for each completed semester</CardDescription>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mb-8"
+        >
+          <Button
+            onClick={() => { setStep('config'); setShowResults(false); }}
+            variant="outline"
+            className="mb-4 bg-white border-gray-300 text-foreground hover:bg-gray-50"
+          >
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Change Configuration
+          </Button>
+          <h1 className="text-3xl font-bold text-foreground mb-2">
+            {selectedCourse === 'Other' ? customCourse : selectedCourse} - Semester {currentSemester}
+          </h1>
+          <p className="text-muted-foreground">
+            {scoreSystem} • {duration}
+          </p>
+        </motion.div>
+
+        {/* Previous Semesters */}
+        {previousSemesters.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className="mb-8"
+          >
+            <Card className="bg-white border-gray-200 shadow-lg">
+              <CardHeader className="border-b border-slate-700">
+                <CardTitle className="text-foreground">📊 Previous Semesters (1 to {currentSemester - 1})</CardTitle>
+                <p className="text-sm text-slate-400">
+                  {isPercentageSystem
+                    ? 'Enter percentage for each completed semester'
+                    : 'Enter SGPA and total credits for each completed semester'}
+                </p>
               </CardHeader>
-              <CardContent>
+              <CardContent className="p-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {previousSemesters.map((sem, index) => (
-                    <div key={index} className="p-4 bg-muted/30 rounded-lg">
-                      <Label className="font-medium mb-2 block">Semester {sem.semesterNumber}</Label>
-                      <div className="grid grid-cols-2 gap-3">
+                    <div key={index} className="p-4 bg-slate-900/50 rounded-lg border border-slate-700">
+                      <Label className="text-slate-300 font-semibold mb-3 block">Semester {sem.semester}</Label>
+                      {isPercentageSystem ? (
                         <div>
-                          <Label className="text-xs text-muted-foreground">SGPA</Label>
+                          <Label className="text-xs text-slate-400 mb-1.5 block">Percentage (%)</Label>
                           <Input
                             type="number"
                             min="0"
-                            max="10"
-                            step="0.001"
-                            placeholder="e.g., 8.234"
-                            value={sem.sgpa || ''}
-                            onChange={(e) => updatePreviousSemester(index, 'sgpa', parseFloat(e.target.value) || 0)}
+                            max="100"
+                            step="0.01"
+                            placeholder="85.50"
+                            value={sem.percentage || ''}
+                            onChange={(e) => updatePreviousSemester(index, 'percentage', parseFloat(e.target.value) || 0)}
+                            className="bg-slate-800 border-slate-600 text-white placeholder:text-slate-500"
                           />
                         </div>
-                        <div>
-                          <Label className="text-xs text-muted-foreground">Total Credits</Label>
-                          <Input
-                            type="number"
-                            min="1"
-                            max="40"
-                            placeholder="e.g., 24"
-                            value={sem.totalCredits || ''}
-                            onChange={(e) => updatePreviousSemester(index, 'totalCredits', parseInt(e.target.value) || 0)}
-                          />
+                      ) : (
+                        <div className="grid grid-cols-2 gap-3">
+                          <div>
+                            <Label className="text-xs text-slate-400 mb-1.5 block">SGPA</Label>
+                            <Input
+                              type="number"
+                              min="0"
+                              max="10"
+                              step="0.01"
+                              placeholder="8.5"
+                              value={sem.sgpa || ''}
+                              onChange={(e) => updatePreviousSemester(index, 'sgpa', parseFloat(e.target.value) || 0)}
+                              className="bg-slate-800 border-slate-600 text-white placeholder:text-slate-500"
+                            />
+                          </div>
+                          <div>
+                            <Label className="text-xs text-slate-400 mb-1.5 block">Total Credits</Label>
+                            <Input
+                              type="number"
+                              min="1"
+                              max="50"
+                              placeholder="24"
+                              value={sem.totalCredits || ''}
+                              onChange={(e) => updatePreviousSemester(index, 'totalCredits', parseInt(e.target.value) || 0)}
+                              className="bg-slate-800 border-slate-600 text-white placeholder:text-slate-500"
+                            />
+                          </div>
                         </div>
-                      </div>
+                      )}
                     </div>
                   ))}
                 </div>
               </CardContent>
             </Card>
           </motion.div>
-
-          {/* Current Semesters - Both semesters for the year */}
-          {currentSemesters.map((currentSem, semIndex) => (
-            <motion.div key={semIndex} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 + semIndex * 0.1 }} className="mb-8">
-              <Card className="feature-card">
-                <CardHeader>
-                  <CardTitle>📚 Semester {currentSem.semesterNumber}</CardTitle>
-                  <CardDescription>Enter subject details for semester {currentSem.semesterNumber}</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    {currentSem.subjects.map((subject) => (
-                      <div key={subject.id} className="grid grid-cols-1 md:grid-cols-4 gap-3 p-4 bg-muted/30 rounded-lg">
-                        <div>
-                          <Label>Subject Name</Label>
-                          <Input
-                            placeholder="Enter subject name"
-                            value={subject.name}
-                            onChange={(e) => updateCurrentSubject(semIndex, subject.id, 'name', e.target.value)}
-                          />
-                        </div>
-                        <div>
-                          <Label>Credits</Label>
-                          <Input
-                            type="number"
-                            min="1"
-                            max="6"
-                            placeholder="Credits"
-                            value={subject.credits || ''}
-                            onChange={(e) => updateCurrentSubject(semIndex, subject.id, 'credits', Math.floor(Number(e.target.value)) || 0)}
-                          />
-                        </div>
-                        <div>
-                          <Label>Grade Point</Label>
-                          <Input
-                            type="number"
-                            min="0"
-                            max="10"
-                            step="1"
-                            placeholder="0-10"
-                            value={subject.gradePoint || ''}
-                            onChange={(e) => updateCurrentSubject(semIndex, subject.id, 'gradePoint', Math.floor(Number(e.target.value)) || 0)}
-                          />
-                        </div>
-                        <div className="flex items-end">
-                          <Button variant="outline" size="sm" onClick={() => removeCurrentSubject(semIndex, subject.id)} className="text-red-600 hover:bg-red-50">
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      </div>
-                    ))}
-                    <Button variant="outline" onClick={() => addCurrentSubject(semIndex)} className="w-full">
-                      <Plus className="h-4 w-4 mr-2" /> Add Subject
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            </motion.div>
-          ))}
-
-          {/* Calculate Button */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
-            <Button onClick={calculateResultsAdvanced} className="btn-hero">
-              <Calculator className="h-4 w-4 mr-2" /> Calculate CGPA
-            </Button>
-            {showResults && (
-              <Button onClick={downloadResults} variant="outline">
-                <Download className="h-4 w-4 mr-2" /> Download Results
-              </Button>
-            )}
-          </div>
-
-          {/* Results */}
-          {showResults && (
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-              <Card className={`gradient-card border-2 ${getCGPAColor(overallCGPA)} shadow-lg`}>
-                <CardHeader className="text-center">
-                  <CardTitle className="text-2xl">🎯 Results</CardTitle>
-                  <div className="space-y-2">
-                    {currentSGPAs.map((sgpa, index) => (
-                      <div key={index} className="flex items-center justify-center gap-2">
-                        <Badge variant="secondary">Sem {currentSemesters[index]?.semesterNumber} SGPA: {sgpa}</Badge>
-                      </div>
-                    ))}
-                    <p className="text-5xl font-bold mt-4">{overallCGPA}</p>
-                    <p className="text-lg">{getCGPALabel(overallCGPA)}</p>
-                  </div>
-                </CardHeader>
-              </Card>
-            </motion.div>
-          )}
-        </div>
-      </div>
-    );
-  }
-
-  // Traditional view for 1st year students
-  return (
-    <div className="min-h-screen bg-gradient-hero">
-      <Navbar />
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
-          <Button onClick={() => { setCurrentYear(null); setShowResults(false); }} variant="outline" className="mb-4">
-            <ArrowLeft className="h-4 w-4 mr-2" /> Change Year
-          </Button>
-          <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-2 flex items-center gap-3">
-            <GraduationCap className="h-7 w-7" /> 1st Year CGPA Calculator
-          </h1>
-          <p className="text-muted-foreground">Add semesters and subjects to calculate your CGPA</p>
-        </motion.div>
-
-        {/* Add Semester Button */}
-        {semesters.length < 2 && (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mb-6">
-            <Button onClick={addSemester} className="btn-hero">
-              <Plus className="h-4 w-4 mr-2" /> Add Semester {nextSemesterNumber}
-            </Button>
-          </motion.div>
         )}
 
-        {/* Semesters */}
-        {semesters.map((semester, semIndex) => (
-          <motion.div
-            key={semester.id}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: semIndex * 0.1 }}
-            className="mb-6"
-          >
-            <Card className="feature-card">
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <CardTitle>📚 Semester {semester.number}</CardTitle>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => removeSemester(semester.id)}
-                    className="text-red-600 hover:bg-red-50"
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
-                </div>
-                <CardDescription>Add subjects with credits and grade points</CardDescription>
-                {showResults && semester.sgpa > 0 && (
-                  <Badge className="w-fit mt-2" variant="secondary">
-                    SGPA: {semester.sgpa}
-                  </Badge>
-                )}
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {semester.subjects.map((subject) => (
-                    <div key={subject.id} className="grid grid-cols-1 md:grid-cols-4 gap-3 p-4 bg-muted/30 rounded-lg">
+        {/* Current Semester */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+          className="mb-8"
+        >
+          <Card className="bg-slate-800/50 border-slate-700 backdrop-blur-sm">
+            <CardHeader className="border-b border-slate-700">
+              <CardTitle className="text-white">📚 Current Semester {currentSemester}</CardTitle>
+              <p className="text-sm text-slate-400">
+                {isPercentageSystem
+                  ? 'Add subjects with obtained marks and total marks'
+                  : 'Add subjects with credits and grade points'}
+              </p>
+            </CardHeader>
+            <CardContent className="p-6 space-y-4">
+              {currentSubjects.map((subject) => (
+                <div key={subject.id} className={`grid ${isPercentageSystem ? 'md:grid-cols-4' : 'md:grid-cols-4'} gap-3 p-4 bg-slate-900/50 rounded-lg border border-slate-700`}>
+                  <div>
+                    <Label className="text-slate-300 text-sm mb-1.5 block">Subject Name</Label>
+                    <Input
+                      placeholder="e.g., Data Structures"
+                      value={subject.name}
+                      onChange={(e) => updateSubject(subject.id, 'name', e.target.value)}
+                      className="bg-slate-800 border-slate-600 text-white placeholder:text-slate-500"
+                    />
+                  </div>
+
+                  {isPercentageSystem ? (
+                    <>
                       <div>
-                        <Label>Subject Name</Label>
+                        <Label className="text-slate-300 text-sm mb-1.5 block">Obtained Marks</Label>
                         <Input
-                          placeholder="Enter subject name"
-                          value={subject.name}
-                          onChange={(e) => updateSubject(semester.id, subject.id, 'name', e.target.value)}
+                          type="number"
+                          min="0"
+                          placeholder="85"
+                          value={subject.obtainedMarks || ''}
+                          onChange={(e) => updateSubject(subject.id, 'obtainedMarks', parseFloat(e.target.value) || 0)}
+                          className="bg-slate-800 border-slate-600 text-white placeholder:text-slate-500"
                         />
                       </div>
                       <div>
-                        <Label>Credits</Label>
+                        <Label className="text-slate-300 text-sm mb-1.5 block">Total Marks</Label>
+                        <Input
+                          type="number"
+                          min="1"
+                          placeholder="100"
+                          value={subject.totalMarks || ''}
+                          onChange={(e) => updateSubject(subject.id, 'totalMarks', parseFloat(e.target.value) || 0)}
+                          className="bg-slate-800 border-slate-600 text-white placeholder:text-slate-500"
+                        />
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <div>
+                        <Label className="text-slate-300 text-sm mb-1.5 block">Credits</Label>
                         <Input
                           type="number"
                           min="1"
                           max="6"
-                          placeholder="Credits"
+                          placeholder="4"
                           value={subject.credits || ''}
-                          onChange={(e) => updateSubject(semester.id, subject.id, 'credits', Math.floor(Number(e.target.value)) || 0)}
+                          onChange={(e) => updateSubject(subject.id, 'credits', parseInt(e.target.value) || 0)}
+                          className="bg-slate-800 border-slate-600 text-white placeholder:text-slate-500"
                         />
                       </div>
                       <div>
-                        <Label>Grade Point</Label>
+                        <Label className="text-slate-300 text-sm mb-1.5 block">Grade Point</Label>
                         <Input
                           type="number"
                           min="0"
                           max="10"
-                          step="1"
-                          placeholder="0-10"
-                          value={subject.gradePoint || ''}
-                          onChange={(e) => updateSubject(semester.id, subject.id, 'gradePoint', Math.floor(Number(e.target.value)) || 0)}
+                          placeholder="9"
+                          value={subject.points || ''}
+                          onChange={(e) => updateSubject(subject.id, 'points', parseFloat(e.target.value) || 0)}
+                          className="bg-slate-800 border-slate-600 text-white placeholder:text-slate-500"
                         />
                       </div>
-                      <div className="flex items-end">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => removeSubject(semester.id, subject.id)}
-                          className="text-red-600 hover:bg-red-50"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    </div>
-                  ))}
-                  <Button variant="outline" onClick={() => addSubject(semester.id)} className="w-full">
-                    <Plus className="h-4 w-4 mr-2" /> Add Subject
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          </motion.div>
-        ))}
+                    </>
+                  )}
 
-        {/* Calculate Button */}
-        {semesters.length > 0 && (
-          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
-            <Button onClick={calculateResultsTraditional} className="btn-hero">
-              <Calculator className="h-4 w-4 mr-2" /> Calculate CGPA
-            </Button>
-            {showResults && (
-              <Button onClick={downloadResults} variant="outline">
-                <Download className="h-4 w-4 mr-2" /> Download Results
+                  <div className="flex items-end">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => removeSubject(subject.id)}
+                      className="bg-red-900/20 border-red-700/50 text-red-400 hover:bg-red-900/40 hover:text-red-300 w-full"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
+              ))}
+              <Button
+                variant="outline"
+                onClick={addSubject}
+                className="w-full bg-slate-900/50 border-slate-600 text-white hover:bg-slate-800"
+              >
+                <Plus className="h-4 w-4 mr-2" />
+                Add Subject
               </Button>
-            )}
-          </div>
-        )}
+            </CardContent>
+          </Card>
+        </motion.div>
+
+        {/* Action Buttons */}
+        <div className="flex flex-wrap gap-4 justify-center mb-8">
+          <Button
+            onClick={calculateResults}
+            className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold h-12 px-8 shadow-lg shadow-blue-500/25"
+          >
+            <Calculator className="h-5 w-5 mr-2" />
+            Calculate {isPercentageSystem ? 'Percentage' : 'CGPA'}
+          </Button>
+          {showResults && (
+            <Button
+              onClick={downloadResults}
+              variant="outline"
+              className="bg-slate-800 border-slate-600 text-white hover:bg-slate-700 h-12 px-8"
+            >
+              <Download className="h-5 w-5 mr-2" />
+              Download Results
+            </Button>
+          )}
+        </div>
 
         {/* Results */}
         {showResults && (
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-            <Card className={`gradient-card border-2 ${getCGPAColor(overallCGPA)} shadow-lg`}>
-              <CardHeader className="text-center">
-                <CardTitle className="text-2xl">🎯 Your Results</CardTitle>
-                <div className="space-y-2">
-                  <p className="text-5xl font-bold">{overallCGPA}</p>
-                  <p className="text-lg">{getCGPALabel(overallCGPA)}</p>
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="mb-8"
+          >
+            <Card className="bg-gradient-to-br from-slate-800 to-slate-900 border-2 border-blue-500/50 shadow-2xl shadow-blue-500/20 backdrop-blur-sm">
+              <CardHeader className="text-center border-b border-slate-700 pb-6">
+                <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-500/10 rounded-full mb-4 mx-auto border border-blue-500/20">
+                  <Sparkles className="h-5 w-5 text-blue-400" />
+                  <span className="text-blue-400 font-semibold">Your Results</span>
+                </div>
+
+                <div className="space-y-4">
+                  <div>
+                    <p className="text-slate-400 text-sm mb-2">
+                      Current Semester {isPercentageSystem ? 'Percentage' : 'SGPA'}
+                    </p>
+                    <p className={`text-4xl font-bold ${getCGPAColor(currentSGPA)}`}>
+                      {currentSGPA}{isPercentageSystem ? '%' : ''}
+                    </p>
+                  </div>
+
+                  <div className="pt-4 border-t border-slate-700">
+                    <p className="text-slate-400 text-sm mb-2">
+                      Overall {isPercentageSystem ? 'Percentage' : 'CGPA'}
+                    </p>
+                    <p className={`text-6xl font-bold ${getCGPAColor(cgpa)}`}>
+                      {cgpa}{isPercentageSystem ? '%' : ''}
+                    </p>
+                  </div>
                 </div>
               </CardHeader>
             </Card>

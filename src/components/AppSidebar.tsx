@@ -5,8 +5,8 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useTheme } from '@/providers/ThemeProvider';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { 
-  ChevronLeft, 
+import {
+  ChevronLeft,
   ChevronRight,
   Calculator,
   Users,
@@ -23,7 +23,9 @@ import {
   Edit,
   GraduationCap,
   FileText,
-  Laptop
+  Laptop,
+  Home,
+  BadgeCheck
 } from 'lucide-react';
 
 interface AppSidebarProps {
@@ -39,7 +41,7 @@ interface NavItem {
 
 const AppSidebar = ({ className }: AppSidebarProps) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
-  const [expandedGroups, setExpandedGroups] = useState<string[]>(['notes']);
+  const [expandedGroups, setExpandedGroups] = useState<string[]>([]);
   const { user, signOut } = useAuth();
   const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
@@ -59,14 +61,15 @@ const AppSidebar = ({ className }: AppSidebarProps) => {
   };
 
   const navItems: NavItem[] = [
+    { icon: <Home className="h-4 w-4" />, label: 'Home', href: '/' },
     { icon: <Calculator className="h-4 w-4" />, label: 'CGPA Calculator', href: '/cgpa-calculator' },
     { icon: <Users className="h-4 w-4" />, label: 'Contributor List', href: '/notes-contributors' },
     { icon: <Layers className="h-4 w-4" />, label: 'Integrated Platforms', href: '/learning-platforms' },
     { icon: <Award className="h-4 w-4" />, label: 'Scholarships', href: '/opportunities?type=scholarship' },
     { icon: <Briefcase className="h-4 w-4" />, label: 'Opportunities', href: '/opportunities' },
-    { 
-      icon: <BookOpen className="h-4 w-4" />, 
-      label: 'Notes', 
+    {
+      icon: <BookOpen className="h-4 w-4" />,
+      label: 'Notes',
       href: '/notes',
       children: [
         { icon: <GraduationCap className="h-4 w-4" />, label: 'BTech Notes', href: '/btech-notes' },
@@ -84,8 +87,8 @@ const AppSidebar = ({ className }: AppSidebarProps) => {
   const isActive = (href: string) => location.pathname === href;
 
   const toggleGroup = (label: string) => {
-    setExpandedGroups(prev => 
-      prev.includes(label) 
+    setExpandedGroups(prev =>
+      prev.includes(label)
         ? prev.filter(g => g !== label)
         : [...prev, label]
     );
@@ -103,26 +106,30 @@ const AppSidebar = ({ className }: AppSidebarProps) => {
       initial={false}
       animate={{ width: isCollapsed ? 64 : 260 }}
       transition={{ duration: 0.2, ease: 'easeInOut' }}
-      className={`h-screen bg-background border-r border-border flex flex-col ${className}`}
+      className={`h-full bg-blue-50/30 dark:bg-slate-900/50 border-r border-blue-200 dark:border-slate-700 flex flex-col backdrop-blur-sm ${className}`}
     >
-      {/* Toggle Button */}
+      {/* Toggle Button - Moved inside the sidebar */}
       <button
         onClick={() => setIsCollapsed(!isCollapsed)}
-        className="absolute -right-3 top-20 z-10 w-6 h-6 bg-background border border-border rounded-full flex items-center justify-center hover:bg-accent transition-colors"
+        className="absolute right-2 top-3 z-50 p-1 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-muted-foreground"
       >
-        {isCollapsed ? <ChevronRight className="h-3 w-3" /> : <ChevronLeft className="h-3 w-3" />}
+        {isCollapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
       </button>
 
-      {/* Profile Section */}
+      {/* Profile Section - Clickable Box */}
       <div className={`p-4 border-b border-border ${isCollapsed ? 'items-center' : ''}`}>
-        <div className={`flex ${isCollapsed ? 'flex-col items-center' : 'items-center gap-3'}`}>
-          <Avatar className="h-10 w-10 flex-shrink-0">
+        <div
+          onClick={() => navigate('/profile')}
+          className={`flex ${isCollapsed ? 'flex-col items-center justify-center p-2' : 'items-center gap-3 p-3'} rounded-xl cursor-pointer transition-all duration-200 hover:bg-secondary/50 border border-transparent hover:border-border group`}
+          title="View Profile"
+        >
+          <Avatar className="h-10 w-10 flex-shrink-0 border border-border/50 group-hover:border-primary/50 transition-colors">
             <AvatarImage src={avatarUrl} />
-            <AvatarFallback className="bg-primary text-primary-foreground text-sm font-medium">
+            <AvatarFallback className="bg-primary/10 text-primary text-sm font-medium">
               {getInitials()}
             </AvatarFallback>
           </Avatar>
-          
+
           <AnimatePresence>
             {!isCollapsed && (
               <motion.div
@@ -131,36 +138,20 @@ const AppSidebar = ({ className }: AppSidebarProps) => {
                 exit={{ opacity: 0, width: 0 }}
                 className="flex-1 min-w-0"
               >
-                <p className="font-medium text-sm text-foreground truncate">
+                <p className="font-semibold text-sm text-foreground truncate group-hover:text-primary transition-colors flex items-center gap-2">
                   {firstName} {lastName}
+                  <span className="relative flex-shrink-0">
+                    <BadgeCheck className="h-5 w-5 text-white fill-green-500 relative z-10 drop-shadow-lg" />
+                    <span className="absolute inset-0 bg-green-500/30 rounded-full blur-sm animate-pulse" />
+                  </span>
                 </p>
-                <p className="text-xs text-muted-foreground truncate">
+                <p className="text-xs text-muted-foreground truncate group-hover:text-muted-foreground/80">
                   {userEmail}
                 </p>
               </motion.div>
             )}
           </AnimatePresence>
         </div>
-        
-        <AnimatePresence>
-          {!isCollapsed && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
-            >
-              <Button
-                variant="outline"
-                size="sm"
-                className="w-full mt-3 text-xs h-8"
-                onClick={() => navigate('/profile')}
-              >
-                <Edit className="h-3 w-3 mr-2" />
-                Edit Profile
-              </Button>
-            </motion.div>
-          )}
-        </AnimatePresence>
       </div>
 
       {/* Navigation */}
@@ -172,23 +163,21 @@ const AppSidebar = ({ className }: AppSidebarProps) => {
                 <>
                   <button
                     onClick={() => toggleGroup(item.label.toLowerCase())}
-                    className={`w-full flex items-center gap-3 px-3 py-2 rounded text-sm transition-colors hover:bg-accent ${
-                      isCollapsed ? 'justify-center' : ''
-                    }`}
+                    className={`w-full flex items-center gap-3 px-3 py-2 rounded text-sm transition-colors hover:bg-gray-100 dark:hover:bg-gray-800 ${isCollapsed ? 'justify-center' : ''
+                      }`}
                   >
                     <span className="flex-shrink-0">{item.icon}</span>
                     {!isCollapsed && (
                       <>
                         <span className="flex-1 text-left">{item.label}</span>
-                        <ChevronRight 
-                          className={`h-4 w-4 transition-transform ${
-                            expandedGroups.includes(item.label.toLowerCase()) ? 'rotate-90' : ''
-                          }`} 
+                        <ChevronRight
+                          className={`h-4 w-4 transition-transform ${expandedGroups.includes(item.label.toLowerCase()) ? 'rotate-90' : ''
+                            }`}
                         />
                       </>
                     )}
                   </button>
-                  
+
                   <AnimatePresence>
                     {!isCollapsed && expandedGroups.includes(item.label.toLowerCase()) && (
                       <motion.ul
@@ -201,11 +190,10 @@ const AppSidebar = ({ className }: AppSidebarProps) => {
                           <li key={child.label}>
                             <button
                               onClick={() => navigate(child.href)}
-                              className={`w-full flex items-center gap-2 px-3 py-1.5 rounded text-xs transition-colors ${
-                                isActive(child.href)
-                                  ? 'bg-primary/10 text-primary font-medium'
-                                  : 'text-muted-foreground hover:bg-accent hover:text-foreground'
-                              }`}
+                              className={`w-full flex items-center gap-2 px-3 py-1.5 rounded text-xs transition-colors ${isActive(child.href)
+                                ? 'bg-primary/10 text-primary font-medium'
+                                : 'text-muted-foreground hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-foreground'
+                                }`}
                             >
                               {child.icon}
                               <span>{child.label}</span>
@@ -219,11 +207,10 @@ const AppSidebar = ({ className }: AppSidebarProps) => {
               ) : (
                 <button
                   onClick={() => navigate(item.href)}
-                  className={`w-full flex items-center gap-3 px-3 py-2 rounded text-sm transition-colors ${
-                    isActive(item.href)
-                      ? 'bg-primary/10 text-primary font-medium'
-                      : 'text-foreground hover:bg-accent'
-                  } ${isCollapsed ? 'justify-center' : ''}`}
+                  className={`w-full flex items-center gap-3 px-3 py-2 rounded text-sm transition-colors ${isActive(item.href)
+                    ? 'bg-primary/10 text-primary font-medium'
+                    : 'text-foreground hover:bg-gray-100 dark:hover:bg-gray-800'
+                    } ${isCollapsed ? 'justify-center' : ''}`}
                   title={isCollapsed ? item.label : undefined}
                 >
                   <span className="flex-shrink-0">{item.icon}</span>
@@ -239,20 +226,18 @@ const AppSidebar = ({ className }: AppSidebarProps) => {
       <div className="p-2 border-t border-border space-y-1">
         <button
           onClick={toggleTheme}
-          className={`w-full flex items-center gap-3 px-3 py-2 rounded text-sm transition-colors hover:bg-accent ${
-            isCollapsed ? 'justify-center' : ''
-          }`}
+          className={`w-full flex items-center gap-3 px-3 py-2 rounded text-sm transition-colors hover:bg-gray-100 dark:hover:bg-gray-800 ${isCollapsed ? 'justify-center' : ''
+            }`}
           title={isCollapsed ? (theme === 'dark' ? 'Light Mode' : 'Dark Mode') : undefined}
         >
           {theme === 'dark' ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
           {!isCollapsed && <span>{theme === 'dark' ? 'Light Mode' : 'Dark Mode'}</span>}
         </button>
-        
+
         <button
           onClick={handleSignOut}
-          className={`w-full flex items-center gap-3 px-3 py-2 rounded text-sm transition-colors text-red-600 hover:bg-red-50 dark:hover:bg-red-950/30 ${
-            isCollapsed ? 'justify-center' : ''
-          }`}
+          className={`w-full flex items-center gap-3 px-3 py-2 rounded text-sm transition-colors text-red-600 hover:bg-red-50 dark:hover:bg-red-950/30 ${isCollapsed ? 'justify-center' : ''
+            }`}
           title={isCollapsed ? 'Sign Out' : undefined}
         >
           <LogOut className="h-4 w-4" />

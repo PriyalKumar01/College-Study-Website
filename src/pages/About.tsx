@@ -2,7 +2,7 @@ import { motion } from 'framer-motion';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Github, Linkedin, Mail, ExternalLink, Heart, Users, BookOpen, Award } from 'lucide-react';
+import { Github, Linkedin, Mail, ExternalLink, Heart, Users, BookOpen, Award, Briefcase, FileText, Rocket } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 
 const About = () => {
@@ -17,34 +17,38 @@ const About = () => {
     {
       title: 'Notes Sharing',
       description: 'Share and access quality study materials across all branches and semesters',
-      icon: <BookOpen className="h-6 w-6" />,
+      icon: <BookOpen className="h-6 w-6 text-white" />,
+      gradient: 'bg-gradient-to-br from-blue-500 to-indigo-600',
     },
     {
       title: 'Resume Builder',
       description: 'Create professional, ATS-friendly resumes with our guided builder',
-      icon: <Award className="h-6 w-6" />,
+      icon: <FileText className="h-6 w-6 text-white" />,
+      gradient: 'bg-gradient-to-br from-purple-500 to-pink-600',
     },
     {
       title: 'Career Opportunities',
       description: 'Discover internships and job openings from top companies',
-      icon: <Users className="h-6 w-6" />,
+      icon: <Briefcase className="h-6 w-6 text-white" />,
+      gradient: 'bg-gradient-to-br from-orange-500 to-red-600',
     },
     {
       title: 'Community Driven',
       description: 'Built by students, for students - join our growing academic community',
-      icon: <Heart className="h-6 w-6" />,
+      icon: <Rocket className="h-6 w-6 text-white" />,
+      gradient: 'bg-gradient-to-br from-emerald-500 to-teal-600',
     },
   ];
 
   const technologies = [
-    'React', 'TypeScript', 'Tailwind CSS', 'Framer Motion', 
+    'React', 'TypeScript', 'Tailwind CSS', 'Framer Motion',
     'Clerk Auth', 'Shadcn/ui', 'Lucide Icons', 'Vite'
   ];
 
   return (
     <div className="min-h-screen bg-gradient-hero">
       <Navbar />
-      
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <motion.div
@@ -57,7 +61,7 @@ const About = () => {
             About College Study
           </h1>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-            Empowering students with comprehensive academic resources, note sharing, 
+            Empowering students with comprehensive academic resources, note sharing,
             and career development tools. Built with ❤️ for the student community.
           </p>
         </motion.div>
@@ -72,9 +76,9 @@ const About = () => {
           <Card className="gradient-card max-w-4xl mx-auto">
             <CardHeader className="text-center">
               <div className="w-32 h-32 mx-auto mb-6 rounded-full overflow-hidden border-4 border-primary shadow-lg">
-                <img 
-                  src="/lovable-uploads/958026bc-6d17-4c26-851b-51683b70eedf.png" 
-                  alt="Priyal Kumar - Founder" 
+                <img
+                  src="/lovable-uploads/958026bc-6d17-4c26-851b-51683b70eedf.png"
+                  alt="Priyal Kumar - Founder"
                   className="w-full h-full object-cover"
                 />
               </div>
@@ -88,13 +92,13 @@ const About = () => {
                 <div>
                   <h3 className="font-semibold text-lg mb-4">About Priyal</h3>
                   <p className="text-muted-foreground mb-6">
-                    <strong>Priyal Kumar</strong> — Guide & mentor to 10K+ students across platforms. 
-                    Founder of CodeXtream. Passionate about student communities, technical education, 
-                    and open learning. As a computer science student, Priyal recognized the challenges 
-                    students face in accessing quality study materials and career guidance, inspiring 
+                    <strong>Priyal Kumar</strong> — Guide & mentor to 10K+ students across platforms.
+                    Founder of CodeXtream. Passionate about student communities, technical education,
+                    and open learning. As a computer science student, Priyal recognized the challenges
+                    students face in accessing quality study materials and career guidance, inspiring
                     the creation of College Study Hub.
                   </p>
-                  
+
                   <div className="flex gap-3">
                     <Button variant="outline" size="sm" asChild>
                       <a href="mailto:priyalkumar06@gmail.com" className="flex items-center gap-2">
@@ -116,7 +120,7 @@ const About = () => {
                     </Button>
                   </div>
                 </div>
-                
+
                 <div>
                   <h3 className="font-semibold text-lg mb-4">Achievements</h3>
                   <div className="space-y-3">
@@ -158,7 +162,7 @@ const About = () => {
               >
                 <Card className="feature-card h-full text-center">
                   <CardHeader>
-                    <div className="w-12 h-12 bg-gradient-primary rounded-full flex items-center justify-center text-white mx-auto mb-4">
+                    <div className={`w-14 h-14 ${feature.gradient} rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg`}>
                       {feature.icon}
                     </div>
                     <CardTitle className="text-lg">{feature.title}</CardTitle>
@@ -211,12 +215,12 @@ const About = () => {
             </CardHeader>
             <CardContent>
               <p className="text-lg text-muted-foreground leading-relaxed">
-                To create a comprehensive academic ecosystem where students can easily share knowledge, 
-                access quality study materials, build professional profiles, and discover career opportunities. 
-                We believe in the power of collaboration and aim to make quality education resources 
+                To create a comprehensive academic ecosystem where students can easily share knowledge,
+                access quality study materials, build professional profiles, and discover career opportunities.
+                We believe in the power of collaboration and aim to make quality education resources
                 accessible to every student, regardless of their background or circumstances.
               </p>
-              
+
               <div className="mt-8">
                 <Button asChild className="btn-hero">
                   <a href="/" className="flex items-center gap-2">

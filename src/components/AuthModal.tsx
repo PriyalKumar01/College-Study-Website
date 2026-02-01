@@ -45,7 +45,7 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'signin' }: AuthModalProps) 
   const [step, setStep] = useState<'form' | 'otp' | 'reset-password'>('form');
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  
+
   // Form fields
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -57,18 +57,18 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'signin' }: AuthModalProps) 
   const [branch, setBranch] = useState('');
   const [year, setYear] = useState('');
   const [acceptedTerms, setAcceptedTerms] = useState(false);
-  
+
   // OTP verification
   const [otp, setOtp] = useState('');
   const [generatedOtp, setGeneratedOtp] = useState('');
   const [otpCreatedAt, setOtpCreatedAt] = useState<number | null>(null);
   const [emailVerified, setEmailVerified] = useState(false);
   const [resendTimer, setResendTimer] = useState(0);
-  
+
   // Validation errors (touched state)
   const [touched, setTouched] = useState<Record<string, boolean>>({});
   const [isSendingOtp, setIsSendingOtp] = useState(false);
-  
+
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -125,14 +125,14 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'signin' }: AuthModalProps) 
   const passwordStrength = useMemo(() => {
     const pwd = mode === 'forgot' ? newPassword : password;
     if (!pwd) return { score: 0, label: '', color: '' };
-    
+
     let score = 0;
     if (pwd.length >= 6) score++;
     if (pwd.length >= 8) score++;
     if (/[A-Z]/.test(pwd)) score++;
     if (/[0-9]/.test(pwd)) score++;
     if (/[^A-Za-z0-9]/.test(pwd)) score++;
-    
+
     if (score <= 2) return { score, label: 'Weak', color: 'bg-red-500' };
     if (score <= 3) return { score, label: 'Medium', color: 'bg-yellow-500' };
     if (score <= 4) return { score, label: 'Strong', color: 'bg-green-500' };
@@ -205,13 +205,13 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'signin' }: AuthModalProps) 
       const newOtp = generateOTP();
       setGeneratedOtp(newOtp);
       setOtpCreatedAt(Date.now());
-      
+
       await sendOTPEmail(email, newOtp, isPasswordReset);
-      
+
       setStep('otp');
       setResendTimer(60);
       setOtp('');
-      
+
       toast({
         title: "Verification code sent",
         description: `We've sent a 6-digit code to ${email}. Code expires in 2 minutes.`,
@@ -281,7 +281,7 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'signin' }: AuthModalProps) 
 
   const handleResendOTP = async () => {
     if (resendTimer > 0 || isSendingOtp) return;
-    
+
     setIsSendingOtp(true);
     setIsLoading(true);
     try {
@@ -289,9 +289,9 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'signin' }: AuthModalProps) 
       setGeneratedOtp(newOtp);
       setOtpCreatedAt(Date.now());
       setOtp('');
-      
+
       await sendOTPEmail(email, newOtp, mode === 'forgot');
-      
+
       setResendTimer(60);
       toast({
         title: "New code sent",
@@ -322,7 +322,7 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'signin' }: AuthModalProps) 
     setIsLoading(true);
     try {
       const { error } = await supabase.auth.updateUser({ password: newPassword });
-      
+
       if (error) throw error;
 
       toast({
@@ -344,7 +344,7 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'signin' }: AuthModalProps) 
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     // Mark all required fields as touched
     setTouched({
       firstName: true,
@@ -459,7 +459,7 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'signin' }: AuthModalProps) 
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     // Mark fields as touched
     setTouched({ email: true, password: true });
 
@@ -566,7 +566,7 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'signin' }: AuthModalProps) 
           <ArrowLeft className="h-4 w-4" />
           Back
         </button>
-        
+
         <div className="text-center mb-6">
           <div className="w-14 h-14 mx-auto mb-4 bg-gray-100 rounded-full flex items-center justify-center">
             <Mail className="w-7 h-7 text-gray-700" />
@@ -588,7 +588,7 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'signin' }: AuthModalProps) 
             </p>
           )}
         </div>
-        
+
         <div className="flex justify-center mb-6">
           <InputOTP
             maxLength={6}
@@ -597,10 +597,10 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'signin' }: AuthModalProps) 
           >
             <InputOTPGroup>
               {[0, 1, 2, 3, 4, 5].map((index) => (
-                <InputOTPSlot 
-                  key={index} 
-                  index={index} 
-                  className="w-11 h-12 text-lg border-gray-300 rounded" 
+                <InputOTPSlot
+                  key={index}
+                  index={index}
+                  className="w-11 h-12 text-lg border-gray-300 rounded"
                 />
               ))}
             </InputOTPGroup>
@@ -659,7 +659,7 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'signin' }: AuthModalProps) 
         <h2 className="text-xl font-semibold text-gray-900 mb-1">Set New Password</h2>
         <p className="text-sm text-gray-500">Create a strong password for your account</p>
       </div>
-      
+
       <div className="space-y-4">
         <div>
           <Label htmlFor="newPassword" className="text-sm text-gray-700">
@@ -683,18 +683,17 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'signin' }: AuthModalProps) 
               {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
             </button>
           </div>
-          
+
           {newPassword && (
             <div className="mt-2 space-y-1">
               <div className="flex gap-1">
                 {[1, 2, 3, 4, 5].map((level) => (
                   <div
                     key={level}
-                    className={`h-1 flex-1 rounded ${
-                      level <= passwordStrength.score 
-                        ? passwordStrength.color 
+                    className={`h-1 flex-1 rounded ${level <= passwordStrength.score
+                        ? passwordStrength.color
                         : 'bg-gray-200'
-                    }`}
+                      }`}
                   />
                 ))}
               </div>
@@ -742,12 +741,12 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'signin' }: AuthModalProps) 
           <ArrowLeft className="h-4 w-4" />
           Back to Sign In
         </button>
-        
+
         <div className="text-center mb-6">
           <h2 className="text-xl font-semibold text-gray-900 mb-1">Forgot Password?</h2>
           <p className="text-sm text-gray-500">Enter your email and we'll send you a code to reset it</p>
         </div>
-        
+
         <form onSubmit={handleForgotPassword} className="space-y-4">
           <div>
             <Label htmlFor="forgot-email" className="text-sm text-gray-700">
@@ -802,7 +801,7 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'signin' }: AuthModalProps) 
           <h2 className="text-xl font-semibold text-gray-900 mb-1">Welcome Back</h2>
           <p className="text-sm text-gray-500">Sign in to continue your learning journey</p>
         </div>
-        
+
         <form onSubmit={handleSignIn} className="space-y-4">
           <div>
             <Label htmlFor="signin-email" className="text-sm text-gray-700">
@@ -901,7 +900,7 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'signin' }: AuthModalProps) 
           <h2 className="text-xl font-semibold text-gray-900 mb-1">Create Account</h2>
           <p className="text-sm text-gray-500">Join thousands of students on College Study</p>
         </div>
-        
+
         <form onSubmit={handleSignUp} className="space-y-3">
           {/* Name Fields */}
           <div className="grid grid-cols-2 gap-3">
@@ -970,9 +969,8 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'signin' }: AuthModalProps) 
                 }}
                 onBlur={() => setTouched(prev => ({ ...prev, email: true }))}
                 disabled={isLoading || emailVerified}
-                className={`h-9 pr-20 border-gray-300 rounded text-sm ${
-                  emailVerified ? 'bg-green-50 border-green-400' : signUpEmailError ? 'border-red-400' : ''
-                }`}
+                className={`h-9 pr-20 border-gray-300 rounded text-sm ${emailVerified ? 'bg-green-50 border-green-400' : signUpEmailError ? 'border-red-400' : ''
+                  }`}
               />
               <div className="absolute right-2 top-1/2 -translate-y-1/2">
                 {emailVerified ? (
@@ -1022,18 +1020,17 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'signin' }: AuthModalProps) 
               </button>
             </div>
             {touched.password && !password.trim() && <InlineError message="Required" />}
-            
+
             {password && (
               <div className="mt-1.5 space-y-1">
                 <div className="flex gap-1">
                   {[1, 2, 3, 4, 5].map((level) => (
                     <div
                       key={level}
-                      className={`h-1 flex-1 rounded ${
-                        level <= passwordStrength.score 
-                          ? passwordStrength.color 
+                      className={`h-1 flex-1 rounded ${level <= passwordStrength.score
+                          ? passwordStrength.color
                           : 'bg-gray-200'
-                      }`}
+                        }`}
                     />
                   ))}
                 </div>
@@ -1147,13 +1144,13 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'signin' }: AuthModalProps) 
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent 
+      <DialogContent
         hideDefaultClose
-        className="sm:max-w-[420px] w-[95vw] h-auto max-h-[90vh] p-0 gap-0 bg-white border border-gray-200 shadow-2xl rounded overflow-hidden flex flex-col"
+        className="sm:max-w-[420px] w-[95vw] h-[90vh] p-0 gap-0 bg-white border border-gray-200 shadow-2xl rounded overflow-hidden flex flex-col"
       >
         <DialogTitle className="sr-only">Authentication</DialogTitle>
         <DialogDescription className="sr-only">Sign in or create an account</DialogDescription>
-        
+
         {/* Header - Fixed */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 flex-shrink-0">
           <div className="flex items-center gap-3">

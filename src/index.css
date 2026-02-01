@@ -4,200 +4,219 @@
 
 /* College Study Hub Design System */
 
-@layer base {
-  :root {
-    /* College-themed color palette */
-    --background: 250 100% 99%;
-    --foreground: 225 39% 21%;
+:root {
+  /* College-themed color palette */
+  --background: 250 100% 99%;
+  --foreground: 225 39% 21%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 225 39% 21%;
+  --card: 0 0% 100%;
+  --card-foreground: 225 39% 21%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 225 39% 21%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 225 39% 21%;
 
-    /* Primary - Academic Blue */
-    --primary: 235 69% 61%;
-    --primary-foreground: 0 0% 100%;
-    --primary-light: 235 69% 71%;
-    --primary-dark: 235 69% 51%;
+  /* Primary - Academic Blue */
+  --primary: 235 69% 61%;
+  --primary-foreground: 0 0% 100%;
+  --primary-light: 235 69% 71%;
+  --primary-dark: 235 69% 51%;
 
-    /* Secondary - Study Green */
-    --secondary: 142 71% 45%;
-    --secondary-foreground: 0 0% 100%;
-    --secondary-light: 142 71% 55%;
+  /* Secondary - Study Green */
+  --secondary: 142 71% 45%;
+  --secondary-foreground: 0 0% 100%;
+  --secondary-light: 142 71% 55%;
 
-    /* Accent - Academic Purple */
-    --accent: 262 83% 58%;
-    --accent-foreground: 0 0% 100%;
+  /* Accent - Academic Purple */
+  --accent: 262 83% 58%;
+  --accent-foreground: 0 0% 100%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+  --muted: 210 40% 96.1%;
+  --muted-foreground: 215.4 16.3% 46.9%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+  --destructive: 0 84.2% 60.2%;
+  --destructive-foreground: 210 40% 98%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 235 69% 61%;
+  --border: 214.3 31.8% 91.4%;
+  --input: 214.3 31.8% 91.4%;
+  --ring: 235 69% 61%;
 
-    --radius: 0.75rem;
+  --radius: 0.75rem;
 
-    /* Study Hub specific colors */
-    --study-orange: 25 95% 53%;
-    --study-yellow: 45 93% 58%;
-    --success: 142 71% 45%;
-    --warning: 25 95% 53%;
-    --info: 199 89% 48%;
+  /* Study Hub specific colors */
+  --study-orange: 25 95% 53%;
+  --study-yellow: 45 93% 58%;
+  --success: 142 71% 45%;
+  --warning: 25 95% 53%;
+  --info: 199 89% 48%;
 
-    /* Gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(235 69% 61%), hsl(262 83% 58%));
-    --gradient-secondary: linear-gradient(135deg, hsl(142 71% 45%), hsl(199 89% 48%));
-    --gradient-hero: linear-gradient(135deg, hsl(235 69% 61% / 0.1), hsl(262 83% 58% / 0.1));
-    --gradient-card: linear-gradient(145deg, hsl(0 0% 100%), hsl(235 69% 98%));
+  /* Gradients */
+  --gradient-primary: linear-gradient(135deg, hsl(235 69% 61%), hsl(262 83% 58%));
+  --gradient-secondary: linear-gradient(135deg, hsl(142 71% 45%), hsl(199 89% 48%));
+  --gradient-hero: linear-gradient(135deg, hsl(235 69% 61% / 0.1), hsl(262 83% 58% / 0.1));
+  --gradient-card: linear-gradient(145deg, hsl(0 0% 100%), hsl(235 69% 98%));
 
-    /* Shadows */
-    --shadow-sm: 0 2px 4px hsl(235 69% 61% / 0.1);
-    --shadow-md: 0 4px 12px hsl(235 69% 61% / 0.15);
-    --shadow-lg: 0 8px 32px hsl(235 69% 61% / 0.2);
-    --shadow-glow: 0 0 20px hsl(235 69% 61% / 0.3);
+  /* Shadows */
+  --shadow-sm: 0 2px 4px hsl(235 69% 61% / 0.1);
+  --shadow-md: 0 4px 12px hsl(235 69% 61% / 0.15);
+  --shadow-lg: 0 8px 32px hsl(235 69% 61% / 0.2);
+  --shadow-glow: 0 0 20px hsl(235 69% 61% / 0.3);
 
-    /* Animations */
-    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    --transition-bounce: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  /* Animations */
+  --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-bounce: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.dark {
+  --background: 225 39% 11%;
+  --foreground: 210 40% 98%;
+
+  --card: 225 39% 16%;
+  --card-foreground: 210 40% 98%;
+
+  --popover: 225 39% 16%;
+  --popover-foreground: 210 40% 98%;
+
+  --primary: 235 69% 71%;
+  --primary-foreground: 225 39% 11%;
+
+  --secondary: 142 71% 55%;
+  --secondary-foreground: 225 39% 11%;
+
+  --accent: 262 83% 68%;
+  --accent-foreground: 225 39% 11%;
+
+  --muted: 225 39% 21%;
+  --muted-foreground: 215 20.2% 65.1%;
+
+  --destructive: 0 84.2% 70.2%;
+  --destructive-foreground: 210 40% 98%;
+
+  --border: 225 39% 21%;
+  --input: 225 39% 21%;
+  --ring: 235 69% 71%;
+
+  --gradient-hero: linear-gradient(135deg, hsl(235 69% 71% / 0.1), hsl(262 83% 68% / 0.1));
+  --gradient-card: linear-gradient(145deg, hsl(225 39% 16%), hsl(225 39% 21%));
+}
+
+* {
+  @apply border-border;
+}
+
+body {
+  @apply bg-background text-foreground font-sans;
+}
+
+/* Hero section gradient background */
+.hero-gradient {
+  background: var(--gradient-hero);
+}
+
+/* Card with gradient background */
+.gradient-card {
+  background: var(--gradient-card);
+  box-shadow: var(--shadow-md);
+}
+
+/* Animated button variants */
+.btn-hero {
+  background: var(--gradient-primary);
+  color: hsl(var(--primary-foreground));
+  transition: var(--transition-smooth);
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-hero:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-glow);
+}
+
+.btn-hero::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, hsl(var(--primary-foreground) / 0.2), transparent);
+  transition: left 0.5s;
+}
+
+.btn-hero:hover::before {
+  left: 100%;
+}
+
+/* Animated counters */
+.animate-counter {
+  background: var(--gradient-card);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  text-align: center;
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition-smooth);
+}
+
+.animate-counter:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+}
+
+/* Floating animation */
+@keyframes float {
+
+  0%,
+  100% {
+    transform: translateY(0px);
   }
 
-  .dark {
-    --background: 225 39% 11%;
-    --foreground: 210 40% 98%;
-
-    --card: 225 39% 16%;
-    --card-foreground: 210 40% 98%;
-
-    --popover: 225 39% 16%;
-    --popover-foreground: 210 40% 98%;
-
-    --primary: 235 69% 71%;
-    --primary-foreground: 225 39% 11%;
-
-    --secondary: 142 71% 55%;
-    --secondary-foreground: 225 39% 11%;
-
-    --accent: 262 83% 68%;
-    --accent-foreground: 225 39% 11%;
-
-    --muted: 225 39% 21%;
-    --muted-foreground: 215 20.2% 65.1%;
-
-    --destructive: 0 84.2% 70.2%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 225 39% 21%;
-    --input: 225 39% 21%;
-    --ring: 235 69% 71%;
-
-    --gradient-hero: linear-gradient(135deg, hsl(235 69% 71% / 0.1), hsl(262 83% 68% / 0.1));
-    --gradient-card: linear-gradient(145deg, hsl(225 39% 16%), hsl(225 39% 21%));
+  50% {
+    transform: translateY(-10px);
   }
 }
 
-@layer base {
-  * {
-    @apply border-border;
+.float-animation {
+  animation: float 6s ease-in-out infinite;
+}
+
+/* Pulse glow effect */
+@keyframes pulse-glow {
+
+  0%,
+  100% {
+    box-shadow: 0 0 5px hsl(var(--primary) / 0.5);
   }
 
-  body {
-    @apply bg-background text-foreground font-sans;
+  50% {
+    box-shadow: 0 0 20px hsl(var(--primary) / 0.8), 0 0 30px hsl(var(--primary) / 0.6);
   }
 }
 
-@layer components {
-  /* Hero section gradient background */
-  .hero-gradient {
-    background: var(--gradient-hero);
-  }
+.pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
 
-  /* Card with gradient background */
-  .gradient-card {
-    background: var(--gradient-card);
-    box-shadow: var(--shadow-md);
-  }
+/* Feature card hover effects */
+.feature-card {
+  background: var(--gradient-card);
+  border-radius: var(--radius);
+  padding: 2rem;
+  transition: var(--transition-bounce);
+  border: 1px solid hsl(var(--border));
+}
 
-  /* Animated button variants */
-  .btn-hero {
-    background: var(--gradient-primary);
-    color: hsl(var(--primary-foreground));
-    transition: var(--transition-smooth);
-    position: relative;
-    overflow: hidden;
-  }
+.feature-card:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: var(--shadow-lg);
+}
 
-  .btn-hero:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-glow);
+/* Animation for Infinite Moving Cards */
+@keyframes scroll {
+  to {
+    transform: translate(calc(-50% - 0.5rem));
   }
+}
 
-  .btn-hero::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, hsl(var(--primary-foreground) / 0.2), transparent);
-    transition: left 0.5s;
-  }
-
-  .btn-hero:hover::before {
-    left: 100%;
-  }
-
-  /* Animated counters */
-  .animate-counter {
-    background: var(--gradient-card);
-    border-radius: var(--radius);
-    padding: 1.5rem;
-    text-align: center;
-    box-shadow: var(--shadow-sm);
-    transition: var(--transition-smooth);
-  }
-
-  .animate-counter:hover {
-    transform: translateY(-4px);
-    box-shadow: var(--shadow-md);
-  }
-
-  /* Floating animation */
-  @keyframes float {
-    0%, 100% { transform: translateY(0px); }
-    50% { transform: translateY(-10px); }
-  }
-
-  .float-animation {
-    animation: float 6s ease-in-out infinite;
-  }
-
-  /* Pulse glow effect */
-  @keyframes pulse-glow {
-    0%, 100% { box-shadow: 0 0 5px hsl(var(--primary) / 0.5); }
-    50% { box-shadow: 0 0 20px hsl(var(--primary) / 0.8), 0 0 30px hsl(var(--primary) / 0.6); }
-  }
-
-  .pulse-glow {
-    animation: pulse-glow 2s ease-in-out infinite;
-  }
-
-  /* Feature card hover effects */
-  .feature-card {
-    background: var(--gradient-card);
-    border-radius: var(--radius);
-    padding: 2rem;
-    transition: var(--transition-bounce);
-    border: 1px solid hsl(var(--border));
-  }
-
-  .feature-card:hover {
-    transform: translateY(-8px) scale(1.02);
-    box-shadow: var(--shadow-lg);
-  }
+.animate-scroll {
+  animation: scroll var(--animation-duration, 40s) var(--animation-direction, forwards) linear infinite;
 }
