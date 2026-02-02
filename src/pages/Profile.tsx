@@ -9,8 +9,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, ArrowLeft, Edit3, Save, X, User, Mail, Phone, GraduationCap, Calendar, CheckCircle2 } from 'lucide-react';
-import Navbar from '@/components/Navbar';
+import { Loader2, ArrowLeft, Edit3, Save, X, User, Mail, Phone, GraduationCap, Calendar, CheckCircle2, UploadCloud } from 'lucide-react';
 
 interface ProfileData {
   first_name: string;
@@ -134,12 +133,13 @@ const Profile = () => {
     try {
       setUploadingAvatar(true);
       const fileExt = file.name.split('.').pop();
-      const fileName = `${user?.id}-${Math.random()}.${fileExt}`;
+      const fileName = `${user?.id}-${Date.now()}.${fileExt}`; // Use Date.now() for unique names
       const filePath = `${fileName}`;
 
+      // 1. Upload new file
       const { error: uploadError } = await supabase.storage
         .from('avatars')
-        .upload(filePath, file);
+        .upload(filePath, file, { upsert: true });
 
       if (uploadError) {
         throw uploadError;
@@ -149,8 +149,6 @@ const Profile = () => {
       return data.publicUrl;
     } catch (error: any) {
       console.error('Error uploading avatar:', error);
-      // Fallback: If avatars bucket doesn't exist or fails, we can't upload.
-      // For now, let's just return null and notify user.
       toast({
         title: "Avatar Upload Failed",
         description: "Could not upload image. Please check bucket permissions.",
@@ -179,7 +177,6 @@ const Profile = () => {
           finalAvatarUrl = publicUrl;
         } else {
           uploadFailed = true;
-          // We continue saving other fields even if upload failed
         }
       }
 
@@ -197,10 +194,6 @@ const Profile = () => {
         college: editedProfile.college,
         branch: editedProfile.branch,
         year: editedProfile.year,
-        // Only update avatar_url if we have a valid new one, or if we are just keeping the old one.
-        // If upload failed, we keep the previous URL from editedProfile (which was init from profile)
-        // Wait, if upload failed, `finalAvatarUrl` is `editedProfile.avatar_url`. 
-        // If the user changed the file, they expect a new URL. If we keep the old one, it's fine as fallback.
         avatar_url: finalAvatarUrl,
       };
 
@@ -257,7 +250,7 @@ const Profile = () => {
         toast({
           title: "Profile saved partially",
           description: "Details updated, but avatar could not be uploaded due to storage permissions.",
-          variant: "destructive", // Orange/Red waring
+          variant: "destructive",
         });
       } else {
         toast({
@@ -268,11 +261,10 @@ const Profile = () => {
     } catch (error: any) {
       console.error('Error saving profile:', error);
 
-      // Handle duplicate key violation (specifically for mobile number)
       if (error.code === '23505' || error.message?.includes('profile_mobile_no')) {
         toast({
           title: "Contact Number Exists",
-          description: "This mobile number is already linked to another account. Please use a different number.",
+          description: "This mobile number is already linked to another account.",
           variant: "destructive",
         });
       } else {
@@ -309,264 +301,220 @@ const Profile = () => {
     return (first + last).toUpperCase() || 'U';
   };
 
-  const isMobileReadOnly = !!profile.mobile_number; // Read-only if it already has a value saved in DB
-
   if (authLoading || isLoading) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Back Button */}
-        <button
-          onClick={() => navigate(-1)}
-          className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground mb-6"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          Back
-        </button>
+    <div className="min-h-screen bg-slate-50 relative pb-10">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+        {/* Navigation Bar */}
+        <div className="flex items-center justify-between mb-8">
+          <button
+            onClick={() => navigate(-1)}
+            className="group flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-slate-800 transition-colors"
+          >
+            <div className="w-8 h-8 rounded-full bg-white border border-slate-200 flex items-center justify-center group-hover:border-slate-400">
+              <ArrowLeft className="h-4 w-4" />
+            </div>
+            Back to Dashboard
+          </button>
+        </div>
 
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.4 }}
         >
-          <Card className="border border-border">
-            <CardHeader className="border-b border-border pb-6">
-              <div className="flex items-center justify-between">
-                <CardTitle className="text-2xl font-semibold text-foreground">My Profile</CardTitle>
-                {!isEditing ? (
-                  <Button
-                    size="sm"
-                    onClick={() => setIsEditing(true)}
-                    className="gap-2 bg-blue-600 hover:bg-blue-700 text-white shadow-sm transition-all duration-200"
-                  >
-                    <Edit3 className="h-4 w-4" />
-                    Edit Profile
-                  </Button>
-                ) : (
-                  <div className="flex gap-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={handleCancel}
-                      disabled={isSaving}
-                    >
-                      <X className="h-4 w-4 mr-1" />
-                      Cancel
-                    </Button>
-                    <Button
-                      size="sm"
-                      onClick={handleSave}
-                      disabled={isSaving}
-                      className="bg-blue-600 hover:bg-blue-700 text-white shadow-sm transition-all duration-200"
-                    >
-                      {isSaving ? (
-                        <Loader2 className="h-4 w-4 animate-spin mr-1" />
-                      ) : (
-                        <Save className="h-4 w-4 mr-1" />
-                      )}
-                      Save
-                    </Button>
-                  </div>
-                )}
-              </div>
-            </CardHeader>
+          <Card className="border-0 shadow-xl overflow-hidden rounded-2xl bg-white">
+            {/* Colored Header Banner */}
+            <div className="h-32 bg-gradient-to-r from-blue-600 to-indigo-700 relative">
+              <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20"></div>
+            </div>
 
-            <CardContent className="pt-6">
-              {/* Avatar Section */}
-              <div className="flex flex-col items-center mb-8">
-                <div className="relative group">
-                  <Avatar className="h-24 w-24 border-2 border-border cursor-pointer">
-                    <AvatarImage src={avatarPreview || editedProfile.avatar_url || profile.avatar_url} className="object-cover" />
-                    <AvatarFallback className="text-2xl bg-gray-100 text-gray-600">
-                      {getInitials()}
-                    </AvatarFallback>
-                  </Avatar>
-                  {isEditing && (
-                    <>
+            <CardContent className="px-8 pb-8 -mt-16">
+              {/* Header Section with Avatar */}
+              <div className="flex flex-col md:flex-row items-start md:items-end justify-between gap-6 mb-8">
+                <div className="flex flex-col md:flex-row items-center md:items-end gap-6">
+                  <div className="relative group">
+                    <Avatar className="h-32 w-32 border-4 border-white shadow-lg ring-2 ring-slate-100 bg-white">
+                      <AvatarImage src={avatarPreview || editedProfile.avatar_url || profile.avatar_url} className="object-cover" />
+                      <AvatarFallback className="text-4xl bg-gradient-to-br from-slate-100 to-slate-200 text-slate-500">
+                        {getInitials()}
+                      </AvatarFallback>
+                    </Avatar>
+
+                    {isEditing && (
                       <label
                         htmlFor="avatar-upload"
-                        className="absolute inset-0 flex items-center justify-center bg-black/40 text-white opacity-0 group-hover:opacity-100 transition-opacity rounded-full cursor-pointer"
+                        className="absolute bottom-1 right-1 p-2 bg-blue-600 text-white rounded-full shadow-lg cursor-pointer hover:bg-blue-700 transition-transform active:scale-95"
                       >
-                        <span className="text-xs font-medium">Change</span>
+                        <UploadCloud className="h-4 w-4" />
+                        <input
+                          id="avatar-upload"
+                          type="file"
+                          accept="image/*"
+                          className="hidden"
+                          onChange={handleAvatarChange}
+                        />
                       </label>
-                      <input
-                        id="avatar-upload"
-                        type="file"
-                        accept="image/*"
-                        className="hidden"
-                        onChange={handleAvatarChange}
-                      />
-                    </>
-                  )}
+                    )}
+                  </div>
+
+                  <div className="text-center md:text-left mb-2">
+                    <h1 className="text-3xl font-bold text-slate-900">
+                      {profile.first_name || 'Student'} {profile.last_name}
+                    </h1>
+                    <p className="text-slate-500 font-medium">{profile.email}</p>
+                  </div>
                 </div>
 
-                <h2 className="text-xl font-semibold text-foreground mt-4">
-                  {profile.first_name} {profile.last_name}
-                </h2>
-                <p className="text-sm text-muted-foreground">{profile.email}</p>
+                <div className="w-full md:w-auto flex justify-center md:justify-end">
+                  {!isEditing ? (
+                    <Button
+                      onClick={() => setIsEditing(true)}
+                      className="bg-blue-600 hover:bg-blue-700 text-white shadow-md rounded-full px-6"
+                    >
+                      <Edit3 className="h-4 w-4 mr-2" />
+                      Edit Profile
+                    </Button>
+                  ) : (
+                    <div className="flex gap-3">
+                      <Button
+                        variant="outline"
+                        onClick={handleCancel}
+                        disabled={isSaving}
+                        className="rounded-full border-slate-200 hover:bg-slate-50"
+                      >
+                        <X className="h-4 w-4 mr-1" />
+                        Cancel
+                      </Button>
+                      <Button
+                        onClick={handleSave}
+                        disabled={isSaving}
+                        className="bg-emerald-600 hover:bg-emerald-700 text-white shadow-md rounded-full px-6"
+                      >
+                        {isSaving ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Save className="h-4 w-4 mr-2" />}
+                        Save Changes
+                      </Button>
+                    </div>
+                  )}
+                </div>
               </div>
 
-              {/* Profile Fields */}
-              <div className="space-y-6">
-                {/* Name Fields */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <Label className="text-sm text-muted-foreground flex items-center gap-2">
-                      <User className="h-4 w-4" />
-                      First Name
-                    </Label>
-                    {isEditing ? (
-                      <Input
-                        value={editedProfile.first_name}
-                        onChange={(e) => setEditedProfile({ ...editedProfile, first_name: e.target.value })}
-                        className="mt-1 h-10 border-gray-300"
-                      />
-                    ) : (
-                      <p className="mt-1 text-foreground font-medium">{profile.first_name || 'Not set'}</p>
-                    )}
-                  </div>
-                  <div>
-                    <Label className="text-sm text-muted-foreground flex items-center gap-2">
-                      <User className="h-4 w-4" />
-                      Last Name
-                    </Label>
-                    {isEditing ? (
-                      <Input
-                        value={editedProfile.last_name}
-                        onChange={(e) => setEditedProfile({ ...editedProfile, last_name: e.target.value })}
-                        className="mt-1 h-10 border-gray-300"
-                      />
-                    ) : (
-                      <p className="mt-1 text-foreground font-medium">{profile.last_name || 'Not set'}</p>
-                    )}
-                  </div>
-                </div>
+              {/* Form Fields */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-8">
 
-                {/* Email & Contact - Read Only Logic */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <Label className="text-sm text-muted-foreground flex items-center gap-2">
-                      <Mail className="h-4 w-4" />
-                      Email Address
-                    </Label>
-                    {/* Email is ALWAYS read-only - With Verified Badge */}
-                    <div className="relative">
-                      <Input
-                        value={profile.email}
-                        disabled
-                        className="mt-1 h-10 border-green-200 dark:border-green-800 bg-green-50/50 dark:bg-green-900/20 text-green-700 dark:text-green-300 pr-20 cursor-not-allowed"
-                      />
-                      <div className="absolute right-3 top-1/2 mt-0.5 -translate-y-1/2 flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-400">
-                        <CheckCircle2 className="h-3.5 w-3.5" />
-                        <span className="text-[10px] font-semibold tracking-wide uppercase">Verified</span>
-                      </div>
-                    </div>
-                    <p className="text-[10px] text-muted-foreground mt-1.5 flex items-center gap-1">
-                      <span className="w-1 h-1 rounded-full bg-muted-foreground/50"></span>
-                      Email cannot be changed
-                    </p>
+                {/* Personal Information */}
+                <div className="space-y-6">
+                  <div className="flex items-center gap-2 text-lg font-semibold text-slate-900 border-b pb-2">
+                    <User className="w-5 h-5 text-blue-600" />
+                    Personal Details
                   </div>
-                  <div>
-                    <Label className="text-sm text-muted-foreground flex items-center gap-2">
-                      <Phone className="h-4 w-4" />
-                      Contact Number
-                    </Label>
-                    {isEditing && !isMobileReadOnly ? (
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label className="text-slate-500 text-xs uppercase tracking-wider font-semibold">First Name</Label>
+                      {isEditing ? (
+                        <Input value={editedProfile.first_name} onChange={e => setEditedProfile({ ...editedProfile, first_name: e.target.value })} className="bg-slate-50 border-slate-200" />
+                      ) : (
+                        <p className="text-slate-900 font-medium text-lg">{profile.first_name || '-'}</p>
+                      )}
+                    </div>
+                    <div className="space-y-2">
+                      <Label className="text-slate-500 text-xs uppercase tracking-wider font-semibold">Last Name</Label>
+                      {isEditing ? (
+                        <Input value={editedProfile.last_name} onChange={e => setEditedProfile({ ...editedProfile, last_name: e.target.value })} className="bg-slate-50 border-slate-200" />
+                      ) : (
+                        <p className="text-slate-900 font-medium text-lg">{profile.last_name || '-'}</p>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label className="text-slate-500 text-xs uppercase tracking-wider font-semibold">Email</Label>
+                    <div className="flex items-center gap-2 bg-green-50 px-3 py-2 rounded-lg border border-green-100">
+                      <Mail className="w-4 h-4 text-green-600" />
+                      <span className="text-green-800 font-medium flex-1 truncate">{profile.email}</span>
+                      <span className="text-green-600 text-xs font-bold bg-white px-2 py-0.5 rounded-full shadow-sm flex items-center gap-1">
+                        <CheckCircle2 className="w-3 h-3" /> VERIFIED
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label className="text-slate-500 text-xs uppercase tracking-wider font-semibold">Contact Number</Label>
+                    {isEditing ? (
                       <Input
                         value={editedProfile.mobile_number}
-                        onChange={(e) => setEditedProfile({ ...editedProfile, mobile_number: e.target.value })}
-                        className="mt-1 h-10 border-gray-300 focus:border-primary focus:ring-1 focus:ring-primary"
-                        placeholder="Enter mobile number"
+                        onChange={e => setEditedProfile({ ...editedProfile, mobile_number: e.target.value })}
+                        placeholder="+91 9999999999"
+                        className="bg-slate-50 border-slate-200"
                       />
                     ) : (
-                      <div className="mt-1">
-                        {isEditing ? (
-                          <div className="relative">
-                            <Input
-                              value={profile.mobile_number || ''}
-                              disabled
-                              className="h-10 border-gray-300 bg-muted/50 text-muted-foreground cursor-not-allowed"
-                              placeholder="Not provided"
-                            />
-                            {isMobileReadOnly && (
-                              <p className="text-[10px] text-muted-foreground mt-1.5">
-                                Contact number locked after saving
-                              </p>
-                            )}
-                          </div>
+                      <p className="text-slate-900 font-medium text-lg flex items-center gap-2">
+                        {profile.mobile_number ? (
+                          <>
+                            <Phone className="w-4 h-4 text-slate-400" />
+                            {profile.mobile_number}
+                          </>
                         ) : (
-                          <p className="text-foreground font-medium">{profile.mobile_number || 'Not provided'}</p>
+                          <span className="text-slate-400 italic">Not provided</span>
                         )}
-                      </div>
-                    )}
-                    {isMobileReadOnly && isEditing && !profile.mobile_number && (
-                      <p className="text-xs text-muted-foreground mt-1">Contact cannot be changed after saving</p>
+                      </p>
                     )}
                   </div>
                 </div>
 
-                {/* College Details */}
-                <div>
-                  <Label className="text-sm text-muted-foreground flex items-center gap-2">
-                    <GraduationCap className="h-4 w-4" />
-                    College
-                  </Label>
-                  {isEditing ? (
-                    <Input
-                      value={editedProfile.college}
-                      onChange={(e) => setEditedProfile({ ...editedProfile, college: e.target.value })}
-                      className="mt-1 h-10 border-gray-300"
-                      placeholder="e.g., HBTU Kanpur"
-                    />
-                  ) : (
-                    <p className="mt-1 text-foreground font-medium">{profile.college || 'Not set'}</p>
-                  )}
-                </div>
+                {/* Academic Information */}
+                <div className="space-y-6">
+                  <div className="flex items-center gap-2 text-lg font-semibold text-slate-900 border-b pb-2">
+                    <GraduationCap className="w-5 h-5 text-indigo-600" />
+                    Academic Details
+                  </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <Label className="text-sm text-muted-foreground">Branch</Label>
+                  <div className="space-y-2">
+                    <Label className="text-slate-500 text-xs uppercase tracking-wider font-semibold">College</Label>
                     {isEditing ? (
-                      <Input
-                        value={editedProfile.branch}
-                        onChange={(e) => setEditedProfile({ ...editedProfile, branch: e.target.value })}
-                        className="mt-1 h-10 border-gray-300"
-                        placeholder="e.g., CSE"
-                      />
+                      <Input value={editedProfile.college} onChange={e => setEditedProfile({ ...editedProfile, college: e.target.value })} className="bg-slate-50 border-slate-200" />
                     ) : (
-                      <p className="mt-1 text-foreground font-medium">{profile.branch || 'Not set'}</p>
+                      <p className="text-slate-900 font-medium text-lg">{profile.college || 'Not set'}</p>
                     )}
                   </div>
-                  <div>
-                    <Label className="text-sm text-muted-foreground">Year</Label>
-                    {isEditing ? (
-                      <Input
-                        value={editedProfile.year}
-                        onChange={(e) => setEditedProfile({ ...editedProfile, year: e.target.value })}
-                        className="mt-1 h-10 border-gray-300"
-                        placeholder="e.g., 2nd Year"
-                      />
-                    ) : (
-                      <p className="mt-1 text-foreground font-medium">{profile.year || 'Not set'}</p>
-                    )}
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label className="text-slate-500 text-xs uppercase tracking-wider font-semibold">Branch</Label>
+                      {isEditing ? (
+                        <Input value={editedProfile.branch} onChange={e => setEditedProfile({ ...editedProfile, branch: e.target.value })} className="bg-slate-50 border-slate-200" />
+                      ) : (
+                        <p className="text-slate-900 font-medium text-lg">{profile.branch || '-'}</p>
+                      )}
+                    </div>
+                    <div className="space-y-2">
+                      <Label className="text-slate-500 text-xs uppercase tracking-wider font-semibold">Year</Label>
+                      {isEditing ? (
+                        <Input value={editedProfile.year} onChange={e => setEditedProfile({ ...editedProfile, year: e.target.value })} className="bg-slate-50 border-slate-200" />
+                      ) : (
+                        <p className="text-slate-900 font-medium text-lg">{profile.year || '-'}</p>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="bg-slate-50 rounded-lg p-4 border border-slate-100 mt-6">
+                    <div className="flex items-center gap-2 text-slate-500 mb-1">
+                      <Calendar className="w-4 h-4" />
+                      <span className="text-xs font-semibold uppercase">Member Since</span>
+                    </div>
+                    <p className="text-slate-900 font-medium">{formatDate(profile.created_at)}</p>
                   </div>
                 </div>
 
-                {/* Registration Date */}
-                <div>
-                  <Label className="text-sm text-muted-foreground flex items-center gap-2">
-                    <Calendar className="h-4 w-4" />
-                    Registered On
-                  </Label>
-                  <p className="mt-1 text-foreground font-medium">{formatDate(profile.created_at)}</p>
-                </div>
               </div>
             </CardContent>
           </Card>

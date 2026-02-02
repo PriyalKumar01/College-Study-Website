@@ -510,17 +510,35 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'signin' }: AuthModalProps) 
         <div className="grid grid-cols-2 gap-3">
           <div>
             <Label>First Name<RequiredIndicator /></Label>
-            <Input value={firstName} onChange={e => setFirstName(e.target.value)} disabled={!emailVerified} />
+            <Input
+              value={firstName}
+              onChange={e => setFirstName(e.target.value)}
+              disabled={!emailVerified}
+              placeholder="e.g. Priyal"
+              className="border-slate-200 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+            />
           </div>
           <div>
             <Label>Last Name<RequiredIndicator /></Label>
-            <Input value={lastName} onChange={e => setLastName(e.target.value)} disabled={!emailVerified} />
+            <Input
+              value={lastName}
+              onChange={e => setLastName(e.target.value)}
+              disabled={!emailVerified}
+              placeholder="e.g. Kumar"
+              className="border-slate-200 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+            />
           </div>
         </div>
 
         <div>
           <Label>Contact (Optional)</Label>
-          <Input value={contactNo} onChange={e => setContactNo(e.target.value)} disabled={!emailVerified} />
+          <Input
+            value={contactNo}
+            onChange={e => setContactNo(e.target.value)}
+            disabled={!emailVerified}
+            placeholder="e.g. 9876543210"
+            className="border-slate-200 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+          />
         </div>
 
         <div>
@@ -531,7 +549,8 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'signin' }: AuthModalProps) 
               value={password}
               onChange={e => setPassword(e.target.value)}
               disabled={!emailVerified}
-              className="pr-10"
+              className="pr-10 border-slate-200 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+              placeholder="Create a strong password"
             />
             <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">
               {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -560,12 +579,36 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'signin' }: AuthModalProps) 
 
         <div>
           <Label>College<RequiredIndicator /></Label>
-          <Input value={college} onChange={e => setCollege(e.target.value)} disabled={!emailVerified} />
+          <Input
+            value={college}
+            onChange={e => setCollege(e.target.value)}
+            disabled={!emailVerified}
+            placeholder="e.g. HBTU Kanpur"
+            className="border-slate-200 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+          />
         </div>
 
         <div className="grid grid-cols-2 gap-3">
-          <div><Label>Branch</Label><Input value={branch} onChange={e => setBranch(e.target.value)} disabled={!emailVerified} /></div>
-          <div><Label>Year</Label><Input value={year} onChange={e => setYear(e.target.value)} disabled={!emailVerified} /></div>
+          <div>
+            <Label>Branch</Label>
+            <Input
+              value={branch}
+              onChange={e => setBranch(e.target.value)}
+              disabled={!emailVerified}
+              placeholder="e.g. CSE"
+              className="border-slate-200 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+            />
+          </div>
+          <div>
+            <Label>Year</Label>
+            <Input
+              value={year}
+              onChange={e => setYear(e.target.value)}
+              disabled={!emailVerified}
+              placeholder="e.g. 2nd Year"
+              className="border-slate-200 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+            />
+          </div>
         </div>
 
         {/* hCAPTCHA PLACED HERE - BOTTOM */}
@@ -643,11 +686,22 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'signin' }: AuthModalProps) 
                 <form onSubmit={handleSignIn} className="space-y-4">
                   <div>
                     <Label>Email</Label>
-                    <Input value={email} onChange={e => setEmail(e.target.value.toLowerCase())} placeholder="you@example.com" />
+                    <Input
+                      value={email}
+                      onChange={e => setEmail(e.target.value.toLowerCase())}
+                      placeholder="e.g. student@college.edu"
+                      className="border-slate-200 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                    />
                   </div>
                   <div>
                     <Label>Password</Label>
-                    <Input type="password" value={password} onChange={e => setPassword(e.target.value)} />
+                    <Input
+                      type="password"
+                      value={password}
+                      onChange={e => setPassword(e.target.value)}
+                      placeholder="Enter your password"
+                      className="border-slate-200 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                    />
                   </div>
 
                   {/* hCAPTCHA for Login */}
