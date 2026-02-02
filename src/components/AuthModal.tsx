@@ -155,17 +155,34 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'signin' }: AuthModalProps) 
   };
 
   const sendOTPEmail = async (emailAddress: string, otpCode: string, isPasswordReset = false) => {
+    // Normalize the email address
+    const normalizedEmail = emailAddress.trim().toLowerCase();
+    
+    console.log('Sending OTP to:', normalizedEmail);
+    
     try {
       const { data, error } = await supabase.functions.invoke('send-otp-email', {
         body: {
-          email: emailAddress,
+          email: normalizedEmail,
           otp: otpCode,
           firstName: firstName || 'Student',
           isPasswordReset
         }
       });
 
-      if (error) throw error;
+      // Handle edge function invocation error
+      if (error) {
+        console.error('Edge function error:', error);
+        throw new Error(error.message || 'Failed to send verification email');
+      }
+      
+      // Handle response indicating failure
+      if (data && data.success === false) {
+        console.error('OTP send failed:', data.error);
+        throw new Error(data.error || 'Failed to send verification email');
+      }
+      
+      console.log('OTP email sent successfully to:', normalizedEmail);
       return data;
     } catch (error: any) {
       console.error('Error sending OTP email:', error);
