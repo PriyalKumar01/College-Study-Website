@@ -23,13 +23,59 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
-    const { email, otp, firstName, isPasswordReset }: OTPEmailRequest = await req.json();
+    const body = await req.json();
+    const { email, otp, firstName, isPasswordReset }: OTPEmailRequest = body;
 
-    console.log(`Sending OTP email to: ${email}`);
+    // CRITICAL: Log the exact email being processed
+    console.log("=== OTP EMAIL REQUEST ===");
+    console.log("Recipient email from request:", email);
+    console.log("OTP code:", otp);
+    console.log("Is password reset:", isPasswordReset);
+    console.log("Full request body:", JSON.stringify(body));
 
     // Validate required fields
-    if (!email || !otp) {
-      throw new Error("Missing required fields: email and otp are required");
+    if (!email || typeof email !== "string") {
+      console.error("VALIDATION ERROR: Email is missing or invalid");
+      return new Response(
+        JSON.stringify({ 
+          success: false, 
+          error: "Email address is required" 
+        }),
+        {
+          status: 400,
+          headers: { "Content-Type": "application/json", ...corsHeaders },
+        }
+      );
+    }
+
+    if (!otp || typeof otp !== "string") {
+      console.error("VALIDATION ERROR: OTP is missing or invalid");
+      return new Response(
+        JSON.stringify({ 
+          success: false, 
+          error: "OTP code is required" 
+        }),
+        {
+          status: 400,
+          headers: { "Content-Type": "application/json", ...corsHeaders },
+        }
+      );
+    }
+
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      console.error("VALIDATION ERROR: Invalid email format:", email);
+      return new Response(
+        JSON.stringify({ 
+          success: false, 
+          error: "Invalid email format" 
+        }),
+        {
+          status: 400,
+          headers: { "Content-Type": "application/json", ...corsHeaders },
+        }
+      );
     }
 
     const userName = firstName || "Student";
@@ -43,9 +89,19 @@ const handler = async (req: Request): Promise<Response> => {
       ? `Use the code below to reset your password. This code expires in 2 minutes.`
       : `Use the code below to verify your email and complete your registration. This code expires in 2 minutes.`;
 
-    const emailResponse = await resend.emails.send({
-      from: "College Study <noreply@resend.dev>",
-      to: [email],
+    // Use custom domain if configured, otherwise fall back to resend.dev (test mode)
+    // IMPORTANT: resend.dev only delivers to the account owner's email!
+    // For production, set RESEND_FROM to use a verified domain
+    const fromAddress = Deno.env.get("RESEND_FROM") || "College Study <onboarding@resend.dev>";
+    
+    console.log("Sending email with configuration:");
+    console.log("- From:", fromAddress);
+    console.log("- To:", email);
+    console.log("- Subject:", subject);
+
+    const emailPayload = {
+      from: fromAddress,
+      to: [email], // CRITICAL: This MUST be the user-provided email
       subject,
       html: `
 <!DOCTYPE html>
@@ -136,21 +192,75 @@ const handler = async (req: Request): Promise<Response> => {
 </body>
 </html>
       `,
-    });
+    };
 
-    console.log("OTP email sent successfully:", emailResponse);
+    console.log("Calling Resend API with payload to:", emailPayload.to);
+    
+    const emailResponse = await resend.emails.send(emailPayload);
 
-    return new Response(JSON.stringify({ success: true, data: emailResponse }), {
-      status: 200,
-      headers: {
-        "Content-Type": "application/json",
-        ...corsHeaders,
-      },
-    });
-  } catch (error: any) {
-    console.error("Error in send-otp-email function:", error);
+    console.log("Resend API response:", JSON.stringify(emailResponse));
+
+    // Check for Resend API error in response
+    if (emailResponse.error) {
+      console.error("Resend API returned error:", emailResponse.error);
+      
+      // Check for domain verification error
+      const errorMessage = emailResponse.error.message || "Failed to send email";
+      if (errorMessage.includes("verify a domain") || errorMessage.includes("testing emails")) {
+        return new Response(
+          JSON.stringify({ 
+            success: false, 
+            error: "Email delivery is currently in test mode. Please contact support.",
+            details: "The email service requires domain verification for production use."
+          }),
+          {
+            status: 503,
+            headers: { "Content-Type": "application/json", ...corsHeaders },
+          }
+        );
+      }
+      
+      return new Response(
+        JSON.stringify({ 
+          success: false, 
+          error: errorMessage 
+        }),
+        {
+          status: 400,
+          headers: { "Content-Type": "application/json", ...corsHeaders },
+        }
+      );
+    }
+
+    console.log("=== EMAIL SENT SUCCESSFULLY ===");
+    console.log("Email ID:", emailResponse.data?.id);
+    console.log("Sent to:", email);
+
     return new Response(
-      JSON.stringify({ success: false, error: error.message }),
+      JSON.stringify({ 
+        success: true, 
+        data: emailResponse.data,
+        message: `OTP sent to ${email}`
+      }), 
+      {
+        status: 200,
+        headers: {
+          "Content-Type": "application/json",
+          ...corsHeaders,
+        },
+      }
+    );
+  } catch (error: any) {
+    console.error("=== CRITICAL ERROR ===");
+    console.error("Error type:", error.name);
+    console.error("Error message:", error.message);
+    console.error("Full error:", JSON.stringify(error, Object.getOwnPropertyNames(error)));
+    
+    return new Response(
+      JSON.stringify({ 
+        success: false, 
+        error: error.message || "Failed to send verification email"
+      }),
       {
         status: 500,
         headers: { "Content-Type": "application/json", ...corsHeaders },
