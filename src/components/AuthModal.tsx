@@ -893,15 +893,14 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'signin' }: AuthModalProps) 
         initial={{ opacity: 0, x: 20 }}
         animate={{ opacity: 1, x: 0 }}
         exit={{ opacity: 0, x: -20 }}
-        className="p-6 overflow-y-auto"
-        style={{ maxHeight: 'calc(100% - 120px)' }}
+        className="p-6"
       >
-        <div className="text-center mb-6">
+        <div className="text-center mb-4">
           <h2 className="text-xl font-semibold text-gray-900 mb-1">Create Account</h2>
           <p className="text-sm text-gray-500">Join thousands of students on College Study</p>
         </div>
 
-        <form onSubmit={handleSignUp} className="space-y-3">
+        <form onSubmit={handleSignUp} className="space-y-2.5">
           {/* Name Fields */}
           <div className="grid grid-cols-2 gap-3">
             <div>
@@ -1146,7 +1145,7 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'signin' }: AuthModalProps) 
     <Dialog open={isOpen} onOpenChange={handleClose}>
       <DialogContent
         hideDefaultClose
-        className="sm:max-w-[420px] w-[95vw] h-[90vh] p-0 gap-0 bg-white border border-gray-200 shadow-2xl rounded overflow-hidden flex flex-col"
+        className="sm:max-w-[420px] w-[95vw] max-h-[85vh] p-0 gap-0 bg-white border border-gray-200 shadow-2xl rounded overflow-hidden flex flex-col"
       >
         <DialogTitle className="sr-only">Authentication</DialogTitle>
         <DialogDescription className="sr-only">Sign in or create an account</DialogDescription>
@@ -1169,7 +1168,7 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'signin' }: AuthModalProps) 
         </div>
 
         {/* Content - Scrollable */}
-        <div className="flex-1 overflow-hidden">
+        <div className="flex-1 overflow-y-auto min-h-0">
           <AnimatePresence mode="wait">
             {step === 'otp' && renderOTPScreen()}
             {step === 'reset-password' && renderResetPasswordScreen()}
