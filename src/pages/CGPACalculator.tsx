@@ -232,7 +232,7 @@ const CGPACalculator = () => {
   // Configuration Screen
   if (step === 'config') {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-background">
         <Navbar />
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <motion.div
@@ -240,14 +240,14 @@ const CGPACalculator = () => {
             animate={{ opacity: 1, y: 0 }}
             className="text-center mb-12"
           >
-            <div className="inline-flex items-center gap-3 px-4 py-2 bg-blue-500/10 rounded-full mb-6 border border-blue-500/20">
-              <GraduationCap className="h-6 w-6 text-blue-400" />
-              <span className="text-blue-400 font-semibold">Professional CGPA Calculator</span>
+            <div className="inline-flex items-center gap-3 px-4 py-2 bg-primary/10 rounded-full mb-6 border border-primary/20">
+              <GraduationCap className="h-6 w-6 text-primary" />
+              <span className="text-primary font-semibold">Professional CGPA Calculator</span>
             </div>
-            <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
-              Calculate Your <span className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">Academic Score</span>
+            <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
+              Calculate Your <span className="text-primary">Academic Score</span>
             </h1>
-            <p className="text-slate-400 text-lg">
+            <p className="text-muted-foreground text-lg">
               Enter your course details to get started
             </p>
           </motion.div>
@@ -257,10 +257,10 @@ const CGPACalculator = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
           >
-            <Card className="bg-white border-gray-200 shadow-xl">
-              <CardHeader className="border-b border-slate-700">
+            <Card className="bg-card border-border shadow-xl">
+              <CardHeader className="border-b border-border">
                 <CardTitle className="text-foreground flex items-center gap-2">
-                  <Sparkles className="h-5 w-5 text-blue-400" />
+                  <Sparkles className="h-5 w-5 text-primary" />
                   Course Configuration
                 </CardTitle>
               </CardHeader>
@@ -269,12 +269,12 @@ const CGPACalculator = () => {
                 <div className="space-y-2">
                   <Label className="text-foreground font-medium">Select Course *</Label>
                   <Select value={selectedCourse} onValueChange={setSelectedCourse}>
-                    <SelectTrigger className="bg-slate-900 border-slate-600 text-white">
+                    <SelectTrigger className="bg-background border-input text-foreground">
                       <SelectValue placeholder="Choose your course" />
                     </SelectTrigger>
-                    <SelectContent className="bg-slate-900 border-slate-700">
+                    <SelectContent className="bg-popover border-border">
                       {COURSES.map(course => (
-                        <SelectItem key={course} value={course} className="text-foreground focus:bg-gray-100">
+                        <SelectItem key={course} value={course} className="text-foreground focus:bg-accent">
                           {course}
                         </SelectItem>
                       ))}
@@ -288,25 +288,25 @@ const CGPACalculator = () => {
                     animate={{ opacity: 1, height: 'auto' }}
                     className="space-y-2"
                   >
-                    <Label className="text-slate-300 font-medium">Course Name *</Label>
+                    <Label className="text-foreground font-medium">Course Name *</Label>
                     <Input
                       placeholder="Enter your course name"
                       value={customCourse}
                       onChange={(e) => setCustomCourse(e.target.value)}
-                      className="bg-slate-900 border-slate-600 text-white placeholder:text-slate-500"
+                      className="bg-background border-input text-foreground placeholder:text-muted-foreground"
                     />
                   </motion.div>
                 )}
 
                 <div className="space-y-2">
-                  <Label className="text-slate-300 font-medium">Course Duration *</Label>
+                  <Label className="text-foreground font-medium">Course Duration *</Label>
                   <Select value={duration} onValueChange={setDuration}>
-                    <SelectTrigger className="bg-slate-900 border-slate-600 text-white">
+                    <SelectTrigger className="bg-background border-input text-foreground">
                       <SelectValue placeholder="Select duration" />
                     </SelectTrigger>
-                    <SelectContent className="bg-slate-900 border-slate-700">
+                    <SelectContent className="bg-popover border-border">
                       {DURATIONS.map(dur => (
-                        <SelectItem key={dur} value={dur} className="text-white focus:bg-slate-800 focus:text-white">
+                        <SelectItem key={dur} value={dur} className="text-foreground focus:bg-accent">
                           {dur}
                         </SelectItem>
                       ))}
@@ -315,14 +315,14 @@ const CGPACalculator = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <Label className="text-slate-300 font-medium">Score System *</Label>
+                  <Label className="text-foreground font-medium">Score System *</Label>
                   <Select value={scoreSystem} onValueChange={setScoreSystem}>
-                    <SelectTrigger className="bg-slate-900 border-slate-600 text-white">
+                    <SelectTrigger className="bg-background border-input text-foreground">
                       <SelectValue placeholder="Choose scoring system" />
                     </SelectTrigger>
-                    <SelectContent className="bg-slate-900 border-slate-700">
+                    <SelectContent className="bg-popover border-border">
                       {SCORE_SYSTEMS.map(system => (
-                        <SelectItem key={system} value={system} className="text-white focus:bg-slate-800 focus:text-white">
+                        <SelectItem key={system} value={system} className="text-foreground focus:bg-accent">
                           {system}
                         </SelectItem>
                       ))}
@@ -336,17 +336,17 @@ const CGPACalculator = () => {
                     animate={{ opacity: 1, height: 'auto' }}
                     className="space-y-2"
                   >
-                    <Label className="text-slate-300 font-medium">Current Semester *</Label>
+                    <Label className="text-foreground font-medium">Current Semester *</Label>
                     <Select
                       value={currentSemester.toString()}
                       onValueChange={(val) => setCurrentSemester(parseInt(val))}
                     >
-                      <SelectTrigger className="bg-slate-900 border-slate-600 text-white">
+                      <SelectTrigger className="bg-background border-input text-foreground">
                         <SelectValue placeholder="Select current semester" />
                       </SelectTrigger>
-                      <SelectContent className="bg-slate-900 border-slate-700">
+                      <SelectContent className="bg-popover border-border">
                         {Array.from({ length: getTotalSemesters() }, (_, i) => i + 1).map(sem => (
-                          <SelectItem key={sem} value={sem.toString()} className="text-white focus:bg-slate-800 focus:text-white">
+                          <SelectItem key={sem} value={sem.toString()} className="text-foreground focus:bg-accent">
                             Semester {sem}
                           </SelectItem>
                         ))}
@@ -357,7 +357,7 @@ const CGPACalculator = () => {
 
                 <Button
                   onClick={handleStartCalculation}
-                  className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold h-12 text-lg shadow-lg shadow-blue-500/25"
+                  className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold h-12 text-lg shadow-lg"
                 >
                   Start Calculation
                   <Calculator className="ml-2 h-5 w-5" />
@@ -372,7 +372,7 @@ const CGPACalculator = () => {
 
   // Data Entry Screen
   return (
-    <div className="min-h-screen bg-slate-900">
+    <div className="min-h-screen bg-background">
       <Navbar />
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
@@ -384,7 +384,7 @@ const CGPACalculator = () => {
           <Button
             onClick={() => { setStep('config'); setShowResults(false); }}
             variant="outline"
-            className="mb-4 bg-white border-gray-300 text-foreground hover:bg-gray-50"
+            className="mb-4"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
             Change Configuration
@@ -405,10 +405,10 @@ const CGPACalculator = () => {
             transition={{ delay: 0.1 }}
             className="mb-8"
           >
-            <Card className="bg-white border-gray-200 shadow-lg">
-              <CardHeader className="border-b border-slate-700">
+            <Card className="bg-card border-border shadow-lg">
+              <CardHeader className="border-b border-border">
                 <CardTitle className="text-foreground">📊 Previous Semesters (1 to {currentSemester - 1})</CardTitle>
-                <p className="text-sm text-slate-400">
+                <p className="text-sm text-muted-foreground">
                   {isPercentageSystem
                     ? 'Enter percentage for each completed semester'
                     : 'Enter SGPA and total credits for each completed semester'}
@@ -417,11 +417,11 @@ const CGPACalculator = () => {
               <CardContent className="p-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {previousSemesters.map((sem, index) => (
-                    <div key={index} className="p-4 bg-slate-900/50 rounded-lg border border-slate-700">
-                      <Label className="text-slate-300 font-semibold mb-3 block">Semester {sem.semester}</Label>
+                    <div key={index} className="p-4 bg-muted/50 rounded-lg border border-border">
+                      <Label className="text-foreground font-semibold mb-3 block">Semester {sem.semester}</Label>
                       {isPercentageSystem ? (
                         <div>
-                          <Label className="text-xs text-slate-400 mb-1.5 block">Percentage (%)</Label>
+                          <Label className="text-xs text-muted-foreground mb-1.5 block">Percentage (%)</Label>
                           <Input
                             type="number"
                             min="0"
@@ -430,13 +430,13 @@ const CGPACalculator = () => {
                             placeholder="85.50"
                             value={sem.percentage || ''}
                             onChange={(e) => updatePreviousSemester(index, 'percentage', parseFloat(e.target.value) || 0)}
-                            className="bg-slate-800 border-slate-600 text-white placeholder:text-slate-500"
+                            className="bg-background border-input text-foreground placeholder:text-muted-foreground"
                           />
                         </div>
                       ) : (
                         <div className="grid grid-cols-2 gap-3">
                           <div>
-                            <Label className="text-xs text-slate-400 mb-1.5 block">SGPA</Label>
+                            <Label className="text-xs text-muted-foreground mb-1.5 block">SGPA</Label>
                             <Input
                               type="number"
                               min="0"
@@ -445,11 +445,11 @@ const CGPACalculator = () => {
                               placeholder="8.5"
                               value={sem.sgpa || ''}
                               onChange={(e) => updatePreviousSemester(index, 'sgpa', parseFloat(e.target.value) || 0)}
-                              className="bg-slate-800 border-slate-600 text-white placeholder:text-slate-500"
+                              className="bg-background border-input text-foreground placeholder:text-muted-foreground"
                             />
                           </div>
                           <div>
-                            <Label className="text-xs text-slate-400 mb-1.5 block">Total Credits</Label>
+                            <Label className="text-xs text-muted-foreground mb-1.5 block">Total Credits</Label>
                             <Input
                               type="number"
                               min="1"
@@ -457,7 +457,7 @@ const CGPACalculator = () => {
                               placeholder="24"
                               value={sem.totalCredits || ''}
                               onChange={(e) => updatePreviousSemester(index, 'totalCredits', parseInt(e.target.value) || 0)}
-                              className="bg-slate-800 border-slate-600 text-white placeholder:text-slate-500"
+                              className="bg-background border-input text-foreground placeholder:text-muted-foreground"
                             />
                           </div>
                         </div>
@@ -477,10 +477,10 @@ const CGPACalculator = () => {
           transition={{ delay: 0.2 }}
           className="mb-8"
         >
-          <Card className="bg-slate-800/50 border-slate-700 backdrop-blur-sm">
-            <CardHeader className="border-b border-slate-700">
-              <CardTitle className="text-white">📚 Current Semester {currentSemester}</CardTitle>
-              <p className="text-sm text-slate-400">
+          <Card className="bg-card border-border shadow-lg">
+            <CardHeader className="border-b border-border">
+              <CardTitle className="text-foreground">📚 Current Semester {currentSemester}</CardTitle>
+              <p className="text-sm text-muted-foreground">
                 {isPercentageSystem
                   ? 'Add subjects with obtained marks and total marks'
                   : 'Add subjects with credits and grade points'}
@@ -488,46 +488,46 @@ const CGPACalculator = () => {
             </CardHeader>
             <CardContent className="p-6 space-y-4">
               {currentSubjects.map((subject) => (
-                <div key={subject.id} className={`grid ${isPercentageSystem ? 'md:grid-cols-4' : 'md:grid-cols-4'} gap-3 p-4 bg-slate-900/50 rounded-lg border border-slate-700`}>
+                <div key={subject.id} className={`grid ${isPercentageSystem ? 'md:grid-cols-4' : 'md:grid-cols-4'} gap-3 p-4 bg-muted/50 rounded-lg border border-border`}>
                   <div>
-                    <Label className="text-slate-300 text-sm mb-1.5 block">Subject Name</Label>
+                    <Label className="text-foreground text-sm mb-1.5 block">Subject Name</Label>
                     <Input
                       placeholder="e.g., Data Structures"
                       value={subject.name}
                       onChange={(e) => updateSubject(subject.id, 'name', e.target.value)}
-                      className="bg-slate-800 border-slate-600 text-white placeholder:text-slate-500"
+                      className="bg-background border-input text-foreground placeholder:text-muted-foreground"
                     />
                   </div>
 
                   {isPercentageSystem ? (
                     <>
                       <div>
-                        <Label className="text-slate-300 text-sm mb-1.5 block">Obtained Marks</Label>
+                        <Label className="text-foreground text-sm mb-1.5 block">Obtained Marks</Label>
                         <Input
                           type="number"
                           min="0"
                           placeholder="85"
                           value={subject.obtainedMarks || ''}
                           onChange={(e) => updateSubject(subject.id, 'obtainedMarks', parseFloat(e.target.value) || 0)}
-                          className="bg-slate-800 border-slate-600 text-white placeholder:text-slate-500"
+                          className="bg-background border-input text-foreground placeholder:text-muted-foreground"
                         />
                       </div>
                       <div>
-                        <Label className="text-slate-300 text-sm mb-1.5 block">Total Marks</Label>
+                        <Label className="text-foreground text-sm mb-1.5 block">Total Marks</Label>
                         <Input
                           type="number"
                           min="1"
                           placeholder="100"
                           value={subject.totalMarks || ''}
                           onChange={(e) => updateSubject(subject.id, 'totalMarks', parseFloat(e.target.value) || 0)}
-                          className="bg-slate-800 border-slate-600 text-white placeholder:text-slate-500"
+                          className="bg-background border-input text-foreground placeholder:text-muted-foreground"
                         />
                       </div>
                     </>
                   ) : (
                     <>
                       <div>
-                        <Label className="text-slate-300 text-sm mb-1.5 block">Credits</Label>
+                        <Label className="text-foreground text-sm mb-1.5 block">Credits</Label>
                         <Input
                           type="number"
                           min="1"
@@ -535,11 +535,11 @@ const CGPACalculator = () => {
                           placeholder="4"
                           value={subject.credits || ''}
                           onChange={(e) => updateSubject(subject.id, 'credits', parseInt(e.target.value) || 0)}
-                          className="bg-slate-800 border-slate-600 text-white placeholder:text-slate-500"
+                          className="bg-background border-input text-foreground placeholder:text-muted-foreground"
                         />
                       </div>
                       <div>
-                        <Label className="text-slate-300 text-sm mb-1.5 block">Grade Point</Label>
+                        <Label className="text-foreground text-sm mb-1.5 block">Grade Point</Label>
                         <Input
                           type="number"
                           min="0"
@@ -547,7 +547,7 @@ const CGPACalculator = () => {
                           placeholder="9"
                           value={subject.points || ''}
                           onChange={(e) => updateSubject(subject.id, 'points', parseFloat(e.target.value) || 0)}
-                          className="bg-slate-800 border-slate-600 text-white placeholder:text-slate-500"
+                          className="bg-background border-input text-foreground placeholder:text-muted-foreground"
                         />
                       </div>
                     </>
@@ -555,10 +555,10 @@ const CGPACalculator = () => {
 
                   <div className="flex items-end">
                     <Button
-                      variant="outline"
+                      variant="destructive"
                       size="sm"
                       onClick={() => removeSubject(subject.id)}
-                      className="bg-red-900/20 border-red-700/50 text-red-400 hover:bg-red-900/40 hover:text-red-300 w-full"
+                      className="w-full"
                     >
                       <Trash2 className="h-4 w-4" />
                     </Button>
@@ -568,7 +568,7 @@ const CGPACalculator = () => {
               <Button
                 variant="outline"
                 onClick={addSubject}
-                className="w-full bg-slate-900/50 border-slate-600 text-white hover:bg-slate-800"
+                className="w-full"
               >
                 <Plus className="h-4 w-4 mr-2" />
                 Add Subject
@@ -581,7 +581,7 @@ const CGPACalculator = () => {
         <div className="flex flex-wrap gap-4 justify-center mb-8">
           <Button
             onClick={calculateResults}
-            className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold h-12 px-8 shadow-lg shadow-blue-500/25"
+            className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold h-12 px-8 shadow-lg"
           >
             <Calculator className="h-5 w-5 mr-2" />
             Calculate {isPercentageSystem ? 'Percentage' : 'CGPA'}
@@ -590,7 +590,7 @@ const CGPACalculator = () => {
             <Button
               onClick={downloadResults}
               variant="outline"
-              className="bg-slate-800 border-slate-600 text-white hover:bg-slate-700 h-12 px-8"
+              className="h-12 px-8"
             >
               <Download className="h-5 w-5 mr-2" />
               Download Results
@@ -605,16 +605,16 @@ const CGPACalculator = () => {
             animate={{ opacity: 1, scale: 1 }}
             className="mb-8"
           >
-            <Card className="bg-gradient-to-br from-slate-800 to-slate-900 border-2 border-blue-500/50 shadow-2xl shadow-blue-500/20 backdrop-blur-sm">
-              <CardHeader className="text-center border-b border-slate-700 pb-6">
-                <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-500/10 rounded-full mb-4 mx-auto border border-blue-500/20">
-                  <Sparkles className="h-5 w-5 text-blue-400" />
-                  <span className="text-blue-400 font-semibold">Your Results</span>
+            <Card className="bg-card border-2 border-primary/50 shadow-2xl">
+              <CardHeader className="text-center border-b border-border pb-6">
+                <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 rounded-full mb-4 mx-auto border border-primary/20">
+                  <Sparkles className="h-5 w-5 text-primary" />
+                  <span className="text-primary font-semibold">Your Results</span>
                 </div>
 
                 <div className="space-y-4">
                   <div>
-                    <p className="text-slate-400 text-sm mb-2">
+                    <p className="text-muted-foreground text-sm mb-2">
                       Current Semester {isPercentageSystem ? 'Percentage' : 'SGPA'}
                     </p>
                     <p className={`text-4xl font-bold ${getCGPAColor(currentSGPA)}`}>
@@ -622,8 +622,8 @@ const CGPACalculator = () => {
                     </p>
                   </div>
 
-                  <div className="pt-4 border-t border-slate-700">
-                    <p className="text-slate-400 text-sm mb-2">
+                  <div className="pt-4 border-t border-border">
+                    <p className="text-muted-foreground text-sm mb-2">
                       Overall {isPercentageSystem ? 'Percentage' : 'CGPA'}
                     </p>
                     <p className={`text-6xl font-bold ${getCGPAColor(cgpa)}`}>
