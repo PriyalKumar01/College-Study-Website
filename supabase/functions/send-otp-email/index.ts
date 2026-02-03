@@ -1,7 +1,6 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
-import { Resend } from "npm:resend@2.0.0";
 
-const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
+const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -31,7 +30,6 @@ const handler = async (req: Request): Promise<Response> => {
     console.log("Recipient email from request:", email);
     console.log("OTP code:", otp);
     console.log("Is password reset:", isPasswordReset);
-    console.log("Full request body:", JSON.stringify(body));
 
     // Validate required fields
     if (!email || typeof email !== "string") {
@@ -90,8 +88,6 @@ const handler = async (req: Request): Promise<Response> => {
       : `Use the code below to verify your email and complete your registration. This code expires in 2 minutes.`;
 
     // Use custom domain if configured, otherwise fall back to resend.dev (test mode)
-    // IMPORTANT: resend.dev only delivers to the account owner's email!
-    // For production, set RESEND_FROM to use a verified domain
     const fromAddress = Deno.env.get("RESEND_FROM") || "College Study <onboarding@resend.dev>";
     
     console.log("Sending email with configuration:");
@@ -99,11 +95,7 @@ const handler = async (req: Request): Promise<Response> => {
     console.log("- To:", email);
     console.log("- Subject:", subject);
 
-    const emailPayload = {
-      from: fromAddress,
-      to: [email], // CRITICAL: This MUST be the user-provided email
-      subject,
-      html: `
+    const emailHtml = `
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -116,20 +108,12 @@ const handler = async (req: Request): Promise<Response> => {
     <tr>
       <td align="center" style="padding: 40px 20px;">
         <table role="presentation" style="max-width: 440px; width: 100%; background-color: #ffffff; border: 1px solid #e5e5e5;">
-          
-          <!-- Header -->
           <tr>
             <td style="padding: 32px 32px 24px; border-bottom: 1px solid #e5e5e5;">
               <table role="presentation" style="width: 100%;">
                 <tr>
                   <td>
-                    <img 
-                      src="https://axalbmmjqdezbkpffore.supabase.co/storage/v1/object/public/assets/college-study-logo.png" 
-                      alt="College Study" 
-                      style="height: 40px; width: auto;"
-                      onerror="this.style.display='none'"
-                    />
-                    <div style="display: inline-block; vertical-align: middle; margin-left: 12px;">
+                    <div style="display: inline-block; vertical-align: middle;">
                       <p style="margin: 0; font-size: 18px; font-weight: 600; color: #1a1a1a;">College Study</p>
                       <p style="margin: 0; font-size: 11px; color: #666666; text-transform: uppercase; letter-spacing: 0.5px;">Your Study Hub</p>
                     </div>
@@ -138,20 +122,15 @@ const handler = async (req: Request): Promise<Response> => {
               </table>
             </td>
           </tr>
-          
-          <!-- Content -->
           <tr>
             <td style="padding: 32px;">
               <h1 style="margin: 0 0 16px; font-size: 22px; font-weight: 600; color: #1a1a1a; text-align: center;">
                 ${heading}
               </h1>
-              
               <p style="margin: 0 0 24px; font-size: 14px; color: #4a4a4a; line-height: 1.6; text-align: center;">
                 Hi ${userName}! 👋<br><br>
                 ${message}
               </p>
-              
-              <!-- OTP Code Box -->
               <div style="background-color: #f9f9f9; border: 1px solid #e5e5e5; padding: 24px; text-align: center; margin-bottom: 24px;">
                 <p style="margin: 0 0 8px; font-size: 11px; color: #666666; text-transform: uppercase; letter-spacing: 1px; font-weight: 600;">
                   Your Verification Code
@@ -160,20 +139,15 @@ const handler = async (req: Request): Promise<Response> => {
                   ${otp}
                 </p>
               </div>
-              
               <p style="margin: 0 0 24px; font-size: 12px; color: #888888; text-align: center;">
                 ⚠️ Please don't share this code with anyone. Our team will never ask for it.
               </p>
-              
               <hr style="border: none; border-top: 1px solid #e5e5e5; margin: 24px 0;">
-              
               <p style="margin: 0; font-size: 12px; color: #888888; text-align: center; line-height: 1.6;">
                 If you didn't request this code, you can safely ignore this email.
               </p>
             </td>
           </tr>
-          
-          <!-- Footer -->
           <tr>
             <td style="padding: 20px 32px; background-color: #fafafa; border-top: 1px solid #e5e5e5; text-align: center;">
               <p style="margin: 0 0 4px; font-size: 13px; color: #4a4a4a;">
@@ -184,28 +158,41 @@ const handler = async (req: Request): Promise<Response> => {
               </p>
             </td>
           </tr>
-          
         </table>
       </td>
     </tr>
   </table>
 </body>
 </html>
-      `,
-    };
+    `;
 
-    console.log("Calling Resend API with payload to:", emailPayload.to);
+    // Use Resend API directly with fetch
+    const resendResponse = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${RESEND_API_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        from: fromAddress,
+        to: [email],
+        subject,
+        html: emailHtml,
+      }),
+    });
+
+    const resendData = await resendResponse.json();
     
-    const emailResponse = await resend.emails.send(emailPayload);
+    console.log("Resend API response status:", resendResponse.status);
+    console.log("Resend API response:", JSON.stringify(resendData));
 
-    console.log("Resend API response:", JSON.stringify(emailResponse));
-
-    // Check for Resend API error in response
-    if (emailResponse.error) {
-      console.error("Resend API returned error:", emailResponse.error);
+    // Check for error response
+    if (!resendResponse.ok || resendData.error) {
+      console.error("Resend API returned error:", resendData);
+      
+      const errorMessage = resendData.error?.message || resendData.message || "Failed to send email";
       
       // Check for domain verification error
-      const errorMessage = emailResponse.error.message || "Failed to send email";
       if (errorMessage.includes("verify a domain") || errorMessage.includes("testing emails")) {
         return new Response(
           JSON.stringify({ 
@@ -233,13 +220,13 @@ const handler = async (req: Request): Promise<Response> => {
     }
 
     console.log("=== EMAIL SENT SUCCESSFULLY ===");
-    console.log("Email ID:", emailResponse.data?.id);
+    console.log("Email ID:", resendData.id);
     console.log("Sent to:", email);
 
     return new Response(
       JSON.stringify({ 
         success: true, 
-        data: emailResponse.data,
+        data: resendData,
         message: `OTP sent to ${email}`
       }), 
       {
@@ -254,7 +241,6 @@ const handler = async (req: Request): Promise<Response> => {
     console.error("=== CRITICAL ERROR ===");
     console.error("Error type:", error.name);
     console.error("Error message:", error.message);
-    console.error("Full error:", JSON.stringify(error, Object.getOwnPropertyNames(error)));
     
     return new Response(
       JSON.stringify({ 
