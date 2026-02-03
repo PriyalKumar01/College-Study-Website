@@ -125,6 +125,17 @@ const Profile = () => {
       return;
     }
     const file = event.target.files[0];
+
+    // 2MB Text Size Limit
+    if (file.size > 2 * 1024 * 1024) {
+      toast({
+        title: "File too large",
+        description: "Please upload an image smaller than 2MB",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setAvatarFile(file);
     setAvatarPreview(URL.createObjectURL(file));
   };
@@ -168,7 +179,8 @@ const Profile = () => {
     let uploadFailed = false;
 
     try {
-      let finalAvatarUrl = editedProfile.avatar_url;
+      // Default to existing confirmed avatar URL, not the potentially optimistic one
+      let finalAvatarUrl = profile.avatar_url;
 
       if (avatarFile) {
         // Attempt upload
@@ -177,6 +189,8 @@ const Profile = () => {
           finalAvatarUrl = publicUrl;
         } else {
           uploadFailed = true;
+          // If upload failed, we keep the OLD avatar_url (finalAvatarUrl = profile.avatar_url)
+          // instead of setting it to null or the optimistic one
         }
       }
 
@@ -222,7 +236,7 @@ const Profile = () => {
       }
 
       // Also update user metadata
-      await supabase.auth.updateUser({
+      const { error: userUpdateError } = await supabase.auth.updateUser({
         data: {
           first_name: editedProfile.first_name,
           last_name: editedProfile.last_name,
@@ -233,6 +247,11 @@ const Profile = () => {
           avatar_url: finalAvatarUrl
         }
       });
+
+      if (userUpdateError) throw userUpdateError;
+
+      // Force session refresh to allow Sidebar to see new metadata immediately
+      await supabase.auth.refreshSession();
 
       setProfile({
         ...editedProfile,
@@ -249,7 +268,7 @@ const Profile = () => {
       if (uploadFailed) {
         toast({
           title: "Profile saved partially",
-          description: "Details updated, but avatar could not be uploaded due to storage permissions.",
+          description: "Details updated, but avatar upload failed. Please checks storage permissions or try a smaller file.",
           variant: "destructive",
         });
       } else {
@@ -276,6 +295,7 @@ const Profile = () => {
       }
     } finally {
       setIsSaving(false);
+      setUploadingAvatar(false);
     }
   };
 
@@ -310,7 +330,7 @@ const Profile = () => {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 relative pb-10">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 relative pb-10">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
         {/* Navigation Bar */}
@@ -331,20 +351,20 @@ const Profile = () => {
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.4 }}
         >
-          <Card className="border-0 shadow-xl overflow-hidden rounded-2xl bg-white">
+          <Card className="border-0 shadow-xl overflow-hidden rounded-2xl bg-white dark:bg-slate-900">
             {/* Colored Header Banner */}
-            <div className="h-32 bg-gradient-to-r from-blue-600 to-indigo-700 relative">
+            <div className="h-40 bg-gradient-to-r from-sky-500 to-indigo-600 relative">
               <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20"></div>
             </div>
 
-            <CardContent className="px-8 pb-8 -mt-16">
+            <CardContent className="px-8 pb-8 -mt-20">
               {/* Header Section with Avatar */}
               <div className="flex flex-col md:flex-row items-start md:items-end justify-between gap-6 mb-8">
                 <div className="flex flex-col md:flex-row items-center md:items-end gap-6">
                   <div className="relative group">
-                    <Avatar className="h-32 w-32 border-4 border-white shadow-lg ring-2 ring-slate-100 bg-white">
+                    <Avatar className="h-36 w-36 border-4 border-white dark:border-slate-900 shadow-xl ring-2 ring-slate-100 dark:ring-slate-800 bg-white dark:bg-slate-950">
                       <AvatarImage src={avatarPreview || editedProfile.avatar_url || profile.avatar_url} className="object-cover" />
-                      <AvatarFallback className="text-4xl bg-gradient-to-br from-slate-100 to-slate-200 text-slate-500">
+                      <AvatarFallback className="text-4xl bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-800 dark:to-slate-900 text-slate-500 dark:text-slate-400">
                         {getInitials()}
                       </AvatarFallback>
                     </Avatar>
@@ -367,10 +387,10 @@ const Profile = () => {
                   </div>
 
                   <div className="text-center md:text-left mb-2">
-                    <h1 className="text-3xl font-bold text-slate-900">
+                    <h1 className="text-3xl font-bold text-slate-900 dark:text-white">
                       {profile.first_name || 'Student'} {profile.last_name}
                     </h1>
-                    <p className="text-slate-500 font-medium">{profile.email}</p>
+                    <p className="text-slate-500 dark:text-slate-400 font-medium">{profile.email}</p>
                   </div>
                 </div>
 
@@ -412,52 +432,52 @@ const Profile = () => {
 
                 {/* Personal Information */}
                 <div className="space-y-6">
-                  <div className="flex items-center gap-2 text-lg font-semibold text-slate-900 border-b pb-2">
-                    <User className="w-5 h-5 text-blue-600" />
+                  <div className="flex items-center gap-2 text-lg font-semibold text-slate-900 dark:text-slate-100 border-b dark:border-slate-700 pb-2">
+                    <User className="w-5 h-5 text-blue-600 dark:text-blue-400" />
                     Personal Details
                   </div>
 
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label className="text-slate-500 text-xs uppercase tracking-wider font-semibold">First Name</Label>
+                      <Label className="text-slate-500 dark:text-slate-400 text-xs uppercase tracking-wider font-semibold">First Name</Label>
                       {isEditing ? (
-                        <Input value={editedProfile.first_name} onChange={e => setEditedProfile({ ...editedProfile, first_name: e.target.value })} className="bg-slate-50 border-slate-200" />
+                        <Input value={editedProfile.first_name} onChange={e => setEditedProfile({ ...editedProfile, first_name: e.target.value })} className="bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800" />
                       ) : (
-                        <p className="text-slate-900 font-medium text-lg">{profile.first_name || '-'}</p>
+                        <p className="text-slate-900 dark:text-slate-100 font-medium text-lg">{profile.first_name || '-'}</p>
                       )}
                     </div>
                     <div className="space-y-2">
-                      <Label className="text-slate-500 text-xs uppercase tracking-wider font-semibold">Last Name</Label>
+                      <Label className="text-slate-500 dark:text-slate-400 text-xs uppercase tracking-wider font-semibold">Last Name</Label>
                       {isEditing ? (
-                        <Input value={editedProfile.last_name} onChange={e => setEditedProfile({ ...editedProfile, last_name: e.target.value })} className="bg-slate-50 border-slate-200" />
+                        <Input value={editedProfile.last_name} onChange={e => setEditedProfile({ ...editedProfile, last_name: e.target.value })} className="bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800" />
                       ) : (
-                        <p className="text-slate-900 font-medium text-lg">{profile.last_name || '-'}</p>
+                        <p className="text-slate-900 dark:text-slate-100 font-medium text-lg">{profile.last_name || '-'}</p>
                       )}
                     </div>
                   </div>
 
                   <div className="space-y-2">
-                    <Label className="text-slate-500 text-xs uppercase tracking-wider font-semibold">Email</Label>
-                    <div className="flex items-center gap-2 bg-green-50 px-3 py-2 rounded-lg border border-green-100">
-                      <Mail className="w-4 h-4 text-green-600" />
-                      <span className="text-green-800 font-medium flex-1 truncate">{profile.email}</span>
-                      <span className="text-green-600 text-xs font-bold bg-white px-2 py-0.5 rounded-full shadow-sm flex items-center gap-1">
+                    <Label className="text-slate-500 dark:text-slate-400 text-xs uppercase tracking-wider font-semibold">Email</Label>
+                    <div className="flex items-center gap-2 bg-green-50 dark:bg-green-900/20 px-3 py-2 rounded-lg border border-green-100 dark:border-green-900/50">
+                      <Mail className="w-4 h-4 text-green-600 dark:text-green-400" />
+                      <span className="text-green-800 dark:text-green-300 font-medium flex-1 truncate">{profile.email}</span>
+                      <span className="text-green-600 dark:text-green-400 text-xs font-bold bg-white dark:bg-green-950 px-2 py-0.5 rounded-full shadow-sm flex items-center gap-1">
                         <CheckCircle2 className="w-3 h-3" /> VERIFIED
                       </span>
                     </div>
                   </div>
 
                   <div className="space-y-2">
-                    <Label className="text-slate-500 text-xs uppercase tracking-wider font-semibold">Contact Number</Label>
+                    <Label className="text-slate-500 dark:text-slate-400 text-xs uppercase tracking-wider font-semibold">Contact Number</Label>
                     {isEditing ? (
                       <Input
                         value={editedProfile.mobile_number}
                         onChange={e => setEditedProfile({ ...editedProfile, mobile_number: e.target.value })}
                         placeholder="+91 9999999999"
-                        className="bg-slate-50 border-slate-200"
+                        className="bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800"
                       />
                     ) : (
-                      <p className="text-slate-900 font-medium text-lg flex items-center gap-2">
+                      <p className="text-slate-900 dark:text-slate-100 font-medium text-lg flex items-center gap-2">
                         {profile.mobile_number ? (
                           <>
                             <Phone className="w-4 h-4 text-slate-400" />
@@ -473,45 +493,45 @@ const Profile = () => {
 
                 {/* Academic Information */}
                 <div className="space-y-6">
-                  <div className="flex items-center gap-2 text-lg font-semibold text-slate-900 border-b pb-2">
-                    <GraduationCap className="w-5 h-5 text-indigo-600" />
+                  <div className="flex items-center gap-2 text-lg font-semibold text-slate-900 dark:text-slate-100 border-b dark:border-slate-700 pb-2">
+                    <GraduationCap className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
                     Academic Details
                   </div>
 
                   <div className="space-y-2">
-                    <Label className="text-slate-500 text-xs uppercase tracking-wider font-semibold">College</Label>
+                    <Label className="text-slate-500 dark:text-slate-400 text-xs uppercase tracking-wider font-semibold">College</Label>
                     {isEditing ? (
-                      <Input value={editedProfile.college} onChange={e => setEditedProfile({ ...editedProfile, college: e.target.value })} className="bg-slate-50 border-slate-200" />
+                      <Input value={editedProfile.college} onChange={e => setEditedProfile({ ...editedProfile, college: e.target.value })} className="bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800" />
                     ) : (
-                      <p className="text-slate-900 font-medium text-lg">{profile.college || 'Not set'}</p>
+                      <p className="text-slate-900 dark:text-slate-100 font-medium text-lg">{profile.college || 'Not set'}</p>
                     )}
                   </div>
 
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label className="text-slate-500 text-xs uppercase tracking-wider font-semibold">Branch</Label>
+                      <Label className="text-slate-500 dark:text-slate-400 text-xs uppercase tracking-wider font-semibold">Branch</Label>
                       {isEditing ? (
-                        <Input value={editedProfile.branch} onChange={e => setEditedProfile({ ...editedProfile, branch: e.target.value })} className="bg-slate-50 border-slate-200" />
+                        <Input value={editedProfile.branch} onChange={e => setEditedProfile({ ...editedProfile, branch: e.target.value })} className="bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800" />
                       ) : (
-                        <p className="text-slate-900 font-medium text-lg">{profile.branch || '-'}</p>
+                        <p className="text-slate-900 dark:text-slate-100 font-medium text-lg">{profile.branch || '-'}</p>
                       )}
                     </div>
                     <div className="space-y-2">
-                      <Label className="text-slate-500 text-xs uppercase tracking-wider font-semibold">Year</Label>
+                      <Label className="text-slate-500 dark:text-slate-400 text-xs uppercase tracking-wider font-semibold">Year</Label>
                       {isEditing ? (
-                        <Input value={editedProfile.year} onChange={e => setEditedProfile({ ...editedProfile, year: e.target.value })} className="bg-slate-50 border-slate-200" />
+                        <Input value={editedProfile.year} onChange={e => setEditedProfile({ ...editedProfile, year: e.target.value })} className="bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800" />
                       ) : (
-                        <p className="text-slate-900 font-medium text-lg">{profile.year || '-'}</p>
+                        <p className="text-slate-900 dark:text-slate-100 font-medium text-lg">{profile.year || '-'}</p>
                       )}
                     </div>
                   </div>
 
-                  <div className="bg-slate-50 rounded-lg p-4 border border-slate-100 mt-6">
-                    <div className="flex items-center gap-2 text-slate-500 mb-1">
+                  <div className="bg-slate-50 dark:bg-slate-900/50 rounded-lg p-4 border border-slate-100 dark:border-slate-800 mt-6">
+                    <div className="flex items-center gap-2 text-slate-500 dark:text-slate-400 mb-1">
                       <Calendar className="w-4 h-4" />
                       <span className="text-xs font-semibold uppercase">Member Since</span>
                     </div>
-                    <p className="text-slate-900 font-medium">{formatDate(profile.created_at)}</p>
+                    <p className="text-slate-900 dark:text-slate-100 font-medium">{formatDate(profile.created_at)}</p>
                   </div>
                 </div>
 
