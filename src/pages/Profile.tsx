@@ -125,33 +125,67 @@ const Profile = () => {
       return;
     }
     const file = event.target.files[0];
+    
+    // Validate file type
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/jpg'];
+    if (!allowedTypes.includes(file.type)) {
+      toast({
+        title: "Invalid File Type",
+        description: "Please upload a JPG, PNG, or WebP image only.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    // Validate file size (max 2MB)
+    const maxSize = 2 * 1024 * 1024; // 2MB
+    if (file.size > maxSize) {
+      toast({
+        title: "File Too Large",
+        description: "Please upload an image smaller than 2MB.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
     setAvatarFile(file);
     setAvatarPreview(URL.createObjectURL(file));
   };
 
   const uploadAvatar = async (file: File): Promise<string | null> => {
+    if (!user?.id) return null;
+    
     try {
       setUploadingAvatar(true);
-      const fileExt = file.name.split('.').pop();
-      const fileName = `${user?.id}-${Date.now()}.${fileExt}`; // Use Date.now() for unique names
-      const filePath = `${fileName}`;
+      
+      // Use user ID folder for RLS policy compliance
+      const filePath = `${user.id}/avatar.png`;
 
-      // 1. Upload new file
+      // Upload file with upsert to replace existing
       const { error: uploadError } = await supabase.storage
         .from('avatars')
-        .upload(filePath, file, { upsert: true });
+        .upload(filePath, file, { 
+          upsert: true,
+          cacheControl: '3600',
+          contentType: file.type
+        });
 
       if (uploadError) {
+        console.error('Upload error:', uploadError);
         throw uploadError;
       }
 
+      // Get public URL
       const { data } = supabase.storage.from('avatars').getPublicUrl(filePath);
-      return data.publicUrl;
+      
+      // Add cache-busting timestamp to URL
+      const publicUrl = `${data.publicUrl}?t=${Date.now()}`;
+      return publicUrl;
     } catch (error: any) {
       console.error('Error uploading avatar:', error);
       toast({
         title: "Avatar Upload Failed",
-        description: "Could not upload image. Please check bucket permissions.",
+        description: error.message || "Could not upload image. Please try again.",
         variant: "destructive",
       });
       return null;
@@ -358,7 +392,7 @@ const Profile = () => {
                         <input
                           id="avatar-upload"
                           type="file"
-                          accept="image/*"
+                          accept="image/jpeg,image/png,image/webp,image/jpg"
                           className="hidden"
                           onChange={handleAvatarChange}
                         />
