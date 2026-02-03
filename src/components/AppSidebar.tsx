@@ -104,31 +104,26 @@ const AppSidebar = ({ className }: AppSidebarProps) => {
   return (
     <motion.aside
       initial={false}
-      animate={{ width: isCollapsed ? 64 : 260 }}
-      transition={{ duration: 0.2, ease: 'easeInOut' }}
-      className={`h-full bg-blue-50/30 dark:bg-slate-900/50 border-r border-blue-200 dark:border-slate-700 flex flex-col backdrop-blur-sm ${className}`}
+      animate={{ width: isCollapsed ? 80 : 280 }}
+      transition={{ duration: 0.3, type: "spring", stiffness: 100, damping: 20 }}
+      className={`h-full bg-slate-900/95 border-r border-slate-800 flex flex-col text-slate-100 ${className}`}
     >
-      {/* Toggle Button - Moved inside the sidebar */}
-      <button
-        onClick={() => setIsCollapsed(!isCollapsed)}
-        className="absolute right-2 top-3 z-50 p-1 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-muted-foreground"
-      >
-        {isCollapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
-      </button>
-
-      {/* Profile Section - Clickable Box */}
-      <div className={`p-4 border-b border-border ${isCollapsed ? 'items-center' : ''}`}>
+      {/* Profile Section */}
+      <div className="p-4 mb-2">
         <div
           onClick={() => navigate('/profile')}
-          className={`flex ${isCollapsed ? 'flex-col items-center justify-center p-2' : 'items-center gap-3 p-3'} rounded-xl cursor-pointer transition-all duration-200 hover:bg-secondary/50 border border-transparent hover:border-border group`}
+          className={`flex ${isCollapsed ? 'justify-center' : 'items-center gap-3'} p-2 rounded-xl cursor-pointer hover:bg-slate-800/50 transition-all border border-transparent hover:border-slate-700 group`}
           title="View Profile"
         >
-          <Avatar className="h-10 w-10 flex-shrink-0 border border-border/50 group-hover:border-primary/50 transition-colors">
-            <AvatarImage src={avatarUrl} />
-            <AvatarFallback className="bg-primary/10 text-primary text-sm font-medium">
-              {getInitials()}
-            </AvatarFallback>
-          </Avatar>
+          <div className="relative">
+            <Avatar className="h-10 w-10 border-2 border-slate-700 group-hover:border-blue-500 transition-colors">
+              <AvatarImage src={avatarUrl} />
+              <AvatarFallback className="bg-slate-800 text-slate-300 font-bold">
+                {getInitials()}
+              </AvatarFallback>
+            </Avatar>
+            <div className="absolute -bottom-1 -right-1 bg-green-500 w-3 h-3 rounded-full border-2 border-slate-900"></div>
+          </div>
 
           <AnimatePresence>
             {!isCollapsed && (
@@ -138,14 +133,10 @@ const AppSidebar = ({ className }: AppSidebarProps) => {
                 exit={{ opacity: 0, width: 0 }}
                 className="flex-1 min-w-0"
               >
-                <p className="font-semibold text-sm text-foreground truncate group-hover:text-primary transition-colors flex items-center gap-2">
+                <p className="font-bold text-sm truncate text-white group-hover:text-blue-400 transition-colors">
                   {firstName} {lastName}
-                  <span className="relative flex-shrink-0">
-                    <BadgeCheck className="h-5 w-5 text-white fill-green-500 relative z-10 drop-shadow-lg" />
-                    <span className="absolute inset-0 bg-green-500/30 rounded-full blur-sm animate-pulse" />
-                  </span>
                 </p>
-                <p className="text-xs text-muted-foreground truncate group-hover:text-muted-foreground/80">
+                <p className="text-xs text-slate-400 truncate">
                   {userEmail}
                 </p>
               </motion.div>
@@ -154,94 +145,121 @@ const AppSidebar = ({ className }: AppSidebarProps) => {
         </div>
       </div>
 
-      {/* Navigation */}
-      <nav className="flex-1 overflow-y-auto py-2">
-        <ul className="space-y-1 px-2">
-          {navItems.map((item) => (
-            <li key={item.label}>
-              {item.children ? (
-                <>
-                  <button
-                    onClick={() => toggleGroup(item.label.toLowerCase())}
-                    className={`w-full flex items-center gap-3 px-3 py-2 rounded text-sm transition-colors hover:bg-gray-100 dark:hover:bg-gray-800 ${isCollapsed ? 'justify-center' : ''
-                      }`}
-                  >
-                    <span className="flex-shrink-0">{item.icon}</span>
-                    {!isCollapsed && (
-                      <>
-                        <span className="flex-1 text-left">{item.label}</span>
-                        <ChevronRight
-                          className={`h-4 w-4 transition-transform ${expandedGroups.includes(item.label.toLowerCase()) ? 'rotate-90' : ''
-                            }`}
-                        />
-                      </>
-                    )}
-                  </button>
+      {/* Sidebar Toggle Button (Moved Below Profile) */}
+      <div className={`px-4 mb-4 flex ${isCollapsed ? 'justify-center' : 'justify-end'}`}>
+        <button
+          onClick={() => setIsCollapsed(!isCollapsed)}
+          className="p-1.5 rounded-lg bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700 transition-all shadow-sm border border-slate-700"
+        >
+          {isCollapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
+        </button>
+      </div>
 
-                  <AnimatePresence>
-                    {!isCollapsed && expandedGroups.includes(item.label.toLowerCase()) && (
-                      <motion.ul
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: 'auto' }}
-                        exit={{ opacity: 0, height: 0 }}
-                        className="ml-6 mt-1 space-y-1"
-                      >
-                        {item.children.map((child) => (
-                          <li key={child.label}>
-                            <button
-                              onClick={() => navigate(child.href)}
-                              className={`w-full flex items-center gap-2 px-3 py-1.5 rounded text-xs transition-colors ${isActive(child.href)
-                                ? 'bg-primary/10 text-primary font-medium'
-                                : 'text-muted-foreground hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-foreground'
-                                }`}
-                            >
-                              {child.icon}
-                              <span>{child.label}</span>
-                            </button>
-                          </li>
-                        ))}
-                      </motion.ul>
-                    )}
-                  </AnimatePresence>
-                </>
-              ) : (
+      {/* Navigation */}
+      <nav className="flex-1 overflow-y-auto px-3 py-2 space-y-1">
+        {navItems.map((item) => (
+          <div key={item.label}>
+            {item.children ? (
+              <>
                 <button
-                  onClick={() => navigate(item.href)}
-                  className={`w-full flex items-center gap-3 px-3 py-2 rounded text-sm transition-colors ${isActive(item.href)
-                    ? 'bg-primary/10 text-primary font-medium'
-                    : 'text-foreground hover:bg-gray-100 dark:hover:bg-gray-800'
+                  onClick={() => toggleGroup(item.label.toLowerCase())}
+                  className={`w-full flex items-center gap-3 p-2 rounded-xl transition-all group ${expandedGroups.includes(item.label.toLowerCase()) ? 'bg-slate-800/50' : 'hover:bg-slate-800/50'
                     } ${isCollapsed ? 'justify-center' : ''}`}
-                  title={isCollapsed ? item.label : undefined}
                 >
-                  <span className="flex-shrink-0">{item.icon}</span>
-                  {!isCollapsed && <span>{item.label}</span>}
+                  {/* 3D Icon Container */}
+                  <div className="flex-shrink-0 flex items-center justify-center w-9 h-9 rounded-lg bg-gradient-to-br from-blue-600 to-indigo-700 text-white shadow-lg shadow-blue-900/20 border border-white/10 group-hover:scale-110 transition-transform duration-200">
+                    {item.icon}
+                  </div>
+
+                  {!isCollapsed && (
+                    <>
+                      <span className="flex-1 text-left text-sm font-medium text-slate-300 group-hover:text-white transition-colors">
+                        {item.label}
+                      </span>
+                      <ChevronRight
+                        className={`h-4 w-4 text-slate-500 transition-transform duration-200 ${expandedGroups.includes(item.label.toLowerCase()) ? 'rotate-90' : ''
+                          }`}
+                      />
+                    </>
+                  )}
                 </button>
-              )}
-            </li>
-          ))}
-        </ul>
+
+                <AnimatePresence>
+                  {!isCollapsed && expandedGroups.includes(item.label.toLowerCase()) && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      exit={{ opacity: 0, height: 0 }}
+                      className="ml-4 mt-1 space-y-1 border-l-2 border-slate-800 pl-3"
+                    >
+                      {item.children.map((child) => (
+                        <button
+                          key={child.label}
+                          onClick={() => navigate(child.href)}
+                          className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-all ${isActive(child.href)
+                              ? 'text-blue-400 bg-blue-500/10 font-semibold'
+                              : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
+                            }`}
+                        >
+                          {/* Smaller 3D Icon for Sub-items */}
+                          <div className={`p-1 rounded-md ${isActive(child.href) ? 'bg-blue-500/20' : 'bg-slate-800'}`}>
+                            {child.icon}
+                          </div>
+                          <span>{child.label}</span>
+                        </button>
+                      ))}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </>
+            ) : (
+              <button
+                onClick={() => navigate(item.href)}
+                className={`w-full flex items-center gap-3 p-2 rounded-xl transition-all group ${isActive(item.href) ? 'bg-slate-800 border border-slate-700' : 'hover:bg-slate-800/50 border border-transparent'
+                  } ${isCollapsed ? 'justify-center' : ''}`}
+                title={isCollapsed ? item.label : undefined}
+              >
+                {/* 3D Icon Container */}
+                <div className={`flex-shrink-0 flex items-center justify-center w-9 h-9 rounded-lg shadow-lg border border-white/10 transition-transform duration-200 group-hover:scale-110 ${isActive(item.href)
+                    ? 'bg-gradient-to-br from-blue-500 to-indigo-600 text-white shadow-blue-500/20'
+                    : 'bg-gradient-to-br from-slate-700 to-slate-800 text-slate-300 group-hover:from-blue-600 group-hover:to-indigo-700 group-hover:text-white'
+                  }`}>
+                  {item.icon}
+                </div>
+
+                {!isCollapsed && (
+                  <span className={`text-sm font-medium transition-colors ${isActive(item.href) ? 'text-white' : 'text-slate-300 group-hover:text-white'}`}>
+                    {item.label}
+                  </span>
+                )}
+              </button>
+            )}
+          </div>
+        ))}
       </nav>
 
       {/* Bottom Actions */}
-      <div className="p-2 border-t border-border space-y-1">
+      <div className="p-4 border-t border-slate-800 space-y-2">
         <button
           onClick={toggleTheme}
-          className={`w-full flex items-center gap-3 px-3 py-2 rounded text-sm transition-colors hover:bg-gray-100 dark:hover:bg-gray-800 ${isCollapsed ? 'justify-center' : ''
-            }`}
+          className={`w-full flex items-center gap-3 p-2 rounded-xl transition-all hover:bg-slate-800/50 group ${isCollapsed ? 'justify-center' : ''}`}
           title={isCollapsed ? (theme === 'dark' ? 'Light Mode' : 'Dark Mode') : undefined}
         >
-          {theme === 'dark' ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
-          {!isCollapsed && <span>{theme === 'dark' ? 'Light Mode' : 'Dark Mode'}</span>}
+          <div className="flex-shrink-0 flex items-center justify-center w-8 h-8 rounded-lg bg-slate-800 text-yellow-400 border border-slate-700 group-hover:bg-slate-700 transition-colors">
+            {theme === 'dark' ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+          </div>
+          {!isCollapsed && <span className="text-sm font-medium text-slate-300 group-hover:text-white">{theme === 'dark' ? 'Light Mode' : 'Dark Mode'}</span>}
         </button>
 
         <button
           onClick={handleSignOut}
-          className={`w-full flex items-center gap-3 px-3 py-2 rounded text-sm transition-colors text-red-600 hover:bg-red-50 dark:hover:bg-red-950/30 ${isCollapsed ? 'justify-center' : ''
-            }`}
+          className={`w-full flex items-center gap-3 p-2 rounded-xl transition-all hover:bg-red-500/10 group ${isCollapsed ? 'justify-center' : ''}`}
           title={isCollapsed ? 'Sign Out' : undefined}
         >
-          <LogOut className="h-4 w-4" />
-          {!isCollapsed && <span>Sign Out</span>}
+          <div className="flex-shrink-0 flex items-center justify-center w-8 h-8 rounded-lg bg-slate-800 text-red-500 border border-slate-700 group-hover:bg-red-500 group-hover:text-white transition-colors">
+            <LogOut className="h-4 w-4" />
+          </div>
+          {!isCollapsed && <span className="text-sm font-medium text-slate-300 group-hover:text-red-400">Sign Out</span>}
         </button>
       </div>
     </motion.aside>
