@@ -172,7 +172,7 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'signin' }: AuthModalProps) 
     }
 
     if (!captchaToken) {
-      toast({ title: "CAPTCHA Required", description: "Please complete the CAPTCHA check.", variant: "destructive" });
+      toast({ title: "CAPTCHA Required", description: "Please complete the CAPTCHA check first.", variant: "destructive" });
       return;
     }
 
@@ -429,34 +429,34 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'signin' }: AuthModalProps) 
   const renderOTPScreen = () => (
     <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="p-6">
       <div className="flex items-center mb-6">
-        <Button variant="ghost" size="sm" onClick={() => setStep('form')} className="p-0">
+        <Button variant="ghost" size="sm" onClick={() => setStep('form')} className="p-0 dark:text-gray-300">
           <ArrowLeft className="h-4 w-4 mr-1" /> Back
         </Button>
       </div>
       <div className="text-center mb-6">
-        <div className="w-14 h-14 mx-auto mb-4 bg-gray-100 rounded-full flex items-center justify-center">
-          <Mail className="w-7 h-7 text-gray-700" />
+        <div className="w-14 h-14 mx-auto mb-4 bg-gray-100 dark:bg-slate-800 rounded-full flex items-center justify-center">
+          <Mail className="w-7 h-7 text-gray-700 dark:text-gray-300" />
         </div>
-        <h2 className="text-xl font-bold">{mode === 'forgot' ? 'Reset Password' : 'Verify Email'}</h2>
-        <p className="text-sm text-gray-500">
+        <h2 className="text-xl font-bold dark:text-white">{mode === 'forgot' ? 'Reset Password' : 'Verify Email'}</h2>
+        <p className="text-sm text-gray-500 dark:text-gray-400">
           Enter the 6-digit code sent to <br />
-          <span className="font-semibold text-gray-900">{email}</span>
+          <span className="font-semibold text-gray-900 dark:text-gray-200">{email}</span>
         </p>
       </div>
       <div className="flex justify-center mb-6">
         <InputOTP maxLength={6} value={otp} onChange={setOtp}>
           <InputOTPGroup>
             {[0, 1, 2, 3, 4, 5].map(i => (
-              <InputOTPSlot key={i} index={i} className="w-11 h-12 text-lg border-gray-300 rounded" />
+              <InputOTPSlot key={i} index={i} className="w-11 h-12 text-lg border-gray-300 dark:border-slate-700 rounded dark:text-white" />
             ))}
           </InputOTPGroup>
         </InputOTP>
       </div>
-      <Button onClick={handleVerifyOTP} disabled={isLoading || otp.length !== 6} className="w-full bg-gray-900 text-white">
+      <Button onClick={handleVerifyOTP} disabled={isLoading || otp.length !== 6} className="w-full bg-gray-900 dark:bg-slate-50 dark:text-slate-900 dark:hover:bg-slate-200 text-white">
         {isLoading ? <Loader2 className="animate-spin h-4 w-4" /> : 'Confirm Verification'}
       </Button>
       <div className="text-center mt-4">
-        <button onClick={handleResendOTP} disabled={resendTimer > 0} className="text-sm text-blue-600 disabled:text-gray-400">
+        <button onClick={handleResendOTP} disabled={resendTimer > 0} className="text-sm text-blue-600 dark:text-blue-400 disabled:text-gray-400 dark:disabled:text-gray-600">
           {resendTimer > 0 ? `Resend in ${resendTimer}s` : 'Resend Code (Requires Captcha)'}
         </button>
       </div>
@@ -466,13 +466,25 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'signin' }: AuthModalProps) 
   const renderSignupForm = () => (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="p-6 space-y-4">
       <div className="text-center mb-4">
-        <h2 className="text-xl font-bold">Create Account</h2>
+        <h2 className="text-xl font-bold dark:text-white">Create Account</h2>
       </div>
 
       <form onSubmit={handleFinalSignup} className="space-y-3">
+        {/* hCAPTCHA FIRST - TOP OF FORM */}
+        {!emailVerified && (
+          <div className="flex flex-col items-center justify-center py-2 space-y-2">
+            <Label className="text-xs text-gray-500 dark:text-gray-400 mb-1">Verify you are human first<RequiredIndicator /></Label>
+            <HCaptcha
+              ref={captchaRef}
+              sitekey={HCAPTCHA_SITE_KEY}
+              onVerify={(token) => setCaptchaToken(token)}
+            />
+          </div>
+        )}
+
         {/* Email & Verify */}
         <div>
-          <Label>Email Address<RequiredIndicator /></Label>
+          <Label className="dark:text-gray-300">Email Address<RequiredIndicator /></Label>
           <div className="relative mt-1">
             <Input
               value={email}
@@ -481,84 +493,84 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'signin' }: AuthModalProps) 
                 setEmail(e.target.value.toLowerCase())
               }}
               disabled={emailVerified || isSendingOtp}
-              className={`pr-20 ${emailVerified ? 'border-green-500 bg-green-50 text-green-700' : ''}`}
+              className={`pr-20 dark:bg-slate-950 dark:border-slate-800 dark:text-white ${emailVerified ? 'border-green-500 bg-green-50 dark:bg-green-900/10 text-green-700 dark:text-green-400' : ''}`}
               placeholder="student@college.edu"
             />
             {emailVerified ? (
-              <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center text-green-600 font-medium text-sm">
+              <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center text-green-600 dark:text-green-400 font-medium text-sm">
                 <CheckCircle2 className="w-4 h-4 mr-1" /> Verified
               </div>
             ) : (
               <button
                 type="button"
                 onClick={() => handleVerifyEmailStart(false)}
-                disabled={!isEmailValid || isSendingOtp}
-                className="absolute right-1 top-1/2 -translate-y-1/2 px-3 py-1 text-xs font-semibold text-blue-600 hover:bg-blue-50 rounded disabled:opacity-50"
+                disabled={!isEmailValid || isSendingOtp || !captchaToken}
+                className="absolute right-1 top-1/2 -translate-y-1/2 px-3 py-1 text-xs font-semibold text-blue-600 hover:bg-blue-50 dark:text-blue-400 dark:hover:bg-slate-800 rounded disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isSendingOtp ? <Loader2 className="w-3 h-3 animate-spin" /> : 'VERIFY'}
               </button>
             )}
           </div>
           {emailError && <InlineError message={emailError} />}
-          {!emailVerified && !isSendingOtp && (
-            <p className="text-[10px] text-gray-400 mt-1 pl-1">
-              * Solve Captcha below to Verify
+          {!emailVerified && !isSendingOtp && !captchaToken && (
+            <p className="text-[10px] text-red-500 mt-1 pl-1 flex items-center gap-1">
+              <AlertCircle className="w-3 h-3" /> Complete Captcha first (above)
             </p>
           )}
         </div>
 
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <Label>First Name<RequiredIndicator /></Label>
+            <Label className="dark:text-gray-300">First Name<RequiredIndicator /></Label>
             <Input
               value={firstName}
               onChange={e => setFirstName(e.target.value)}
               disabled={!emailVerified}
               placeholder="e.g. Priyal"
-              className="border-slate-200 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+              className="border-slate-200 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:bg-slate-950 dark:border-slate-800 dark:text-white"
             />
           </div>
           <div>
-            <Label>Last Name<RequiredIndicator /></Label>
+            <Label className="dark:text-gray-300">Last Name<RequiredIndicator /></Label>
             <Input
               value={lastName}
               onChange={e => setLastName(e.target.value)}
               disabled={!emailVerified}
               placeholder="e.g. Kumar"
-              className="border-slate-200 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+              className="border-slate-200 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:bg-slate-950 dark:border-slate-800 dark:text-white"
             />
           </div>
         </div>
 
         <div>
-          <Label>Contact (Optional)</Label>
+          <Label className="dark:text-gray-300">Contact (Optional)</Label>
           <Input
             value={contactNo}
             onChange={e => setContactNo(e.target.value)}
             disabled={!emailVerified}
             placeholder="e.g. 9876543210"
-            className="border-slate-200 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+            className="border-slate-200 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:bg-slate-950 dark:border-slate-800 dark:text-white"
           />
         </div>
 
         <div>
-          <Label>Password<RequiredIndicator /></Label>
+          <Label className="dark:text-gray-300">Password<RequiredIndicator /></Label>
           <div className="relative">
             <Input
               type={showPassword ? "text" : "password"}
               value={password}
               onChange={e => setPassword(e.target.value)}
               disabled={!emailVerified}
-              className="pr-10 border-slate-200 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+              className="pr-10 border-slate-200 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:bg-slate-950 dark:border-slate-800 dark:text-white"
               placeholder="Create a strong password"
             />
-            <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">
+            <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
               {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
             </button>
           </div>
 
           {password && (
-            <div className="mt-2 text-xs space-y-1 bg-slate-50 p-2 rounded">
+            <div className="mt-2 text-xs space-y-1 bg-slate-50 dark:bg-slate-900 p-2 rounded border border-gray-100 dark:border-slate-800">
               {getPasswordErrors(password).map((err, i) => (
                 <p key={i} className="text-red-500 flex items-center gap-1">
                   <X className="w-3 h-3" /> {err}
@@ -571,85 +583,74 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'signin' }: AuthModalProps) 
               )}
             </div>
           )}
-          <p className="text-[10px] text-gray-500 mt-1 flex items-start gap-1">
+          <p className="text-[10px] text-gray-500 dark:text-gray-400 mt-1 flex items-start gap-1">
             <AlertTriangle className="w-3 h-3 shrink-0" />
             <span>Use a strong password containing small & capital letters, numbers, and special symbols.</span>
           </p>
         </div>
 
         <div>
-          <Label>College<RequiredIndicator /></Label>
+          <Label className="dark:text-gray-300">College<RequiredIndicator /></Label>
           <Input
             value={college}
             onChange={e => setCollege(e.target.value)}
             disabled={!emailVerified}
             placeholder="e.g. HBTU Kanpur"
-            className="border-slate-200 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+            className="border-slate-200 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:bg-slate-950 dark:border-slate-800 dark:text-white"
           />
         </div>
 
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <Label>Branch</Label>
+            <Label className="dark:text-gray-300">Branch</Label>
             <Input
               value={branch}
               onChange={e => setBranch(e.target.value)}
               disabled={!emailVerified}
               placeholder="e.g. CSE"
-              className="border-slate-200 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+              className="border-slate-200 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:bg-slate-950 dark:border-slate-800 dark:text-white"
             />
           </div>
           <div>
-            <Label>Year</Label>
+            <Label className="dark:text-gray-300">Year</Label>
             <Input
               value={year}
               onChange={e => setYear(e.target.value)}
               disabled={!emailVerified}
               placeholder="e.g. 2nd Year"
-              className="border-slate-200 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+              className="border-slate-200 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:bg-slate-950 dark:border-slate-800 dark:text-white"
             />
           </div>
         </div>
 
-        {/* hCAPTCHA PLACED HERE - BOTTOM */}
-        {!emailVerified && (
-          <div className="flex justify-center py-2">
-            <HCaptcha
-              ref={captchaRef}
-              sitekey={HCAPTCHA_SITE_KEY}
-              onVerify={(token) => setCaptchaToken(token)}
-            />
-          </div>
-        )}
-
         <div className="flex items-center space-x-2">
-          <Checkbox id="terms" checked={acceptedTerms} onCheckedChange={(c) => setAcceptedTerms(c as boolean)} disabled={!emailVerified} />
-          <label htmlFor="terms" className="text-xs text-gray-500">
-            I agree to <Link to="/terms" className="text-blue-600">Terms</Link> & <Link to="/privacy" className="text-blue-600">Privacy</Link>
+          <Checkbox id="terms" checked={acceptedTerms} onCheckedChange={(c) => setAcceptedTerms(c as boolean)} disabled={!emailVerified} className="dark:border-slate-700 dark:data-[state=checked]:bg-slate-50 dark:data-[state=checked]:text-slate-900" />
+          <label htmlFor="terms" className="text-xs text-gray-500 dark:text-gray-400">
+            I agree to <Link to="/terms" className="text-blue-600 dark:text-blue-400">Terms</Link> & <Link to="/privacy" className="text-blue-600 dark:text-blue-400">Privacy</Link>
           </label>
         </div>
 
-        <Button type="submit" disabled={isLoading || !emailVerified || !acceptedTerms || getPasswordErrors(password).length > 0} className="w-full bg-gray-900 text-white">
+        <Button type="submit" disabled={isLoading || !emailVerified || !acceptedTerms || getPasswordErrors(password).length > 0} className="w-full bg-gray-900 dark:bg-slate-50 dark:text-slate-900 dark:hover:bg-slate-200 text-white">
           {isLoading ? <Loader2 className="animate-spin mr-2 h-4 w-4" /> : 'Create Account'}
         </Button>
 
       </form>
 
-      <div className="text-center text-sm">
-        Already have an account? <button onClick={() => switchMode('signin')} className="text-blue-600 font-medium">Login</button>
+      <div className="text-center text-sm dark:text-gray-400">
+        Already have an account? <button onClick={() => switchMode('signin')} className="text-blue-600 dark:text-blue-400 font-medium">Login</button>
       </div>
     </motion.div>
   );
 
   const renderResetPasswordScreen = () => (
     <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="p-6 space-y-4">
-      <h2 className="text-xl font-bold text-center">Set New Password</h2>
+      <h2 className="text-xl font-bold text-center dark:text-white">Set New Password</h2>
       <div>
-        <Label>New Password</Label>
-        <Input type="password" value={newPassword} onChange={e => setNewPassword(e.target.value)} placeholder="••••••••" />
+        <Label className="dark:text-gray-300">New Password</Label>
+        <Input type="password" value={newPassword} onChange={e => setNewPassword(e.target.value)} placeholder="••••••••" className="dark:bg-slate-950 dark:border-slate-800 dark:text-white" />
 
         {newPassword && (
-          <div className="mt-2 text-xs space-y-1 bg-slate-50 p-2 rounded">
+          <div className="mt-2 text-xs space-y-1 bg-slate-50 dark:bg-slate-900 p-2 rounded border border-gray-100 dark:border-slate-800">
             {getPasswordErrors(newPassword).map((err, i) => (
               <p key={i} className="text-red-500 flex items-center gap-1">
                 <X className="w-3 h-3" /> {err}
@@ -658,7 +659,7 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'signin' }: AuthModalProps) 
           </div>
         )}
       </div>
-      <Button onClick={handleResetPasswordFinal} disabled={isLoading || getPasswordErrors(newPassword).length > 0} className="w-full bg-gray-900 text-white">
+      <Button onClick={handleResetPasswordFinal} disabled={isLoading || getPasswordErrors(newPassword).length > 0} className="w-full bg-gray-900 dark:bg-slate-50 dark:text-slate-900 text-white">
         {isLoading ? 'Updating...' : 'Update Password'}
       </Button>
     </motion.div>
@@ -666,13 +667,13 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'signin' }: AuthModalProps) 
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent hideDefaultClose className="sm:max-w-[440px] w-[95vw] max-h-[90vh] p-0 pr-0 gap-0 bg-white border border-gray-200 shadow-2xl rounded overflow-hidden flex flex-col">
-        <div className="flex justify-between items-center px-6 py-4 border-b border-gray-100 flex-shrink-0">
+      <DialogContent hideDefaultClose className="sm:max-w-[440px] w-[95vw] max-h-[90vh] p-0 pr-0 gap-0 bg-white dark:bg-slate-950 border border-gray-200 dark:border-slate-800 shadow-2xl rounded overflow-hidden flex flex-col">
+        <div className="flex justify-between items-center px-6 py-4 border-b border-gray-100 dark:border-slate-800 flex-shrink-0">
           <div className="flex items-center gap-3">
             <img src={logoImg} className="w-8 h-8" alt="Logo" />
-            <span className="font-bold text-base block text-gray-900">College Study</span>
+            <span className="font-bold text-base block text-gray-900 dark:text-white">College Study</span>
           </div>
-          <button onClick={handleClose}><X className="w-5 h-5 text-gray-400 hover:text-gray-600" /></button>
+          <button onClick={handleClose}><X className="w-5 h-5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300" /></button>
         </div>
 
         <div className="flex-1 overflow-y-auto min-h-0">
@@ -682,25 +683,25 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'signin' }: AuthModalProps) 
 
             {step === 'form' && mode === 'signin' && (
               <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} className="p-6 space-y-4">
-                <h2 className="text-xl font-bold text-center">Welcome Back</h2>
+                <h2 className="text-xl font-bold text-center dark:text-white">Welcome Back</h2>
                 <form onSubmit={handleSignIn} className="space-y-4">
                   <div>
-                    <Label>Email</Label>
+                    <Label className="dark:text-gray-300">Email</Label>
                     <Input
                       value={email}
                       onChange={e => setEmail(e.target.value.toLowerCase())}
                       placeholder="e.g. student@college.edu"
-                      className="border-slate-200 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                      className="border-slate-200 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:bg-slate-950 dark:border-slate-800 dark:text-white"
                     />
                   </div>
                   <div>
-                    <Label>Password</Label>
+                    <Label className="dark:text-gray-300">Password</Label>
                     <Input
                       type="password"
                       value={password}
                       onChange={e => setPassword(e.target.value)}
                       placeholder="Enter your password"
-                      className="border-slate-200 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                      className="border-slate-200 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:bg-slate-950 dark:border-slate-800 dark:text-white"
                     />
                   </div>
 
@@ -713,14 +714,14 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'signin' }: AuthModalProps) 
                     />
                   </div>
 
-                  <Button type="submit" disabled={isLoading} className="w-full bg-gray-900 text-white">
+                  <Button type="submit" disabled={isLoading} className="w-full bg-gray-900 dark:bg-slate-50 dark:text-slate-900 dark:hover:bg-slate-200 text-white">
                     {isLoading ? <Loader2 className="animate-spin" /> : 'Login'}
                   </Button>
                 </form>
                 <div className="space-y-4 text-center text-sm pt-2">
-                  <button onClick={() => switchMode('forgot')} className="text-blue-600 hover:text-blue-700 font-medium">Forgot Password?</button>
-                  <div>
-                    Don't have an account? <button onClick={() => switchMode('signup')} className="text-blue-600 font-medium hover:text-blue-700">Create Account</button>
+                  <button onClick={() => switchMode('forgot')} className="text-blue-600 dark:text-blue-400 hover:text-blue-700 font-medium">Forgot Password?</button>
+                  <div className="dark:text-gray-400">
+                    Don't have an account? <button onClick={() => switchMode('signup')} className="text-blue-600 dark:text-blue-400 font-medium hover:text-blue-700">Create Account</button>
                   </div>
                 </div>
               </motion.div>
@@ -731,21 +732,21 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'signin' }: AuthModalProps) 
 
             {step === 'form' && mode === 'forgot' && (
               <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="p-6 space-y-4">
-                <div className="flex items-center mb-4"><button onClick={() => switchMode('signin')} className="flex items-center text-sm text-gray-500"><ArrowLeft className="w-4 h-4 mr-1" /> Back</button></div>
-                <h2 className="text-xl font-bold text-center">Forgot Password</h2>
-                <p className="text-sm text-center text-gray-500">Enter your email to receive a reset code.</p>
+                <div className="flex items-center mb-4"><button onClick={() => switchMode('signin')} className="flex items-center text-sm text-gray-500 dark:text-gray-400"><ArrowLeft className="w-4 h-4 mr-1" /> Back</button></div>
+                <h2 className="text-xl font-bold text-center dark:text-white">Forgot Password</h2>
+                <p className="text-sm text-center text-gray-500 dark:text-gray-400">Enter your email to receive a reset code.</p>
 
                 <form onSubmit={handleForgotPassword} className="space-y-4">
                   <div>
-                    <Label>Email Address</Label>
-                    <Input value={email} onChange={e => setEmail(e.target.value)} placeholder="you@example.com" />
+                    <Label className="dark:text-gray-300">Email Address</Label>
+                    <Input value={email} onChange={e => setEmail(e.target.value)} placeholder="you@example.com" className="dark:bg-slate-950 dark:border-slate-800 dark:text-white" />
                   </div>
 
                   <div className="flex justify-center">
                     <HCaptcha ref={captchaRef} sitekey={HCAPTCHA_SITE_KEY} onVerify={setCaptchaToken} />
                   </div>
 
-                  <Button type="submit" disabled={isLoading} className="w-full bg-gray-900 text-white">
+                  <Button type="submit" disabled={isLoading} className="w-full bg-gray-900 dark:bg-slate-50 dark:text-slate-900 dark:hover:bg-slate-200 text-white">
                     {isLoading ? <Loader2 className="animate-spin" /> : 'Send Code'}
                   </Button>
                 </form>
@@ -754,8 +755,8 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'signin' }: AuthModalProps) 
           </AnimatePresence>
         </div>
 
-        <div className="px-6 py-3 bg-gray-50 border-t border-gray-100 flex-shrink-0">
-          <p className="text-xs text-gray-500 text-center">
+        <div className="px-6 py-3 bg-gray-50 dark:bg-slate-900 border-t border-gray-100 dark:border-slate-800 flex-shrink-0">
+          <p className="text-xs text-gray-500 dark:text-gray-400 text-center">
             Made with ❤️ for HBTU Students
           </p>
         </div>
