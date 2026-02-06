@@ -19,6 +19,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Star, MessageSquarePlus } from 'lucide-react';
+import StudentSuccessStories from '@/components/StudentSuccessStories';
 
 const Index = () => {
   const { user } = useAuth();
@@ -28,95 +29,11 @@ const Index = () => {
   const [hasShownScrollPopup, setHasShownScrollPopup] = useState(false);
   const [hasClosedInitialPopup, setHasClosedInitialPopup] = useState(false);
 
-  // Review State
-  const [reviews, setReviews] = useState(() => {
-    const saved = localStorage.getItem('studentReviews');
-    if (saved) {
-      try {
-        return JSON.parse(saved);
-      } catch (e) {
-        console.error("Failed to parse reviews", e);
-      }
-    }
-    return [
-      {
-        name: 'Rahul Sharma',
-        branch: 'Computer Science',
-        message: 'College Study Hub helped me find amazing notes and land my dream internship!',
-        rating: 5,
-      },
-      {
-        name: 'Priya Singh',
-        branch: 'Electronics',
-        message: 'The CGPA calculator and opportunities section helped me plan my career better.',
-        rating: 5,
-      },
-      {
-        name: 'Amit Kumar',
-        branch: 'Mechanical',
-        message: 'Such a helpful platform for students. The notes quality is excellent.',
-        rating: 5,
-      },
-      {
-        name: 'Sneha Gupta',
-        branch: 'Civil Engineering',
-        message: 'Finally found a place where I can get all B.Tech notes organized properly.',
-        rating: 4,
-      },
-      {
-        name: 'Vikram Malhotra',
-        branch: 'MBA',
-        message: 'Great resource for management students as well. Keep it up!',
-        rating: 5,
-      }
-    ];
-  });
 
-  const [isReviewOpen, setIsReviewOpen] = useState(false);
-  const [newReview, setNewReview] = useState({ name: '', branch: '', message: '', rating: 5 });
-  const scrollRef = useRef<HTMLDivElement>(null);
-  const [isPaused, setIsPaused] = useState(false);
 
-  // Manual Scroll
-  const scroll = (direction: 'left' | 'right') => {
-    if (scrollRef.current) {
-      const { current } = scrollRef;
-      const scrollAmount = direction === 'left' ? -320 : 320;
-      current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
-    }
-  };
 
-  // Continuous Auto-Scroll Loop
-  useEffect(() => {
-    const scrollContainer = scrollRef.current;
-    let animationFrameId: number;
 
-    const animate = () => {
-      if (scrollContainer && !isPaused) {
-        scrollContainer.scrollLeft += 1; // Consistent smooth flow
 
-        // Instant Reset when halfway (infinite loop illusion)
-        if (scrollContainer.scrollLeft >= scrollContainer.scrollWidth / 2) {
-          scrollContainer.scrollLeft = 0;
-        }
-      }
-      animationFrameId = requestAnimationFrame(animate);
-    };
-
-    // Start animation
-    animationFrameId = requestAnimationFrame(animate);
-
-    return () => cancelAnimationFrame(animationFrameId);
-  }, [isPaused, reviews]);
-
-  const handleSubmitReview = () => {
-    if (!newReview.name || !newReview.message) return;
-    const updatedReviews = [newReview, ...reviews];
-    setReviews(updatedReviews);
-    localStorage.setItem('studentReviews', JSON.stringify(updatedReviews));
-    setNewReview({ name: '', branch: '', message: '', rating: 5 });
-    setIsReviewOpen(false);
-  };
 
 
   // Auto-show signup popup on first visit
@@ -256,9 +173,9 @@ const Index = () => {
 
   const benefitsList = [
     'Access semester-wise study materials',
-    'Find internships & job opportunities',
-    'Calculate CGPA instantly',
-    'Connect with fellow students',
+    'Separate section for internships & jobs',
+    'Calculate CGPA instantly with precision',
+    'DSA, & coding, & placement study material also available here',
   ];
 
   return (
@@ -276,7 +193,8 @@ const Index = () => {
       <CookieConsent />
 
       {/* Hero Section */}
-      <section className="relative pt-6 pb-20 lg:pb-28 bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-background">
+      {/* Hero Section */}
+      <section className="relative pt-6 pb-20 lg:pb-28 bg-gradient-to-b from-sky-50 to-white dark:from-gray-900 dark:to-background">
         {/* ... (Kept as is, simplified for replacement matching if needed, but I'll target specific blocks) */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
@@ -286,10 +204,7 @@ const Index = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
             >
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-primary/10 text-primary text-sm font-medium rounded-full mb-6">
-                <GraduationCap className="h-4 w-4" />
-                Your Academic Success Partner
-              </div>
+              {/* Badge Removed */}
 
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-6 leading-tight tracking-tight">
                 Your One-Stop
@@ -323,7 +238,7 @@ const Index = () => {
                 <Button
                   size="lg"
                   variant="outline"
-                  className="h-12 px-6 sm:px-8 border-gray-200 hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800 font-medium flex-shrink-0"
+                  className="h-12 px-6 sm:px-8 bg-transparent border-gray-200 text-foreground hover:bg-gray-100 dark:border-gray-700 dark:hover:bg-gray-800 hover:text-foreground font-medium flex-shrink-0 transition-colors"
                   onClick={() => navigate('/notes')}
                 >
                   Browse Notes
@@ -350,24 +265,11 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Stats Section */}
-      <section className="py-16 border-y border-border/50 bg-muted/30">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            {stats.map((stat, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, delay: index * 0.1 }}
-                viewport={{ once: true }}
-              >
-                <AnimatedCounter {...stat} />
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
+
+      {/* Student Success Stories (3D Hall of Fame) */}
+      <StudentSuccessStories />
+
+      {/* Stats Section Removed (Moved inside StudentSuccessStories) */}
 
       {/* Features Section */}
       <section className="py-16">
@@ -427,156 +329,7 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Testimonials & Reviews */}
-      <section className="py-10 bg-gray-50 dark:bg-gray-900 relative">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-          {/* Professional Container Box */}
-          <div className="bg-white dark:bg-card rounded-3xl shadow-xl border border-gray-100 dark:border-border p-8 md:p-12 relative overflow-hidden">
-            <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-primary to-accent"></div>
-
-            <div className="flex flex-col md:flex-row justify-between items-center mb-10 gap-6">
-              <div className="text-left">
-                <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-2">
-                  What Students Say
-                </h2>
-                <p className="text-muted-foreground">
-                  Real feedback from our community
-                </p>
-              </div>
-
-              <Dialog open={isReviewOpen} onOpenChange={setIsReviewOpen}>
-                <DialogTrigger asChild>
-                  <Button className="bg-primary hover:bg-primary/90 text-white gap-2 shadow-lg transition-all">
-                    <MessageSquarePlus className="h-4 w-4" />
-                    Submit Your Review
-                  </Button>
-                </DialogTrigger>
-                <DialogContent className="sm:max-w-[425px]">
-                  <DialogHeader>
-                    <DialogTitle>Share Your Experience</DialogTitle>
-                    <DialogDescription>
-                      Tell us how College Study Hub helped you.
-                    </DialogDescription>
-                  </DialogHeader>
-                  <div className="grid gap-4 py-4">
-                    <div className="grid gap-2">
-                      <Label htmlFor="name">Name</Label>
-                      <Input
-                        id="name"
-                        value={newReview.name}
-                        onChange={(e) => setNewReview({ ...newReview, name: e.target.value })}
-                        placeholder="Your Name"
-                      />
-                    </div>
-                    <div className="grid gap-2">
-                      <Label htmlFor="branch">Branch (Optional)</Label>
-                      <Input
-                        id="branch"
-                        value={newReview.branch}
-                        onChange={(e) => setNewReview({ ...newReview, branch: e.target.value })}
-                        placeholder="e.g. Computer Science"
-                      />
-                    </div>
-                    <div className="grid gap-2">
-                      <Label>Rating</Label>
-                      <div className="flex gap-1">
-                        {[1, 2, 3, 4, 5].map((star) => (
-                          <button
-                            key={star}
-                            type="button"
-                            onClick={() => setNewReview({ ...newReview, rating: star })}
-                            className="focus:outline-none transition-transform hover:scale-110"
-                          >
-                            <Star
-                              className={`h-6 w-6 ${star <= newReview.rating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'}`}
-                            />
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                    <div className="grid gap-2">
-                      <Label htmlFor="message">Review</Label>
-                      <Textarea
-                        id="message"
-                        value={newReview.message}
-                        onChange={(e) => setNewReview({ ...newReview, message: e.target.value })}
-                        placeholder="Write your review here..."
-                      />
-                    </div>
-                  </div>
-                  <DialogFooter>
-                    <Button onClick={handleSubmitReview}>Submit Review</Button>
-                  </DialogFooter>
-                </DialogContent>
-              </Dialog>
-            </div>
-
-            {/* Carousel Area */}
-            <div
-              className="relative group"
-              onMouseEnter={() => setIsPaused(true)}
-              onMouseLeave={() => setIsPaused(false)}
-            >
-
-              {/* Left Arrow */}
-              <button
-                onClick={() => scroll('left')}
-                className="absolute left-0 top-1/2 -translate-y-1/2 -ml-4 z-10 bg-white dark:bg-gray-800 rounded-full p-2 shadow-lg border border-gray-200 dark:border-gray-700 text-foreground hover:scale-110 transition-transform hidden md:block"
-                aria-label="Scroll Left"
-              >
-                <ChevronLeft className="h-6 w-6" />
-              </button>
-
-              {/* Scroll Container */}
-              <div
-                ref={scrollRef}
-                className="flex gap-6 overflow-x-auto pb-4 pt-2 snap-x hide-scrollbar scroll-smooth"
-                style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-              >
-                {[...reviews, ...reviews].map((review, idx) => (
-                  <div
-                    key={idx}
-                    className="min-w-[280px] w-[280px] md:min-w-[320px] md:w-[320px] bg-yellow-50/50 dark:bg-gray-800/50 border border-yellow-200 dark:border-yellow-900/30 rounded-xl p-6 flex-shrink-0 snap-center hover:shadow-lg transition-all duration-300 relative group/card"
-                  >
-                    <div className="flex gap-1 mb-3">
-                      {[...Array(5)].map((_, i) => (
-                        <Star
-                          key={i}
-                          className={`h-4 w-4 ${i < review.rating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'}`}
-                        />
-                      ))}
-                    </div>
-                    <p className="text-gray-700 dark:text-gray-300 mb-4 text-sm leading-relaxed min-h-[60px]">
-                      "{review.message}"
-                    </p>
-                    <div className="flex items-center gap-3 mt-auto">
-                      <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-xs uppercase">
-                        {review.name.charAt(0)}
-                      </div>
-                      <div>
-                        <p className="text-sm font-semibold text-foreground">{review.name}</p>
-                        <p className="text-xs text-muted-foreground">{review.branch}</p>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              {/* Right Arrow */}
-              <button
-                onClick={() => scroll('right')}
-                className="absolute right-0 top-1/2 -translate-y-1/2 -mr-4 z-10 bg-white dark:bg-gray-800 rounded-full p-2 shadow-lg border border-gray-200 dark:border-gray-700 text-foreground hover:scale-110 transition-transform hidden md:block"
-                aria-label="Scroll Right"
-              >
-                <ChevronRight className="h-6 w-6" />
-              </button>
-            </div>
-
-
-          </div>
-        </div>
-      </section>
 
       {/* Footer - Professional Dark Theme */}
       <footer className="bg-gray-950 border-t border-gray-800 py-16 text-gray-400 mt-auto">
