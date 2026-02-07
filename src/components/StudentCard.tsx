@@ -24,11 +24,41 @@ export const StudentCard = ({ student }: { student: StudentStory }) => {
     const ratingVal = parseInt(student.rating) || 5;
     const stars = Array(5).fill(0).map((_, i) => i < ratingVal);
 
+    // IMAGE FALLBACK LOGIC
+    // 1. Try initial photoUrl (Standard lh3...crop)
+    // 2. If error, try Direct Drive Link (uc?export=view)
+    // 3. If error, fallback to UI Avatars
+    const [imgSrc, setImgSrc] = React.useState(displayPhoto);
+
+    // Reset image when student changes (e.g. carousel slide)
+    React.useEffect(() => {
+        setImgSrc(displayPhoto);
+    }, [displayPhoto]);
+
+    const handleImageError = () => {
+        // If currently using the primary lh3 link, try the backup
+        if (imgSrc && imgSrc.includes('lh3.googleusercontent.com')) {
+            // Extract ID
+            let id = '';
+            const match = imgSrc.match(/\/d\/([^=]+)/);
+            if (match) id = match[1];
+
+            if (id) {
+                // Switch to Direct Link
+                setImgSrc(`https://drive.google.com/uc?export=view&id=${id}`);
+                return;
+            }
+        }
+
+        // If already on backup or can't parse ID, switch to Avatar
+        setImgSrc(`https://ui-avatars.com/api/?name=${encodeURIComponent(student.name)}&background=random&size=200`);
+    };
+
     return (
-        <div className="group relative w-full h-full min-h-[420px] mx-auto transition-all duration-500 hover:-translate-y-2 p-4 cursor-default">
+        <div className="group relative w-full h-full min-h-[350px] md:min-h-[420px] mx-auto transition-all duration-500 hover:-translate-y-2 p-4 cursor-default">
 
             {/* INVERTED THEME */}
-            <div className="relative h-full bg-[#1a1f2e] dark:bg-white rounded-[2rem] overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500 flex flex-col items-center pt-12 pb-8 px-6 border border-gray-800 dark:border-gray-200">
+            <div className="relative h-full bg-[#1a1f2e] dark:bg-white rounded-[2rem] overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500 flex flex-col items-center pt-8 md:pt-12 pb-6 md:pb-8 px-5 md:px-6 border border-gray-800 dark:border-gray-200">
 
                 {/* Background Decor */}
                 <div className="absolute top-0 w-full h-32 bg-gradient-to-b from-white/5 to-transparent dark:from-blue-50/50 opacity-50"></div>
@@ -60,15 +90,17 @@ export const StudentCard = ({ student }: { student: StudentStory }) => {
                         {student.linkedinUrl ? (
                             <a href={student.linkedinUrl} target="_blank" rel="noopener noreferrer">
                                 <img
-                                    src={displayPhoto}
+                                    src={imgSrc}
                                     alt={student.name}
+                                    onError={handleImageError}
                                     className="w-full h-full rounded-full object-cover border-4 border-[#1a1f2e] dark:border-white shadow-lg cursor-pointer hover:scale-105 transition-transform"
                                 />
                             </a>
                         ) : (
                             <img
-                                src={displayPhoto}
+                                src={imgSrc}
                                 alt={student.name}
+                                onError={handleImageError}
                                 className="w-full h-full rounded-full object-cover border-4 border-[#1a1f2e] dark:border-white shadow-lg"
                             />
                         )}

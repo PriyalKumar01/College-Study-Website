@@ -14,6 +14,8 @@ export interface StudentStory {
     consent?: string;
 }
 
+
+
 // Extended fallback data
 const FALLBACK_STORIES: StudentStory[] = [
     {
@@ -84,18 +86,22 @@ const FALLBACK_STORIES: StudentStory[] = [
 ];
 
 // Helper to convert Google Drive links to viewable Images
+// Helper to convert Google Drive links to viewable Images
+// Helper to convert Google Drive links to viewable Images
 const getGoogleDriveImage = (url: string) => {
     if (!url) return '';
-    let id = '';
-    const idMatch = url.match(/id=([^&]+)/);
-    if (idMatch) id = idMatch[1];
-    if (!id) {
-        const dMatch = url.match(/\/d\/([^/]+)/);
-        if (dMatch) id = dMatch[1];
-    }
+
+    // Robust regex to find ID in any common Drive URL format
+    const idMatch = url.match(/(?:\/d\/|id=)([\w-]+)/);
+    const id = idMatch ? idMatch[1] : null;
+
     if (id) {
-        return `https://lh3.googleusercontent.com/d/${id}=w500-h500-p-k-rw-no`;
+        // Return standard crop format for best visuals
+        return `https://lh3.googleusercontent.com/d/${id}=w500-h500-c-k-rw-no`;
     }
+
+    // If no ID found (e.g. just a filename "photo.jpg"), return original.
+    // The UI (StudentCard) will try to load it, fail, and show Avatar.
     return url;
 };
 
@@ -119,7 +125,8 @@ export const useStudentStories = () => {
         const fetchStories = async () => {
             try {
                 const SHEET_ID = '124vaMaCKRn7G-BEz2mT2vTSIoyk0Zow-j-8uqIIhJi8';
-                const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv`;
+                // User specified GID 214412608
+                const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&gid=214412608&t=${Date.now()}`;
 
                 const response = await fetch(SHEET_URL);
                 if (!response.ok) throw new Error("Network response was not ok");
@@ -129,7 +136,7 @@ export const useStudentStories = () => {
 
                 const parsedStories: StudentStory[] = rows
                     .slice(1) // Remove header
-                    .map(row => {
+                    .map((row): StudentStory | null => {
                         if (row.length < 5) return null;
 
                         const name = row[2]?.replace(/^"|"$/g, '').trim();
@@ -147,7 +154,9 @@ export const useStudentStories = () => {
 
                         const rawPhoto = row[11]?.replace(/^"|"$/g, '').trim();
                         const firstPhoto = rawPhoto.split(',')[0].trim();
-                        const photoUrl = getGoogleDriveImage(firstPhoto);
+                        let photoUrl = getGoogleDriveImage(firstPhoto);
+
+
 
                         // Feedback = Index 13
                         const feedback = row[13]?.replace(/^"|"$/g, '').trim();
@@ -173,21 +182,35 @@ export const useStudentStories = () => {
                         };
                     })
                     .filter((story): story is StudentStory => {
-                        const hasName = !!(story && story.name);
+                        if (!story) return false;
+                        const hasName = !!story.name;
                         if (!hasName) return false;
                         const consentVal = story.consent?.toLowerCase() || '';
                         return !consentVal.includes('no');
                     });
 
-                if (parsedStories.length === 0) {
+                // Deduplicate: Keep only the LATEST submission for each student (by properties)
+                // We use a Map to overwrite previous entries with newer ones (assuming rows are chronological)
+                const uniqueStoriesMap = new Map<string, StudentStory>();
+
+                parsedStories.forEach(story => {
+                    if (!story) return;
+                    // Use email as key if available, else name
+                    const key = story.email && story.email.includes('@') ? story.email.toLowerCase() : story.name.toLowerCase();
+                    uniqueStoriesMap.set(key, story);
+                });
+
+                const uniqueStories = Array.from(uniqueStoriesMap.values());
+
+                if (uniqueStories.length === 0) {
                     setStories(FALLBACK_STORIES);
                     setStats({ averageRating: "4.9", totalReviews: FALLBACK_STORIES.length });
                 } else {
-                    setStories(parsedStories);
+                    setStories(uniqueStories);
                     // Calculate Average Rating
-                    const totalRating = parsedStories.reduce((acc, story) => acc + (parseFloat(story.rating) || 5), 0);
-                    const avg = (totalRating / parsedStories.length).toFixed(1);
-                    setStats({ averageRating: avg, totalReviews: parsedStories.length });
+                    const totalRating = uniqueStories.reduce((acc, story) => acc + (parseFloat(story.rating) || 5), 0);
+                    const avg = (totalRating / uniqueStories.length).toFixed(1);
+                    setStats({ averageRating: avg, totalReviews: uniqueStories.length });
                 }
                 setLoading(false);
             } catch (err) {

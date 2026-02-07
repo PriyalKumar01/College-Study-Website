@@ -105,7 +105,7 @@ const StudentSuccessStories = () => {
                                     <div className="flex touch-pan-y gap-6 ml-0">
                                         {stories.map((student, index) => (
                                             <div
-                                                className="flex-[0_0_auto] min-w-0 relative w-[90%] md:w-[70%] lg:w-[48%]"
+                                                className="flex-[0_0_auto] min-w-0 relative w-full md:w-[70%] lg:w-[48%]"
                                                 key={`${student.name}-${index}`}
                                             >
                                                 <div className="h-full px-2">
