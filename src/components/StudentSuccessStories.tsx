@@ -47,15 +47,25 @@ const StudentSuccessStories = () => {
     const [userRating, setUserRating] = useState(0);
     const [hasRated, setHasRated] = useState(false);
 
+    useEffect(() => {
+        const storedRating = localStorage.getItem('college-hub-user-rating');
+        if (storedRating) {
+            setUserRating(parseInt(storedRating));
+            setHasRated(true);
+        }
+    }, []);
+
     const handleRate = (starIndex: number) => {
         if (hasRated) return;
-        setUserRating(starIndex + 1);
+        const newRating = starIndex + 1;
+        setUserRating(newRating);
         setHasRated(true);
+        localStorage.setItem('college-hub-user-rating', newRating.toString());
         // In a real app, send to backend here.
     };
 
     return (
-        <section className="py-24 bg-white dark:bg-[#0a0f1c] transition-colors duration-300 relative z-30">
+        <section className="py-12 md:py-24 bg-white dark:bg-[#0a0f1c] transition-colors duration-300 relative z-30">
             {/* Header */}
             <div className="container mx-auto px-4 relative z-40">
                 <div className="text-center mb-16">
@@ -71,7 +81,7 @@ const StudentSuccessStories = () => {
             {/* MAIN CONTAINER BOX (Requested "Like Everything section") */}
             <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 relative z-50">
                 {/* This wrapper mimics the "Everything" section style EXACTLY */}
-                <div className="bg-white dark:bg-card rounded-3xl shadow-xl border border-gray-100 dark:border-border p-8 md:p-12 relative overflow-hidden">
+                <div className="bg-white dark:bg-card rounded-3xl shadow-xl border border-gray-100 dark:border-border p-5 md:p-12 relative overflow-hidden">
                     {/* Top Gradient Line */}
                     <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-blue-500 to-indigo-600"></div>
                     <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/5 rounded-full blur-3xl pointer-events-none"></div>
@@ -140,7 +150,7 @@ const StudentSuccessStories = () => {
 
             {/* Bottom Actions & Stats - Wrapped in Box */}
             <div className="mt-12 container mx-auto px-4 relative z-30">
-                <div className="max-w-[1200px] mx-auto bg-white dark:bg-card rounded-3xl shadow-xl border border-gray-100 dark:border-border p-8 md:p-10 relative overflow-hidden flex flex-col gap-8">
+                <div className="max-w-[1200px] mx-auto bg-white dark:bg-card rounded-3xl shadow-xl border border-gray-100 dark:border-border p-6 md:p-10 relative overflow-hidden flex flex-col gap-6 md:gap-8">
 
                     {/* Gradient Decor */}
                     <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-orange-400 to-pink-500"></div>
@@ -218,6 +228,7 @@ const StudentSuccessStories = () => {
                                     <button
                                         key={i}
                                         onClick={() => handleRate(i)}
+                                        aria-label={`Rate ${i + 1} stars`}
                                         className={cn(
                                             "transition-all duration-200 hover:scale-125 focus:outline-none",
                                             (hasRated ? i < userRating : false) ? "text-yellow-400 fill-yellow-400" : "text-gray-300 hover:text-yellow-400"
@@ -228,7 +239,7 @@ const StudentSuccessStories = () => {
                                     </button>
                                 ))}
                             </div>
-                            {hasRated && <span className="text-xs text-green-500 mt-1 font-bold animate-fade-in">Thanks for rating!</span>}
+                            {hasRated && <span className="text-xs text-green-500 mt-1 font-bold animate-in fade-in zoom-in">Thanks for rating!</span>}
                         </div>
 
                     </div>

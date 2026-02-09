@@ -55,10 +55,10 @@ export const StudentCard = ({ student }: { student: StudentStory }) => {
     };
 
     return (
-        <div className="group relative w-full h-full min-h-[350px] md:min-h-[420px] mx-auto transition-all duration-500 hover:-translate-y-2 p-4 cursor-default">
+        <div className="group relative w-full h-full min-h-[300px] md:min-h-[420px] mx-auto transition-all duration-500 hover:-translate-y-2 p-2 md:p-4 cursor-default">
 
             {/* INVERTED THEME */}
-            <div className="relative h-full bg-[#1a1f2e] dark:bg-white rounded-[2rem] overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500 flex flex-col items-center pt-8 md:pt-12 pb-6 md:pb-8 px-5 md:px-6 border border-gray-800 dark:border-gray-200">
+            <div className="relative h-full bg-[#1a1f2e] dark:bg-white rounded-[2rem] overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500 flex flex-col items-center pt-8 md:pt-12 pb-5 md:pb-8 px-4 md:px-6 border border-gray-800 dark:border-gray-200">
 
                 {/* Background Decor */}
                 <div className="absolute top-0 w-full h-32 bg-gradient-to-b from-white/5 to-transparent dark:from-blue-50/50 opacity-50"></div>
@@ -86,7 +86,7 @@ export const StudentCard = ({ student }: { student: StudentStory }) => {
                 {/* Profile Image with Ring */}
                 <div className="relative mb-6 mt-2">
                     <div className="absolute -inset-4 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-full opacity-30 blur-md group-hover:opacity-50 transition-opacity duration-500"></div>
-                    <div className="relative w-36 h-36 p-1 rounded-full bg-gradient-to-tr from-blue-500 to-indigo-500">
+                    <div className="relative w-24 h-24 md:w-36 md:h-36 p-1 rounded-full bg-gradient-to-tr from-blue-500 to-indigo-500">
                         {student.linkedinUrl ? (
                             <a href={student.linkedinUrl} target="_blank" rel="noopener noreferrer">
                                 <img
@@ -106,7 +106,7 @@ export const StudentCard = ({ student }: { student: StudentStory }) => {
                         )}
 
                         {/* METRIC BADGE (CGPA/SGPA) */}
-                        <div className="absolute -bottom-2 md:-bottom-3 left-1/2 -translate-x-1/2 bg-white dark:bg-[#1a1f2e] px-4 py-1.5 rounded-full shadow-lg border border-blue-100 dark:border-blue-900 flex items-center gap-1.5 whitespace-nowrap z-20">
+                        <div className="absolute -bottom-2 md:-bottom-3 left-1/2 -translate-x-1/2 bg-white dark:bg-[#1a1f2e] px-3 md:px-4 py-1 md:py-1.5 rounded-full shadow-lg border border-blue-100 dark:border-blue-900 flex items-center gap-1 md:gap-1.5 whitespace-nowrap z-20">
                             <span className="text-blue-600 dark:text-blue-400 font-black text-sm md:text-base tracking-tight">
                                 {metricValue}
                             </span>
@@ -116,8 +116,8 @@ export const StudentCard = ({ student }: { student: StudentStory }) => {
                 </div>
 
                 {/* Name & Info */}
-                <div className="mb-6 mt-4 w-full text-center">
-                    <h3 className="text-2xl font-bold text-white dark:text-gray-900 mb-1">
+                <div className="mb-4 md:mb-6 mt-4 md:mt-4 w-full text-center">
+                    <h3 className="text-xl md:text-2xl font-bold text-white dark:text-gray-900 mb-1">
                         {student.linkedinUrl ? (
                             <a
                                 href={student.linkedinUrl}

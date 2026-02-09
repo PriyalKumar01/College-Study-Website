@@ -211,6 +211,21 @@ const Index = () => {
                 <span className="block bg-gradient-to-r from-primary via-blue-600 to-indigo-600 bg-clip-text text-transparent">Academic Platform</span>
               </h1>
 
+              {/* Mobile Hero Image (Hidden on Desktop) */}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.5 }}
+                className="lg:hidden mb-8 relative"
+              >
+                <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-transparent rounded-full blur-2xl"></div>
+                <img
+                  src="/lovable-uploads/f3b6ce00-a0ff-4b44-bbdb-ab5640339741.png"
+                  alt="College Study Hub"
+                  className="w-48 h-auto mx-auto relative z-10 drop-shadow-xl"
+                />
+              </motion.div>
+
               <p className="text-lg text-muted-foreground mb-8 leading-relaxed max-w-xl">
                 Empowering students with comprehensive notes, career resources,
                 and academic tools. Join thousands already benefiting from our platform.
@@ -275,7 +290,7 @@ const Index = () => {
       <section className="py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-          <div className="bg-white dark:bg-card rounded-3xl shadow-xl border border-gray-100 dark:border-border p-8 md:p-12 relative overflow-hidden">
+          <div className="bg-white dark:bg-card rounded-3xl shadow-xl border border-gray-100 dark:border-border p-5 md:p-12 relative overflow-hidden">
             <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-blue-500 to-indigo-600"></div>
             <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl"></div>
             <div className="absolute bottom-0 left-0 w-40 h-40 bg-accent/5 rounded-full blur-3xl"></div>
@@ -295,7 +310,7 @@ const Index = () => {
               </p>
             </motion.div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 relative z-10">
+            <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-8 relative z-10">
               {features.map((feature, index) => (
                 <motion.div
                   key={index}
@@ -308,15 +323,16 @@ const Index = () => {
                     onClick={() => handleNavigation(feature.href)}
                     className="cursor-pointer group h-full"
                   >
-                    <div className="h-full p-6 rounded-2xl bg-gray-50 dark:bg-gray-800/50 hover:bg-white dark:hover:bg-gray-800 border border-transparent hover:border-gray-200 dark:hover:border-gray-700 hover:shadow-xl transition-all duration-300">
-                      <div className={`w-14 h-14 rounded-2xl flex items-center justify-center mb-6 ${feature.gradient} shadow-lg ring-4 ring-white dark:ring-gray-900`}>
-                        {feature.icon}
+                    <div className="h-full p-3 md:p-6 rounded-2xl bg-gray-50 dark:bg-gray-800/50 hover:bg-white dark:hover:bg-gray-800 border border-transparent hover:border-gray-200 dark:hover:border-gray-700 hover:shadow-xl transition-all duration-300">
+                      <div className={`w-10 h-10 md:w-14 md:h-14 rounded-xl md:rounded-2xl flex items-center justify-center mb-3 md:mb-6 ${feature.gradient} shadow-lg ring-2 md:ring-4 ring-white dark:ring-gray-900`}>
+                        {/* Clone element to modify className for mobile size if needed, or rely on parent size */}
+                        <div className="scale-75 md:scale-100 origin-center">{feature.icon}</div>
                       </div>
-                      <h3 className="text-xl font-bold mb-3 group-hover:text-primary transition-colors">{feature.title}</h3>
+                      <h3 className="text-sm md:text-xl font-bold mb-2 md:mb-3 group-hover:text-primary transition-colors">{feature.title}</h3>
                       <p className="text-muted-foreground text-sm leading-relaxed mb-4">
                         {feature.description}
                       </p>
-                      <div className="flex items-center text-primary font-semibold text-sm group-hover:translate-x-1 transition-transform duration-300">
+                      <div className="flex items-center text-primary font-semibold text-xs md:text-sm group-hover:translate-x-1 transition-transform duration-300">
                         Explore
                         <ArrowRight className="ml-1 h-4 w-4" />
                       </div>
