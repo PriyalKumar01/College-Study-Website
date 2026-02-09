@@ -16,11 +16,10 @@ import HCaptcha from '@hcaptcha/react-hcaptcha';
 // hCaptcha Site Key provided by user
 const HCAPTCHA_SITE_KEY = "8a4805ba-2f46-4c8a-980a-54b8d5240d88";
 
-// Common temp mail domains to block
 const BLOCKED_DOMAINS = [
   'tempmail.com', 'throwawaymail.com', '10minutemail.com', 'guerrillamail.com', 'mailinator.com',
   'yopmail.com', 'getnada.com', 'temp-mail.org', 'fake-email.com', 'dispostable.com',
-  'sharklasers.com', 'gmial.com', 'gmal.com'
+  'sharklasers.com', 'gmial.com', 'gmal.com', 'test.com', 'example.com', 'testmail.com'
 ];
 
 interface AuthModalProps {
@@ -43,6 +42,15 @@ const InlineError = ({ message }: { message: string }) => (
 const isValidEmail = (email: string): boolean => {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!emailRegex.test(email)) return false;
+
+  const lowerEmail = email.toLowerCase();
+
+  // Block specific "test" patterns commonly used
+  if (lowerEmail.startsWith('test') || lowerEmail.startsWith('abc') || lowerEmail.startsWith('xyz') || lowerEmail.startsWith('user')) {
+    // Only block if it looks like a lazy test email (e.g. test@gmail.com, test@test.com)
+    // We'll be a bit strict here to save the user's reputation
+    if (lowerEmail.includes('test') && (lowerEmail.length < 15)) return false;
+  }
 
   const domain = email.split('@')[1]?.toLowerCase();
   if (domain && BLOCKED_DOMAINS.some(d => domain.includes(d))) {
@@ -185,21 +193,17 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'signin' }: AuthModalProps) 
 
       let error = null;
 
-      if (isPasswordReset) {
-        const res = await supabase.auth.resetPasswordForEmail(email.trim().toLowerCase(), {
+      // IMP: Using signInWithOtp for BOTH signup/login AND password reset
+      // This bypasses the strict 2/hr limit on resetPasswordForEmail
+      // For password reset, we just log them in via OTP, then show "New Password" screen
+      const res = await supabase.auth.signInWithOtp({
+        email: email.trim().toLowerCase(),
+        options: {
+          shouldCreateUser: !isPasswordReset, // Don't create user if resetting password
           captchaToken: captchaToken || undefined
-        });
-        error = res.error;
-      } else {
-        const res = await supabase.auth.signInWithOtp({
-          email: email.trim().toLowerCase(),
-          options: {
-            shouldCreateUser: true,
-            captchaToken: captchaToken || undefined
-          }
-        });
-        error = res.error;
-      }
+        }
+      });
+      error = res.error;
 
       if (error) {
         console.error("OTP Send Error:", error);
@@ -255,7 +259,9 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'signin' }: AuthModalProps) 
     setIsLoading(true);
 
     try {
-      const type = mode === 'forgot' ? 'recovery' : 'email';
+      // Since we changed password reset to use signInWithOtp, the verification type is always 'email'
+      // 'recovery' is only for resetPasswordForEmail links
+      const type = 'email';
 
       const { data, error } = await supabase.auth.verifyOtp({
         email: email.trim().toLowerCase(),
@@ -668,12 +674,14 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'signin' }: AuthModalProps) 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
       <DialogContent hideDefaultClose className="sm:max-w-[440px] w-[95vw] max-h-[90vh] p-0 pr-0 gap-0 bg-white dark:bg-slate-950 border border-gray-200 dark:border-slate-800 shadow-2xl rounded overflow-hidden flex flex-col">
+        <DialogTitle className="sr-only">Authentication</DialogTitle>
+        <DialogDescription className="sr-only">Sign in, Sign up, or recover your password</DialogDescription>
         <div className="flex justify-between items-center px-6 py-4 border-b border-gray-100 dark:border-slate-800 flex-shrink-0">
           <div className="flex items-center gap-3">
-            <img src={logoImg} className="w-8 h-8" alt="Logo" />
+            <img src={logoImg} className="w-8 h-8" alt="College Study Hub" width="32" height="32" />
             <span className="font-bold text-base block text-gray-900 dark:text-white">College Study</span>
           </div>
-          <button onClick={handleClose}><X className="w-5 h-5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300" /></button>
+          <button onClick={handleClose} aria-label="Close"><X className="w-5 h-5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300" /></button>
         </div>
 
         <div className="flex-1 overflow-y-auto min-h-0">
