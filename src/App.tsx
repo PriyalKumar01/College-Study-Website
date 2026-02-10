@@ -12,6 +12,8 @@ import ScrollToTop from "./components/ScrollToTop";
 import Auth from "./pages/Auth";
 import Index from "./pages/Index";
 import About from './pages/About';
+import TermsOfService from './pages/TermsOfService';
+import PrivacyPolicy from './pages/PrivacyPolicy';
 import AppLayout from "./components/AppLayout";
 
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -31,6 +33,8 @@ const App = () => {
               <Routes>
                 {/* Auth Route - stand alone or inside layout? Usually stand alone to avoid distractions */}
                 <Route path="/auth" element={<Auth />} />
+                <Route path="/terms" element={<TermsOfService />} />
+                <Route path="/privacy" element={<PrivacyPolicy />} />
 
                 {/* Main Layout routes */}
                 <Route element={<AppLayout />}>

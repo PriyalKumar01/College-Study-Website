@@ -71,7 +71,7 @@ const getPasswordErrors = (pwd: string) => {
 
 const AuthModal = ({ isOpen, onClose, defaultMode = 'signin' }: AuthModalProps) => {
   const [mode, setMode] = useState<'signin' | 'signup' | 'forgot'>('signin');
-  const [step, setStep] = useState<'form' | 'otp' | 'reset-password'>('form');
+  const [step, setStep] = useState<'form' | 'otp' | 'reset-password' | 'signup-complete'>('form');
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
@@ -139,8 +139,33 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'signin' }: AuthModalProps) 
   }, [isOpen, resetForm]);
 
   useEffect(() => {
+    // Check for existing timer on mount
+    const savedTimer = localStorage.getItem('otp_timer_expiry');
+    if (savedTimer) {
+      const expiry = parseInt(savedTimer, 10);
+      const now = Date.now();
+      if (expiry > now) {
+        setResendTimer(Math.ceil((expiry - now) / 1000));
+        setStep('otp'); // Restore OTP step if timer is running
+        // Also restore email if possible? We might lose email on refresh unless we persist it too.
+        // For now, let's just respect the timer blocking.
+      } else {
+        localStorage.removeItem('otp_timer_expiry');
+      }
+    }
+  }, []);
+
+  useEffect(() => {
     if (resendTimer > 0) {
-      const timer = setTimeout(() => setResendTimer(t => t - 1), 1000);
+      const timer = setTimeout(() => {
+        setResendTimer(t => {
+          if (t <= 1) {
+            localStorage.removeItem('otp_timer_expiry');
+            return 0;
+          }
+          return t - 1;
+        });
+      }, 1000);
       return () => clearTimeout(timer);
     }
   }, [resendTimer]);
@@ -184,58 +209,36 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'signin' }: AuthModalProps) 
       return;
     }
 
+    if (resendTimer > 0) {
+      toast({ title: "Please Wait", description: `You can resend in ${resendTimer} seconds.`, variant: "destructive" });
+      return;
+    }
+
     if (isSendingOtp) return;
     setIsSendingOtp(true);
     setIsLoading(true);
 
     try {
-      console.log('Initiating OTP login for:', email);
+      console.log('Initiating OTP login/signup for:', email);
 
-      let error = null;
-
-      // IMP: Using signInWithOtp for BOTH signup/login AND password reset
-      // This bypasses the strict 2/hr limit on resetPasswordForEmail
-      // For password reset, we just log them in via OTP, then show "New Password" screen
-      const res = await supabase.auth.signInWithOtp({
+      // STEP 1: Request OTP
+      const { error } = await supabase.auth.signInWithOtp({
         email: email.trim().toLowerCase(),
         options: {
-          shouldCreateUser: !isPasswordReset, // Don't create user if resetting password
+          shouldCreateUser: !isPasswordReset,
           captchaToken: captchaToken || undefined
         }
       });
-      error = res.error;
 
       if (error) {
-        console.error("OTP Send Error:", error);
-        captchaRef.current?.resetCaptcha();
-        setCaptchaToken(null);
-
-        let title = "Verification Failed";
-        let desc = error.message;
-
-        if (error.message.includes('captcha protection') || error.message.includes('invalid-input-response')) {
-          title = "Configuration Error";
-          desc = "Supabase rejected the hCaptcha. Please check your Secret Key in Supabase = hCaptcha Secret.";
-        } else if (error.message.includes('browser-error')) {
-          desc = "Network issue checking Captcha. Please try again.";
-        } else if (error.message.includes('Signups not allowed')) {
-          title = "Signup Error";
-          desc = "Signups are currently disabled.";
-        } else if (error.message.includes('unique constraint')) {
-          title = "Cannot Verify";
-          desc = "This email might already be registered.";
-        }
-
-        toast({
-          title: title,
-          description: desc,
-          variant: "destructive",
-        });
-        return;
+        throw error;
       }
 
+      // Success: Set persistent timer (120s = 2 mins)
+      const expiry = Date.now() + 120 * 1000;
+      localStorage.setItem('otp_timer_expiry', expiry.toString());
       setStep('otp');
-      setResendTimer(60);
+      setResendTimer(120);
       setOtp('');
 
       toast({
@@ -244,7 +247,26 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'signin' }: AuthModalProps) 
       });
 
     } catch (err: any) {
-      toast({ title: "Error", description: err.message || "Something went wrong", variant: "destructive" });
+      console.error("OTP Send Error:", err);
+      captchaRef.current?.resetCaptcha();
+      setCaptchaToken(null);
+
+      let title = "Verification Failed";
+      let desc = err.message || "Something went wrong";
+
+      if (err.message?.includes('captcha')) {
+        title = "Captcha Error";
+        desc = "Please try again.";
+      } else if (err.status === 429 || err.message?.includes('limit')) {
+        title = "Too Many Requests";
+        desc = "Server is busy. Please wait 2 minutes before trying again.";
+      } else {
+        // Generic fall-back
+        title = "Request Failed";
+        desc = "Unable to send verification code. Please try again later.";
+      }
+
+      toast({ title, description: desc, variant: "destructive" });
     } finally {
       setIsSendingOtp(false);
       setIsLoading(false);
@@ -259,40 +281,50 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'signin' }: AuthModalProps) 
     setIsLoading(true);
 
     try {
-      // Since we changed password reset to use signInWithOtp, the verification type is always 'email'
-      // 'recovery' is only for resetPasswordForEmail links
-      const type = 'email';
-
+      // STEP 2: Verify OTP
       const { data, error } = await supabase.auth.verifyOtp({
         email: email.trim().toLowerCase(),
         token: otp,
-        type: type as any,
+        type: 'email',
       });
 
       if (error) throw error;
-
-      if (!data.session) {
-        throw new Error("Verification succeeded but no session created. Please try again.");
+      if (!data.session || !data.user) {
+        throw new Error("Verification succeeded but no session created.");
       }
 
       setEmailVerified(true);
 
+      // Determine next step based on mode and profile status
       if (mode === 'forgot') {
         setStep('reset-password');
         toast({ title: "Verified", description: "Please set your new password." });
+      } else if (mode === 'signup') {
+        // Check if profile is already completed (e.g., existing user trying to signup again)
+        const isProfileCompleted = data.user.user_metadata?.profile_completed === true;
+
+        if (isProfileCompleted) {
+          // User already exists and is complete -> Just log them in
+          toast({ title: "Welcome back!", description: "You already have an account. Signed in successfully." });
+          handleClose();
+          navigate('/dashboard');
+        } else {
+          // New user or incomplete profile -> Move to Profile Completion
+          setStep('signup-complete');
+          toast({ title: "Verified!", description: "Please complete your profile." });
+        }
       } else {
+        // Default fallthrough (shouldn't really happen for signin unless we support OTP login)
         setStep('form');
-        toast({
-          title: "Verified Successfully! \u2705",
-          description: "Your email is confirmed. Please complete your profile."
-        });
+        handleClose();
+        navigate('/dashboard');
       }
 
     } catch (err: any) {
       console.error("Verification Error:", err);
       toast({
         title: "Verification Failed",
-        description: err.message || "Invalid code. Please try again.",
+        description: err.message || "Invalid code.",
         variant: "destructive"
       });
     } finally {
@@ -303,14 +335,9 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'signin' }: AuthModalProps) 
   const handleFinalSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     setTouched({
-      email: true, firstName: true, lastName: true, password: true,
+      firstName: true, lastName: true, password: true,
       college: true, branch: true, year: true
     });
-
-    if (!emailVerified) {
-      toast({ title: "Action Required", description: "Please verify your email first.", variant: "destructive" });
-      return;
-    }
 
     const pwdErrors = getPasswordErrors(password);
     if (pwdErrors.length > 0) {
@@ -330,13 +357,15 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'signin' }: AuthModalProps) 
 
     setIsLoading(true);
     try {
+      // STEP 3: Update User with Password and Profile Data
       const { error } = await supabase.auth.updateUser({
         password: password,
         data: {
           first_name: firstName,
           last_name: lastName,
           mobile_number: contactNo || null,
-          college, branch, year
+          college, branch, year,
+          profile_completed: true // MARK PROFILE AS COMPLETE
         }
       });
 
@@ -462,78 +491,82 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'signin' }: AuthModalProps) 
         {isLoading ? <Loader2 className="animate-spin h-4 w-4" /> : 'Confirm Verification'}
       </Button>
       <div className="text-center mt-4">
-        <button onClick={handleResendOTP} disabled={resendTimer > 0} className="text-sm text-blue-600 dark:text-blue-400 disabled:text-gray-400 dark:disabled:text-gray-600">
-          {resendTimer > 0 ? `Resend in ${resendTimer}s` : 'Resend Code (Requires Captcha)'}
-        </button>
+        {resendTimer > 0 ? (
+          <p className="text-sm text-gray-500 dark:text-gray-400">
+            Didn’t receive? Wait <span className="font-medium text-gray-900 dark:text-white">{Math.floor(resendTimer / 60)}:{(resendTimer % 60).toString().padStart(2, '0')}</span> ({resendTimer}s)
+          </p>
+        ) : (
+          <button onClick={handleResendOTP} className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 font-medium">
+            Resend Code (Requires Captcha)
+          </button>
+        )}
       </div>
     </motion.div>
   );
 
-  const renderSignupForm = () => (
+  const renderSignupStart = () => (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="p-6 space-y-4">
       <div className="text-center mb-4">
         <h2 className="text-xl font-bold dark:text-white">Create Account</h2>
+        <p className="text-sm text-gray-500 dark:text-gray-400">Step 1: Verify Email</p>
       </div>
 
-      <form onSubmit={handleFinalSignup} className="space-y-3">
-        {/* hCAPTCHA FIRST - TOP OF FORM */}
-        {!emailVerified && (
-          <div className="flex flex-col items-center justify-center py-2 space-y-2">
-            <Label className="text-xs text-gray-500 dark:text-gray-400 mb-1">Verify you are human first<RequiredIndicator /></Label>
-            <HCaptcha
-              ref={captchaRef}
-              sitekey={HCAPTCHA_SITE_KEY}
-              onVerify={(token) => setCaptchaToken(token)}
-            />
-          </div>
-        )}
-
-        {/* Email & Verify */}
+      <div className="space-y-4">
+        {/* Email */}
         <div>
           <Label className="dark:text-gray-300">Email Address<RequiredIndicator /></Label>
-          <div className="relative mt-1">
-            <Input
-              value={email}
-              onChange={e => {
-                if (emailVerified) setEmailVerified(false);
-                setEmail(e.target.value.toLowerCase())
-              }}
-              disabled={emailVerified || isSendingOtp}
-              className={`pr-20 dark:bg-slate-950 dark:border-slate-800 dark:text-white ${emailVerified ? 'border-green-500 bg-green-50 dark:bg-green-900/10 text-green-700 dark:text-green-400' : ''}`}
-              placeholder="student@college.edu"
-            />
-            {emailVerified ? (
-              <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center text-green-600 dark:text-green-400 font-medium text-sm">
-                <CheckCircle2 className="w-4 h-4 mr-1" /> Verified
-              </div>
-            ) : (
-              <button
-                type="button"
-                onClick={() => handleVerifyEmailStart(false)}
-                disabled={!isEmailValid || isSendingOtp || !captchaToken}
-                className="absolute right-1 top-1/2 -translate-y-1/2 px-3 py-1 text-xs font-semibold text-blue-600 hover:bg-blue-50 dark:text-blue-400 dark:hover:bg-slate-800 rounded disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {isSendingOtp ? <Loader2 className="w-3 h-3 animate-spin" /> : 'VERIFY'}
-              </button>
-            )}
-          </div>
-          {emailError && <InlineError message={emailError} />}
-          {!emailVerified && !isSendingOtp && !captchaToken && (
-            <p className="text-[10px] text-red-500 mt-1 pl-1 flex items-center gap-1">
-              <AlertCircle className="w-3 h-3" /> Complete Captcha first (above)
-            </p>
+          <Input
+            value={email}
+            onChange={e => setEmail(e.target.value.toLowerCase())}
+            disabled={isSendingOtp}
+            placeholder="student@college.edu"
+            className="mt-1 dark:bg-slate-950 dark:border-slate-800 dark:text-white"
+          />
+          {getEmailError(email, touched.email || false) && (
+            <InlineError message={getEmailError(email, true) || ''} />
           )}
         </div>
 
+        {/* hCaptcha */}
+        <div className="flex justify-center">
+          <HCaptcha
+            ref={captchaRef}
+            sitekey={HCAPTCHA_SITE_KEY}
+            onVerify={(token) => setCaptchaToken(token)}
+          />
+        </div>
+
+        <Button
+          onClick={() => handleVerifyEmailStart(false)}
+          disabled={isSendingOtp || !email || !captchaToken}
+          className="w-full bg-gray-900 dark:bg-slate-50 dark:text-slate-900 dark:hover:bg-slate-200 text-white"
+        >
+          {isSendingOtp ? <Loader2 className="animate-spin mr-2 h-4 w-4" /> : 'Verify & Create Account'}
+        </Button>
+      </div>
+
+      <div className="text-center text-sm dark:text-gray-400 mt-4">
+        Already have an account? <button onClick={() => switchMode('signin')} className="text-blue-600 dark:text-blue-400 font-medium">Login</button>
+      </div>
+    </motion.div>
+  );
+
+  const renderSignupComplete = () => (
+    <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="p-6 space-y-4">
+      <div className="text-center mb-4">
+        <h2 className="text-xl font-bold dark:text-white">Complete Profile</h2>
+        <p className="text-sm text-gray-500 dark:text-gray-400">Step 2: Set Details</p>
+      </div>
+
+      <form onSubmit={handleFinalSignup} className="space-y-3">
         <div className="grid grid-cols-2 gap-3">
           <div>
             <Label className="dark:text-gray-300">First Name<RequiredIndicator /></Label>
             <Input
               value={firstName}
               onChange={e => setFirstName(e.target.value)}
-              disabled={!emailVerified}
               placeholder="e.g. Priyal"
-              className="border-slate-200 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:bg-slate-950 dark:border-slate-800 dark:text-white"
+              className="mt-1 dark:bg-slate-950 dark:border-slate-800 dark:text-white"
             />
           </div>
           <div>
@@ -541,9 +574,8 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'signin' }: AuthModalProps) 
             <Input
               value={lastName}
               onChange={e => setLastName(e.target.value)}
-              disabled={!emailVerified}
               placeholder="e.g. Kumar"
-              className="border-slate-200 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:bg-slate-950 dark:border-slate-800 dark:text-white"
+              className="mt-1 dark:bg-slate-950 dark:border-slate-800 dark:text-white"
             />
           </div>
         </div>
@@ -553,46 +585,32 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'signin' }: AuthModalProps) 
           <Input
             value={contactNo}
             onChange={e => setContactNo(e.target.value)}
-            disabled={!emailVerified}
             placeholder="e.g. 9876543210"
-            className="border-slate-200 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:bg-slate-950 dark:border-slate-800 dark:text-white"
+            className="mt-1 dark:bg-slate-950 dark:border-slate-800 dark:text-white"
           />
         </div>
 
         <div>
           <Label className="dark:text-gray-300">Password<RequiredIndicator /></Label>
-          <div className="relative">
+          <div className="relative mt-1">
             <Input
               type={showPassword ? "text" : "password"}
               value={password}
               onChange={e => setPassword(e.target.value)}
-              disabled={!emailVerified}
-              className="pr-10 border-slate-200 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:bg-slate-950 dark:border-slate-800 dark:text-white"
+              className="pr-10 dark:bg-slate-950 dark:border-slate-800 dark:text-white"
               placeholder="Create a strong password"
             />
             <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
               {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
             </button>
           </div>
-
           {password && (
             <div className="mt-2 text-xs space-y-1 bg-slate-50 dark:bg-slate-900 p-2 rounded border border-gray-100 dark:border-slate-800">
               {getPasswordErrors(password).map((err, i) => (
-                <p key={i} className="text-red-500 flex items-center gap-1">
-                  <X className="w-3 h-3" /> {err}
-                </p>
+                <p key={i} className="text-red-500 flex items-center gap-1"><X className="w-3 h-3" /> {err}</p>
               ))}
-              {getPasswordErrors(password).length === 0 && (
-                <p className="text-emerald-600 flex items-center gap-1 font-medium">
-                  <CheckCircle2 className="w-3 h-3" /> Strong Password
-                </p>
-              )}
             </div>
           )}
-          <p className="text-[10px] text-gray-500 dark:text-gray-400 mt-1 flex items-start gap-1">
-            <AlertTriangle className="w-3 h-3 shrink-0" />
-            <span>Use a strong password containing small & capital letters, numbers, and special symbols.</span>
-          </p>
         </div>
 
         <div>
@@ -600,9 +618,8 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'signin' }: AuthModalProps) 
           <Input
             value={college}
             onChange={e => setCollege(e.target.value)}
-            disabled={!emailVerified}
             placeholder="e.g. HBTU Kanpur"
-            className="border-slate-200 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:bg-slate-950 dark:border-slate-800 dark:text-white"
+            className="mt-1 dark:bg-slate-950 dark:border-slate-800 dark:text-white"
           />
         </div>
 
@@ -612,9 +629,8 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'signin' }: AuthModalProps) 
             <Input
               value={branch}
               onChange={e => setBranch(e.target.value)}
-              disabled={!emailVerified}
               placeholder="e.g. CSE"
-              className="border-slate-200 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:bg-slate-950 dark:border-slate-800 dark:text-white"
+              className="mt-1 dark:bg-slate-950 dark:border-slate-800 dark:text-white"
             />
           </div>
           <div>
@@ -622,29 +638,23 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'signin' }: AuthModalProps) 
             <Input
               value={year}
               onChange={e => setYear(e.target.value)}
-              disabled={!emailVerified}
               placeholder="e.g. 2nd Year"
-              className="border-slate-200 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:bg-slate-950 dark:border-slate-800 dark:text-white"
+              className="mt-1 dark:bg-slate-950 dark:border-slate-800 dark:text-white"
             />
           </div>
         </div>
 
-        <div className="flex items-center space-x-2">
-          <Checkbox id="terms" checked={acceptedTerms} onCheckedChange={(c) => setAcceptedTerms(c as boolean)} disabled={!emailVerified} className="dark:border-slate-700 dark:data-[state=checked]:bg-slate-50 dark:data-[state=checked]:text-slate-900" />
+        <div className="flex items-center space-x-2 mt-2">
+          <Checkbox id="terms" checked={acceptedTerms} onCheckedChange={(c) => setAcceptedTerms(c as boolean)} className="dark:border-slate-700" />
           <label htmlFor="terms" className="text-xs text-gray-500 dark:text-gray-400">
             I agree to <Link to="/terms" className="text-blue-600 dark:text-blue-400">Terms</Link> & <Link to="/privacy" className="text-blue-600 dark:text-blue-400">Privacy</Link>
           </label>
         </div>
 
-        <Button type="submit" disabled={isLoading || !emailVerified || !acceptedTerms || getPasswordErrors(password).length > 0} className="w-full bg-gray-900 dark:bg-slate-50 dark:text-slate-900 dark:hover:bg-slate-200 text-white">
-          {isLoading ? <Loader2 className="animate-spin mr-2 h-4 w-4" /> : 'Create Account'}
+        <Button type="submit" disabled={isLoading} className="w-full bg-gray-900 dark:bg-slate-50 dark:text-slate-900 dark:hover:bg-slate-200 text-white">
+          {isLoading ? <Loader2 className="animate-spin mr-2 h-4 w-4" /> : 'Complete Signup'}
         </Button>
-
       </form>
-
-      <div className="text-center text-sm dark:text-gray-400">
-        Already have an account? <button onClick={() => switchMode('signin')} className="text-blue-600 dark:text-blue-400 font-medium">Login</button>
-      </div>
     </motion.div>
   );
 
@@ -672,8 +682,23 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'signin' }: AuthModalProps) 
   );
 
   return (
-    <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent hideDefaultClose className="sm:max-w-[440px] w-[95vw] max-h-[90vh] p-0 pr-0 gap-0 bg-white dark:bg-slate-950 border border-gray-200 dark:border-slate-800 shadow-2xl rounded overflow-hidden flex flex-col">
+    <Dialog open={isOpen} onOpenChange={(open) => {
+      // Prevent closing if we are in the 'signup-complete' step
+      if (!open && step === 'signup-complete') {
+        return;
+      }
+      handleClose();
+    }}>
+      <DialogContent
+        hideDefaultClose
+        className="sm:max-w-[440px] w-[95vw] max-h-[90vh] p-0 pr-0 gap-0 bg-white dark:bg-slate-950 border border-gray-200 dark:border-slate-800 shadow-2xl rounded overflow-hidden flex flex-col"
+        onPointerDownOutside={(e) => {
+          if (step === 'signup-complete') e.preventDefault();
+        }}
+        onEscapeKeyDown={(e) => {
+          if (step === 'signup-complete') e.preventDefault();
+        }}
+      >
         <DialogTitle className="sr-only">Authentication</DialogTitle>
         <DialogDescription className="sr-only">Sign in, Sign up, or recover your password</DialogDescription>
         <div className="flex justify-between items-center px-6 py-4 border-b border-gray-100 dark:border-slate-800 flex-shrink-0">
@@ -681,7 +706,10 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'signin' }: AuthModalProps) 
             <img src={logoImg} className="w-8 h-8" alt="College Study Hub" width="32" height="32" />
             <span className="font-bold text-base block text-gray-900 dark:text-white">College Study</span>
           </div>
-          <button onClick={handleClose} aria-label="Close"><X className="w-5 h-5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300" /></button>
+          {/* Hide Close button during mandatory profile completion */}
+          {step !== 'signup-complete' && (
+            <button onClick={handleClose} aria-label="Close"><X className="w-5 h-5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300" /></button>
+          )}
         </div>
 
         <div className="flex-1 overflow-y-auto min-h-0">
@@ -735,8 +763,9 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'signin' }: AuthModalProps) 
               </motion.div>
             )}
 
-            {/* SIGNUP FORM is handled by renderSignupForm above */}
-            {step === 'form' && mode === 'signup' && renderSignupForm()}
+            {/* SIGNUP FLOW */}
+            {step === 'form' && mode === 'signup' && renderSignupStart()}
+            {step === 'signup-complete' && mode === 'signup' && renderSignupComplete()}
 
             {step === 'form' && mode === 'forgot' && (
               <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="p-6 space-y-4">
