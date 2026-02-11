@@ -367,9 +367,31 @@ export default function Profile() {
           transition={{ duration: 0.4 }}
         >
           <Card className="border-0 shadow-xl overflow-hidden rounded-2xl bg-white dark:bg-slate-900">
-            {/* Colored Header Banner */}
-            <div className="h-40 bg-gradient-to-r from-sky-500 to-indigo-600 relative">
-              <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20"></div>
+            {/* Header Banner Image */}
+            {/* Header Banner Image */}
+            <div className="h-48 relative overflow-hidden group bg-[#4facfe]">
+              {/* Seamless Background Extension */}
+              <div className="absolute inset-0 bg-gradient-to-r from-[#00f2fe] to-[#4facfe] opacity-100"></div>
+
+              {/* Decorative Elements to simulate "generation" */}
+              <div className="absolute top-[-50%] left-[-10%] w-[50%] h-[200%] bg-white/10 blur-3xl rounded-full transform rotate-12"></div>
+              <div className="absolute bottom-[-20%] left-[10%] w-[30%] h-[100%] bg-blue-400/20 blur-2xl rounded-full"></div>
+
+              {/* Main Image - Anchored Right & Faded into background */}
+              <div className="absolute inset-0 flex items-center justify-end">
+                <img
+                  src="/AllProfilebanner.png"
+                  alt="Profile Banner"
+                  className="h-full w-auto object-contain object-right"
+                  style={{
+                    maskImage: 'linear-gradient(to right, transparent 0%, black 20%, black 100%)',
+                    WebkitMaskImage: 'linear-gradient(to right, transparent 0%, black 20%, black 100%)'
+                  }}
+                />
+              </div>
+
+              {/* Shine/Glow Overlay */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-white/10 pointer-events-none"></div>
             </div>
 
             <CardContent className="px-8 pb-8 -mt-20">
