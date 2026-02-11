@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { supabase } from '@/integrations/supabase/client';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@/contexts/AuthContext';
@@ -47,11 +48,34 @@ const AppSidebar = ({ className }: AppSidebarProps) => {
   const navigate = useNavigate();
   const location = useLocation();
 
+  // Local state for profile avatar to override metadata if available
+  const [profileAvatar, setProfileAvatar] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (user?.id) {
+      const fetchProfileAvatar = async () => {
+        const { data } = await supabase
+          .from('profiles')
+          .select('avatar_url')
+          .eq('id', user.id)
+          .maybeSingle();
+
+        if (data?.avatar_url) {
+          setProfileAvatar(data.avatar_url);
+        }
+      };
+
+      fetchProfileAvatar();
+    }
+  }, [user?.id]);
+
   const userEmail = user?.email || '';
   const userMetadata = user?.user_metadata || {};
+
   const firstName = userMetadata.first_name || userEmail.split('@')[0];
   const lastName = userMetadata.last_name || '';
-  const avatarUrl = userMetadata.avatar_url;
+  // Prioritize locally fetched profile avatar (DB) over auth metadata (Google)
+  const avatarUrl = profileAvatar || userMetadata.avatar_url;
 
   const getInitials = () => {
     if (firstName && lastName) {
@@ -197,8 +221,8 @@ const AppSidebar = ({ className }: AppSidebarProps) => {
                           key={child.label}
                           onClick={() => navigate(child.href)}
                           className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-all ${isActive(child.href)
-                              ? 'text-blue-400 bg-blue-500/10 font-semibold'
-                              : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
+                            ? 'text-blue-400 bg-blue-500/10 font-semibold'
+                            : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
                             }`}
                         >
                           {/* Smaller 3D Icon for Sub-items */}
@@ -221,8 +245,8 @@ const AppSidebar = ({ className }: AppSidebarProps) => {
               >
                 {/* 3D Icon Container */}
                 <div className={`flex-shrink-0 flex items-center justify-center w-9 h-9 rounded-lg shadow-lg border border-white/10 transition-transform duration-200 group-hover:scale-110 ${isActive(item.href)
-                    ? 'bg-gradient-to-br from-blue-500 to-indigo-600 text-white shadow-blue-500/20'
-                    : 'bg-gradient-to-br from-slate-700 to-slate-800 text-slate-300 group-hover:from-blue-600 group-hover:to-indigo-700 group-hover:text-white'
+                  ? 'bg-gradient-to-br from-blue-500 to-indigo-600 text-white shadow-blue-500/20'
+                  : 'bg-gradient-to-br from-slate-700 to-slate-800 text-slate-300 group-hover:from-blue-600 group-hover:to-indigo-700 group-hover:text-white'
                   }`}>
                   {item.icon}
                 </div>

@@ -23,7 +23,7 @@ interface ProfileData {
   created_at: string;
 }
 
-const Profile = () => {
+export default function Profile() {
   const { user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -84,9 +84,10 @@ const Profile = () => {
           last_name: profileData.last_name || user.user_metadata?.last_name || '',
           email: profileData.email || user.email || '',
           mobile_number: profileData.mobile_number || user.user_metadata?.mobile_number || '',
-          college: profileData.college || user.user_metadata?.college || '',
-          branch: profileData.branch || user.user_metadata?.branch || '',
+          college: profileData.college || '', // Trust DB value strictly
+          branch: profileData.branch || '',   // Trust DB value strictly
           year: profileData.year || user.user_metadata?.year || '',
+          // IMPORTANT: Trust DB value strictly for avatar. Do NOT fallback here to avoid saving metadata URL to DB on next save.
           avatar_url: profileData.avatar_url || '',
           created_at: profileData.created_at || '',
         };
@@ -102,7 +103,7 @@ const Profile = () => {
           college: user.user_metadata?.college || '',
           branch: user.user_metadata?.branch || '',
           year: user.user_metadata?.year || '',
-          avatar_url: '',
+          avatar_url: '', // Do not set metadata avatar here either, let JSX handle display fallback
           created_at: user.created_at || '',
         };
         setProfile(metaProfile);
@@ -221,48 +222,32 @@ const Profile = () => {
         }
       }
 
-      // Check if profile exists
-      const { data: existingProfile } = await supabase
-        .from('profiles')
-        .select('id')
-        .eq('user_id', user.id)
-        .maybeSingle();
-
       const profileUpdates = {
         first_name: editedProfile.first_name,
         last_name: editedProfile.last_name,
-        mobile_number: editedProfile.mobile_number,
+        // Convert empty string to null to avoid unique constraint violations
+        mobile_number: editedProfile.mobile_number?.trim() === '' ? null : editedProfile.mobile_number,
         college: editedProfile.college,
         branch: editedProfile.branch,
         year: editedProfile.year,
         avatar_url: finalAvatarUrl,
       };
 
-      if (existingProfile) {
-        // Update existing profile
-        const { error } = await supabase
-          .from('profiles')
-          .update({
-            ...profileUpdates,
-            updated_at: new Date().toISOString(),
-          })
-          .eq('user_id', user.id);
+      // Robust Upsert: Handles both Insert and Update in one go
+      // Explicitly providing 'id: user.id' ensures we pass the RLS check (auth.uid() = id)
+      const { error } = await supabase
+        .from('profiles')
+        .upsert({
+          id: user.id, // CRITICAL: This was missing, causing RLS violation on insert
+          user_id: user.id,
+          email: user.email || '',
+          ...profileUpdates,
+          updated_at: new Date().toISOString(),
+        });
 
-        if (error) throw error;
-      } else {
-        // Insert new profile
-        const { error } = await supabase
-          .from('profiles')
-          .insert({
-            user_id: user.id,
-            email: user.email || '',
-            ...profileUpdates
-          });
+      if (error) throw error;
 
-        if (error) throw error;
-      }
-
-      // Also update user metadata
+      // 5. Update auth metadata (optional, but good for sync)
       const { error: userUpdateError } = await supabase.auth.updateUser({
         data: {
           first_name: editedProfile.first_name,
@@ -276,6 +261,9 @@ const Profile = () => {
       });
 
       if (userUpdateError) throw userUpdateError;
+
+      // 6. Refresh Global Auth Context (Reverted)
+      // await refreshProfile();
 
       // Force session refresh to allow Sidebar to see new metadata immediately
       await supabase.auth.refreshSession();
@@ -390,26 +378,29 @@ const Profile = () => {
                 <div className="flex flex-col md:flex-row items-center md:items-end gap-6">
                   <div className="relative group">
                     <Avatar className="h-36 w-36 border-4 border-white dark:border-slate-900 shadow-xl ring-2 ring-slate-100 dark:ring-slate-800 bg-white dark:bg-slate-950">
-                      <AvatarImage src={avatarPreview || editedProfile.avatar_url || profile.avatar_url} className="object-cover" />
+                      <AvatarImage src={avatarPreview || editedProfile.avatar_url || profile.avatar_url || user?.user_metadata?.avatar_url} className="object-cover" />
                       <AvatarFallback className="text-4xl bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-800 dark:to-slate-900 text-slate-500 dark:text-slate-400">
                         {getInitials()}
                       </AvatarFallback>
                     </Avatar>
 
                     {isEditing && (
-                      <label
-                        htmlFor="avatar-upload"
-                        className="absolute bottom-1 right-1 p-2 bg-blue-600 text-white rounded-full shadow-lg cursor-pointer hover:bg-blue-700 transition-transform active:scale-95"
-                      >
-                        <UploadCloud className="h-4 w-4" />
+                      <>
+                        <label
+                          htmlFor="avatar-upload"
+                          className="absolute bottom-1 right-1 p-2 bg-blue-600 text-white rounded-full shadow-lg cursor-pointer hover:bg-blue-700 transition-transform active:scale-95"
+                        >
+                          <UploadCloud className="h-4 w-4" />
+                        </label>
                         <input
                           id="avatar-upload"
                           type="file"
                           accept="image/jpeg,image/png,image/webp,image/jpg"
                           className="hidden"
                           onChange={handleAvatarChange}
+                          title="Upload avatar image"
                         />
-                      </label>
+                      </>
                     )}
                   </div>
 
@@ -571,4 +562,4 @@ const Profile = () => {
   );
 };
 
-export default Profile;
+

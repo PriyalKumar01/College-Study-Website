@@ -3,6 +3,7 @@ import { Outlet, useLocation } from "react-router-dom";
 import AppSidebar from "./AppSidebar";
 import Navbar from "./Navbar";
 import { useAuth } from "@/contexts/AuthContext";
+import { ProfileCompletionModal } from "./ProfileCompletionModal";
 
 const AppLayout = () => {
   const { user, loading } = useAuth();
@@ -44,6 +45,7 @@ const AppLayout = () => {
              Given current codebase, let's keep it in pages but ensure this container allows sticky behavior.
           */}
           <Outlet />
+          <ProfileCompletionModal />
         </main>
       </div>
     </div>
