@@ -67,27 +67,29 @@ export default function Profile() {
     setIsLoading(true);
     try {
       // First try to get from profiles table
+      // If profile exists in database, use it
+      // If profile exists in database, use it
       const { data: profileData, error } = await supabase
         .from('profiles')
-        .select('*')
-        .eq('user_id', user.id)
+        .select('first_name, last_name, email, mobile_number, college, branch, year, avatar_url, created_at')
+        .eq('id', user.id)
         .maybeSingle();
 
-      if (error && error.code !== 'PGRST116') {
-        throw error;
+      if (error) {
+        console.error('Error fetching profile:', error);
       }
 
-      // If profile exists in database, use it
       if (profileData) {
+        console.log('Profile data fetched:', profileData);
         const fetchedProfile: ProfileData = {
           first_name: profileData.first_name || user.user_metadata?.first_name || '',
           last_name: profileData.last_name || user.user_metadata?.last_name || '',
           email: profileData.email || user.email || '',
           mobile_number: profileData.mobile_number || user.user_metadata?.mobile_number || '',
-          college: profileData.college || '', // Trust DB value strictly
-          branch: profileData.branch || '',   // Trust DB value strictly
+          college: profileData.college || '',
+          branch: profileData.branch || '',
           year: profileData.year || user.user_metadata?.year || '',
-          // IMPORTANT: Trust DB value strictly for avatar. Do NOT fallback here to avoid saving metadata URL to DB on next save.
+          // IMPORTANT: Trust DB value strictly for avatar. 
           avatar_url: profileData.avatar_url || '',
           created_at: profileData.created_at || '',
         };
@@ -103,7 +105,7 @@ export default function Profile() {
           college: user.user_metadata?.college || '',
           branch: user.user_metadata?.branch || '',
           year: user.user_metadata?.year || '',
-          avatar_url: '', // Do not set metadata avatar here either, let JSX handle display fallback
+          avatar_url: '',
           created_at: user.created_at || '',
         };
         setProfile(metaProfile);

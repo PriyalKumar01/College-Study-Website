@@ -98,7 +98,8 @@ const Navbar = ({ onOpenAuth }: NavbarProps) => {
                   </Button>
                 </>
               ) : (
-                <ProfileDropdown />
+                // Profile is hidden on desktop because it's available in the Sidebar
+                null
               )}
             </div>
 
@@ -106,7 +107,7 @@ const Navbar = ({ onOpenAuth }: NavbarProps) => {
             <div className="md:hidden flex items-center gap-2">
               <Sheet>
                 <SheetTrigger asChild>
-                  <button className="p-2 rounded-md hover:bg-accent focus:outline-none">
+                  <button className="p-2 rounded-md hover:bg-accent focus:outline-none" aria-label="Menu">
                     <Menu className="h-6 w-6" />
                   </button>
                 </SheetTrigger>
