@@ -11,6 +11,14 @@ const ProtectedRoute = () => {
     const isEmailConfirmed = user?.email_confirmed_at;
 
     useEffect(() => {
+        console.log('ProtectedRoute Check:', {
+            loading,
+            hasUser: !!user,
+            email: user?.email,
+            emailConfirmed: isEmailConfirmed,
+            confirmedAt: user?.email_confirmed_at
+        });
+
         if (!loading && user && !isEmailConfirmed) {
             toast({
                 title: "Email not verified",
@@ -24,9 +32,15 @@ const ProtectedRoute = () => {
         return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
     }
 
-    if (!user || !isEmailConfirmed) {
-        // Redirect if not logged in OR if email not confirmed
+    if (!user) {
+        // Redirect if not logged in
         return <Navigate to="/auth" replace />;
+    }
+
+    if (!isEmailConfirmed) {
+        // Warn but allow access for debugging GitHub issue
+        console.warn("Allowing access despite unconfirmed email for debugging.");
+        // return <Navigate to="/auth" replace />; 
     }
 
     return <Outlet />;

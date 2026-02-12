@@ -222,7 +222,30 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'signin' }: AuthModalProps) 
     try {
       console.log('Initiating OTP login/signup for:', email);
 
-      // STEP 1: Request OTP
+      // STEP 1: Check if user exists (Probe with SignUp)
+      if (mode === 'signup') {
+        const dummyPassword = "ProbePassword123!@#"; // Temporary password for probing
+        const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
+          email: email.trim().toLowerCase(),
+          password: dummyPassword,
+        });
+
+        if (signUpError && signUpError.message.includes("already registered")) {
+          toast({
+            title: "Account Already Exists",
+            description: "Redirecting to login...",
+          });
+          setMode('signin'); // Switch to login mode
+          setIsSendingOtp(false);
+          setIsLoading(false);
+          return;
+        }
+
+        // If no error, the user is either created (new) or the probe didn't catch it (unlikely for existing).
+        // If created, we continue to send OTP so they can verify.
+        // We do NOT stop here.
+      }
+
       const { error } = await supabase.auth.signInWithOtp({
         email: email.trim().toLowerCase(),
         options: {
@@ -256,8 +279,8 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'signin' }: AuthModalProps) 
       let desc = err.message || "Something went wrong";
 
       if (err.message?.includes('captcha')) {
-        title = "Captcha Error";
-        desc = "Please try again.";
+        title = "Captcha Required";
+        desc = "Server requires Captcha but it is hidden. Please disable 'Enable Captcha Protection' in Supabase > Authentication > Security.";
       } else if (err.status === 429 || err.message?.includes('limit')) {
         title = "Too Many Requests";
         desc = "Server is busy. Please wait 2 minutes before trying again.";
@@ -564,7 +587,7 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'signin' }: AuthModalProps) 
             value={email}
             onChange={e => setEmail(e.target.value.toLowerCase())}
             disabled={isSendingOtp}
-            placeholder="student@college.edu"
+            placeholder="e.g. name@gmail.com or name@hbtu.ac.in"
             className="mt-1 dark:bg-slate-950 dark:border-slate-800 dark:text-white"
           />
           {getEmailError(email, touched.email || false) && (
