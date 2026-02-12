@@ -383,12 +383,14 @@ export default function Profile() {
               <div className="absolute inset-0 flex items-center justify-end">
                 <img
                   src="/AllProfilebanner.png"
-                  alt="Profile Banner"
+                  alt=""
+                  role="presentation"
+                  aria-hidden="true"
                   className="h-full w-auto object-contain object-right"
                   style={{
                     maskImage: 'linear-gradient(to right, transparent 0%, black 20%, black 100%)',
                     WebkitMaskImage: 'linear-gradient(to right, transparent 0%, black 20%, black 100%)'
-                  }}
+                  } as React.CSSProperties}
                 />
               </div>
 

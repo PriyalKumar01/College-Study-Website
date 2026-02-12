@@ -38,7 +38,6 @@ const FirstSemesterNotes = () => {
     civil: {
       detailed: [
         { title: 'Civil Engineering Complete (Best)', url: 'https://youtube.com/playlist?list=PLEYBvmdYQH_Z3sFfITPeEv-qg3sgHVIqC&si=p7O3LMHX28BDkQxU', recommended: true },
-        { title: 'Civil Engineering Fundamentals', url: 'https://youtube.com/playlist?list=PLkEhI-YDhJ6xN7lsr6rc7d5awH5WTmpxG&si=HkRBgTvz96J5wbaH' }
       ],
       oneshot: [
         { title: 'Civil Engineering One Shot', url: 'https://youtu.be/o-oCyZtCqR0?si=tVpcOQdTAzSSz82u' }
