@@ -1,19 +1,22 @@
-# College Study Web - Unlocked Nexus
+# College Study - Your Study Hub 🗂️📝
 
 <div align="center">
   <img src="public/CollegeStudy-Homepageview.png" alt="College Study Web Banner" width="100%" />
   
   <br />
   
-  <h1>🎓 College Study Web</h1>
+  ## 🌐 [Live Website : College Study](https://college-study.netlify.app/)
   <p><strong>A Premium Platform for Academic Excellence & Resource Sharing</strong></p>
 
-  [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-  [![React](https://img.shields.io/badge/react-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB)](https://reactjs.org/)
-  [![Vite](https://img.shields.io/badge/vite-%23646CFF.svg?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev/)
-  [![Tailwind CSS](https://img.shields.io/badge/tailwindcss-%2338B2AC.svg?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
+  <br/>
+
+  [![Live Website](https://img.shields.io/badge/🌐_Live_Demo-college--study.netlify.app-1E90FF?style=for-the-badge&logo=google-chrome&logoColor=white)](https://college-study.netlify.app/)
+  [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
+  [![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)](https://reactjs.org/)
+  [![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev/)
+  [![Tailwind CSS](https://img.shields.io/badge/TailwindCSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
   [![Supabase](https://img.shields.io/badge/Supabase-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white)](https://supabase.com/)
-  [![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+  [![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 
 </div>
 
@@ -21,7 +24,7 @@
 
 ## 🚀 Overview
 
-**College Study Web** (Unlocked Nexus) is a next-generation academic platform designed to democratize education. It serves as a unified hub for students to access high-quality notes, calculate CGPA, track academic progress, and contribute to a growing repository of knowledge.
+**College Study Website** is a next-generation academic platform designed to democratize education. It serves as a unified hub for students to access high-quality notes, calculate CGPA, track academic progress, and contribute to a growing repository of knowledge.
 
 With a focus on **premium UI/UX**, accessibility, and community engagement, the platform empowers students to excel in their academic journey.
 
@@ -35,17 +38,23 @@ With a focus on **premium UI/UX**, accessibility, and community engagement, the 
 - **🌗 Dark Mode Support**: A fully responsive interface with toggleable light and dark themes for comfortable reading.
 - **📱 Mobile-First Design**: Optimized for seamless experience across all devices.
 
+---
+
 ## 🛠️ Tech Stack
 
-This project is built using modern web technologies to ensure performance, scalability, and maintainability.
+<div align="center">
 
-- **Frontend**: [React](https://reactjs.org/) (v18) with [TypeScript](https://www.typescriptlang.org/)
-- **Build Tool**: [Vite](https://vitejs.dev/)
-- **Styling**: [Tailwind CSS](https://tailwindcss.com/) & [Shadcn UI](https://ui.shadcn.com/)
-- **Animations**: [Framer Motion](https://www.framer.com/motion/)
-- **Backend/Auth**: [Supabase](https://supabase.com/)
-- **Routing**: [React Router](https://reactrouter.com/)
-- **Icons**: [Lucide React](https://lucide.dev/)
+[![React](https://img.shields.io/badge/React-18-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)](https://reactjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Vite](https://img.shields.io/badge/Vite-Build_Tool-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev/)
+[![TailwindCSS](https://img.shields.io/badge/TailwindCSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
+[![ShadcnUI](https://img.shields.io/badge/Shadcn_UI-000000?style=for-the-badge&logo=radix-ui&logoColor=white)](https://ui.shadcn.com/)
+[![Framer Motion](https://img.shields.io/badge/Framer_Motion-0055FF?style=for-the-badge&logo=framer&logoColor=white)](https://www.framer.com/motion/)
+[![Supabase](https://img.shields.io/badge/Supabase-Backend_&_Auth-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white)](https://supabase.com/)
+[![React Router](https://img.shields.io/badge/React_Router-Routing-CA4245?style=for-the-badge&logo=react-router&logoColor=white)](https://reactrouter.com/)
+[![Lucide](https://img.shields.io/badge/Lucide_Icons-F56565?style=for-the-badge&logo=lucide&logoColor=white)](https://lucide.dev/)
+
+</div>
 
 ## 📸 Gallery
 
@@ -53,26 +62,38 @@ This project is built using modern web technologies to ensure performance, scala
   <table>
     <tr>
       <td align="center">
-        <img src="public/AllProfilebanner.png" alt="Profile Banner" width="400"/>
+        <img src="public/CollegeStudy-Homepageview.png" alt="Profile Banner" width="400"/>
         <br />
-        <em>User Profile & Stats</em>
+        <em>Home Page, College Study</em>
       </td>
       <td align="center">
         <img src="public/AllYouNeedtoSucceed.png" alt="Resources" width="400"/>
         <br />
-        <em>Comprehensive Resources</em>
+        <em>All You need to succeed</em>
       </td>
     </tr>
     <tr>
+    <tr>
       <td align="center">
-        <img src="public/collegeStudyAboutpage.png" alt="About Page" width="400"/>
+        <img src="public/CollegeStudy UserProfile.png" alt="Profile Banner" width="400"/>
         <br />
-        <em>About the Platform</em>
+        <em>User Profile & Stats</em>
       </td>
+      <td align="center">
+        <img src="public/CollegeStudy_TopContributor.png" alt="Resources" width="400"/>
+        <br />
+        <em>Our Top Notes Contributors </em>
+      </td>
+    </tr>
       <td align="center">
         <img src="public/CollegeStudy-academicAchieversPage.png" alt="Achievers" width="400"/>
         <br />
         <em>Academic Achievers</em>
+      </td>
+      <td align="center">
+        <img src="public/collegeStudyAboutpage.png" alt="About Page" width="400"/>
+        <br />
+        <em>About the Platform</em>
       </td>
     </tr>
   </table>
