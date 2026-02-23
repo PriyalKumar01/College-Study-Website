@@ -210,9 +210,10 @@ const FirstSemesterNotes = () => {
       icon: '❓',
       color: 'bg-red-500',
       notes: [ 
-        { title: 'Mid Sem-1 PYQs (2025-26)', url: 'https://drive.google.com/file/d/1UHEYh3ykfe1QtYE_VfOF09nLwfWkjx5Z/view?usp=drivesdk' },
-        { title: 'Mid Sem-2 PYQs (2025-26)', url: 'https://drive.google.com/file/d/1VzarRmsgnrELjL9fsGKFy31Ba1G9nZZi/view?usp=drivesdk' },
-        { title: 'End Sem PYQs (2025-26)', url: 'https://drive.google.com/file/d/1RvGVTwQiqsc2AcodFj8g7P76_Dy75B_8/view?usp=drivesdk' },
+        { title: 'Mid Sem-1 PYQs (2025-26)-EVEN SEM', url: 'https://drive.google.com/file/d/18k4F_9KcyfRkEt-rjsDIMA2wN4BvZj_1/view' },
+        { title: 'Mid Sem-1 PYQs (2025-26)-ODD SEM', url: 'https://drive.google.com/file/d/1UHEYh3ykfe1QtYE_VfOF09nLwfWkjx5Z/view?usp=drivesdk' },
+        { title: 'Mid Sem-2 PYQs (2025-26)-ODD SEM', url: 'https://drive.google.com/file/d/1VzarRmsgnrELjL9fsGKFy31Ba1G9nZZi/view?usp=drivesdk' },
+        { title: 'End Sem PYQs (2025-26)-ODD SEM', url: 'https://drive.google.com/file/d/1RvGVTwQiqsc2AcodFj8g7P76_Dy75B_8/view?usp=drivesdk' },
         { title: 'Mid Sem-1 PYQs (2024-25)', url: 'https://drive.google.com/file/d/1SFx9P6EEyEu5fCwHrL6hMjnugNkodV2t/view?usp=drive_link' },
         { title: 'Mid Sem-2 PYQs (2024-25)', url: 'https://drive.google.com/file/d/1oBW8TZphAGA3jPf5PaiXzhr3CDkRX8cb/view?usp=drive_link' },
         { title: 'End Sem PYQs (2024-25)', url: 'https://drive.google.com/file/d/1FefFp2xjatHyPb205qKyORxsdQKeqVDP/view?usp=drive_link' },

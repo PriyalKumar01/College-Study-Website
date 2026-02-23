@@ -224,6 +224,7 @@ const SecondSemesterNotes = () => {
       icon: '❓',
       color: 'bg-red-500',
       notes: [
+        { title: 'Mid Sem-1 PYQs (2025-26)-EVEN SEM', url: 'https://drive.google.com/file/d/135yNwTL1_MdXO9IgaRWO3f8CHTq33bDY/view' },
         { title: 'Mid Sem 1 PYQs (2025-26) -ODD SEM', url: 'https://drive.google.com/file/d/1SXPBclZ-Bjv6l9O3iKFRionXUq9iLhkW/view?usp=drivesdk' },
         { title: 'Mid Sem 2 PYQs (2025-26) -ODD SEM', url: 'https://drive.google.com/file/d/1wty3ubMfR4Vyt6ClzFfi0gKi-jNH0EmY/view?usp=drivesdk' },
         { title: 'End Sem PYQs (2025-26) -ODD SEM', url: 'https://drive.google.com/file/d/1S41rOchlw2VV0JUqd-NA2-lJSv9MvaJM/view?usp=drivesdk' },
