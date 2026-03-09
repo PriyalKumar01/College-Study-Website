@@ -24,8 +24,8 @@ const SixthSemesterCSENotes = () => {
   };
 
   const toggleSubjectExpansion = (subjectId: string) => {
-    setExpandedSubjects(prev => 
-      prev.includes(subjectId) 
+    setExpandedSubjects(prev =>
+      prev.includes(subjectId)
         ? prev.filter(id => id !== subjectId)
         : [...prev, subjectId]
     );
@@ -55,31 +55,87 @@ const SixthSemesterCSENotes = () => {
         detailed: [{ title: 'AI Complete Playlist', url: '#' }],
         oneshot: [{ title: 'AI One Shot', url: '#' }]
       },
-      notes: [{ title: 'AI Notes', url: '#' }]
+      notes: [{ title: 'AI Notes (UPTO MID SEM-1)', url: 'https://drive.google.com/file/d/15XHFBtmouZBNB1IW2h6LL57T-uqzGDSH/view?usp=drivesdk' }]
     },
     {
-      id: 'se',
-      name: 'Software Engineering',
+      id: 'dip',
+      name: 'Digital Image Processing',
+      icon: '📚',
+      color: 'bg-blue-500',
+      playlists: {
+        detailed: [{ title: 'DIP Complete Playlist', url: '#' }],
+        oneshot: [{ title: 'DIP One Shot', url: '#' }]
+      },
+      notes: [{ title: 'DIP Notes', url: '#' }]
+    },
+    {
+      id: 'cd',
+      name: 'Compiler Design Notes',
       icon: '💻',
       color: 'bg-blue-500',
       playlists: {
         detailed: [{ title: 'SE Complete Playlist', url: '#' }],
         oneshot: [{ title: 'SE One Shot', url: '#' }]
       },
-      notes: [{ title: 'SE Notes', url: '#' }]
+      notes: [{ title: 'CD Notes', url: 'https://drive.google.com/file/d/1o-EHoiE9vK4WmKiOMAKnaI02BYXsRvhp/view?usp=drivesdk' },
+
+      ]
     },
     {
-      id: 'xyz',
-      name: 'Subject XYZ',
+      id: 'entrepreneurship',
+      name: 'Entrepreneurship Notes',
       icon: '📘',
       color: 'bg-green-500',
       playlists: {
-        detailed: [{ title: 'XYZ Playlist', url: '#' }],
+        detailed: [{ title: 'Entrepreneurship Playlist', url: '#' }],
         oneshot: []
       },
-      notes: [{ title: 'XYZ Notes', url: '#' }]
+      notes: [{ title: 'Entrepreneurship Notes (UPTO MID SEM-1)', url: 'https://drive.google.com/file/d/1m6DIjYxnAQhHJ2j7ER4J2-vVRhIfrsY7/view?usp=drivesdk' }]
+    },
+    {
+      id: 'oops',
+      name: 'Object Oriented System Design',
+      icon: '🤖',
+      color: 'bg-green-500',
+      playlists: {
+        detailed: [{ title: 'OOPS Playlist', url: '#' }],
+        oneshot: []
+      },
+      notes: [
+        { title: 'OOMD Notes with UML', url: 'https://drive.google.com/file/d/15U47qFbbIchLEjjOdDgDTasWDd9a9a0k/view?usp=drivesdk' },
+        { title: 'OOS Notes (UPTO MID SEM-1)', url: 'https://drive.google.com/file/d/1nT8SZZVX8HNIa-eL8gLHeS4tlSwrBPvz/view?usp=drivesdk' },
+      ]
+    },
+    {
+      id: 'cg',
+      name: 'Computer Graphics Notes',
+      icon: '📘',
+      color: 'bg-green-500',
+      playlists: {
+        detailed: [{ title: 'CG Playlist', url: '#' }],
+        oneshot: []
+      },
+      notes: [{ title: 'CG Short Notes(UPTO MID SEM-1)', url: 'https://drive.google.com/file/d/1vrqJcmk6OWhT-78xm24lXYoNc4c9AyyA/view?usp=drivesdk' }]
+    }
+    ,
+    {
+      id: 'pyqs',
+      name: 'ALL MID & ESE PYQs',
+      icon: '📚',
+      color: 'bg-blue-500',
+      notes: [
+        { title: 'MID SEM-1 PYQS (2025-2026)', url: 'https://drive.google.com/file/d/1knakHpegqEoLF34EjA1n0as_R5uXt_R1/view?usp=drivesdk' },
+        { title: 'MID SEM-1 PYQs (2024-2025)', url: 'https://drive.google.com/file/d/1uGqRQOMAebvV7fUgwknaEGuA6UPCMs9p/view?usp=drivesdk' },
+        { title: 'MID SEM-2 PYQs (2024-2025)', url: 'https://drive.google.com/file/d/1p-nQIP-gbllmCIWkrB6dd02AuzStv2-s/view?usp=drivesdk' },
+        { title: 'ALL ESE PYQs (2024-2025)', url: 'https://drive.google.com/file/d/1d3WLlDg0bqjTTpkkzAVWhIFxxMKxjGxk/view?usp=drivesdk' },
+      ]
     }
   ];
+
+  const syllabus = {
+    title: '6th Semester CSE Syllabus',
+    url: 'https://drive.google.com/file/d/1mOL5meStuQfR61dX-g5LA2S-9V0BGTrb/view?usp=drivesdk'
+  };
 
   const handleDownload = (url: string, title: string) => {
     if (url === '#') {
@@ -112,7 +168,7 @@ const SixthSemesterCSENotes = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {subject.notes.map((note, index) => (
               <motion.div key={index} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.1, duration: 0.5 }} whileHover={{ scale: 1.02 }}>
-                <Card className="feature-card h-full">
+                <Card className="feature-card h-full border-2 border-transparent hover:border-primary/20 shadow-lg hover:shadow-xl transition-all duration-300">
                   <CardHeader>
                     <div className="flex items-center gap-3 mb-2">
                       <div className={`w-10 h-10 ${subject.color} rounded-full flex items-center justify-center text-white text-lg`}>
@@ -149,19 +205,62 @@ const SixthSemesterCSENotes = () => {
           <p className="text-muted-foreground text-lg"><strong>Only for CSE/IT students</strong></p>
         </motion.div>
 
+        {/* Syllabus Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1, duration: 0.5 }}
+          className="mb-8 p-6 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-lg border-2 border-blue-200 dark:border-blue-800"
+        >
+          <div className="flex items-center justify-between flex-wrap gap-4">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white">
+                <FileText className="h-5 w-5" />
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-foreground">{syllabus.title}</h3>
+                <p className="text-sm text-muted-foreground">Official syllabus for 6th semester CSE</p>
+              </div>
+            </div>
+            <Button
+              onClick={() => handleDownload(syllabus.url, syllabus.title)}
+              className="btn-hero"
+              disabled={syllabus.url === '#'}
+            >
+              <Download className="h-4 w-4 mr-2" />
+              {syllabus.url === '#' ? 'Coming Soon' : 'Download Syllabus'}
+            </Button>
+          </div>
+        </motion.div>
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {subjects.map((subject, index) => (
             <motion.div key={subject.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: (index + 1) * 0.1, duration: 0.5 }} whileHover={{ scale: 1.02 }}>
-              <Card className="feature-card h-full transition-all duration-300">
+              <Card
+                className="feature-card h-full cursor-pointer transition-all duration-300 border-2 border-transparent hover:border-primary/20 shadow-lg hover:shadow-xl"
+                onClick={() => setSelectedSubject(subject.id)}
+              >
                 <CardHeader>
-                  <div className="flex items-center justify-between mb-3">
-                    <div className={`w-16 h-16 ${subject.color} rounded-full flex items-center justify-center text-white text-2xl`}>
-                      {subject.icon}
-                    </div>
-                    <Button variant="ghost" size="icon" className="text-green-600 hover:bg-green-50" onClick={() => handleWhatsAppShare(subject.name, subject.id)}>
+                  <div className="flex justify-end mb-2">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="text-green-600 hover:bg-green-50 h-8 w-8 -mt-2 -mr-2"
+                      onClick={(e) => { e.stopPropagation(); handleWhatsAppShare(subject.name, subject.id); }}
+                    >
                       <Share2 className="h-4 w-4" />
                     </Button>
                   </div>
+
+                  {/* Modern 3D Icon */}
+                  <div className="relative w-20 h-20 mx-auto mb-6 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                    <div className={`absolute inset-0 rounded-2xl ${subject.color} blur-xl opacity-20`} />
+                    <div className={`relative w-full h-full rounded-2xl ${subject.color} bg-opacity-10 backdrop-blur-md border border-white/20 shadow-lg flex items-center justify-center overflow-hidden`}>
+                      <div className="absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-b from-white/30 to-transparent pointer-events-none" />
+                      <span className="text-4xl drop-shadow-md">{subject.icon}</span>
+                    </div>
+                  </div>
+
                   <CardTitle className="text-lg text-center mb-2">{subject.name}</CardTitle>
                   <CardDescription className="text-center">
                     {subject.notes.length} notes available
@@ -172,7 +271,7 @@ const SixthSemesterCSENotes = () => {
                     {/* Study Playlists Section */}
                     {subject.id !== 'pyqs' && subject.id !== 'assignments' && (
                       <div className="border-t pt-4">
-                        <div 
+                        <div
                           className="flex items-center justify-between cursor-pointer hover:bg-muted/50 rounded p-2 -m-2"
                           onClick={(e) => { e.stopPropagation(); toggleSubjectExpansion(subject.id); }}
                         >
@@ -202,12 +301,12 @@ const SixthSemesterCSENotes = () => {
                       </div>
                     )}
 
-                    <div className="flex items-center justify-between">
+                    <div className="flex items-center justify-between mt-2">
                       <Badge variant="secondary">{subject.notes.length} Files</Badge>
-                      <Button 
-                        variant="outline" 
+                      <Button
+                        variant="outline"
                         size="sm"
-                        onClick={() => setSelectedSubject(subject.id)}
+                        onClick={(e) => { e.stopPropagation(); setSelectedSubject(subject.id); }}
                       >
                         View Notes
                       </Button>

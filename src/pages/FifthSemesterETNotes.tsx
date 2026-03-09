@@ -32,7 +32,7 @@ const FifthSemesterETNotes = () => {
   };
 
   const toggleSubjectExpansion = (subjectId: string) => {
-    setExpandedSubjects(prev => 
+    setExpandedSubjects(prev =>
       prev.includes(subjectId) ? prev.filter(id => id !== subjectId) : [...prev, subjectId]
     );
   };
@@ -84,6 +84,11 @@ const FifthSemesterETNotes = () => {
     return subject?.name || subjectId;
   };
 
+  const syllabus = {
+    title: '5th Semester ET Syllabus',
+    url: 'https://drive.google.com/file/d/1o4-y7gQRZplfmvYzlCZsT2dxZ8a_UtEV/view',
+  };
+
   return (
     <div className="min-h-screen bg-gradient-hero">
       <Navbar />
@@ -99,92 +104,149 @@ const FifthSemesterETNotes = () => {
         </motion.div>
 
         {!selectedSubject ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {subjects.map((subject, index) => {
-              const playlists = getSubjectPlaylists(subject.id);
-              const isExpanded = expandedSubjects.includes(subject.id);
-              
-              if (subject.isSpecial) {
+          <>
+            {/* Syllabus Section */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1, duration: 0.5 }}
+              className="mb-8 p-6 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-lg border-2 border-blue-200 dark:border-blue-800"
+            >
+              <div className="flex items-center justify-between flex-wrap gap-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white">
+                    <FileText className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-semibold text-foreground">{syllabus.title}</h3>
+                    <p className="text-sm text-muted-foreground">Official syllabus for 5th semester ET</p>
+                  </div>
+                </div>
+                <Button
+                  onClick={() => window.open(syllabus.url, '_blank')}
+                  className="btn-hero"
+                  disabled={syllabus.url === '#'}
+                >
+                  <Download className="h-4 w-4 mr-2" />
+                  {syllabus.url === '#' ? 'Coming Soon' : 'Download Syllabus'}
+                </Button>
+              </div>
+            </motion.div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {subjects.map((subject, index) => {
+                const playlists = getSubjectPlaylists(subject.id);
+                const isExpanded = expandedSubjects.includes(subject.id);
+
+                if (subject.isSpecial) {
+                  return (
+                    <motion.div key={subject.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.1, duration: 0.5 }}>
+                      <Card
+                        className="feature-card h-full border-2 border-primary/30 bg-gradient-to-br from-primary/5 to-purple-500/5 cursor-pointer transition-all duration-300 hover:shadow-xl"
+                        onClick={() => navigate('/fifth-semester-cse-open-electives')}
+                      >
+                        <CardHeader>
+                          {/* Modern 3D Icon */}
+                          <div className="relative w-20 h-20 mx-auto mb-6 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                            <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-purple-500 to-pink-500 blur-xl opacity-20" />
+                            <div className="relative w-full h-full rounded-2xl bg-gradient-to-br from-purple-500 to-pink-500 bg-opacity-10 backdrop-blur-md border border-white/20 shadow-lg flex items-center justify-center overflow-hidden">
+                              <div className="absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-b from-white/30 to-transparent pointer-events-none" />
+                              <span className="text-4xl drop-shadow-md">{subject.icon}</span>
+                            </div>
+                          </div>
+                          <CardTitle className="text-xl text-center">{subject.name}</CardTitle>
+                          <CardDescription className="text-center">Choose your elective subject</CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                          <Button className="w-full btn-hero" onClick={(e) => { e.stopPropagation(); navigate('/fifth-semester-cse-open-electives'); }}>
+                            <BookOpen className="h-4 w-4 mr-2" />
+                            View Open Electives
+                          </Button>
+                        </CardContent>
+                      </Card>
+                    </motion.div>
+                  );
+                }
+
                 return (
                   <motion.div key={subject.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.1, duration: 0.5 }}>
-                    <Card className="feature-card h-full border-2 border-primary/30 bg-gradient-to-br from-primary/5 to-purple-500/5">
+                    <Card
+                      className="feature-card h-full cursor-pointer transition-all duration-300 border-2 border-transparent hover:border-primary/20 shadow-lg hover:shadow-xl"
+                      onClick={() => setSelectedSubject(subject.id)}
+                    >
                       <CardHeader>
-                        <div className={`w-12 h-12 rounded-full ${subject.color} flex items-center justify-center text-2xl mb-4 text-white`}>
-                          {subject.icon}
+                        {/* Modern 3D Icon */}
+                        <div className="relative w-20 h-20 mx-auto mb-6 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                          <div className={`absolute inset-0 rounded-2xl ${subject.color} blur-xl opacity-20`} />
+                          <div className={`relative w-full h-full rounded-2xl ${subject.color} bg-opacity-10 backdrop-blur-md border border-white/20 shadow-lg flex items-center justify-center overflow-hidden`}>
+                            <div className="absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-b from-white/30 to-transparent pointer-events-none" />
+                            <span className="text-4xl drop-shadow-md">{subject.icon}</span>
+                          </div>
                         </div>
-                        <CardTitle className="text-xl">{subject.name}</CardTitle>
-                        <CardDescription>Choose your elective subject</CardDescription>
+
+                        <CardTitle className="text-xl text-center">{subject.name}</CardTitle>
+                        <CardDescription className="text-center">{subject.notes.length} PDF Notes Available</CardDescription>
                       </CardHeader>
                       <CardContent>
-                        <Button className="w-full btn-hero" onClick={() => navigate('/fifth-semester-cse-open-electives')}>
-                          <BookOpen className="h-4 w-4 mr-2" />
-                          View Open Electives
-                        </Button>
+                        <div className="flex flex-col gap-3">
+                          {/* Study Playlists Section */}
+                          {(playlists.detailed.length > 0 || playlists.oneshot.length > 0) && (
+                            <div className="border-t pt-4">
+                              <div
+                                className="flex items-center justify-between cursor-pointer hover:bg-muted/50 rounded p-2 -m-2"
+                                onClick={(e) => { e.stopPropagation(); toggleSubjectExpansion(subject.id); }}
+                              >
+                                <div className="flex items-center gap-2">
+                                  <Play className="h-4 w-4 text-primary" />
+                                  <span className="text-sm font-medium">Study Playlists</span>
+                                </div>
+                                {expandedSubjects.includes(subject.id) ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
+                              </div>
+                              {expandedSubjects.includes(subject.id) && (
+                                <div className="mt-3 space-y-2 pl-2">
+                                  {playlists.detailed.length > 0 && (
+                                    <Button variant="ghost" size="sm" className="w-full justify-start text-xs h-8" onClick={(e) => { e.stopPropagation(); handlePlaylistClick(subject.id, 'detailed'); }}>
+                                      📚 Detailed Playlists ({playlists.detailed.length})
+                                    </Button>
+                                  )}
+                                  {playlists.oneshot.length > 0 && (
+                                    <Button variant="ghost" size="sm" className="w-full justify-start text-xs h-8" onClick={(e) => { e.stopPropagation(); handlePlaylistClick(subject.id, 'oneshot'); }}>
+                                      ⚡ One Shot Videos ({playlists.oneshot.length})
+                                    </Button>
+                                  )}
+                                </div>
+                              )}
+                            </div>
+                          )}
+
+                          <div className="flex items-center justify-between mt-2">
+                            <Badge variant="secondary">{subject.notes.length} Files</Badge>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={(e) => { e.stopPropagation(); setSelectedSubject(subject.id); }}
+                            >
+                              View Notes
+                            </Button>
+                          </div>
+
+                        </div>
                       </CardContent>
                     </Card>
                   </motion.div>
                 );
-              }
-              
-              return (
-                <motion.div key={subject.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.1, duration: 0.5 }}>
-                  <Card className="feature-card h-full">
-                    <CardHeader>
-                      <div className={`w-12 h-12 rounded-full ${subject.color} flex items-center justify-center text-2xl mb-4`}>
-                        {subject.icon}
-                      </div>
-                      <CardTitle className="text-xl">{subject.name}</CardTitle>
-                      <CardDescription>{subject.notes.length} PDF Notes Available</CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-3">
-                      <Button className="w-full btn-hero" onClick={() => setSelectedSubject(subject.id)}>
-                        <FileText className="h-4 w-4 mr-2" />
-                        View Notes
-                      </Button>
-                      
-                      {(playlists.detailed.length > 0 || playlists.oneshot.length > 0) && (
-                        <div className="border-t pt-3">
-                          <Button variant="ghost" className="w-full justify-between p-2 h-auto" onClick={() => toggleSubjectExpansion(subject.id)}>
-                            <span className="flex items-center gap-2 text-sm font-medium">
-                              <Play className="h-4 w-4" />
-                              Study Playlists
-                            </span>
-                            {isExpanded ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
-                          </Button>
-                          
-                          {isExpanded && (
-                            <div className="mt-2 space-y-2 pl-2">
-                              {playlists.detailed.length > 0 && (
-                                <Button variant="outline" size="sm" className="w-full justify-start" onClick={() => handlePlaylistClick(subject.id, 'detailed')}>
-                                  <Play className="h-3 w-3 mr-2" />
-                                  Detailed Playlists ({playlists.detailed.length})
-                                </Button>
-                              )}
-                              {playlists.oneshot.length > 0 && (
-                                <Button variant="outline" size="sm" className="w-full justify-start" onClick={() => handlePlaylistClick(subject.id, 'oneshot')}>
-                                  <Play className="h-3 w-3 mr-2" />
-                                  One Shot Videos ({playlists.oneshot.length})
-                                </Button>
-                              )}
-                            </div>
-                          )}
-                        </div>
-                      )}
-                    </CardContent>
-                  </Card>
-                </motion.div>
-              );
-            })}
-          </div>
+              })}
+            </div>
+          </>
         ) : (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.3 }}>
             <Button variant="outline" onClick={() => setSelectedSubject(null)} className="mb-6">
               <ArrowLeft className="h-4 w-4 mr-2" />
               Back to Subjects
             </Button>
-            
+
             <h2 className="text-2xl font-bold mb-6">{subjects.find(s => s.id === selectedSubject)?.name} - Notes</h2>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {subjects.find(s => s.id === selectedSubject)?.notes.map((note, index) => (
                 <motion.div key={index} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.05, duration: 0.3 }}>

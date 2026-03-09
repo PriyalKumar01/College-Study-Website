@@ -16,8 +16,8 @@ const FourthSemesterETNotes = () => {
   const [selectedPlaylistType, setSelectedPlaylistType] = useState<'detailed' | 'oneshot'>('detailed');
   const [selectedSubjectForPlaylist, setSelectedSubjectForPlaylist] = useState<string>('');
   const [expandedSubjects, setExpandedSubjects] = useState<string[]>([]);
-  
-  
+
+
   const handleWhatsAppShare = (subjectName: string) => {
     const shareUrl = `${window.location.origin}${location.pathname}?subject=${encodeURIComponent(subjectName)}`;
     const message = `Check out ${subjectName} notes for 4th Semester ET on College Study Hub: ${shareUrl}`;
@@ -65,9 +65,9 @@ const FourthSemesterETNotes = () => {
       oneshot: []
     }
   };
-   const toggleSubjectExpansion = (subjectId: string) => {
-    setExpandedSubjects(prev => 
-      prev.includes(subjectId) 
+  const toggleSubjectExpansion = (subjectId: string) => {
+    setExpandedSubjects(prev =>
+      prev.includes(subjectId)
         ? prev.filter(id => id !== subjectId)
         : [...prev, subjectId]
     );
@@ -80,7 +80,7 @@ const FourthSemesterETNotes = () => {
       setSelectedPlaylistType(type);
       setShowPlaylistModal(true);
     }
-  }; 
+  };
   const getSubjectPlaylists = (subjectId: string) => {
     const playlistKey = subjectId as keyof typeof subjectPlaylists;
     return subjectPlaylists[playlistKey] || { detailed: [], oneshot: [] };
@@ -145,7 +145,10 @@ const FourthSemesterETNotes = () => {
       icon: '❓',
       color: 'bg-red-600',
       notes: [
-        { title: 'PYQs Coming Soon', url: '#' },
+        { title: 'MID SEM-1 PYQS (2025-2026)', url: 'https://drive.google.com/file/d/1VTLs5pLDDD-cZLfSmIlTf9W2bNNGj4EX/view?usp=drivesdk' },
+        { title: 'ALL ESE PYQS (2024-2025)', url: 'https://drive.google.com/file/d/1owpcBuEsrTB3BLayDYQ2R_D3xQdmOtdS/view?usp=drivesdk' },
+        { title: 'ALL 4TH SEM PYQS (2023-2024)', url: 'https://drive.google.com/file/d/1YTAmn1qoGZWsNAzEK84scJCxGKjMuroD/view?usp=drivesdk' },
+        { title: 'ALL ESE PYQS (2022-2023)', url: 'https://drive.google.com/file/d/1oY6TFpA4z8Wdk1_bMn2DnyVBkMmQSTRW/view?usp=drivesdk' },
       ]
     },
   ];
@@ -173,7 +176,7 @@ const FourthSemesterETNotes = () => {
     return (
       <div className="min-h-screen bg-gradient-hero">
         <Navbar />
-        
+
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -189,7 +192,7 @@ const FourthSemesterETNotes = () => {
               <ArrowLeft className="h-4 w-4 mr-2" />
               Back to Subjects
             </Button>
-            
+
             <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-2">
               {subject.name} 📚
             </h1>
@@ -242,7 +245,7 @@ const FourthSemesterETNotes = () => {
   return (
     <div className="min-h-screen bg-gradient-hero">
       <Navbar />
-      
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -258,7 +261,7 @@ const FourthSemesterETNotes = () => {
             <ArrowLeft className="h-4 w-4 mr-2" />
             Back to Branches
           </Button>
-          
+
           <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-2">
             4th Semester ET Notes 📖
           </h1>
@@ -284,8 +287,8 @@ const FourthSemesterETNotes = () => {
                 <p className="text-sm text-muted-foreground">Official syllabus for 4th semester ET</p>
               </div>
             </div>
-            <Button 
-              onClick={() => handleDownload(syllabus.url, syllabus.title)} 
+            <Button
+              onClick={() => handleDownload(syllabus.url, syllabus.title)}
               className="btn-hero"
               disabled={syllabus.url === '#'}
             >
@@ -309,104 +312,109 @@ const FourthSemesterETNotes = () => {
                 transition={{ delay: index * 0.05, duration: 0.5 }}
                 whileHover={{ scale: 1.02 }}
               >
-                <Card 
-                className="feature-card h-full cursor-pointer transition-all duration-300 border-2 border-transparent hover:border-primary/20 shadow-lg hover:shadow-xl"
-                onClick={() => setSelectedSubject(subject.id)}
-              >
-                <CardHeader>
-                  <div className={`w-16 h-16 ${subject.color} rounded-full flex items-center justify-center text-white text-2xl mb-4 mx-auto shadow-lg`}>
-                    {subject.icon}
-                  </div>
-                  <CardTitle className="text-lg text-center">{subject.name}</CardTitle>
-                  <CardDescription className="text-center">
-                    {subject.notes.length} notes available
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex flex-col gap-3">
-                    {/* Study Playlists Section */}
-                    {subject.id !== 'pyqs' && subject.id !== "assignments" &&(
-                    <div className="border-t pt-4">
-                      <div
-                        className="flex items-center justify-between cursor-pointer hover:bg-muted/50 rounded p-2 -m-2"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          toggleSubjectExpansion(subject.id);
-                        }}
-                      >
-                        <div className="flex items-center gap-2">
-                          <Play className="h-4 w-4 text-primary" />
-                          <span className="text-sm font-medium">Study Playlists</span>
-                        </div>
-                        {expandedSubjects.includes(subject.id) ?
-                          <ChevronDown className="h-4 w-4" /> :
-                          <ChevronRight className="h-4 w-4" />
-                        }
+                <Card
+                  className="feature-card h-full cursor-pointer transition-all duration-300 border-2 border-transparent hover:border-primary/20 shadow-lg hover:shadow-xl"
+                  onClick={() => setSelectedSubject(subject.id)}
+                >
+                  <CardHeader>
+                    {/* Modern 3D Icon */}
+                    <div className="relative w-20 h-20 mx-auto mb-6 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                      <div className={`absolute inset-0 rounded-2xl ${subject.color} blur-xl opacity-20`} />
+                      <div className={`relative w-full h-full rounded-2xl ${subject.color} bg-opacity-10 backdrop-blur-md border border-white/20 shadow-lg flex items-center justify-center overflow-hidden`}>
+                        <div className="absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-b from-white/30 to-transparent pointer-events-none" />
+                        <span className="text-4xl drop-shadow-md">{subject.icon}</span>
                       </div>
+                    </div>
+                    <CardTitle className="text-lg text-center">{subject.name}</CardTitle>
+                    <CardDescription className="text-center">
+                      {subject.notes.length} notes available
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="flex flex-col gap-3">
+                      {/* Study Playlists Section */}
+                      {subject.id !== 'pyqs' && subject.id !== "assignments" && (
+                        <div className="border-t pt-4">
+                          <div
+                            className="flex items-center justify-between cursor-pointer hover:bg-muted/50 rounded p-2 -m-2"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              toggleSubjectExpansion(subject.id);
+                            }}
+                          >
+                            <div className="flex items-center gap-2">
+                              <Play className="h-4 w-4 text-primary" />
+                              <span className="text-sm font-medium">Study Playlists</span>
+                            </div>
+                            {expandedSubjects.includes(subject.id) ?
+                              <ChevronDown className="h-4 w-4" /> :
+                              <ChevronRight className="h-4 w-4" />
+                            }
+                          </div>
 
-                      {expandedSubjects.includes(subject.id) && (
-                        <div className="mt-3 space-y-2 pl-2">
-                          {getSubjectPlaylists(subject.id).detailed.length > 0 && (
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              className="w-full justify-start text-xs h-8"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handlePlaylistClick(subject.id, 'detailed');
-                              }}
-                            >
-                              📚 Detailed Playlists ({getSubjectPlaylists(subject.id).detailed.length})
-                            </Button>
-                          )}
-                          {getSubjectPlaylists(subject.id).oneshot.length > 0 && (
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              className="w-full justify-start text-xs h-8"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handlePlaylistClick(subject.id, 'oneshot');
-                              }}
-                            >
-                              ⚡ One Shot Videos ({getSubjectPlaylists(subject.id).oneshot.length})
-                            </Button>
-                          )}
-                          {getSubjectPlaylists(subject.id).detailed.length === 0 &&
-                           getSubjectPlaylists(subject.id).oneshot.length === 0 && (
-                            <p className="text-xs text-muted-foreground pl-2">Not available...</p>
+                          {expandedSubjects.includes(subject.id) && (
+                            <div className="mt-3 space-y-2 pl-2">
+                              {getSubjectPlaylists(subject.id).detailed.length > 0 && (
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  className="w-full justify-start text-xs h-8"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handlePlaylistClick(subject.id, 'detailed');
+                                  }}
+                                >
+                                  📚 Detailed Playlists ({getSubjectPlaylists(subject.id).detailed.length})
+                                </Button>
+                              )}
+                              {getSubjectPlaylists(subject.id).oneshot.length > 0 && (
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  className="w-full justify-start text-xs h-8"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handlePlaylistClick(subject.id, 'oneshot');
+                                  }}
+                                >
+                                  ⚡ One Shot Videos ({getSubjectPlaylists(subject.id).oneshot.length})
+                                </Button>
+                              )}
+                              {getSubjectPlaylists(subject.id).detailed.length === 0 &&
+                                getSubjectPlaylists(subject.id).oneshot.length === 0 && (
+                                  <p className="text-xs text-muted-foreground pl-2">Not available...</p>
+                                )}
+                            </div>
                           )}
                         </div>
                       )}
-                    </div>
-                  )}
 
-                    <div className="flex items-center justify-between">
-                      <Badge variant="secondary">{subject.notes.length} Files</Badge>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => setSelectedSubject(subject.id)}
-                      >
-                        View Notes
-                      </Button>
+                      <div className="flex items-center justify-between">
+                        <Badge variant="secondary">{subject.notes.length} Files</Badge>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={(e) => { e.stopPropagation(); setSelectedSubject(subject.id); }}
+                        >
+                          View Notes
+                        </Button>
+                      </div>
                     </div>
-                  </div>
-                </CardContent>
-              </Card>
+                  </CardContent>
+                </Card>
               </motion.div>
             );
           })}
         </div>
         {showPlaylistModal && (
-                  <PlaylistModal
-                  isOpen={showPlaylistModal}
-                  onClose={() => setShowPlaylistModal(false)}
-                  title={subjects.find(s => s.id === selectedSubjectForPlaylist)?.name || ''}
-                  playlists={selectedSubjectForPlaylist ? getSubjectPlaylists(selectedSubjectForPlaylist)[selectedPlaylistType] : []}
-                  type={selectedPlaylistType}
-                />
-                )}
+          <PlaylistModal
+            isOpen={showPlaylistModal}
+            onClose={() => setShowPlaylistModal(false)}
+            title={subjects.find(s => s.id === selectedSubjectForPlaylist)?.name || ''}
+            playlists={selectedSubjectForPlaylist ? getSubjectPlaylists(selectedSubjectForPlaylist)[selectedPlaylistType] : []}
+            type={selectedPlaylistType}
+          />
+        )}
       </div>
 
     </div>

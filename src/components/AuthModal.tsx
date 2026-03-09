@@ -449,6 +449,7 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'signin' }: AuthModalProps) 
         provider,
         options: {
           redirectTo: `${window.location.origin}/auth`,
+          // redirectTo: `http://localhost:8080/auth`,   when deploying change this url
         },
       });
       if (error) throw error;

@@ -91,13 +91,38 @@ const ThirdSemesterETNotes = () => {
   ];
 
   const pyqs = [
-    { title: 'ESE PYQs (2020-21)', url: 'https://drive.google.com/uc?export=download&id=1qSh1KfrtnANPXPTi6TNkDLX2zHiOvQeZ' },
-    { title: 'ESE PYQs (2024-25)', url: 'https://drive.google.com/uc?export=download&id=1jITDsxslYvATjArkAP9LJkT7pbyIUsHQ' },
-    { title: 'ESE PYQs (2021-22)', url: 'https://drive.google.com/uc?export=download&id=1-sLPRx8hnjPoOYH3haBKAMa2wvyu6_6A' },
+    { title: 'ALL ESE PYQs (2020-21)', url: 'https://drive.google.com/file/d/1qSh1KfrtnANPXPTi6TNkDLX2zHiOvQeZ/view?usp=drivesdk' },
+    { title: 'ALL ESE PYQs (2021-22)', url: 'https://drive.google.com/file/d/1-sLPRx8hnjPoOYH3haBKAMa2wvyu6_6A/view?usp=drivesdk' },
+    { title: 'ALL MID SEM PYQs (2022-23)', url: 'https://drive.google.com/file/d/1XNa-KjmgWanTLXFfoFL1GQhVy2MAk4Ij/view?usp=drivesdk' },
+    { title: 'MID SEM-1 PYQS (2023-24)', url: 'https://drive.google.com/file/d/1LIH6GhcEHUG2h208On8xw8RSJCkU2-7d/view?usp=drivesdk' },
+    { title: 'ALL ESE PYQS (2024-25)', url: 'https://drive.google.com/file/d/1jITDsxslYvATjArkAP9LJkT7pbyIUsHQ/view?usp=drivesdk' },
+    { title: 'MID SEM-1 PYQS (2025-26)', url: 'https://drive.google.com/file/d/1myKO8oRNzxXV-CLutIA4NuX_L3FsUs9K/view?usp=drivesdk' },
+    { title: 'MID SEM-2 PYQS (2025-26)', url: 'https://drive.google.com/file/d/1Mikt8nRCCZXmDm6GT7pFG2mSXVmwB5Ii/view?usp=drivesdk' },
+    { title: 'ALL ESE PYQs (2025-26)', url: 'https://drive.google.com/file/d/1K7lQJCOxNVNBAJUVkh2KEWWMHKNiHT8Y/view?usp=drivesdk' },
   ];
 
   const handleDownload = (url: string, title: string) => {
-    window.open(url, '_blank');
+    if (url === '#') return;
+    const fileId = url.match(/\/d\/([a-zA-Z0-9-_]+)/)?.[1];
+    if (fileId) {
+      const downloadUrl = `https://drive.google.com/uc?export=download&id=${fileId}`;
+      window.open(downloadUrl, '_blank');
+    } else {
+      window.open(url, '_blank');
+    }
+  };
+
+  const toggleSubjectExpansion = (subjectId: string) => {
+    // Basic placeholder if we add playlists later
+  };
+
+  const handlePlaylistClick = (subjectId: string, type: 'detailed' | 'oneshot') => {
+    // Basic placeholder if we add playlists later
+  };
+
+  const syllabus = {
+    title: '3rd Semester ET Syllabus',
+    url: 'https://drive.google.com/file/d/1qGGkZ5h5jyBMjXCsYRayl2EZSl4IXMGH/view?usp=drivesdk' // User can update this URL later
   };
 
   if (selectedSubject) {
@@ -198,6 +223,34 @@ const ThirdSemesterETNotes = () => {
           </p>
         </motion.div>
 
+        {/* Syllabus Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1, duration: 0.5 }}
+          className="mb-8 p-6 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-lg border-2 border-blue-200 dark:border-blue-800"
+        >
+          <div className="flex items-center justify-between flex-wrap gap-4">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white">
+                <FileText className="h-5 w-5" />
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-foreground">{syllabus.title}</h3>
+                <p className="text-sm text-muted-foreground">Official syllabus for 3rd semester ET</p>
+              </div>
+            </div>
+            <Button
+              onClick={() => handleDownload(syllabus.url, syllabus.title)}
+              className="btn-hero"
+              disabled={syllabus.url === '#'}
+            >
+              <Download className="h-4 w-4 mr-2" />
+              {syllabus.url === '#' ? 'Coming Soon' : 'Download Syllabus'}
+            </Button>
+          </div>
+        </motion.div>
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
           {subjects.map((subject, index) => (
             <motion.div
@@ -207,13 +260,20 @@ const ThirdSemesterETNotes = () => {
               transition={{ delay: (index + 1) * 0.1, duration: 0.5 }}
               whileHover={{ scale: 1.02 }}
             >
-              <Card className="feature-card h-full transition-all duration-300">
+              <Card
+                className="feature-card h-full cursor-pointer transition-all duration-300 border-2 border-transparent hover:border-primary/20 shadow-lg hover:shadow-xl"
+                onClick={() => setSelectedSubject(subject.id)}
+              >
                 <CardHeader>
-                  <div className="flex items-center justify-between mb-3">
-                    <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center text-primary-foreground text-2xl">
-                      {subject.name}
+                  {/* Modern 3D Icon */}
+                  <div className="relative w-20 h-20 mx-auto mb-6 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                    <div className={`absolute inset-0 rounded-2xl bg-primary blur-xl opacity-20`} />
+                    <div className={`relative w-full h-full rounded-2xl bg-primary bg-opacity-10 backdrop-blur-md border border-white/20 shadow-lg flex items-center justify-center overflow-hidden`}>
+                      <div className="absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-b from-white/30 to-transparent pointer-events-none" />
+                      <span className="text-2xl drop-shadow-md text-primary">{subject.name}</span>
                     </div>
                   </div>
+
                   <CardTitle className="text-lg text-center mb-2">{subject.fullName}</CardTitle>
                   <CardDescription className="text-center">{subject.description}</CardDescription>
                 </CardHeader>
@@ -223,7 +283,7 @@ const ThirdSemesterETNotes = () => {
                     <Button
                       variant="outline"
                       size="sm"
-                      onClick={() => setSelectedSubject(subject.id)}
+                      onClick={(e) => { e.stopPropagation(); setSelectedSubject(subject.id); }}
                     >
                       View Notes
                     </Button>

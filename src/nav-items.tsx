@@ -18,7 +18,7 @@ import FifthSemesterCSEOpenElectives from "./pages/FifthSemesterCSEOpenElectives
 import ThirdSemesterMENotes from "./pages/ThirdSemesterMENotes";
 import ThirdSemesterCHENotes from "./pages/ThirdSemesterCHENotes";
 import ThirdSemesterCENotes from "./pages/ThirdSemesterCENotes";
-import MBANotes from "./pages/MBANotes";      
+import MBANotes from "./pages/MBANotes";
 import BBANotes from "./pages/BBANotes";
 import ThirdSemesterLFTNotes from "./pages/ThirdSemesterLFTNotes";
 import ThirdSemesterETNotes from "./pages/ThirdSemesterETNotes";
@@ -59,6 +59,7 @@ import FifthSemesterOTNotes from "./pages/FifthSemesterOTNotes";
 import FifthSemesterFTNotes from "./pages/FifthSemesterFTNotes";
 import SixthSemesterCSENotes from "./pages/SixthSemesterCSENotes";
 import SixthSemesterCSEOpenElectives from "./pages/SixthSemesterCSEOpenElectives";
+import SixthSemesterETNotes from "./pages/SixthSemesterETNotes";
 import Profile from "./pages/Profile";
 
 export const navItems = [
@@ -114,7 +115,7 @@ export const navItems = [
   { to: "/sixth-semester-me", page: <SixthSemesterCSENotes /> },
   { to: "/sixth-semester-ce", page: <SixthSemesterCSENotes /> },
   { to: "/sixth-semester-che", page: <SixthSemesterCSENotes /> },
-  { to: "/sixth-semester-et", page: <SixthSemesterCSENotes /> },
+  { to: "/sixth-semester-et", page: <SixthSemesterETNotes /> },
   { to: "/sixth-semester-ee", page: <SixthSemesterCSENotes /> },
   { to: "/sixth-semester-be", page: <SixthSemesterCSENotes /> },
   { to: "/sixth-semester-lft", page: <SixthSemesterCSENotes /> },
