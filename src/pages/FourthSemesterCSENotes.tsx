@@ -256,10 +256,21 @@ const FourthSemesterNotes = () => {
       icon: '❓',
       color: 'bg-red-500',
       notes: [
+        { title: 'MID SEM-1 PYQs(2023-24)', url: 'https://drive.google.com/file/d/14F6R3Hj0wikQOGmVXW9HVUwEvgpf739X/view?usp=drivesdk' },
+        { title: 'MID SEM-2 PYQs(2023-24)', url: 'https://drive.google.com/file/d/1wJJpB62nd1K7hZZW6SKCtOweKADD_cha/view?usp=drivesdk' },
+        { title: 'END SEM PYQs(2023-24)', url: 'https://drive.google.com/file/d/18Ipuy7EjuIn9hqTdBg1Mrr2TButtQuxV/view?usp=drivesdk' },
+        { title: 'MID SEM-1 PYQs(2024-25)', url: 'https://drive.google.com/file/d/1L2I-8b37kC8FqAwzuOhirBnV4q5c2kBR/view?usp=drivesdk' },
+        { title: 'MID SEM-2 PYQs(2024-25)', url: 'https://drive.google.com/file/d/1O7h6JmXUjNBQXgm3DZGGNfHgk84T4SOT/view?usp=drivesdk' },
+        { title: 'END SEM PYQs(2024-25)', url: 'https://drive.google.com/file/d/1UkJvfwupN5gEVkSb27m2mp4BxukHhglv/view?usp=drivesdk' },
         { title: 'PPL PYQs with Solution', url: 'https://drive.google.com/file/d/1zmI94Kwpn-hVY5hTSeK5e_pwZc_RCP6A/view?usp=drive_link' },
-        { title: 'All Mid Sem-1 PYQs', url: 'https://drive.google.com/file/d/1zhJ4vgSUR3N0pefSDKHQwCIsEFxwM8sE/view?usp=drive_link' },
+        { title: 'MID SEM-1 PYQs(2025-26)', url: 'https://drive.google.com/file/d/1JEXebFcpFKNcrvx8DG4gtnibEYYTLp07/view?usp=drivesdk' },
+        { title: 'All Mid Sem-1 PYQs(2024-25)', url: 'https://drive.google.com/file/d/1zhJ4vgSUR3N0pefSDKHQwCIsEFxwM8sE/view?usp=drive_link' },
         { title: 'Math\'s PYQs (2024-25)', url: 'https://drive.google.com/file/d/1R1MAUoeyvU813aNWlkzVhoioK2Z7NBRH/view?usp=drive_link' },
-        { title: 'WT ESE PYQs with Solutions', url: 'https://drive.google.com/file/d/1WcMLbY9sTbBqyLrqe_lPAt3E4BSVo-gw/view?usp=drive_link' }
+        { title: 'WT ESE PYQs with Solutions', url: 'https://drive.google.com/file/d/1WcMLbY9sTbBqyLrqe_lPAt3E4BSVo-gw/view?usp=drive_link' },
+        
+        
+
+
       ]
     }
   ];
