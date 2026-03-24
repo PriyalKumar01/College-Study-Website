@@ -256,7 +256,7 @@ const Index = () => {
                   className="h-12 px-6 sm:px-8 bg-transparent border-gray-200 text-foreground hover:bg-gray-100 dark:border-gray-700 dark:hover:bg-gray-800 hover:text-foreground font-medium flex-shrink-0 transition-colors"
                   onClick={() => user ? navigate('/notes') : openAuth('signup')}
                 >
-                  {user ? 'Browse Notes' : 'Explore Notes Free'}
+                  {user ? 'Browse Notes' : 'Explore Notes'}
                 </Button>
               </div>
             </motion.div>
