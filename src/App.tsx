@@ -17,20 +17,30 @@ import PrivacyPolicy from './pages/PrivacyPolicy';
 import AppLayout from "./components/AppLayout";
 
 import ProtectedRoute from "./components/ProtectedRoute";
+import Maintenance from "./pages/Maintenance";
 
 const queryClient = new QueryClient();
 
+const IS_MAINTENANCE_MODE = false;  // during maintenance make it true ;
+
 const App = () => {
+  // Bypasses maintenance mode if you are running on localhost so you can see live changes
+  const isLocalhost = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
+  const showMaintenance = IS_MAINTENANCE_MODE && !isLocalhost;
+
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
         <AuthProvider>
           <TooltipProvider>
             <Toaster />
-            <BrowserRouter>
-              <ScrollToTop />
-              <CustomCursor />
-              <Routes>
+            {showMaintenance ? (
+              <Maintenance />
+            ) : (
+              <BrowserRouter>
+                <ScrollToTop />
+                <CustomCursor />
+                <Routes>
                 {/* Auth Route - stand alone or inside layout? Usually stand alone to avoid distractions */}
                 <Route path="/auth" element={<Auth />} />
                 <Route path="/terms" element={<TermsOfService />} />
@@ -53,6 +63,7 @@ const App = () => {
               <CookieConsent />
               <WhatsAppButton />
             </BrowserRouter>
+            )}
           </TooltipProvider>
         </AuthProvider>
       </ThemeProvider>

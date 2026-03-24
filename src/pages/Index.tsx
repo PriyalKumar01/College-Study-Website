@@ -254,9 +254,9 @@ const Index = () => {
                   size="lg"
                   variant="outline"
                   className="h-12 px-6 sm:px-8 bg-transparent border-gray-200 text-foreground hover:bg-gray-100 dark:border-gray-700 dark:hover:bg-gray-800 hover:text-foreground font-medium flex-shrink-0 transition-colors"
-                  onClick={() => navigate('/notes')}
+                  onClick={() => user ? navigate('/notes') : openAuth('signup')}
                 >
-                  Browse Notes
+                  {user ? 'Browse Notes' : 'Explore Notes Free'}
                 </Button>
               </div>
             </motion.div>
@@ -395,7 +395,7 @@ const Index = () => {
           </div>
 
           <div className="border-t border-gray-800 mt-12 pt-8 text-center text-sm text-gray-500 flex flex-col md:flex-row justify-between items-center gap-4">
-            <p>&copy; 2025 College Study Hub. All rights reserved.</p>
+            <p>&copy; 2026 College Study Hub. All rights reserved.</p>
             <div className="flex gap-6">
               <span className="hover:text-white cursor-pointer transition-colors">Privacy Policy</span>
               <span className="hover:text-white cursor-pointer transition-colors">Terms of Service</span>
