@@ -21,7 +21,7 @@ import Maintenance from "./pages/Maintenance";
 
 const queryClient = new QueryClient();
 
-const IS_MAINTENANCE_MODE = false;  // during maintenance make it true ;
+const IS_MAINTENANCE_MODE = true;  // during maintenance make it true ;
 
 const App = () => {
   // Bypasses maintenance mode if you are running on localhost so you can see live changes
