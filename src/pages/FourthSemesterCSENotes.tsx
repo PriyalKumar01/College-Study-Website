@@ -267,10 +267,7 @@ const FourthSemesterNotes = () => {
         { title: 'All Mid Sem-1 PYQs(2024-25)', url: 'https://drive.google.com/file/d/1zhJ4vgSUR3N0pefSDKHQwCIsEFxwM8sE/view?usp=drive_link' },
         { title: 'Math\'s PYQs (2024-25)', url: 'https://drive.google.com/file/d/1R1MAUoeyvU813aNWlkzVhoioK2Z7NBRH/view?usp=drive_link' },
         { title: 'WT ESE PYQs with Solutions', url: 'https://drive.google.com/file/d/1WcMLbY9sTbBqyLrqe_lPAt3E4BSVo-gw/view?usp=drive_link' },
-        
-        
-
-
+     
       ]
     }
   ];
