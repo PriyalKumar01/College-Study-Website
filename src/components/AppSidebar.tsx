@@ -86,11 +86,6 @@ const AppSidebar = ({ className }: AppSidebarProps) => {
 
   const navItems: NavItem[] = [
     { icon: <Home className="h-4 w-4" />, label: 'Home', href: '/' },
-    { icon: <Calculator className="h-4 w-4" />, label: 'CGPA Calculator', href: '/cgpa-calculator' },
-    { icon: <Users className="h-4 w-4" />, label: 'Contributor List', href: '/notes-contributors' },
-    { icon: <Layers className="h-4 w-4" />, label: 'Integrated Platforms', href: '/learning-platforms' },
-    { icon: <Award className="h-4 w-4" />, label: 'Scholarships', href: '/opportunities?type=scholarship' },
-    { icon: <Briefcase className="h-4 w-4" />, label: 'Opportunities', href: '/opportunities' },
     {
       icon: <BookOpen className="h-4 w-4" />,
       label: 'Notes',
@@ -104,6 +99,12 @@ const AppSidebar = ({ className }: AppSidebarProps) => {
         { icon: <Code className="h-4 w-4" />, label: 'Coding Notes', href: '/coding-study-material' },
       ]
     },
+    { icon: <Calculator className="h-4 w-4" />, label: 'CGPA Calculator', href: '/cgpa-calculator' },
+    { icon: <FileText className="h-4 w-4" />, label: 'ATS Friendly Resume', href: '/ats-friendly-resume' },
+    { icon: <Users className="h-4 w-4" />, label: 'Contributor List', href: '/notes-contributors' },
+    { icon: <Layers className="h-4 w-4" />, label: 'Integrated Platforms', href: '/learning-platforms' },
+    { icon: <Award className="h-4 w-4" />, label: 'Scholarships', href: '/opportunities?type=scholarship' },
+    { icon: <Briefcase className="h-4 w-4" />, label: 'Opportunities', href: '/opportunities' },
     { icon: <Brain className="h-4 w-4" />, label: 'AI Tools', href: '/useful-ai-tools' },
     { icon: <Info className="h-4 w-4" />, label: 'About', href: '/about' },
   ];

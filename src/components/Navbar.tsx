@@ -1,5 +1,9 @@
 import { useState } from 'react';
-import { Menu, Moon, Sun, User, LogOut } from 'lucide-react';
+import { 
+  Menu, Moon, Sun, User, LogOut, Home, 
+  LayoutDashboard, BookOpen, Calculator, FileText, 
+  Users, Layers, Award, Briefcase, Brain, Info 
+} from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useTheme } from '@/providers/ThemeProvider';
 import { useAuth } from '@/contexts/AuthContext';
@@ -22,16 +26,41 @@ const Navbar = ({ onOpenAuth }: NavbarProps) => {
   const { theme, toggleTheme } = useTheme();
   const { user, signOut } = useAuth();
   const location = useLocation();
+  const [isOpen, setIsOpen] = useState(false);
 
   const isActive = (path: string) => location.pathname === path;
 
-  // Simplified navbar items
+  // Desktop Navbar Items
   const navItems = [
     { href: '/', label: 'Home' },
     { href: '/dashboard', label: 'Dashboard' },
     { href: '/notes', label: 'Notes' },
     { href: '/about', label: 'About' },
   ];
+
+  // Mobile AppSidebar Items shown when logged in
+  const authenticatedMobileItems = [
+    { href: '/', label: 'Home', icon: Home },
+    { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+    { href: '/notes', label: 'Notes', icon: BookOpen },
+    { href: '/cgpa-calculator', label: 'CGPA Calculator', icon: Calculator },
+    { href: '/ats-friendly-resume', label: 'ATS Friendly Resume', icon: FileText },
+    { href: '/notes-contributors', label: 'Contributor List', icon: Users },
+    { href: '/learning-platforms', label: 'Integrated Platforms', icon: Layers },
+    { href: '/opportunities?type=scholarship', label: 'Scholarships', icon: Award },
+    { href: '/opportunities', label: 'Opportunities', icon: Briefcase },
+    { href: '/useful-ai-tools', label: 'AI Tools', icon: Brain },
+    { href: '/about', label: 'About', icon: Info },
+  ];
+
+  const defaultMobileItems = [
+    { href: '/', label: 'Home', icon: Home },
+    { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+    { href: '/notes', label: 'Notes', icon: BookOpen },
+    { href: '/about', label: 'About', icon: Info },
+  ];
+
+  const mobileNavItems = user ? authenticatedMobileItems : defaultMobileItems;
 
   const firstName = user?.user_metadata?.first_name || 'User';
 
@@ -105,7 +134,7 @@ const Navbar = ({ onOpenAuth }: NavbarProps) => {
 
             {/* Mobile Menu (Sheet) */}
             <div className="md:hidden flex items-center gap-2">
-              <Sheet>
+              <Sheet open={isOpen} onOpenChange={setIsOpen}>
                 <SheetTrigger asChild>
                   <button className="p-2 rounded-md hover:bg-accent focus:outline-none" aria-label="Menu">
                     <Menu className="h-6 w-6" />
@@ -140,17 +169,20 @@ const Navbar = ({ onOpenAuth }: NavbarProps) => {
                       </Link>
                     )}
 
-                    <div className="flex flex-col space-y-3">
-                      {navItems.map((item) => (
+                    <div className="flex flex-col space-y-1 max-h-[60vh] overflow-y-auto pb-4 custom-scrollbar">
+                      {mobileNavItems.map((item) => (
                         <Link
                           key={item.href}
                           to={item.href}
                           onClick={() => setIsOpen(false)} // Ensure setOpen is used
-                          className={`px-4 py-2 text-base font-medium rounded-md transition-colors ${isActive(item.href)
-                            ? 'bg-primary/10 text-primary'
-                            : 'hover:bg-accent text-foreground'
+                          className={`flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-xl transition-all ${isActive(item.href)
+                            ? 'bg-blue-600/10 text-blue-600 dark:text-blue-400'
+                            : 'hover:bg-slate-100 dark:hover:bg-slate-800/50 text-slate-700 dark:text-slate-300'
                             }`}
                         >
+                          <div className={`p-1.5 rounded-lg flex-shrink-0 ${isActive(item.href) ? 'bg-blue-600/20' : 'bg-slate-200 dark:bg-slate-800'}`}>
+                            <item.icon className="h-4 w-4" />
+                          </div>
                           {item.label}
                         </Link>
                       ))}
