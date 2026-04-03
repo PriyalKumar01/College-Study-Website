@@ -17,23 +17,19 @@ import Navbar from '@/components/Navbar';
 const ThirdSemesterCENotes = () => {
   const navigate = useNavigate();
 
-  const { data: communityNotes } = useCommunityNotes('btech', 'CE-3rd Semester');
-  const { user } = useAuth();
+  const { data: communityNotes, refetch: refreshNotes } = useCommunityNotes('btech', 'CE-3rd Semester');
+  const { isOwner } = useAuth();
   const { toast } = useToast();
 
-  const handleDeleteCommunityNote = async (id: string, fileName: string) => {
-    if (!user || user.email !== 'priyalkumar06@gmail.com') return;
+  const handleDeleteCommunityNote = async (id: string) => {
+    if (!window.confirm('Delete this user-uploaded material?')) return;
     try {
-      if (fileName) {
-        const { error: storageError } = await supabase.storage.from('study-materials').remove([fileName]);
-        if (storageError) console.error('Storage deletion error:', storageError);
-      }
-      const { error: dbError } = await supabase.from('notes').delete().eq('id', id);
-      if (dbError) throw dbError;
-      toast({ title: "Deleted securely", description: "Material removed successfully." });
-      window.location.reload();
+      const { error } = await supabase.from('notes').delete().eq('id', id);
+      if (error) throw error;
+      toast({ title: 'Deleted', description: 'Material removed successfully.' });
+      refreshNotes();
     } catch (error: any) {
-      toast({ title: "Deletion failed", description: error.message, variant: 'destructive' });
+      toast({ title: 'Error', description: error.message, variant: 'destructive' });
     }
   };
 
@@ -134,6 +130,13 @@ const ThirdSemesterCENotes = () => {
         { title: 'Unit-2 Aggregate Notes', url: 'https://drive.google.com/uc?export=download&id=19X6xdj_W7dPP1zx_0HLPtPg01ut33-Yn' },
         { title: 'Unit-2 Testing of Cement', url: 'https://drive.google.com/uc?export=download&id=1ym2P7Ik8aEk0zyT0N6kyt5a03hn_C2Pm' }
       ]
+    },
+    {
+      id: 'pyqs',
+      name: 'Previous Year Questions',
+      fullName: 'PYQs for 3rd Semester CE',
+      description: 'Previous year question papers',
+      notes: []
     }
   ];
 
@@ -235,16 +238,33 @@ const ThirdSemesterCENotes = () => {
                         </h3>
                         <div className="grid gap-2">
                           {subject.notes.map((note: any, idx: number) => (
-                            <a
+                            <div
                               key={idx}
-                              href={note.url}
-                              target="_blank"
-                              rel="noopener noreferrer"
                               className="flex items-center justify-between p-3 rounded-lg bg-secondary/50 hover:bg-secondary transition-colors"
                             >
-                              <span className="text-sm font-medium">{note.title}</span>
-                              <Download className="h-4 w-4 text-primary" />
-                            </a>
+                              <a
+                                href={note.url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="flex-1 text-sm font-medium"
+                              >
+                                {note.title}
+                              </a>
+                              <div className="flex items-center gap-2">
+                                {note.isCommunity && isOwner && (
+                                  <button
+                                    onClick={() => handleDeleteCommunityNote(note.id)}
+                                    className="text-destructive hover:text-destructive/80"
+                                    title="Delete Community Upload"
+                                  >
+                                    <Trash2 className="h-4 w-4" />
+                                  </button>
+                                )}
+                                <a href={note.url} target="_blank" rel="noopener noreferrer">
+                                  <Download className="h-4 w-4 text-primary" />
+                                </a>
+                              </div>
+                            </div>
                           ))}
                         </div>
                       </div>

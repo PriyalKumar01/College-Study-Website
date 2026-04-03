@@ -18,23 +18,19 @@ import { PlaylistModal } from '@/components/PlaylistModal';
 const FourthSemesterETNotes = () => {
   const navigate = useNavigate();
 
-  const { data: communityNotes } = useCommunityNotes('btech', 'ET-4th Semester');
-  const { user } = useAuth();
+  const { data: communityNotes, refetch: refreshNotes } = useCommunityNotes('btech', 'ET-4th Semester');
+  const { isOwner } = useAuth();
   const { toast } = useToast();
 
-  const handleDeleteCommunityNote = async (id: string, fileName: string) => {
-    if (!user || user.email !== 'priyalkumar06@gmail.com') return;
+  const handleDeleteCommunityNote = async (id: string) => {
+    if (!window.confirm('Delete this user-uploaded material?')) return;
     try {
-      if (fileName) {
-        const { error: storageError } = await supabase.storage.from('study-materials').remove([fileName]);
-        if (storageError) console.error('Storage deletion error:', storageError);
-      }
-      const { error: dbError } = await supabase.from('notes').delete().eq('id', id);
-      if (dbError) throw dbError;
-      toast({ title: "Deleted securely", description: "Material removed successfully." });
-      window.location.reload();
+      const { error } = await supabase.from('notes').delete().eq('id', id);
+      if (error) throw error;
+      toast({ title: 'Deleted', description: 'Material removed successfully.' });
+      refreshNotes();
     } catch (error: any) {
-      toast({ title: "Deletion failed", description: error.message, variant: 'destructive' });
+      toast({ title: 'Error', description: error.message, variant: 'destructive' });
     }
   };
 
@@ -272,14 +268,26 @@ const FourthSemesterETNotes = () => {
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <Button
-                      onClick={() => handleDownload(note.url, note.title)}
-                      className="w-full btn-hero"
-                      disabled={note.url === '#'}
-                    >
-                      <Download className="h-4 w-4 mr-2" />
-                      {note.url === '#' ? 'Coming Soon' : 'Download PDF'}
-                    </Button>
+                    <div className="flex gap-2">
+                      <Button
+                        onClick={() => handleDownload(note.url, note.title)}
+                        className="flex-1 btn-hero"
+                        disabled={note.url === '#'}
+                      >
+                        <Download className="h-4 w-4 mr-2" />
+                        {note.url === '#' ? 'Coming Soon' : 'Download PDF'}
+                      </Button>
+                      {(note as any).isCommunity && isOwner && (
+                        <Button
+                          variant="destructive"
+                          size="icon"
+                          onClick={() => handleDeleteCommunityNote((note as any).id)}
+                          title="Delete Community Upload"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      )}
+                    </div>
                   </CardContent>
                 </Card>
               </motion.div>
