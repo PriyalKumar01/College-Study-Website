@@ -1,3 +1,10 @@
+
+import { useCommunityNotes } from '@/hooks/useCommunityNotes';
+import { useAuth } from '@/contexts/AuthContext';
+import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
+import { Trash2 } from 'lucide-react';
+
 import { motion } from 'framer-motion';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -9,7 +16,28 @@ import Navbar from '@/components/Navbar';
 const WebDevelopmentNotes = () => {
   const navigate = useNavigate();
 
-  const notes = [
+  const { data: communityNotes } = useCommunityNotes('webdev');
+  const { user } = useAuth();
+  const { toast } = useToast();
+
+  const handleDeleteCommunityNote = async (id: string, fileName: string) => {
+    if (!user || user.email !== 'priyalkumar06@gmail.com') return;
+    try {
+      if (fileName) {
+        const { error: storageError } = await supabase.storage.from('study-materials').remove([fileName]);
+        if (storageError) console.error('Storage deletion error:', storageError);
+      }
+      const { error: dbError } = await supabase.from('notes').delete().eq('id', id);
+      if (dbError) throw dbError;
+      toast({ title: "Deleted securely", description: "Material removed successfully." });
+      window.location.reload();
+    } catch (error: any) {
+      toast({ title: "Deletion failed", description: error.message, variant: 'destructive' });
+    }
+  };
+
+
+  const staticNotes = [
     { title: 'Backend Expert Interview Questions', url: 'https://drive.google.com/file/d/10Mf4HwXV0A0wSCSnTmJJUD3Vls3wQ05g/view?usp=drive_link' },
     { title: 'System Design Notes', url: 'https://drive.google.com/file/d/10tvBr8onwzSc8q8TpdyRdpbZ21vKfPlO/view?usp=drive_link' },
     { title: 'Frontend Interview Questions', url: 'https://drive.google.com/file/d/10wd0lDUqnu9HBV0EmLutyYvD_nXMbaX8/view?usp=drive_link' },
@@ -30,6 +58,20 @@ const WebDevelopmentNotes = () => {
     { title: 'SQL Complete PDF Notes', url: 'https://drive.google.com/file/d/111xaHcL9ZDKtTpdB2mk-ceir5kZ7LQfT/view?usp=drive_link' },
     { title: 'System Design Handbook', url: 'https://drive.google.com/file/d/113jEs3RkyjV1u46W_bD-vTvTMnm9Jf-x/view?usp=drive_link' },
     { title: 'The Complete SQL Handbook Notes & Tips', url: 'https://drive.google.com/file/d/12Qq7As6xtwBk73IYiBLVoQzKdiT_0lJd/view?usp=drive_link' }
+  ];
+
+  
+  const allNotes: any[] = [
+    ...staticNotes,
+    ...(communityNotes || []).map(cn => ({
+      id: cn.id,
+      title: cn.title,
+      url: cn.file_url,
+      isCommunity: true,
+      fileName: cn.file_name,
+      uploadedBy: cn.uploaded_by,
+      userName: cn.user_name
+    }))
   ];
 
   const handleDownload = (url: string, title: string) => {
@@ -79,7 +121,7 @@ const WebDevelopmentNotes = () => {
 
         {/* Notes Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {notes.map((note, index) => (
+          {allNotes.map((note, index) => (
             <motion.div
               key={index}
               initial={{ opacity: 0, y: 20 }}
@@ -87,7 +129,18 @@ const WebDevelopmentNotes = () => {
               transition={{ delay: index * 0.1, duration: 0.5 }}
               whileHover={{ scale: 1.02 }}
             >
-              <Card className="feature-card h-full">
+              <Card className="feature-card h-full relative">
+                  {note.isCommunity && user?.email === 'priyalkumar06@gmail.com' && (
+                    <Button
+                      variant="destructive"
+                      size="icon"
+                      className="absolute top-2 right-2 h-8 w-8 z-10"
+                      onClick={(e) => { e.stopPropagation(); handleDeleteCommunityNote(note.id, note.fileName); }}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  )}
+
                 <CardHeader>
                   <div className="flex items-center gap-3 mb-2">
                     <div className="w-10 h-10 bg-teal-500 rounded-full flex items-center justify-center text-white text-lg">

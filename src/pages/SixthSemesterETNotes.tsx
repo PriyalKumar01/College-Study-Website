@@ -1,3 +1,10 @@
+
+import { useCommunityNotes } from '@/hooks/useCommunityNotes';
+import { useAuth } from '@/contexts/AuthContext';
+import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
+import { Trash2 } from 'lucide-react';
+
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -10,6 +17,27 @@ import { PlaylistModal } from '@/components/PlaylistModal';
 
 const SixthSemesterETNotes = () => {
     const navigate = useNavigate();
+
+  const { data: communityNotes } = useCommunityNotes('btech', 'ET-6th Semester');
+  const { user } = useAuth();
+  const { toast } = useToast();
+
+  const handleDeleteCommunityNote = async (id: string, fileName: string) => {
+    if (!user || user.email !== 'priyalkumar06@gmail.com') return;
+    try {
+      if (fileName) {
+        const { error: storageError } = await supabase.storage.from('study-materials').remove([fileName]);
+        if (storageError) console.error('Storage deletion error:', storageError);
+      }
+      const { error: dbError } = await supabase.from('notes').delete().eq('id', id);
+      if (dbError) throw dbError;
+      toast({ title: "Deleted securely", description: "Material removed successfully." });
+      window.location.reload();
+    } catch (error: any) {
+      toast({ title: "Deletion failed", description: error.message, variant: 'destructive' });
+    }
+  };
+
     const location = useLocation();
     const [selectedSubject, setSelectedSubject] = useState<string | null>(null);
     const [showPlaylistModal, setShowPlaylistModal] = useState(false);
@@ -45,7 +73,7 @@ const SixthSemesterETNotes = () => {
         return subject?.playlists || { detailed: [], oneshot: [] };
     };
 
-    const subjects = [
+    const staticSubjects = [
         {
             id: 'mwe',
             name: 'Microwave Engineering',
@@ -113,7 +141,26 @@ const SixthSemesterETNotes = () => {
         url: 'https://drive.google.com/file/d/1uMAxZktTub4htDZPrgom1mHYXU5Bg-Jc/view?usp=drivesdk'
     };
 
-    const handleDownload = (url: string, title: string) => {
+    
+  const subjects: any[] = staticSubjects.map(sub => ({
+    ...sub,
+    notes: [
+      ...sub.notes,
+      ...(communityNotes || [])
+        .filter(cn => cn.subject === sub.name || cn.subject === sub.id)
+        .map(cn => ({
+          id: cn.id,
+          title: cn.title,
+          url: cn.file_url,
+          isCommunity: true,
+          fileName: cn.file_name,
+          uploadedBy: cn.uploaded_by,
+          userName: cn.user_name
+        }))
+    ]
+  }));
+
+  const handleDownload = (url: string, title: string) => {
         if (url === '#') {
             return;
         }
@@ -144,7 +191,8 @@ const SixthSemesterETNotes = () => {
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {subject.notes.map((note, index) => (
                             <motion.div key={index} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.1, duration: 0.5 }} whileHover={{ scale: 1.02 }}>
-                                <Card className="feature-card h-full border-2 border-transparent hover:border-primary/20 shadow-lg hover:shadow-xl transition-all duration-300">
+                                <Card className="feature-card h-full border-2 border-transparent hover:border-primary/20 shadow-lg hover:shadow-xl transition-all duration-300 relative">
+
                                     <CardHeader>
                                         <div className="flex items-center gap-3 mb-2">
                                             <div className={`w-10 h-10 ${subject.color} rounded-full flex items-center justify-center text-white text-lg`}>

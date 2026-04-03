@@ -109,6 +109,17 @@ const AdminDashboard = () => {
     }
   };
 
+  const handleDownload = (url: string) => {
+    if (!url || url === '#') return;
+    const fileId = url.match(/\/d\/([a-zA-Z0-9-_]+)/)?.[1];
+    if (fileId) {
+      const downloadUrl = `https://drive.google.com/uc?export=download&id=${fileId}`;
+      window.open(downloadUrl, '_blank');
+    } else {
+      window.open(url, '_blank');
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-hero">
@@ -221,15 +232,24 @@ const AdminDashboard = () => {
                             File: {note.file_name}
                           </div>
                           
-                          <div className="flex gap-2 pt-2">
+                          <div className="flex gap-2 pt-2 flex-wrap">
                             <Button
                               onClick={() => window.open(note.file_url, '_blank')}
                               variant="outline"
                               size="sm"
-                              className="flex-1"
+                              className="flex-1 min-w-[80px]"
                             >
-                              <Eye className="h-4 w-4 mr-2" />
+                              <Eye className="h-4 w-4 mr-1" />
                               Preview
+                            </Button>
+                            <Button
+                              onClick={() => handleDownload(note.file_url)}
+                              variant="outline"
+                              size="sm"
+                              className="flex-1 min-w-[80px]"
+                            >
+                              <Download className="h-4 w-4 mr-1" />
+                              Download
                             </Button>
                             <Button
                               onClick={() => handleNoteApproval(note.id, true)}

@@ -1,3 +1,10 @@
+
+import { useCommunityNotes } from '@/hooks/useCommunityNotes';
+import { useAuth } from '@/contexts/AuthContext';
+import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
+import { Trash2 } from 'lucide-react';
+
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -8,6 +15,27 @@ import Navbar from '@/components/Navbar';
 
 const ThirdSemesterPTNotes = () => {
   const navigate = useNavigate();
+
+  const { data: communityNotes } = useCommunityNotes('btech', 'PT-3rd Semester');
+  const { user } = useAuth();
+  const { toast } = useToast();
+
+  const handleDeleteCommunityNote = async (id: string, fileName: string) => {
+    if (!user || user.email !== 'priyalkumar06@gmail.com') return;
+    try {
+      if (fileName) {
+        const { error: storageError } = await supabase.storage.from('study-materials').remove([fileName]);
+        if (storageError) console.error('Storage deletion error:', storageError);
+      }
+      const { error: dbError } = await supabase.from('notes').delete().eq('id', id);
+      if (dbError) throw dbError;
+      toast({ title: "Deleted securely", description: "Material removed successfully." });
+      window.location.reload();
+    } catch (error: any) {
+      toast({ title: "Deletion failed", description: error.message, variant: 'destructive' });
+    }
+  };
+
   const [expandedSubjects, setExpandedSubjects] = useState<string[]>([]);
 
   const toggleSubjectExpansion = (subjectId: string) => {
@@ -18,7 +46,7 @@ const ThirdSemesterPTNotes = () => {
     );
   };
 
-  const subjects = [
+  const staticSubjects = [
     {
       id: 'math2',
       name: 'Math-II',
@@ -144,6 +172,25 @@ const ThirdSemesterPTNotes = () => {
 
   ];
 
+  
+  const subjects: any[] = staticSubjects.map((sub: any) => ({
+    ...sub,
+    notes: [
+      ...sub.notes,
+      ...(communityNotes || [])
+        .filter((cn: any) => cn.subject === sub.name || cn.subject === sub.id)
+        .map((cn: any) => ({
+          id: cn.id,
+          title: cn.title,
+          url: cn.file_url,
+          isCommunity: true,
+          fileName: cn.file_name,
+          uploadedBy: cn.uploaded_by,
+          userName: cn.user_name
+        }))
+    ]
+  }));
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
       <Navbar />
@@ -180,7 +227,18 @@ const ThirdSemesterPTNotes = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1, duration: 0.5 }}
             >
-              <Card className="feature-card">
+              <Card className="feature-card relative">
+                  {note.isCommunity && user?.email === 'priyalkumar06@gmail.com' && (
+                    <Button
+                      variant="destructive"
+                      size="icon"
+                      className="absolute top-2 right-10 h-8 w-8 z-10"
+                      onClick={(e) => { e.stopPropagation(); handleDeleteCommunityNote(note.id, note.fileName); }}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  )}
+
                 <CardHeader>
                   <div className="flex items-start justify-between">
                     <div className="flex-1">

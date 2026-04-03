@@ -62,6 +62,8 @@ import SixthSemesterCSEOpenElectives from "./pages/SixthSemesterCSEOpenElectives
 import SixthSemesterETNotes from "./pages/SixthSemesterETNotes";
 import Profile from "./pages/Profile";
 import ATSFriendlyResume from "./pages/ATSFriendlyResume";
+import AdminPortal from "./pages/AdminPortal";
+import OwnerDashboard from "./pages/OwnerDashboard";
 
 export const navItems = [
   { to: "/", page: <Index /> },
@@ -136,5 +138,7 @@ export const navItems = [
   { to: "/bba-notes", page: <BBANotes /> },
   { to: "/mba-notes", page: <MBANotes /> },
   { to: "/ats-friendly-resume", page: <ATSFriendlyResume /> },
+  { to: "/admin-portal", page: <AdminPortal /> },
+  { to: "/owner-dashboard", page: <OwnerDashboard /> },
   { to: "*", page: <NotFound /> },
 ];

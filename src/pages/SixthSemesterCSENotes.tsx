@@ -1,9 +1,13 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
+import { useAuth } from '@/contexts/AuthContext';
+import { useCommunityNotes } from '@/hooks/useCommunityNotes';
+import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Download, ArrowLeft, FileText, Play, ChevronDown, ChevronRight, Share2 } from 'lucide-react';
+import { Download, ArrowLeft, FileText, Play, ChevronDown, ChevronRight, Share2, Trash2 } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import { PlaylistModal } from '@/components/PlaylistModal';
@@ -11,6 +15,8 @@ import { PlaylistModal } from '@/components/PlaylistModal';
 const SixthSemesterCSENotes = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { isOwner } = useAuth();
+  const { toast } = useToast();
   const [selectedSubject, setSelectedSubject] = useState<string | null>(null);
   const [showPlaylistModal, setShowPlaylistModal] = useState(false);
   const [selectedPlaylistType, setSelectedPlaylistType] = useState<'detailed' | 'oneshot'>('detailed');
@@ -45,7 +51,7 @@ const SixthSemesterCSENotes = () => {
     return subject?.playlists || { detailed: [], oneshot: [] };
   };
 
-  const subjects = [
+  const staticSubjects = [
     {
       id: 'ai',
       name: 'Artificial Intelligence',
@@ -129,8 +135,46 @@ const SixthSemesterCSENotes = () => {
         { title: 'MID SEM-2 PYQs (2024-2025)', url: 'https://drive.google.com/file/d/1p-nQIP-gbllmCIWkrB6dd02AuzStv2-s/view?usp=drivesdk' },
         { title: 'ALL ESE PYQs (2024-2025)', url: 'https://drive.google.com/file/d/1d3WLlDg0bqjTTpkkzAVWhIFxxMKxjGxk/view?usp=drivesdk' },
       ]
+    },
+    {
+      id: 'assignments',
+      name: 'Assignments - All Subjects',
+      icon: '📝',
+      color: 'bg-yellow-500',
+      notes: []
     }
   ];
+
+  const { data: communityNotes, refetch: refreshNotes } = useCommunityNotes('btech', 'CSE-6th Semester');
+  const subjects = staticSubjects.map((sub) => ({
+    ...sub,
+    notes: [
+      ...sub.notes,
+      ...(communityNotes || [])
+        .filter((cn) => cn.subject === sub.name || cn.subject === sub.id)
+        .map((cn) => ({
+          id: cn.id,
+          title: cn.title,
+          url: cn.file_url,
+          isCommunity: true,
+          fileName: cn.file_name,
+          uploadedBy: cn.uploaded_by,
+          userName: cn.user_name
+        }))
+    ]
+  }));
+
+  const handleDeleteCommunityNote = async (id: string) => {
+    if (!window.confirm('Delete this user-uploaded material?')) return;
+    try {
+      const { error } = await supabase.from('notes').delete().eq('id', id);
+      if (error) throw error;
+      toast({ title: 'Deleted', description: 'Material removed successfully.' });
+      refreshNotes();
+    } catch (error: any) {
+      toast({ title: 'Error', description: error.message, variant: 'destructive' });
+    }
+  };
 
   const syllabus = {
     title: '6th Semester CSE Syllabus',
@@ -180,9 +224,21 @@ const SixthSemesterCSENotes = () => {
                     <CardDescription>{subject.name} study material</CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <Button onClick={() => handleDownload(note.url, note.title)} className="w-full btn-hero" disabled={note.url === '#'}>
-                      <Download className="h-4 w-4 mr-2" /> {note.url === '#' ? 'Coming Soon' : 'Download PDF'}
-                    </Button>
+                    <div className="flex gap-2">
+                      <Button onClick={() => handleDownload(note.url, note.title)} className="flex-1 btn-hero" disabled={note.url === '#'}>
+                        <Download className="h-4 w-4 mr-2" /> {note.url === '#' ? 'Coming Soon' : 'Download'}
+                      </Button>
+                      {(note as any).isCommunity && isOwner && (
+                        <Button
+                          variant="destructive"
+                          size="icon"
+                          onClick={() => handleDeleteCommunityNote((note as any).id)}
+                          title="Delete Community Upload"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      )}
+                    </div>
                   </CardContent>
                 </Card>
               </motion.div>
@@ -317,6 +373,8 @@ const SixthSemesterCSENotes = () => {
             </motion.div>
           ))}
         </div>
+
+
 
         <PlaylistModal
           isOpen={showPlaylistModal}

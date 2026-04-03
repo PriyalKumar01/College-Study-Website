@@ -26,7 +26,9 @@ import {
   FileText,
   Laptop,
   Home,
-  BadgeCheck
+  BadgeCheck,
+  Shield,
+  Crown
 } from 'lucide-react';
 
 interface AppSidebarProps {
@@ -43,7 +45,7 @@ interface NavItem {
 const AppSidebar = ({ className }: AppSidebarProps) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [expandedGroups, setExpandedGroups] = useState<string[]>([]);
-  const { user, signOut } = useAuth();
+  const { user, signOut, isAdmin, isOwner } = useAuth();
   const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
   const location = useLocation();
@@ -107,6 +109,9 @@ const AppSidebar = ({ className }: AppSidebarProps) => {
     { icon: <Briefcase className="h-4 w-4" />, label: 'Opportunities', href: '/opportunities' },
     { icon: <Brain className="h-4 w-4" />, label: 'AI Tools', href: '/useful-ai-tools' },
     { icon: <Info className="h-4 w-4" />, label: 'About', href: '/about' },
+    // Conditional admin/owner items
+    ...(isAdmin ? [{ icon: <Shield className="h-4 w-4" />, label: 'Admin Portal', href: '/admin-portal' }] : []),
+    ...(isOwner ? [{ icon: <Crown className="h-4 w-4" />, label: 'Owner Dashboard', href: '/owner-dashboard' }] : []),
   ];
 
   const isActive = (href: string) => location.pathname === href;

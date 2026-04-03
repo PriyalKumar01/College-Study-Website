@@ -1,3 +1,10 @@
+
+import { useCommunityNotes } from '@/hooks/useCommunityNotes';
+import { useAuth } from '@/contexts/AuthContext';
+import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
+import { Trash2 } from 'lucide-react';
+
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -9,7 +16,31 @@ import Navbar from '@/components/Navbar';
 
 const ThirdSemesterMENotes = () => {
   const navigate = useNavigate();
+
+  const { data: communityNotes } = useCommunityNotes('btech', 'ME-3rd Semester');
+  const { user } = useAuth();
+  const { toast } = useToast();
+
+  const handleDeleteCommunityNote = async (id: string, fileName: string) => {
+    if (!user || user.email !== 'priyalkumar06@gmail.com') return;
+    try {
+      if (fileName) {
+        const { error: storageError } = await supabase.storage.from('study-materials').remove([fileName]);
+        if (storageError) console.error('Storage deletion error:', storageError);
+      }
+      const { error: dbError } = await supabase.from('notes').delete().eq('id', id);
+      if (dbError) throw dbError;
+      toast({ title: "Deleted securely", description: "Material removed successfully." });
+      window.location.reload();
+    } catch (error: any) {
+      toast({ title: "Deletion failed", description: error.message, variant: 'destructive' });
+    }
+  };
+
   const [selectedSubject, setSelectedSubject] = useState<string | null>(null);
+
+  
+  
 
   const handleDownload = (url: string, title: string) => {
     const fileId = url.match(/\/d\/([a-zA-Z0-9-_]+)/)?.[1];
@@ -21,114 +52,9 @@ const ThirdSemesterMENotes = () => {
     }
   };
 
-  const subjects = [
-    {
-      id: 'math2',
-      name: 'Engineering Mathematics-II',
-      icon: '📐',
-      color: 'bg-indigo-500',
-      notes: [
-        { title: 'Unit 1 C.F & PI Notes', url: 'https://drive.google.com/file/d/1_OfjdkVBUxb6352LJcCSqv_nKrjz4uSU/view?usp=drive_link' },
-        { title: 'Unit 2 Notes', url: 'https://drive.google.com/file/d/1_OSlf-B7K9TFC1LgA6yZDUH2sQL-RTy0/view?usp=drive_link' },
-        { title: 'Unit 3 Notes', url: 'https://drive.google.com/file/d/1_PtU2rwcwDjGnrBwBpTtSeohDrbvxDBa/view?usp=drive_link' },
-        { title: 'Mid Sem 2 Last Minute Revision', url: 'https://drive.google.com/file/d/1oGU5M62XSyErVp3qP4CrEj1v0t5FQqej/view?usp=drive_link' },
-        { title: 'Best Maths Chapter 1 & 2 Notes', url: 'https://drive.google.com/file/d/1_JfBOvZp84amQj6Mo7-KtwrARm1kTHUr/view?usp=drive_link' },
-        { title: 'Formula Sheet Unit 1', url: 'https://drive.google.com/file/d/1T6PERNwiIdoA0Vm2EGyIVwp9TlrG7IrX/view?usp=drive_link' }
-      ]
-    },
-    {
-      id: 'et',
-      name: 'Engineering Thermodynamics',
-      icon: '🔥',
-      color: 'bg-red-500',
-      notes: [
-        { title: 'Unit-1 Notes', url: 'https://drive.google.com/file/d/1L_cqxvSO6djvfa32zliF32MXiLT2nQh7/view?usp=drivesdk' },
-        { title: 'Unit-2 Part 1 Notes', url: 'https://drive.google.com/file/d/1l5qwbL5puPX-SAD5Yc4ww5mSEsWnNvrd/view?usp=drivesdk' },
-        { title: 'Unit-2 Part 2 Notes', url: 'https://drive.google.com/file/d/1BRrCZ5njGVkHWqDa6fG4rpB_ewIIePwG/view?usp=drivesdk' },
-        { title: 'Unit-3 Notes', url: 'https://drive.google.com/file/d/1hI6X8tlTlrJlNixbhaGIiRctrppFy9fx/view?usp=drivesdk' },
-        { title: 'Unit-4 Notes', url: 'https://drive.google.com/file/d/1_kiMpbsqzcwPwOsl3hQpg9Wl9Q_Sfp75/view?usp=drivesdk' },
-        { title: 'ET Self Study Notes', url: 'https://drive.google.com/file/d/10V0KF21CkXScf__3pLqWgFF7f--VE7mc/view?usp=drivesdk' }
-      ]
-    },
-    {
-      id: 'kom',
-      name: 'Kinematics of Machines',
-      icon: '⚙️',
-      color: 'bg-blue-500',
-      notes: [
-        { title: 'KOM Book', url: 'https://drive.google.com/file/d/1Ret3lDNQ-Q_aHekhx-1IrVwWN0T1teMN/view?usp=drivesdk' }
-      ]
-    },
-    {
-      id: 'ms',
-      name: 'Material Science',
-      icon: '🔬',
-      color: 'bg-purple-500',
-      notes: [
-        { title: 'Ferrous Material Notes', url: 'https://drive.google.com/file/d/1tUuPIWhyWBwySY3MwFzkStAjHAffeOdm/view?usp=drivesdk' },
-        { title: 'Gate GPSC Material Science PDF', url: 'https://drive.google.com/file/d/1ibTXNh7As3GPVdt1W-AKZGAjsYF76M2C/view?usp=drivesdk' },
-        { title: 'Imp. PYQs with Solution PDF', url: 'https://drive.google.com/file/d/1nmlQKBUPfw5RfO0-WRnXSrwyD4V4vvBi/view?usp=drivesdk' },
-        { title: 'Unit-1, 2 & 3 Notes', url: 'https://drive.google.com/file/d/1oPMef-67CF8M0gDwoNHAfxutsSuCy_Me/view?usp=drivesdk' },
-        { title: 'Unit-4 Notes', url: 'https://drive.google.com/file/d/1WjNZVn-02CXoYFBMYZU3ucP0vbk-KJ0R/view?usp=drivesdk' },
-        { title: 'Unit-5 Notes', url: 'https://drive.google.com/file/d/11RCPAy1-YnHr06_S6eM9u9ay5uKl1twR/view?usp=drivesdk' }
-      ]
-    },
-    {
-      id: 'md',
-      name: 'Machine Drawing',
-      icon: '📐',
-      color: 'bg-green-500',
-      notes: [
-        { title: 'MD Official Syllabus', url: 'https://drive.google.com/file/d/1KwWOJi9yGLwqA5dLJJnF0pPR7rEbVXMq/view?usp=drivesdk' },
-        { title: 'MD Objective Questions', url: 'https://drive.google.com/file/d/1KEkAFfUTKrlfBZSflaRp-3JSY55W2z69/view?usp=drivesdk' }
-      ]
-    },
-    {
-      id: 'mes',
-      name: 'Manufacturing Engineering Sciences',
-      icon: '🏭',
-      color: 'bg-orange-500',
-      notes: [
-        { title: 'Unit-2 Notes', url: 'https://drive.google.com/file/d/1SQCyclPgRSj_dGA7WVU6lW9Eglw8y3kG/view?usp=drivesdk' },
-        { title: 'Unit-3 Notes', url: 'https://drive.google.com/file/d/1EO_jaSk0YL-xr8lJT9MZjc1UKQLIgFr3/view?usp=drivesdk' },
-        { title: 'Unit-4 Notes', url: 'https://drive.google.com/file/d/1hcIsrWh89XAXCJF_pE0zQhVMJkF6EQp2/view?usp=drivesdk' },
-        { title: 'Unit-5 Notes', url: 'https://drive.google.com/file/d/1CYNvhFWiz3zXyJD90XkJA99kRi6kzq1Q/view?usp=drivesdk' },
-        { title: 'Imp. PYQs with Solution', url: 'https://drive.google.com/file/d/1kC6iv_fkPr8_JMGN_Ro_CpTPl_-rqymo/view?usp=drivesdk' }
-      ]
-    },
-    {
-      id: 'som',
-      name: 'Strength of Materials',
-      icon: '💪',
-      color: 'bg-teal-500',
-      notes: [
-        { title: 'SOM Book by RK Bansal', url: 'https://drive.google.com/file/d/15ahuMSoS3b6XeNwK7WVxOQ93pk9ukMwx/view?usp=drivesdk' },
-        { title: 'SOM Lab Questions', url: 'https://drive.google.com/file/d/15aa0NBdtwFBJUaaK1tMdMM8GTxsDvlcL/view?usp=drivesdk' },
-        { title: 'Unit-1, 2 & 3 Handwritten Notes', url: 'https://drive.google.com/file/d/17blfHAcJBn3xuR72YyZEos8HpX4gah50/view?usp=drivesdk' },
-        { title: 'Unit-4 Notes', url: 'https://drive.google.com/file/d/1oKnyxO-KzRUuu2qFl21zgxyulHTxFZ0S/view?usp=drivesdk' },
-        { title: 'Unit-5 Notes', url: 'https://drive.google.com/file/d/1fJZ2clBRsX8t6hZoA_Sue85IueQzL25e/view?usp=drivesdk' },
-        { title: 'Unit-1 PDF Notes', url: 'https://drive.google.com/file/d/19bTcoGiDiYm6rtoXGe8IJvhgbCTc48h5/view?usp=drivesdk' }
-      ]
-    },
-    {
-      id: 'pyqs',
-      name: 'Previous Year Questions',
-      icon: '❓',
-      color: 'bg-yellow-500',
-      notes: [
-        { title: 'End Sem PYQs (2022-23)', url: 'https://drive.google.com/file/d/1oBDlfMok9kUsvyE-0LzJvI8Qn8eFd_tg/view?usp=drivesdk' },
-        { title: 'Engg. Thermodynamics PYQs (2022-23)', url: 'https://drive.google.com/file/d/1ob0kQEBoz0soaCFLKiQcgKiR_ggy-1-F/view?usp=drivesdk' },
-        { title: 'ESE PYQs (2023-24)', url: 'https://drive.google.com/file/d/1_yfFyoum1jigWHDTEzKQFpb-Tvet81N4/view?usp=drivesdk' },
-        { title: 'MID SEM-1 (2025-26)', url: 'https://drive.google.com/file/d/15t3Iqz4L1mqMcnZA1I_uifLnNag8SEVW/view?usp=drivesdk' },
-        { title: 'MID SEM PYQs (2023-24)', url: 'https://drive.google.com/file/d/1a4bBTk9Q9NGdPmCv5GJ9wpOBpWYY3gag/view?usp=drivesdk' },
-        { title: 'MID SEM PYQs (2022-23)', url: 'https://drive.google.com/file/d/1CDP18lrpDfpro60B_fNbrwCScqXL_6jR/view?usp=drivesdk' },
-        { title: 'Mid Sem + ESE PYQs (2024-25)', url: 'https://drive.google.com/file/d/1E7bR9519waWe0YzEMspyimXwFoJm9a6r/view?usp=drivesdk' },
-        { title: 'SOM Old PYQs', url: 'https://drive.google.com/file/d/1N3tU3TiSXYWsUDsV3r3z4kHpAIC4s-GP/view?usp=drivesdk' }
-      ]
-    }
-  ];
+  const subjects: any[] = staticSubjects.map((sub: any) => ({ ...sub, notes: [ ...sub.notes, ...(communityNotes || []).filter((cn: any) => cn.subject === sub.name || cn.subject === sub.id).map((cn: any) => ({ id: cn.id, title: cn.title, url: cn.file_url, isCommunity: true, fileName: cn.file_name })) ] }));
 
-  const syllabus = {
+  
     title: 'ME Branch Syllabus',
     url: 'https://drive.google.com/file/d/14vei1z0YQmFEVZFZzel2UEhjO3nRE9oy/view?usp=drivesdk'
   };
@@ -174,7 +100,18 @@ const ThirdSemesterMENotes = () => {
                 transition={{ delay: index * 0.1, duration: 0.5 }}
                 whileHover={{ scale: 1.02 }}
               >
-                <Card className="feature-card h-full">
+                <Card className="feature-card h-full relative">
+                  {note.isCommunity && user?.email === 'priyalkumar06@gmail.com' && (
+                    <Button
+                      variant="destructive"
+                      size="icon"
+                      className="absolute top-2 right-10 h-8 w-8 z-10"
+                      onClick={(e) => { e.stopPropagation(); handleDeleteCommunityNote(note.id, note.fileName); }}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  )}
+
                   <CardHeader>
                     <div className="flex items-center gap-3 mb-2">
                       <div className={`w-10 h-10 ${subject.color} rounded-full flex items-center justify-center text-white text-lg`}>

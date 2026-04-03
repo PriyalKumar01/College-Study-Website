@@ -1,3 +1,10 @@
+
+import { useCommunityNotes } from '@/hooks/useCommunityNotes';
+import { useAuth } from '@/contexts/AuthContext';
+import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
+import { Trash2, Download } from 'lucide-react';
+
 import { motion } from 'framer-motion';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -5,6 +12,7 @@ import { Badge } from '@/components/ui/badge';
 import { ArrowLeft, Target, Play, ExternalLink, Star, TrendingUp, Users, BookOpen, FileText } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
+import CommunityMaterials from '@/components/CommunityMaterials';
 
 // Import coding platform images
 import leetcodeLogo from '@/assets/leetcode-logo.jpg';
@@ -24,6 +32,31 @@ import overleafTemplate from '@/assets/overleaf-template.jpg';
 
 const PlacementPreparation = () => {
   const navigate = useNavigate();
+
+  const { data: communityNotes } = useCommunityNotes('placement');
+  const { user } = useAuth();
+  const { toast } = useToast();
+
+  const handleDeleteCommunityNote = async (id: string, fileName: string) => {
+    if (!user || user.email !== 'priyalkumar06@gmail.com') return;
+    try {
+      if (fileName) {
+        const { error: storageError } = await supabase.storage.from('study-materials').remove([fileName]);
+        if (storageError) console.error('Storage deletion error:', storageError);
+      }
+      const { error: dbError } = await supabase.from('notes').delete().eq('id', id);
+      if (dbError) throw dbError;
+      toast({ title: "Deleted securely", description: "Material removed successfully." });
+      window.location.reload();
+    } catch (error: any) {
+      toast({ title: "Deletion failed", description: error.message, variant: 'destructive' });
+    }
+  };
+
+  const handleDownloadNote = (url: string) => {
+    window.open(url, '_blank');
+  };
+
 
   const handleVideoClick = (url: string) => {
     window.open(url, '_blank');
@@ -446,6 +479,11 @@ const PlacementPreparation = () => {
               </div>
             </CardContent>
           </Card>
+        </motion.div>
+
+        {/* Community Materials */}
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1.3, duration: 0.5 }} className="mb-8">
+          <CommunityMaterials semester="placement" />
         </motion.div>
 
         {/* Call to Action */}

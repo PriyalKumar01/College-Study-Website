@@ -92,13 +92,16 @@ export type Database = {
           file_name: string
           file_url: string
           id: string
+          material_type: string
           semester: string
+          status: string
           subject: string
           title: string
           uploaded_at: string | null
           uploaded_by: string
           user_email: string
           user_name: string
+          year: string | null
         }
         Insert: {
           approved?: boolean | null
@@ -108,13 +111,16 @@ export type Database = {
           file_name: string
           file_url: string
           id?: string
+          material_type?: string
           semester: string
+          status?: string
           subject: string
           title: string
           uploaded_at?: string | null
           uploaded_by: string
           user_email: string
           user_name: string
+          year?: string | null
         }
         Update: {
           approved?: boolean | null
@@ -124,13 +130,16 @@ export type Database = {
           file_name?: string
           file_url?: string
           id?: string
+          material_type?: string
           semester?: string
+          status?: string
           subject?: string
           title?: string
           uploaded_at?: string | null
           uploaded_by?: string
           user_email?: string
           user_name?: string
+          year?: string | null
         }
         Relationships: []
       }

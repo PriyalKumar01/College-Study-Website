@@ -1,3 +1,10 @@
+
+import { useCommunityNotes } from '@/hooks/useCommunityNotes';
+import { useAuth } from '@/contexts/AuthContext';
+import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
+import { Trash2 } from 'lucide-react';
+
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -9,9 +16,30 @@ import Navbar from '@/components/Navbar';
 
 const ThirdSemesterETNotes = () => {
   const navigate = useNavigate();
+
+  const { data: communityNotes } = useCommunityNotes('btech', 'ET-3rd Semester');
+  const { user } = useAuth();
+  const { toast } = useToast();
+
+  const handleDeleteCommunityNote = async (id: string, fileName: string) => {
+    if (!user || user.email !== 'priyalkumar06@gmail.com') return;
+    try {
+      if (fileName) {
+        const { error: storageError } = await supabase.storage.from('study-materials').remove([fileName]);
+        if (storageError) console.error('Storage deletion error:', storageError);
+      }
+      const { error: dbError } = await supabase.from('notes').delete().eq('id', id);
+      if (dbError) throw dbError;
+      toast({ title: "Deleted securely", description: "Material removed successfully." });
+      window.location.reload();
+    } catch (error: any) {
+      toast({ title: "Deletion failed", description: error.message, variant: 'destructive' });
+    }
+  };
+
   const [selectedSubject, setSelectedSubject] = useState<string | null>(null);
 
-  const subjects = [
+  const staticSubjects = [
     {
       id: 'eca',
       name: 'ECA',
@@ -101,6 +129,25 @@ const ThirdSemesterETNotes = () => {
     { title: 'ALL ESE PYQs (2025-26)', url: 'https://drive.google.com/file/d/1K7lQJCOxNVNBAJUVkh2KEWWMHKNiHT8Y/view?usp=drivesdk' },
   ];
 
+  
+  const subjects: any[] = staticSubjects.map(sub => ({
+    ...sub,
+    notes: [
+      ...sub.notes,
+      ...(communityNotes || [])
+        .filter(cn => cn.subject === sub.name || cn.subject === sub.id)
+        .map(cn => ({
+          id: cn.id,
+          title: cn.title,
+          url: cn.file_url,
+          isCommunity: true,
+          fileName: cn.file_name,
+          uploadedBy: cn.uploaded_by,
+          userName: cn.user_name
+        }))
+    ]
+  }));
+
   const handleDownload = (url: string, title: string) => {
     if (url === '#') return;
     const fileId = url.match(/\/d\/([a-zA-Z0-9-_]+)/)?.[1];
@@ -166,7 +213,18 @@ const ThirdSemesterETNotes = () => {
                 transition={{ delay: index * 0.1, duration: 0.5 }}
                 whileHover={{ scale: 1.02 }}
               >
-                <Card className="feature-card h-full border-2 border-transparent hover:border-primary/20 shadow-lg hover:shadow-xl transition-all duration-300">
+                <Card className="feature-card h-full border-2 border-transparent hover:border-primary/20 shadow-lg hover:shadow-xl transition-all duration-300 relative">
+                  {note.isCommunity && user?.email === 'priyalkumar06@gmail.com' && (
+                    <Button
+                      variant="destructive"
+                      size="icon"
+                      className="absolute top-2 right-10 h-8 w-8 z-10"
+                      onClick={(e) => { e.stopPropagation(); handleDeleteCommunityNote(note.id, note.fileName); }}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  )}
+
                   <CardHeader>
                     <div className="flex items-center gap-3 mb-2">
                       <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center text-primary-foreground text-lg">
@@ -299,7 +357,18 @@ const ThirdSemesterETNotes = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: subjects.length * 0.1, duration: 0.5 }}
         >
-          <Card className="feature-card">
+          <Card className="feature-card relative">
+                  {note.isCommunity && user?.email === 'priyalkumar06@gmail.com' && (
+                    <Button
+                      variant="destructive"
+                      size="icon"
+                      className="absolute top-2 right-10 h-8 w-8 z-10"
+                      onClick={(e) => { e.stopPropagation(); handleDeleteCommunityNote(note.id, note.fileName); }}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  )}
+
             <CardHeader>
               <CardTitle className="text-2xl">Previous Year Questions</CardTitle>
               <CardDescription>End semester exam papers from previous years</CardDescription>

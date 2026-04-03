@@ -324,11 +324,15 @@ const Dashboard = () => {
                   <ul className="space-y-3">
                     <li className="flex items-start gap-3 text-sm text-slate-600 dark:text-slate-400">
                       <div className="w-1.5 h-1.5 rounded-full bg-blue-500 mt-2 shrink-0"></div>
-                      <p><span className="font-semibold text-slate-800 dark:text-slate-200">5th & 6th Sem ET Branch Notes</span> added to the database recently.</p>
+                      <p><span className="font-semibold text-slate-800 dark:text-slate-200">ATS Friendly Resume Guide & Templates</span> added to the database recently.</p>
                     </li>
                     <li className="flex items-start gap-3 text-sm text-slate-600 dark:text-slate-400">
                       <div className="w-1.5 h-1.5 rounded-full bg-green-500 mt-2 shrink-0"></div>
                       <p><span className="font-semibold text-slate-800 dark:text-slate-200">PYQs of 4th Sem CSE Branch</span> uploaded successfully and are now live!</p>
+                    </li>
+                    <li className="flex items-start gap-3 text-sm text-slate-600 dark:text-slate-400">
+                      <div className="w-1.5 h-1.5 rounded-full bg-blue-500 mt-2 shrink-0"></div>
+                      <p><span className="font-semibold text-slate-800 dark:text-slate-200">5th & 6th Sem ET Branch Notes</span> added to the database recently.</p>
                     </li>
                   </ul>
                 </div>
@@ -349,10 +353,10 @@ const Dashboard = () => {
 
               <div className="relative z-10 pb-1">
                 <h3 className="text-xl md:text-2xl font-bold mb-2 text-white leading-tight drop-shadow-sm mt-2">
-                  Path to Academic Excellence
+                  College Study Website ✨
                 </h3>
                 <p className="text-xs md:text-sm font-medium text-blue-50 max-w-[95%] leading-snug drop-shadow-sm line-clamp-2">
-                  Access top-tier resources & tools to boost your grades.
+                  Access top-tier resources to boost your grades.
                 </p>
               </div>
 
