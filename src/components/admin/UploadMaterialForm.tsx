@@ -28,7 +28,11 @@ const ICON_MAP: Record<string, React.ReactNode> = {
   Sparkles: <Sparkles className="h-5 w-5" />,
 };
 
-const UploadMaterialForm = () => {
+interface UploadMaterialFormProps {
+  onUploadSuccess?: () => void;
+}
+
+const UploadMaterialForm = ({ onUploadSuccess }: UploadMaterialFormProps) => {
   const { user } = useAuth();
   const { toast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -215,6 +219,7 @@ const UploadMaterialForm = () => {
       setDescription('');
       setFile(null);
       if (fileInputRef.current) fileInputRef.current.value = '';
+      onUploadSuccess?.();
     } catch (error: any) {
       toast({ title: 'Upload failed', description: error.message, variant: 'destructive' });
     } finally {
