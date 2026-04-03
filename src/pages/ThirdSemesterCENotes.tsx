@@ -130,6 +130,13 @@ const ThirdSemesterCENotes = () => {
         { title: 'Unit-2 Aggregate Notes', url: 'https://drive.google.com/uc?export=download&id=19X6xdj_W7dPP1zx_0HLPtPg01ut33-Yn' },
         { title: 'Unit-2 Testing of Cement', url: 'https://drive.google.com/uc?export=download&id=1ym2P7Ik8aEk0zyT0N6kyt5a03hn_C2Pm' }
       ]
+    },
+    {
+      id: 'pyqs',
+      name: 'Previous Year Questions',
+      fullName: 'PYQs for 3rd Semester CE',
+      description: 'Previous year question papers',
+      notes: []
     }
   ];
 
