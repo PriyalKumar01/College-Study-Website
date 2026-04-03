@@ -238,16 +238,33 @@ const ThirdSemesterCENotes = () => {
                         </h3>
                         <div className="grid gap-2">
                           {subject.notes.map((note: any, idx: number) => (
-                            <a
+                            <div
                               key={idx}
-                              href={note.url}
-                              target="_blank"
-                              rel="noopener noreferrer"
                               className="flex items-center justify-between p-3 rounded-lg bg-secondary/50 hover:bg-secondary transition-colors"
                             >
-                              <span className="text-sm font-medium">{note.title}</span>
-                              <Download className="h-4 w-4 text-primary" />
-                            </a>
+                              <a
+                                href={note.url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="flex-1 text-sm font-medium"
+                              >
+                                {note.title}
+                              </a>
+                              <div className="flex items-center gap-2">
+                                {note.isCommunity && isOwner && (
+                                  <button
+                                    onClick={() => handleDeleteCommunityNote(note.id)}
+                                    className="text-destructive hover:text-destructive/80"
+                                    title="Delete Community Upload"
+                                  >
+                                    <Trash2 className="h-4 w-4" />
+                                  </button>
+                                )}
+                                <a href={note.url} target="_blank" rel="noopener noreferrer">
+                                  <Download className="h-4 w-4 text-primary" />
+                                </a>
+                              </div>
+                            </div>
                           ))}
                         </div>
                       </div>
