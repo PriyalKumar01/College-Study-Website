@@ -233,7 +233,7 @@ const ThirdSemesterMENotes = () => {
             </CardHeader>
             <CardContent>
               <Button
-                onClick={() => handleDownload(syllabus.url, syllabus.title)}
+                onClick={() => handleDownload(syllabusLink.url, syllabusLink.title)}
                 className="btn-hero"
               >
                 <Download className="h-4 w-4 mr-2" />
