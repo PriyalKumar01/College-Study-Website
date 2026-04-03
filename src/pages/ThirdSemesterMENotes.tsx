@@ -54,7 +54,7 @@ const ThirdSemesterMENotes = () => {
 
   const subjects: any[] = staticSubjects.map((sub: any) => ({ ...sub, notes: [ ...sub.notes, ...(communityNotes || []).filter((cn: any) => cn.subject === sub.name || cn.subject === sub.id).map((cn: any) => ({ id: cn.id, title: cn.title, url: cn.file_url, isCommunity: true, fileName: cn.file_name })) ] }));
 
-  
+  const syllabusLink = {
     title: 'ME Branch Syllabus',
     url: 'https://drive.google.com/file/d/14vei1z0YQmFEVZFZzel2UEhjO3nRE9oy/view?usp=drivesdk'
   };
