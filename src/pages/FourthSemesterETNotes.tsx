@@ -18,8 +18,8 @@ import { PlaylistModal } from '@/components/PlaylistModal';
 const FourthSemesterETNotes = () => {
   const navigate = useNavigate();
 
-  const { data: communityNotes } = useCommunityNotes('btech', 'ET-4th Semester');
-  const { user } = useAuth();
+  const { data: communityNotes, refetch: refreshNotes } = useCommunityNotes('btech', 'ET-4th Semester');
+  const { isOwner } = useAuth();
   const { toast } = useToast();
 
   const handleDeleteCommunityNote = async (id: string, fileName: string) => {
