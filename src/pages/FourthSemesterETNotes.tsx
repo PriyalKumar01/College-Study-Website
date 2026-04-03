@@ -268,14 +268,26 @@ const FourthSemesterETNotes = () => {
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <Button
-                      onClick={() => handleDownload(note.url, note.title)}
-                      className="w-full btn-hero"
-                      disabled={note.url === '#'}
-                    >
-                      <Download className="h-4 w-4 mr-2" />
-                      {note.url === '#' ? 'Coming Soon' : 'Download PDF'}
-                    </Button>
+                    <div className="flex gap-2">
+                      <Button
+                        onClick={() => handleDownload(note.url, note.title)}
+                        className="flex-1 btn-hero"
+                        disabled={note.url === '#'}
+                      >
+                        <Download className="h-4 w-4 mr-2" />
+                        {note.url === '#' ? 'Coming Soon' : 'Download PDF'}
+                      </Button>
+                      {(note as any).isCommunity && isOwner && (
+                        <Button
+                          variant="destructive"
+                          size="icon"
+                          onClick={() => handleDeleteCommunityNote((note as any).id)}
+                          title="Delete Community Upload"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      )}
+                    </div>
                   </CardContent>
                 </Card>
               </motion.div>
