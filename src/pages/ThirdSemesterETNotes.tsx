@@ -358,17 +358,6 @@ const ThirdSemesterETNotes = () => {
           transition={{ delay: subjects.length * 0.1, duration: 0.5 }}
         >
           <Card className="feature-card relative">
-                  {note.isCommunity && user?.email === 'priyalkumar06@gmail.com' && (
-                    <Button
-                      variant="destructive"
-                      size="icon"
-                      className="absolute top-2 right-10 h-8 w-8 z-10"
-                      onClick={(e) => { e.stopPropagation(); handleDeleteCommunityNote(note.id, note.fileName); }}
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  )}
-
             <CardHeader>
               <CardTitle className="text-2xl">Previous Year Questions</CardTitle>
               <CardDescription>End semester exam papers from previous years</CardDescription>

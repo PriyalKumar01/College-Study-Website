@@ -39,9 +39,6 @@ const ThirdSemesterMENotes = () => {
 
   const [selectedSubject, setSelectedSubject] = useState<string | null>(null);
 
-  
-  
-
   const handleDownload = (url: string, title: string) => {
     const fileId = url.match(/\/d\/([a-zA-Z0-9-_]+)/)?.[1];
     if (fileId) {
@@ -52,9 +49,57 @@ const ThirdSemesterMENotes = () => {
     }
   };
 
+  const staticSubjects = [
+    {
+      id: 'thermodynamics',
+      name: 'Thermodynamics',
+      icon: '🔥',
+      color: 'bg-red-500',
+      notes: [
+        { title: 'Thermodynamics Complete Notes', url: '#' },
+      ],
+    },
+    {
+      id: 'material-science',
+      name: 'Material Science',
+      icon: '🧪',
+      color: 'bg-blue-500',
+      notes: [
+        { title: 'Material Science Notes', url: '#' },
+      ],
+    },
+    {
+      id: 'strength-of-materials',
+      name: 'Strength of Materials',
+      icon: '💪',
+      color: 'bg-green-500',
+      notes: [
+        { title: 'SOM Complete Notes', url: '#' },
+      ],
+    },
+    {
+      id: 'manufacturing-process',
+      name: 'Manufacturing Process',
+      icon: '🏭',
+      color: 'bg-orange-500',
+      notes: [
+        { title: 'Manufacturing Process Notes', url: '#' },
+      ],
+    },
+    {
+      id: 'math-2',
+      name: 'Math-II',
+      icon: '📐',
+      color: 'bg-purple-500',
+      notes: [
+        { title: 'Engineering Mathematics-II Notes', url: '#' },
+      ],
+    },
+  ];
+
   const subjects: any[] = staticSubjects.map((sub: any) => ({ ...sub, notes: [ ...sub.notes, ...(communityNotes || []).filter((cn: any) => cn.subject === sub.name || cn.subject === sub.id).map((cn: any) => ({ id: cn.id, title: cn.title, url: cn.file_url, isCommunity: true, fileName: cn.file_name })) ] }));
 
-  
+  const syllabusLink = {
     title: 'ME Branch Syllabus',
     url: 'https://drive.google.com/file/d/14vei1z0YQmFEVZFZzel2UEhjO3nRE9oy/view?usp=drivesdk'
   };
@@ -188,7 +233,7 @@ const ThirdSemesterMENotes = () => {
             </CardHeader>
             <CardContent>
               <Button
-                onClick={() => handleDownload(syllabus.url, syllabus.title)}
+                onClick={() => handleDownload(syllabusLink.url, syllabusLink.title)}
                 className="btn-hero"
               >
                 <Download className="h-4 w-4 mr-2" />
