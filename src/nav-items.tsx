@@ -60,6 +60,15 @@ import FifthSemesterFTNotes from "./pages/FifthSemesterFTNotes";
 import SixthSemesterCSENotes from "./pages/SixthSemesterCSENotes";
 import SixthSemesterCSEOpenElectives from "./pages/SixthSemesterCSEOpenElectives";
 import SixthSemesterETNotes from "./pages/SixthSemesterETNotes";
+import SixthSemesterMENotes from "./pages/SixthSemesterMENotes";
+import SixthSemesterCENotes from "./pages/SixthSemesterCENotes";
+import SixthSemesterCHENotes from "./pages/SixthSemesterCHENotes";
+import SixthSemesterEENotes from "./pages/SixthSemesterEENotes";
+import SixthSemesterBENotes from "./pages/SixthSemesterBENotes";
+import SixthSemesterLFTNotes from "./pages/SixthSemesterLFTNotes";
+import SixthSemesterPTNotes from "./pages/SixthSemesterPTNotes";
+import SixthSemesterOTNotes from "./pages/SixthSemesterOTNotes";
+import SixthSemesterFTNotes from "./pages/SixthSemesterFTNotes";
 import Profile from "./pages/Profile";
 import ATSFriendlyResume from "./pages/ATSFriendlyResume";
 import AdminPortal from "./pages/AdminPortal";
@@ -115,16 +124,16 @@ export const navItems = [
   { to: "/fifth-semester-ft", page: <FifthSemesterFTNotes /> },
   { to: "/sixth-semester-cse", page: <SixthSemesterCSENotes /> },
   { to: "/sixth-semester-cse-open-electives", page: <SixthSemesterCSEOpenElectives /> },
-  { to: "/sixth-semester-me", page: <SixthSemesterCSENotes /> },
-  { to: "/sixth-semester-ce", page: <SixthSemesterCSENotes /> },
-  { to: "/sixth-semester-che", page: <SixthSemesterCSENotes /> },
+  { to: "/sixth-semester-me", page: <SixthSemesterMENotes /> },
+  { to: "/sixth-semester-ce", page: <SixthSemesterCENotes /> },
+  { to: "/sixth-semester-che", page: <SixthSemesterCHENotes /> },
   { to: "/sixth-semester-et", page: <SixthSemesterETNotes /> },
-  { to: "/sixth-semester-ee", page: <SixthSemesterCSENotes /> },
-  { to: "/sixth-semester-be", page: <SixthSemesterCSENotes /> },
-  { to: "/sixth-semester-lft", page: <SixthSemesterCSENotes /> },
-  { to: "/sixth-semester-pt", page: <SixthSemesterCSENotes /> },
-  { to: "/sixth-semester-ot", page: <SixthSemesterCSENotes /> },
-  { to: "/sixth-semester-ft", page: <SixthSemesterCSENotes /> },
+  { to: "/sixth-semester-ee", page: <SixthSemesterEENotes /> },
+  { to: "/sixth-semester-be", page: <SixthSemesterBENotes /> },
+  { to: "/sixth-semester-lft", page: <SixthSemesterLFTNotes /> },
+  { to: "/sixth-semester-pt", page: <SixthSemesterPTNotes /> },
+  { to: "/sixth-semester-ot", page: <SixthSemesterOTNotes /> },
+  { to: "/sixth-semester-ft", page: <SixthSemesterFTNotes /> },
   { to: "/learning-platforms", page: <LearningPlatforms /> },
   { to: "/opportunities", page: <Opportunities /> },
   { to: "/opportunity-upload", page: <OpportunityUpload /> },

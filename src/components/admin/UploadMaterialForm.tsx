@@ -66,6 +66,36 @@ const UploadMaterialForm = ({ onUploadSuccess }: UploadMaterialFormProps) => {
   const [uploading, setUploading] = useState(false);
   const [dragOver, setDragOver] = useState(false);
 
+  // PYQ Smart Title Builder state
+  const PYQ_EXAM_TYPES = [
+    "Mid Sem-1 PYQ'S",
+    "Mid Sem-2 PYQ'S",
+    "End Sem PYQ'S",
+    'Other',
+  ];
+  const ACADEMIC_YEARS = [
+    '2024-25', '2025-26', '2026-27', '2027-28',
+    '2028-29', '2029-30', '2030-31', '2031-32',
+  ];
+  const [pyqExamType, setPyqExamType] = useState('');
+  const [pyqAcademicYear, setPyqAcademicYear] = useState('');
+  const [pyqCustomTitle, setPyqCustomTitle] = useState('');
+
+  // Derived: is current upload a PYQ?
+  const isPyqMode =
+    materialType === 'pyqs' || subject === 'Previous Year Questions';
+
+  // Auto-build title for PYQs
+  const autoPyqTitle =
+    isPyqMode && pyqExamType && pyqExamType !== 'Other' && pyqAcademicYear
+      ? `${pyqExamType} (${pyqAcademicYear})`
+      : isPyqMode && pyqExamType === 'Other'
+      ? pyqCustomTitle
+      : title;
+
+  // Effective title used for submission
+  const effectiveTitle = isPyqMode ? autoPyqTitle : title;
+
   // For 1st year: map the actual semester to the correct subject list
   // Engineering: 1st Sem → 1st Semester subjects, 2nd Sem → 2nd Semester subjects
   // Technology: 1st Sem → 2nd Semester subjects, 2nd Sem → 1st Semester subjects
@@ -164,7 +194,14 @@ const UploadMaterialForm = ({ onUploadSuccess }: UploadMaterialFormProps) => {
   const finalMaterialType = derivedMaterialType || materialType;
 
   const isFormValid = () => {
-    if (!category || !title.trim() || !file) return false;
+    // For PYQ mode validate smart title fields
+    if (isPyqMode) {
+      if (!pyqExamType || !pyqAcademicYear) return false;
+      if (pyqExamType === 'Other' && !pyqCustomTitle.trim()) return false;
+    } else {
+      if (!title.trim()) return false;
+    }
+    if (!category || !file) return false;
     if (selectedCategory?.hasSemesters && !semester) return false;
     if (isFirstYear && !branchType) return false;
     if (selectedCategory?.hasBranches && !isFirstYear && !branch) return false;
@@ -174,6 +211,7 @@ const UploadMaterialForm = ({ onUploadSuccess }: UploadMaterialFormProps) => {
   };
 
   const handleSubmit = async () => {
+    // Use effectiveTitle as the final title
     if (!user || !isFormValid()) return;
     setUploading(true);
 
@@ -218,7 +256,7 @@ const UploadMaterialForm = ({ onUploadSuccess }: UploadMaterialFormProps) => {
       const { error: insertError } = await supabase
         .from('notes')
         .insert({
-          title: title.trim(),
+          title: effectiveTitle.trim(),
           subject: subject || category,
           semester: dbSemester,
           material_type: finalMaterialType,
@@ -243,6 +281,9 @@ const UploadMaterialForm = ({ onUploadSuccess }: UploadMaterialFormProps) => {
       setTitle('');
       setDescription('');
       setFile(null);
+      setPyqExamType('');
+      setPyqAcademicYear('');
+      setPyqCustomTitle('');
       if (fileInputRef.current) fileInputRef.current.value = '';
       onUploadSuccess?.();
     } catch (error: any) {
@@ -527,17 +568,78 @@ const UploadMaterialForm = ({ onUploadSuccess }: UploadMaterialFormProps) => {
             </div>
           )}
 
-          {/* Title */}
-          <div className="space-y-2">
-            <Label htmlFor="upload-title">Title *</Label>
-            <Input
-              id="upload-title"
-              value={title}
-              onChange={e => setTitle(e.target.value)}
-              placeholder="e.g., Unit-1 Complete Notes, Mid Sem PYQ 2024"
-              className="h-11"
-            />
-          </div>
+          {/* Title — Smart Builder for PYQs, plain input otherwise */}
+          {isPyqMode ? (
+            <div className="space-y-4">
+              <Label className="text-sm font-semibold flex items-center gap-2">
+                <span className="w-5 h-5 bg-amber-500/15 text-amber-600 rounded-full flex items-center justify-center text-xs font-bold">📋</span>
+                PYQ Title Builder *
+              </Label>
+
+              {/* Exam Type Dropdown */}
+              <div className="space-y-1.5">
+                <Label htmlFor="pyq-exam-type" className="text-xs text-muted-foreground">Select Exam Type</Label>
+                <Select value={pyqExamType} onValueChange={val => { setPyqExamType(val); setPyqCustomTitle(''); }}>
+                  <SelectTrigger id="pyq-exam-type" className="h-11">
+                    <SelectValue placeholder="Choose exam type..." />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {PYQ_EXAM_TYPES.map(et => (
+                      <SelectItem key={et} value={et}>{et}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Academic Year Dropdown */}
+              <div className="space-y-1.5">
+                <Label htmlFor="pyq-year" className="text-xs text-muted-foreground">Select Academic Year</Label>
+                <Select value={pyqAcademicYear} onValueChange={setPyqAcademicYear}>
+                  <SelectTrigger id="pyq-year" className="h-11">
+                    <SelectValue placeholder="Choose year e.g. 2025-26" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {ACADEMIC_YEARS.map(yr => (
+                      <SelectItem key={yr} value={yr}>{yr}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Custom title input for 'Other' */}
+              {pyqExamType === 'Other' && (
+                <div className="space-y-1.5">
+                  <Label htmlFor="pyq-custom" className="text-xs text-muted-foreground">Custom Title *</Label>
+                  <Input
+                    id="pyq-custom"
+                    value={pyqCustomTitle}
+                    onChange={e => setPyqCustomTitle(e.target.value)}
+                    placeholder="e.g., Supplementary PYQ 2025-26"
+                    className="h-11"
+                  />
+                </div>
+              )}
+
+              {/* Live preview */}
+              {autoPyqTitle && (
+                <div className="flex items-center gap-2 px-3 py-2.5 bg-primary/5 border border-primary/20 rounded-lg">
+                  <span className="text-xs text-muted-foreground">Title preview:</span>
+                  <span className="text-sm font-semibold text-primary">{autoPyqTitle}</span>
+                </div>
+              )}
+            </div>
+          ) : (
+            <div className="space-y-2">
+              <Label htmlFor="upload-title">Title *</Label>
+              <Input
+                id="upload-title"
+                value={title}
+                onChange={e => setTitle(e.target.value)}
+                placeholder="e.g., Unit-1 Complete Notes, Assignment 2024"
+                className="h-11"
+              />
+            </div>
+          )}
 
           {/* Description */}
           <div className="space-y-2">
