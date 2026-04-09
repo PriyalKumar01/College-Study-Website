@@ -179,8 +179,10 @@ const UploadMaterialForm = ({ onUploadSuccess }: UploadMaterialFormProps) => {
 
     try {
       // Build the semester string for DB
-      const dbSemester = category === 'btech' ? `${branch}-${semester}` : 
-                         (semester || category);
+      // 1st year: store as ALL-{mapped semester} so it appears on correct page
+      const dbSemester = category === 'btech'
+        ? (isFirstYear ? `ALL-${mappedSemester}` : `${branch}-${semester}`)
+        : (semester || category);
 
       // Check duplicates
       const { data: existing } = await supabase
