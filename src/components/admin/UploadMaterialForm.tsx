@@ -55,6 +55,7 @@ const UploadMaterialForm = ({ onUploadSuccess }: UploadMaterialFormProps) => {
   // Form state - cascading
   const [category, setCategory] = useState('');
   const [branch, setBranch] = useState('');
+  const [branchType, setBranchType] = useState<'engineering' | 'technology' | ''>(''); // 1st year only
   const [year, setYear] = useState('');
   const [semester, setSemester] = useState('');
   const [subject, setSubject] = useState('');
@@ -65,10 +66,20 @@ const UploadMaterialForm = ({ onUploadSuccess }: UploadMaterialFormProps) => {
   const [uploading, setUploading] = useState(false);
   const [dragOver, setDragOver] = useState(false);
 
+  // For 1st year: map the actual semester to the correct subject list
+  // Engineering: 1st Sem → 1st Semester subjects, 2nd Sem → 2nd Semester subjects
+  // Technology: 1st Sem → 2nd Semester subjects, 2nd Sem → 1st Semester subjects
+  const isFirstYear = category === 'btech' && year === '1st';
+  const mappedSemester = isFirstYear && branchType === 'technology' && semester
+    ? (semester === '1st Semester' ? '2nd Semester' : '1st Semester')
+    : semester;
+
   // Derived data
   const selectedCategory = CATEGORIES.find(c => c.id === category);
   const availableSemesters = category ? getSemesters(category, year) : [];
-  const availableSubjects = category && semester ? getSubjects(category, semester, branch) : [];
+  const availableSubjects = category && (isFirstYear ? (branchType && semester) : semester)
+    ? getSubjects(category, isFirstYear ? mappedSemester : semester, isFirstYear ? undefined : branch)
+    : [];
 
   const handleCategoryChange = (val: string) => {
     setCategory(val);
