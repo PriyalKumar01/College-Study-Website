@@ -18,12 +18,12 @@ const FifthSemesterLFTNotes = () => {
   const navigate = useNavigate();
 
   // Semester key MUST match what the upload form stores: 'LFT-5th Semester'
-  const { data: communityNotes } = useCommunityNotes('btech', 'LFT-5th Semester');
-  const { user } = useAuth();
+  const { data: communityNotes, refetch: refreshNotes } = useCommunityNotes('btech', 'LFT-5th Semester');
+  const { user, isOwner } = useAuth();
   const { toast } = useToast();
 
   const handleDeleteCommunityNote = async (id: string, fileName: string) => {
-    if (!user || user.email !== 'priyalkumar06@gmail.com') return;
+    if (!user || !isOwner) return;
     try {
       if (fileName) {
         const { error: storageError } = await supabase.storage.from('study-materials').remove([fileName]);
@@ -32,7 +32,7 @@ const FifthSemesterLFTNotes = () => {
       const { error: dbError } = await supabase.from('notes').delete().eq('id', id);
       if (dbError) throw dbError;
       toast({ title: "Deleted securely", description: "Material removed successfully." });
-      window.location.reload();
+      refreshNotes();
     } catch (error: any) {
       toast({ title: "Deletion failed", description: error.message, variant: 'destructive' });
     }
@@ -176,7 +176,7 @@ const FifthSemesterLFTNotes = () => {
               {subject.notes.map((note: any, index: number) => (
                 <motion.div key={index} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.1 }}>
                   <Card className="feature-card relative">
-                    {note.isCommunity && user?.email === 'priyalkumar06@gmail.com' && (
+                    {note.isCommunity && isOwner && (
                       <Button
                         variant="destructive"
                         size="icon"

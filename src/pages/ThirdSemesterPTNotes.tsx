@@ -16,12 +16,12 @@ import Navbar from '@/components/Navbar';
 const ThirdSemesterPTNotes = () => {
   const navigate = useNavigate();
 
-  const { data: communityNotes } = useCommunityNotes('btech', 'PT-3rd Semester');
-  const { user } = useAuth();
+  const { data: communityNotes, refetch: refreshNotes } = useCommunityNotes('btech', 'PT-3rd Semester');
+  const { user, isOwner } = useAuth();
   const { toast } = useToast();
 
   const handleDeleteCommunityNote = async (id: string, fileName: string) => {
-    if (!user || user.email !== 'priyalkumar06@gmail.com') return;
+    if (!user || !isOwner) return;
     try {
       if (fileName) {
         const { error: storageError } = await supabase.storage.from('study-materials').remove([fileName]);
@@ -30,7 +30,7 @@ const ThirdSemesterPTNotes = () => {
       const { error: dbError } = await supabase.from('notes').delete().eq('id', id);
       if (dbError) throw dbError;
       toast({ title: "Deleted securely", description: "Material removed successfully." });
-      window.location.reload();
+      refreshNotes();
     } catch (error: any) {
       toast({ title: "Deletion failed", description: error.message, variant: 'destructive' });
     }
@@ -168,8 +168,14 @@ const ThirdSemesterPTNotes = () => {
       url: 'https://drive.google.com/uc?export=download&id=1C_4Tu6_ewgL1YRjW6hTRx4AwSUrFBXJG' 
     }
   ]
-}
-
+},
+    {
+      id: 'pyqs',
+      name: 'Previous Year Questions',
+      icon: '❓',
+      color: 'bg-red-500',
+      notes: []
+    }
   ];
 
   

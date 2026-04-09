@@ -18,12 +18,12 @@ import { PlaylistModal } from '@/components/PlaylistModal';
 const FourthSemesterBENotes = () => {
   const navigate = useNavigate();
 
-  const { data: communityNotes } = useCommunityNotes('btech', 'BE-4th Semester');
-  const { user } = useAuth();
+  const { data: communityNotes, refetch: refreshNotes } = useCommunityNotes('btech', 'BE-4th Semester');
+  const { user, isOwner } = useAuth();
   const { toast } = useToast();
 
   const handleDeleteCommunityNote = async (id: string, fileName: string) => {
-    if (!user || user.email !== 'priyalkumar06@gmail.com') return;
+    if (!user || !isOwner) return;
     try {
       if (fileName) {
         const { error: storageError } = await supabase.storage.from('study-materials').remove([fileName]);
@@ -32,7 +32,7 @@ const FourthSemesterBENotes = () => {
       const { error: dbError } = await supabase.from('notes').delete().eq('id', id);
       if (dbError) throw dbError;
       toast({ title: "Deleted securely", description: "Material removed successfully." });
-      window.location.reload();
+      refreshNotes();
     } catch (error: any) {
       toast({ title: "Deletion failed", description: error.message, variant: 'destructive' });
     }
@@ -98,6 +98,14 @@ const FourthSemesterBENotes = () => {
       notes: [
         { title: 'BME Complete Notes', url: '#' },
       ]
+    },
+    {
+      id: 'pyqs',
+      name: 'Previous Year Questions',
+      icon: '❓',
+      color: 'bg-red-500',
+      playlists: { detailed: [], oneshot: [] },
+      notes: []
     }
   ];
 

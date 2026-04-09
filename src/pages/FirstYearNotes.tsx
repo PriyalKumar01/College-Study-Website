@@ -26,6 +26,8 @@ const FirstYearNotes = () => {
       route: "/first-semester",
       thumbnail: firstSemImg,
       subjects: ["Mathematics-I", "Physics", "Chemistry", "Engineering Drawing", "BEE"],
+      enggLabel: "Engg. Branch - 1st Sem",
+      techLabel: "Technology Branch - 2nd Sem",
     },
     {
       name: "2nd Semester",
@@ -34,6 +36,8 @@ const FirstYearNotes = () => {
       route: "/second-semester",
       thumbnail: secondSemImg,
       subjects: ["Mathematics-II", "Physics", "Chemistry", "Programming", "Engineering Mechanics"],
+      enggLabel: "Engg. Branch - 2nd Sem",
+      techLabel: "Technology Branch - 1st Sem",
     },
   ];
 
@@ -111,6 +115,14 @@ const FirstYearNotes = () => {
                     <BookOpen className="h-5 w-5 text-primary" />
                   </div>
                   <CardTitle className="text-2xl mb-2">{semester.name}</CardTitle>
+                  <div className="flex flex-col gap-1 mb-2">
+                    <span className="text-xs font-medium text-primary bg-primary/10 px-2 py-0.5 rounded-full inline-block w-fit">
+                      {semester.enggLabel}
+                    </span>
+                    <span className="text-xs font-medium text-orange-600 bg-orange-100 dark:text-orange-400 dark:bg-orange-900/30 px-2 py-0.5 rounded-full inline-block w-fit">
+                      {semester.techLabel}
+                    </span>
+                  </div>
                   <CardDescription className="text-base mb-4">
                     {semester.description}
                   </CardDescription>

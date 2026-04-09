@@ -16,12 +16,12 @@ import Navbar from '@/components/Navbar';
 const CodingStudyMaterial = () => {
   const navigate = useNavigate();
 
-  const { data: communityNotes } = useCommunityNotes('coding');
-  const { user } = useAuth();
+  const { data: communityNotes, refetch: refreshNotes } = useCommunityNotes('coding');
+  const { user, isOwner } = useAuth();
   const { toast } = useToast();
 
   const handleDeleteCommunityNote = async (id: string, fileName: string) => {
-    if (!user || user.email !== 'priyalkumar06@gmail.com') return;
+    if (!user || !isOwner) return;
     try {
       if (fileName) {
         const { error: storageError } = await supabase.storage.from('study-materials').remove([fileName]);
@@ -30,7 +30,7 @@ const CodingStudyMaterial = () => {
       const { error: dbError } = await supabase.from('notes').delete().eq('id', id);
       if (dbError) throw dbError;
       toast({ title: "Deleted securely", description: "Material removed successfully." });
-      window.location.reload();
+      refreshNotes();
     } catch (error: any) {
       toast({ title: "Deletion failed", description: error.message, variant: 'destructive' });
     }
@@ -124,7 +124,7 @@ const CodingStudyMaterial = () => {
               whileHover={{ scale: 1.02 }}
             >
               <Card className="feature-card h-full relative">
-                  {note.isCommunity && user?.email === 'priyalkumar06@gmail.com' && (
+                  {note.isCommunity && isOwner && (
                     <Button
                       variant="destructive"
                       size="icon"
