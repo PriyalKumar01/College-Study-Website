@@ -255,7 +255,8 @@ const UploadMaterialForm = ({ onUploadSuccess }: UploadMaterialFormProps) => {
   // ── Selection breadcrumb ─────────────────────────────────────
   const breadcrumb = [
     selectedCategory?.label,
-    branch && BTECH_BRANCHES.find(b => b.code === branch)?.fullName,
+    isFirstYear && branchType ? (branchType === 'engineering' ? 'Engineering Branch' : 'Technology Branch') : undefined,
+    !isFirstYear && branch ? BTECH_BRANCHES.find(b => b.code === branch)?.fullName : undefined,
     year && BTECH_YEARS.find(y => y.id === year)?.label,
     semester,
     subject && availableSubjects.find(s => s.name === subject)?.fullName,
