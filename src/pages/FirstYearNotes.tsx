@@ -115,6 +115,14 @@ const FirstYearNotes = () => {
                     <BookOpen className="h-5 w-5 text-primary" />
                   </div>
                   <CardTitle className="text-2xl mb-2">{semester.name}</CardTitle>
+                  <div className="flex flex-col gap-1 mb-2">
+                    <span className="text-xs font-medium text-primary bg-primary/10 px-2 py-0.5 rounded-full inline-block w-fit">
+                      {semester.enggLabel}
+                    </span>
+                    <span className="text-xs font-medium text-orange-600 bg-orange-100 dark:text-orange-400 dark:bg-orange-900/30 px-2 py-0.5 rounded-full inline-block w-fit">
+                      {semester.techLabel}
+                    </span>
+                  </div>
                   <CardDescription className="text-base mb-4">
                     {semester.description}
                   </CardDescription>
