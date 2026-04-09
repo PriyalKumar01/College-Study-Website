@@ -166,7 +166,8 @@ const UploadMaterialForm = ({ onUploadSuccess }: UploadMaterialFormProps) => {
   const isFormValid = () => {
     if (!category || !title.trim() || !file) return false;
     if (selectedCategory?.hasSemesters && !semester) return false;
-    if (selectedCategory?.hasBranches && !branch) return false;
+    if (isFirstYear && !branchType) return false;
+    if (selectedCategory?.hasBranches && !isFirstYear && !branch) return false;
     if (selectedCategory?.hasYears && !year) return false;
     if (availableSubjects.length > 0 && !subject) return false;
     return true;
