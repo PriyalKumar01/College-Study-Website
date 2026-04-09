@@ -22,7 +22,7 @@ import { Star, MessageSquarePlus } from 'lucide-react';
 import StudentSuccessStories from '@/components/StudentSuccessStories';
 
 const Index = () => {
-  const { user } = useAuth();
+  const { user, isOwner } = useAuth();
   const navigate = useNavigate();
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [authMode, setAuthMode] = useState<'signin' | 'signup'>('signin');
