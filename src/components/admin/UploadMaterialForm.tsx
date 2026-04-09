@@ -107,12 +107,6 @@ const UploadMaterialForm = ({ onUploadSuccess }: UploadMaterialFormProps) => {
     scrollToRef(semesterRef);
   };
 
-  const handleYearChange = (val: string) => {
-    setYear(val);
-    setSemester('');
-    setSubject(''); // Branch remains but sub-selections reset
-    scrollToRef(semesterRef);
-  };
 
   const handleSemesterChange = (val: string) => {
     setSemester(val);
