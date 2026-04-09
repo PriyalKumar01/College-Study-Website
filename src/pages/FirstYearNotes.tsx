@@ -26,6 +26,8 @@ const FirstYearNotes = () => {
       route: "/first-semester",
       thumbnail: firstSemImg,
       subjects: ["Mathematics-I", "Physics", "Chemistry", "Engineering Drawing", "BEE"],
+      enggLabel: "Engg. Branch - 1st Sem",
+      techLabel: "Technology Branch - 2nd Sem",
     },
     {
       name: "2nd Semester",
@@ -34,6 +36,8 @@ const FirstYearNotes = () => {
       route: "/second-semester",
       thumbnail: secondSemImg,
       subjects: ["Mathematics-II", "Physics", "Chemistry", "Programming", "Engineering Mechanics"],
+      enggLabel: "Engg. Branch - 2nd Sem",
+      techLabel: "Technology Branch - 1st Sem",
     },
   ];
 
