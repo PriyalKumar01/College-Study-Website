@@ -121,6 +121,14 @@ const FourthSemesterMENotes = () => {
       notes: [
         { title: 'FM Complete Notes', url: '#' },
       ]
+    },
+    {
+      id: 'pyqs',
+      name: 'Previous Year Questions',
+      icon: '❓',
+      color: 'bg-red-500',
+      playlists: { detailed: [], oneshot: [] },
+      notes: []
     }
   ];
 

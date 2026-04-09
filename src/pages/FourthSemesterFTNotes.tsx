@@ -98,6 +98,14 @@ const FourthSemesterFTNotes = () => {
       color: 'bg-green-500',
       playlists: { detailed: [], oneshot: [] },
       notes: [{ title: 'Food Preservation Notes', url: '#' }]
+    },
+    {
+      id: 'pyqs',
+      name: 'Previous Year Questions',
+      icon: '❓',
+      color: 'bg-red-500',
+      playlists: { detailed: [], oneshot: [] },
+      notes: []
     }
   ];
 

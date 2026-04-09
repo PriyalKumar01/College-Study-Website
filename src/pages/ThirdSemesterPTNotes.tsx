@@ -168,8 +168,14 @@ const ThirdSemesterPTNotes = () => {
       url: 'https://drive.google.com/uc?export=download&id=1C_4Tu6_ewgL1YRjW6hTRx4AwSUrFBXJG' 
     }
   ]
-}
-
+},
+    {
+      id: 'pyqs',
+      name: 'Previous Year Questions',
+      icon: '❓',
+      color: 'bg-red-500',
+      notes: []
+    }
   ];
 
   

@@ -102,6 +102,14 @@ const FifthSemesterMENotes = () => {
       isOpenElective: true,
       playlists: { detailed: [], oneshot: [] },
       notes: []
+    },
+    {
+      id: 'pyqs',
+      name: 'Previous Year Questions',
+      icon: '❓',
+      color: 'bg-red-500',
+      playlists: { detailed: [], oneshot: [] },
+      notes: []
     }
   ];
 

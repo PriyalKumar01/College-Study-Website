@@ -104,6 +104,14 @@ const FifthSemesterETNotes = () => {
       color: 'bg-gradient-to-br from-purple-500 to-pink-500',
       isSpecial: true,
       notes: []
+    },
+    {
+      id: 'pyqs',
+      name: 'Previous Year Questions',
+      icon: '❓',
+      color: 'bg-red-500',
+      playlists: { detailed: [], oneshot: [] },
+      notes: []
     }
   ];
 

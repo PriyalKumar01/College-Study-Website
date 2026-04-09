@@ -95,6 +95,13 @@ const ThirdSemesterMENotes = () => {
         { title: 'Engineering Mathematics-II Notes', url: '#' },
       ],
     },
+    {
+      id: 'pyqs',
+      name: 'Previous Year Questions',
+      icon: '❓',
+      color: 'bg-red-500',
+      notes: []
+    }
   ];
 
   const subjects: any[] = staticSubjects.map((sub: any) => ({ ...sub, notes: [ ...sub.notes, ...(communityNotes || []).filter((cn: any) => cn.subject === sub.name || cn.subject === sub.id).map((cn: any) => ({ id: cn.id, title: cn.title, url: cn.file_url, isCommunity: true, fileName: cn.file_name })) ] }));
