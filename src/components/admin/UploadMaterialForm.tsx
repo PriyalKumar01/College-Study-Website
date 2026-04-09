@@ -336,12 +336,50 @@ const UploadMaterialForm = ({ onUploadSuccess }: UploadMaterialFormProps) => {
 
 
 
-      {/* Step 3: Semester */}
-      {((category === 'btech' && year) || (selectedCategory?.hasSemesters && category !== 'btech')) && (
+      {/* Step 3 (1st year): Branch Type - Engineering or Technology */}
+      {isFirstYear && (
+        <div className="space-y-3" ref={branchRef}>
+          <Label className="text-base font-semibold flex items-center gap-2">
+            <span className="w-6 h-6 bg-primary/10 text-primary rounded-full flex items-center justify-center text-xs font-bold">3</span>
+            Select Branch Type
+          </Label>
+          <div className="grid grid-cols-2 gap-3">
+            <Card
+              className={`cursor-pointer transition-all duration-200 text-center ${
+                branchType === 'engineering'
+                  ? 'ring-2 ring-primary bg-primary/5 border-primary'
+                  : 'hover:border-primary/50 hover:bg-accent/50'
+              }`}
+              onClick={() => handleBranchTypeChange('engineering')}
+            >
+              <CardContent className="p-4">
+                <div className="text-base font-semibold text-primary">Engineering</div>
+                <div className="text-xs text-muted-foreground mt-1">CSE/IT, ME, CE, ET, EE</div>
+              </CardContent>
+            </Card>
+            <Card
+              className={`cursor-pointer transition-all duration-200 text-center ${
+                branchType === 'technology'
+                  ? 'ring-2 ring-primary bg-primary/5 border-primary'
+                  : 'hover:border-primary/50 hover:bg-accent/50'
+              }`}
+              onClick={() => handleBranchTypeChange('technology')}
+            >
+              <CardContent className="p-4">
+                <div className="text-base font-semibold text-primary">Technology</div>
+                <div className="text-xs text-muted-foreground mt-1">CHE, PT, FT, OT, LFT, BE etc.</div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      )}
+
+      {/* Step 3/4: Semester */}
+      {((category === 'btech' && year && (isFirstYear ? branchType : true)) || (selectedCategory?.hasSemesters && category !== 'btech')) && (
         <div className="space-y-3" ref={semesterRef}>
           <Label className="text-base font-semibold flex items-center gap-2">
             <span className="w-6 h-6 bg-primary/10 text-primary rounded-full flex items-center justify-center text-xs font-bold">
-              {category === 'btech' ? '3' : '2'}
+              {isFirstYear ? '4' : (category === 'btech' ? '3' : '2')}
             </span>
             Select Semester
           </Label>
@@ -358,6 +396,21 @@ const UploadMaterialForm = ({ onUploadSuccess }: UploadMaterialFormProps) => {
               >
                 <CardContent className="p-3">
                   <div className="text-base font-semibold">{sem}</div>
+                  {isFirstYear && (
+                    <div className="text-xs text-muted-foreground mt-1">
+                      {branchType === 'engineering'
+                        ? `Engg. Branch - ${sem}`
+                        : `Technology Branch - ${sem}`}
+                      <br />
+                      <span className="text-xs opacity-70">
+                        (Subjects from{' '}
+                        {branchType === 'technology'
+                          ? (sem === '1st Semester' ? '2nd Semester' : '1st Semester')
+                          : sem}
+                        {' '}curriculum)
+                      </span>
+                    </div>
+                  )}
                 </CardContent>
               </Card>
             ))}
@@ -365,8 +418,8 @@ const UploadMaterialForm = ({ onUploadSuccess }: UploadMaterialFormProps) => {
         </div>
       )}
 
-      {/* Step 4: Branch (BTech only, after semester) */}
-      {category === 'btech' && semester && (
+      {/* Step 4: Branch (BTech only, NOT 1st year, after semester) */}
+      {category === 'btech' && !isFirstYear && semester && (
         <div className="space-y-3" ref={branchRef}>
           <Label className="text-base font-semibold flex items-center gap-2">
             <span className="w-6 h-6 bg-primary/10 text-primary rounded-full flex items-center justify-center text-xs font-bold">4</span>
