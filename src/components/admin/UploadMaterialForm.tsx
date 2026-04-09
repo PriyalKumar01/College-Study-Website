@@ -84,10 +84,27 @@ const UploadMaterialForm = ({ onUploadSuccess }: UploadMaterialFormProps) => {
   const handleCategoryChange = (val: string) => {
     setCategory(val);
     setBranch('');
+    setBranchType('');
     setYear('');
     setSemester('');
     setSubject('');
     scrollToRef(yearRef);
+  };
+
+  const handleYearChange = (val: string) => {
+    setYear(val);
+    setBranchType('');
+    setSemester('');
+    setSubject('');
+    setBranch('');
+    scrollToRef(val === '1st' ? branchRef : semesterRef);
+  };
+
+  const handleBranchTypeChange = (val: 'engineering' | 'technology') => {
+    setBranchType(val);
+    setSemester('');
+    setSubject('');
+    scrollToRef(semesterRef);
   };
 
   const handleYearChange = (val: string) => {
