@@ -315,16 +315,7 @@ const FourthSemesterNotes = () => {
     url: 'https://drive.google.com/file/d/1Pj0S0G7EnEaFwQfBPndyIE_v37Z_P4pi/view?usp=drive_link'
   };
 
-  const handleDownload = (url: string, title: string) => {
-    // Extract file ID from Google Drive URL
-    const fileId = url.match(/\/d\/([a-zA-Z0-9-_]+)/)?.[1];
-    if (fileId) {
-      const downloadUrl = `https://drive.google.com/uc?export=download&id=${fileId}`;
-      window.open(downloadUrl, '_blank');
-    } else {
-      window.open(url, '_blank');
-    }
-  };
+  const handleDownload = (url: string, title: string) => smartDownload(url, title);
 
   if (selectedSubject) {
     const subject = subjects.find(s => s.id === selectedSubject);

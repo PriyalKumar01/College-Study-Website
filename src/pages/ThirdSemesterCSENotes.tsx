@@ -275,15 +275,7 @@ const ThirdSemesterNotes = () => {
     url: 'https://drive.google.com/file/d/1mpACtmx9BF_gInlrOa8U-8ykmGHumQRk/view?usp=drive_link'
   };
 
-  const handleDownload = (url: string, title: string) => {
-    const fileId = url.match(/\/d\/([a-zA-Z0-9-_]+)/)?.[1];
-    if (fileId) {
-      const downloadUrl = `https://drive.google.com/uc?export=download&id=${fileId}`;
-      window.open(downloadUrl, '_blank');
-    } else {
-      window.open(url, '_blank');
-    }
-  };
+  const handleDownload = (url: string, title: string) => smartDownload(url, title);
 
   if (selectedSubject) {
     const subject = subjects.find(s => s.id === selectedSubject);

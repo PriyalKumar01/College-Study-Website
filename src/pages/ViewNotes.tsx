@@ -70,23 +70,7 @@ const ViewNotes = () => {
     return matchesSearch && matchesSubject && matchesSemester;
   });
 
-  const handleDownload = async (noteId: string, title: string, fileUrl: string) => {
-    try {
-      // Open the file URL in a new tab
-      window.open(fileUrl, '_blank');
-      
-      toast({
-        title: 'Download started',
-        description: `Downloading: ${title}`,
-      });
-    } catch (error) {
-      toast({
-        title: 'Download failed',
-        description: 'Failed to download the file. Please try again.',
-        variant: 'destructive',
-      });
-    }
-  };
+  const handleDownload = (noteId: string, title: string, fileUrl: string) => smartDownload(fileUrl, title);
 
   return (
     <div className="min-h-screen bg-gradient-hero">

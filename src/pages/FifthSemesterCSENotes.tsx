@@ -302,16 +302,7 @@ const FifthSemesterCSENotes = () => {
     url: 'https://drive.google.com/file/d/1FLX3oeRQM_jGcT1NvsY85EtygH6Lxtkf/view?usp=drivesdk'
   };
 
-  const handleDownload = (url: string, title: string) => {
-    if (url === '#') return;
-    const fileId = url.match(/\/d\/([a-zA-Z0-9-_]+)/)?.[1];
-    if (fileId) {
-      const downloadUrl = `https://drive.google.com/uc?export=download&id=${fileId}`;
-      window.open(downloadUrl, '_blank');
-    } else {
-      window.open(url, '_blank');
-    }
-  };
+  const handleDownload = (url: string, title: string) => smartDownload(url, title);
 
   // Subject detail view
   if (selectedSubject) {

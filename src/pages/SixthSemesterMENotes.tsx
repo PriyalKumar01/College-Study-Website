@@ -112,15 +112,7 @@ const SixthSemesterMENotes = () => {
     }
   };
 
-  const handleDownload = (url: string) => {
-    if (url === '#') return;
-    const fileId = url.match(/\/d\/([a-zA-Z0-9-_]+)/)?.[1];
-    if (fileId) {
-      window.open(`https://drive.google.com/uc?export=download&id=${fileId}`, '_blank');
-    } else {
-      window.open(url, '_blank');
-    }
-  };
+  const handleDownload = (url: string) => smartDownload(url);
 
   if (selectedSubject) {
     const subject = subjects.find(s => s.id === selectedSubject);
