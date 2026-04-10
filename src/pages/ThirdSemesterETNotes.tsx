@@ -13,6 +13,7 @@ import { Badge } from '@/components/ui/badge';
 import { Download, ArrowLeft, FileText } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
+import { smartDownload } from '@/lib/downloadUtils';
 
 const ThirdSemesterETNotes = () => {
   const navigate = useNavigate();
@@ -148,16 +149,7 @@ const ThirdSemesterETNotes = () => {
     ]
   }));
 
-  const handleDownload = (url: string, title: string) => {
-    if (url === '#') return;
-    const fileId = url.match(/\/d\/([a-zA-Z0-9-_]+)/)?.[1];
-    if (fileId) {
-      const downloadUrl = `https://drive.google.com/uc?export=download&id=${fileId}`;
-      window.open(downloadUrl, '_blank');
-    } else {
-      window.open(url, '_blank');
-    }
-  };
+  const handleDownload = (url: string, title: string) => smartDownload(url, title);
 
   const toggleSubjectExpansion = (subjectId: string) => {
     // Basic placeholder if we add playlists later

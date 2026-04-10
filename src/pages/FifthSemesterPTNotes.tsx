@@ -14,6 +14,7 @@ import { Download, ArrowLeft, FileText, Play, ChevronDown, ChevronRight, BookOpe
 import { useNavigate, useLocation } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import { PlaylistModal } from '@/components/PlaylistModal';
+import { smartDownload } from '@/lib/downloadUtils';
 
 const FifthSemesterPTNotes = () => {
   const navigate = useNavigate();
@@ -125,10 +126,7 @@ const FifthSemesterPTNotes = () => {
     ]
   }));
 
-  const handleDownload = (url: string) => {
-    if (url === '#') return;
-    window.open(url, '_blank');
-  };
+  const handleDownload = (url: string) => smartDownload(url);
 
   if (selectedSubject) {
     const subject = subjects.find(s => s.id === selectedSubject);

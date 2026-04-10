@@ -12,6 +12,7 @@ import {
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import Navbar from '@/components/Navbar';
+import { smartDownload } from '@/lib/downloadUtils';
 
 const AdminDashboard = () => {
   const { user } = useAuth();
@@ -109,16 +110,7 @@ const AdminDashboard = () => {
     }
   };
 
-  const handleDownload = (url: string) => {
-    if (!url || url === '#') return;
-    const fileId = url.match(/\/d\/([a-zA-Z0-9-_]+)/)?.[1];
-    if (fileId) {
-      const downloadUrl = `https://drive.google.com/uc?export=download&id=${fileId}`;
-      window.open(downloadUrl, '_blank');
-    } else {
-      window.open(url, '_blank');
-    }
-  };
+  const handleDownload = (url: string) => smartDownload(url);
 
   if (loading) {
     return (

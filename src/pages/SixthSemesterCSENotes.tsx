@@ -11,6 +11,7 @@ import { Download, ArrowLeft, FileText, Play, ChevronDown, ChevronRight, Share2,
 import { useNavigate, useLocation } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import { PlaylistModal } from '@/components/PlaylistModal';
+import { smartDownload } from '@/lib/downloadUtils';
 
 const SixthSemesterCSENotes = () => {
   const navigate = useNavigate();
@@ -181,18 +182,7 @@ const SixthSemesterCSENotes = () => {
     url: 'https://drive.google.com/file/d/1mOL5meStuQfR61dX-g5LA2S-9V0BGTrb/view?usp=drivesdk'
   };
 
-  const handleDownload = (url: string, title: string) => {
-    if (url === '#') {
-      return;
-    }
-    const fileId = url.match(/\/d\/([a-zA-Z0-9-_]+)/)?.[1];
-    if (fileId) {
-      const downloadUrl = `https://drive.google.com/uc?export=download&id=${fileId}`;
-      window.open(downloadUrl, '_blank');
-    } else {
-      window.open(url, '_blank');
-    }
-  };
+  const handleDownload = (url: string, title: string) => smartDownload(url, title);
 
   if (selectedSubject) {
     const subject = subjects.find(s => s.id === selectedSubject);

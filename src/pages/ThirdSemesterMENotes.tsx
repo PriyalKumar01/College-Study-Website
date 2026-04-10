@@ -13,6 +13,7 @@ import { Badge } from '@/components/ui/badge';
 import { Download, ArrowLeft, FileText } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
+import { smartDownload } from '@/lib/downloadUtils';
 
 const ThirdSemesterMENotes = () => {
   const navigate = useNavigate();
@@ -39,15 +40,7 @@ const ThirdSemesterMENotes = () => {
 
   const [selectedSubject, setSelectedSubject] = useState<string | null>(null);
 
-  const handleDownload = (url: string, title: string) => {
-    const fileId = url.match(/\/d\/([a-zA-Z0-9-_]+)/)?.[1];
-    if (fileId) {
-      const downloadUrl = `https://drive.google.com/uc?export=download&id=${fileId}`;
-      window.open(downloadUrl, '_blank');
-    } else {
-      window.open(url, '_blank');
-    }
-  };
+  const handleDownload = (url: string, title: string) => smartDownload(url, title);
 
   const staticSubjects = [
     {
