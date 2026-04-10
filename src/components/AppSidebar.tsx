@@ -175,8 +175,8 @@ const AppSidebar = ({ className }: AppSidebarProps) => {
         </div>
       </div>
 
-      {/* Sidebar Toggle Button (Moved Below Profile) */}
-      <div className={`px-4 mb-4 flex ${isCollapsed ? 'justify-center' : 'justify-end'}`}>
+      {/* Sidebar Toggle Button (Hidden on mobile) */}
+      <div className={`px-4 mb-4 hidden md:flex ${isCollapsed ? 'justify-center' : 'justify-end'}`}>
         <button
           onClick={() => setIsCollapsed(!isCollapsed)}
           className="p-1.5 rounded-lg bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700 transition-all shadow-sm border border-slate-700"
