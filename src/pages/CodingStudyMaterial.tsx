@@ -12,6 +12,7 @@ import { Badge } from '@/components/ui/badge';
 import { Download, ArrowLeft, FileText, Laptop } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
+import { smartDownload } from '@/lib/downloadUtils';
 
 const CodingStudyMaterial = () => {
   const navigate = useNavigate();

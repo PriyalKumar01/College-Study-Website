@@ -13,6 +13,7 @@ import { Download, ArrowLeft, FileText, Play, ChevronDown, ChevronRight, Share2 
 import { useNavigate, useLocation } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import { PlaylistModal } from '@/components/PlaylistModal';
+import { smartDownload } from '@/lib/downloadUtils';
 
 const FifthSemesterLFTNotes = () => {
   const navigate = useNavigate();
@@ -149,10 +150,7 @@ const FifthSemesterLFTNotes = () => {
     ]
   }));
 
-  const handleDownload = (url: string) => {
-    if (url === '#') return;
-    window.open(url, '_blank');
-  };
+  const handleDownload = (url: string) => smartDownload(url);
 
   if (selectedSubject) {
     const subject = subjects.find(s => s.id === selectedSubject);

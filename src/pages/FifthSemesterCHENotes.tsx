@@ -14,6 +14,7 @@ import { Download, ArrowLeft, FileText, Play, ChevronRight, Share2 } from 'lucid
 import { useNavigate, useLocation } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import { PlaylistModal } from '@/components/PlaylistModal';
+import { smartDownload } from '@/lib/downloadUtils';
 
 const FifthSemesterCHENotes = () => {
   const navigate = useNavigate();

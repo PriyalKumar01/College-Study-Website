@@ -7,6 +7,7 @@ import { Download, ArrowLeft, FileText, Play, ChevronDown, ChevronRight, Share2 
 import { useNavigate, useLocation } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import { PlaylistModal } from '@/components/PlaylistModal';
+import { smartDownload } from '@/lib/downloadUtils';
 
 const SixthSemesterCSEOpenElectives = () => {
   const navigate = useNavigate();

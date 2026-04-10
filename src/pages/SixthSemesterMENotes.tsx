@@ -10,6 +10,7 @@ import { Badge } from '@/components/ui/badge';
 import { Download, ArrowLeft, FileText, Share2, Trash2 } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
+import { smartDownload } from '@/lib/downloadUtils';
 
 const SixthSemesterMENotes = () => {
   const navigate = useNavigate();

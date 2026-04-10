@@ -11,6 +11,7 @@ import { Download, ArrowLeft, FileText, Play, ChevronDown, ChevronRight, Trash2 
 import { useNavigate } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import { PlaylistModal } from '@/components/PlaylistModal';
+import { smartDownload } from '@/lib/downloadUtils';
 
 const FifthSemesterCSENotes = () => {
   const navigate = useNavigate();

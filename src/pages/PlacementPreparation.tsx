@@ -29,6 +29,7 @@ import resumeioTemplate from '@/assets/resumeio-template.jpg';
 import jobscanTemplate from '@/assets/jobscan-template.jpg';
 import millionResume from '@/assets/1million-resume.jpg';
 import overleafTemplate from '@/assets/overleaf-template.jpg';
+import { smartDownload } from '@/lib/downloadUtils';
 
 const PlacementPreparation = () => {
   const navigate = useNavigate();
