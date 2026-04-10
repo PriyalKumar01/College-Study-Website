@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FileText, Download, ExternalLink, Users, Sparkles } from 'lucide-react';
+import { downloadFile } from '@/lib/downloadUtils';
 
 interface CommunityMaterial {
   id: string;
@@ -166,12 +167,7 @@ const MaterialCard = ({ material, index }: { material: CommunityMaterial; index:
               variant="ghost"
               size="icon"
               className="h-8 w-8 text-muted-foreground hover:text-emerald-600"
-              onClick={() => {
-                const link = document.createElement('a');
-                link.href = material.file_url;
-                link.download = material.file_name || 'download.pdf';
-                link.click();
-              }}
+              onClick={() => downloadFile(material.file_url, material.file_name || 'download.pdf')}
               title="Download"
             >
               <Download className="h-4 w-4" />
