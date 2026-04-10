@@ -52,6 +52,8 @@ const Navbar = ({ onOpenAuth }: NavbarProps) => {
     { href: '/opportunities', label: 'Opportunities', icon: Briefcase },
     { href: '/useful-ai-tools', label: 'AI Tools', icon: Brain },
     { href: '/about', label: 'About', icon: Info },
+    ...(isAdmin ? [{ href: '/admin-portal', label: 'Admin Portal', icon: Shield }] : []),
+    ...(isOwner ? [{ href: '/owner-dashboard', label: 'Owner Dashboard', icon: Crown }] : []),
   ];
 
   const defaultMobileItems = [
