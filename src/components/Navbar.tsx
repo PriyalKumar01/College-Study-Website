@@ -2,7 +2,8 @@ import { useState } from 'react';
 import { 
   Menu, Moon, Sun, User, LogOut, Home, 
   LayoutDashboard, BookOpen, Calculator, FileText, 
-  Users, Layers, Award, Briefcase, Brain, Info 
+  Users, Layers, Award, Briefcase, Brain, Info,
+  Shield, Crown
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useTheme } from '@/providers/ThemeProvider';
@@ -24,7 +25,7 @@ interface NavbarProps {
 
 const Navbar = ({ onOpenAuth }: NavbarProps) => {
   const { theme, toggleTheme } = useTheme();
-  const { user, signOut } = useAuth();
+  const { user, signOut, isAdmin, isOwner } = useAuth();
   const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
 
@@ -51,6 +52,8 @@ const Navbar = ({ onOpenAuth }: NavbarProps) => {
     { href: '/opportunities', label: 'Opportunities', icon: Briefcase },
     { href: '/useful-ai-tools', label: 'AI Tools', icon: Brain },
     { href: '/about', label: 'About', icon: Info },
+    ...(isAdmin ? [{ href: '/admin-portal', label: 'Admin Portal', icon: Shield }] : []),
+    ...(isOwner ? [{ href: '/owner-dashboard', label: 'Owner Dashboard', icon: Crown }] : []),
   ];
 
   const defaultMobileItems = [
