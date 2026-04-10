@@ -2,7 +2,8 @@ import { useState } from 'react';
 import { 
   Menu, Moon, Sun, User, LogOut, Home, 
   LayoutDashboard, BookOpen, Calculator, FileText, 
-  Users, Layers, Award, Briefcase, Brain, Info 
+  Users, Layers, Award, Briefcase, Brain, Info,
+  Shield, Crown
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useTheme } from '@/providers/ThemeProvider';
