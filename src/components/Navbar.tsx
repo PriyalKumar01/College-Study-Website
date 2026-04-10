@@ -25,7 +25,7 @@ interface NavbarProps {
 
 const Navbar = ({ onOpenAuth }: NavbarProps) => {
   const { theme, toggleTheme } = useTheme();
-  const { user, signOut } = useAuth();
+  const { user, signOut, isAdmin, isOwner } = useAuth();
   const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
 
