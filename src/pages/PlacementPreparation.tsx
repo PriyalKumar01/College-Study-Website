@@ -54,9 +54,7 @@ const PlacementPreparation = () => {
     }
   };
 
-  const handleDownloadNote = (url: string) => {
-    window.open(url, '_blank');
-  };
+  const handleDownloadNote = (url: string) => smartDownload(url);
 
 
   const handleVideoClick = (url: string) => {
