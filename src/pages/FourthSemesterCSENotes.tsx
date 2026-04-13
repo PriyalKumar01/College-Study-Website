@@ -79,19 +79,19 @@ const FourthSemesterNotes = () => {
     },
     math3: {
       detailed: [
-        { title: 'Engineering Mathematics-III Complete (Best)', url: 'https://youtube.com/playlist?list=PLhSp9OSVmeyITz_e6F9YiyongjaCryasK&si=xhAnYIkAQTe5jAw-', recommended: true },
-        { title: 'Engineering Mathematics-III Advanced (Best)', url: 'https://youtube.com/playlist?list=PL5Dqs90qDljVCPXMA2wwA9oIV3blxLLQ6&si=zRcZEv8D7dK-CP2M', recommended: true },
-        { title: 'Engineering Mathematics-III Unit 3 (Best)', url: 'https://youtube.com/playlist?list=PL5Dqs90qDljWlvUJ-YmjMsjkAANOagCk7&si=o7JtHhGSY40pDjWY', recommended: true },
-        { title: 'Engineering Mathematics-III Unit 4 (Best)', url: 'https://youtube.com/playlist?list=PLU6SqdYcYsfL1Mrdj7bs2A6bQOU7FMqKX&si=wFlWnVRj-HEH7qAw', recommended: true },
-        { title: 'Engineering Mathematics-III Unit 5 (Best)', url: 'https://youtube.com/playlist?list=PLhSp9OSVmeyLB62_-fT9VNbjRkDEzJzzp&si=FE8RI4spBCakwAgh', recommended: true },
-        { title: 'Engineering Mathematics-III General 1', url: 'https://youtube.com/playlist?list=PLNKD1qB9pptvgPP_zrKXa64SPYtKQpy-C&si=mOUPo8QHIhN5w9md' },
-        { title: 'Engineering Mathematics-III General 2', url: 'https://youtube.com/playlist?list=PL5Dqs90qDljVF5-HxU829qWUMRFwDAu3v&si=YqbaDiSVfO_BQrlN' },
-        { title: 'Engineering Mathematics-III General 3', url: 'https://youtube.com/playlist?list=PLT3bOBUU3L9ibhrkzWki0_tfrugS4rvnJ&si=fOLiA6fhcpYafFnO' },
-        { title: 'Engineering Mathematics-III General 4 (Best)', url: 'https://youtube.com/playlist?list=PLT3bOBUU3L9jr5vb-zUd4GUFaexGDiRc9&si=uMG3aPDDGVRo_QOQ', recommended: true },
-        { title: 'Engineering Mathematics-III General 5 (Best)', url: 'https://youtube.com/playlist?list=PL5Dqs90qDljWze2qPIgZv-CtBJYHEIvqa&si=yrKbGQpWpqNZeDwi', recommended: true },
-        { title: 'Engineering Mathematics-III General 6', url: 'https://youtube.com/playlist?list=PLT3bOBUU3L9iHqXEfSTmpmOpEkUmj-Qay&si=xiSCdE-W81UTMxg6' },
-        { title: 'Engineering Mathematics-III General 7', url: 'https://youtube.com/playlist?list=PLU6SqdYcYsfK_FysPwDqaoUKhTqms_aEg&si=4iqfG5zjBHpBMQU_' }
-      ],
+        { title: 'Fourier Integral Playlist by-Fearless (Best)', url: 'https://youtube.com/playlist?list=PLhSp9OSVmeyITz_e6F9YiyongjaCryasK&si=xhAnYIkAQTe5jAw-', recommended: true },
+        { title: 'Complex Variable (Complete Playlist) by-Fearless (Best)', url: 'https://youtube.com/playlist?list=PL5Dqs90qDljVCPXMA2wwA9oIV3blxLLQ6&si=zRcZEv8D7dK-CP2M', recommended: true },
+        { title: 'Unit 3 Complex Intigration Playlist By-Fearless (Best)', url: 'https://youtube.com/playlist?list=PL5Dqs90qDljWlvUJ-YmjMsjkAANOagCk7&si=o7JtHhGSY40pDjWY', recommended: true },
+        { title: 'Unit 4 Curve Fitting, Correlation & Regrassion by-Gajendra Prohit (Best)', url: 'https://youtube.com/playlist?list=PLU6SqdYcYsfL1Mrdj7bs2A6bQOU7FMqKX&si=wFlWnVRj-HEH7qAw', recommended: true },
+        { title: 'Unit 5 Probability & Distribution Playlist by- MKS (Best)', url: 'https://youtube.com/playlist?list=PLhSp9OSVmeyLB62_-fT9VNbjRkDEzJzzp&si=FE8RI4spBCakwAgh', recommended: true },
+        { title: 'FITTING OF CURVE IN STATISTICS - BY TIKLE\'S ACADEMY', url: 'https://youtube.com/playlist?list=PLNKD1qB9pptvgPP_zrKXa64SPYtKQpy-C&si=mOUPo8QHIhN5w9md' },
+        { title: 'Curve Fitting, Correlation by-Fearless', url: 'https://youtube.com/playlist?list=PL5Dqs90qDljVF5-HxU829qWUMRFwDAu3v&si=YqbaDiSVfO_BQrlN' },
+        { title: 'Complex Integer Playlist By-Pradeep Giri', url: 'https://youtube.com/playlist?list=PLT3bOBUU3L9ibhrkzWki0_tfrugS4rvnJ&si=fOLiA6fhcpYafFnO' },
+        { title: 'Laplace Transform & Fourier Series By-Pradeep Giri (Best)', url: 'https://youtube.com/playlist?list=PLT3bOBUU3L9jr5vb-zUd4GUFaexGDiRc9&si=uMG3aPDDGVRo_QOQ', recommended: true },
+        { title: 'Hypothesis Testing Playlist By-Fearless (Best)', url: 'https://youtube.com/playlist?list=PL5Dqs90qDljWze2qPIgZv-CtBJYHEIvqa&si=yrKbGQpWpqNZeDwi', recommended: true },
+        { title: 'Inverse Laplace Transform Playlist By-Pradeep Giri', url: 'https://youtube.com/playlist?list=PLT3bOBUU3L9iHqXEfSTmpmOpEkUmj-Qay&si=xiSCdE-W81UTMxg6' },
+        { title: 'Fourier Transform By-Gajendra Prohit', url: 'https://youtube.com/playlist?list=PLU6SqdYcYsfK_FysPwDqaoUKhTqms_aEg&si=4iqfG5zjBHpBMQU_' }
+     ],
       oneshot: [
         { title: 'Engineering Mathematics-III One Shot', url: 'https://youtu.be/_Hjp6aFJO40?si=L8tp3IgTfCBFhxEz' }
       ]
@@ -413,20 +413,17 @@ const FourthSemesterNotes = () => {
           className="mb-8"
         >
           <Button
-            onClick={() => navigate('/btech-notes')}
+            onClick={() => navigate('/btech-notes/second-year/semester-4')}
             variant="outline"
             className="mb-4"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to B.Tech Notes
+            Back to 4th Semester
           </Button>
           
           <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-2">
-            4th Semester B.Tech Notes 📖
+            4th Sem B.Tech CSE Notes 📖
           </h1>
-          <p className="text-muted-foreground text-lg mb-6 text-center">
-            <strong>Only for CSE/IT students</strong>
-          </p>
         </motion.div>
 
         {/* Important Information */}
@@ -441,13 +438,26 @@ const FourthSemesterNotes = () => {
               <span className="text-white text-sm font-bold">!</span>
             </div>
             <div>
-              <h3 className="text-lg font-semibold text-blue-800 dark:text-blue-200 mb-2">
-                📚 Important Branch Information
-              </h3>
-              <div className="space-y-2 text-sm text-blue-700 dark:text-blue-300">
-                <p><strong>✨ Only for CSE/IT students:</strong> These notes are specifically designed for Computer Science and Information Technology students.</p>
-              </div>
-            </div>
+  <h3 className="text-lg font-semibold text-blue-800 dark:text-blue-200 mb-2">
+    📚 Important Branch Information
+  </h3>
+
+  <div className="space-y-2 text-sm text-blue-700 dark:text-blue-300">
+    <p><strong>✨ Only for CSE/IT students:</strong> These notes are specifically designed for Computer Science and Information Technology students.</p>
+
+    <p>• <strong>Engg. Math's:</strong> For Maths, follow the Fearless and MKS playlists. MKS playlist and notes are very helpful, and many PYQs match from them.</p>
+
+    <p>• <strong>Web Technology (WT):</strong> This is a 5-credit subject, so give it proper importance. It can significantly improve your CGPA or lower it if ignored.</p>
+
+    <p>• <strong>E&amp;M:</strong> This subject is easy to crack. Write detailed answers in the exam with clean handwriting and proper presentation to score well. It is only a 2-credit subject, so its impact is limited.</p>
+
+    <p>• <strong>OS, SE, WT:</strong> These subjects may feel boring, but the GateHub playlists are available and usually sufficient along with the notes.</p>
+
+    <p>• <strong>Quantum Book:</strong> The Quantum book is very effective for these subjects because it already contains many important questions and answers. Practice PYQs as well.</p>
+
+    <p>• <strong>Assignments:</strong> Follow your professors' instructions and review assignments before the exam, as questions are often asked from them.</p>
+  </div>
+</div>
           </div>
         </motion.div>
 

@@ -1,82 +1,108 @@
-
-import { useCommunityNotes } from '@/hooks/useCommunityNotes';
-import { useAuth } from '@/contexts/AuthContext';
-import { supabase } from '@/integrations/supabase/client';
-import { useToast } from '@/hooks/use-toast';
-import { Trash2 } from 'lucide-react';
-
 import { useState } from 'react';
 import { motion } from 'framer-motion';
+import { useAuth } from '@/contexts/AuthContext';
+import { useCommunityNotes } from '@/hooks/useCommunityNotes';
+import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Download, ArrowLeft, FileText, Play, ChevronDown, ChevronRight, Share2 } from 'lucide-react';
+import { Download, ArrowLeft, FileText, Play, ChevronDown, ChevronRight, Trash2 } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import { PlaylistModal } from '@/components/PlaylistModal';
+import { smartDownload } from '@/lib/downloadUtils';
 
-const FourthSemesterMENotes = () => {
+const FourthSemesterNotes = () => {
   const navigate = useNavigate();
-
-  const { data: communityNotes, refetch: refreshNotes } = useCommunityNotes('btech', 'ME-4th Semester');
-  const { user, isOwner } = useAuth();
-  const { toast } = useToast();
-
-  const handleDeleteCommunityNote = async (id: string, fileName: string) => {
-    if (!user || !isOwner) return;
-    try {
-      if (fileName) {
-        const { error: storageError } = await supabase.storage.from('study-materials').remove([fileName]);
-        if (storageError) console.error('Storage deletion error:', storageError);
-      }
-      const { error: dbError } = await supabase.from('notes').delete().eq('id', id);
-      if (dbError) throw dbError;
-      toast({ title: "Deleted securely", description: "Material removed successfully." });
-      refreshNotes();
-    } catch (error: any) {
-      toast({ title: "Deletion failed", description: error.message, variant: 'destructive' });
-    }
-  };
-
   const location = useLocation();
-  const [selectedSubject, setSelectedSubject] = useState<string | null>(null);
-  const [showPlaylistModal, setShowPlaylistModal] = useState(false);
-  const [selectedPlaylistType, setSelectedPlaylistType] = useState<'detailed' | 'oneshot'>('detailed');
-  const [selectedSubjectForPlaylist, setSelectedSubjectForPlaylist] = useState<string>('');
-  const [expandedSubjects, setExpandedSubjects] = useState<string[]>([]);
+  const { isOwner } = useAuth();
+  const { toast } = useToast();
 
   const handleWhatsAppShare = (subjectName: string) => {
     const shareUrl = `${window.location.origin}${location.pathname}?subject=${encodeURIComponent(subjectName)}`;
-    const message = `Check out ${subjectName} notes for 4th Semester ME on College Study Hub: ${shareUrl}`;
+    const message = `Check out ${subjectName} notes for 4th Semester CSE/IT on College Study Hub: ${shareUrl}`;
     window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, '_blank');
   };
-
-  const subjectPlaylists: Record<string, { detailed: { title: string; url: string; recommended?: boolean }[]; oneshot: { title: string; url: string; recommended?: boolean }[] }> = {
-    math3: {
+  const [selectedSubject, setSelectedSubject] = useState<string | null>(null);
+  const [showPlaylistModal, setShowPlaylistModal] = useState(false);
+  const [selectedPlaylistType, setSelectedPlaylistType] = useState<'detailed' | 'oneshot' | 'workshop'>('detailed');
+  const [selectedSubjectForPlaylist, setSelectedSubjectForPlaylist] = useState<string>('');
+  const [expandedSubjects, setExpandedSubjects] = useState<string[]>([]);
+  
+  const subjectPlaylists = {
+    ppl: {
       detailed: [
-        { title: 'Engineering Mathematics-III Complete', url: '#', recommended: true },
+        { title: 'Principal of Programming Language 1', url: 'https://youtube.com/playlist?list=PL-JvKqQx2AtdIkEFDrqsHyKWzb5PWniI1&si=UAZUusqLpaAJZDPk' },
+        { title: 'Principal of Programming Language 2', url: 'https://youtube.com/playlist?list=PLbWkMgLvWbDF3bErg6Ejo8d1QtTSqtWwN&si=1Z2lbiTm8JClSOEa' },
+        { title: 'Principal of Programming Language 3', url: 'https://youtube.com/playlist?list=PLwheXbz_XBtltsxCn00Hkdc2Dqa9t6wNd&si=WQ5lH-A5EQB1sW_Z' },
+        { title: 'Principal of Programming Language 4', url: 'https://youtube.com/playlist?list=PLTo1TmBz2ekof8VsYaoTxP-9VgJ9P-dTO&si=55vMVnCXKNwTVDnp' }
+      ],
+      oneshot: []
+    },
+    se: {
+      detailed: [
+        { title: 'Software Engineering Complete (Best)', url: 'https://youtube.com/playlist?list=PLxCzCOWd7aiEed7SKZBnC6ypFDWYLRvB2&si=V_wg1F_QDMAzhqbJ', recommended: true },
+        { title: 'Software Engineering Advanced', url: 'https://youtube.com/playlist?list=PLvu-LC7buiaXLZ6P6ePiAhAI1uTWfyVXZ&si=68I7AzesTJAQhrGc' },
+        { title: 'Software Engineering Comprehensive', url: 'https://youtube.com/playlist?list=PLqcuf9-ILPYA-OGMephZ0U9c8JvdefE0X&si=o6yJSSIx9o4kvaKL' }
       ],
       oneshot: [
-        { title: 'Engineering Mathematics-III One Shot', url: '#' }
+        { title: 'Software Engineering One Shot', url: 'https://youtu.be/NlLM3sVF8wY?si=z9MHr4P7KoiPxX5-' }
       ]
     },
-    tom: {
+    wt: {
       detailed: [
-        { title: 'Theory of Machines Complete', url: '#', recommended: true },
+        { title: 'Web Technology Complete', url: 'https://youtube.com/playlist?list=PLrjkTql3jnm8d1ddpVKifXO_fPjSKATCp&si=mK0fsnBGAZaW8hYN' },
+        { title: 'Web Technology Advanced', url: 'https://youtube.com/playlist?list=PL49mRA0Y_C8u2dOqXa-f9KSoSx9XICZ1E&si=lv0RPacby30ubHRf' }
+      ],
+      oneshot: [
+        { title: 'Web Technology One Shot', url: 'https://youtube.com/playlist?list=PLR5USSocuZ5eMnOLgS57Uuemx6bGV2lan&si=dazqDSAIkgHk0XPm' }
+      ]
+    },
+    os: {
+      detailed: [
+        { title: 'Operating System Complete (Best)', url: 'https://youtube.com/playlist?list=PLxCzCOWd7aiGz9donHRrE9I3Mwn6XdP8p&si=Q37KNf4AAP4Qk8oq', recommended: true },
+        { title: 'Operating System Advanced', url: 'https://youtube.com/playlist?list=PLBlnK6fEyqRiVhbXDGLXDk_OQAeuVcp2O&si=qbZZeUys9gnBM8_7' },
+        { title: 'Operating System Comprehensive', url: 'https://youtube.com/playlist?list=PLG9aCp4uE-s17rFjWM8KchGlffXgOzzVP&si=23zhPsNlTjwU4OGV' }
+      ],
+      oneshot: [
+        { title: 'Operating System One Shot (Best)', url: 'https://youtu.be/xw_OuOhjauw?si=MzjKrv7cY2vswkg5', recommended: true },
+        { title: 'Operating System One Shot 2', url: 'https://youtu.be/009FHqBo87Q?si=1SzNKk9iZR8TAZms' }
+      ]
+    },
+    em: {
+      detailed: [
+        { title: 'Economics and Management Complete (Best)', url: 'https://youtube.com/playlist?list=PLsh2FvSr3n7cjVNULjFnVvI_DMVoMYG9o&si=iQiHHTspvuH4MEOy', recommended: true },
+        { title: 'Economics and Management Advanced', url: 'https://youtube.com/playlist?list=PLaAhQ2ofZZRC1OFxHoa8qGyFHDgk7PyUN&si=5HtscWYDIA3f9qae' }
       ],
       oneshot: []
     },
-    fm: {
+    math3: {
       detailed: [
-        { title: 'Fluid Mechanics Complete', url: '#', recommended: true },
-      ],
-      oneshot: []
+        { title: 'Fourier Integral Playlist by-Fearless (Best)', url: 'https://youtube.com/playlist?list=PLhSp9OSVmeyITz_e6F9YiyongjaCryasK&si=xhAnYIkAQTe5jAw-', recommended: true },
+        { title: 'Complex Variable (Complete Playlist) by-Fearless (Best)', url: 'https://youtube.com/playlist?list=PL5Dqs90qDljVCPXMA2wwA9oIV3blxLLQ6&si=zRcZEv8D7dK-CP2M', recommended: true },
+        { title: 'Unit 3 Complex Intigration Playlist By-Fearless (Best)', url: 'https://youtube.com/playlist?list=PL5Dqs90qDljWlvUJ-YmjMsjkAANOagCk7&si=o7JtHhGSY40pDjWY', recommended: true },
+        { title: 'Unit 4 Curve Fitting, Correlation & Regrassion by-Gajendra Prohit (Best)', url: 'https://youtube.com/playlist?list=PLU6SqdYcYsfL1Mrdj7bs2A6bQOU7FMqKX&si=wFlWnVRj-HEH7qAw', recommended: true },
+        { title: 'Unit 5 Probability & Distribution Playlist by- MKS (Best)', url: 'https://youtube.com/playlist?list=PLhSp9OSVmeyLB62_-fT9VNbjRkDEzJzzp&si=FE8RI4spBCakwAgh', recommended: true },
+        { title: 'FITTING OF CURVE IN STATISTICS - BY TIKLE\'S ACADEMY', url: 'https://youtube.com/playlist?list=PLNKD1qB9pptvgPP_zrKXa64SPYtKQpy-C&si=mOUPo8QHIhN5w9md' },
+        { title: 'Curve Fitting, Correlation by-Fearless', url: 'https://youtube.com/playlist?list=PL5Dqs90qDljVF5-HxU829qWUMRFwDAu3v&si=YqbaDiSVfO_BQrlN' },
+        { title: 'Complex Integer Playlist By-Pradeep Giri', url: 'https://youtube.com/playlist?list=PLT3bOBUU3L9ibhrkzWki0_tfrugS4rvnJ&si=fOLiA6fhcpYafFnO' },
+        { title: 'Laplace Transform & Fourier Series By-Pradeep Giri (Best)', url: 'https://youtube.com/playlist?list=PLT3bOBUU3L9jr5vb-zUd4GUFaexGDiRc9&si=uMG3aPDDGVRo_QOQ', recommended: true },
+        { title: 'Hypothesis Testing Playlist By-Fearless (Best)', url: 'https://youtube.com/playlist?list=PL5Dqs90qDljWze2qPIgZv-CtBJYHEIvqa&si=yrKbGQpWpqNZeDwi', recommended: true },
+        { title: 'Inverse Laplace Transform Playlist By-Pradeep Giri', url: 'https://youtube.com/playlist?list=PLT3bOBUU3L9iHqXEfSTmpmOpEkUmj-Qay&si=xiSCdE-W81UTMxg6' },
+        { title: 'Fourier Transform By-Gajendra Prohit', url: 'https://youtube.com/playlist?list=PLU6SqdYcYsfK_FysPwDqaoUKhTqms_aEg&si=4iqfG5zjBHpBMQU_' }
+     ],
+      oneshot: [
+        { title: 'Engineering Mathematics-III One Shot', url: 'https://youtu.be/_Hjp6aFJO40?si=L8tp3IgTfCBFhxEz' }
+      ]
     }
   };
 
   const toggleSubjectExpansion = (subjectId: string) => {
     setExpandedSubjects(prev => 
-      prev.includes(subjectId) ? prev.filter(id => id !== subjectId) : [...prev, subjectId]
+      prev.includes(subjectId) 
+        ? prev.filter(id => id !== subjectId)
+        : [...prev, subjectId]
     );
   };
 
@@ -90,61 +116,116 @@ const FourthSemesterMENotes = () => {
   };
 
   const getSubjectPlaylists = (subjectId: string) => {
-    return subjectPlaylists[subjectId] || { detailed: [], oneshot: [] };
+    const playlistKey = subjectId as keyof typeof subjectPlaylists;
+    return subjectPlaylists[playlistKey] || { detailed: [], oneshot: [] };
   };
-
+  
   const staticSubjects = [
     {
+      id: 'em',
+      name: 'Economics & Management',
+      icon: '💼',
+      color: 'bg-blue-500',
+      notes: [
+        { title: 'Business Economics Book', url: 'https://drive.google.com/file/d/1XD2CnTGa8tpUzqLPlzzDnc1-P60wdAJO/view?usp=drive_link' },
+        { title: 'E&M Unit 1 (Part-1) Notes', url: 'https://drive.google.com/file/d/1UI4YbkhC7bbb7DpMtNgnciPCFV_c7FaL/view?usp=drive_link' },
+        { title: 'E&M Unit 1 (Part 2) Notes', url: 'https://drive.google.com/file/d/1UObid3Prm9I_JVbxPqaPSukSmQ8qyCV6/view?usp=drive_link' },
+        { title: 'Unit 1 (Elasticity Notes)', url: 'https://drive.google.com/file/d/1U8GWR590L9kRgbe5_fZ6t-myuUoXmqn8/view?usp=drive_link' },
+        { title: 'Complete Unit 2 Notes', url: 'https://drive.google.com/file/d/1UOd_TOHZeOayp-W0NeKdmnv2mXr7-or-/view?usp=drive_link' },
+        { title: 'Unit 3 (Part-1) Notes', url: 'https://drive.google.com/file/d/1UPKMYKBS5k96DWeB2xyVy1ix9gUBnF_o/view?usp=drive_link' },
+        { title: 'Unit 3 (Part-2) Notes', url: 'https://drive.google.com/file/d/1U_rmk9aE-Ge6cxrPqIBbNovw9kwXm56M/view?usp=drive_link' },
+        { title: 'E&M Handwritten Notes', url: 'https://drive.google.com/file/d/1XANMyirw8Bb8Ks4m-R9jOtJ-0CncP5mQ/view?usp=drive_link' },
+        { title: 'Full Last Min. Revision Notes', url: 'https://drive.google.com/file/d/1Tv4l6-DNZygMKa-7AP73LvBki4L3QQcI/view?usp=drive_link' }
+      ]
+    },
+    {
       id: 'math3',
-      name: 'Engineering Mathematics-III',
+      name: 'Engg Math\'s-III',
       icon: '📐',
       color: 'bg-purple-500',
       notes: [
-        { title: 'EM-III Complete Notes', url: '#' },
-        { title: 'EM-III Unit 1 Notes', url: '#' },
+        { title: 'BS Gerewal Math Book', url: 'https://drive.google.com/file/d/1WO6VBRte2_4ZdXbwuwLoA4PfjgSFdabL/view?usp=drive_link' },
+        { title: 'HK Das Math Book', url: 'https://drive.google.com/file/d/1WO_2jHYoYX_T9PoZHVVvts4WssiWRqPK/view?usp=drive_link' },
+        { title: 'Complete Unit-1,2 & 3 Notes', url: 'https://drive.google.com/file/d/1CE9GVSQI9YCq6iEZ25ASudXDyLHEL5tJ/view?usp=drive_link' },
+        { title: 'Unit 4 (Moment) Notes', url: 'https://drive.google.com/file/d/1R0KO9NqX0WFnSbuFqZMTxyol1KmIrC5T/view?usp=drive_link' },
+        { title: 'Unit 5 Notes', url: 'https://drive.google.com/file/d/1R0nue1eUT7kZXKeQnXJiZ6mZuijVoQ07/view?usp=drive_link' },
+        { title: 'Unit 4 Curve Fitting Notes', url: 'https://drive.google.com/file/d/1CEcIG1FTaeZdqRn53Fy-O8at9SGbmXX2/view?usp=drive_link' },
+        { title: 'Z-Transform Notes', url: 'https://drive.google.com/file/d/1_QbIn7C9i3M8E6HD_J3hNwgMORjrMEaj/view?usp=drive_link' },
+        { title: 'EM-III Residue Notes', url: 'https://drive.google.com/file/d/1_PeEnniPP66dRbwGRJiPzyjLTEs00jbX/view?usp=drive_link' },
+        { title: 'Harmonic Function Prove Notes', url: 'https://drive.google.com/file/d/1_PeEnniPP66dRbwGRJiPzyjLTEs00jbX/view?usp=drive_link' }
       ]
     },
     {
-      id: 'tom',
-      name: 'Theory of Machines',
+      id: 'fluid-mechanics',
+      name: 'Fuid Mechanics',
+      icon: '🖥️',
+      color: 'bg-green-500',
+      notes: [
+        { title: ' Handwritten Notes', url: '#' },
+        ]
+    },
+    {
+      id: 'engg-materials',
+      name: 'Engineering Materials',
       icon: '⚙️',
-      color: 'bg-blue-500',
+      color: 'bg-orange-500',
       notes: [
-        { title: 'TOM Complete Notes', url: '#' },
-      ]
+        { title: ' Handwritten Notes', url: '#' },
+        ]
     },
     {
-      id: 'fm',
-      name: 'Fluid Mechanics',
-      icon: '💧',
-      color: 'bg-cyan-500',
+      id: 'heat-mass-transfer',
+      name: 'Heat & Mass Transfer',
+      icon: '🔥',
+      color: 'bg-indigo-500',
       notes: [
-        { title: 'FM Complete Notes', url: '#' },
-      ]
+        { title: ' Handwritten Notes', url: '#' },
+        ]
+    },
+    {
+      id: 'dynamics-of-machines',
+      name: 'Dynamics of Machines',
+      icon: '🌐',
+      color: 'bg-teal-500',
+      notes: [
+        { title: ' Handwritten Notes', url: '#' },
+        ]
+    },
+    {
+      id: 'assignments',
+      name: 'Assignments - All Subjects',
+      icon: '📝',
+      color: 'bg-yellow-500',
+      notes: [
+        { title: 'E&M Assignment-2', url: 'https://drive.google.com/file/d/1fDegieCMpAuj47Y3TzIVidqm2cQqM5yV/view?usp=drive_link' },
+        { title: 'EM-III Assignment Ques. (For Practice)', url: 'https://drive.google.com/file/d/1_UnztNjMw8E_in3W-Fy75go8igGuV_Iq/view?usp=drive_link' },
+        { title: 'EM-III Assignment Ques. (For Practice)', url: 'https://drive.google.com/file/d/1_XXityVgli5CQoOpWTKiHRgBVMzQM5wm/view?usp=drive_link' },
+       ]
     },
     {
       id: 'pyqs',
       name: 'Previous Year Questions',
       icon: '❓',
       color: 'bg-red-500',
-      playlists: { detailed: [], oneshot: [] },
-      notes: []
+      notes: [
+        { title: 'All Math\'s PYQs (2024-25)', url: 'https://drive.google.com/file/d/1R1MAUoeyvU813aNWlkzVhoioK2Z7NBRH/view?usp=drive_link' },
+        { title: 'All 4th Sem ME PYQs (2023-24)', url: 'https://drive.google.com/file/d/1w4rRFJA-2xLKq8WlCqWHaWM6ADE6Td8S/view?usp=drivesdk' },
+        { title: 'End Sem PYQs (2023-24)', url: 'https://drive.google.com/file/d/1zS61oa2GFVrPz2O9sAfnwJtgNuYWubSU/view?usp=drivesdk' },
+        { title: 'End Sem PYQs (2022-23)', url: 'https://drive.google.com/file/d/1U-GnQVe7_Tg8_SoWa64wT3dS-tuelJ6s/view?usp=drivesdk' },     
+        { title: 'Mid Sem-1 PYQs (2025-26)', url: 'https://drive.google.com/file/d/1EI_z47Djhu1viqMt-JVtfIAzBjLAKt7z/view?usp=drivesdk' },
+        { title: 'Mid Sem-2 PYQs (2025-26)', url: 'https://drive.google.com/file/d/14NEU6MGGBAA-oGDG9y7nbER5a9ZYZAR6/view?usp=drivesdk' }, 
+      ]
     }
   ];
 
-  const getSubjectDisplayName = (subjectId: string): string => {
-    const subject = subjects.find(s => s.id === subjectId);
-    return subject?.name || subjectId;
-  };
-
-  
-  const subjects: any[] = staticSubjects.map((sub: any) => ({
+  const { data: communityNotes, refetch: refreshNotes } = useCommunityNotes('btech', 'CSE-4th Semester');
+  const subjects = staticSubjects.map((sub) => ({
     ...sub,
     notes: [
       ...sub.notes,
       ...(communityNotes || [])
-        .filter((cn: any) => cn.subject === sub.name || cn.subject === sub.id)
-        .map((cn: any) => ({
+        .filter((cn) => cn.subject === sub.name || cn.subject === sub.id)
+        .map((cn) => ({
           id: cn.id,
           title: cn.title,
           url: cn.file_url,
@@ -156,131 +237,305 @@ const FourthSemesterMENotes = () => {
     ]
   }));
 
-  return (
-    <div className="min-h-screen bg-gradient-hero">
-      <Navbar />
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <Button variant="outline" onClick={() => navigate('/btech-notes/second-year/semester-4')} className="mb-4">
-          <ArrowLeft className="h-4 w-4 mr-2" />
-          Back to Branches
-        </Button>
+  const handleDeleteCommunityNote = async (id: string) => {
+    if (!window.confirm('Delete this user-uploaded material?')) return;
+    try {
+      const { error } = await supabase.from('notes').delete().eq('id', id);
+      if (error) throw error;
+      toast({ title: 'Deleted', description: 'Material removed successfully.' });
+      refreshNotes();
+    } catch (error: any) {
+      toast({ title: 'Error', description: error.message, variant: 'destructive' });
+    }
+  };
 
-        <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} className="text-center mb-12">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4 text-foreground">4th Semester ME Notes</h1>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">Mechanical Engineering study materials</p>
-        </motion.div>
+  const syllabus = {
+    title: '4th Sem ME Syllabus',
+    url: 'https://drive.google.com/file/d/1VBjApUuM3_ErVrEly83GKwcPVHqaUssV/view?usp=drivesdk'
+  };
 
-        {!selectedSubject ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {subjects.map((subject, index) => {
-              const playlists = getSubjectPlaylists(subject.id);
-              const isExpanded = expandedSubjects.includes(subject.id);
-              
-              return (
-                <motion.div key={subject.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.1, duration: 0.5 }}>
-                  <Card className="feature-card h-full relative">
+  const handleDownload = (url: string, title: string) => smartDownload(url, title);
 
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="absolute top-2 right-2 h-8 w-8 text-green-600 hover:text-green-700 hover:bg-green-50 dark:hover:bg-green-900/20"
-                      onClick={(e) => { e.stopPropagation(); handleWhatsAppShare(subject.name); }}
-                      title="Share on WhatsApp"
-                    >
-                      <Share2 className="h-4 w-4" />
-                    </Button>
-                    <CardHeader>
-                      <div className={`w-12 h-12 rounded-full ${subject.color} flex items-center justify-center text-2xl mb-4`}>
-                        {subject.icon}
-                      </div>
-                      <CardTitle className="text-xl">{subject.name}</CardTitle>
-                      <CardDescription>{subject.notes.length} PDF Notes Available</CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-3">
-                      <Button className="w-full btn-hero" onClick={() => setSelectedSubject(subject.id)}>
-                        <FileText className="h-4 w-4 mr-2" />
-                        View Notes
-                      </Button>
-                      
-                      {(playlists.detailed.length > 0 || playlists.oneshot.length > 0) && (
-                        <div className="border-t pt-3">
-                          <Button variant="ghost" className="w-full justify-between p-2 h-auto" onClick={() => toggleSubjectExpansion(subject.id)}>
-                            <span className="flex items-center gap-2 text-sm font-medium">
-                              <Play className="h-4 w-4" />
-                              Study Playlists
-                            </span>
-                            {isExpanded ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
-                          </Button>
-                          
-                          {isExpanded && (
-                            <div className="mt-2 space-y-2 pl-2">
-                              {playlists.detailed.length > 0 && (
-                                <Button variant="outline" size="sm" className="w-full justify-start" onClick={() => handlePlaylistClick(subject.id, 'detailed')}>
-                                  <Play className="h-3 w-3 mr-2" />
-                                  Detailed Playlists ({playlists.detailed.length})
-                                </Button>
-                              )}
-                              {playlists.oneshot.length > 0 && (
-                                <Button variant="outline" size="sm" className="w-full justify-start" onClick={() => handlePlaylistClick(subject.id, 'oneshot')}>
-                                  <Play className="h-3 w-3 mr-2" />
-                                  One Shot Videos ({playlists.oneshot.length})
-                                </Button>
-                              )}
-                            </div>
-                          )}
-                        </div>
-                      )}
-                    </CardContent>
-                  </Card>
-                </motion.div>
-              );
-            })}
-          </div>
-        ) : (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.3 }}>
-            <Button variant="outline" onClick={() => setSelectedSubject(null)} className="mb-6">
+  if (selectedSubject) {
+    const subject = subjects.find(s => s.id === selectedSubject);
+    if (!subject) return null;
+
+    return (
+        <div className="min-h-screen bg-gradient-hero">
+        <Navbar />
+        
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="mb-8"
+          >
+            <Button
+              onClick={() => setSelectedSubject(null)}
+              variant="outline"
+              className="mb-4"
+            >
               <ArrowLeft className="h-4 w-4 mr-2" />
               Back to Subjects
             </Button>
             
-            <h2 className="text-2xl font-bold mb-6">{subjects.find(s => s.id === selectedSubject)?.name} - Notes</h2>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {subjects.find(s => s.id === selectedSubject)?.notes.map((note, index) => (
-                <motion.div key={index} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.05, duration: 0.3 }}>
-                  <Card className="feature-card relative">
-                    <CardContent className="p-4">
-                      <div className="flex items-start gap-3">
-                        <div className="p-2 rounded-lg bg-primary/10">
-                          <FileText className="h-5 w-5 text-primary" />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <h3 className="font-medium text-sm leading-tight mb-2">{note.title}</h3>
-                          <Badge variant="secondary" className="text-xs">PDF</Badge>
-                        </div>
-                      </div>
-                      <Button className="w-full mt-3" size="sm" onClick={() => window.open(note.url, '_blank')}>
-                        <Download className="h-3 w-3 mr-2" />
-                        Download PDF
-                      </Button>
-                    </CardContent>
-                  </Card>
-                </motion.div>
-              ))}
-            </div>
+            <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-2">
+              {subject.name} 📚
+            </h1>
+            <p className="text-muted-foreground text-lg">
+              All notes for {subject.name} - 4th Semester B.Tech
+            </p>
           </motion.div>
-        )}
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {subject.notes.map((note, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.1, duration: 0.5 }}
+                whileHover={{ scale: 1.02 }}
+              >
+                <Card className="feature-card h-full border-2 border-transparent hover:border-primary/20 shadow-lg hover:shadow-xl transition-all duration-300">
+                  <CardHeader>
+                    <div className="flex items-center gap-3 mb-2">
+                      <div className={`w-10 h-10 ${subject.color} rounded-full flex items-center justify-center text-white text-lg`}>
+                        <FileText className="h-5 w-5" />
+                      </div>
+                      <Badge variant="secondary" >PDF</Badge>
+                    </div>
+                    <CardTitle className="text-lg leading-tight">{note.title}</CardTitle>
+                    <CardDescription>
+                      {subject.name} study material
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="flex gap-2">
+                      <Button
+                        onClick={() => handleDownload(note.url, note.title)}
+                        className="flex-1 btn-hero"
+                      >
+                        <Download className="h-4 w-4 mr-2" />
+                        Download
+                      </Button>
+                      {(note as any).isCommunity && isOwner && (
+                        <Button
+                          variant="destructive"
+                          size="icon"
+                          onClick={() => handleDeleteCommunityNote((note as any).id)}
+                          title="Delete Community Upload"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ))}
+          </div>
+        </div>
       </div>
+    );
+  }
 
-      <PlaylistModal
-        isOpen={showPlaylistModal}
-        onClose={() => setShowPlaylistModal(false)}
-        title={getSubjectDisplayName(selectedSubjectForPlaylist)}
-        playlists={getSubjectPlaylists(selectedSubjectForPlaylist)[selectedPlaylistType]}
-        type={selectedPlaylistType}
-      />
-    </div>
-  );
-};
+  return (
+      <div className="min-h-screen bg-gradient-hero">
+        <Navbar />
+        
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="mb-8"
+        >
+          <Button
+            onClick={() => navigate('/btech-notes/second-year/semester-4')}
+            variant="outline"
+            className="mb-4"
+          >
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Back to 4th Semester
+          </Button>
+          
+          <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-2">
+            4th Sem B.Tech ME Notes 📖
+          </h1>
+        </motion.div>
 
-export default FourthSemesterMENotes;
+        {/* Important Information */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1, duration: 0.5 }}
+          className="mb-8 p-6 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-lg border-2 border-blue-200 dark:border-blue-800"
+        >
+          <div className="flex items-start gap-3">
+            <div className="flex-shrink-0 w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
+              <span className="text-white text-sm font-bold">!</span>
+            </div>
+            <div>
+  <h3 className="text-lg font-semibold text-blue-800 dark:text-blue-200 mb-2">
+    📚 Important Branch Information
+  </h3>
+
+  <div className="space-y-2 text-sm text-blue-700 dark:text-blue-300">
+    <p><strong>✨ Only for ME students:</strong> These notes are specifically designed for Mechanical Engineering students.</p>
+
+    <p>• <strong>Engg. Math's:</strong> For Maths, follow the Fearless and MKS playlists. MKS playlist and notes are very helpful, and many PYQs match from them.</p>
+
+    <p>• <strong>E&amp;M:</strong> This subject is easy to crack. Write detailed answers in the exam with clean handwriting and proper presentation to score well. It is only a 2-credit subject, so its impact is limited.</p>
+
+    <p>• <strong>Assignments:</strong> Follow your professors' instructions and review assignments before the exam, as questions are often asked from them.</p>
+  </div>
+</div>
+          </div>
+        </motion.div>
+
+        {/* Syllabus Card */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2, duration: 0.5 }}
+          className="mb-8"
+        >
+          <Card className="gradient-card border-2 border-primary/20 shadow-lg">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <FileText className="h-5 w-5" />
+                4th Sem Syllabus
+              </CardTitle>
+              <CardDescription>
+                Official syllabus for 4th sem B.Tech ME
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Button
+                onClick={() => handleDownload(syllabus.url, syllabus.title)}
+                className="btn-hero"
+              >
+                <Download className="h-4 w-4 mr-2" />
+                Download Syllabus
+              </Button>
+            </CardContent>
+          </Card>
+        </motion.div>
+
+        {/* Subjects Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {subjects.map((subject, index) => (
+            <motion.div
+              key={subject.id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: (index + 1) * 0.1, duration: 0.5 }}
+              whileHover={{ scale: 1.02 }}
+            >
+              <Card 
+                className="feature-card h-full cursor-pointer transition-all duration-300 border-2 border-transparent hover:border-primary/20 shadow-lg hover:shadow-xl"
+                onClick={() => setSelectedSubject(subject.id)}
+              >
+                <CardHeader>
+                  <div className={`w-16 h-16 ${subject.color} rounded-full flex items-center justify-center text-white text-2xl mb-4 mx-auto shadow-lg`}>
+                    {subject.icon}
+                  </div>
+                  <CardTitle className="text-lg text-center">{subject.name}</CardTitle>
+                  <CardDescription className="text-center">
+                    {subject.notes.length} notes available
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex flex-col gap-3">
+                    {/* Study Playlists Section */}
+                    {subject.id !== 'pyqs' && subject.id !== "assignments" &&(
+                    <div className="border-t pt-4">
+                      <div
+                        className="flex items-center justify-between cursor-pointer hover:bg-muted/50 rounded p-2 -m-2"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          toggleSubjectExpansion(subject.id);
+                        }}
+                      >
+                        <div className="flex items-center gap-2">
+                          <Play className="h-4 w-4 text-primary" />
+                          <span className="text-sm font-medium">Study Playlists</span>
+                        </div>
+                        {expandedSubjects.includes(subject.id) ?
+                          <ChevronDown className="h-4 w-4" /> :
+                          <ChevronRight className="h-4 w-4" />
+                        }
+                      </div>
+
+                      {expandedSubjects.includes(subject.id) && (
+                        <div className="mt-3 space-y-2 pl-2">
+                          {getSubjectPlaylists(subject.id).detailed.length > 0 && (
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="w-full justify-start text-xs h-8"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handlePlaylistClick(subject.id, 'detailed');
+                              }}
+                            >
+                              📚 Detailed Playlists ({getSubjectPlaylists(subject.id).detailed.length})
+                            </Button>
+                          )}
+                          {getSubjectPlaylists(subject.id).oneshot.length > 0 && (
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="w-full justify-start text-xs h-8"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handlePlaylistClick(subject.id, 'oneshot');
+                              }}
+                            >
+                              ⚡ One Shot Videos ({getSubjectPlaylists(subject.id).oneshot.length})
+                            </Button>
+                          )}
+                          {getSubjectPlaylists(subject.id).detailed.length === 0 &&
+                           getSubjectPlaylists(subject.id).oneshot.length === 0 && (
+                            <p className="text-xs text-muted-foreground pl-2">Not available...</p>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                    <div className="flex items-center justify-between">
+                      <Badge variant="secondary">{subject.notes.length} Files</Badge>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setSelectedSubject(subject.id)}
+                      >
+                        View Notes
+                      </Button>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+          ))}
+        </div>
+
+
+
+        {showPlaylistModal && (
+          <PlaylistModal
+          isOpen={showPlaylistModal}
+          onClose={() => setShowPlaylistModal(false)}
+          title={subjects.find(s => s.id === selectedSubjectForPlaylist)?.name || ''}
+          playlists={selectedSubjectForPlaylist ? getSubjectPlaylists(selectedSubjectForPlaylist)[selectedPlaylistType] : []}
+          type={selectedPlaylistType}
+        />
+        )}
+        </div>
+      </div>
+    );
+  }
+
+export default FourthSemesterNotes;
