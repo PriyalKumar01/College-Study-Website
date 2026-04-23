@@ -156,6 +156,30 @@ const OwnerDashboard = () => {
     }
   };
 
+  const handleScholarshipApproval = async (id: string, newStatus: 'approved' | 'rejected') => {
+    const { error } = await (supabase as any)
+      .from('scholarships')
+      .update({ approval_status: newStatus })
+      .eq('id', id);
+    if (error) {
+      toast({ title: 'Error', description: error.message, variant: 'destructive' });
+    } else {
+      toast({ title: newStatus === 'approved' ? 'Scholarship approved ✅' : 'Scholarship rejected ❌' });
+      fetchScholarships();
+    }
+  };
+
+  const handleDeleteScholarship = async (id: string, name: string) => {
+    if (!confirm(`Permanently delete "${name}"? This will remove it from the database.`)) return;
+    const { error } = await (supabase as any).from('scholarships').delete().eq('id', id);
+    if (error) {
+      toast({ title: 'Delete failed', description: error.message, variant: 'destructive' });
+    } else {
+      toast({ title: 'Deleted', description: 'Scholarship removed from database.' });
+      fetchScholarships();
+    }
+  };
+
   const handleDownload = (url: string) => smartDownload(url);
 
   const handlePromoteAdmin = async () => {
