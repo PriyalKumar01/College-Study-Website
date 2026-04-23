@@ -40,6 +40,21 @@ interface AdminRole {
   created_by: string | null;
 }
 
+interface Scholarship {
+  id: string;
+  name: string;
+  org: string;
+  amount: string;
+  description: string;
+  deadline: string;
+  apply_url: string;
+  approval_status: string;
+  status: string;
+  submitted_by: string | null;
+  submitted_by_email: string | null;
+  created_at: string | null;
+}
+
 const OwnerDashboard = () => {
   const { user, isOwner, loading: authLoading } = useAuth();
   const { toast } = useToast();
@@ -47,11 +62,13 @@ const OwnerDashboard = () => {
   const [pendingMaterials, setPendingMaterials] = useState<Material[]>([]);
   const [allMaterials, setAllMaterials] = useState<Material[]>([]);
   const [adminRoles, setAdminRoles] = useState<AdminRole[]>([]);
+  const [scholarships, setScholarships] = useState<Scholarship[]>([]);
   const [loading, setLoading] = useState(true);
   const [newAdminEmail, setNewAdminEmail] = useState('');
   const [isPromoting, setIsPromoting] = useState(false);
   const [materialFilter, setMaterialFilter] = useState<'all' | 'pending' | 'approved' | 'rejected'>('all');
   const [searchQuery, setSearchQuery] = useState('');
+  const [scholarshipFilter, setScholarshipFilter] = useState<'all' | 'pending' | 'approved'>('all');
 
   useEffect(() => {
     if (isOwner) {
@@ -61,8 +78,16 @@ const OwnerDashboard = () => {
 
   const fetchAll = async () => {
     setLoading(true);
-    await Promise.all([fetchPendingMaterials(), fetchAllMaterials(), fetchAdminRoles()]);
+    await Promise.all([fetchPendingMaterials(), fetchAllMaterials(), fetchAdminRoles(), fetchScholarships()]);
     setLoading(false);
+  };
+
+  const fetchScholarships = async () => {
+    const { data, error } = await (supabase as any)
+      .from('scholarships')
+      .select('*')
+      .order('created_at', { ascending: false });
+    if (!error) setScholarships((data || []) as Scholarship[]);
   };
 
   const fetchPendingMaterials = async () => {
