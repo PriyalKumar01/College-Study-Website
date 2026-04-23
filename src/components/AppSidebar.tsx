@@ -94,6 +94,7 @@ const AppSidebar = ({ className }: AppSidebarProps) => {
       href: '/notes',
       children: [
         { icon: <GraduationCap className="h-4 w-4" />, label: 'BTech Notes', href: '/btech-notes' },
+        { icon: <GraduationCap className="h-4 w-4" />, label: 'BS-MS Notes', href: '/bsms-notes' },
         { icon: <FileText className="h-4 w-4" />, label: 'BBA Notes', href: '/bba-notes' },
         { icon: <FileText className="h-4 w-4" />, label: 'MBA Notes', href: '/mba-notes' },
         { icon: <Code className="h-4 w-4" />, label: 'DSA', href: '/dsa-notes' },
@@ -105,7 +106,7 @@ const AppSidebar = ({ className }: AppSidebarProps) => {
     { icon: <FileText className="h-4 w-4" />, label: 'ATS Friendly Resume', href: '/ats-friendly-resume' },
     { icon: <Users className="h-4 w-4" />, label: 'Contributor List', href: '/notes-contributors' },
     { icon: <Layers className="h-4 w-4" />, label: 'Integrated Platforms', href: '/learning-platforms' },
-    { icon: <Award className="h-4 w-4" />, label: 'Scholarships', href: '/opportunities?type=scholarship' },
+    { icon: <Award className="h-4 w-4" />, label: 'Scholarships', href: '/scholarship-portal' },
     { icon: <Briefcase className="h-4 w-4" />, label: 'Opportunities', href: '/opportunities' },
     { icon: <Brain className="h-4 w-4" />, label: 'AI Tools', href: '/useful-ai-tools' },
     { icon: <Info className="h-4 w-4" />, label: 'About', href: '/about' },

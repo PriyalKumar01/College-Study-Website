@@ -13,7 +13,7 @@ import Navbar from '@/components/Navbar';
 import { PlaylistModal } from '@/components/PlaylistModal';
 import { smartDownload } from '@/lib/downloadUtils';
 
-const FifthSemesterETNotes = () => {
+const BSMSSem4Notes = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { isOwner } = useAuth();
@@ -21,7 +21,7 @@ const FifthSemesterETNotes = () => {
 
   const handleWhatsAppShare = (subjectName: string) => {
     const shareUrl = `${window.location.origin}${location.pathname}?subject=${encodeURIComponent(subjectName)}`;
-    const message = `Check out ${subjectName} notes for 5th Semester ET on College Study Hub: ${shareUrl}`;
+    const message = `Check out ${subjectName} notes for BS-MS 4th Semester on College Study Hub: ${shareUrl}`;
     window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, '_blank');
   };
 
@@ -33,10 +33,9 @@ const FifthSemesterETNotes = () => {
 
   const subjectPlaylists: Record<string, { detailed: any[]; oneshot: any[] }> = {
     math4: { detailed: [], oneshot: [] },
-    dsp: { detailed: [], oneshot: [] },
-    'control-systems': { detailed: [], oneshot: [] },
-    microprocessor: { detailed: [], oneshot: [] },
-    adc: { detailed: [], oneshot: [] }
+    'classical-mech': { detailed: [], oneshot: [] },
+    thermodynamics: { detailed: [], oneshot: [] },
+    electronics: { detailed: [], oneshot: [] }
   };
 
   const toggleSubjectExpansion = (subjectId: string) => {
@@ -62,44 +61,37 @@ const FifthSemesterETNotes = () => {
   const staticSubjects = [
     {
       id: 'math4',
-      name: 'Engineering Mathematics-IV',
+      name: 'Mathematics-IV',
       icon: '📐',
       color: 'bg-purple-500',
-      notes: [{ title: 'EM-IV Notes', url: '#' }]
+      notes: [{ title: 'Mathematics-IV Notes', url: '#' }]
     },
     {
-      id: 'dsp',
-      name: 'Digital Signal Processing',
-      icon: '📡',
+      id: 'classical-mech',
+      name: 'Classical Mechanics',
+      icon: '🌀',
       color: 'bg-blue-500',
-      notes: [{ title: 'DSP Notes', url: '#' }]
+      notes: [{ title: 'Classical Mechanics Notes', url: '#' }]
     },
     {
-      id: 'control-systems',
-      name: 'Control Systems',
-      icon: '🎛️',
+      id: 'thermodynamics',
+      name: 'Thermodynamics & Statistical Physics',
+      icon: '🔥',
+      color: 'bg-orange-500',
+      notes: [{ title: 'Thermodynamics Notes', url: '#' }]
+    },
+    {
+      id: 'electronics',
+      name: 'Electronics & Instrumentation',
+      icon: '🔌',
       color: 'bg-green-500',
-      notes: [{ title: 'Control Systems Notes', url: '#' }]
-    },
-    {
-      id: 'microprocessor',
-      name: 'Microprocessor & Microcontroller',
-      icon: '🖥️',
-      color: 'bg-indigo-500',
-      notes: [{ title: 'Microprocessor Notes', url: '#' }]
-    },
-    {
-      id: 'adc',
-      name: 'Analog & Digital Communication',
-      icon: '📻',
-      color: 'bg-teal-500',
-      notes: [{ title: 'ADC Notes', url: '#' }]
+      notes: [{ title: 'Electronics Notes', url: '#' }]
     },
     {
       id: 'assignments',
       name: 'Assignments - All Subjects',
       icon: '📝',
-      color: 'bg-orange-500',
+      color: 'bg-yellow-500',
       notes: []
     },
     {
@@ -107,11 +99,11 @@ const FifthSemesterETNotes = () => {
       name: 'Previous Year Questions',
       icon: '❓',
       color: 'bg-red-500',
-      notes: [{ title: 'All 5th Sem ET PYQs', url: '#' }]
+      notes: [{ title: 'BS-MS 4th Sem PYQs', url: '#' }]
     }
   ];
 
-  const { data: communityNotes, refetch: refreshNotes } = useCommunityNotes('btech', 'ET-5th Semester');
+  const { data: communityNotes, refetch: refreshNotes } = useCommunityNotes('btech', 'BSMS-4th Semester');
   const subjects = staticSubjects.map((sub) => ({
     ...sub,
     notes: [
@@ -119,13 +111,8 @@ const FifthSemesterETNotes = () => {
       ...(communityNotes || [])
         .filter((cn) => cn.subject === sub.name || cn.subject === sub.id)
         .map((cn) => ({
-          id: cn.id,
-          title: cn.title,
-          url: cn.file_url,
-          isCommunity: true,
-          fileName: cn.file_name,
-          uploadedBy: cn.uploaded_by,
-          userName: cn.user_name
+          id: cn.id, title: cn.title, url: cn.file_url, isCommunity: true,
+          fileName: cn.file_name, uploadedBy: cn.uploaded_by, userName: cn.user_name
         }))
     ]
   }));
@@ -142,7 +129,7 @@ const FifthSemesterETNotes = () => {
     }
   };
 
-  const syllabus = { title: '5th Sem ET Syllabus', url: '#' };
+  const syllabus = { title: 'BS-MS 4th Sem Syllabus', url: '#' };
   const handleDownload = (url: string, title: string) => smartDownload(url, title);
 
   if (selectedSubject) {
@@ -157,7 +144,7 @@ const FifthSemesterETNotes = () => {
               <ArrowLeft className="h-4 w-4 mr-2" /> Back to Subjects
             </Button>
             <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-2">{subject.name} 📚</h1>
-            <p className="text-muted-foreground text-lg">All notes for {subject.name} - 5th Semester ET B.Tech</p>
+            <p className="text-muted-foreground text-lg">All notes for {subject.name} - BS-MS 4th Semester</p>
           </motion.div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {subject.notes.map((note, index) => (
@@ -165,9 +152,7 @@ const FifthSemesterETNotes = () => {
                 <Card className="feature-card h-full border-2 border-transparent hover:border-primary/20 shadow-lg hover:shadow-xl transition-all duration-300">
                   <CardHeader>
                     <div className="flex items-center gap-3 mb-2">
-                      <div className={`w-10 h-10 ${subject.color} rounded-full flex items-center justify-center text-white text-lg`}>
-                        <FileText className="h-5 w-5" />
-                      </div>
+                      <div className={`w-10 h-10 ${subject.color} rounded-full flex items-center justify-center text-white text-lg`}><FileText className="h-5 w-5" /></div>
                       <Badge variant="secondary">PDF</Badge>
                     </div>
                     <CardTitle className="text-lg leading-tight">{note.title}</CardTitle>
@@ -176,13 +161,10 @@ const FifthSemesterETNotes = () => {
                   <CardContent>
                     <div className="flex gap-2">
                       <Button onClick={() => handleDownload(note.url, note.title)} className="flex-1 btn-hero" disabled={(note as any).url === '#'}>
-                        <Download className="h-4 w-4 mr-2" />
-                        {(note as any).url === '#' ? 'Coming Soon' : 'Download'}
+                        <Download className="h-4 w-4 mr-2" />{(note as any).url === '#' ? 'Coming Soon' : 'Download'}
                       </Button>
                       {(note as any).isCommunity && isOwner && (
-                        <Button variant="destructive" size="icon" onClick={() => handleDeleteCommunityNote((note as any).id)} title="Delete">
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
+                        <Button variant="destructive" size="icon" onClick={() => handleDeleteCommunityNote((note as any).id)} title="Delete"><Trash2 className="h-4 w-4" /></Button>
                       )}
                     </div>
                   </CardContent>
@@ -200,26 +182,25 @@ const FifthSemesterETNotes = () => {
       <Navbar />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} className="mb-8">
-          <Button onClick={() => navigate('/btech-notes/third-year/semester-5')} variant="outline" className="mb-4">
-            <ArrowLeft className="h-4 w-4 mr-2" /> Back to 5th Semester
+          <Button onClick={() => navigate('/bsms-notes/second-year')} variant="outline" className="mb-4">
+            <ArrowLeft className="h-4 w-4 mr-2" /> Back to 2nd Year
           </Button>
-          <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-2">5th Sem B.Tech ET Notes 📖</h1>
+          <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-2">BS-MS 4th Semester Notes ⚗️</h1>
         </motion.div>
 
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1, duration: 0.5 }}
-          className="mb-8 p-6 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-lg border-2 border-blue-200 dark:border-blue-800">
+          className="mb-8 p-6 bg-gradient-to-r from-purple-50 to-violet-50 dark:from-purple-900/20 dark:to-violet-900/20 rounded-lg border-2 border-purple-200 dark:border-purple-800">
           <div className="flex items-start gap-3">
-            <div className="flex-shrink-0 w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
+            <div className="flex-shrink-0 w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center">
               <span className="text-white text-sm font-bold">!</span>
             </div>
             <div>
-              <h3 className="text-lg font-semibold text-blue-800 dark:text-blue-200 mb-2">📚 Important Branch Information</h3>
-              <div className="space-y-2 text-sm text-blue-700 dark:text-blue-300">
-                <p><strong>✨ Only for ET students:</strong> These notes are specifically designed for Electronics & Telecommunication students.</p>
-                <p>• <strong>DSP:</strong> Focus on DFT/FFT and Z-transform. Practice numerical problems from standard textbooks.</p>
-                <p>• <strong>Microprocessor:</strong> Practice 8085/8086 programming — assembly language problems are frequently asked in exams.</p>
-                <p>• <strong>Control Systems:</strong> Practice block diagram reduction, root locus, and Bode plots.</p>
-                <p>• <strong>Assignments:</strong> Follow your professors' instructions and review assignments before exams.</p>
+              <h3 className="text-lg font-semibold text-purple-800 dark:text-purple-200 mb-2">📚 BS-MS 4th Semester Info</h3>
+              <div className="space-y-2 text-sm text-purple-700 dark:text-purple-300">
+                <p><strong>✨ For BS-MS students:</strong> 4th semester builds on your 3rd semester foundation with more advanced topics.</p>
+                <p>• <strong>Classical Mechanics:</strong> Lagrangian and Hamiltonian formulations, rigid body dynamics.</p>
+                <p>• <strong>Thermodynamics:</strong> Statistical mechanics, entropy, free energy, and partition functions.</p>
+                <p>• <strong>Electronics:</strong> Op-amps, oscillators, and basic digital circuits for experimental science.</p>
               </div>
             </div>
           </div>
@@ -228,13 +209,12 @@ const FifthSemesterETNotes = () => {
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 0.5 }} className="mb-8">
           <Card className="gradient-card border-2 border-primary/20 shadow-lg">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2"><FileText className="h-5 w-5" />5th Sem ET Syllabus</CardTitle>
-              <CardDescription>Official syllabus for 5th Semester B.Tech ET</CardDescription>
+              <CardTitle className="flex items-center gap-2"><FileText className="h-5 w-5" />BS-MS 4th Sem Syllabus</CardTitle>
+              <CardDescription>Official syllabus for BS-MS 4th Semester</CardDescription>
             </CardHeader>
             <CardContent>
               <Button onClick={() => handleDownload(syllabus.url, syllabus.title)} className="btn-hero" disabled={syllabus.url === '#'}>
-                <Download className="h-4 w-4 mr-2" />
-                {syllabus.url === '#' ? 'Coming Soon' : 'Download Syllabus'}
+                <Download className="h-4 w-4 mr-2" />{syllabus.url === '#' ? 'Coming Soon' : 'Download Syllabus'}
               </Button>
             </CardContent>
           </Card>
@@ -255,29 +235,12 @@ const FifthSemesterETNotes = () => {
                       <div className="border-t pt-4">
                         <div className="flex items-center justify-between cursor-pointer hover:bg-muted/50 rounded p-2 -m-2"
                           onClick={(e) => { e.stopPropagation(); toggleSubjectExpansion(subject.id); }}>
-                          <div className="flex items-center gap-2">
-                            <Play className="h-4 w-4 text-primary" />
-                            <span className="text-sm font-medium">Study Playlists</span>
-                          </div>
+                          <div className="flex items-center gap-2"><Play className="h-4 w-4 text-primary" /><span className="text-sm font-medium">Study Playlists</span></div>
                           {expandedSubjects.includes(subject.id) ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
                         </div>
                         {expandedSubjects.includes(subject.id) && (
                           <div className="mt-3 space-y-2 pl-2">
-                            {getSubjectPlaylists(subject.id).detailed.length > 0 && (
-                              <Button variant="ghost" size="sm" className="w-full justify-start text-xs h-8"
-                                onClick={(e) => { e.stopPropagation(); handlePlaylistClick(subject.id, 'detailed'); }}>
-                                📚 Detailed Playlists ({getSubjectPlaylists(subject.id).detailed.length})
-                              </Button>
-                            )}
-                            {getSubjectPlaylists(subject.id).oneshot.length > 0 && (
-                              <Button variant="ghost" size="sm" className="w-full justify-start text-xs h-8"
-                                onClick={(e) => { e.stopPropagation(); handlePlaylistClick(subject.id, 'oneshot'); }}>
-                                ⚡ One Shot Videos ({getSubjectPlaylists(subject.id).oneshot.length})
-                              </Button>
-                            )}
-                            {getSubjectPlaylists(subject.id).detailed.length === 0 && getSubjectPlaylists(subject.id).oneshot.length === 0 && (
-                              <p className="text-xs text-muted-foreground pl-2">Not available...</p>
-                            )}
+                            <p className="text-xs text-muted-foreground pl-2">Not available...</p>
                           </div>
                         )}
                       </div>
@@ -307,4 +270,4 @@ const FifthSemesterETNotes = () => {
   );
 };
 
-export default FifthSemesterETNotes;
+export default BSMSSem4Notes;

@@ -4,10 +4,11 @@ import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Upload, FileText, ShieldAlert } from 'lucide-react';
+import { Upload, FileText, ShieldAlert, GraduationCap } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import UploadMaterialForm from '@/components/admin/UploadMaterialForm';
 import MySubmissions from '@/components/admin/MySubmissions';
+import SubmitScholarshipForm from '@/components/admin/SubmitScholarshipForm';
 
 const AdminPortal = () => {
   const { user, isAdmin, loading } = useAuth();
@@ -58,15 +59,19 @@ const AdminPortal = () => {
             Admin Portal 🛡️
           </h1>
           <p className="text-muted-foreground text-lg">
-            Upload study materials for students. All uploads require owner approval before going live.
+            Upload study materials or add scholarships. All submissions require owner approval before going live.
           </p>
         </motion.div>
 
         <Tabs defaultValue="upload" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-2">
+          <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="upload" className="flex items-center gap-2">
               <Upload className="h-4 w-4" />
               Upload Material
+            </TabsTrigger>
+            <TabsTrigger value="scholarship" className="flex items-center gap-2">
+              <GraduationCap className="h-4 w-4" />
+              Add Scholarship
             </TabsTrigger>
             <TabsTrigger value="submissions" className="flex items-center gap-2">
               <FileText className="h-4 w-4" />
@@ -76,6 +81,10 @@ const AdminPortal = () => {
 
           <TabsContent value="upload">
             <UploadMaterialForm onUploadSuccess={() => setRefreshTrigger(prev => prev + 1)} />
+          </TabsContent>
+
+          <TabsContent value="scholarship">
+            <SubmitScholarshipForm onSuccess={() => setRefreshTrigger(prev => prev + 1)} />
           </TabsContent>
 
           <TabsContent value="submissions">

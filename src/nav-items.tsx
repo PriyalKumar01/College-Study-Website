@@ -73,6 +73,14 @@ import Profile from "./pages/Profile";
 import ATSFriendlyResume from "./pages/ATSFriendlyResume";
 import AdminPortal from "./pages/AdminPortal";
 import OwnerDashboard from "./pages/OwnerDashboard";
+import BSMSYears from "./pages/BSMSYears";
+import BSMSSecondYearNotes from "./pages/BSMSSecondYearNotes";
+import BSMSThirdYearNotes from "./pages/BSMSThirdYearNotes";
+import BSMSSem3Notes from "./pages/BSMSSem3Notes";
+import BSMSSem4Notes from "./pages/BSMSSem4Notes";
+import BSMSSem5Notes from "./pages/BSMSSem5Notes";
+import BSMSSem6Notes from "./pages/BSMSSem6Notes";
+import ScholarshipsPortal from "./pages/ScholarshipsPortal";
 
 export const navItems = [
   { to: "/", page: <Index /> },
@@ -149,5 +157,15 @@ export const navItems = [
   { to: "/ats-friendly-resume", page: <ATSFriendlyResume /> },
   { to: "/admin-portal", page: <AdminPortal /> },
   { to: "/owner-dashboard", page: <OwnerDashboard /> },
+  // BS-MS Routes
+  { to: "/bsms-notes", page: <BSMSYears /> },
+  { to: "/bsms-notes/second-year", page: <BSMSSecondYearNotes /> },
+  { to: "/bsms-notes/third-year", page: <BSMSThirdYearNotes /> },
+  { to: "/bsms/sem-3", page: <BSMSSem3Notes /> },
+  { to: "/bsms/sem-4", page: <BSMSSem4Notes /> },
+  { to: "/bsms/sem-5", page: <BSMSSem5Notes /> },
+  { to: "/bsms/sem-6", page: <BSMSSem6Notes /> },
+  // Scholarship Portal
+  { to: "/scholarship-portal", page: <ScholarshipsPortal /> },
   { to: "*", page: <NotFound /> },
 ];

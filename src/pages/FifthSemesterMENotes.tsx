@@ -1,16 +1,13 @@
-
-import { useCommunityNotes } from '@/hooks/useCommunityNotes';
-import { useAuth } from '@/contexts/AuthContext';
-import { supabase } from '@/integrations/supabase/client';
-import { useToast } from '@/hooks/use-toast';
-import { Trash2 } from 'lucide-react';
-
 import { useState } from 'react';
 import { motion } from 'framer-motion';
+import { useAuth } from '@/contexts/AuthContext';
+import { useCommunityNotes } from '@/hooks/useCommunityNotes';
+import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Download, ArrowLeft, FileText, Play, ChevronDown, ChevronRight, Share2, BookOpen } from 'lucide-react';
+import { Download, ArrowLeft, FileText, Play, ChevronDown, ChevronRight, Trash2 } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import { PlaylistModal } from '@/components/PlaylistModal';
@@ -18,49 +15,39 @@ import { smartDownload } from '@/lib/downloadUtils';
 
 const FifthSemesterMENotes = () => {
   const navigate = useNavigate();
-
-  const { data: communityNotes, refetch: refreshNotes } = useCommunityNotes('btech', 'ME-5th Semester');
-  const { user, isOwner } = useAuth();
+  const location = useLocation();
+  const { isOwner } = useAuth();
   const { toast } = useToast();
 
-  const handleDeleteCommunityNote = async (id: string, fileName: string) => {
-    if (!user || !isOwner) return;
-    try {
-      if (fileName) {
-        const { error: storageError } = await supabase.storage.from('study-materials').remove([fileName]);
-        if (storageError) console.error('Storage deletion error:', storageError);
-      }
-      const { error: dbError } = await supabase.from('notes').delete().eq('id', id);
-      if (dbError) throw dbError;
-      toast({ title: "Deleted securely", description: "Material removed successfully." });
-      refreshNotes();
-    } catch (error: any) {
-      toast({ title: "Deletion failed", description: error.message, variant: 'destructive' });
-    }
-  };
-
-  const location = useLocation();
-  const [selectedSubject, setSelectedSubject] = useState<string | null>(null);
-  const [showPlaylistModal, setShowPlaylistModal] = useState(false);
-  const [selectedPlaylistType, setSelectedPlaylistType] = useState<'detailed' | 'oneshot'>('detailed');
-  const [selectedSubjectForPlaylist, setSelectedSubjectForPlaylist] = useState<string>('');
-  const [expandedSubjects, setExpandedSubjects] = useState<string[]>([]);
-
-  const handleWhatsAppShare = (subjectName: string, subjectId: string) => {
-    const shareUrl = `${window.location.origin}${location.pathname}?subject=${encodeURIComponent(subjectId)}`;
+  const handleWhatsAppShare = (subjectName: string) => {
+    const shareUrl = `${window.location.origin}${location.pathname}?subject=${encodeURIComponent(subjectName)}`;
     const message = `Check out ${subjectName} notes for 5th Semester ME on College Study Hub: ${shareUrl}`;
     window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, '_blank');
   };
 
+  const [selectedSubject, setSelectedSubject] = useState<string | null>(null);
+  const [showPlaylistModal, setShowPlaylistModal] = useState(false);
+  const [selectedPlaylistType, setSelectedPlaylistType] = useState<'detailed' | 'oneshot' | 'workshop'>('detailed');
+  const [selectedSubjectForPlaylist, setSelectedSubjectForPlaylist] = useState<string>('');
+  const [expandedSubjects, setExpandedSubjects] = useState<string[]>([]);
+
+  const subjectPlaylists: Record<string, { detailed: any[]; oneshot: any[] }> = {
+    math4: { detailed: [], oneshot: [] },
+    'heat-transfer': { detailed: [], oneshot: [] },
+    'machine-design': { detailed: [], oneshot: [] },
+    'theory-of-machines': { detailed: [], oneshot: [] },
+    iem: { detailed: [], oneshot: [] }
+  };
+
   const toggleSubjectExpansion = (subjectId: string) => {
-    setExpandedSubjects(prev => 
+    setExpandedSubjects(prev =>
       prev.includes(subjectId) ? prev.filter(id => id !== subjectId) : [...prev, subjectId]
     );
   };
 
   const handlePlaylistClick = (subjectId: string, type: 'detailed' | 'oneshot') => {
-    const subject = subjects.find(s => s.id === subjectId);
-    if (subject?.playlists?.[type]?.length > 0) {
+    const playlistKey = subjectId as keyof typeof subjectPlaylists;
+    if (subjectPlaylists[playlistKey] && subjectPlaylists[playlistKey][type].length > 0) {
       setSelectedSubjectForPlaylist(subjectId);
       setSelectedPlaylistType(type);
       setShowPlaylistModal(true);
@@ -68,40 +55,51 @@ const FifthSemesterMENotes = () => {
   };
 
   const getSubjectPlaylists = (subjectId: string) => {
-    const subject = subjects.find(s => s.id === subjectId);
-    return subject?.playlists || { detailed: [], oneshot: [] };
+    const playlistKey = subjectId as keyof typeof subjectPlaylists;
+    return subjectPlaylists[playlistKey] || { detailed: [], oneshot: [] };
   };
 
   const staticSubjects = [
     {
-      id: 'ht',
+      id: 'math4',
+      name: 'Engineering Mathematics-IV',
+      icon: '📐',
+      color: 'bg-purple-500',
+      notes: [{ title: 'EM-IV Notes', url: '#' }]
+    },
+    {
+      id: 'heat-transfer',
       name: 'Heat Transfer',
       icon: '🔥',
       color: 'bg-orange-500',
-      playlists: {
-        detailed: [{ title: 'Heat Transfer Complete', url: '#', recommended: true }],
-        oneshot: []
-      },
-      notes: [{ title: 'Heat Transfer Complete Notes', url: '#' }]
+      notes: [{ title: 'Heat Transfer Notes', url: '#' }]
     },
     {
-      id: 'md',
+      id: 'machine-design',
       name: 'Machine Design',
       icon: '⚙️',
       color: 'bg-blue-500',
-      playlists: {
-        detailed: [{ title: 'Machine Design Complete', url: '#', recommended: true }],
-        oneshot: []
-      },
-      notes: [{ title: 'MD Complete Notes', url: '#' }]
+      notes: [{ title: 'Machine Design Notes', url: '#' }]
     },
     {
-      id: 'openElective',
-      name: 'Open Elective',
-      icon: '📚',
-      color: 'bg-yellow-400',
-      isOpenElective: true,
-      playlists: { detailed: [], oneshot: [] },
+      id: 'theory-of-machines',
+      name: 'Theory of Machines-II',
+      icon: '🔧',
+      color: 'bg-green-500',
+      notes: [{ title: 'Theory of Machines-II Notes', url: '#' }]
+    },
+    {
+      id: 'iem',
+      name: 'Industrial Engineering & Management',
+      icon: '🏭',
+      color: 'bg-teal-500',
+      notes: [{ title: 'IEM Notes', url: '#' }]
+    },
+    {
+      id: 'assignments',
+      name: 'Assignments - All Subjects',
+      icon: '📝',
+      color: 'bg-yellow-500',
       notes: []
     },
     {
@@ -109,19 +107,18 @@ const FifthSemesterMENotes = () => {
       name: 'Previous Year Questions',
       icon: '❓',
       color: 'bg-red-500',
-      playlists: { detailed: [], oneshot: [] },
-      notes: []
+      notes: [{ title: 'All 5th Sem ME PYQs', url: '#' }]
     }
   ];
 
-  
-  const subjects: any[] = staticSubjects.map(sub => ({
+  const { data: communityNotes, refetch: refreshNotes } = useCommunityNotes('btech', 'ME-5th Semester');
+  const subjects = staticSubjects.map((sub) => ({
     ...sub,
     notes: [
       ...sub.notes,
       ...(communityNotes || [])
-        .filter(cn => cn.subject === sub.name || cn.subject === sub.id)
-        .map(cn => ({
+        .filter((cn) => cn.subject === sub.name || cn.subject === sub.id)
+        .map((cn) => ({
           id: cn.id,
           title: cn.title,
           url: cn.file_url,
@@ -133,42 +130,56 @@ const FifthSemesterMENotes = () => {
     ]
   }));
 
-  const handleDownload = (url: string) => smartDownload(url);
+  const handleDeleteCommunityNote = async (id: string) => {
+    if (!window.confirm('Delete this user-uploaded material?')) return;
+    try {
+      const { error } = await supabase.from('notes').delete().eq('id', id);
+      if (error) throw error;
+      toast({ title: 'Deleted', description: 'Material removed successfully.' });
+      refreshNotes();
+    } catch (error: any) {
+      toast({ title: 'Error', description: error.message, variant: 'destructive' });
+    }
+  };
+
+  const syllabus = { title: '5th Sem ME Syllabus', url: '#' };
+  const handleDownload = (url: string, title: string) => smartDownload(url, title);
 
   if (selectedSubject) {
     const subject = subjects.find(s => s.id === selectedSubject);
     if (!subject) return null;
-
     return (
       <div className="min-h-screen bg-gradient-hero">
         <Navbar />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} className="mb-8">
             <Button onClick={() => setSelectedSubject(null)} variant="outline" className="mb-4">
               <ArrowLeft className="h-4 w-4 mr-2" /> Back to Subjects
             </Button>
             <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-2">{subject.name} 📚</h1>
-            <p className="text-muted-foreground text-lg">5th Semester ME</p>
+            <p className="text-muted-foreground text-lg">All notes for {subject.name} - 5th Semester ME B.Tech</p>
           </motion.div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {subject.notes.map((note, index) => (
-              <motion.div key={index} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.1 }} whileHover={{ scale: 1.02 }}>
-                <Card className="feature-card h-full relative">
-
+              <motion.div key={index} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.1, duration: 0.5 }} whileHover={{ scale: 1.02 }}>
+                <Card className="feature-card h-full border-2 border-transparent hover:border-primary/20 shadow-lg hover:shadow-xl transition-all duration-300">
                   <CardHeader>
                     <div className="flex items-center gap-3 mb-2">
-                      <div className={`w-10 h-10 ${subject.color} rounded-full flex items-center justify-center text-white text-lg`}>
-                        <FileText className="h-5 w-5" />
-                      </div>
+                      <div className={`w-10 h-10 ${subject.color} rounded-full flex items-center justify-center text-white text-lg`}><FileText className="h-5 w-5" /></div>
                       <Badge variant="secondary">PDF</Badge>
                     </div>
                     <CardTitle className="text-lg leading-tight">{note.title}</CardTitle>
                     <CardDescription>{subject.name} study material</CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <Button onClick={() => handleDownload(note.url)} className="w-full btn-hero" disabled={note.url === '#'}>
-                      <Download className="h-4 w-4 mr-2" /> {note.url === '#' ? 'Coming Soon' : 'Download PDF'}
-                    </Button>
+                    <div className="flex gap-2">
+                      <Button onClick={() => handleDownload(note.url, note.title)} className="flex-1 btn-hero" disabled={(note as any).url === '#'}>
+                        <Download className="h-4 w-4 mr-2" />{(note as any).url === '#' ? 'Coming Soon' : 'Download'}
+                      </Button>
+                      {(note as any).isCommunity && isOwner && (
+                        <Button variant="destructive" size="icon" onClick={() => handleDeleteCommunityNote((note as any).id)} title="Delete"><Trash2 className="h-4 w-4" /></Button>
+                      )}
+                    </div>
                   </CardContent>
                 </Card>
               </motion.div>
@@ -183,108 +194,109 @@ const FifthSemesterMENotes = () => {
     <div className="min-h-screen bg-gradient-hero">
       <Navbar />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <Button variant="outline" onClick={() => navigate('/btech-notes/third-year/semester-5')} className="mb-4">
-          <ArrowLeft className="h-4 w-4 mr-2" /> Back to Branches
-        </Button>
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} className="mb-8">
+          <Button onClick={() => navigate('/btech-notes/third-year/semester-5')} variant="outline" className="mb-4">
+            <ArrowLeft className="h-4 w-4 mr-2" /> Back to 5th Semester
+          </Button>
+          <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-2">5th Sem B.Tech ME Notes 📖</h1>
+        </motion.div>
 
-        <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-12">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4 text-foreground">5th Semester ME Notes</h1>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">Mechanical Engineering study materials</p>
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1, duration: 0.5 }}
+          className="mb-8 p-6 bg-gradient-to-r from-orange-50 to-amber-50 dark:from-orange-900/20 dark:to-amber-900/20 rounded-lg border-2 border-orange-200 dark:border-orange-800">
+          <div className="flex items-start gap-3">
+            <div className="flex-shrink-0 w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center">
+              <span className="text-white text-sm font-bold">!</span>
+            </div>
+            <div>
+              <h3 className="text-lg font-semibold text-orange-800 dark:text-orange-200 mb-2">📚 Important Branch Information</h3>
+              <div className="space-y-2 text-sm text-orange-700 dark:text-orange-300">
+                <p><strong>✨ Only for ME students:</strong> These notes are specifically designed for Mechanical Engineering students.</p>
+                <p>• <strong>Heat Transfer:</strong> Understand conduction, convection, and radiation. Numericals on fins and heat exchangers are commonly asked.</p>
+                <p>• <strong>Machine Design:</strong> Focus on design of shafts, keys, couplings and fasteners. Practice numerical problems.</p>
+                <p>• <strong>Theory of Machines-II:</strong> Dynamic analysis of mechanisms — balancing, vibration, governors are key topics.</p>
+                <p>• <strong>Assignments:</strong> Follow your professors' instructions and review assignments before exams.</p>
+              </div>
+            </div>
+          </div>
+        </motion.div>
+
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 0.5 }} className="mb-8">
+          <Card className="gradient-card border-2 border-primary/20 shadow-lg">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2"><FileText className="h-5 w-5" />5th Sem ME Syllabus</CardTitle>
+              <CardDescription>Official syllabus for 5th Semester B.Tech ME</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Button onClick={() => handleDownload(syllabus.url, syllabus.title)} className="btn-hero" disabled={syllabus.url === '#'}>
+                <Download className="h-4 w-4 mr-2" />{syllabus.url === '#' ? 'Coming Soon' : 'Download Syllabus'}
+              </Button>
+            </CardContent>
+          </Card>
         </motion.div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {subjects.map((subject, index) => {
-            const playlists = getSubjectPlaylists(subject.id);
-            const isExpanded = expandedSubjects.includes(subject.id);
-            
-            if (subject.isOpenElective) {
-              return (
-                <motion.div key={subject.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.1 }} whileHover={{ scale: 1.02 }}>
-                  <Card className="feature-card h-full border-2 border-yellow-400 bg-yellow-50/50 dark:bg-yellow-900/20 relative">
-
-                    <CardHeader>
-                      <div className="flex items-center justify-between mb-3">
-                        <div className={`w-16 h-16 ${subject.color} rounded-full flex items-center justify-center text-2xl`}>
-                          {subject.icon}
+          {subjects.map((subject, index) => (
+            <motion.div key={subject.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: (index + 1) * 0.1, duration: 0.5 }} whileHover={{ scale: 1.02 }}>
+              <Card className="feature-card h-full cursor-pointer transition-all duration-300 border-2 border-transparent hover:border-primary/20 shadow-lg hover:shadow-xl" onClick={() => setSelectedSubject(subject.id)}>
+                <CardHeader>
+                  <div className={`w-16 h-16 ${subject.color} rounded-full flex items-center justify-center text-white text-2xl mb-4 mx-auto shadow-lg`}>{subject.icon}</div>
+                  <CardTitle className="text-lg text-center">{subject.name}</CardTitle>
+                  <CardDescription className="text-center">{subject.notes.length} notes available</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex flex-col gap-3">
+                    {subject.id !== 'pyqs' && subject.id !== 'assignments' && (
+                      <div className="border-t pt-4">
+                        <div className="flex items-center justify-between cursor-pointer hover:bg-muted/50 rounded p-2 -m-2"
+                          onClick={(e) => { e.stopPropagation(); toggleSubjectExpansion(subject.id); }}>
+                          <div className="flex items-center gap-2">
+                            <Play className="h-4 w-4 text-primary" />
+                            <span className="text-sm font-medium">Study Playlists</span>
+                          </div>
+                          {expandedSubjects.includes(subject.id) ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
                         </div>
-                        <Button variant="ghost" size="icon" className="text-green-600 hover:bg-green-50" onClick={() => handleWhatsAppShare(subject.name, subject.id)}>
-                          <Share2 className="h-4 w-4" />
-                        </Button>
-                      </div>
-                      <CardTitle className="text-xl">{subject.name}</CardTitle>
-                      <CardDescription>Choose your elective subject</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <Button className="w-full btn-hero" onClick={() => navigate('/fifth-semester-cse-open-electives')}>
-                        <BookOpen className="h-4 w-4 mr-2" /> View Open Electives
-                      </Button>
-                    </CardContent>
-                  </Card>
-                </motion.div>
-              );
-            }
-            
-            return (
-              <motion.div key={subject.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.1 }} whileHover={{ scale: 1.02 }}>
-                <Card className="feature-card h-full relative">
-
-                  <CardHeader>
-                    <div className="flex items-center justify-between mb-3">
-                      <div className={`w-16 h-16 ${subject.color} rounded-full flex items-center justify-center text-white text-2xl`}>
-                        {subject.icon}
-                      </div>
-                      <Button variant="ghost" size="icon" className="text-green-600 hover:bg-green-50" onClick={() => handleWhatsAppShare(subject.name, subject.id)}>
-                        <Share2 className="h-4 w-4" />
-                      </Button>
-                    </div>
-                    <CardTitle className="text-xl">{subject.name}</CardTitle>
-                    <CardDescription>{subject.notes.length} PDF Notes Available</CardDescription>
-                  </CardHeader>
-                  <CardContent className="space-y-3">
-                    <Button className="w-full btn-hero" onClick={() => setSelectedSubject(subject.id)}>
-                      <FileText className="h-4 w-4 mr-2" /> View Notes
-                    </Button>
-                    
-                    {(playlists.detailed.length > 0 || playlists.oneshot.length > 0) && (
-                      <div className="border-t pt-3">
-                        <Button variant="ghost" className="w-full justify-between p-2 h-auto" onClick={() => toggleSubjectExpansion(subject.id)}>
-                          <span className="flex items-center gap-2 text-sm font-medium">
-                            <Play className="h-4 w-4" /> Study Playlists
-                          </span>
-                          {isExpanded ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
-                        </Button>
-                        
-                        {isExpanded && (
-                          <div className="mt-2 space-y-2 pl-2">
-                            {playlists.detailed.length > 0 && (
-                              <Button variant="outline" size="sm" className="w-full justify-start" onClick={() => handlePlaylistClick(subject.id, 'detailed')}>
-                                <Play className="h-3 w-3 mr-2" /> Detailed Playlists ({playlists.detailed.length})
+                        {expandedSubjects.includes(subject.id) && (
+                          <div className="mt-3 space-y-2 pl-2">
+                            {getSubjectPlaylists(subject.id).detailed.length > 0 && (
+                              <Button variant="ghost" size="sm" className="w-full justify-start text-xs h-8"
+                                onClick={(e) => { e.stopPropagation(); handlePlaylistClick(subject.id, 'detailed'); }}>
+                                📚 Detailed Playlists ({getSubjectPlaylists(subject.id).detailed.length})
                               </Button>
                             )}
-                            {playlists.oneshot.length > 0 && (
-                              <Button variant="outline" size="sm" className="w-full justify-start" onClick={() => handlePlaylistClick(subject.id, 'oneshot')}>
-                                <Play className="h-3 w-3 mr-2" /> One Shot Videos ({playlists.oneshot.length})
+                            {getSubjectPlaylists(subject.id).oneshot.length > 0 && (
+                              <Button variant="ghost" size="sm" className="w-full justify-start text-xs h-8"
+                                onClick={(e) => { e.stopPropagation(); handlePlaylistClick(subject.id, 'oneshot'); }}>
+                                ⚡ One Shot Videos ({getSubjectPlaylists(subject.id).oneshot.length})
                               </Button>
+                            )}
+                            {getSubjectPlaylists(subject.id).detailed.length === 0 && getSubjectPlaylists(subject.id).oneshot.length === 0 && (
+                              <p className="text-xs text-muted-foreground pl-2">Not available...</p>
                             )}
                           </div>
                         )}
                       </div>
                     )}
-                  </CardContent>
-                </Card>
-              </motion.div>
-            );
-          })}
+                    <div className="flex items-center justify-between">
+                      <Badge variant="secondary">{subject.notes.length} Files</Badge>
+                      <Button variant="outline" size="sm" onClick={() => setSelectedSubject(subject.id)}>View Notes</Button>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+          ))}
         </div>
-      </div>
 
-      <PlaylistModal
-        isOpen={showPlaylistModal}
-        onClose={() => setShowPlaylistModal(false)}
-        title={subjects.find(s => s.id === selectedSubjectForPlaylist)?.name || ''}
-        playlists={getSubjectPlaylists(selectedSubjectForPlaylist)[selectedPlaylistType]}
-        type={selectedPlaylistType}
-      />
+        {showPlaylistModal && (
+          <PlaylistModal
+            isOpen={showPlaylistModal}
+            onClose={() => setShowPlaylistModal(false)}
+            title={subjects.find(s => s.id === selectedSubjectForPlaylist)?.name || ''}
+            playlists={selectedSubjectForPlaylist ? getSubjectPlaylists(selectedSubjectForPlaylist)[selectedPlaylistType] : []}
+            type={selectedPlaylistType}
+          />
+        )}
+      </div>
     </div>
   );
 };

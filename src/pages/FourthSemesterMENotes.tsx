@@ -21,7 +21,7 @@ const FourthSemesterNotes = () => {
 
   const handleWhatsAppShare = (subjectName: string) => {
     const shareUrl = `${window.location.origin}${location.pathname}?subject=${encodeURIComponent(subjectName)}`;
-    const message = `Check out ${subjectName} notes for 4th Semester CSE/IT on College Study Hub: ${shareUrl}`;
+    const message = `Check out ${subjectName} notes for 4th Semester ME on College Study Hub: ${shareUrl}`;
     window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, '_blank');
   };
   const [selectedSubject, setSelectedSubject] = useState<string | null>(null);
@@ -30,46 +30,7 @@ const FourthSemesterNotes = () => {
   const [selectedSubjectForPlaylist, setSelectedSubjectForPlaylist] = useState<string>('');
   const [expandedSubjects, setExpandedSubjects] = useState<string[]>([]);
   
-  const subjectPlaylists = {
-    ppl: {
-      detailed: [
-        { title: 'Principal of Programming Language 1', url: 'https://youtube.com/playlist?list=PL-JvKqQx2AtdIkEFDrqsHyKWzb5PWniI1&si=UAZUusqLpaAJZDPk' },
-        { title: 'Principal of Programming Language 2', url: 'https://youtube.com/playlist?list=PLbWkMgLvWbDF3bErg6Ejo8d1QtTSqtWwN&si=1Z2lbiTm8JClSOEa' },
-        { title: 'Principal of Programming Language 3', url: 'https://youtube.com/playlist?list=PLwheXbz_XBtltsxCn00Hkdc2Dqa9t6wNd&si=WQ5lH-A5EQB1sW_Z' },
-        { title: 'Principal of Programming Language 4', url: 'https://youtube.com/playlist?list=PLTo1TmBz2ekof8VsYaoTxP-9VgJ9P-dTO&si=55vMVnCXKNwTVDnp' }
-      ],
-      oneshot: []
-    },
-    se: {
-      detailed: [
-        { title: 'Software Engineering Complete (Best)', url: 'https://youtube.com/playlist?list=PLxCzCOWd7aiEed7SKZBnC6ypFDWYLRvB2&si=V_wg1F_QDMAzhqbJ', recommended: true },
-        { title: 'Software Engineering Advanced', url: 'https://youtube.com/playlist?list=PLvu-LC7buiaXLZ6P6ePiAhAI1uTWfyVXZ&si=68I7AzesTJAQhrGc' },
-        { title: 'Software Engineering Comprehensive', url: 'https://youtube.com/playlist?list=PLqcuf9-ILPYA-OGMephZ0U9c8JvdefE0X&si=o6yJSSIx9o4kvaKL' }
-      ],
-      oneshot: [
-        { title: 'Software Engineering One Shot', url: 'https://youtu.be/NlLM3sVF8wY?si=z9MHr4P7KoiPxX5-' }
-      ]
-    },
-    wt: {
-      detailed: [
-        { title: 'Web Technology Complete', url: 'https://youtube.com/playlist?list=PLrjkTql3jnm8d1ddpVKifXO_fPjSKATCp&si=mK0fsnBGAZaW8hYN' },
-        { title: 'Web Technology Advanced', url: 'https://youtube.com/playlist?list=PL49mRA0Y_C8u2dOqXa-f9KSoSx9XICZ1E&si=lv0RPacby30ubHRf' }
-      ],
-      oneshot: [
-        { title: 'Web Technology One Shot', url: 'https://youtube.com/playlist?list=PLR5USSocuZ5eMnOLgS57Uuemx6bGV2lan&si=dazqDSAIkgHk0XPm' }
-      ]
-    },
-    os: {
-      detailed: [
-        { title: 'Operating System Complete (Best)', url: 'https://youtube.com/playlist?list=PLxCzCOWd7aiGz9donHRrE9I3Mwn6XdP8p&si=Q37KNf4AAP4Qk8oq', recommended: true },
-        { title: 'Operating System Advanced', url: 'https://youtube.com/playlist?list=PLBlnK6fEyqRiVhbXDGLXDk_OQAeuVcp2O&si=qbZZeUys9gnBM8_7' },
-        { title: 'Operating System Comprehensive', url: 'https://youtube.com/playlist?list=PLG9aCp4uE-s17rFjWM8KchGlffXgOzzVP&si=23zhPsNlTjwU4OGV' }
-      ],
-      oneshot: [
-        { title: 'Operating System One Shot (Best)', url: 'https://youtu.be/xw_OuOhjauw?si=MzjKrv7cY2vswkg5', recommended: true },
-        { title: 'Operating System One Shot 2', url: 'https://youtu.be/009FHqBo87Q?si=1SzNKk9iZR8TAZms' }
-      ]
-    },
+  const subjectPlaylists: Record<string, { detailed: any[]; oneshot: any[] }> = {
     em: {
       detailed: [
         { title: 'Economics and Management Complete (Best)', url: 'https://youtube.com/playlist?list=PLsh2FvSr3n7cjVNULjFnVvI_DMVoMYG9o&si=iQiHHTspvuH4MEOy', recommended: true },
@@ -81,20 +42,32 @@ const FourthSemesterNotes = () => {
       detailed: [
         { title: 'Fourier Integral Playlist by-Fearless (Best)', url: 'https://youtube.com/playlist?list=PLhSp9OSVmeyITz_e6F9YiyongjaCryasK&si=xhAnYIkAQTe5jAw-', recommended: true },
         { title: 'Complex Variable (Complete Playlist) by-Fearless (Best)', url: 'https://youtube.com/playlist?list=PL5Dqs90qDljVCPXMA2wwA9oIV3blxLLQ6&si=zRcZEv8D7dK-CP2M', recommended: true },
-        { title: 'Unit 3 Complex Intigration Playlist By-Fearless (Best)', url: 'https://youtube.com/playlist?list=PL5Dqs90qDljWlvUJ-YmjMsjkAANOagCk7&si=o7JtHhGSY40pDjWY', recommended: true },
-        { title: 'Unit 4 Curve Fitting, Correlation & Regrassion by-Gajendra Prohit (Best)', url: 'https://youtube.com/playlist?list=PLU6SqdYcYsfL1Mrdj7bs2A6bQOU7FMqKX&si=wFlWnVRj-HEH7qAw', recommended: true },
-        { title: 'Unit 5 Probability & Distribution Playlist by- MKS (Best)', url: 'https://youtube.com/playlist?list=PLhSp9OSVmeyLB62_-fT9VNbjRkDEzJzzp&si=FE8RI4spBCakwAgh', recommended: true },
-        { title: 'FITTING OF CURVE IN STATISTICS - BY TIKLE\'S ACADEMY', url: 'https://youtube.com/playlist?list=PLNKD1qB9pptvgPP_zrKXa64SPYtKQpy-C&si=mOUPo8QHIhN5w9md' },
-        { title: 'Curve Fitting, Correlation by-Fearless', url: 'https://youtube.com/playlist?list=PL5Dqs90qDljVF5-HxU829qWUMRFwDAu3v&si=YqbaDiSVfO_BQrlN' },
-        { title: 'Complex Integer Playlist By-Pradeep Giri', url: 'https://youtube.com/playlist?list=PLT3bOBUU3L9ibhrkzWki0_tfrugS4rvnJ&si=fOLiA6fhcpYafFnO' },
         { title: 'Laplace Transform & Fourier Series By-Pradeep Giri (Best)', url: 'https://youtube.com/playlist?list=PLT3bOBUU3L9jr5vb-zUd4GUFaexGDiRc9&si=uMG3aPDDGVRo_QOQ', recommended: true },
-        { title: 'Hypothesis Testing Playlist By-Fearless (Best)', url: 'https://youtube.com/playlist?list=PL5Dqs90qDljWze2qPIgZv-CtBJYHEIvqa&si=yrKbGQpWpqNZeDwi', recommended: true },
-        { title: 'Inverse Laplace Transform Playlist By-Pradeep Giri', url: 'https://youtube.com/playlist?list=PLT3bOBUU3L9iHqXEfSTmpmOpEkUmj-Qay&si=xiSCdE-W81UTMxg6' },
-        { title: 'Fourier Transform By-Gajendra Prohit', url: 'https://youtube.com/playlist?list=PLU6SqdYcYsfK_FysPwDqaoUKhTqms_aEg&si=4iqfG5zjBHpBMQU_' }
-     ],
+        { title: 'Hypothesis Testing Playlist By-Fearless (Best)', url: 'https://youtube.com/playlist?list=PL5Dqs90qDljWze2qPIgZv-CtBJYHEIvqa&si=yrKbGQpWpqNZeDwi', recommended: true }
+      ],
       oneshot: [
         { title: 'Engineering Mathematics-III One Shot', url: 'https://youtu.be/_Hjp6aFJO40?si=L8tp3IgTfCBFhxEz' }
       ]
+    },
+    'fluid-mechanics': {
+      detailed: [
+        { title: 'Fluid Mechanics Complete Playlist (Best)', url: 'https://youtube.com/playlist?list=PLgwJf8NK-2e5JaGgTdMsCHUzStEoPXH7p&si=example', recommended: true }
+      ],
+      oneshot: []
+    },
+    'engg-materials': {
+      detailed: [],
+      oneshot: []
+    },
+    'heat-mass-transfer': {
+      detailed: [
+        { title: 'Heat & Mass Transfer Complete Playlist', url: 'https://youtube.com/playlist?list=PLgwJf8NK-2e5JaGgTdMsCHUzStEoPXH7p&si=example2', recommended: true }
+      ],
+      oneshot: []
+    },
+    'dynamics-of-machines': {
+      detailed: [],
+      oneshot: []
     }
   };
 
@@ -156,7 +129,7 @@ const FourthSemesterNotes = () => {
       ]
     },
     {
-      id: 'fluid-mechanics',
+      id: 'fluid-mechanics', 
       name: 'Fuid Mechanics',
       icon: '🖥️',
       color: 'bg-green-500',
@@ -218,7 +191,7 @@ const FourthSemesterNotes = () => {
     }
   ];
 
-  const { data: communityNotes, refetch: refreshNotes } = useCommunityNotes('btech', 'CSE-4th Semester');
+  const { data: communityNotes, refetch: refreshNotes } = useCommunityNotes('btech', 'ME-4th Semester');
   const subjects = staticSubjects.map((sub) => ({
     ...sub,
     notes: [
