@@ -336,6 +336,75 @@ export type Database = {
         }
         Relationships: []
       }
+      scholarships: {
+        Row: {
+          amount: string
+          amount_num: number
+          apply_url: string
+          approval_status: string
+          created_at: string | null
+          deadline: string
+          description: string
+          id: string
+          income: string
+          level: string
+          marks: string
+          name: string
+          org: string
+          status: string
+          streams: string[]
+          submitted_by: string | null
+          submitted_by_email: string | null
+          tags: string[]
+          type: string
+          who: string[]
+        }
+        Insert: {
+          amount: string
+          amount_num?: number
+          apply_url: string
+          approval_status?: string
+          created_at?: string | null
+          deadline: string
+          description: string
+          id?: string
+          income?: string
+          level?: string
+          marks?: string
+          name: string
+          org: string
+          status?: string
+          streams?: string[]
+          submitted_by?: string | null
+          submitted_by_email?: string | null
+          tags?: string[]
+          type?: string
+          who?: string[]
+        }
+        Update: {
+          amount?: string
+          amount_num?: number
+          apply_url?: string
+          approval_status?: string
+          created_at?: string | null
+          deadline?: string
+          description?: string
+          id?: string
+          income?: string
+          level?: string
+          marks?: string
+          name?: string
+          org?: string
+          status?: string
+          streams?: string[]
+          submitted_by?: string | null
+          submitted_by_email?: string | null
+          tags?: string[]
+          type?: string
+          who?: string[]
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
