@@ -432,6 +432,90 @@ const OwnerDashboard = () => {
             )}
           </TabsContent>
 
+          {/* TAB: Scholarships */}
+          <TabsContent value="scholarships" className="space-y-4">
+            <div className="flex gap-2 flex-wrap">
+              {(['all', 'pending', 'approved'] as const).map(f => (
+                <Button
+                  key={f}
+                  size="sm"
+                  variant={scholarshipFilter === f ? 'default' : 'outline'}
+                  onClick={() => setScholarshipFilter(f)}
+                  className="capitalize"
+                >
+                  {f} ({f === 'all' ? scholarships.length : scholarships.filter(s => s.approval_status === f).length})
+                </Button>
+              ))}
+            </div>
+
+            {(() => {
+              const list = scholarships.filter(s =>
+                scholarshipFilter === 'all' ? true : s.approval_status === scholarshipFilter
+              );
+              if (list.length === 0) {
+                return (
+                  <Card className="gradient-card text-center py-12">
+                    <CardContent>
+                      <GraduationCap className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
+                      <h3 className="text-xl font-semibold mb-2">No scholarships found</h3>
+                      <p className="text-muted-foreground">
+                        Admins can submit new scholarships from the Admin Portal.
+                      </p>
+                    </CardContent>
+                  </Card>
+                );
+              }
+              return (
+                <div className="space-y-3">
+                  {list.map(sc => (
+                    <Card key={sc.id} className={`feature-card border-l-4 ${
+                      sc.approval_status === 'pending' ? 'border-l-yellow-500' :
+                      sc.approval_status === 'approved' ? 'border-l-green-500' : 'border-l-red-500'
+                    }`}>
+                      <CardContent className="p-4">
+                        <div className="flex flex-col md:flex-row md:items-start justify-between gap-3">
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-2 mb-1 flex-wrap">
+                              <h4 className="font-semibold text-sm">{sc.name}</h4>
+                              <Badge variant="outline" className="text-xs capitalize">{sc.approval_status}</Badge>
+                            </div>
+                            <p className="text-xs text-muted-foreground mb-1">
+                              {sc.org} • {sc.amount} • Deadline: {sc.deadline}
+                            </p>
+                            <p className="text-xs text-muted-foreground line-clamp-2">{sc.description}</p>
+                            {sc.submitted_by_email && (
+                              <p className="text-[11px] text-muted-foreground mt-1">
+                                Submitted by: {sc.submitted_by_email}
+                              </p>
+                            )}
+                          </div>
+                          <div className="flex gap-2 flex-wrap">
+                            <Button variant="outline" size="sm" onClick={() => window.open(sc.apply_url, '_blank')} title="Visit">
+                              <ExternalLink className="h-4 w-4" />
+                            </Button>
+                            {sc.approval_status === 'pending' && (
+                              <>
+                                <Button size="sm" className="bg-green-600 hover:bg-green-700" onClick={() => handleScholarshipApproval(sc.id, 'approved')}>
+                                  <CheckCircle className="h-4 w-4 mr-1" /> Approve
+                                </Button>
+                                <Button variant="destructive" size="sm" onClick={() => handleScholarshipApproval(sc.id, 'rejected')}>
+                                  <XCircle className="h-4 w-4" />
+                                </Button>
+                              </>
+                            )}
+                            <Button variant="ghost" size="sm" className="text-red-500" onClick={() => handleDeleteScholarship(sc.id, sc.name)} title="Delete permanently">
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              );
+            })()}
+          </TabsContent>
+
           {/* TAB 2: Manage Admins */}
           <TabsContent value="admins" className="space-y-6">
             {/* Promote new admin */}
