@@ -325,14 +325,18 @@ const OwnerDashboard = () => {
         </motion.div>
 
         <Tabs defaultValue="pending" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-3">
+          <TabsList className="grid w-full grid-cols-2 md:grid-cols-4">
             <TabsTrigger value="pending" className="flex items-center gap-2">
               <BookOpen className="h-4 w-4" />
               Pending ({pendingMaterials.length})
             </TabsTrigger>
+            <TabsTrigger value="scholarships" className="flex items-center gap-2">
+              <GraduationCap className="h-4 w-4" />
+              Scholarships ({scholarships.filter(s => s.approval_status === 'pending').length})
+            </TabsTrigger>
             <TabsTrigger value="admins" className="flex items-center gap-2">
               <Crown className="h-4 w-4" />
-              Manage Admins
+              Admins
             </TabsTrigger>
             <TabsTrigger value="all" className="flex items-center gap-2">
               <FileText className="h-4 w-4" />
