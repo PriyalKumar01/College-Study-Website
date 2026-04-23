@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   CheckCircle, XCircle, User, Calendar, BookOpen, ShieldAlert,
-  Eye, Trash2, Crown, UserPlus, UserMinus, Search, Loader2, FileText, Download
+  Eye, Trash2, Crown, UserPlus, UserMinus, Search, Loader2, FileText, Download, GraduationCap, ExternalLink
 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
