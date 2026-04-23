@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   CheckCircle, XCircle, User, Calendar, BookOpen, ShieldAlert,
-  Eye, Trash2, Crown, UserPlus, UserMinus, Search, Loader2, FileText, Download
+  Eye, Trash2, Crown, UserPlus, UserMinus, Search, Loader2, FileText, Download, GraduationCap, ExternalLink
 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
@@ -40,6 +40,21 @@ interface AdminRole {
   created_by: string | null;
 }
 
+interface Scholarship {
+  id: string;
+  name: string;
+  org: string;
+  amount: string;
+  description: string;
+  deadline: string;
+  apply_url: string;
+  approval_status: string;
+  status: string;
+  submitted_by: string | null;
+  submitted_by_email: string | null;
+  created_at: string | null;
+}
+
 const OwnerDashboard = () => {
   const { user, isOwner, loading: authLoading } = useAuth();
   const { toast } = useToast();
@@ -47,11 +62,13 @@ const OwnerDashboard = () => {
   const [pendingMaterials, setPendingMaterials] = useState<Material[]>([]);
   const [allMaterials, setAllMaterials] = useState<Material[]>([]);
   const [adminRoles, setAdminRoles] = useState<AdminRole[]>([]);
+  const [scholarships, setScholarships] = useState<Scholarship[]>([]);
   const [loading, setLoading] = useState(true);
   const [newAdminEmail, setNewAdminEmail] = useState('');
   const [isPromoting, setIsPromoting] = useState(false);
   const [materialFilter, setMaterialFilter] = useState<'all' | 'pending' | 'approved' | 'rejected'>('all');
   const [searchQuery, setSearchQuery] = useState('');
+  const [scholarshipFilter, setScholarshipFilter] = useState<'all' | 'pending' | 'approved'>('all');
 
   useEffect(() => {
     if (isOwner) {
@@ -61,8 +78,16 @@ const OwnerDashboard = () => {
 
   const fetchAll = async () => {
     setLoading(true);
-    await Promise.all([fetchPendingMaterials(), fetchAllMaterials(), fetchAdminRoles()]);
+    await Promise.all([fetchPendingMaterials(), fetchAllMaterials(), fetchAdminRoles(), fetchScholarships()]);
     setLoading(false);
+  };
+
+  const fetchScholarships = async () => {
+    const { data, error } = await (supabase as any)
+      .from('scholarships')
+      .select('*')
+      .order('created_at', { ascending: false });
+    if (!error) setScholarships((data || []) as Scholarship[]);
   };
 
   const fetchPendingMaterials = async () => {
@@ -128,6 +153,30 @@ const OwnerDashboard = () => {
       fetchPendingMaterials();
     } catch (err: any) {
       toast({ title: 'Error', description: err.message, variant: 'destructive' });
+    }
+  };
+
+  const handleScholarshipApproval = async (id: string, newStatus: 'approved' | 'rejected') => {
+    const { error } = await (supabase as any)
+      .from('scholarships')
+      .update({ approval_status: newStatus })
+      .eq('id', id);
+    if (error) {
+      toast({ title: 'Error', description: error.message, variant: 'destructive' });
+    } else {
+      toast({ title: newStatus === 'approved' ? 'Scholarship approved ✅' : 'Scholarship rejected ❌' });
+      fetchScholarships();
+    }
+  };
+
+  const handleDeleteScholarship = async (id: string, name: string) => {
+    if (!confirm(`Permanently delete "${name}"? This will remove it from the database.`)) return;
+    const { error } = await (supabase as any).from('scholarships').delete().eq('id', id);
+    if (error) {
+      toast({ title: 'Delete failed', description: error.message, variant: 'destructive' });
+    } else {
+      toast({ title: 'Deleted', description: 'Scholarship removed from database.' });
+      fetchScholarships();
     }
   };
 
@@ -276,14 +325,18 @@ const OwnerDashboard = () => {
         </motion.div>
 
         <Tabs defaultValue="pending" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-3">
+          <TabsList className="grid w-full grid-cols-2 md:grid-cols-4">
             <TabsTrigger value="pending" className="flex items-center gap-2">
               <BookOpen className="h-4 w-4" />
               Pending ({pendingMaterials.length})
             </TabsTrigger>
+            <TabsTrigger value="scholarships" className="flex items-center gap-2">
+              <GraduationCap className="h-4 w-4" />
+              Scholarships ({scholarships.filter(s => s.approval_status === 'pending').length})
+            </TabsTrigger>
             <TabsTrigger value="admins" className="flex items-center gap-2">
               <Crown className="h-4 w-4" />
-              Manage Admins
+              Admins
             </TabsTrigger>
             <TabsTrigger value="all" className="flex items-center gap-2">
               <FileText className="h-4 w-4" />
@@ -377,6 +430,90 @@ const OwnerDashboard = () => {
                 ))}
               </div>
             )}
+          </TabsContent>
+
+          {/* TAB: Scholarships */}
+          <TabsContent value="scholarships" className="space-y-4">
+            <div className="flex gap-2 flex-wrap">
+              {(['all', 'pending', 'approved'] as const).map(f => (
+                <Button
+                  key={f}
+                  size="sm"
+                  variant={scholarshipFilter === f ? 'default' : 'outline'}
+                  onClick={() => setScholarshipFilter(f)}
+                  className="capitalize"
+                >
+                  {f} ({f === 'all' ? scholarships.length : scholarships.filter(s => s.approval_status === f).length})
+                </Button>
+              ))}
+            </div>
+
+            {(() => {
+              const list = scholarships.filter(s =>
+                scholarshipFilter === 'all' ? true : s.approval_status === scholarshipFilter
+              );
+              if (list.length === 0) {
+                return (
+                  <Card className="gradient-card text-center py-12">
+                    <CardContent>
+                      <GraduationCap className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
+                      <h3 className="text-xl font-semibold mb-2">No scholarships found</h3>
+                      <p className="text-muted-foreground">
+                        Admins can submit new scholarships from the Admin Portal.
+                      </p>
+                    </CardContent>
+                  </Card>
+                );
+              }
+              return (
+                <div className="space-y-3">
+                  {list.map(sc => (
+                    <Card key={sc.id} className={`feature-card border-l-4 ${
+                      sc.approval_status === 'pending' ? 'border-l-yellow-500' :
+                      sc.approval_status === 'approved' ? 'border-l-green-500' : 'border-l-red-500'
+                    }`}>
+                      <CardContent className="p-4">
+                        <div className="flex flex-col md:flex-row md:items-start justify-between gap-3">
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-2 mb-1 flex-wrap">
+                              <h4 className="font-semibold text-sm">{sc.name}</h4>
+                              <Badge variant="outline" className="text-xs capitalize">{sc.approval_status}</Badge>
+                            </div>
+                            <p className="text-xs text-muted-foreground mb-1">
+                              {sc.org} • {sc.amount} • Deadline: {sc.deadline}
+                            </p>
+                            <p className="text-xs text-muted-foreground line-clamp-2">{sc.description}</p>
+                            {sc.submitted_by_email && (
+                              <p className="text-[11px] text-muted-foreground mt-1">
+                                Submitted by: {sc.submitted_by_email}
+                              </p>
+                            )}
+                          </div>
+                          <div className="flex gap-2 flex-wrap">
+                            <Button variant="outline" size="sm" onClick={() => window.open(sc.apply_url, '_blank')} title="Visit">
+                              <ExternalLink className="h-4 w-4" />
+                            </Button>
+                            {sc.approval_status === 'pending' && (
+                              <>
+                                <Button size="sm" className="bg-green-600 hover:bg-green-700" onClick={() => handleScholarshipApproval(sc.id, 'approved')}>
+                                  <CheckCircle className="h-4 w-4 mr-1" /> Approve
+                                </Button>
+                                <Button variant="destructive" size="sm" onClick={() => handleScholarshipApproval(sc.id, 'rejected')}>
+                                  <XCircle className="h-4 w-4" />
+                                </Button>
+                              </>
+                            )}
+                            <Button variant="ghost" size="sm" className="text-red-500" onClick={() => handleDeleteScholarship(sc.id, sc.name)} title="Delete permanently">
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              );
+            })()}
           </TabsContent>
 
           {/* TAB 2: Manage Admins */}

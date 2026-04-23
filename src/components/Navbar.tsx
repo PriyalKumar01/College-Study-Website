@@ -48,7 +48,7 @@ const Navbar = ({ onOpenAuth }: NavbarProps) => {
     { href: '/ats-friendly-resume', label: 'ATS Friendly Resume', icon: FileText },
     { href: '/notes-contributors', label: 'Contributor List', icon: Users },
     { href: '/learning-platforms', label: 'Integrated Platforms', icon: Layers },
-    { href: '/opportunities?type=scholarship', label: 'Scholarships', icon: Award },
+    { href: '/scholarship-portal', label: 'Scholarships', icon: Award },
     { href: '/opportunities', label: 'Opportunities', icon: Briefcase },
     { href: '/useful-ai-tools', label: 'AI Tools', icon: Brain },
     { href: '/about', label: 'About', icon: Info },

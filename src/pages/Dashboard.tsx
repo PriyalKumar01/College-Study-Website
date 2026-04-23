@@ -76,7 +76,7 @@ const Dashboard = () => {
       title: 'Scholarships',
       description: 'Apply for educational scholarships',
       icon: <Sparkles className="h-6 w-6" />,
-      href: '/opportunities?tab=Scholarships',
+      href: '/scholarship-portal',
       color: 'bg-purple-600',
     },
     {
