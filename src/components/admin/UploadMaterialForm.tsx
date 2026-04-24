@@ -193,29 +193,36 @@ const UploadMaterialForm = ({ onUploadSuccess }: UploadMaterialFormProps) => {
 
   const finalMaterialType = derivedMaterialType || materialType;
 
-  const isFormValid = () => {
-    // For PYQ mode validate smart title fields
+  // Returns null if valid, or a friendly reason string if not
+  const getValidationError = (): string | null => {
+    if (!user) return 'You are not logged in. Please re-login and try again.';
+    if (!category) return 'Please select a category.';
+    if (selectedCategory?.hasYears && !year) return 'Please select a year.';
+    if (isFirstYear && !branchType) return 'Please select a branch type (Engineering or Technology).';
+    if (selectedCategory?.hasSemesters && !semester) return 'Please select a semester.';
+    if (selectedCategory?.hasBranches && !isFirstYear && !branch) return 'Please select a branch.';
+    if (availableSubjects.length > 0 && !subject) return 'Please select a subject.';
+
     if (isPyqMode) {
-      if (!pyqExamType || !pyqAcademicYear) return false;
-      if (pyqExamType === 'Other' && !pyqCustomTitle.trim()) return false;
+      if (!pyqExamType) return 'Please select PYQ exam type.';
+      if (!pyqAcademicYear) return 'Please select PYQ academic year.';
+      if (pyqExamType === 'Other' && !pyqCustomTitle.trim()) return 'Please enter a custom PYQ title.';
     } else {
-      if (!title.trim()) return false;
+      if (!title.trim()) return 'Please enter a title.';
     }
-    if (!category || !file) return false;
-    if (selectedCategory?.hasSemesters && !semester) return false;
-    if (isFirstYear && !branchType) return false;
-    if (selectedCategory?.hasBranches && !isFirstYear && !branch) return false;
-    if (selectedCategory?.hasYears && !year) return false;
-    if (availableSubjects.length > 0 && !subject) return false;
-    return true;
+    if (!file) return 'Please choose a PDF file to upload.';
+    return null;
   };
 
-  const handleSubmit = async () => {
-    // Use effectiveTitle as the final title
-    if (!user || !isFormValid()) return;
-    setUploading(true);
+  const isFormValid = () => getValidationError() === null;
 
-    let uploadedFilePath: string | null = null;
+  const handleSubmit = async () => {
+    const validationError = getValidationError();
+    if (validationError) {
+      toast({ title: 'Missing info', description: validationError, variant: 'destructive' });
+      return;
+    }
+    setUploading(true);
 
     try {
       // Build the semester string for DB
@@ -226,25 +233,17 @@ const UploadMaterialForm = ({ onUploadSuccess }: UploadMaterialFormProps) => {
 
       const finalTitle = effectiveTitle.trim();
 
-      // Check duplicates using the FINAL title (effective title for PYQs)
-      const { data: existing } = await supabase
-        .from('notes')
-        .select('id')
-        .eq('title', finalTitle)
-        .eq('subject', subject || category)
-        .eq('semester', dbSemester)
-        .eq('material_type', finalMaterialType)
-        .maybeSingle();
+      // NOTE: Duplicate check intentionally removed — admins reported it blocking
+      // legitimate uploads (false positives, RLS visibility quirks). Owner reviews
+      // every submission before approval anyway, so duplicates can be filtered there.
 
-      if (existing) {
-        toast({ title: 'Duplicate found', description: 'A material with this title already exists.', variant: 'destructive' });
-        setUploading(false);
-        return;
-      }
-
-      // Upload file
-      const fileExt = file!.name.split('.').pop();
-      const filePath = `${category}/${branch || 'general'}/${semester || 'misc'}/${Date.now()}.${fileExt}`;
+      // Build a unique storage path with random suffix to avoid any collision
+      const fileExt = (file!.name.split('.').pop() || 'pdf').toLowerCase();
+      const safeCat = category || 'misc';
+      const safeBranch = branch || 'general';
+      const safeSem = semester || 'misc';
+      const rand = Math.random().toString(36).slice(2, 10);
+      const filePath = `${safeCat}/${safeBranch}/${safeSem}/${Date.now()}-${rand}.${fileExt}`;
 
       const { error: uploadError } = await supabase.storage
         .from('study-materials')
@@ -255,7 +254,6 @@ const UploadMaterialForm = ({ onUploadSuccess }: UploadMaterialFormProps) => {
         });
 
       if (uploadError) throw uploadError;
-      uploadedFilePath = filePath;
 
       const { data: urlData } = supabase.storage
         .from('study-materials')
@@ -273,9 +271,9 @@ const UploadMaterialForm = ({ onUploadSuccess }: UploadMaterialFormProps) => {
           description: description.trim() || null,
           file_url: urlData.publicUrl,
           file_name: file!.name,
-          uploaded_by: user.id,
-          user_email: user.email,
-          user_name: user.user_metadata?.first_name || user.email?.split('@')[0],
+          uploaded_by: user!.id,
+          user_email: user!.email!,
+          user_name: user!.user_metadata?.first_name || user!.email?.split('@')[0] || 'Admin',
           status: 'pending',
         });
 
@@ -300,18 +298,21 @@ const UploadMaterialForm = ({ onUploadSuccess }: UploadMaterialFormProps) => {
       if (fileInputRef.current) fileInputRef.current.value = '';
       onUploadSuccess?.();
     } catch (error: any) {
-      const rawMsg = error?.message || String(error);
+      console.error('[UploadMaterial] Failed:', error);
+      const rawMsg = error?.message || error?.error_description || String(error);
       let friendly = rawMsg;
 
-      if (/failed to fetch|networkerror|network request failed/i.test(rawMsg)) {
+      if (/failed to fetch|networkerror|network request failed|load failed/i.test(rawMsg)) {
         friendly =
-          'Network problem — upload could not reach the server. Please check your internet, disable any ad-blocker / VPN, and try again.';
+          'Network problem — could not reach the server. Please disable any ad-blocker / VPN / browser extensions and try again. If you are testing inside the editor preview, also try the published URL.';
       } else if (/payload too large|413/i.test(rawMsg)) {
         friendly = 'File is too large. Please keep it under 20MB.';
-      } else if (/row-level security|policy/i.test(rawMsg)) {
-        friendly = 'You do not have permission to upload. Please re-login and try again.';
-      } else if (/duplicate|already exists/i.test(rawMsg)) {
-        friendly = 'A file with this name already exists. Try renaming and re-upload.';
+      } else if (/row-level security|policy|not authorized|permission/i.test(rawMsg)) {
+        friendly = 'Permission denied. Please log out and log back in, then try again.';
+      } else if (/jwt|token|expired|invalid_grant/i.test(rawMsg)) {
+        friendly = 'Your session has expired. Please log out and log back in.';
+      } else if (/duplicate|already exists|resource already exists/i.test(rawMsg)) {
+        friendly = 'A file with this name already exists in storage. Please try again — we will assign a new name.';
       }
 
       toast({ title: 'Upload failed', description: friendly, variant: 'destructive' });
