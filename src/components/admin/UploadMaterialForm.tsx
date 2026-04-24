@@ -734,10 +734,11 @@ const UploadMaterialForm = ({ onUploadSuccess }: UploadMaterialFormProps) => {
             </div>
           </div>
 
-          {/* Submit */}
+          {/* Submit — intentionally NOT disabled by validation, so admins
+              see a toast explaining what's missing instead of a dead button */}
           <Button
             onClick={handleSubmit}
-            disabled={!isFormValid() || uploading}
+            disabled={uploading}
             className="w-full h-12 text-base font-semibold bg-primary hover:bg-primary/90 text-primary-foreground shadow-sm"
           >
             {uploading ? (
