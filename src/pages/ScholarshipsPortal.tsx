@@ -305,61 +305,48 @@ export default function ScholarshipsPortal() {
       <div className="min-h-screen bg-background">
         <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-8">
 
-          {/* ─── HERO HEADER ─── */}
-          <div className="relative overflow-hidden rounded-2xl sm:rounded-3xl mb-6 sm:mb-8"
-            style={{
-              background: 'linear-gradient(135deg, hsl(235 75% 45%) 0%, hsl(262 83% 50%) 50%, hsl(290 70% 50%) 100%)',
-            }}
+          {/* ─── Back link (compact, above hero) ─── */}
+          <button
+            onClick={() => navigate('/dashboard')}
+            className="inline-flex items-center gap-1.5 text-xs sm:text-sm text-muted-foreground hover:text-foreground transition-colors mb-3"
           >
-            {/* Decorative blobs */}
-            <div className="absolute -top-16 -right-16 w-48 h-48 sm:w-64 sm:h-64 bg-white/10 rounded-full blur-3xl" />
-            <div className="absolute -bottom-20 -left-10 w-40 h-40 sm:w-56 sm:h-56 bg-pink-300/15 rounded-full blur-3xl" />
-            {/* Dot pattern */}
-            <div className="absolute inset-0 opacity-[0.07] pointer-events-none"
-              style={{
-                backgroundImage: 'radial-gradient(circle, #fff 1.5px, transparent 1.5px)',
-                backgroundSize: '22px 22px'
-              }}
-            />
-            {/* Shine overlay */}
-            <div className="absolute inset-0 hero-shine pointer-events-none" />
+            <ArrowLeft size={14} /> Back to Dashboard
+          </button>
 
-            <div className="relative p-5 sm:p-8 md:p-10">
-              <button
-                onClick={() => navigate('/dashboard')}
-                className="inline-flex items-center gap-1.5 text-xs sm:text-sm text-white/75 hover:text-white transition-colors mb-3 sm:mb-5"
-              >
-                <ArrowLeft size={14} /> Back to Dashboard
-              </button>
+          {/* ─── HERO HEADER (clean, professional) ─── */}
+          <div className="relative bg-card border border-border rounded-xl mb-6 sm:mb-8 overflow-hidden">
+            {/* Subtle accent bar on top */}
+            <div className="absolute top-0 left-0 right-0 h-1 bg-primary" />
 
-              <div className="flex items-start sm:items-center gap-3 sm:gap-4 mb-3">
-                <div className="flex-shrink-0 w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-white/15 backdrop-blur-md flex items-center justify-center border border-white/25">
-                  <GraduationCap className="w-6 h-6 sm:w-7 sm:h-7 text-white" strokeWidth={2.5} />
+            <div className="p-5 sm:p-7 md:p-8">
+              <div className="flex items-start gap-3 sm:gap-4">
+                <div className="flex-shrink-0 w-11 h-11 sm:w-12 sm:h-12 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center">
+                  <GraduationCap className="w-5 h-5 sm:w-6 sm:h-6 text-primary" strokeWidth={2.2} />
                 </div>
                 <div className="min-w-0 flex-1">
-                  <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/15 backdrop-blur-md border border-white/20 text-[10px] sm:text-xs font-semibold text-white tracking-wider uppercase mb-2">
-                    <Sparkles size={11} /> Verified Scholarships Hub
+                  <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[10px] sm:text-[11px] font-semibold bg-primary/10 text-primary border border-primary/20 uppercase tracking-wider mb-2">
+                    Verified Scholarships
                   </div>
-                  <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-[42px] font-extrabold text-white leading-tight tracking-tight">
-                    Unlock Your <span className="bg-gradient-to-r from-yellow-200 to-orange-200 bg-clip-text text-transparent">Education Funding</span>
+                  <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-foreground leading-tight tracking-tight mb-1.5">
+                    Scholarships for College Students
                   </h1>
+                  <p className="text-sm sm:text-[15px] text-muted-foreground leading-relaxed max-w-2xl">
+                    Curated government &amp; private scholarships across India. Check eligibility, deadlines, and apply directly from official portals.
+                  </p>
                 </div>
               </div>
 
-              <p className="text-sm sm:text-base text-white/85 leading-relaxed sm:pl-[68px] max-w-2xl">
-                Curated government &amp; private scholarships for college students across India — find the right one, check eligibility, and apply directly from official portals.
-              </p>
-
-              {/* Quick stats pills */}
-              <div className="flex flex-wrap gap-2 mt-4 sm:mt-5 sm:pl-[68px]">
-                <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/12 backdrop-blur-md border border-white/20 text-xs font-semibold text-white">
-                  🎓 {scholarships.length}+ Active
+              {/* Stats row */}
+              <div className="flex flex-wrap gap-2 mt-4 sm:mt-5 sm:pl-[60px]">
+                <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-muted/50 border border-border text-xs font-medium text-foreground">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                  {scholarships.length} Active
                 </div>
-                <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/12 backdrop-blur-md border border-white/20 text-xs font-semibold text-white">
-                  🏛 Govt &amp; Private
+                <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-muted/50 border border-border text-xs font-medium text-muted-foreground">
+                  Government &amp; Private
                 </div>
-                <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/12 backdrop-blur-md border border-white/20 text-xs font-semibold text-white">
-                  ✅ Verified Sources
+                <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-muted/50 border border-border text-xs font-medium text-muted-foreground">
+                  Verified Sources
                 </div>
               </div>
             </div>
