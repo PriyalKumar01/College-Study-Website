@@ -215,6 +215,8 @@ const UploadMaterialForm = ({ onUploadSuccess }: UploadMaterialFormProps) => {
     if (!user || !isFormValid()) return;
     setUploading(true);
 
+    let uploadedFilePath: string | null = null;
+
     try {
       // Build the semester string for DB
       // 1st year: store as ALL-{mapped semester} so it appears on correct page
@@ -222,11 +224,13 @@ const UploadMaterialForm = ({ onUploadSuccess }: UploadMaterialFormProps) => {
         ? (isFirstYear ? `ALL-${mappedSemester}` : `${branch}-${semester}`)
         : (semester || category);
 
-      // Check duplicates
+      const finalTitle = effectiveTitle.trim();
+
+      // Check duplicates using the FINAL title (effective title for PYQs)
       const { data: existing } = await supabase
         .from('notes')
         .select('id')
-        .eq('title', title.trim())
+        .eq('title', finalTitle)
         .eq('subject', subject || category)
         .eq('semester', dbSemester)
         .eq('material_type', finalMaterialType)
@@ -244,9 +248,14 @@ const UploadMaterialForm = ({ onUploadSuccess }: UploadMaterialFormProps) => {
 
       const { error: uploadError } = await supabase.storage
         .from('study-materials')
-        .upload(filePath, file!);
+        .upload(filePath, file!, {
+          cacheControl: '3600',
+          upsert: false,
+          contentType: file!.type || 'application/pdf',
+        });
 
       if (uploadError) throw uploadError;
+      uploadedFilePath = filePath;
 
       const { data: urlData } = supabase.storage
         .from('study-materials')
@@ -256,7 +265,7 @@ const UploadMaterialForm = ({ onUploadSuccess }: UploadMaterialFormProps) => {
       const { error: insertError } = await supabase
         .from('notes')
         .insert({
-          title: effectiveTitle.trim(),
+          title: finalTitle,
           subject: subject || category,
           semester: dbSemester,
           material_type: finalMaterialType,
@@ -270,7 +279,11 @@ const UploadMaterialForm = ({ onUploadSuccess }: UploadMaterialFormProps) => {
           status: 'pending',
         });
 
-      if (insertError) throw insertError;
+      if (insertError) {
+        // Cleanup orphaned file if DB insert fails
+        await supabase.storage.from('study-materials').remove([filePath]).catch(() => {});
+        throw insertError;
+      }
 
       toast({
         title: '✅ Uploaded Successfully!',
@@ -287,7 +300,21 @@ const UploadMaterialForm = ({ onUploadSuccess }: UploadMaterialFormProps) => {
       if (fileInputRef.current) fileInputRef.current.value = '';
       onUploadSuccess?.();
     } catch (error: any) {
-      toast({ title: 'Upload failed', description: error.message, variant: 'destructive' });
+      const rawMsg = error?.message || String(error);
+      let friendly = rawMsg;
+
+      if (/failed to fetch|networkerror|network request failed/i.test(rawMsg)) {
+        friendly =
+          'Network problem — upload could not reach the server. Please check your internet, disable any ad-blocker / VPN, and try again.';
+      } else if (/payload too large|413/i.test(rawMsg)) {
+        friendly = 'File is too large. Please keep it under 20MB.';
+      } else if (/row-level security|policy/i.test(rawMsg)) {
+        friendly = 'You do not have permission to upload. Please re-login and try again.';
+      } else if (/duplicate|already exists/i.test(rawMsg)) {
+        friendly = 'A file with this name already exists. Try renaming and re-upload.';
+      }
+
+      toast({ title: 'Upload failed', description: friendly, variant: 'destructive' });
     } finally {
       setUploading(false);
     }
