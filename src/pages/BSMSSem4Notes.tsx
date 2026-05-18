@@ -252,11 +252,23 @@ const BSMSSem4Notes = () => {
             <div>
               <h3 className="text-lg font-semibold text-purple-800 dark:text-purple-200 mb-2">📚 BS-MS 4th Semester Info</h3>
               <div className="space-y-2 text-sm text-purple-700 dark:text-purple-300">
-                <p><strong>✨ For BS-MS students:</strong> 4th semester builds on your 3rd semester foundation with more advanced topics.</p>
-                <p>• <strong>Classical Mechanics:</strong> Lagrangian and Hamiltonian formulations, rigid body dynamics.</p>
-                <p>• <strong>Thermodynamics:</strong> Statistical mechanics, entropy, free energy, and partition functions.</p>
-                <p>• <strong>Electronics:</strong> Op-amps, oscillators, and basic digital circuits for experimental science.</p>
-              </div>
+                 <p><strong>✨ For BS-MS students:</strong> From 2nd year onwards, your curriculum diverges from B.Tech with specially curated resources for your syllabus.</p>
+
+<p>• <strong>Engg. Maths-II:</strong> Curated notes, PYQs, playlists & complete study material available.</p>
+
+<p>• <strong>Statistical Methods:</strong> Well-structured notes and guided resources for easy preparation.</p>
+
+<p>• <strong>Data Structures & Algorithms:</strong> Coding-focused notes, playlists, and practice resources available.</p>
+
+<p>• <strong>Probability & Random Processes:</strong> Concept-based notes with curated study playlists.</p>
+
+<p>• <strong>Real Analysis:</strong> Fully curated notes and resources for strong conceptual understanding.</p>
+
+<p>• <strong>Notes, playlists & PYQs will be updated progressively</strong> — contribute your notes to help fellow students!</p>
+
+<p className='text-red-500'>⚠️ <strong>Important:</strong> Always maintain good presentation in exams — use 2 pens, underline important keywords, keep proper spacing after answers, and write sufficiently explained answers for better scoring. Cover every topic from the syllabus using playlists, notes, PYQs, YouTube, Google AI Mode, or any resource possible. Once every topic is understood properly, exams automatically become much easier.</p>
+
+<p>✨ Best Wishes — <strong>Priyal Kumar</strong></p></div>
             </div>
           </div>
         </motion.div>
