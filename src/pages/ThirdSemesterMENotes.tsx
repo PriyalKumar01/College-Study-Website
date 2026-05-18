@@ -44,6 +44,21 @@ const ThirdSemesterMENotes = () => {
 
   const staticSubjects = [
     {
+      id: 'math2',
+      name: 'Math-II',
+      fullName: 'Engineering Mathematics-II',
+      description: 'Advanced engineering mathematics concepts',
+      notes: [
+        { title: 'Complete Notes (Unit 1 to 5)', url: 'https://drive.google.com/file/d/1EZQ7WMY4EoS9kewXgqRp-dbkLFcsVx-J/view?usp=drivesdk' },
+        { title: 'Unit 1 C.F & PI Notes', url: 'https://drive.google.com/uc?export=download&id=1_OfjdkVBUxb6352LJcCSqv_nKrjz4uSU' },
+        { title: 'Unit 2 Notes', url: 'https://drive.google.com/uc?export=download&id=1_OSlf-B7K9TFC1LgA6yZDUH2sQL-RTy0' },
+        { title: 'Unit 3 Notes', url: 'https://drive.google.com/uc?export=download&id=1_PtU2rwcwDjGnrBwBpTtSeohDrbvxDBa' },
+        { title: 'Mid Sem 2 Last Minute Revision', url: 'https://drive.google.com/uc?export=download&id=1oGU5M62XSyErVp3qP4CrEj1v0t5FQqej' },
+        { title: 'Best Maths Chapter 1 & 2 Notes', url: 'https://drive.google.com/uc?export=download&id=1_JfBOvZp84amQj6Mo7-KtwrARm1kTHUr' },
+        { title: 'Formula Sheet Unit 1', url: 'https://drive.google.com/uc?export=download&id=1T6PERNwiIdoA0Vm2EGyIVwp9TlrG7IrX' }
+      ]
+    },
+    {
       id: 'thermodynamics',
       name: 'Thermodynamics',
       icon: '🔥',
@@ -77,15 +92,6 @@ const ThirdSemesterMENotes = () => {
       color: 'bg-orange-500',
       notes: [
         { title: 'Manufacturing Process Notes', url: '#' },
-      ],
-    },
-    {
-      id: 'math-2',
-      name: 'Math-II',
-      icon: '📐',
-      color: 'bg-purple-500',
-      notes: [
-        { title: 'Engineering Mathematics-II Notes', url: '#' },
       ],
     },
     {

@@ -48,32 +48,12 @@ const ThirdSemesterFTNotes = () => {
   // Subject names MUST match courseStructure.ts 'FT-3rd Semester' exactly
   const staticSubjects = [
     {
-      id: 'food-chemistry',
-      name: 'Food Chemistry',
-      fullName: 'Food Chemistry',
-      description: 'Chemical composition and properties of food',
-      notes: []
-    },
-    {
-      id: 'food-microbiology',
-      name: 'Food Microbiology',
-      fullName: 'Food Microbiology',
-      description: 'Microorganisms in food and their effects',
-      notes: []
-    },
-    {
-      id: 'food-processing',
-      name: 'Food Processing',
-      fullName: 'Food Processing Technology',
-      description: 'Industrial food processing methods and techniques',
-      notes: []
-    },
-    {
       id: 'math2',
       name: 'Math-II',
       fullName: 'Engineering Mathematics-II',
       description: 'Advanced engineering mathematics concepts',
       notes: [
+        { title: 'Complete Notes (Unit 1 to 5)', url: 'https://drive.google.com/file/d/1EZQ7WMY4EoS9kewXgqRp-dbkLFcsVx-J/view?usp=drivesdk' },
         { title: 'Unit 1 C.F & PI Notes', url: 'https://drive.google.com/uc?export=download&id=1_OfjdkVBUxb6352LJcCSqv_nKrjz4uSU' },
         { title: 'Unit 2 Notes', url: 'https://drive.google.com/uc?export=download&id=1_OSlf-B7K9TFC1LgA6yZDUH2sQL-RTy0' },
         { title: 'Unit 3 Notes', url: 'https://drive.google.com/uc?export=download&id=1_PtU2rwcwDjGnrBwBpTtSeohDrbvxDBa' },
@@ -94,6 +74,27 @@ const ThirdSemesterFTNotes = () => {
         { title: 'Complete Unit 2 Notes', url: 'https://drive.google.com/uc?export=download&id=1UOd_TOHZeOayp-W0NeKdmnv2mXr7-or-' },
         { title: 'Full Last Min. Revision Notes', url: 'https://drive.google.com/uc?export=download&id=1Tv4l6-DNZygMKa-7AP73LvBki4L3QQcI' }
       ]
+    },
+    {
+      id: 'food-chemistry',
+      name: 'Food Chemistry',
+      fullName: 'Food Chemistry',
+      description: 'Chemical composition and properties of food',
+      notes: []
+    },
+    {
+      id: 'food-microbiology',
+      name: 'Food Microbiology',
+      fullName: 'Food Microbiology',
+      description: 'Microorganisms in food and their effects',
+      notes: []
+    },
+    {
+      id: 'food-processing',
+      name: 'Food Processing',
+      fullName: 'Food Processing Technology',
+      description: 'Industrial food processing methods and techniques',
+      notes: []
     },
     {
       id: 'pyqs',
