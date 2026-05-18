@@ -192,7 +192,7 @@ const BSMSSem3Notes = () => {
     }
   };
 
-  const syllabus = { title: 'BS-MS 3rd Sem Syllabus', url: '#' };
+  const syllabus = { title: 'BS-MS 3rd Sem Syllabus', url: 'https://drive.google.com/file/d/1TGYcCGUOMvtNQNzjx7M9t796xhvpdgCz/view?usp=drivesdk' };
   const handleDownload = (url: string, title: string) => smartDownload(url, title);
 
   if (selectedSubject) {

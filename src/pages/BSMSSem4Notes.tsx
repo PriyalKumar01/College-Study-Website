@@ -184,7 +184,7 @@ const BSMSSem4Notes = () => {
     }
   };
 
-  const syllabus = { title: 'BS-MS 4th Sem Syllabus', url: '#' };
+  const syllabus = { title: 'BS-MS 4th Sem Syllabus', url: 'https://drive.google.com/file/d/1fVM38WeXkrWqm9vmqApktXMlp7GXDNQj/view?usp=drivesdk' };
   const handleDownload = (url: string, title: string) => smartDownload(url, title);
 
   if (selectedSubject) {
