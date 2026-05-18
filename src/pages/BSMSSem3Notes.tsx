@@ -34,14 +34,14 @@ const BSMSSem3Notes = () => {
   const subjectPlaylists: Record<string, { detailed: any[]; oneshot: any[] }> = {
     math2: {
       detailed: [
-        { title: 'Engineering Mathematics-II Unit 1', url: 'https://youtube.com/playlist?list=PL5Dqs90qDljW1pwNMiPFDvR6zCbA9kRyd&si=eKIFeUwcRRvEW-iy' },
-        { title: 'Engineering Mathematics-II Unit 3', url: 'https://youtube.com/playlist?list=PL5Dqs90qDljWpJyo3QVVyY-o2xVCtxOfF&si=7l12sPrchJuFdEFB' },
-        { title: 'Fourier Series Playlist', url: 'https://youtube.com/playlist?list=PLT3bOBUU3L9garIMWIqgAJ6wqBUe4ckFm&si=sULV2V8F8CxNfLU7' },
-        { title: 'Engineering Math-II Playlist 1', url: 'https://youtube.com/playlist?list=PLhSp9OSVmeyLke5_cby8i8ZhK8FHpw3qs&si=EXY9L4AxKVg58a-8' },
-        { title: 'Engineering Math-II Playlist 2', url: 'https://youtube.com/playlist?list=PLhSp9OSVmeyJoNnAqghUK-Lit3qBgfa6o&si=RfESwXzHT7mFK_DG' },
-        { title: 'Complete Engineering Math-II (Best)', url: 'https://youtube.com/playlist?list=PLU6SqdYcYsfJljvy7Goi78EGwjPDQEnSw&si=dJ54yTQ9R4ZYmV7k', recommended: true },
-        { title: 'Engineering Math-II Advanced', url: 'https://youtube.com/playlist?list=PLhSp9OSVmeyJCwFXRDW8KmDlBFGRAxnAu&si=Vi9_HhLL2K5r15gn' },
-        { title: 'Engineering Math-II Advanced (Best)', url: 'https://youtube.com/playlist?list=PLU6SqdYcYsfKqa52m3wyMZb1KVWuZsA2T&si=MnC0WGH0egKRZkHx', recommended: true }
+         { title: 'Unit 1 Differential Equation- Fearless', url: 'https://youtube.com/playlist?list=PL5Dqs90qDljW1pwNMiPFDvR6zCbA9kRyd&si=eKIFeUwcRRvEW-iy' },
+        { title: ' Unit 3 Laplace Transform - Fearless', url: 'https://youtube.com/playlist?list=PL5Dqs90qDljWpJyo3QVVyY-o2xVCtxOfF&si=7l12sPrchJuFdEFB' },
+        { title: 'Fourier Series -Pradeep Giri Playlist', url: 'https://youtube.com/playlist?list=PLT3bOBUU3L9garIMWIqgAJ6wqBUe4ckFm&si=sULV2V8F8CxNfLU7' },
+        { title: 'Fourier Series - MKS Playlist', url: 'https://youtube.com/playlist?list=PLhSp9OSVmeyLke5_cby8i8ZhK8FHpw3qs&si=EXY9L4AxKVg58a-8' },
+        { title: 'Partial Diff. Eq.- MKS Playlist', url: 'https://youtube.com/playlist?list=PLhSp9OSVmeyJoNnAqghUK-Lit3qBgfa6o&si=RfESwXzHT7mFK_DG' },
+        { title: 'Partial Diff. Eq.- Gajendra Prohit', url: 'https://youtube.com/playlist?list=PLU6SqdYcYsfJljvy7Goi78EGwjPDQEnSw&si=dJ54yTQ9R4ZYmV7k', recommended: true },
+        { title: 'Appliaction of Fourier Transforms to BVP', url: 'https://youtube.com/playlist?list=PLhSp9OSVmeyJCwFXRDW8KmDlBFGRAxnAu&si=Vi9_HhLL2K5r15gn' },
+        { title: 'Complete Engg Math-II -By: Gajendra Prohit', url: 'https://youtube.com/playlist?list=PLU6SqdYcYsfKqa52m3wyMZb1KVWuZsA2T&si=MnC0WGH0egKRZkHx', recommended: true }
       ],
       oneshot: []
     },
@@ -258,16 +258,28 @@ const BSMSSem3Notes = () => {
               <span className="text-white text-sm font-bold">!</span>
             </div>
             <div>
-              <h3 className="text-lg font-semibold text-blue-800 dark:text-blue-200 mb-2">📚 BS-MS 3rd Semester Info</h3>
+              <h3 className="text-lg font-semibold text-blue-800 dark:text-blue-200 mb-2">📚 BS-MS 3rd Semester Instruction: </h3>
               <div className="space-y-2 text-sm text-blue-700 dark:text-blue-300">
-                <p><strong>✨ For BS-MS students:</strong> From 2nd year onwards, your curriculum diverges from B.Tech. These are tailored resources for your specific syllabus.</p>
-                <p>• <strong>Mathematics-III:</strong> Covers advanced calculus, linear algebra, and differential equations specific to science programmes.</p>
-                <p>• <strong>Modern Physics:</strong> Atomic structure, quantum theory basics, and introduction to wave mechanics.</p>
-                <p>• <strong>Physical Chemistry:</strong> Thermodynamics, chemical kinetics, and electrochemistry.</p>
-                <p>• Notes and PYQs will be added progressively — contribute your notes to help fellow students!</p>
-              </div>
+                <p><strong>✨ For BS-MS students:</strong> From 2nd year onwards, your curriculum diverges from B.Tech with specially curated resources for your syllabus.</p>
+
+<p>• <strong>Engg. Maths-II:</strong> Curated notes, PYQs, playlists & complete study material available.</p>
+
+<p>• <strong>Statistical Methods:</strong> Well-structured notes and guided resources for easy preparation.</p>
+
+<p>• <strong>Data Structures & Algorithms:</strong> Coding-focused notes, playlists, and practice resources available.</p>
+
+<p>• <strong>Probability & Random Processes:</strong> Concept-based notes with curated study playlists.</p>
+
+<p>• <strong>Real Analysis:</strong> Fully curated notes and resources for strong conceptual understanding.</p>
+
+<p>• <strong>Notes, playlists & PYQs will be updated progressively</strong> — contribute your notes to help fellow students!</p>
+
+<p className='text-red-500'>⚠️ <strong>Important:</strong> Always maintain good presentation in exams — use 2 pens, underline important keywords, keep proper spacing after answers, and write sufficiently explained answers for better scoring. Cover every topic from the syllabus using playlists, notes, PYQs, YouTube, Google AI Mode, or any resource possible. Once every topic is understood properly, exams automatically become much easier.</p>
+
+<p>✨ Best Wishes — <strong>Priyal Kumar</strong></p>
             </div>
-          </div>
+            </div>
+          </div> 
         </motion.div>
 
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 0.5 }} className="mb-8">
