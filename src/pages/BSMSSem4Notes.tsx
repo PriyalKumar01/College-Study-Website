@@ -31,7 +31,7 @@ const BSMSSem4Notes = () => {
   const [selectedSubjectForPlaylist, setSelectedSubjectForPlaylist] = useState<string>('');
   const [expandedSubjects, setExpandedSubjects] = useState<string[]>([]);
 
-  const subjectPlaylists: Record<string, { detailed: any[]; oneshot: any[] }> = {
+  const subjectPlaylists = {
     math3: {
       detailed: [
         { title: 'Fourier Integral Playlist by-Fearless (Best)', url: 'https://youtube.com/playlist?list=PLhSp9OSVmeyITz_e6F9YiyongjaCryasK&si=xhAnYIkAQTe5jAw-', recommended: true },
@@ -51,9 +51,11 @@ const BSMSSem4Notes = () => {
         { title: 'Engineering Mathematics-III One Shot', url: 'https://youtu.be/_Hjp6aFJO40?si=L8tp3IgTfCBFhxEz' }
       ]
     },
-    'classical-mech': { detailed: [], oneshot: [] },
-    thermodynamics: { detailed: [], oneshot: [] },
-    electronics: { detailed: [], oneshot: [] }
+    conm: { detailed: [], oneshot: [] },
+    no: { detailed: [], oneshot: [] },
+    dms: { detailed: [], oneshot: [] },
+    cla: { detailed: [], oneshot: [] },
+    rds: { detailed: [], oneshot: [] },
   };
 
   const toggleSubjectExpansion = (subjectId: string) => {
@@ -309,7 +311,21 @@ const BSMSSem4Notes = () => {
                         </div>
                         {expandedSubjects.includes(subject.id) && (
                           <div className="mt-3 space-y-2 pl-2">
-                            <p className="text-xs text-muted-foreground pl-2">Not available...</p>
+                            {getSubjectPlaylists(subject.id).detailed.length > 0 && (
+                              <Button variant="ghost" size="sm" className="w-full justify-start text-xs h-8"
+                                onClick={(e) => { e.stopPropagation(); handlePlaylistClick(subject.id, 'detailed'); }}>
+                                📚 Detailed Playlists ({getSubjectPlaylists(subject.id).detailed.length})
+                              </Button>
+                            )}
+                            {getSubjectPlaylists(subject.id).oneshot.length > 0 && (
+                              <Button variant="ghost" size="sm" className="w-full justify-start text-xs h-8"
+                                onClick={(e) => { e.stopPropagation(); handlePlaylistClick(subject.id, 'oneshot'); }}>
+                                ⚡ One Shot Videos ({getSubjectPlaylists(subject.id).oneshot.length})
+                              </Button>
+                            )}
+                            {getSubjectPlaylists(subject.id).detailed.length === 0 && getSubjectPlaylists(subject.id).oneshot.length === 0 && (
+                              <p className="text-xs text-muted-foreground pl-2">Not available...</p>
+                            )}
                           </div>
                         )}
                       </div>
