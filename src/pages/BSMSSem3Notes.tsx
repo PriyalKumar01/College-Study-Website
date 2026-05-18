@@ -32,8 +32,26 @@ const BSMSSem3Notes = () => {
   const [expandedSubjects, setExpandedSubjects] = useState<string[]>([]);
 
   const subjectPlaylists: Record<string, { detailed: any[]; oneshot: any[] }> = {
-    math: { detailed: [], oneshot: [] },
-    physics: { detailed: [], oneshot: [] },
+    math2: {
+      detailed: [
+        { title: 'Engineering Mathematics-II Unit 1', url: 'https://youtube.com/playlist?list=PL5Dqs90qDljW1pwNMiPFDvR6zCbA9kRyd&si=eKIFeUwcRRvEW-iy' },
+        { title: 'Engineering Mathematics-II Unit 3', url: 'https://youtube.com/playlist?list=PL5Dqs90qDljWpJyo3QVVyY-o2xVCtxOfF&si=7l12sPrchJuFdEFB' },
+        { title: 'Fourier Series Playlist', url: 'https://youtube.com/playlist?list=PLT3bOBUU3L9garIMWIqgAJ6wqBUe4ckFm&si=sULV2V8F8CxNfLU7' },
+        { title: 'Engineering Math-II Playlist 1', url: 'https://youtube.com/playlist?list=PLhSp9OSVmeyLke5_cby8i8ZhK8FHpw3qs&si=EXY9L4AxKVg58a-8' },
+        { title: 'Engineering Math-II Playlist 2', url: 'https://youtube.com/playlist?list=PLhSp9OSVmeyJoNnAqghUK-Lit3qBgfa6o&si=RfESwXzHT7mFK_DG' },
+        { title: 'Complete Engineering Math-II (Best)', url: 'https://youtube.com/playlist?list=PLU6SqdYcYsfJljvy7Goi78EGwjPDQEnSw&si=dJ54yTQ9R4ZYmV7k', recommended: true },
+        { title: 'Engineering Math-II Advanced', url: 'https://youtube.com/playlist?list=PLhSp9OSVmeyJCwFXRDW8KmDlBFGRAxnAu&si=Vi9_HhLL2K5r15gn' },
+        { title: 'Engineering Math-II Advanced (Best)', url: 'https://youtube.com/playlist?list=PLU6SqdYcYsfKqa52m3wyMZb1KVWuZsA2T&si=MnC0WGH0egKRZkHx', recommended: true }
+      ],
+      oneshot: []
+    },
+    em: {
+      detailed: [
+        { title: 'Economics and Management Complete (Best)', url: 'https://youtube.com/playlist?list=PLsh2FvSr3n7cjVNULjFnVvI_DMVoMYG9o&si=iQiHHTspvuH4MEOy', recommended: true },
+        { title: 'Economics and Management Advanced', url: 'https://youtube.com/playlist?list=PLaAhQ2ofZZRC1OFxHoa8qGyFHDgk7PyUN&si=5HtscWYDIA3f9qae' }
+      ],
+      oneshot: []
+    },
     chemistry: { detailed: [], oneshot: [] },
     'cs-basics': { detailed: [], oneshot: [] }
   };
@@ -60,32 +78,65 @@ const BSMSSem3Notes = () => {
 
   const staticSubjects = [
     {
-      id: 'math',
-      name: 'Mathematics-III',
+      id: 'math2',
+      name: 'Engineering Mathematics-II',
       icon: '📐',
+      color: 'bg-indigo-500',
+      notes: [
+        { title: 'Complete Notes (Unit 1 to 5)', url: 'https://drive.google.com/file/d/1EZQ7WMY4EoS9kewXgqRp-dbkLFcsVx-J/view?usp=drivesdk' },
+        { title: 'Unit 1 C.F & PI Notes', url: 'https://drive.google.com/file/d/1_OfjdkVBUxb6352LJcCSqv_nKrjz4uSU/view?usp=drive_link' },
+        { title: 'Unit 2 Notes', url: 'https://drive.google.com/file/d/1_OSlf-B7K9TFC1LgA6yZDUH2sQL-RTy0/view?usp=drive_link' },
+        { title: 'Unit 3 Notes', url: 'https://drive.google.com/file/d/1_PtU2rwcwDjGnrBwBpTtSeohDrbvxDBa/view?usp=drive_link' },
+        { title: 'Mid Sem 2 Last Minute Revision', url: 'https://drive.google.com/file/d/1oGU5M62XSyErVp3qP4CrEj1v0t5FQqej/view?usp=drive_link' },
+        { title: 'Best Maths Chapter 1 & 2 Notes', url: 'https://drive.google.com/file/d/1_JfBOvZp84amQj6Mo7-KtwrARm1kTHUr/view?usp=drive_link' },
+        { title: 'Formula Sheet Unit 1', url: 'https://drive.google.com/file/d/1T6PERNwiIdoA0Vm2EGyIVwp9TlrG7IrX/view?usp=drive_link' }
+      ]
+    },
+    {
+      id: 'em',
+      name: 'Economics & Management',
+      icon: '💼',
       color: 'bg-blue-500',
-      notes: [{ title: 'Mathematics-III Notes', url: '#' }]
+      notes: [
+        { title: 'Complete Notes (Unit 1 to 5)', url: 'https://drive.google.com/file/d/1FKODzWwkZ4NLUs4J53Jw6aE3qIkfV3NK/view?usp=drivesdk' },
+        { title: 'Business Economics Book', url: 'https://drive.google.com/file/d/1XD2CnTGa8tpUzqLPlzzDnc1-P60wdAJO/view?usp=drive_link' },
+        { title: 'E&M Unit 1 (Part-1) Notes', url: 'https://drive.google.com/file/d/1UI4YbkhC7bbb7DpMtNgnciPCFV_c7FaL/view?usp=drive_link' },
+        { title: 'E&M Unit 1 (Part 2) Notes', url: 'https://drive.google.com/file/d/1UObid3Prm9I_JVbxPqaPSukSmQ8qyCV6/view?usp=drive_link' },
+        { title: 'Unit 1 (Elasticity Notes)', url: 'https://drive.google.com/file/d/1U8GWR590L9kRgbe5_fZ6t-myuUoXmqn8/view?usp=drive_link' },
+        { title: 'Complete Unit 2 Notes', url: 'https://drive.google.com/file/d/1UOd_TOHZeOayp-W0NeKdmnv2mXr7-or-/view?usp=drive_link' },
+        { title: 'Unit 3 (Part-1) Notes', url: 'https://drive.google.com/file/d/1UPKMYKBS5k96DWeB2xyVy1ix9gUBnF_o/view?usp=drive_link' },
+        { title: 'Unit 3 (Part-2) Notes', url: 'https://drive.google.com/file/d/1U_rmk9aE-Ge6cxrPqIBbNovw9kwXm56M/view?usp=drive_link' },
+        { title: 'E&M Handwritten Notes', url: 'https://drive.google.com/file/d/1XANMyirw8Bb8Ks4m-R9jOtJ-0CncP5mQ/view?usp=drive_link' },
+        { title: 'Full Last Min. Revision Notes', url: 'https://drive.google.com/file/d/1Tv4l6-DNZygMKa-7AP73LvBki4L3QQcI/view?usp=drive_link' }
+      ]
     },
     {
-      id: 'physics',
-      name: 'Physics-III (Modern Physics)',
-      icon: '⚡',
-      color: 'bg-purple-500',
-      notes: [{ title: 'Modern Physics Notes', url: '#' }]
-    },
-    {
-      id: 'chemistry',
-      name: 'Chemistry-III (Physical Chemistry)',
-      icon: '🧪',
+      id: 'statistical',
+      name: 'Statistical Methods',
+      icon: '📊',
       color: 'bg-green-500',
-      notes: [{ title: 'Physical Chemistry Notes', url: '#' }]
+      notes: [{ title: 'Complete Notes (Unit 1 to 5)', url: 'https://drive.google.com/file/d/1zvqf73Q5YzON5-q8MYepf1dMKdE9_8Id/view?usp=drivesdk' }]
     },
     {
-      id: 'cs-basics',
-      name: 'Computer Science Fundamentals',
+      id: 'dsa',
+      name: 'Data Structures & Algorithms',
       icon: '💻',
       color: 'bg-indigo-500',
-      notes: [{ title: 'CS Fundamentals Notes', url: '#' }]
+      notes: [{ title: 'Complete Notes (Unit 1 to 5)', url: 'https://drive.google.com/file/d/1Yv1GXiivwW-VzgXo0LDDilZQRQOVG-k4/view?usp=drivesdk' }]
+    },
+    {
+      id: 'prp',
+      name: 'Probability & Random Processes',
+      icon: '💻',
+      color: 'bg-indigo-500',
+      notes: [{ title: 'Complete Notes (Unit 1 to 5)', url: 'https://drive.google.com/file/d/1qOTsNk7Jbb0dslXNoV1cFbHMQfhtMGUA/view?usp=drivesdk' }]
+    },
+    {
+      id: 'real-analysis',
+      name: 'Real Analysis',
+      icon: '💻',
+      color: 'bg-indigo-500',
+      notes: [{ title: 'Complete Notes (Unit 1 to 5)', url: 'https://drive.google.com/file/d/1ywGtU0gSZcUuB2Pz8xjZlXhuUAnwfEy_/view?usp=drivesdk' }]
     },
     {
       id: 'assignments',
@@ -99,7 +150,11 @@ const BSMSSem3Notes = () => {
       name: 'Previous Year Questions',
       icon: '❓',
       color: 'bg-red-500',
-      notes: [{ title: 'BS-MS 3rd Sem PYQs', url: '#' }]
+      notes: [
+        { title: 'Mid Sem-1 PYQs(2025-26)', url: 'https://drive.google.com/file/d/1MQQHzmoJ80d2V7x4geGk95ozuC-YAQO2/view?usp=drivesdk' },
+        { title: 'Mid Sem-2 PYQs(2025-26)', url: 'https://drive.google.com/file/d/1uxM4C7DaILXYTRCtivU-lM5B6zZUpnDv/view?usp=drivesdk' },
+        { title: 'End Sem PYQs(2025-26)', url: 'https://drive.google.com/file/d/1ie2sSJbkNT5voEhTqyjh3uqWb_zzzYzF/view?usp=drivesdk' },
+      ]
     }
   ];
 
