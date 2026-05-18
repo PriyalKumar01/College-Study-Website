@@ -254,15 +254,17 @@ const BSMSSem4Notes = () => {
               <div className="space-y-2 text-sm text-purple-700 dark:text-purple-300">
                  <p><strong>✨ For BS-MS students:</strong> From 2nd year onwards, your curriculum diverges from B.Tech with specially curated resources for your syllabus.</p>
 
-<p>• <strong>Engg. Maths-II:</strong> Curated notes, PYQs, playlists & complete study material available.</p>
+<p>• <strong>Engineering Mathematics-III:</strong> Curated notes, PYQs, playlists & complete study material available.</p>
 
-<p>• <strong>Statistical Methods:</strong> Well-structured notes and guided resources for easy preparation.</p>
+<p>• <strong>CONM Notes:</strong> Structured notes and guided resources for effective preparation.</p>
 
-<p>• <strong>Data Structures & Algorithms:</strong> Coding-focused notes, playlists, and practice resources available.</p>
+<p>• <strong>Numerical Optimization:</strong> Concept-focused notes with curated study playlists.</p>
 
-<p>• <strong>Probability & Random Processes:</strong> Concept-based notes with curated study playlists.</p>
+<p>• <strong>Discrete Maths Structure:</strong> Well-organized notes, playlists, and practice resources available.</p>
 
-<p>• <strong>Real Analysis:</strong> Fully curated notes and resources for strong conceptual understanding.</p>
+<p>• <strong>Computational Linear Algebra (CLA):</strong> Fully curated notes and learning resources for strong conceptual understanding.</p>
+
+<p>• <strong>R for Data Science:</strong> Practical notes, study playlists, and coding resources available.</p>
 
 <p>• <strong>Notes, playlists & PYQs will be updated progressively</strong> — contribute your notes to help fellow students!</p>
 
