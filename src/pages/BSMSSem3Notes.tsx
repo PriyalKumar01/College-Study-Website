@@ -136,14 +136,19 @@ const BSMSSem3Notes = () => {
       name: 'Real Analysis',
       icon: '💻',
       color: 'bg-indigo-500',
-      notes: [{ title: 'Complete Notes (Unit 1 to 5)', url: 'https://drive.google.com/file/d/1ywGtU0gSZcUuB2Pz8xjZlXhuUAnwfEy_/view?usp=drivesdk' }]
+      notes: [{ title: 'Complete Notes (Unit 1 to 5)', url: 'https://drive.google.com/file/d/1ywGtU0gSZcUuB2Pz8xjZlXhuUAnwfEy_/view?usp=drivesdk' },
+        { title: 'Real analysis book (by Bartle & Shebert 4th edition)', url: 'https://drive.google.com/file/d/1IoWmsjvxfOxJFWQw0F6Kmul1VQ-26pN9/view?usp=drivesdk' },
+      ]
     },
     {
       id: 'assignments',
       name: 'Assignments - All Subjects',
       icon: '📝',
       color: 'bg-orange-500',
-      notes: []
+      notes: [
+        { title: 'PRP & SM Assignment', url: 'https://drive.google.com/file/d/1uVzVvrxd_9zhd0mMYW8Wn0T64Gj9a3u3/view?usp=drivesdk' },
+        
+      ]
     },
     {
       id: 'pyqs',
@@ -151,6 +156,9 @@ const BSMSSem3Notes = () => {
       icon: '❓',
       color: 'bg-red-500',
       notes: [
+        { title: 'Mid Sem-1 PYQs(2024-25)', url: 'https://drive.google.com/file/d/1poHiP_Tvv_zPb0_p4whjlbj8SkNlDITo/view?usp=drivesdk' },
+        { title: 'Mid Sem-2 PYQs(2024-25)', url: 'https://drive.google.com/file/d/1r7kGmBnL9E0UASfursx5MdM5b3l8A_CT/view?usp=drivesdk' },
+        { title: 'End Sem PYQs(2024-25)', url: 'https://drive.google.com/file/d/1JvNOmih8LYMYvYZlxuEDdFC6XqQfUKuG/view?usp=drivesdk' },
         { title: 'Mid Sem-1 PYQs(2025-26)', url: 'https://drive.google.com/file/d/1MQQHzmoJ80d2V7x4geGk95ozuC-YAQO2/view?usp=drivesdk' },
         { title: 'Mid Sem-2 PYQs(2025-26)', url: 'https://drive.google.com/file/d/1uxM4C7DaILXYTRCtivU-lM5B6zZUpnDv/view?usp=drivesdk' },
         { title: 'End Sem PYQs(2025-26)', url: 'https://drive.google.com/file/d/1ie2sSJbkNT5voEhTqyjh3uqWb_zzzYzF/view?usp=drivesdk' },

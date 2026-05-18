@@ -32,7 +32,25 @@ const BSMSSem4Notes = () => {
   const [expandedSubjects, setExpandedSubjects] = useState<string[]>([]);
 
   const subjectPlaylists: Record<string, { detailed: any[]; oneshot: any[] }> = {
-    math4: { detailed: [], oneshot: [] },
+    math3: {
+      detailed: [
+        { title: 'Fourier Integral Playlist by-Fearless (Best)', url: 'https://youtube.com/playlist?list=PLhSp9OSVmeyITz_e6F9YiyongjaCryasK&si=xhAnYIkAQTe5jAw-', recommended: true },
+        { title: 'Complex Variable (Complete Playlist) by-Fearless (Best)', url: 'https://youtube.com/playlist?list=PL5Dqs90qDljVCPXMA2wwA9oIV3blxLLQ6&si=zRcZEv8D7dK-CP2M', recommended: true },
+        { title: 'Unit 3 Complex Intigration Playlist By-Fearless (Best)', url: 'https://youtube.com/playlist?list=PL5Dqs90qDljWlvUJ-YmjMsjkAANOagCk7&si=o7JtHhGSY40pDjWY', recommended: true },
+        { title: 'Unit 4 Curve Fitting, Correlation & Regrassion by-Gajendra Prohit (Best)', url: 'https://youtube.com/playlist?list=PLU6SqdYcYsfL1Mrdj7bs2A6bQOU7FMqKX&si=wFlWnVRj-HEH7qAw', recommended: true },
+        { title: 'Unit 5 Probability & Distribution Playlist by- MKS (Best)', url: 'https://youtube.com/playlist?list=PLhSp9OSVmeyLB62_-fT9VNbjRkDEzJzzp&si=FE8RI4spBCakwAgh', recommended: true },
+        { title: 'FITTING OF CURVE IN STATISTICS - BY TIKLE\'S ACADEMY', url: 'https://youtube.com/playlist?list=PLNKD1qB9pptvgPP_zrKXa64SPYtKQpy-C&si=mOUPo8QHIhN5w9md' },
+        { title: 'Curve Fitting, Correlation by-Fearless', url: 'https://youtube.com/playlist?list=PL5Dqs90qDljVF5-HxU829qWUMRFwDAu3v&si=YqbaDiSVfO_BQrlN' },
+        { title: 'Complex Integer Playlist By-Pradeep Giri', url: 'https://youtube.com/playlist?list=PLT3bOBUU3L9ibhrkzWki0_tfrugS4rvnJ&si=fOLiA6fhcpYafFnO' },
+        { title: 'Laplace Transform & Fourier Series By-Pradeep Giri (Best)', url: 'https://youtube.com/playlist?list=PLT3bOBUU3L9jr5vb-zUd4GUFaexGDiRc9&si=uMG3aPDDGVRo_QOQ', recommended: true },
+        { title: 'Hypothesis Testing Playlist By-Fearless (Best)', url: 'https://youtube.com/playlist?list=PL5Dqs90qDljWze2qPIgZv-CtBJYHEIvqa&si=yrKbGQpWpqNZeDwi', recommended: true },
+        { title: 'Inverse Laplace Transform Playlist By-Pradeep Giri', url: 'https://youtube.com/playlist?list=PLT3bOBUU3L9iHqXEfSTmpmOpEkUmj-Qay&si=xiSCdE-W81UTMxg6' },
+        { title: 'Fourier Transform By-Gajendra Prohit', url: 'https://youtube.com/playlist?list=PLU6SqdYcYsfK_FysPwDqaoUKhTqms_aEg&si=4iqfG5zjBHpBMQU_' }
+      ],
+      oneshot: [
+        { title: 'Engineering Mathematics-III One Shot', url: 'https://youtu.be/_Hjp6aFJO40?si=L8tp3IgTfCBFhxEz' }
+      ]
+    },
     'classical-mech': { detailed: [], oneshot: [] },
     thermodynamics: { detailed: [], oneshot: [] },
     electronics: { detailed: [], oneshot: [] }
@@ -60,32 +78,65 @@ const BSMSSem4Notes = () => {
 
   const staticSubjects = [
     {
-      id: 'math4',
-      name: 'Mathematics-IV',
+      id: 'math3',
+      name: 'Engineering Mathematics-III',
       icon: '📐',
       color: 'bg-purple-500',
-      notes: [{ title: 'Mathematics-IV Notes', url: '#' }]
+      notes: [
+        { title: 'Complete Math-III Notes(Unit 1-5)', url: 'https://drive.google.com/file/d/1UNq-P8jCu1R0ucy2zXh1OID5ExaQcUL5/view?usp=drivesdk', recommended: true },
+        { title: 'BS Gerewal Math Book', url: 'https://drive.google.com/file/d/1WO6VBRte2_4ZdXbwuwLoA4PfjgSFdabL/view?usp=drive_link' },
+        { title: 'HK Das Math Book', url: 'https://drive.google.com/file/d/1WO_2jHYoYX_T9PoZHVVvts4WssiWRqPK/view?usp=drive_link' },
+        { title: 'Complete Unit-1,2 & 3 Notes', url: 'https://drive.google.com/file/d/1CE9GVSQI9YCq6iEZ25ASudXDyLHEL5tJ/view?usp=drive_link' },
+        { title: 'Unit 4 (Moment) Notes', url: 'https://drive.google.com/file/d/1R0KO9NqX0WFnSbuFqZMTxyol1KmIrC5T/view?usp=drive_link' },
+        { title: 'Unit 5 Notes', url: 'https://drive.google.com/file/d/1R0nue1eUT7kZXKeQnXJiZ6mZuijVoQ07/view?usp=drive_link' },
+        { title: 'Unit 4 Curve Fitting Notes', url: 'https://drive.google.com/file/d/1CEcIG1FTaeZdqRn53Fy-O8at9SGbmXX2/view?usp=drive_link' },
+        { title: 'Z-Transform Notes', url: 'https://drive.google.com/file/d/1_QbIn7C9i3M8E6HD_J3hNwgMORjrMEaj/view?usp=drive_link' },
+        { title: 'EM-III Residue Notes', url: 'https://drive.google.com/file/d/1_PeEnniPP66dRbwGRJiPzyjLTEs00jbX/view?usp=drive_link' },
+        { title: 'Harmonic Function Prove Notes', url: 'https://drive.google.com/file/d/1_PeEnniPP66dRbwGRJiPzyjLTEs00jbX/view?usp=drive_link' }
+      ]
     },
     {
-      id: 'classical-mech',
-      name: 'Classical Mechanics',
+      id: 'conm',
+      name: 'CONM Notes',
       icon: '🌀',
       color: 'bg-blue-500',
-      notes: [{ title: 'Classical Mechanics Notes', url: '#' }]
+      notes: [{ title: 'CONM Notes(unit 1-5)', url: 'https://drive.google.com/file/d/18lnFb5NV00LsRkdAqk1MyBHyinOf19n7/view?usp=drivesdk', recommended: true }]
     },
     {
-      id: 'thermodynamics',
-      name: 'Thermodynamics & Statistical Physics',
+      id: 'no',
+      name: 'Numerical Optimization',
       icon: '🔥',
       color: 'bg-orange-500',
-      notes: [{ title: 'Thermodynamics Notes', url: '#' }]
+      notes: [{ title: 'NO Notes(unit 1-5)', url: 'https://drive.google.com/file/d/1tDAuQ_6MD_gxnUyb8FXOmR8UZFD86u6l/view?usp=drivesdk', recommended: true }]
     },
     {
-      id: 'electronics',
-      name: 'Electronics & Instrumentation',
+      id: 'dms',
+      name: 'Discrete Maths Structure',
       icon: '🔌',
       color: 'bg-green-500',
-      notes: [{ title: 'Electronics Notes', url: '#' }]
+      notes: [
+        { title: 'All Discrete Maths Structure Notes(Unit 1 to 5)', url: 'https://drive.google.com/file/d/1zZz0d9u6oEU5b5K0TbHPJ_LOSCI6r0Fu/view?usp=drivesdk', recommended: true },
+        { title: 'Discrete maths book-kennath H.Roshan', url: 'https://drive.google.com/file/d/17sp7ETuil3xu9CXefKJl56qowmgk-3dQ/view?usp=drivesdk' },
+        { title: 'Probability & Statistics book', url: 'https://drive.google.com/file/d/1__BWebDSeury6Fc9lhXYhzL7ykIicu3l/view?usp=drivesdk' },
+        { title: 'Fundamentals of Maths Statistics book', url: 'https://drive.google.com/file/d/155iOpSTfCuz0NOB6q_5Ohq6iFk8SH1fE/view?usp=drivesdk' },
+      ]
+    },
+    {
+      id: 'cla',
+      name: 'Computational Linear Algebra (CLA)',
+      icon: '🔌',
+      color: 'bg-green-500',
+      notes: [{ title: 'Complete CLA Notes(unit 1-5)', url: 'https://drive.google.com/file/d/1CKwLsaFF-TQQ3KM1CtXzfxfsNfRj85vu/view?usp=drivesdk', recommended: true }]
+    },
+    {
+      id: 'rDS',
+      name: 'R for Data Science',
+      icon: '🔌',
+      color: 'bg-green-500',
+      notes: [
+        { title: 'Complete R for DS Notes(unit 1-5)', url: 'https://drive.google.com/file/d/1Xo-zsg8BL2wuxWLn7UF4_SuTHTQMUszD/view?usp=drivesdk', recommended: true },
+        { title: 'Full R for DS Notes', url: 'https://drive.google.com/file/d/1zU6N4X6RmLddHWh6ify9k0Dm-rVCRswT/view?usp=drivesdk' }
+      ]
     },
     {
       id: 'assignments',
@@ -99,7 +150,11 @@ const BSMSSem4Notes = () => {
       name: 'Previous Year Questions',
       icon: '❓',
       color: 'bg-red-500',
-      notes: [{ title: 'BS-MS 4th Sem PYQs', url: '#' }]
+      notes: [
+        { title: 'End Sem PYQs (2024-25)', url: 'https://drive.google.com/file/d/1Z7spAbIGu5BTgT_2ePXh3xqdyh08fzpW/view?usp=drivesdk' },
+        { title: 'Mid Sem-1 PYQs (2025-26)', url: 'https://drive.google.com/file/d/1sj9C6vGSslL2Aq9pOnrV6Q05YKIdgAPV/view?usp=drivesdk' },
+        { title: 'Mid Sem-2 PYQs (2025-26)', url: 'https://drive.google.com/file/d/1369PIfbozG_5xJEN-oc3KKElWIe5BKeP/view?usp=drivesdk' },
+      ]
     }
   ];
 
