@@ -1,103 +1,106 @@
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, BookOpen, GraduationCap, ExternalLink } from 'lucide-react';
+import { ArrowLeft, BookOpen, ExternalLink, Lock } from 'lucide-react';
 import Navbar from '@/components/Navbar';
+
+const years = [
+  {
+    year: '1st Year',
+    semesters: 'Semester 1 & 2',
+    description: 'Same as B.Tech 1st year — common 1st & 2nd semester resources.',
+    note: 'Shared with B.Tech 1st year curriculum',
+    status: 'available',
+    image: '/bsms_year1.png',
+    fallbackGradient: 'from-blue-600 to-blue-800',
+    onClick: (navigate: ReturnType<typeof useNavigate>) => navigate('/btech-notes/first-year'),
+    buttonLabel: 'Go to 1st Year',
+    icon: <ExternalLink className="h-4 w-4" />,
+  },
+  {
+    year: '2nd Year',
+    semesters: 'Semester 3 & 4',
+    description: 'BS-MS specific subjects from 2nd year onwards. Core science & research foundation.',
+    status: 'available',
+    image: '/bsms_year2.png',
+    fallbackGradient: 'from-purple-600 to-purple-800',
+    onClick: (navigate: ReturnType<typeof useNavigate>) => navigate('/bsms-notes/second-year'),
+    buttonLabel: 'View Semesters',
+    icon: <BookOpen className="h-4 w-4" />,
+  },
+  {
+    year: '3rd Year',
+    semesters: 'Semester 5 & 6',
+    description: 'Advanced science subjects — quantum mechanics, electrodynamics, and specializations.',
+    status: 'available',
+    image: '/bsms_year3.png',
+    fallbackGradient: 'from-indigo-600 to-indigo-800',
+    onClick: (navigate: ReturnType<typeof useNavigate>) => navigate('/bsms-notes/third-year'),
+    buttonLabel: 'View Semesters',
+    icon: <BookOpen className="h-4 w-4" />,
+  },
+  {
+    year: '4th Year',
+    semesters: 'Semester 7 & 8',
+    description: 'Advanced specialization and research project work.',
+    status: 'coming-soon',
+    image: '/bsms_year4.png',
+    fallbackGradient: 'from-slate-500 to-slate-700',
+    onClick: () => {},
+    buttonLabel: 'Coming Soon',
+    icon: <Lock className="h-4 w-4" />,
+  },
+  {
+    year: '5th Year',
+    semesters: 'Semester 9 & 10',
+    description: "Master's level research, thesis, and dissertation.",
+    status: 'coming-soon',
+    image: '/bsms_year5.png',
+    fallbackGradient: 'from-slate-500 to-slate-700',
+    onClick: () => {},
+    buttonLabel: 'Coming Soon',
+    icon: <Lock className="h-4 w-4" />,
+  },
+];
 
 const BSMSYears = () => {
   const navigate = useNavigate();
 
-  const years = [
-    {
-      year: '1st Year',
-      semesters: 'Semester 1 & 2',
-      icon: '🎯',
-      color: 'bg-gradient-to-br from-blue-500 to-blue-700',
-      borderColor: 'border-blue-400',
-      description: 'Same as B.Tech 1st year — redirects to common 1st & 2nd semester resources.',
-      status: 'available',
-      note: 'Shared with B.Tech 1st year curriculum',
-      onClick: () => navigate('/btech-notes/first-year')
-    },
-    {
-      year: '2nd Year',
-      semesters: 'Semester 3 & 4',
-      icon: '🔬',
-      color: 'bg-gradient-to-br from-purple-500 to-purple-700',
-      borderColor: 'border-purple-400',
-      description: 'BS-MS specific subjects from 2nd year onwards. Core science & research foundation.',
-      status: 'available',
-      onClick: () => navigate('/bsms-notes/second-year')
-    },
-    {
-      year: '3rd Year',
-      semesters: 'Semester 5 & 6',
-      icon: '⚛️',
-      color: 'bg-gradient-to-br from-indigo-500 to-indigo-700',
-      borderColor: 'border-indigo-400',
-      description: 'Advanced science subjects — quantum mechanics, electrodynamics, and specializations.',
-      status: 'available',
-      onClick: () => navigate('/bsms-notes/third-year')
-    },
-    {
-      year: '4th Year',
-      semesters: 'Semester 7 & 8',
-      icon: '🧬',
-      color: 'bg-gradient-to-br from-slate-500 to-slate-700',
-      borderColor: 'border-slate-400',
-      description: 'Advanced specialization and research project work.',
-      status: 'coming-soon',
-      onClick: () => {}
-    },
-    {
-      year: '5th Year',
-      semesters: 'Semester 9 & 10',
-      icon: '🎓',
-      color: 'bg-gradient-to-br from-slate-500 to-slate-700',
-      borderColor: 'border-slate-400',
-      description: 'Master\'s level research, thesis, and dissertation.',
-      status: 'coming-soon',
-      onClick: () => {}
-    }
-  ];
-
   return (
-    <div className="min-h-screen bg-gradient-hero">
+    <div className="min-h-screen" style={{ background: 'linear-gradient(135deg, #eef2ff 0%, #e8f0fe 40%, #f0f4ff 100%)' }}>
       <Navbar />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="mb-8"
-        >
-          <Button onClick={() => navigate('/notes')} variant="outline" className="mb-4">
-            <ArrowLeft className="h-4 w-4 mr-2" /> Back to Notes
-          </Button>
+
+        {/* Header */}
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} className="mb-8">
+          <button
+            onClick={() => navigate('/notes')}
+            className="flex items-center gap-2 text-sm text-gray-500 hover:text-gray-800 mb-5 transition-colors"
+          >
+            <ArrowLeft className="h-4 w-4" /> Back to Notes
+          </button>
 
           <div className="flex items-center gap-3 mb-2">
-            <div className="w-12 h-12 bg-gradient-to-br from-violet-500 to-purple-700 rounded-xl flex items-center justify-center text-white shadow-lg">
-              <GraduationCap className="h-6 w-6" />
+            <div className="w-12 h-12 bg-gradient-to-br from-violet-500 to-purple-700 rounded-xl flex items-center justify-center text-2xl shadow-lg">
+              🔬
             </div>
             <div>
-              <h1 className="text-3xl md:text-4xl font-bold text-foreground">BS-MS Notes 🔬</h1>
-              <p className="text-muted-foreground">5-Year Integrated Science Programme</p>
+              <h1 className="text-3xl md:text-4xl font-bold text-gray-900">BS-MS Notes</h1>
+              <p className="text-gray-500">5-Year Integrated Science Programme</p>
             </div>
           </div>
         </motion.div>
 
         {/* Info Banner */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1, duration: 0.5 }}
-          className="mb-8 p-5 bg-gradient-to-r from-violet-50 to-purple-50 dark:from-violet-900/20 dark:to-purple-900/20 rounded-lg border-2 border-violet-200 dark:border-violet-800"
+          className="mb-8 p-5 rounded-2xl border border-violet-200 bg-white shadow-sm"
+          style={{ background: 'linear-gradient(135deg, #f5f3ff, #ede9fe)' }}
         >
           <div className="flex items-start gap-3">
-            <BookOpen className="h-6 w-6 text-violet-600 mt-0.5 flex-shrink-0" />
-            <div className="text-sm text-violet-700 dark:text-violet-300">
+            <BookOpen className="h-5 w-5 text-violet-600 mt-0.5 flex-shrink-0" />
+            <div className="text-sm text-violet-800">
               <p className="font-semibold mb-1">About BS-MS Programme</p>
               <p>The BS-MS dual degree is a 5-year integrated science programme. The <strong>1st year syllabus is shared with B.Tech</strong> (Sem 1 & 2). From <strong>2nd year onwards</strong>, BS-MS students have a dedicated syllabus with specialized science subjects.</p>
             </div>
@@ -105,55 +108,72 @@ const BSMSYears = () => {
         </motion.div>
 
         {/* Year Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {years.map((year, index) => (
-            <motion.div
-              key={year.year}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: (index + 1) * 0.1, duration: 0.5 }}
-              whileHover={{ scale: year.status === 'available' ? 1.03 : 1 }}
-            >
-              <Card
-                className={`h-full transition-all duration-300 border-2 shadow-lg ${
-                  year.status === 'available'
-                    ? `${year.borderColor} hover:shadow-xl cursor-pointer`
-                    : 'border-slate-300 dark:border-slate-700 opacity-60 cursor-not-allowed'
-                }`}
-                onClick={year.status === 'available' ? year.onClick : undefined}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {years.map((year, index) => {
+            const available = year.status === 'available';
+            return (
+              <motion.div
+                key={year.year}
+                initial={{ opacity: 0, y: 24 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: (index + 1) * 0.08, duration: 0.45 }}
+                whileHover={available ? { y: -5, scale: 1.02 } : {}}
+                className="group"
               >
-                <CardHeader className="text-center pb-3">
-                  <div className={`w-20 h-20 ${year.color} rounded-2xl flex items-center justify-center text-3xl mx-auto mb-3 shadow-lg`}>
-                    {year.icon}
+                <div
+                  className={`h-full rounded-2xl bg-white shadow-md overflow-hidden flex flex-col transition-all duration-300 ${available ? 'cursor-pointer hover:shadow-xl' : 'opacity-60 cursor-not-allowed'}`}
+                  onClick={available ? () => year.onClick(navigate) : undefined}
+                >
+                  {/* Image area */}
+                  <div className="relative h-48 overflow-hidden">
+                    <img
+                      src={year.image}
+                      alt={year.year}
+                      className={`w-full h-full object-cover transition-transform duration-500 ${available ? 'group-hover:scale-105' : ''}`}
+                    />
+                    {!available && (
+                      <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+                        <span className="bg-white/20 backdrop-blur-sm text-white text-xs font-bold px-3 py-1.5 rounded-full border border-white/30">
+                          🔒 Coming Soon
+                        </span>
+                      </div>
+                    )}
                   </div>
-                  <CardTitle className="text-xl">{year.year}</CardTitle>
-                  <CardDescription className="font-medium">{year.semesters}</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm text-muted-foreground text-center mb-4">{year.description}</p>
-                  {year.note && (
-                    <Badge variant="secondary" className="w-full justify-center text-xs mb-3">
-                      {year.note}
-                    </Badge>
-                  )}
-                  {year.status === 'available' ? (
-                    <Button className="w-full btn-hero" onClick={year.onClick}>
-                      {index === 0 ? (
-                        <><ExternalLink className="h-4 w-4 mr-2" /> Go to 1st Year</>
-                      ) : (
-                        <><BookOpen className="h-4 w-4 mr-2" /> View Semesters</>
-                      )}
-                    </Button>
-                  ) : (
-                    <Button className="w-full" disabled>
-                      🔒 Coming Soon
-                    </Button>
-                  )}
-                </CardContent>
-              </Card>
-            </motion.div>
-          ))}
+
+                  {/* Card body */}
+                  <div className="flex flex-col flex-1 p-5 gap-2">
+                    <div>
+                      <h3 className={`text-xl font-bold mb-0.5 ${available ? 'text-gray-900 group-hover:text-violet-600' : 'text-gray-500'} transition-colors`}>
+                        {year.year}
+                      </h3>
+                      <p className="text-xs text-violet-600 font-semibold">{year.semesters}</p>
+                    </div>
+                    <p className="text-sm text-gray-500 leading-relaxed flex-1">{year.description}</p>
+                    {year.note && (
+                      <span className="inline-block text-[11px] font-semibold text-green-700 bg-green-50 border border-green-200 rounded-full px-3 py-0.5 w-fit">
+                        {year.note}
+                      </span>
+                    )}
+                    <button
+                      disabled={!available}
+                      onClick={available ? () => year.onClick(navigate) : undefined}
+                      className={`mt-2 w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 ${
+                        available
+                          ? 'text-white shadow-md hover:shadow-lg hover:scale-[1.02]'
+                          : 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                      }`}
+                      style={available ? { background: 'linear-gradient(135deg, #7c3aed, #4f46e5)' } : {}}
+                    >
+                      {year.icon}
+                      {year.buttonLabel}
+                    </button>
+                  </div>
+                </div>
+              </motion.div>
+            );
+          })}
         </div>
+
       </div>
     </div>
   );

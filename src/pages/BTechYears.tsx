@@ -1,157 +1,162 @@
-import { useNavigate, useLocation } from "react-router-dom";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { ArrowLeft, BookOpen, Share2 } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
+import { useNavigate } from "react-router-dom";
+import { ArrowLeft, BookOpen, Share2, Lock } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import { motion } from "framer-motion";
-import firstYearImg from "@/assets/1st-year-thumbnail.jpg";
-import secondYearImg from "@/assets/2nd-year-thumbnail.jpg";
-import thirdYearImg from "@/assets/3rd-year-thumbnail.jpg";
-import fourthYearImg from "@/assets/4th-year-thumbnail.jpg";
+
+const years = [
+  {
+    name: "1st Year",
+    description: "Foundation courses covering basic engineering principles",
+    available: true,
+    route: "/btech-notes/first-year",
+    image: "/btech_year1.png",
+    semesters: ["1st Semester", "2nd Semester"],
+  },
+  {
+    name: "2nd Year",
+    description: "Core branch subjects with practical applications",
+    available: true,
+    route: "/btech-notes/second-year",
+    image: "/btech_year2.png",
+    semesters: ["3rd Semester", "4th Semester"],
+  },
+  {
+    name: "3rd Year",
+    description: "Advanced topics and specialization courses",
+    available: true,
+    route: "/btech-notes/third-year",
+    image: "/btech_year3.png",
+    semesters: ["5th Semester", "6th Semester"],
+  },
+  {
+    name: "4th Year",
+    description: "Final year projects and elective subjects",
+    available: false,
+    route: "/btech-notes/fourth-year",
+    image: "/btech_year4.png",
+    semesters: ["7th Semester", "8th Semester"],
+  },
+];
 
 const BTechYears = () => {
   const navigate = useNavigate();
-  const location = useLocation();
 
   const handleWhatsAppShare = (yearName: string, route: string) => {
     const shareUrl = `${window.location.origin}${route}`;
     const message = `Check out ${yearName} B.Tech Notes on College Study Hub: ${shareUrl}`;
-    window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, '_blank');
-  };
-
-  const years = [
-    {
-      name: "1st Year",
-      description: "Foundation courses covering basic engineering principles",
-      available: true,
-      route: "/btech-notes/first-year",
-      thumbnail: firstYearImg,
-      semesters: ["1st Semester", "2nd Semester"],
-    },
-    {
-      name: "2nd Year",
-      description: "Core branch subjects with practical applications",
-      available: true,
-      route: "/btech-notes/second-year",
-      thumbnail: secondYearImg,
-      semesters: ["3rd Semester", "4th Semester"],
-    },
-    {
-      name: "3rd Year",
-      description: "Advanced topics and specialization courses",
-      available: true,
-      route: "/btech-notes/third-year",
-      thumbnail: thirdYearImg,
-      semesters: ["5th Semester", "6th Semester"],
-    },
-    {
-      name: "4th Year",
-      description: "Final year projects and elective subjects",
-      available: false,
-      route: "/btech-notes/fourth-year",
-      thumbnail: fourthYearImg,
-      semesters: ["7th Semester", "8th Semester"],
-    },
-  ];
-
-  const handleYearClick = (year: typeof years[0]) => {
-    if (year.available) {
-      navigate(year.route);
-    }
+    window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, "_blank");
   };
 
   return (
-    <div className="min-h-screen bg-gradient-hero">
+    <div className="min-h-screen" style={{ background: "linear-gradient(135deg, #eef2ff 0%, #e8f0fe 40%, #f0f4ff 100%)" }}>
       <Navbar />
-      
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <Button
-          variant="outline"
-          onClick={() => navigate("/notes")}
-          className="mb-4"
-        >
-          <ArrowLeft className="h-4 w-4 mr-2" />
-          Back to Notes
-        </Button>
 
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="text-center mb-12"
-        >
-          <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-primary via-purple-500 to-pink-500 bg-clip-text text-transparent">
-            B.Tech Notes by Year
-          </h1>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Select your academic year to access comprehensive study materials
-          </p>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Header */}
+        <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
+          <button
+            onClick={() => navigate("/notes")}
+            className="flex items-center gap-2 text-sm text-gray-500 hover:text-gray-800 mb-5 transition-colors"
+          >
+            <ArrowLeft className="h-4 w-4" /> Back to Notes
+          </button>
+
+          <div className="text-center mb-10">
+            <h1 className="text-4xl md:text-5xl font-bold mb-3 bg-gradient-to-r from-primary via-purple-500 to-pink-500 bg-clip-text text-transparent">
+              B.Tech Notes by Year
+            </h1>
+            <p className="text-base text-gray-500 max-w-xl mx-auto">
+              Select your academic year to access comprehensive study materials
+            </p>
+          </div>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-6xl mx-auto">
+        {/* Year Cards — 2 columns */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-7 max-w-4xl mx-auto">
           {years.map((year, index) => (
             <motion.div
               key={year.name}
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1, duration: 0.5 }}
+              whileHover={year.available ? { y: -6, scale: 1.02 } : {}}
+              className="group"
             >
-              <Card
-                className={`feature-card h-full relative ${
-                  year.available ? "cursor-pointer" : "opacity-60"
-                } transition-all duration-300`}
-                onClick={() => handleYearClick(year)}
+              <div
+                className={`h-full rounded-2xl bg-white shadow-md overflow-hidden flex flex-col transition-all duration-300 ${
+                  year.available ? "cursor-pointer hover:shadow-2xl" : "opacity-60 cursor-not-allowed"
+                }`}
+                onClick={() => year.available && navigate(year.route)}
               >
-                {year.available && (
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="absolute top-2 right-2 z-10 h-8 w-8 text-green-600 hover:text-green-700 hover:bg-green-50 dark:hover:bg-green-900/20"
-                    onClick={(e) => { e.stopPropagation(); handleWhatsAppShare(year.name, year.route); }}
-                    title="Share on WhatsApp"
-                  >
-                    <Share2 className="h-4 w-4" />
-                  </Button>
-                )}
-                <CardHeader>
-                  <div className="w-full h-48 rounded-lg overflow-hidden mb-4">
-                    <img
-                      src={year.thumbnail}
-                      alt={year.name}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                  <div className="flex items-center justify-between mb-3">
-                    <Badge variant={year.available ? "default" : "secondary"}>
-                      {year.available ? "Available" : "Coming Soon"}
-                    </Badge>
-                    <BookOpen className="h-5 w-5 text-primary" />
-                  </div>
-                  <CardTitle className="text-2xl mb-2">{year.name}</CardTitle>
-                  <CardDescription className="text-base mb-4">
-                    {year.description}
-                  </CardDescription>
-                  <div className="flex flex-wrap gap-2">
-                    {year.semesters.map((sem) => (
-                      <Badge key={sem} variant="outline" className="text-xs">
-                        {sem}
-                      </Badge>
-                    ))}
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  {year.available ? (
-                    <Button className="w-full btn-hero">
-                      View Notes
-                    </Button>
-                  ) : (
-                    <Button className="w-full" variant="secondary" disabled>
-                      Coming Soon
-                    </Button>
+                {/* Image */}
+                <div className="relative h-52 overflow-hidden">
+                  <img
+                    src={year.image}
+                    alt={year.name}
+                    className={`w-full h-full object-cover transition-transform duration-500 ${year.available ? "group-hover:scale-105" : ""}`}
+                    onError={(e) => {
+                      // Fall back to existing asset thumbnail
+                      e.currentTarget.src = year.fallbackImg;
+                    }}
+                  />
+
+                  {/* Share button */}
+                  {year.available && (
+                    <button
+                      className="absolute top-3 right-3 z-10 w-8 h-8 bg-white/80 backdrop-blur-sm rounded-full flex items-center justify-center text-green-600 hover:bg-white hover:scale-110 transition-all shadow-md"
+                      onClick={(e) => { e.stopPropagation(); handleWhatsAppShare(year.name, year.route); }}
+                      title="Share on WhatsApp"
+                    >
+                      <Share2 className="h-4 w-4" />
+                    </button>
                   )}
-                </CardContent>
-              </Card>
+
+                  {!year.available && (
+                    <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+                      <span className="bg-white/20 backdrop-blur-sm text-white text-xs font-bold px-3 py-1.5 rounded-full border border-white/30">
+                        🔒 Coming Soon
+                      </span>
+                    </div>
+                  )}
+                </div>
+
+                {/* Card body */}
+                <div className="flex flex-col flex-1 p-5 gap-3">
+                  <div className="flex items-start justify-between gap-2">
+                    <h3 className={`text-xl font-bold ${year.available ? "text-gray-900 group-hover:text-blue-600" : "text-gray-400"} transition-colors`}>
+                      {year.name}
+                    </h3>
+                    <div className="flex gap-1.5 flex-wrap justify-end">
+                      {year.semesters.map((sem) => (
+                        <span key={sem} className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200">
+                          {sem}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+
+                  <p className="text-sm text-gray-500 leading-relaxed flex-1">{year.description}</p>
+
+                  {year.available ? (
+                    <button
+                      onClick={() => navigate(year.route)}
+                      className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-semibold text-white shadow-md hover:shadow-lg hover:scale-[1.02] transition-all duration-300"
+                      style={{ background: "linear-gradient(135deg, #4f46e5, #2563eb)" }}
+                    >
+                      <BookOpen className="h-4 w-4" />
+                      View Notes
+                    </button>
+                  ) : (
+                    <button
+                      disabled
+                      className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-semibold bg-gray-100 text-gray-400 cursor-not-allowed"
+                    >
+                      <Lock className="h-4 w-4" />
+                      Coming Soon
+                    </button>
+                  )}
+                </div>
+              </div>
             </motion.div>
           ))}
         </div>
