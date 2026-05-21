@@ -55,7 +55,9 @@ const BSMSSem4Notes = () => {
     no: { detailed: [], oneshot: [] },
     dms: { detailed: [], oneshot: [] },
     cla: { detailed: [], oneshot: [] },
-    rds: { detailed: [], oneshot: [] },
+    rds: { detailed: [
+                  { title: 'R for DS Playlist - 5 min. Engg', url: 'https://youtube.com/playlist?list=PLYwpaL_SFmcCRFzBkZ-b92Hdg-qCUfx48&si=ooWKiQG1rf56Pcjc', recommended: true },
+    ], oneshot: [] },
   };
 
   const toggleSubjectExpansion = (subjectId: string) => {
