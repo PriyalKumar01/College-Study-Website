@@ -116,16 +116,16 @@ const FifthSemesterCSENotes = () => {
         ]
       },
       notes: [
+        { title: 'Unit-1 Part-1 Navathe', url: 'https://drive.google.com/uc?export=download&id=1Njok356K8ftqy6IfELlH2LoYh4ncX0Kx' },
+        { title: 'Unit-1 Part-2 Navathe', url: 'https://drive.google.com/uc?export=download&id=1il-V1xgTxz0cRdiVzhYqdpE4hrWIA_Kw' },
+        { title: 'Unit-2 Part-3 Navathe', url: 'https://drive.google.com/uc?export=download&id=1xK0r9BkxR3BtA0iM9zJdcM5UNe7duy8S' },
+        { title: 'Unit-1 Part-4 Navathe', url: 'https://drive.google.com/uc?export=download&id=1_PyxPpuWG1F7NJYxjaW2wFqjmuseUjsT' },
         { title: 'DBMS-Quantum Book', url: 'https://drive.google.com/uc?export=download&id=1DNKGyHci5Du4yjaL2Mf3EYHSADPz13la' },
         { title: 'DBMS Complete Notes - KnowledgeGATE', url: 'https://drive.google.com/uc?export=download&id=1oubD7Ov62JD1SOwhx-XsWqqK3TbOHAbn' },
         { title: 'DBMS Complete Notes-MultiAtoms', url: 'https://drive.google.com/uc?export=download&id=1O399cHUYpgAFswLIIzZjJuZ_Se98_oby' },
         { title: 'DBMS Complete Notes-5 min. Engg.', url: 'https://drive.google.com/uc?export=download&id=15lUt9NLdShn6fTg4QaRiGRyUWJJ3K4Z5' },
         { title: 'DBMS Book-Henry Korth', url: 'https://drive.google.com/uc?export=download&id=1GMdDx-BuR3pcnla16xVJ4mOx4JMrxlTd' },
         { title: 'DBMS Practical File- Priyal Kumar', url: 'https://drive.google.com/file/d/1FhsohpFS5j91ykfH350X90VezA2u9_ZT/view?usp=drivesdk' },
-        { title: 'Unit-1 Part-1 Navathe', url: 'https://drive.google.com/uc?export=download&id=1Njok356K8ftqy6IfELlH2LoYh4ncX0Kx' },
-        { title: 'Unit-1 Part-2 Navathe', url: 'https://drive.google.com/uc?export=download&id=1il-V1xgTxz0cRdiVzhYqdpE4hrWIA_Kw' },
-        { title: 'Unit-2 Part-3 Navathe', url: 'https://drive.google.com/uc?export=download&id=1xK0r9BkxR3BtA0iM9zJdcM5UNe7duy8S' },
-        { title: 'Unit-1 Part-4 Navathe', url: 'https://drive.google.com/uc?export=download&id=1_PyxPpuWG1F7NJYxjaW2wFqjmuseUjsT' },
       ]
     },
     {
