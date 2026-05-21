@@ -62,7 +62,16 @@ const SixthSemesterCSENotes = () => {
         detailed: [{ title: 'AI Complete Playlist', url: '#' }],
         oneshot: [{ title: 'AI One Shot', url: '#' }]
       },
-      notes: [{ title: 'AI Notes (UPTO MID SEM-1)', url: 'https://drive.google.com/file/d/15XHFBtmouZBNB1IW2h6LL57T-uqzGDSH/view?usp=drivesdk' }]
+      notes: [
+        { title: 'AI Notes (UPTO MID SEM-1)', url: 'https://drive.google.com/file/d/15XHFBtmouZBNB1IW2h6LL57T-uqzGDSH/view?usp=drivesdk' , recommended: true },
+       { title: 'A* Algorithm PDF', url: 'https://drive.google.com/file/d/1ks_pUlZYWHxskrM5bt9R5cnSxl7t43qj/view?usp=drivesdk' , recommended: true},
+        { title: 'AI Unit-2 PDF Notes', url: 'https://drive.google.com/file/d/1HzAZz8yz8owX-JFUAtnpV5NPBMEQSEiD/view?usp=drivesdk' , recommended: true },
+        { title: 'Automated Reasoning & Visual Perception PDF', url: 'https://drive.google.com/file/d/1tXudt3Be5CsIwpDQbxrEAPCc2CAqP1yf/view?usp=drivesdk' , recommended: true },
+        { title: 'Fillmore Grammer PDF', url: 'https://drive.google.com/file/d/1UTHmalD0JrzQzYZXY4hINchthZL9E600/view?usp=drivesdk' , recommended: true },
+        { title: 'Intro to PROLOG PDF)', url: 'https://drive.google.com/file/d/1gYtWG9BDeddCt9n5Q6eS8eJ8_Fm0Xw8k/view?usp=drivesdk' , recommended: true },
+        { title: 'Case Studies: DENDRAL, MYCIN & JESS', url: 'https://drive.google.com/file/d/1SBL4n6rUE8gY_lpF0SNhzUVwJP6fncvD/view?usp=drivesdk' , recommended: true },
+        { title: 'AI - 5th Assignment ', url: 'https://drive.google.com/file/d/1cg9pIUUqqXni3WpSMX92jkYrqF6uXdj_/view?usp=drivesdk'  },
+   ]
     },
     {
       id: 'dip',
@@ -73,7 +82,12 @@ const SixthSemesterCSENotes = () => {
         detailed: [{ title: 'DIP Complete Playlist', url: '#' }],
         oneshot: [{ title: 'DIP One Shot', url: '#' }]
       },
-      notes: [{ title: 'DIP Notes', url: '#' }]
+      notes: [
+        { title: 'DIP Complete Notes', url: 'https://youngresearcher.in/dip_qa/' , recommended: true }, 
+        { title: 'DIP Book PDF', url: 'https://drive.google.com/file/d/1ftfZb_-YCh0Bn3BB5MqvWsJLIyGOoAcT/view?usp=drivesdk' , recommended: true  }, 
+        { title: 'DIP Additional Notes', url: 'https://drive.google.com/file/d/1i2FAENNKaIEYi_0f_J9BkXGIFceovc8s/view?usp=drivesdk' , recommended: true  }, 
+        { title: 'DIP Lecture Notes', url: 'https://drive.google.com/file/d/11lifkDAxyt7LMVSy6JfgkzRviUDzAwq9/view?usp=drivesdk' , recommended: true }, 
+      ]
     },
     {
       id: 'cd',
@@ -149,7 +163,16 @@ const SixthSemesterCSENotes = () => {
       },
       notes: [
         { title: 'OOMD Notes with UML', url: 'https://drive.google.com/file/d/15U47qFbbIchLEjjOdDgDTasWDd9a9a0k/view?usp=drivesdk' },
-        { title: 'OOS Notes (UPTO MID SEM-1)', url: 'https://drive.google.com/file/d/1nT8SZZVX8HNIa-eL8gLHeS4tlSwrBPvz/view?usp=drivesdk' },
+        { title: 'OOS Notes (UPTO MID SEM-1)', url: 'https://drive.google.com/file/d/1nT8SZZVX8HNIa-eL8gLHeS4tlSwrBPvz/view?usp=drivesdk' , recommended: true },
+        { title: 'Unit-1 Best Notes - Priyal Kumar', url: 'https://drive.google.com/file/d/1G2FjarscpxMvRsndYAuhrAIr2tBg0qjK/view?usp=drivesdk' , recommended: true },
+        { title: 'Unit-2 Best Notes - Priyal Kumar', url: 'https://drive.google.com/file/d/1rwOWWUwOsb2glQ6qREll3r-twpl6zglV/view?usp=drivesdk' , recommended: true },
+        { title: 'Unit-3 Best Notes - Priyal Kumar', url: 'https://drive.google.com/file/d/1VjBU1zMn2BD47RPdRPH09ZvPfaOKOALG/view?usp=drivesdk' , recommended: true },
+        { title: 'Unit-4 Best Notes - Priyal Kumar', url: 'https://drive.google.com/file/d/1zgPUZMBFjTA5ndJqAImIZPMBool5sug0/view?usp=drivesdk' , recommended: true },
+        { title: 'OOS LAB File -Priyal Kumar', url: 'https://drive.google.com/file/d/1kPFwtHiRu6trNYwHlmgaZgY3HPn9ScTL/view?usp=drivesdk' , recommended: true },
+        { title: 'Imp. Diagrams & Last Min. Revision ', url: 'https://drive.google.com/file/d/11yWd_yBYrcyGtYWseuzpFBP9sJfBkiI-/view?usp=drivesdk' , recommended: true },
+        { title: 'OOS All Assignment Ques. ( for Practice)', url: 'https://drive.google.com/file/d/1R4FSXABX1jfaAAKd2abvgmMl59GLfm1M/view?usp=drivesdk' , recommended: true },
+        { title: 'OOS -Quantum Book PDF', url: 'https://drive.google.com/file/d/1x2oKtVibZ-Ww77lw-DZwONHrn3wBvR4Y/view?usp=drivesdk'  },
+        { title: 'OOS - Book PDF', url: 'https://drive.google.com/file/d/18jDR9nJfJdz5I5vTYRxiI92-gRizkRdV/view?usp=drivesdk'  },
       ]
     },
     {
@@ -220,7 +243,11 @@ const SixthSemesterCSENotes = () => {
       name: 'Assignments - All Subjects',
       icon: '📝',
       color: 'bg-yellow-500',
-      notes: []
+      notes: [
+                { title: 'OOS All Assignment Ques. ( for Practice)', url: 'https://drive.google.com/file/d/1R4FSXABX1jfaAAKd2abvgmMl59GLfm1M/view?usp=drivesdk' },
+        { title: 'AI - 5th Assignment ', url: 'https://drive.google.com/file/d/1cg9pIUUqqXni3WpSMX92jkYrqF6uXdj_/view?usp=drivesdk'  },
+
+      ]
     }
   ];
 
