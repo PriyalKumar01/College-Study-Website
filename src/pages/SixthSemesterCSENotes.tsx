@@ -84,7 +84,14 @@ const SixthSemesterCSENotes = () => {
         detailed: [{ title: 'SE Complete Playlist', url: '#' }],
         oneshot: [{ title: 'SE One Shot', url: '#' }]
       },
-      notes: [{ title: 'CD Notes', url: 'https://drive.google.com/file/d/1o-EHoiE9vK4WmKiOMAKnaI02BYXsRvhp/view?usp=drivesdk' },
+      notes: [
+        { title: 'CD Notes', url: 'https://drive.google.com/file/d/1o-EHoiE9vK4WmKiOMAKnaI02BYXsRvhp/view?usp=drivesdk' },
+        { title: 'CD Notes', url: 'https://drive.google.com/file/d/1o-EHoiE9vK4WmKiOMAKnaI02BYXsRvhp/view?usp=drivesdk' },
+        { title: 'CD Notes', url: 'https://drive.google.com/file/d/1o-EHoiE9vK4WmKiOMAKnaI02BYXsRvhp/view?usp=drivesdk' },
+        { title: 'CD Notes', url: 'https://drive.google.com/file/d/1o-EHoiE9vK4WmKiOMAKnaI02BYXsRvhp/view?usp=drivesdk' },
+        { title: 'CD Notes', url: 'https://drive.google.com/file/d/1o-EHoiE9vK4WmKiOMAKnaI02BYXsRvhp/view?usp=drivesdk' },
+        { title: 'CD Notes', url: 'https://drive.google.com/file/d/1o-EHoiE9vK4WmKiOMAKnaI02BYXsRvhp/view?usp=drivesdk' },
+        { title: 'CD Notes', url: 'https://drive.google.com/file/d/1o-EHoiE9vK4WmKiOMAKnaI02BYXsRvhp/view?usp=drivesdk' },
 
       ]
     },
@@ -94,18 +101,45 @@ const SixthSemesterCSENotes = () => {
       icon: '📘',
       color: 'bg-green-500',
       playlists: {
-        detailed: [{ title: 'Entrepreneurship Playlist', url: '#' }],
-        oneshot: []
+        detailed: [
+         { title: 'Financing Decision -Capital Structure', url: 'https://youtu.be/xO20sAjwbq4?si=EmbYJhfQGf8OBd16' , recommended: true },
+            { title: 'Investment Decision -Capital Budget', url: 'https://youtu.be/KAITRH_Ohss?si=l9ggbusQWH0rbxOL' , recommended: true },
+            { title: 'EBIT/EPS Numerical -Capital Structure', url: 'https://youtu.be/jG0pd7bFMbM?si=dT3qHXuoukRM9cfY' , recommended: true },
+            { title: 'ARR Numerical -Capital Structure', url: 'https://youtu.be/duAS8l4GcgM?si=gWTqjks_LLGCsBmF' , recommended: true },
+            { title: 'IRR Numerical -Capital Structure', url: 'https://youtu.be/EUGU9q1gzR0?si=osFvPbZY0NsGQBX9' , recommended: true },
+            { title: 'NPV Numerical -Capital Structure', url: 'https://youtu.be/sTvV0fkLhh0?si=LeA4JZVzu0ptcFN1' , recommended: true },
+            { title: 'Working Capital Management -Concepts', url: 'https://youtu.be/MDeCGC5G2BI?si=PyGYO7Xb_KioasUg' , recommended: true },
+            { title: 'Working Capital Management -Numericals', url: 'https://youtu.be/8cB2NI3NkgU?si=59kVTIl96ee1YDs2' , recommended: true },
+
+        ],
+        oneshot: [
+          { title: 'Financing Decision -Capital Structure', url: 'https://youtu.be/xO20sAjwbq4?si=EmbYJhfQGf8OBd16' , recommended: true },
+            { title: 'Investment Decision -Capital Budget', url: 'https://youtu.be/KAITRH_Ohss?si=l9ggbusQWH0rbxOL' , recommended: true },
+            { title: 'EBIT/EPS Numerical -Capital Structure', url: 'https://youtu.be/jG0pd7bFMbM?si=dT3qHXuoukRM9cfY' , recommended: true },
+            { title: 'ARR Numerical -Capital Structure', url: 'https://youtu.be/duAS8l4GcgM?si=gWTqjks_LLGCsBmF' , recommended: true },
+            { title: 'IRR Numerical -Capital Structure', url: 'https://youtu.be/EUGU9q1gzR0?si=osFvPbZY0NsGQBX9' , recommended: true },
+            { title: 'NPV Numerical -Capital Structure', url: 'https://youtu.be/sTvV0fkLhh0?si=LeA4JZVzu0ptcFN1' , recommended: true },
+            { title: 'Working Capital Management -Concepts', url: 'https://youtu.be/MDeCGC5G2BI?si=PyGYO7Xb_KioasUg' , recommended: true },
+            { title: 'Working Capital Management -Numericals', url: 'https://youtu.be/8cB2NI3NkgU?si=59kVTIl96ee1YDs2' , recommended: true },
+
+        ]
       },
-      notes: [{ title: 'Entrepreneurship Notes (UPTO MID SEM-1)', url: 'https://drive.google.com/file/d/1m6DIjYxnAQhHJ2j7ER4J2-vVRhIfrsY7/view?usp=drivesdk' }]
-    },
+      notes: [
+        { title: 'Entrepreneurship Notes (UPTO MID SEM-1)', url: 'https://drive.google.com/file/d/1m6DIjYxnAQhHJ2j7ER4J2-vVRhIfrsY7/view?usp=drivesdk' , recommended: true },
+        { title: 'Full Entrepreneurship Notes (BEST)', url: 'https://docs.google.com/document/d/1-F4WRVvWzW8OZUjUsFtZX0mgtbsq1dGJ5tkl_hJao0I/edit?usp=sharing' , recommended: true },
+        { title: 'Entrepreneurship Extra GPT Notes', url: 'https://drive.google.com/file/d/1epEbIJ_Y8J_V7rkbPM50ufwG8DVNVCq9/view?usp=drivesdk' },
+        { title: 'Imp. Numerical PDF', url: 'https://drive.google.com/file/d/1X2GW3TcZiIp1RLpB_HECRerQQTBGFWIb/view?usp=drivesdk' , recommended: true },
+
+      ]    },
     {
       id: 'oops',
       name: 'Object Oriented System Design',
       icon: '🤖',
       color: 'bg-green-500',
       playlists: {
-        detailed: [{ title: 'OOPS Playlist', url: '#' }],
+        detailed: [
+          { title: 'OOPS Playlist', url: '#' },
+        ],
         oneshot: []
       },
       notes: [
@@ -119,10 +153,42 @@ const SixthSemesterCSENotes = () => {
       icon: '📘',
       color: 'bg-green-500',
       playlists: {
-        detailed: [{ title: 'CG Playlist', url: '#' }],
-        oneshot: []
+        detailed: [
+          { title: 'CG Playlist - 5 Min. Engg (Must Watch)', url: 'https://youtube.com/playlist?list=PLYwpaL_SFmcAtxMe7ahYC4ZYjQHun_b-T&si=bWK_DqlTVDh7-sXJ' , recommended: true  },
+          { title: 'CG OneShot Playlist - MultiAtom', url: 'https://youtube.com/playlist?list=PLvu-LC7buiaW7eFdacsxGSeaoe2euao6c&si=G2ZmT7LIk-wHj8Ll'  },
+          { title: 'CG By- Education 4 u Playlist (Must Watch)', url: 'https://youtube.com/playlist?list=PLrjkTql3jnm9cY0ijEyr2fPdwnH-0t8EY&si=1X_5EcUzdr7yXKca' , recommended: true  },
+        ],
+        oneshot: [
+          { title: 'CG Complete OneShot (NEW)', url: 'https://youtu.be/ufafNJAXSnA?si=kcJv6vrKBrNzMJnN' },
+          { title: 'Transformations in 2D', url: 'https://youtu.be/LJA8HlPfyQw?si=OEVl7yX1CUoDcTGi' , recommended: true  },
+          { title: 'Transformations in 3D', url: 'https://youtu.be/0ebVXplaJFc?si=9Fl1n4k8Osm0CIju' , recommended: true  },
+          { title: 'Window to Viewport Transformation', url: 'https://youtu.be/ivNhBhS1UoU?si=QdXdlYHdMSHlO4J_' , recommended: true  },
+          { title: 'Curve & Surface -Lecture', url: 'https://youtu.be/uKXbkJR6gek?si=pCKpOIEJEYDWs6df' , recommended: true  },
+          { title: 'Hidden & Visible Surfaces -Itro', url: 'https://youtu.be/kPd95B2KOyc?si=BlBl7iDOgxv6WuBs' , recommended: true  },
+          { title: 'Hidden & Visible Surfaces -State Space Method', url: 'https://youtu.be/dqsVQ31ZfuE?si=IzlNa0KAQrOe4KWL' , recommended: true  },
+          { title: 'Coherence Properties -Lecture', url: 'https://youtu.be/BOiEtlLwUuw?si=ES0-2bAXrJJhUPhY' , recommended: true  },
+          { title: 'Back Face Removal -Lecture', url: 'https://youtu.be/_p16NATygqU?si=hqihEdZLK5A_m0Lx' , recommended: true  },
+          { title: 'Back Face Dectection Methods-Lecture', url: 'https://youtu.be/tOOiJ91wWJY?si=IVgINXZDM1SmHpjC' , recommended: true  },
+          { title: 'Z-Buffer algorithm -Lecture', url: 'https://youtu.be/JZutixUiCEE?si=JH_RSKumVp77DmiZ' , recommended: true  },
+          { title: 'Curve & Its Types -Lecture', url: 'https://youtu.be/1iuINGsS_vo?si=ThiB_4HKgJ-rCSxs' , recommended: true  },
+          { title: 'Beizer Curve & Its Properties -Lecture', url: 'https://youtu.be/grYrC6_LDcY?si=uRKG1lBnTwvD3sM4' , recommended: true  },
+          { title: 'Beizer Curve  -Numerical', url: 'https://youtu.be/wZbazXBkGv4?si=mlvtD15PVaHRixUa' , recommended: true  },
+          { title: 'Hermite Curve -Lecture', url: 'https://youtu.be/8vo21tbtDgU?si=OXcsTld9I2bXxLpu' , recommended: true  },
+          { title: 'Beizer Curve & Hermite Spline -Numericals', url: 'https://youtu.be/4vjBXh3xYB4?si=k4oTSB3YAVwblJtu' , recommended: true  },
+          { title: 'Concepts of B-Spline -Lecture', url: 'https://youtu.be/kFRl2eNyW1E?si=Cefg5esj-FM_dTc5' , recommended: true  },
+          { title: 'Numericals on B-Spline', url: 'https://youtu.be/H0VBveFyIZU?si=SY2ZIvDcacwv2z_l' , recommended: true  },
+        ]
       },
-      notes: [{ title: 'CG Short Notes(UPTO MID SEM-1)', url: 'https://drive.google.com/file/d/1vrqJcmk6OWhT-78xm24lXYoNc4c9AyyA/view?usp=drivesdk' }]
+      notes: [
+        { title: 'Unit-1 Complete Notes', url: 'https://drive.google.com/file/d/1YK7hE7bcjU08i1XORSFUyTPU029wzZf6/view?usp=drivesdk', recommended: true },
+        { title: 'Unit-2 Complete Notes', url: 'https://drive.google.com/file/d/1mFKMpVux4rH1-u62SJj80Ey_30bGXvYC/view?usp=drivesdk', recommended: true },
+        { title: 'Unit-3 Complete Notes', url: 'https://drive.google.com/file/d/1Vu-o6nehnizx8L9Ix9MY6liRZzOKqtm4/view?usp=drivesdk', recommended: true },
+        { title: 'Unit-4 Complete Notes', url: 'https://drive.google.com/file/d/1IlfUbqaLyS2mCws7MWCHS844R04eOfj9/view?usp=drivesdk', recommended: true },
+        { title: 'Unit-5 Complete Notes', url: 'https://drive.google.com/file/d/1NIdOhmiQzq1ZrUspMA-9xkPCocChfvCS/view?usp=drivesdk', recommended: true },
+        { title: 'CG Short Notes(UPTO MID SEM-1)', url: 'https://drive.google.com/file/d/1vrqJcmk6OWhT-78xm24lXYoNc4c9AyyA/view?usp=drivesdk', recommended: true },
+        { title: 'CG Lab File by-Priyal Kumar', url: 'https://drive.google.com/file/d/1mYLcW_NtDwqmiMrlYKwhr8CZz5L7wA-s/view?usp=drivesdk', recommended: true },
+        { title: 'CG Imp. Lab Program for Practical & ESE', url: 'https://drive.google.com/file/d/1x_jsxXpk-Pk1Yg-Bk9KHX24lji7ZLicf/view?usp=drivesdk', recommended: true },
+      ]
     }
     ,
     {
@@ -132,9 +198,16 @@ const SixthSemesterCSENotes = () => {
       color: 'bg-blue-500',
       notes: [
         { title: 'MID SEM-1 PYQS (2025-2026)', url: 'https://drive.google.com/file/d/1knakHpegqEoLF34EjA1n0as_R5uXt_R1/view?usp=drivesdk' },
+        { title: 'MID SEM-2 PYQS (2025-2026)', url: 'https://drive.google.com/file/d/1S9Ea1EWunrt6k1nbJmfuygW7DLm-LlAe/view?usp=drivesdk' },
+        { title: 'END SEM PYQS (2025-2026)', url: 'https://drive.google.com/file/d/1v7bBFgOJ1tC6dJpCSOuCytlD9Ufmhvah/view?usp=drivesdk' },
         { title: 'MID SEM-1 PYQs (2024-2025)', url: 'https://drive.google.com/file/d/1uGqRQOMAebvV7fUgwknaEGuA6UPCMs9p/view?usp=drivesdk' },
         { title: 'MID SEM-2 PYQs (2024-2025)', url: 'https://drive.google.com/file/d/1p-nQIP-gbllmCIWkrB6dd02AuzStv2-s/view?usp=drivesdk' },
         { title: 'ALL ESE PYQs (2024-2025)', url: 'https://drive.google.com/file/d/1d3WLlDg0bqjTTpkkzAVWhIFxxMKxjGxk/view?usp=drivesdk' },
+        { title: 'MID SEM-1 PYQs (2022-2023)', url: 'https://drive.google.com/file/d/1FDEZfXKRBGc5HFb0Kof-8ExBc3Hz5x-Y/view?usp=drivesdk' },
+        { title: 'MID SEM-2 PYQs (2022-2023)', url: 'https://drive.google.com/file/d/15XHLzWYTnebL3Z2uWnm-mKg20Wo4S9mm/view?usp=drivesdk' },
+        { title: 'ALL ESE PYQs (2022-2023)', url: 'https://drive.google.com/file/d/11qH7_rBDjOB4x0o18obJpvrUoj7ZskSy/view?usp=drivesdk' },
+        { title: 'ALL PYQs (2021-2022)', url: 'https://drive.google.com/file/d/1PDajhpJ8QDrCRklkedmPBN2ir23rI7jK/view?usp=drivesdk' },
+        { title: 'All OOPS PYQs (2017-2022)', url: 'https://drive.google.com/file/d/1H5tGzQG5WmQ9OpVzJm6QfzkQaXhuEdk1/view?usp=drivesdk' },
       ]
     },
     {
