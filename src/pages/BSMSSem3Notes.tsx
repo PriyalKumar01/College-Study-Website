@@ -52,8 +52,37 @@ const BSMSSem3Notes = () => {
       ],
       oneshot: []
     },
-    chemistry: { detailed: [], oneshot: [] },
-    'cs-basics': { detailed: [], oneshot: [] }
+    dsa: { detailed: [
+            { title: 'DSA Playlist - Apna College', url: 'https://youtube.com/playlist?list=PLfqMhTWNBTe137I_EPQd34TsgV6IO55pt&si=otofg4uKUOkbdo-1' },
+            { title: 'DSA Playlist - Striver (TUF)', url: 'https://youtube.com/playlist?list=PLgUwDviBIf0oF6QL8m22w1hIDC1vJ_BHz&si=1tp4BqrnCCzIQ3rC' , recommended: true },
+            { title: 'DSA Playlist - Jennys Lecture CS-IT', url: 'https://youtube.com/playlist?list=PLdo5W4Nhv31bbKJzrsKfMpo_grxuLl8LU&si=AEAsLtvlZaIHECNN', recommended: true },
+    ], oneshot: [
+             { title: 'Data Structure - One Shot (best)', url: 'https://youtu.be/MdG0Vw9f1A4?si=9h21EHzuwNR6AfON', recommended: true },
+             { title: 'Algorithm - One Shot (best)', url: 'https://youtu.be/z6DY_YSdyww?si=af83vbGtH1MwnLjY', recommended: true },
+
+    ] },
+    statistical: { detailed: [
+                  { title: 'Statistics Playlist', url: 'https://youtube.com/playlist?list=PLZoTAELRMXVMhVyr3Ri9IQ-t5QPBtxzJO&si=EsiD7GKFbYYaaa4y' },
+                  { title: 'Statistics Playlist (best)', url: 'https://youtube.com/playlist?list=PLunlGNVWDAaY7AeDDzTeu4-DD3g7zmAXs&si=T8wYd8Dn5YtawmzP', recommended: true },
+
+    ], oneshot: [
+            { title: 'Complete Statistics -6hrs Oneshot', url: 'https://youtu.be/LZzq1zSL1bs?si=haVPPP2HqmRdu5XP', recommended: true },
+
+    ] },
+    prp: { detailed: [
+             { title: 'Sampling Distribution - Probability & Statistics', url: 'https://youtube.com/playlist?list=PLxaL_Pkhcom8ZwQL9azic7vCJ_5gWYUyp&si=2GnDdgeacqWPrXT6', recommended: true },
+            { title: 'Random Process Playlist', url: 'https://youtube.com/playlist?list=PLBYHJFgaueob60t6KH2QdGOHFF_c8eC7c&si=FxdMnXX8VipNwoQ5', recommended: true },
+            { title: 'Probability & Statistics', url: 'https://youtube.com/playlist?list=PLxCzCOWd7aiFjZP4z1_3Kr3m3J5wu5Q8V&si=XPVk4_Hc9Oug8m4I', recommended: true },
+    ], oneshot: [
+                  { title: 'Random Variables', url: 'https://youtu.be/V3iEsLPAD68?si=lMBXR90b_jZhKw5B', recommended: true },
+
+    ] },
+   'real-analysis': { detailed: [
+                { title: 'Real Analysis - Full Playlists', url: 'https://youtube.com/playlist?list=PLU6SqdYcYsfKvYZhiXPoaR5fBYDYXENSn&si=WKKSYJb5Tqq7DZ6A', recommended: true },
+   ], oneshot: [
+                    { title: 'Real Analysis - OneShots', url: 'https://youtube.com/playlist?list=PLTchWiHrNnixqWcWOzRjfZOo8zChhVxA7&si=l_ra8Jpm0tYiL-j_', recommended: true },
+
+   ] },
   };
 
   const toggleSubjectExpansion = (subjectId: string) => {
