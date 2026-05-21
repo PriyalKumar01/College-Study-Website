@@ -81,18 +81,23 @@ const SixthSemesterCSENotes = () => {
       icon: '💻',
       color: 'bg-blue-500',
       playlists: {
-        detailed: [{ title: 'SE Complete Playlist', url: '#' }],
-        oneshot: [{ title: 'SE One Shot', url: '#' }]
+        detailed: [
+          { title: 'CD Playlist By- Gate Hub', url: 'https://youtube.com/playlist?list=PL1QH9gyQXfguPNDTsnG90W2kBDQpYLDQr&si=-RC7IX3_lC1n7bRt', recommended: true  },
+          { title: 'CD Unitwise OneShot Playlist - MultiAtoms', url: 'https://youtube.com/playlist?list=PLh11ucJN276J4uv6uwawDr3mNHTdx9n43&si=7K6fQKEqeDpyp_Et' },
+          ],
+        oneshot: [
+          { title: 'CD One Shot By-5 Min. Engg', url: 'https://youtu.be/7ICf62fp_4I?si=IyIn0v3m9QmzPrpX' , recommended: true },
+          { title: 'Unit-1 One Shot By-Gate Hub', url: 'https://youtu.be/VQeI7lB5ccM?si=qELcs_g6tsZ3exc5' , recommended: true  },
+          { title: 'CD One Shot By-Knowledge Gate', url: 'https://youtu.be/OQCjakjCJu4?si=tyAXGu7MVXaPJyD7', recommended: true  },
+        ]
       },
       notes: [
-        { title: 'CD Notes', url: 'https://drive.google.com/file/d/1o-EHoiE9vK4WmKiOMAKnaI02BYXsRvhp/view?usp=drivesdk' },
-        { title: 'CD Notes', url: 'https://drive.google.com/file/d/1o-EHoiE9vK4WmKiOMAKnaI02BYXsRvhp/view?usp=drivesdk' },
-        { title: 'CD Notes', url: 'https://drive.google.com/file/d/1o-EHoiE9vK4WmKiOMAKnaI02BYXsRvhp/view?usp=drivesdk' },
-        { title: 'CD Notes', url: 'https://drive.google.com/file/d/1o-EHoiE9vK4WmKiOMAKnaI02BYXsRvhp/view?usp=drivesdk' },
-        { title: 'CD Notes', url: 'https://drive.google.com/file/d/1o-EHoiE9vK4WmKiOMAKnaI02BYXsRvhp/view?usp=drivesdk' },
-        { title: 'CD Notes', url: 'https://drive.google.com/file/d/1o-EHoiE9vK4WmKiOMAKnaI02BYXsRvhp/view?usp=drivesdk' },
-        { title: 'CD Notes', url: 'https://drive.google.com/file/d/1o-EHoiE9vK4WmKiOMAKnaI02BYXsRvhp/view?usp=drivesdk' },
-
+        { title: 'CD -Rough Copy (My Lecture Notes)', url: 'https://drive.google.com/file/d/1HfGUofPis_2lNC6HWPUJANSmjJmfQvQt/view?usp=drivesdk' , recommended: true },
+        { title: 'Complete CD Notes By-Priyal Kumar (BEST)', url: 'https://drive.google.com/file/d/1uGNVlq5UNufG8Nz9JyJiqeAgvj_F46zb/view?usp=drivesdk' , recommended: true },
+        { title: 'Code Optimization Notes (BEST)', url: 'https://drive.google.com/file/d/1ggNi8S3qTwtvrV7oRw1wVBnOOQ7HsoNH/view?usp=drivesdk', recommended: true  },
+        { title: 'DAG Notes (BEST)', url: 'https://drive.google.com/file/d/1smxrq6G6IrWo5HmhzewZyNn5Vmif2wJF/view?usp=drivesdk' , recommended: true },
+        { title: 'Intermediate Code Generator Notes (BEST)', url: 'https://drive.google.com/file/d/19S6Jzc4a7wx7RMuFggI-SFtSbr3KXuyA/view?usp=drivesdk' , recommended: true },
+        { title: 'Full CD Notes (Optional)', url: 'https://drive.google.com/file/d/1o-EHoiE9vK4WmKiOMAKnaI02BYXsRvhp/view?usp=drivesdk' },
       ]
     },
     {

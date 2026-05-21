@@ -23,21 +23,36 @@ export const downloadFile = async (url: string, filename: string) => {
 
 /**
  * Smart download handler that handles both Google Drive and Supabase storage URLs.
- * - Google Drive URLs: extracts file ID and opens direct download link
+ * - Google Drive file URLs (drive.google.com): extracts file ID and opens direct download link
+ * - Google Docs/Sheets/Slides URLs (docs.google.com) and other links: open as-is in new tab
  * - Supabase/other URLs: uses blob fetch to force download
  */
 export const smartDownload = async (url: string, title: string = 'download.pdf') => {
   if (url === '#') return;
-  
-  // Google Drive URL handling
-  const fileId = url.match(/\/d\/([a-zA-Z0-9-_]+)/)?.[1];
-  if (fileId) {
-    const downloadUrl = `https://drive.google.com/uc?export=download&id=${fileId}`;
-    window.open(downloadUrl, '_blank');
-    return;
+
+  try {
+    const parsed = new URL(url);
+
+    // Only convert drive.google.com file links to downloadable links
+    if (parsed.hostname === 'drive.google.com') {
+      const fileId = url.match(/\/d\/([a-zA-Z0-9-_]+)/)?.[1];
+      if (fileId) {
+        const downloadUrl = `https://drive.google.com/uc?export=download&id=${fileId}`;
+        window.open(downloadUrl, '_blank');
+        return;
+      }
+    }
+
+    // Google Docs, Sheets, Slides, Forms, or any other web URL — open as-is
+    if (parsed.hostname.includes('google.com') || parsed.protocol === 'https:') {
+      window.open(url, '_blank');
+      return;
+    }
+  } catch {
+    // Not a valid URL, fall through to blob download
   }
-  
-  // For Supabase storage and other URLs, use blob download
+
+  // For Supabase storage and other non-HTTP URLs, use blob download
   const filename = title.replace(/[^a-zA-Z0-9._-]/g, '_') + '.pdf';
   await downloadFile(url, filename);
 };
