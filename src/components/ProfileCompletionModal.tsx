@@ -15,7 +15,7 @@ import logoImg from '@/assets/college-study-hub-logo.png';
 // ---------------------------------------------------------------------------
 // Batch / Enrollment Year dropdown options
 // ---------------------------------------------------------------------------
-const YEAR_OPTIONS = [
+export const YEAR_OPTIONS = [
     { value: "2015-older", label: "2015 or Older" },
     ...Array.from({ length: 2040 - 2016 + 1 }, (_, i) => ({
         value: String(2016 + i),
@@ -25,11 +25,11 @@ const YEAR_OPTIONS = [
     { value: "Other", label: "Other (specify)" },
 ];
 
-const isValidYearOption = (y: string) =>
+export const isValidYearOption = (y: string) =>
     YEAR_OPTIONS.some((opt) => opt.value === y);
 
 // Branch dropdown options
-const BRANCH_OPTIONS = [
+export const BRANCH_OPTIONS = [
     "Computer Science & Engineering (CSE)",
     "Information Technology (IT)",
     "Electronics Engineering (ET)",
@@ -136,12 +136,22 @@ export function ProfileCompletionModal() {
             const existingCollege: string = data?.college || user.user_metadata?.college || "";
             const collegeIsHBTUVariant = existingCollege !== "" && isHBTUCollege(existingCollege) && existingCollege !== "HBTU Kanpur";
             const collegeNeedsUpdate = existingCollege === "" || collegeIsHBTUVariant;
+            
+            const existingBranch: string = data?.branch || user.user_metadata?.branch || "";
+            const branchNeedsUpdate = !existingBranch || (!BRANCH_OPTIONS.includes(existingBranch === "Other" ? "Other" : existingBranch) && !existingBranch);
 
-            if (isMetaComplete && data && data.first_name && data.college && (yearNeedsUpdate || collegeNeedsUpdate)) {
+            if (isMetaComplete && data && data.first_name && data.college && (yearNeedsUpdate || collegeNeedsUpdate || branchNeedsUpdate)) {
                 setIsUpdateMode(true);
                 setFirstName(data.first_name || user.user_metadata?.first_name || "");
                 setLastName(data.last_name || user.user_metadata?.last_name || "");
-                setBranch(data.branch || user.user_metadata?.branch || "");
+                
+                // Handle existing branch
+                if (existingBranch && BRANCH_OPTIONS.includes(existingBranch)) {
+                    setBranch(existingBranch);
+                } else if (existingBranch) {
+                    setBranch("Other");
+                    setOtherBranch(existingBranch);
+                }
 
                 if (collegeIsHBTUVariant) {
                     setCollegeType("hbtu");
@@ -151,7 +161,6 @@ export function ProfileCompletionModal() {
                     setCustomCollege(existingCollege);
                     setCollege(existingCollege);
                 }
-
                 setIsOpen(true);
                 setHasChecked(true);
                 return;
@@ -229,15 +238,14 @@ export function ProfileCompletionModal() {
 
         setIsLoading(true);
         try {
-            const { error } = await supabase
-                .from("profiles")
-                .update({
-                    year: finalYear,
-                    college: resolvedCollege,
-                    branch: finalBranch,
-                    updated_at: new Date().toISOString(),
-                })
-                .eq("user_id", user!.id);
+            const { error } = await supabase.rpc("upsert_my_profile", {
+                p_first_name: firstName || undefined,
+                p_last_name: lastName || undefined,
+                p_college: resolvedCollege,
+                p_branch: finalBranch,
+                p_year: finalYear,
+                p_email: user!.email
+            });
 
             if (error) throw error;
 
@@ -291,32 +299,16 @@ export function ProfileCompletionModal() {
 
         setIsLoading(true);
         try {
-            const profileData = {
-                first_name: firstName,
-                last_name: lastName,
-                college: resolvedCollege,
-                branch: finalBranch,
-                year: finalYear,
-                email: user!.email,
-                updated_at: new Date().toISOString(),
-            };
+            const { error: rpcError } = await supabase.rpc("upsert_my_profile", {
+                p_first_name: firstName,
+                p_last_name: lastName,
+                p_college: resolvedCollege,
+                p_branch: finalBranch,
+                p_year: finalYear,
+                p_email: user!.email
+            });
 
-            // UPDATE first (trigger already created the row), INSERT as fallback
-            const { data: updateData, error: updateError } = await supabase
-                .from("profiles")
-                .update(profileData)
-                .eq("user_id", user!.id)
-                .select()
-                .maybeSingle();
-
-            if (updateError) throw updateError;
-
-            if (!updateData) {
-                const { error: insertError } = await supabase
-                    .from("profiles")
-                    .insert({ user_id: user!.id, ...profileData });
-                if (insertError) throw insertError;
-            }
+            if (rpcError) throw rpcError;
 
             const authUpdates: any = {
                 data: { first_name: firstName, last_name: lastName, college: resolvedCollege, branch: finalBranch, year: finalYear, profile_completed: true },
@@ -331,6 +323,19 @@ export function ProfileCompletionModal() {
             window.location.reload();
         } catch (error: any) {
             console.error("Profile update error:", error);
+            
+            // Handle the case where the user was deleted from the database but still has a valid JWT session in the browser.
+            if (error.message?.includes("foreign key constraint") || error.code === "23503") {
+                toast({ 
+                    title: "Session Invalid", 
+                    description: "Your account appears to have been removed or session is invalid. Logging you out...", 
+                    variant: "destructive" 
+                });
+                await supabase.auth.signOut();
+                window.location.reload();
+                return;
+            }
+
             toast({ title: "Error", description: error.message || "Failed to save profile.", variant: "destructive" });
         } finally {
             setIsLoading(false);

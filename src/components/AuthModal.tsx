@@ -13,17 +13,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Loader2, Eye, EyeOff, CheckCircle2, Mail, ArrowLeft, X, AlertCircle, AlertTriangle, School, UserCheck } from 'lucide-react';
 import logoImg from '@/assets/college-study-hub-logo.png';
 import HCaptcha from '@hcaptcha/react-hcaptcha';
-
-// Batch / Enrollment Year dropdown options
-const YEAR_OPTIONS = [
-  { value: "2015-older", label: "2015 or Older" },
-  ...Array.from({ length: 2040 - 2016 + 1 }, (_, i) => ({
-    value: String(2016 + i),
-    label: String(2016 + i),
-  })),
-  { value: "Professor", label: "Professor" },
-  { value: "Other", label: "Other (specify)" },
-];
+import { BRANCH_OPTIONS, YEAR_OPTIONS } from './ProfileCompletionModal';
 
 // hCaptcha Site Key provided by user
 const HCAPTCHA_SITE_KEY = "8a4805ba-2f46-4c8a-980a-54b8d5240d88";
@@ -94,8 +84,8 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'signin' }: AuthModalProps) 
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [contactNo, setContactNo] = useState('');
-  const [college, setCollege] = useState('');
   const [branch, setBranch] = useState('');
+  const [otherBranch, setOtherBranch] = useState('');
   const [year, setYear] = useState('');
   const [otherYear, setOtherYear] = useState('');
   const [collegeType, setCollegeType] = useState<'hbtu' | 'non-hbtu' | ''>('');
@@ -125,9 +115,12 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'signin' }: AuthModalProps) 
     setFirstName('');
     setLastName('');
     setContactNo('');
-    setCollege('');
+    setCollegeType('');
+    setCustomCollege('');
     setBranch('');
+    setOtherBranch('');
     setYear('');
+    setOtherYear('');
     setOtp('');
     setStep('form');
     setAcceptedTerms(false);
@@ -375,7 +368,7 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'signin' }: AuthModalProps) 
     e.preventDefault();
     setTouched({
       firstName: true, lastName: true, password: true,
-      college: true, branch: true, year: true
+      branch: true, year: true
     });
 
     const pwdErrors = getPasswordErrors(password);
@@ -384,10 +377,11 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'signin' }: AuthModalProps) 
       return;
     }
 
+    const finalBranch = branch === "Other" ? otherBranch.trim() : branch;
     const finalYear = year === "Other" ? otherYear.trim() : year;
     const resolvedCollege = collegeType === 'hbtu' ? 'HBTU Kanpur' : customCollege.trim();
 
-    if (!firstName || !lastName || !resolvedCollege || !branch || !finalYear) {
+    if (!firstName || !lastName || !resolvedCollege || !finalBranch || !finalYear) {
       toast({ title: "Missing Fields", description: "Please fill all required fields.", variant: "destructive" });
       return;
     }
@@ -420,7 +414,7 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'signin' }: AuthModalProps) 
           first_name: firstName,
           last_name: lastName,
           mobile_number: contactNo || null,
-          college: resolvedCollege, branch, year: finalYear,
+          college: resolvedCollege, branch: finalBranch, year: finalYear,
           profile_completed: true // MARK PROFILE AS COMPLETE
         }
       });
@@ -749,12 +743,26 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'signin' }: AuthModalProps) 
         <div className="grid grid-cols-2 gap-3">
           <div>
             <Label className="dark:text-gray-300">Branch</Label>
-            <Input
-              value={branch}
-              onChange={e => setBranch(e.target.value)}
-              placeholder="e.g. CSE"
-              className="mt-1 dark:bg-slate-950 dark:border-slate-800 dark:text-white"
-            />
+            <Select value={branch} onValueChange={(val) => { setBranch(val); if (val !== "Other") setOtherBranch(""); }}>
+              <SelectTrigger className="mt-1 w-full dark:bg-slate-950 dark:border-slate-800 dark:text-white">
+                <SelectValue placeholder="Select branch" />
+              </SelectTrigger>
+              <SelectContent className="max-h-60 overflow-y-auto">
+                {BRANCH_OPTIONS.map((opt) => (
+                  <SelectItem key={opt} value={opt}>
+                    {opt}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            {branch === "Other" && (
+              <Input
+                value={otherBranch}
+                onChange={e => setOtherBranch(e.target.value)}
+                placeholder="e.g. Architecture, MBA..."
+                className="mt-2 dark:bg-slate-950 dark:border-slate-800 dark:text-white"
+              />
+            )}
           </div>
           <div>
             <Label className="dark:text-gray-300">Batch / Enrollment Year</Label>
