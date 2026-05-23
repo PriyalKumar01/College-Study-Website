@@ -86,6 +86,7 @@ export function ProfileCompletionModal() {
     const [branch, setBranch] = useState("");
     const [year, setYear] = useState("");
     const [otherYear, setOtherYear] = useState("");
+    const [otherBranch, setOtherBranch] = useState("");
     const [password, setPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
 
@@ -213,6 +214,8 @@ export function ProfileCompletionModal() {
     // ---------------------------------------------------------------------------
     // HANDLER: Update Mode (year + college only)
     // ---------------------------------------------------------------------------
+    const finalBranch = branch === "Other" ? otherBranch.trim() : branch;
+
     const handleUpdateSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
@@ -232,12 +235,21 @@ export function ProfileCompletionModal() {
             toast({ title: "Required", description: "Please enter your college name.", variant: "destructive" });
             return;
         }
+        if (!finalBranch) {
+            toast({ title: "Required", description: "Please select your branch.", variant: "destructive" });
+            return;
+        }
+        if (branch === "Other" && !otherBranch.trim()) {
+            toast({ title: "Required", description: "Please specify your branch.", variant: "destructive" });
+            return;
+        }
 
         setIsLoading(true);
         try {
             const updatesDB: any = {
                 year: finalYear,
                 college: resolvedCollege,
+                branch: finalBranch,
                 updated_at: new Date().toISOString(),
             };
 
@@ -252,11 +264,12 @@ export function ProfileCompletionModal() {
                 data: {
                     year: finalYear,
                     college: resolvedCollege,
+                    branch: finalBranch,
                     profile_completed: true,
                 },
             });
 
-            toast({ title: "Profile Updated ✓", description: "Your batch year and college have been saved!" });
+            toast({ title: "Profile Updated ✓", description: "Your profile has been saved!" });
             setIsOpen(false);
             window.location.reload();
         } catch (err: any) {
@@ -272,7 +285,7 @@ export function ProfileCompletionModal() {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        if (!firstName || !branch || !finalYear || !resolvedCollege) {
+        if (!firstName || !finalBranch || !finalYear || !resolvedCollege) {
             toast({ title: "Required Fields", description: "Please fill in all details.", variant: "destructive" });
             return;
         }
@@ -316,7 +329,7 @@ export function ProfileCompletionModal() {
                 first_name: firstName,
                 last_name: lastName,
                 college: resolvedCollege,
-                branch,
+                branch: finalBranch,
                 year: finalYear,
                 updated_at: new Date().toISOString(),
             };
@@ -334,7 +347,7 @@ export function ProfileCompletionModal() {
                     first_name: firstName,
                     last_name: lastName,
                     college: resolvedCollege,
-                    branch,
+                    branch: finalBranch,
                     year: finalYear,
                     profile_completed: true,
                 },
@@ -461,12 +474,35 @@ export function ProfileCompletionModal() {
                         <form onSubmit={handleUpdateSubmit} className="space-y-5 pb-2">
                             <div className="rounded-lg bg-amber-50 border border-amber-200 p-3 text-sm text-amber-800">
                                 👋 Hey <strong>{firstName || "there"}</strong>! We've upgraded our profile system.
-                                Please select your <strong>batch/enrollment year</strong> from the new dropdown
+                                Please update your <strong>branch</strong>, <strong>batch/enrollment year</strong>
                                 and confirm your college. This helps us show you the right content!
                             </div>
 
                             {/* College picker */}
                             {renderCollegePicker(true)}
+
+                            {/* Branch dropdown */}
+                            <div className="space-y-2">
+                                <Label htmlFor="branch-update">Branch *</Label>
+                                <Select value={branch} onValueChange={(val) => { setBranch(val); if (val !== "Other") setOtherBranch(""); }}>
+                                    <SelectTrigger id="branch-update" className="w-full">
+                                        <SelectValue placeholder="Select your branch" />
+                                    </SelectTrigger>
+                                    <SelectContent className="max-h-60 overflow-y-auto">
+                                        {BRANCH_OPTIONS.map((opt) => (
+                                            <SelectItem key={opt} value={opt}>{opt}</SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                                {branch === "Other" && (
+                                    <Input
+                                        value={otherBranch}
+                                        onChange={(e) => setOtherBranch(e.target.value)}
+                                        placeholder="e.g. Architecture, MBA..."
+                                        className="mt-2"
+                                    />
+                                )}
+                            </div>
 
                             {/* Year dropdown */}
                             <div className="space-y-2">
@@ -567,7 +603,7 @@ export function ProfileCompletionModal() {
 
                             <div className="space-y-2">
                                 <Label htmlFor="branch">Branch *</Label>
-                                <Select value={branch} onValueChange={setBranch}>
+                                <Select value={branch} onValueChange={(val) => { setBranch(val); if (val !== "Other") setOtherBranch(""); }}>
                                     <SelectTrigger id="branch" className="w-full">
                                         <SelectValue placeholder="Select your branch" />
                                     </SelectTrigger>
@@ -577,6 +613,15 @@ export function ProfileCompletionModal() {
                                         ))}
                                     </SelectContent>
                                 </Select>
+                                {branch === "Other" && (
+                                    <Input
+                                        id="otherBranch"
+                                        value={otherBranch}
+                                        onChange={(e) => setOtherBranch(e.target.value)}
+                                        placeholder="e.g. Architecture, MBA..."
+                                        className="mt-2"
+                                    />
+                                )}
                             </div>
 
 
