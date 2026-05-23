@@ -235,17 +235,17 @@ export default function Profile() {
         avatar_url: finalAvatarUrl,
       };
 
-      // Robust Upsert: Handles both Insert and Update in one go
-      // Explicitly providing 'id: user.id' ensures we pass the RLS check (auth.uid() = id)
-      const { error } = await supabase
-        .from('profiles')
-        .upsert({
-          id: user.id, // CRITICAL: This was missing, causing RLS violation on insert
-          user_id: user.id,
-          email: user.email || '',
-          ...profileUpdates,
-          updated_at: new Date().toISOString(),
-        });
+      // Robust Upsert: Handles both Insert and Update in one go using our custom RPC
+      const { error } = await supabase.rpc('upsert_my_profile', {
+        p_first_name: editedProfile.first_name,
+        p_last_name: editedProfile.last_name,
+        p_college: editedProfile.college,
+        p_branch: editedProfile.branch,
+        p_year: editedProfile.year,
+        p_email: user.email || '',
+        p_mobile_number: profileUpdates.mobile_number,
+        p_avatar_url: profileUpdates.avatar_url
+      });
 
       if (error) throw error;
 
