@@ -545,8 +545,18 @@ export function ProfileCompletionModal() {
 
                             <div className="space-y-2">
                                 <Label htmlFor="branch">Branch *</Label>
-                                <Input id="branch" value={branch} onChange={(e) => setBranch(e.target.value)} placeholder="e.g. CSE" />
+                                <Select value={branch} onValueChange={setBranch}>
+                                    <SelectTrigger id="branch" className="w-full">
+                                        <SelectValue placeholder="Select your branch" />
+                                    </SelectTrigger>
+                                    <SelectContent className="max-h-60 overflow-y-auto">
+                                        {BRANCH_OPTIONS.map((opt) => (
+                                            <SelectItem key={opt} value={opt}>{opt}</SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
                             </div>
+
 
                             {/* Year dropdown */}
                             <div className="space-y-2">
