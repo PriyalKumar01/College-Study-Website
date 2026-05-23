@@ -7,11 +7,23 @@ import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp';
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, Eye, EyeOff, CheckCircle2, Mail, ArrowLeft, X, AlertCircle, AlertTriangle } from 'lucide-react';
+import { Loader2, Eye, EyeOff, CheckCircle2, Mail, ArrowLeft, X, AlertCircle, AlertTriangle, School, UserCheck } from 'lucide-react';
 import logoImg from '@/assets/college-study-hub-logo.png';
 import HCaptcha from '@hcaptcha/react-hcaptcha';
+
+// Batch / Enrollment Year dropdown options
+const YEAR_OPTIONS = [
+  { value: "2015-older", label: "2015 or Older" },
+  ...Array.from({ length: 2040 - 2016 + 1 }, (_, i) => ({
+    value: String(2016 + i),
+    label: String(2016 + i),
+  })),
+  { value: "Professor", label: "Professor" },
+  { value: "Other", label: "Other (specify)" },
+];
 
 // hCaptcha Site Key provided by user
 const HCAPTCHA_SITE_KEY = "8a4805ba-2f46-4c8a-980a-54b8d5240d88";
@@ -85,6 +97,9 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'signin' }: AuthModalProps) 
   const [college, setCollege] = useState('');
   const [branch, setBranch] = useState('');
   const [year, setYear] = useState('');
+  const [otherYear, setOtherYear] = useState('');
+  const [collegeType, setCollegeType] = useState<'hbtu' | 'non-hbtu' | ''>('');
+  const [customCollege, setCustomCollege] = useState('');
   const [acceptedTerms, setAcceptedTerms] = useState(false);
 
   // Verification State
@@ -369,8 +384,25 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'signin' }: AuthModalProps) 
       return;
     }
 
-    if (!firstName || !lastName || !college || !branch || !year) {
+    const finalYear = year === "Other" ? otherYear.trim() : year;
+    const resolvedCollege = collegeType === 'hbtu' ? 'HBTU Kanpur' : customCollege.trim();
+
+    if (!firstName || !lastName || !resolvedCollege || !branch || !finalYear) {
       toast({ title: "Missing Fields", description: "Please fill all required fields.", variant: "destructive" });
+      return;
+    }
+
+    if (!collegeType) {
+      toast({ title: "Missing Fields", description: "Please select HBTU or Non-HBTU college.", variant: "destructive" });
+      return;
+    }
+    if (collegeType === 'non-hbtu' && !customCollege.trim()) {
+      toast({ title: "Missing Fields", description: "Please enter your college name.", variant: "destructive" });
+      return;
+    }
+
+    if (year === "Other" && !otherYear.trim()) {
+      toast({ title: "Missing Fields", description: "Please specify your year/batch.", variant: "destructive" });
       return;
     }
 
@@ -388,7 +420,7 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'signin' }: AuthModalProps) 
           first_name: firstName,
           last_name: lastName,
           mobile_number: contactNo || null,
-          college, branch, year,
+          college: resolvedCollege, branch, year: finalYear,
           profile_completed: true // MARK PROFILE AS COMPLETE
         }
       });
@@ -676,13 +708,42 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'signin' }: AuthModalProps) 
         </div>
 
         <div>
-          <Label className="dark:text-gray-300">College<RequiredIndicator /></Label>
-          <Input
-            value={college}
-            onChange={e => setCollege(e.target.value)}
-            placeholder="e.g. HBTU Kanpur"
-            className="mt-1 dark:bg-slate-950 dark:border-slate-800 dark:text-white"
-          />
+          <Label className="dark:text-gray-300">Are you an HBTU Student?<RequiredIndicator /></Label>
+          <div className="grid grid-cols-2 gap-2 mt-1">
+            <button
+              type="button"
+              onClick={() => { setCollegeType('hbtu'); setCollege('HBTU Kanpur'); setCustomCollege(''); }}
+              className={`flex flex-col items-center gap-1 rounded-lg border-2 p-2.5 text-xs font-medium transition-all
+                ${collegeType === 'hbtu'
+                  ? 'border-sky-500 bg-sky-50 text-sky-700 dark:bg-sky-900/20 dark:text-sky-300'
+                  : 'border-gray-200 dark:border-slate-700 hover:border-sky-300 hover:bg-sky-50/40 dark:text-gray-300'}`}
+            >
+              <School className="w-4 h-4" />
+              HBTU Kanpur
+            </button>
+            <button
+              type="button"
+              onClick={() => { setCollegeType('non-hbtu'); setCollege(''); }}
+              className={`flex flex-col items-center gap-1 rounded-lg border-2 p-2.5 text-xs font-medium transition-all
+                ${collegeType === 'non-hbtu'
+                  ? 'border-indigo-500 bg-indigo-50 text-indigo-700 dark:bg-indigo-900/20 dark:text-indigo-300'
+                  : 'border-gray-200 dark:border-slate-700 hover:border-indigo-300 hover:bg-indigo-50/40 dark:text-gray-300'}`}
+            >
+              <UserCheck className="w-4 h-4" />
+              Other College
+            </button>
+          </div>
+          {collegeType === 'hbtu' && (
+            <p className="text-xs text-sky-600 mt-1 font-medium">✓ College set to: HBTU Kanpur</p>
+          )}
+          {collegeType === 'non-hbtu' && (
+            <Input
+              value={customCollege}
+              onChange={e => { setCustomCollege(e.target.value); setCollege(e.target.value); }}
+              placeholder="Enter your full college name"
+              className="mt-1.5 dark:bg-slate-950 dark:border-slate-800 dark:text-white"
+            />
+          )}
         </div>
 
         <div className="grid grid-cols-2 gap-3">
@@ -696,13 +757,27 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'signin' }: AuthModalProps) 
             />
           </div>
           <div>
-            <Label className="dark:text-gray-300">Year</Label>
-            <Input
-              value={year}
-              onChange={e => setYear(e.target.value)}
-              placeholder="e.g. 2nd Year"
-              className="mt-1 dark:bg-slate-950 dark:border-slate-800 dark:text-white"
-            />
+            <Label className="dark:text-gray-300">Batch / Enrollment Year</Label>
+            <Select value={year} onValueChange={(val) => { setYear(val); if (val !== "Other") setOtherYear(""); }}>
+              <SelectTrigger className="mt-1 w-full dark:bg-slate-950 dark:border-slate-800 dark:text-white">
+                <SelectValue placeholder="Select batch year" />
+              </SelectTrigger>
+              <SelectContent className="max-h-60 overflow-y-auto">
+                {YEAR_OPTIONS.map((opt) => (
+                  <SelectItem key={opt.value} value={opt.value}>
+                    {opt.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            {year === "Other" && (
+              <Input
+                value={otherYear}
+                onChange={e => setOtherYear(e.target.value)}
+                placeholder="e.g. Faculty, 2014..."
+                className="mt-2 dark:bg-slate-950 dark:border-slate-800 dark:text-white"
+              />
+            )}
           </div>
         </div>
 
