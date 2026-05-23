@@ -30,6 +30,28 @@ const YEAR_OPTIONS = [
 const isValidYearOption = (y: string) =>
     YEAR_OPTIONS.some((opt) => opt.value === y);
 
+// Branch dropdown options (full name with short form in brackets)
+const BRANCH_OPTIONS = [
+    "Computer Science & Engineering (CSE)",
+    "Information Technology (IT)",
+    "Electronics Engineering (ET)",
+    "Electrical Engineering (EE)",
+    "Oil Technology (OT)",
+    "Paint Technology (PT)",
+    "Plastic Technology (PL)",
+    "Chemical Engineering (CHE)",
+    "Electronics & Communication Engineering (ECE)",
+    "Mechanical Engineering (ME)",
+    "Civil Engineering (CE)",
+    "Leather & Fashion Technology (LFT)",
+    "Food Technology (FT)",
+    "Biochemical Engineering (BE)",
+    "BioTechnology (BT)",
+    "CSE - AI/ML",
+    "Metallurgy",
+    "Other",
+];
+
 // ---------------------------------------------------------------------------
 // HBTU detection helpers
 // ---------------------------------------------------------------------------
@@ -545,8 +567,18 @@ export function ProfileCompletionModal() {
 
                             <div className="space-y-2">
                                 <Label htmlFor="branch">Branch *</Label>
-                                <Input id="branch" value={branch} onChange={(e) => setBranch(e.target.value)} placeholder="e.g. CSE" />
+                                <Select value={branch} onValueChange={setBranch}>
+                                    <SelectTrigger id="branch" className="w-full">
+                                        <SelectValue placeholder="Select your branch" />
+                                    </SelectTrigger>
+                                    <SelectContent className="max-h-60 overflow-y-auto">
+                                        {BRANCH_OPTIONS.map((opt) => (
+                                            <SelectItem key={opt} value={opt}>{opt}</SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
                             </div>
+
 
                             {/* Year dropdown */}
                             <div className="space-y-2">

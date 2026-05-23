@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -36,14 +36,27 @@ const Index = () => {
 
 
 
+  // If redirected here from a protected route, prompt sign-in immediately
+  const location = useLocation();
+  useEffect(() => {
+    if (user) return;
+    const fromState = (location.state as any)?.from;
+    const stored = (() => { try { return sessionStorage.getItem('postLoginRedirect'); } catch { return null; } })();
+    if (fromState || stored) {
+      setAuthMode('signin');
+      setShowAuthModal(true);
+    }
+  }, [user, location.state]);
+
   // Auto-show signup popup on first visit
   useEffect(() => {
     if (user) return; // Don't show if logged in
 
     const hasSignedUp = sessionStorage.getItem('hasSignedUp');
     const hasSeenInitialPopup = sessionStorage.getItem('hasSeenInitialPopup');
+    const pendingRedirect = sessionStorage.getItem('postLoginRedirect');
 
-    if (!hasSignedUp && !hasSeenInitialPopup) {
+    if (!hasSignedUp && !hasSeenInitialPopup && !pendingRedirect) {
       // Show popup after a short delay
       const timer = setTimeout(() => {
         setAuthMode('signup');
