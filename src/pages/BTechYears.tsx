@@ -31,7 +31,7 @@ const years = [
   {
     name: "4th Year",
     description: "Final year projects and elective subjects",
-    available: false,
+    available: true,
     route: "/btech-notes/fourth-year",
     image: "/btech_year4.png",
     semesters: ["7th Semester", "8th Semester"],

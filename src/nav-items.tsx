@@ -81,6 +81,12 @@ import BSMSSem4Notes from "./pages/BSMSSem4Notes";
 import BSMSSem5Notes from "./pages/BSMSSem5Notes";
 import BSMSSem6Notes from "./pages/BSMSSem6Notes";
 import ScholarshipsPortal from "./pages/ScholarshipsPortal";
+import ThirdSemesterBTNotes from "./pages/ThirdSemesterBTNotes";
+import ThirdSemesterPLNotes from "./pages/ThirdSemesterPLNotes";
+import FourthSemesterBTNotes from "./pages/FourthSemesterBTNotes";
+import FourthSemesterPLNotes from "./pages/FourthSemesterPLNotes";
+import SeventhSemesterCSENotes from "./pages/SeventhSemesterCSENotes";
+import EighthSemesterCSENotes from "./pages/EighthSemesterCSENotes";
 
 export const navItems = [
   { to: "/", page: <Index /> },
@@ -167,5 +173,11 @@ export const navItems = [
   { to: "/bsms/sem-6", page: <BSMSSem6Notes /> },
   // Scholarship Portal
   { to: "/scholarship-portal", page: <ScholarshipsPortal /> },
+  { to: "/third-semester-bt", page: <ThirdSemesterBTNotes /> },
+  { to: "/third-semester-pl", page: <ThirdSemesterPLNotes /> },
+  { to: "/fourth-semester-bt", page: <FourthSemesterBTNotes /> },
+  { to: "/fourth-semester-pl", page: <FourthSemesterPLNotes /> },
+  { to: "/seventh-semester-cse", page: <SeventhSemesterCSENotes /> },
+  { to: "/eighth-semester-cse", page: <EighthSemesterCSENotes /> },
   { to: "*", page: <NotFound /> },
 ];

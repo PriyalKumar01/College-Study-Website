@@ -62,7 +62,7 @@ const BTechSemesters = () => {
       {
         name: "7th Semester",
         description: "Final year electives and major project",
-        available: false,
+        available: true,
         route: "/btech-notes/fourth-year/semester-7",
         thumbnail: thirdSemImg,
         branches: ["CSE/IT", "ME", "CE", "CHE", "ET", "EE", "BE", "LFT"],
@@ -70,7 +70,7 @@ const BTechSemesters = () => {
       {
         name: "8th Semester",
         description: "Project completion and placement preparation",
-        available: false,
+        available: true,
         route: "/btech-notes/fourth-year/semester-8",
         thumbnail: fourthSemImg,
         branches: ["CSE/IT", "ME", "CE", "CHE", "ET", "EE", "BE", "LFT"],

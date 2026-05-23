@@ -13,7 +13,7 @@ import Navbar from '@/components/Navbar';
 import { PlaylistModal } from '@/components/PlaylistModal';
 import { smartDownload } from '@/lib/downloadUtils';
 
-const FourthSemesterPTNotes = () => {
+const FourthSemesterBTNotes = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { isOwner } = useAuth();
@@ -21,7 +21,7 @@ const FourthSemesterPTNotes = () => {
 
   const handleWhatsAppShare = (subjectName: string) => {
     const shareUrl = `${window.location.origin}${location.pathname}?subject=${encodeURIComponent(subjectName)}`;
-    const message = `Check out ${subjectName} notes for 4th Semester Paint Tech on College Study Hub: ${shareUrl}`;
+    const message = `Check out ${subjectName} notes for 4th Semester BioTech on College Study Hub: ${shareUrl}`;
     window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, '_blank');
   };
   const [selectedSubject, setSelectedSubject] = useState<string | null>(null);
@@ -241,7 +241,7 @@ const FourthSemesterPTNotes = () => {
     }
   ];
 
-  const { data: communityNotes, refetch: refreshNotes } = useCommunityNotes('btech', 'PT-4th Semester');
+  const { data: communityNotes, refetch: refreshNotes } = useCommunityNotes('btech', 'BT-4th Semester');
   const subjects = staticSubjects.map((sub) => ({
     ...sub,
     notes: [
@@ -403,7 +403,7 @@ const FourthSemesterPTNotes = () => {
               <span className="text-white text-sm font-bold">!</span>
             </div>
             <div className="w-full">
-              <h3 className="text-lg font-semibold text-blue-800 dark:text-blue-200 mb-3">📚 Paint Tech 4th Semester — Important Instructions</h3>
+              <h3 className="text-lg font-semibold text-blue-800 dark:text-blue-200 mb-3">📚 BioTech 4th Semester — Important Instructions</h3>
               <div className="space-y-2 text-sm text-blue-700 dark:text-blue-300">
 
                 <p><strong>✨ Hi CSE/IT Juniors!</strong> A few important things to keep in mind as you progress through 4th semester — read carefully, this will genuinely help you.</p>
@@ -593,4 +593,4 @@ const FourthSemesterPTNotes = () => {
   );
 };
 
-export default FourthSemesterPTNotes;
+export default FourthSemesterBTNotes;

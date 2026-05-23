@@ -13,7 +13,7 @@ import Navbar from '@/components/Navbar';
 import { PlaylistModal } from '@/components/PlaylistModal';
 import { smartDownload } from '@/lib/downloadUtils';
 
-const FourthSemesterPTNotes = () => {
+const ThirdSemesterPLNotes = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { isOwner } = useAuth();
@@ -21,7 +21,7 @@ const FourthSemesterPTNotes = () => {
 
   const handleWhatsAppShare = (subjectName: string) => {
     const shareUrl = `${window.location.origin}${location.pathname}?subject=${encodeURIComponent(subjectName)}`;
-    const message = `Check out ${subjectName} notes for 4th Semester Paint Tech on College Study Hub: ${shareUrl}`;
+    const message = `Check out ${subjectName} notes for 3rd Semester Plastics on College Study Hub: ${shareUrl}`;
     window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, '_blank');
   };
   const [selectedSubject, setSelectedSubject] = useState<string | null>(null);
@@ -241,7 +241,7 @@ const FourthSemesterPTNotes = () => {
     }
   ];
 
-  const { data: communityNotes, refetch: refreshNotes } = useCommunityNotes('btech', 'PT-4th Semester');
+  const { data: communityNotes, refetch: refreshNotes } = useCommunityNotes('btech', 'PL-3rd Semester');
   const subjects = staticSubjects.map((sub) => ({
     ...sub,
     notes: [
@@ -273,7 +273,7 @@ const FourthSemesterPTNotes = () => {
   };
 
   const syllabus = {
-    title: '4th Semester Syllabus',
+    title: '3rd Semester Syllabus',
     url: 'https://drive.google.com/file/d/1mpACtmx9BF_gInlrOa8U-8ykmGHumQRk/view?usp=drive_link'
   };
 
@@ -307,7 +307,7 @@ const FourthSemesterPTNotes = () => {
               {subject.name} 📚
             </h1>
             <p className="text-muted-foreground text-lg">
-              All notes for {subject.name} - 4th Semester B.Tech
+              All notes for {subject.name} - 3rd Semester B.Tech
             </p>
           </motion.div>
 
@@ -384,7 +384,7 @@ const FourthSemesterPTNotes = () => {
           </Button>
           
           <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-2">
-            4th Semester B.Tech Notes 📖
+            3rd Semester B.Tech Notes 📖
           </h1>
           <p className="text-muted-foreground text-lg">
             <strong>Only for CSE/IT students</strong>
@@ -403,10 +403,10 @@ const FourthSemesterPTNotes = () => {
               <span className="text-white text-sm font-bold">!</span>
             </div>
             <div className="w-full">
-              <h3 className="text-lg font-semibold text-blue-800 dark:text-blue-200 mb-3">📚 Paint Tech 4th Semester — Important Instructions</h3>
+              <h3 className="text-lg font-semibold text-blue-800 dark:text-blue-200 mb-3">📚 Plastics 3rd Semester — Important Instructions</h3>
               <div className="space-y-2 text-sm text-blue-700 dark:text-blue-300">
 
-                <p><strong>✨ Hi CSE/IT Juniors!</strong> A few important things to keep in mind as you progress through 4th semester — read carefully, this will genuinely help you.</p>
+                <p><strong>✨ Hi CSE/IT Juniors!</strong> A few important things to keep in mind as you progress through 3rd semester — read carefully, this will genuinely help you.</p>
 
                 <p>• <strong>Career Focus:</strong> Start building command in at least one domain — <strong>Web Dev, App Dev (frontend/backend/both), AI/ML, or Cybersecurity.</strong> Participate in hackathons and contribute to open-source. These make learning exciting and your profile strong.</p>
 
@@ -464,10 +464,10 @@ const FourthSemesterPTNotes = () => {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <FileText className="h-5 w-5" />
-                4th Semester Syllabus
+                3rd Semester Syllabus
               </CardTitle>
               <CardDescription>
-                Official syllabus for 4th semester B.Tech
+                Official syllabus for 3rd semester B.Tech
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -593,4 +593,4 @@ const FourthSemesterPTNotes = () => {
   );
 };
 
-export default FourthSemesterPTNotes;
+export default ThirdSemesterPLNotes;

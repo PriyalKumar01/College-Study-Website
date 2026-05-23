@@ -25,6 +25,8 @@ const BTechBranches = () => {
         'semester-4': '/fourth-semester-cse',
         'semester-5': '/fifth-semester-cse',
         'semester-6': '/sixth-semester-cse',
+        'semester-7': '/seventh-semester-cse',
+        'semester-8': '/eighth-semester-cse',
       },
       'CHE': {
         'semester-3': '/third-semester-che',
@@ -70,6 +72,8 @@ const BTechBranches = () => {
       'PT': { 'semester-3': '/third-semester-pt', 'semester-4': '/fourth-semester-pt', 'semester-5': '/fifth-semester-pt', 'semester-6': '/sixth-semester-pt' },
       'FT': { 'semester-3': '/third-semester-ft', 'semester-4': '/fourth-semester-ft', 'semester-5': '/fifth-semester-ft', 'semester-6': '/sixth-semester-ft' },
       'OT': { 'semester-3': '/third-semester-ot', 'semester-4': '/fourth-semester-ot', 'semester-5': '/fifth-semester-ot', 'semester-6': '/sixth-semester-ot' },
+      'BT': { 'semester-3': '/third-semester-bt', 'semester-4': '/fourth-semester-bt' },
+      'PL': { 'semester-3': '/third-semester-pl', 'semester-4': '/fourth-semester-pl' },
     };
     return routes[branchKey]?.[semester || ''] || '#';
   };
@@ -88,9 +92,11 @@ const BTechBranches = () => {
     { name: "EE", fullName: "Electrical Engineering", description: "Power systems, motors, and electrical networks", thumbnail: eeImg },
     { name: "BE", fullName: "Biomedical Engineering", description: "Medical devices and healthcare technology", thumbnail: beImg },
     { name: "LFT", fullName: "Leather & Fashion Technology", description: "Leather processing and footwear manufacturing", thumbnail: lftImg },
-    { name: "PT", fullName: "Plastic Technology", description: "Plastic processing and polymer engineering", thumbnail: lftImg },
+    { name: "PT", fullName: "Paint Technology", description: "Paint processing and polymer engineering", thumbnail: lftImg },
+    { name: "PL", fullName: "Plastic Technology", description: "Plastic processing and polymer engineering", thumbnail: lftImg },
     { name: "FT", fullName: "Food Technology", description: "Food processing and preservation", thumbnail: lftImg },
     { name: "OT", fullName: "Oil Technology", description: "Oil processing and refining", thumbnail: lftImg },
+    { name: "BT", fullName: "BioTechnology", description: "Biochemical and genetic engineering", thumbnail: lftImg },
   ];
 
   const semesterName = semester?.replace("semester-", "");
