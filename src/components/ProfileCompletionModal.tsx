@@ -323,24 +323,33 @@ export function ProfileCompletionModal() {
 
         setIsLoading(true);
         try {
-            const updates = {
-                user_id: user!.id,
-                email: user!.email,
+            const profileData = {
                 first_name: firstName,
                 last_name: lastName,
                 college: resolvedCollege,
                 branch: finalBranch,
                 year: finalYear,
+                email: user!.email,
                 updated_at: new Date().toISOString(),
             };
 
-            const { error } = await supabase
+            // Try UPDATE first (the trigger already created the row on signup)
+            const { data: updateData, error: updateError } = await supabase
                 .from("profiles")
-                .upsert(updates, { onConflict: "user_id" })
+                .update(profileData)
+                .eq("user_id", user!.id)
                 .select()
-                .single();
+                .maybeSingle();
 
-            if (error) throw error;
+            if (updateError) throw updateError;
+
+            // If no row was updated (profile doesn't exist yet), INSERT it
+            if (!updateData) {
+                const { error: insertError } = await supabase
+                    .from("profiles")
+                    .insert({ user_id: user!.id, ...profileData });
+                if (insertError) throw insertError;
+            }
 
             const authUpdates: any = {
                 data: {
