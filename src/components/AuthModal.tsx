@@ -346,7 +346,7 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'signin' }: AuthModalProps) 
           // User already exists and is complete -> Just log them in
           toast({ title: "Welcome back!", description: "You already have an account. Signed in successfully." });
           handleClose();
-          navigate('/dashboard');
+          { const r = (()=>{try{const v=sessionStorage.getItem('postLoginRedirect');if(v){sessionStorage.removeItem('postLoginRedirect');return v;}}catch{}return '/dashboard';})(); navigate(r); }
         } else {
           // New user or incomplete profile -> Move to Profile Completion
           setStep('signup-complete');
@@ -356,7 +356,7 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'signin' }: AuthModalProps) 
         // Default fallthrough (shouldn't really happen for signin unless we support OTP login)
         setStep('form');
         handleClose();
-        navigate('/dashboard');
+        { const r = (()=>{try{const v=sessionStorage.getItem('postLoginRedirect');if(v){sessionStorage.removeItem('postLoginRedirect');return v;}}catch{}return '/dashboard';})(); navigate(r); }
       }
 
     } catch (err: any) {
@@ -433,7 +433,7 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'signin' }: AuthModalProps) 
         description: "Welcome to College Study Hub!",
       });
       handleClose();
-      navigate('/dashboard');
+      { const r = (()=>{try{const v=sessionStorage.getItem('postLoginRedirect');if(v){sessionStorage.removeItem('postLoginRedirect');return v;}}catch{}return '/dashboard';})(); navigate(r); }
 
     } catch (err: any) {
       toast({ title: "Signup Failed", description: err.message, variant: "destructive" });
@@ -464,7 +464,7 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'signin' }: AuthModalProps) 
       if (data.session) {
         toast({ title: "Welcome back!", description: "Signed in successfully." });
         handleClose();
-        navigate('/dashboard');
+        { const r = (()=>{try{const v=sessionStorage.getItem('postLoginRedirect');if(v){sessionStorage.removeItem('postLoginRedirect');return v;}}catch{}return '/dashboard';})(); navigate(r); }
       }
     } catch (err: any) {
       captchaRef.current?.resetCaptcha();
