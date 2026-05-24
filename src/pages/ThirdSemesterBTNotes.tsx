@@ -31,62 +31,29 @@ const ThirdSemesterBTNotes = () => {
   const [expandedSubjects, setExpandedSubjects] = useState<string[]>([]);
 
   const subjectPlaylists = {
-    co: {
-      detailed: [
-        { title: 'Computer Organization Complete', url: 'https://youtube.com/playlist?list=PLxCzCOWd7aiHMonh3G6QNKq53C6oNXGrX&si=DIFQTSm2C9CeKCSW' }
-      ],
-      oneshot: [
-        { title: 'Computer Organization One Shot 1', url: 'https://youtu.be/DsK35f8wyUw?si=txkw3jBfvMrPRHI9' },
-        { title: 'Computer Organization One Shot 2', url: 'https://youtu.be/nezosHntjPg?si=b07dVQUqLYcwXAak' }
-      ]
-    },
-    dsuc: {
-      detailed: [
-        { title: 'DSUC Complete Playlist', url: 'https://youtube.com/playlist?list=PLdo5W4Nhv31bbKJzrsKfMpo_grxuLl8LU&si=ywuxQFLJq-6kBNBz' },
-        { title: 'DSUC Advanced Playlist', url: 'https://youtube.com/playlist?list=PLVlQHNRLflP_OxF1QJoGBwH_TnZszHR_j&si=UoNjnrMNLqIyMOJ7' }
-      ],
-      oneshot: [
-        { title: 'DSUC One Shot Complete', url: 'https://youtu.be/MdG0Vw9f1A4?si=l-gk-33QAWwbhSeC' }
-      ]
-    },
-    de: {
-      detailed: [
-        { title: 'Digital Electronics by-Vaibhav Jain (Best)', url: 'https://youtube.com/playlist?list=PL0c0N7xv8s06alYrdpsYjGXBs1IqIU8QS&si=YrMsDIvKhqS3pAjx', recommended: true },
-        { title: 'Digital Electronics by- Engg. Funda', url: 'https://youtube.com/playlist?list=PLgwJf8NK-2e7nYSG31YWEUfwgAp2uIOBY&si=gjuY7Q3o8GBTfdR3' }
-      ],
-      oneshot: [
-        { title: 'DE One Shot by- Knowledge Gate', url: 'https://youtu.be/pHNbm-4reIc?si=BAIqs2C-Ga8NRzPJ' },
-        { title: 'DE One Shot by- 5 Min. Engg.', url: 'https://youtu.be/9Tn9M98yER8?si=Mubongdz8rnHGTaz' }
-      ]
-    },
-    python: {
-      detailed: [
-        { title: 'Python Programming Complete', url: 'https://youtube.com/playlist?list=PLvu-LC7buiaVdESLhxGj0BDQMjSLIEiSL&si=_GpcglKz_pZ78pt_' }
-      ],
-      oneshot: [
-        { title: 'Python Programming One Shot', url: 'https://youtube.com/playlist?list=PL49mRA0Y_C8vu2RWHdPsuRNRAcd89-eaz&si=dTvCvGhRbf7esBPJ' }
-      ]
-    },
-    math2: {
-      detailed: [
-        { title: 'Unit 1 Differential Equation- Fearless', url: 'https://youtube.com/playlist?list=PL5Dqs90qDljW1pwNMiPFDvR6zCbA9kRyd&si=eKIFeUwcRRvEW-iy' },
-        { title: ' Unit 3 Laplace Transform - Fearless', url: 'https://youtube.com/playlist?list=PL5Dqs90qDljWpJyo3QVVyY-o2xVCtxOfF&si=7l12sPrchJuFdEFB' },
-        { title: 'Fourier Series -Pradeep Giri Playlist', url: 'https://youtube.com/playlist?list=PLT3bOBUU3L9garIMWIqgAJ6wqBUe4ckFm&si=sULV2V8F8CxNfLU7' },
-        { title: 'Fourier Series - MKS Playlist', url: 'https://youtube.com/playlist?list=PLhSp9OSVmeyLke5_cby8i8ZhK8FHpw3qs&si=EXY9L4AxKVg58a-8' },
-        { title: 'Partial Diff. Eq.- MKS Playlist', url: 'https://youtube.com/playlist?list=PLhSp9OSVmeyJoNnAqghUK-Lit3qBgfa6o&si=RfESwXzHT7mFK_DG' },
-        { title: 'Partial Diff. Eq.- Gajendra Prohit', url: 'https://youtube.com/playlist?list=PLU6SqdYcYsfJljvy7Goi78EGwjPDQEnSw&si=dJ54yTQ9R4ZYmV7k', recommended: true },
-        { title: 'Appliaction of Fourier Transforms to BVP', url: 'https://youtube.com/playlist?list=PLhSp9OSVmeyJCwFXRDW8KmDlBFGRAxnAu&si=Vi9_HhLL2K5r15gn' },
-        { title: 'Complete Engg Math-II -By: Gajendra Prohit', url: 'https://youtube.com/playlist?list=PLU6SqdYcYsfKqa52m3wyMZb1KVWuZsA2T&si=MnC0WGH0egKRZkHx', recommended: true }
-      ],
+    microBiology: {
+      detailed: [ ],
       oneshot: []
     },
-    itetiict: {
+    ipr: {
       detailed: [],
-      oneshot: [
-        { title: 'ICT Introduction Video 1', url: 'https://youtu.be/6ptZr9VRxPs?si=IRMWuVFfR4-Yj6rM' },
-        { title: 'ICT Introduction Video 2', url: 'https://youtu.be/Pg_9kXV1lXg?si=Z-jfUI57nI_c8_2w' },
-        { title: 'ICT Introduction Video 3', url: 'https://youtu.be/mbdl-Fh5ALg?si=1JQlwxU9UroBsgL8' }
-      ]
+      oneshot: []
+    },
+    immunology: {
+      detailed: [ ],
+      oneshot: []
+    },
+    biochemistry: {
+      detailed: [],
+      oneshot: []
+    },
+    plantAnimal: {
+      detailed: [ ],
+      oneshot: []
+    },
+    analyticalTechniques: {
+      detailed: [],
+      oneshot: []
     }
   };
 
@@ -114,130 +81,95 @@ const ThirdSemesterBTNotes = () => {
 
   const staticSubjects = [
     {
-      id: 'dsuc',
-      name: 'Data Structures Using C',
+      id: 'biochemistry',
+      name: 'BioChemistry Notes',
       icon: '💻',
       color: 'bg-blue-500',
       notes: [
-        { title: 'Complete DSUC Best Notes - Quantum', url: 'https://drive.google.com/file/d/1owA6SjSqpZrLk1-qH_W0o96jamAcciOC/view?usp=drive_link' },
-        { title: 'All Most Important Programs for End Sem DSUC', url: 'https://drive.google.com/file/d/16eqDnz71Ir1RulrBmeN7Lsxb54NnFPVs/view?usp=drive_link' },
-        { title: 'DSUC Lab File', url: 'https://drive.google.com/file/d/1-XiDXdsHOUgn_FWc7Vj3nqkPIpvQ6Z00/view?usp=drive_link' },
-        { title: 'DSUC Unit 3 Notes', url: 'https://drive.google.com/file/d/16vyaX2v03fQIIRlPQEuRpZlj9yMkwslJ/view?usp=drive_link' },
-        { title: 'DSUC Unit 1 Notes', url: 'https://drive.google.com/file/d/17AvvwyJt04S2BVhsGaeIPTmKiauFjFt3/view?usp=drive_link' },
-        { title: 'DSUC Unit 2 Notes', url: 'https://drive.google.com/file/d/176a8uPhPDR4sCE0OGOnem3fAJzhEafHp/view?usp=drive_link' },
-        { title: 'DSUC Unit 4 Notes', url: 'https://drive.google.com/file/d/16puOi7D4C8zNYQy7b5g57ldSY4uxKu1U/view?usp=drive_link' },
-        { title: 'DSUC Unit 5 Notes', url: 'https://drive.google.com/file/d/16lSiwGeeApPd-ROVWiHzE2p_lrGl8Nmx/view?usp=drive_link' },
-        { title: 'Best Unit 1 Notes', url: 'https://drive.google.com/file/d/1ox2uuOi9_5E_OykzE4HVFziuaztrG_6h/view?usp=drive_link' }
-      ]
-    },
-    {
-      id: 'itetiict',
-      name: 'Intro to Emerging Technologies in ICT',
-      icon: '🌐',
-      color: 'bg-purple-500',
-      notes: [
-        { title: 'IoT Introduction PDF', url: 'https://drive.google.com/file/d/1_RxHI-c9kG75CDeqvMaq6ZF7kfpcASfr/view?usp=drive_link' },
-        { title: 'Cryptocurrency Notes', url: 'https://drive.google.com/file/d/1nXHy2Yc2Sj9Dbnk5sc8b40WRdR5FEYt-/view?usp=drive_link' },
-        { title: 'IoT Smart City PDF', url: 'https://drive.google.com/file/d/1_Ptg9E0I-o6t8yu_dx3tEEZ1SdF3mk7M/view?usp=drive_link' },
-        { title: 'OSI Model PDF', url: 'https://drive.google.com/file/d/1_UGWKcSl3PlJoPFnh7doApswuIxVDoxA/view?usp=drive_link' },
-        { title: 'Blockchain Notes', url: 'https://drive.google.com/file/d/1naxhYNRX8Jh3F761QKSXgz1GSPvEWQPI/view?usp=drive_link' },
-        { title: 'Mid Sem 2 (Unit 3 & 4 Revision Notes)', url: 'https://drive.google.com/file/d/1o66wwin_5zxme7XQZtLxzrfDfRndVaIN/view?usp=drive_link' },
-        { title: 'Blockchain Reference Book', url: 'https://drive.google.com/file/d/1n31Nl9JGvvB9gu2IcYnHxA_f-_f81Abd/view?usp=drive_link' },
-        { title: 'Unit 3 Topic Smart Contract PDF', url: 'https://drive.google.com/file/d/1ncpHnKX8YdQb0S-qYPjZpy0raJSG6xCx/view?usp=drive_link' },
-        { title: 'AWS, Azure & Cloud Difference - Most Important PDF', url: 'https://drive.google.com/file/d/1_5MPY5RNWggsfMMZ8OfNYwv25cTe5o1J/view?usp=drive_link' },
-        { title: 'Artificial Intelligence Notes', url: 'https://drive.google.com/file/d/1nQMQcUnAiWtmGsA7I8O5uhkGCJfVpumY/view?usp=drive_link' },
-        { title: '10 V\'s of Big Data PDF', url: 'https://drive.google.com/file/d/1n3L4z2CaXd1GEbVE6A3ghpX1wYLWxlCv/view?usp=drive_link' },
-        { title: '10 Use Cases of Blockchain PDF', url: 'https://drive.google.com/file/d/1nWBxdm1CXBihI_yI8BLan6lKeWkshEus/view?usp=drive_link' },
-        { title: 'Unit 1 Short Notes', url: 'https://drive.google.com/file/d/1Yx6KtWPOFZo9r0Gkzz4wB63xGlzcRD7E/view?usp=drive_link' },
-        { title: 'Unit 2 Short Notes', url: 'https://drive.google.com/file/d/1Z75dUAIGpD9BjO6XbTmrC5PLR3hbu4H6/view?usp=drive_link' },
-        { title: 'Unit 3 Short Notes', url: 'https://drive.google.com/file/d/1Z7DnmJZGdh9FvJf-9uzGWb2X0wlAi2ep/view?usp=drive_link' },
-        { title: 'Unit 5 Short Notes', url: 'https://drive.google.com/file/d/1ZIdEag2hUDiDcS0oMMD6_0AYzucWll0n/view?usp=drive_link' }
-      ]
-    },
-    {
-      id: 'co',
-      name: 'Computer Organisation',
-      icon: '🖥️',
-      color: 'bg-green-500',
-      notes: [
-        { title: 'CO Notes', url: 'https://drive.google.com/file/d/1_BSSWlVYgFZrNF2tmNEBhMDATUmCj73B/view?usp=drive_link' },
-        { title: 'CO Unit 3 & 4 Notes', url: 'https://drive.google.com/file/d/1nmTLVoJw-JmThfro0vm5Wk-taA1jDHBn/view?usp=drive_link' },
-        { title: 'CO Unit 3 Handwritten Notes', url: 'https://drive.google.com/file/d/1nt9Llpt9gmc2SlQb0fqwVzcEfAYjZkGD/view?usp=drive_link' },
-        { title: 'Full CO Playlist SS Notes', url: 'https://drive.google.com/file/d/1565sCtaXE8cUAYyQ9t6hlShUkteSK8di/view?usp=drive_link' },
-        { title: 'Control Unit & Design Notes', url: 'https://drive.google.com/file/d/1o3kF8AMJDkFcIFVaaxiB2i8HNejd-GTk/view?usp=drive_link' },
-        { title: 'Full Important CO Material - ESE', url: 'https://drive.google.com/file/d/15Ah5duaHgJSNDRD2chR68rUc1dozjcYW/view?usp=drive_link' },
-        { title: 'RISC Vs CISC PDF', url: 'https://drive.google.com/file/d/1nuRiot85uZwMmsH_4vizdT92BNGGdPEJ/view?usp=drive_link' },
-        { title: 'CO Mid Sem 2 Numericals - Last Minute Revision PDF', url: 'https://drive.google.com/file/d/1o4JJ7-guZ4ttvNNitQd0Vh4aDeoNogRe/view?usp=drive_link' }
-      ]
-    },
-    {
-      id: 'python',
-      name: 'Python Programming',
-      icon: '🐍',
-      color: 'bg-orange-500',
-      notes: [
-        { title: 'PP Notes', url: 'https://drive.google.com/file/d/14MsO70g821_IZrtXEp8bezOKnte8Enak/view?usp=drive_link' },
-        { title: 'PP Lab File', url: 'https://drive.google.com/file/d/1-Vb1JsaRf3VnonTH80EtYzg2W53n5HV5/view?usp=drive_link' },
-        { title: 'PP Best Quantum Notes', url: 'https://drive.google.com/file/d/1ovVLnKwYM1vsYSeAk0UNEqcF-lU7otVH/view?usp=drive_link' },
-        { title: 'Important PP Programs for ESE', url: 'https://drive.google.com/file/d/13viyP84UNb_1UfGWPUnqOapXUSq2jcMz/view?usp=drive_link' },
-        { title: 'Python Full Handwritten Notes', url: 'https://drive.google.com/file/d/1_VF2ORzst49Yu5BtYdhSkTbw16Wge2rE/view?usp=drive_link' }
-      ]
-    },
-    {
-      id: 'math2',
-      name: 'Engineering Mathematics-II',
-      icon: '📐',
-      color: 'bg-indigo-500',
-      notes: [
-        { title: 'Complete Notes (Unit 1 to 5)', url: 'https://drive.google.com/file/d/1EZQ7WMY4EoS9kewXgqRp-dbkLFcsVx-J/view?usp=drivesdk' },
-        { title: 'Unit 1 C.F & PI Notes', url: 'https://drive.google.com/file/d/1_OfjdkVBUxb6352LJcCSqv_nKrjz4uSU/view?usp=drive_link' },
-        { title: 'Unit 2 Notes', url: 'https://drive.google.com/file/d/1_OSlf-B7K9TFC1LgA6yZDUH2sQL-RTy0/view?usp=drive_link' },
-        { title: 'Unit 3 Notes', url: 'https://drive.google.com/file/d/1_PtU2rwcwDjGnrBwBpTtSeohDrbvxDBa/view?usp=drive_link' },
-        { title: 'Mid Sem 2 Last Minute Revision', url: 'https://drive.google.com/file/d/1oGU5M62XSyErVp3qP4CrEj1v0t5FQqej/view?usp=drive_link' },
-        { title: 'Best Maths Chapter 1 & 2 Notes', url: 'https://drive.google.com/file/d/1_JfBOvZp84amQj6Mo7-KtwrARm1kTHUr/view?usp=drive_link' },
-        { title: 'Formula Sheet Unit 1', url: 'https://drive.google.com/file/d/1T6PERNwiIdoA0Vm2EGyIVwp9TlrG7IrX/view?usp=drive_link' }
-      ]
-    },
-    {
-      id: 'de',
-      name: 'Digital Electronics',
-      icon: '🔌',
-      color: 'bg-teal-500',
-       notes: [
-        { title: 'DE Complete Notes', url: 'https://drive.google.com/file/d/1BUBUuMlABL7Uu-CxOa8_Q5tbFajxBI8t/view?usp=drivesdk' },
-       { title: 'Full DE Notes - 5 Min. Engg.', url: 'https://drive.google.com/file/d/1LaApEGFI4z5n-6N54CtgmRwq7B03EZq5/view?usp=drivesdk' },
-        { title: 'Question Bank (Chapter Wise)', url: 'https://drive.google.com/file/d/1ANtk5b6Sr6Q6LQLDELmjDsiLis77ThjI/view?usp=drive_link' },
-        { title: 'DE Complete Lab File', url: 'https://drive.google.com/file/d/1-u7KbXNDxNQNw7g64PEbwfqE7FOhZmRb/view?usp=drive_link' }
+        { title: 'Pyrimidine Synthesis', url: 'https://drive.google.com/file/d/1pTJns7FgSGp7qxVu8T2rLknh-HZ85vWJ/view?usp=drivesdk' },
+        { title: 'Purine & Pyrimidine Metabolism', url: 'https://drive.google.com/file/d/1OJf9h9G1TaGaRixcRVp-GlfJ3bEN3eTk/view?usp=drivesdk' },
+        { title: 'Nucleic Acid Metabolism', url: 'https://drive.google.com/file/d/1a7ZWZ64UBKFg1p5mqkrgM03q9Es4AOgB/view?usp=drivesdk' },
+        { title: 'Lipids- Properties, Structure & Classifications', url: 'https://drive.google.com/file/d/1aBwCyYpW8S6qm2wG14-3ZXeDEoKQWRAR/view?usp=drivesdk' },
+        { title: 'Lipid Oxidation of Fatty Acid', url: 'https://drive.google.com/file/d/1U4b4as7ATO8c-XaUODewAt_CNKPJqIa0/view?usp=drivesdk' },
+        { title: 'Lipid Disorder PDF', url: 'https://drive.google.com/file/d/1gI0lKKXatGxgExHMfD0tFhtvOu8fqm5L/view?usp=drivesdk' },
+        { title: 'BOOK-Principles of BioChemistry (by_Lehninger_4th Edition)', url: 'https://drive.google.com/file/d/1EISLid_3Lsy7qnFlOs1uaUWuQ9uU252S/view?usp=drivesdk' },
+        { title: 'Enzyme PDF', url: 'https://drive.google.com/file/d/1c4ZNlSxzT0XYgrEVLK7UtMzB-U4Im8tw/view?usp=drivesdk' },
+        { title: 'Disorder Of Carbohydrate Metabolism', url: 'https://drive.google.com/file/d/1J4F1SWGUdJ7MIZnZSxZblJIKEbFvtM-d/view?usp=drivesdk' },
+        { title: 'Disorder of Purine and Pyrimidine', url: 'https://drive.google.com/file/d/1LUJg1S4KoxMwqUj_gJlI0IfWCtO-P11n/view?usp=drivesdk' },
+        { title: 'Amino Acid Disorder', url: 'https://drive.google.com/file/d/1lF5odTEK-gJfp4s8LXUAYq0KSBZKBRTH/view?usp=drivesdk' },
        ]
     },
     {
-      id: 'assignments',
-      name: 'Assignments - All Subjects',
-      icon: '📝',
-      color: 'bg-yellow-500',
+      id: 'immunology',
+      name: 'Immunology & Immunotechnology',
+      icon: '🌐',
+      color: 'bg-purple-500',
       notes: [
-        { title: 'PP Assignment-1', url: 'https://drive.google.com/file/d/1-dydD1SBZZ7Grggn3whZwA4Fbfo-xupA/view?usp=drive_link' },
-        { title: 'ItETiICT Assignment-1', url: 'https://drive.google.com/file/d/1rXGsAnU9Shr7YNybgAQJVZrtR3QbfOwU/view?usp=drive_link' },
-        { title: 'EM-II Assignment 1', url: 'https://drive.google.com/file/d/1TIUedXB4mRke7CDxuvHnVn9lXXA6KmQf/view?usp=drive_link' },
-        { title: 'EM-II Assignment-2', url: 'https://drive.google.com/file/d/1TKW4nyYuBMe5LJxXLBlEwEIOdSvbWTpI/view?usp=drive_link' },
-        { title: 'EM-II Assignment-3', url: 'https://drive.google.com/file/d/1tDZaX9nQEPecEtrDgjgtPOblvp_GA9TG/view?usp=drive_link' }
-      ]
+        { title: 'Hypersensitivity to a Substance', url: 'https://drive.google.com/file/d/1bBXaBG8i55OrKu1OU8gV_Os0td4DU47H/view?usp=drivesdk' },
+        { title: 'Immunology PDF Notes', url: 'https://drive.google.com/file/d/1I5CI39rdPx7g5c6YwqLisQ0o2DWa0f79/view?usp=drivesdk' },
+        { title: 'Immunology BOOK by-Kuby(5 edition)', url: 'https://drive.google.com/file/d/1qzAlv9xYoYyBOgMgIccmhK_b5wnfkNeH/view?usp=drivesdk' },
+        { title: 'Innate Immunity PDF', url: 'https://drive.google.com/file/d/1_m5NlOX_wx5yYF8rxSHn12bf2C5COL1D/view?usp=drivesdk' },
+         ]
+    },
+    {
+      id: 'ipr',
+      name: 'IPR, Ethics & Patenting in Biotechnology',
+      icon: '🖥️',
+      color: 'bg-green-500',
+      notes: [
+        { title: 'Unit-4 Bio-Safety (BEST)', url: 'https://drive.google.com/file/d/1r_GASU4kLBYxEOmUTBWJxpswvYUCAoAl/view?usp=drivesdk' , recommended: true },
+        { title: 'Unit-4 Bio Safety PDF', url: 'https://drive.google.com/file/d/1_CbZuuk4AC6-XxhaP4rO4gZD2O4sqigZ/view?usp=drivesdk' },
+        { title: 'Bombs, Missiles, Rockets Patentability', url: 'https://drive.google.com/file/d/1-wZNO58wp_uxYYOKgLQekkHWIJ04fi7L/view?usp=drivesdk' },
+        { title: 'IPR & Patent in Biotechnology', url: 'https://drive.google.com/file/d/1vJO-9aF4JKKt0H-8JJQXhByZz2Pp3HeO/view?usp=drivesdk' },
+        { title: 'International Conventions & GATT', url: 'https://drive.google.com/file/d/1IblrgMSmoj_JS3zpKbYnGGGHsZsPIhgl/view?usp=drivesdk' },
+        { title: 'IPR PDF', url: 'https://drive.google.com/file/d/1Jwi8aD6EC3APbE5wYqW_NgqMAKd-XNR1/view?usp=drivesdk' },
+       ]
+    },
+    {
+      id: 'microBiology',
+      name: 'Micro Biology',
+      icon: '🐍',
+      color: 'bg-orange-500',
+      notes: [
+        { title: 'Indicator Micro-Organism & Environment MicroBiology', url: 'https://drive.google.com/file/d/1qvJxb3pyd2xdfi7t8hbROALSb4T8BUim/view?usp=drivesdk' },
+        { title: 'Bacterial Isolation, Identification & Storage', url: 'https://drive.google.com/file/d/1KZ84vZaL-nEojZ4h-YXbGw-epfifz_bi/view?usp=drivesdk' },
+        { title: 'MicroBiology PDF', url: 'https://drive.google.com/drive/folders/17Z8un86xg-4L-npNqap4AvXGhn8_K-Ka' },
+        { title: 'Cont. Culture of Micro-Organism', url: 'https://drive.google.com/file/d/1XnLDMceHy2agIIuIUQIilDraJ3hOLgXR/view?usp=drivesdk' },
+        { title: 'Control of Microbes', url: 'https://drive.google.com/file/d/1N6CWrOX0DlkZUpkr-Tg_LV01qEQRQu63/view?usp=drivesdk' },
+        { title: 'Effect of factors on Growth', url: 'https://drive.google.com/file/d/18Id-MqneDHdEEfXyyuyqNSSTRlIDaAqk/view?usp=drivesdk' },
+        { title: 'Growth Curve PDF', url: 'https://drive.google.com/file/d/1C4i81RqL5jN-Oe5aBc5Pmxy-SA_0Vefw/view?usp=drivesdk' },
+        { title: 'Micro-Biology BOOK By-Lansing M.Prescott', url: 'https://drive.google.com/file/d/1ByTWe6o6LPOxuVDJ__Ini7PcHVE538Xx/view?usp=drivesdk' },
+        { title: 'Maintenance & Preservation Of Microbes', url: 'https://drive.google.com/file/d/1OaLyAQo7r_DRDpw8JXF6Z6E75hoEYIHc/view?usp=drivesdk' },
+        { title: 'Media , Type Culture Media PDF', url: 'https://drive.google.com/file/d/12Hxs3WkB_8Nt4Fk0KG52-LfCFOyu7k3v/view?usp=drivesdk' },
+         { title: 'MicroBiology BOOK By-Michael J.Pelczar', url: 'https://drive.google.com/file/d/1vBKvXHb1Af6qomRObNjd-VthHXmNuogy/view?usp=drivesdk' },
+        { title: 'Unit-2 Microbial Growth Kinetics PDF', url: 'https://drive.google.com/file/d/1WaBiPgZFn6rOj-dgHHJIEqMUp4RX1Mnx/view?usp=drivesdk' },
+        { title: 'Unit-2 Numericals on Batch Reactor', url: 'https://drive.google.com/file/d/1GnE6ZkkqC4WGv2OTsIHAAIrwHg9v6jIT/view?usp=drivesdk' },
+        { title: 'Procaryotic & Eukaryotic Microbes', url: 'https://drive.google.com/file/d/1G9JZkUliRjPIaj8I8QXBsZN8K5vFkOdq/view?usp=drivesdk' },
+        { title: 'UNIT-2 Microbial Growth Kinetics(Batch,Fed batch,Chemostat microbial)', url: 'https://drive.google.com/file/d/1ftQHcySNxc0olXosmVTeGBcaHft-z3-k/view?usp=drivesdk' },
+        { title: 'Viruses PDF', url: 'https://drive.google.com/file/d/15O74fVDx18rZfGSnKECvwVhThwqquhTW/view?usp=drivesdk' },
+      
+           ]
+    },
+    {
+      id: 'plantAnimal',
+      name: 'Plant & Animal Biotechnology',
+      icon: '📐',
+      color: 'bg-indigo-500',
+      notes: []
+    },
+    {
+      id: 'analyticalTechniques',
+      name: 'Analytical Techniques in Biotechnology',
+      icon: '🔌',
+      color: 'bg-teal-500',
+       notes: []
     },
     {
       id: 'pyqs',
       name: 'Previous Year Questions',
       icon: '❓',
       color: 'bg-red-500',
-      notes: [
-        { title: 'Mid Sem 1 PYQs (2025-26)', url: 'https://drive.google.com/file/d/1aYXQlrMqS8wIP_k__SrXBOwTq8g9q42T/view?usp=drivesdk' },
-        { title: 'Mid Sem 2 PYQs (2025-26)', url: 'https://drive.google.com/file/d/1uPEiDJyEzEz2OsyCXJ2ZuyS-m1k8NpR4/view?usp=drivesdk' },
-        { title: 'End Sem PYQs (2025-26)', url: 'https://drive.google.com/file/d/1tK3VnFKhL1Vw13SCqh-NOOLEY1E7glIu/view?usp=drivesdk' },
-        { title: 'Mid Sem 1 PYQs (2024-25)', url: 'https://drive.google.com/file/d/1SFi-2scaPEeehBKK7sW-vuag0-t3Z3Pk/view?usp=drive_link' },
-        { title: 'Mid Sem 2 PYQs (2024-25)', url: 'https://drive.google.com/file/d/1my2tho6uAeNtm2r6wA9Egare2Wsj6MzX/view?usp=drive_link' },
-        { title: 'End Sem PYQs (2024-25)', url: 'https://drive.google.com/file/d/1P6gRk-loWPVrYtclKa9YaXa5AKLiebZ7/view?usp=drive_link' },
-        { title: 'Mid Sem-1 PYQs (2023-24)', url: 'https://drive.google.com/file/d/1TLslQyKp3OofBB61ApE4-5q0epHzVcik/view?usp=drive_link' },
-        { title: 'End Sem PYQs (2023-24)', url: 'https://drive.google.com/file/d/1TeQ1Pee5v93WkAncNgNss9JQaXhg4b0h/view?usp=drive_link' },
-      ]
+      notes: []
     }
   ];
 
@@ -273,8 +205,8 @@ const ThirdSemesterBTNotes = () => {
   };
 
   const syllabus = {
-    title: '3rd Semester Syllabus',
-    url: 'https://drive.google.com/file/d/1mpACtmx9BF_gInlrOa8U-8ykmGHumQRk/view?usp=drive_link'
+    title: '3rd Semester BT Syllabus',
+    url: 'https://drive.google.com/file/d/1h6AmBh57MfadiOaT377p3xcm4in2hA6R/view?usp=drivesdk'
   };
 
   const handleDownload = (url: string, title: string) => smartDownload(url, title);
@@ -387,7 +319,7 @@ const ThirdSemesterBTNotes = () => {
             3rd Semester B.Tech Notes 📖
           </h1>
           <p className="text-muted-foreground text-lg">
-            <strong>Only for CSE/IT students</strong>
+            <strong>Only for BioTechology students</strong>
           </p>
         </motion.div>
 
@@ -406,43 +338,9 @@ const ThirdSemesterBTNotes = () => {
               <h3 className="text-lg font-semibold text-blue-800 dark:text-blue-200 mb-3">📚 BioTech 3rd Semester — Important Instructions</h3>
               <div className="space-y-2 text-sm text-blue-700 dark:text-blue-300">
 
-                <p><strong>✨ Hi CSE/IT Juniors!</strong> A few important things to keep in mind as you progress through 3rd semester — read carefully, this will genuinely help you.</p>
-
-                <p>• <strong>Career Focus:</strong> Start building command in at least one domain — <strong>Web Dev, App Dev (frontend/backend/both), AI/ML, or Cybersecurity.</strong> Participate in hackathons and contribute to open-source. These make learning exciting and your profile strong.</p>
-
-                <p>• <strong>DSA is Non-Negotiable:</strong> As a CSE student, strong DSA in C++/Java is a must for placements. Most companies that visit campus are heavily DSA-focused — start early, be consistent.</p>
+                <p><strong>✨ Hi BioTech Juniors!</strong> A few important things to keep in mind as you progress through 3rd semester — read carefully, this will genuinely help you.</p>
 
                 <p>• <strong>Maintain CGPA:</strong> Companies keep a cutoff of <strong>7 or 7.5 CGPA</strong> — no excuses below that. Those with <strong>8.5+ are in a very safe zone</strong> — aim for 8+ minimum and maintain it till at least 6th semester.</p>
-
-                <p>• <strong>DSUC:</strong> Quantum PDF + my notes + Programming PDF available on College Study Website are more than enough. Practice programs: Stack, Dijkstra, Insertion Sort, Selection Sort, Linear & Binary Search.</p>
-
-                <p>• <strong>Computer Organisation (CO):</strong> IT students — Amit Sir's classes + write well. CSE students — Gate Smashers or Knowledge Gate OneShot (or both) + PYQs.</p>
-
-                <p>• <strong>ItETiICT:</strong> Notes + PYQs are enough. Focus on IoT, Sensors, and OSI Model — remember the OSI layers using the trick below! 👇</p>
-
-                <p>• <strong>Python Programming (PP):</strong> Pooja Ma'am's notes + PYQs + Quantum PDF — must go through before exam. For practicals: go through all important Python programs from the special PDF & lab file on the website. Exam has 2 programming questions — insertion/selection sort, linear & binary search (most important), Tower of Hanoi, etc.</p>
-
-                <p>• <strong>Digital Electronics (DE):</strong> Question Bank on website + Vaibhav Jain playlist (best) + PYQs.</p>
-
-                <p>• <strong>Maths-II (M2):</strong> Make a short formula sheet yourself while watching YouTube lectures. Solve PYQs. That's it.</p>
-
-                <p>• <strong>Quantum PDFs:</strong> Wherever available, always go through them — they are genuinely very helpful in general preparation.</p>
-
-                <p>• <strong>PP Practical Tip 😄:</strong> Odd roll no. students sit near odd roll no. friends, even near even — because odd and even students get different questions. Plan accordingly!</p>
-
-                {/* OSI Model Trick Image */}
-                <div className="mt-4 mb-2">
-                  <p className="font-semibold text-blue-800 dark:text-blue-200 mb-2">🌐 OSI Model Trick — Easy Way to Remember All 7 Layers in Sequence:</p>
-                  <div className="rounded-lg overflow-hidden border border-blue-300 dark:border-blue-700 max-w-lg">
-                    <img
-                      src="/osi-model-trick.png"
-                      alt="OSI Model Easy Memory Trick by Priyal Kumar"
-                      className="w-full object-contain bg-white"
-                      onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
-                    />
-                  </div>
-                  <p className="text-xs mt-1 text-blue-600 dark:text-blue-400 italic">Trick by Priyal Kumar — Sequence: Application → Presentation → Session → Transport → Network → Data Link → Physical</p>
-                </div>
 
                 <p className="text-red-500"><strong>⚠️ Important:</strong> Always maintain good presentation in exams — use 2 pens, underline important keywords, keep proper spacing after answers, and write sufficiently explained answers for better scoring. Cover every topic from the syllabus using playlists, notes, PYQs, YouTube, Google AI Mode, or any resource possible. Once every topic is understood properly, exams automatically become much easier.</p>
 
