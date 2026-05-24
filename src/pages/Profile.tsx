@@ -6,10 +6,12 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { supabase } from '@/integrations/supabase/client';
+import { BRANCH_OPTIONS, YEAR_OPTIONS } from '@/components/ProfileCompletionModal';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, ArrowLeft, Edit3, Save, X, User, Mail, Phone, GraduationCap, Calendar, CheckCircle2, UploadCloud } from 'lucide-react';
+import { Loader2, ArrowLeft, Edit3, Save, X, User, Mail, Phone, GraduationCap, Calendar, CheckCircle2, UploadCloud, School, UserCheck } from 'lucide-react';
 
 interface ProfileData {
   first_name: string;
@@ -48,6 +50,11 @@ export default function Profile() {
   const [editedProfile, setEditedProfile] = useState<ProfileData>(profile);
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
+
+  const [collegeType, setCollegeType] = useState<'hbtu' | 'non-hbtu' | ''>('');
+  const [customCollege, setCustomCollege] = useState('');
+  const [otherBranch, setOtherBranch] = useState('');
+  const [otherYear, setOtherYear] = useState('');
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -90,7 +97,7 @@ export default function Profile() {
           branch: profileData.branch || '',
           year: profileData.year || user.user_metadata?.year || '',
           // IMPORTANT: Trust DB value strictly for avatar. 
-          avatar_url: profileData.avatar_url || '',
+          avatar_url: profileData.avatar_url || user.user_metadata?.avatar_url || '',
           created_at: profileData.created_at || '',
         };
         setProfile(fetchedProfile);
@@ -224,14 +231,18 @@ export default function Profile() {
         }
       }
 
+      const finalCollege = collegeType === 'hbtu' ? 'HBTU Kanpur' : customCollege;
+      const finalBranch = editedProfile.branch === 'Other' ? otherBranch : editedProfile.branch;
+      const finalYear = editedProfile.year === 'Other' ? otherYear : editedProfile.year;
+
       const profileUpdates = {
         first_name: editedProfile.first_name,
         last_name: editedProfile.last_name,
         // Convert empty string to null to avoid unique constraint violations
         mobile_number: editedProfile.mobile_number?.trim() === '' ? null : editedProfile.mobile_number,
-        college: editedProfile.college,
-        branch: editedProfile.branch,
-        year: editedProfile.year,
+        college: finalCollege,
+        branch: finalBranch,
+        year: finalYear,
         avatar_url: finalAvatarUrl,
       };
 
@@ -441,7 +452,32 @@ export default function Profile() {
                 <div className="w-full md:w-auto flex justify-center md:justify-end">
                   {!isEditing ? (
                     <Button
-                      onClick={() => setIsEditing(true)}
+                      onClick={() => {
+                        setIsEditing(true);
+                        if (profile.college === 'HBTU Kanpur') {
+                          setCollegeType('hbtu');
+                          setCustomCollege('');
+                        } else {
+                          setCollegeType('non-hbtu');
+                          setCustomCollege(profile.college);
+                        }
+                        
+                        if (BRANCH_OPTIONS.includes(profile.branch)) {
+                          setEditedProfile(prev => ({...prev, branch: profile.branch}));
+                          setOtherBranch('');
+                        } else {
+                          setEditedProfile(prev => ({...prev, branch: profile.branch ? 'Other' : ''}));
+                          setOtherBranch(profile.branch);
+                        }
+
+                        if (YEAR_OPTIONS.some(y => y.value === profile.year)) {
+                          setEditedProfile(prev => ({...prev, year: profile.year}));
+                          setOtherYear('');
+                        } else {
+                          setEditedProfile(prev => ({...prev, year: profile.year ? 'Other' : ''}));
+                          setOtherYear(profile.year);
+                        }
+                      }}
                       className="bg-blue-600 hover:bg-blue-700 text-white shadow-md rounded-full px-6"
                     >
                       <Edit3 className="h-4 w-4 mr-2" />
@@ -545,7 +581,13 @@ export default function Profile() {
                   <div className="space-y-2">
                     <Label className="text-slate-500 dark:text-slate-400 text-xs uppercase tracking-wider font-semibold">College</Label>
                     {isEditing ? (
-                      <Input value={editedProfile.college} onChange={e => setEditedProfile({ ...editedProfile, college: e.target.value })} className="bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800" />
+                      <div className="space-y-2">
+                        <div className="grid grid-cols-2 gap-2">
+                          <button type="button" onClick={() => { setCollegeType('hbtu'); setCustomCollege(''); }} className={`flex items-center justify-center gap-1 rounded-lg border p-2 text-sm transition-all ${collegeType === 'hbtu' ? 'border-sky-500 bg-sky-50 text-sky-700 dark:bg-sky-900/20 dark:text-sky-300' : 'border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800'}`}><School className="w-4 h-4"/> HBTU Kanpur</button>
+                          <button type="button" onClick={() => { setCollegeType('non-hbtu'); }} className={`flex items-center justify-center gap-1 rounded-lg border p-2 text-sm transition-all ${collegeType === 'non-hbtu' ? 'border-indigo-500 bg-indigo-50 text-indigo-700 dark:bg-indigo-900/20 dark:text-indigo-300' : 'border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800'}`}><UserCheck className="w-4 h-4"/> Other College</button>
+                        </div>
+                        {collegeType === 'non-hbtu' && <Input value={customCollege} onChange={e => setCustomCollege(e.target.value)} placeholder="Enter full college name" className="bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800" />}
+                      </div>
                     ) : (
                       <p className="text-slate-900 dark:text-slate-100 font-medium text-lg">{profile.college || 'Not set'}</p>
                     )}
@@ -555,15 +597,27 @@ export default function Profile() {
                     <div className="space-y-2">
                       <Label className="text-slate-500 dark:text-slate-400 text-xs uppercase tracking-wider font-semibold">Branch</Label>
                       {isEditing ? (
-                        <Input value={editedProfile.branch} onChange={e => setEditedProfile({ ...editedProfile, branch: e.target.value })} className="bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800" />
+                        <div className="space-y-2">
+                          <Select value={editedProfile.branch} onValueChange={(v) => { setEditedProfile({ ...editedProfile, branch: v }); if (v !== "Other") setOtherBranch(""); }}>
+                            <SelectTrigger className="bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800"><SelectValue placeholder="Select branch" /></SelectTrigger>
+                            <SelectContent className="max-h-60">{BRANCH_OPTIONS.map(o => <SelectItem key={o} value={o}>{o}</SelectItem>)}</SelectContent>
+                          </Select>
+                          {editedProfile.branch === "Other" && <Input value={otherBranch} onChange={e => setOtherBranch(e.target.value)} placeholder="e.g. Architecture" className="bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800" />}
+                        </div>
                       ) : (
                         <p className="text-slate-900 dark:text-slate-100 font-medium text-lg">{profile.branch || '-'}</p>
                       )}
                     </div>
                     <div className="space-y-2">
-                      <Label className="text-slate-500 dark:text-slate-400 text-xs uppercase tracking-wider font-semibold">Year</Label>
+                      <Label className="text-slate-500 dark:text-slate-400 text-xs uppercase tracking-wider font-semibold">Batch / Graduating Year</Label>
                       {isEditing ? (
-                        <Input value={editedProfile.year} onChange={e => setEditedProfile({ ...editedProfile, year: e.target.value })} className="bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800" />
+                        <div className="space-y-2">
+                          <Select value={editedProfile.year} onValueChange={(v) => { setEditedProfile({ ...editedProfile, year: v }); if (v !== "Other") setOtherYear(""); }}>
+                            <SelectTrigger className="bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800"><SelectValue placeholder="Select year" /></SelectTrigger>
+                            <SelectContent className="max-h-60">{YEAR_OPTIONS.map(o => <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>)}</SelectContent>
+                          </Select>
+                          {editedProfile.year === "Other" && <Input value={otherYear} onChange={e => setOtherYear(e.target.value)} placeholder="e.g. 2014" className="bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800" />}
+                        </div>
                       ) : (
                         <p className="text-slate-900 dark:text-slate-100 font-medium text-lg">{profile.year || '-'}</p>
                       )}

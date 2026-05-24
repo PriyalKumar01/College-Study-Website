@@ -419,6 +419,8 @@ export type Database = {
           p_branch?: string
           p_year?: string
           p_email?: string
+          p_mobile_number?: string | null
+          p_avatar_url?: string | null
         }
         Returns: void
       }
