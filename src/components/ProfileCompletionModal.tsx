@@ -13,7 +13,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import logoImg from '@/assets/college-study-hub-logo.png';
 
 // ---------------------------------------------------------------------------
-// Batch / Enrollment Year dropdown options
+// Batch / Graduating Year dropdown options
 // ---------------------------------------------------------------------------
 export const YEAR_OPTIONS = [
     { value: "2015-older", label: "2015 or Older" },
@@ -216,7 +216,7 @@ export function ProfileCompletionModal() {
         e.preventDefault();
 
         if (!finalYear) {
-            toast({ title: "Required", description: "Please select your batch / enrollment year.", variant: "destructive" });
+            toast({ title: "Required", description: "Please select your batch / Graduating year.", variant: "destructive" });
             return;
         }
         if (year === "Other" && !otherYear.trim()) {
@@ -490,7 +490,7 @@ export function ProfileCompletionModal() {
 
                             {/* Year */}
                             <FieldGroup>
-                                <FieldLabel htmlFor="year-update">Batch / Enrollment Year <span className="text-red-500">*</span></FieldLabel>
+                                <FieldLabel htmlFor="year-update">Batch / Graduating Year <span className="text-red-500">*</span></FieldLabel>
                                 <Select value={year} onValueChange={(v) => { setYear(v); if (v !== "Other") setOtherYear(""); }}>
                                     <SelectTrigger id="year-update" className="w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 h-10 text-sm focus:ring-2 focus:ring-sky-500">
                                         <SelectValue placeholder="Select your batch year" />
@@ -613,7 +613,7 @@ export function ProfileCompletionModal() {
 
                             {/* Year */}
                             <FieldGroup>
-                                <FieldLabel htmlFor="year">Batch / Enrollment Year <span className="text-red-500">*</span></FieldLabel>
+                                <FieldLabel htmlFor="year">Batch / Graduating Year <span className="text-red-500">*</span></FieldLabel>
                                 <Select value={year} onValueChange={(v) => { setYear(v); if (v !== "Other") setOtherYear(""); }}>
                                     <SelectTrigger id="year" className="w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 h-10 text-sm focus:ring-2 focus:ring-sky-500">
                                         <SelectValue placeholder="Select your batch year" />

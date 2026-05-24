@@ -411,6 +411,17 @@ export type Database = {
     }
     Functions: {
       is_admin: { Args: never; Returns: boolean }
+      upsert_my_profile: {
+        Args: {
+          p_first_name?: string
+          p_last_name?: string
+          p_college?: string
+          p_branch?: string
+          p_year?: string
+          p_email?: string
+        }
+        Returns: void
+      }
     }
     Enums: {
       [_ in never]: never
