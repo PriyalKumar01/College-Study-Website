@@ -422,7 +422,7 @@ const ThirdSemesterPTNotes = () => {
             3rd Semester B.Tech Notes 📖
           </h1>
           <p className="text-muted-foreground text-lg">
-            <strong>Only for CSE/IT students</strong>
+            <strong>Only for PT students</strong>
           </p>
         </motion.div>
 
@@ -441,43 +441,13 @@ const ThirdSemesterPTNotes = () => {
               <h3 className="text-lg font-semibold text-blue-800 dark:text-blue-200 mb-3">📚 Paint Tech 3rd Semester — Important Instructions</h3>
               <div className="space-y-2 text-sm text-blue-700 dark:text-blue-300">
 
-                <p><strong>✨ Hi CSE/IT Juniors!</strong> A few important things to keep in mind as you progress through 3rd semester — read carefully, this will genuinely help you.</p>
-
-                <p>• <strong>Career Focus:</strong> Start building command in at least one domain — <strong>Web Dev, App Dev (frontend/backend/both), AI/ML, or Cybersecurity.</strong> Participate in hackathons and contribute to open-source. These make learning exciting and your profile strong.</p>
-
-                <p>• <strong>DSA is Non-Negotiable:</strong> As a CSE student, strong DSA in C++/Java is a must for placements. Most companies that visit campus are heavily DSA-focused — start early, be consistent.</p>
+                <p><strong>✨ Hi PT Juniors!</strong> A few important things to keep in mind as you progress through 3rd semester — read carefully, this will genuinely help you.</p>
 
                 <p>• <strong>Maintain CGPA:</strong> Companies keep a cutoff of <strong>7 or 7.5 CGPA</strong> — no excuses below that. Those with <strong>8.5+ are in a very safe zone</strong> — aim for 8+ minimum and maintain it till at least 6th semester.</p>
 
-                <p>• <strong>DSUC:</strong> Quantum PDF + my notes + Programming PDF available on College Study Website are more than enough. Practice programs: Stack, Dijkstra, Insertion Sort, Selection Sort, Linear & Binary Search.</p>
-
-                <p>• <strong>Computer Organisation (CO):</strong> IT students — Amit Sir's classes + write well. CSE students — Gate Smashers or Knowledge Gate OneShot (or both) + PYQs.</p>
-
-                <p>• <strong>ItETiICT:</strong> Notes + PYQs are enough. Focus on IoT, Sensors, and OSI Model — remember the OSI layers using the trick below! 👇</p>
-
-                <p>• <strong>Python Programming (PP):</strong> Pooja Ma'am's notes + PYQs + Quantum PDF — must go through before exam. For practicals: go through all important Python programs from the special PDF & lab file on the website. Exam has 2 programming questions — insertion/selection sort, linear & binary search (most important), Tower of Hanoi, etc.</p>
-
-                <p>• <strong>Digital Electronics (DE):</strong> Question Bank on website + Vaibhav Jain playlist (best) + PYQs.</p>
-
                 <p>• <strong>Maths-II (M2):</strong> Make a short formula sheet yourself while watching YouTube lectures. Solve PYQs. That's it.</p>
 
-                <p>• <strong>Quantum PDFs:</strong> Wherever available, always go through them — they are genuinely very helpful in general preparation.</p>
-
-                <p>• <strong>PP Practical Tip 😄:</strong> Odd roll no. students sit near odd roll no. friends, even near even — because odd and even students get different questions. Plan accordingly!</p>
-
-                {/* OSI Model Trick Image */}
-                <div className="mt-4 mb-2">
-                  <p className="font-semibold text-blue-800 dark:text-blue-200 mb-2">🌐 OSI Model Trick — Easy Way to Remember All 7 Layers in Sequence:</p>
-                  <div className="rounded-lg overflow-hidden border border-blue-300 dark:border-blue-700 max-w-lg">
-                    <img
-                      src="/osi-model-trick.png"
-                      alt="OSI Model Easy Memory Trick by Priyal Kumar"
-                      className="w-full object-contain bg-white"
-                      onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
-                    />
-                  </div>
-                  <p className="text-xs mt-1 text-blue-600 dark:text-blue-400 italic">Trick by Priyal Kumar — Sequence: Application → Presentation → Session → Transport → Network → Data Link → Physical</p>
-                </div>
+                <p>• <strong>E&amp;M:</strong> This subject is easy to crack. Write detailed answers in the exam with clean handwriting and proper presentation to score well. It is only a 2-credit subject, so its impact is limited.</p>
 
                 <p className="text-red-500"><strong>⚠️ Important:</strong> Always maintain good presentation in exams — use 2 pens, underline important keywords, keep proper spacing after answers, and write sufficiently explained answers for better scoring. Cover every topic from the syllabus using playlists, notes, PYQs, YouTube, Google AI Mode, or any resource possible. Once every topic is understood properly, exams automatically become much easier.</p>
 
