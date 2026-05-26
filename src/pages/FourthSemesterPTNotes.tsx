@@ -199,29 +199,19 @@ const FourthSemesterPTNotes = () => {
       ]
     },
     {
-      id: 'de',
-      name: 'Digital Electronics',
-      icon: '🔌',
-      color: 'bg-teal-500',
-       notes: [
-        { title: 'DE Complete Notes', url: 'https://drive.google.com/file/d/1BUBUuMlABL7Uu-CxOa8_Q5tbFajxBI8t/view?usp=drivesdk' },
-       { title: 'Full DE Notes - 5 Min. Engg.', url: 'https://drive.google.com/file/d/1LaApEGFI4z5n-6N54CtgmRwq7B03EZq5/view?usp=drivesdk' },
-        { title: 'Question Bank (Chapter Wise)', url: 'https://drive.google.com/file/d/1ANtk5b6Sr6Q6LQLDELmjDsiLis77ThjI/view?usp=drive_link' },
-        { title: 'DE Complete Lab File', url: 'https://drive.google.com/file/d/1-u7KbXNDxNQNw7g64PEbwfqE7FOhZmRb/view?usp=drive_link' }
-       ]
+      id: 'conm',
+      name: 'CONM Notes',
+      icon: '🌀',
+      color: 'bg-blue-500',
+      notes: [
+        { title: 'CONM Notes(unit 1-5)', url: 'https://drive.google.com/file/d/18lnFb5NV00LsRkdAqk1MyBHyinOf19n7/view?usp=drivesdk', recommended: true }]
     },
     {
       id: 'assignments',
       name: 'Assignments - All Subjects',
       icon: '📝',
       color: 'bg-yellow-500',
-      notes: [
-        { title: 'PP Assignment-1', url: 'https://drive.google.com/file/d/1-dydD1SBZZ7Grggn3whZwA4Fbfo-xupA/view?usp=drive_link' },
-        { title: 'ItETiICT Assignment-1', url: 'https://drive.google.com/file/d/1rXGsAnU9Shr7YNybgAQJVZrtR3QbfOwU/view?usp=drive_link' },
-        { title: 'EM-II Assignment 1', url: 'https://drive.google.com/file/d/1TIUedXB4mRke7CDxuvHnVn9lXXA6KmQf/view?usp=drive_link' },
-        { title: 'EM-II Assignment-2', url: 'https://drive.google.com/file/d/1TKW4nyYuBMe5LJxXLBlEwEIOdSvbWTpI/view?usp=drive_link' },
-        { title: 'EM-II Assignment-3', url: 'https://drive.google.com/file/d/1tDZaX9nQEPecEtrDgjgtPOblvp_GA9TG/view?usp=drive_link' }
-      ]
+      notes: []
     },
     {
       id: 'pyqs',
