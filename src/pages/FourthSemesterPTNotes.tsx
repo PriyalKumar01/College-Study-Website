@@ -274,7 +274,7 @@ const FourthSemesterPTNotes = () => {
 
   const syllabus = {
     title: '4th Semester Syllabus',
-    url: 'https://drive.google.com/file/d/1mpACtmx9BF_gInlrOa8U-8ykmGHumQRk/view?usp=drive_link'
+    url: 'https://drive.google.com/file/d/1ikG58R0J9zc-0NmfDZbsFumu2edAJ3Y3/view?usp=drivesdk'
   };
 
   const handleDownload = (url: string, title: string) => smartDownload(url, title);

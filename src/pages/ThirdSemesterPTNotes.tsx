@@ -31,41 +31,24 @@ const ThirdSemesterPTNotes = () => {
   const [expandedSubjects, setExpandedSubjects] = useState<string[]>([]);
 
   const subjectPlaylists = {
-    co: {
+    em: {
       detailed: [
-        { title: 'Computer Organization Complete', url: 'https://youtube.com/playlist?list=PLxCzCOWd7aiHMonh3G6QNKq53C6oNXGrX&si=DIFQTSm2C9CeKCSW' }
+        { title: 'Economics and Management Complete (Best)', url: 'https://youtube.com/playlist?list=PLsh2FvSr3n7cjVNULjFnVvI_DMVoMYG9o&si=iQiHHTspvuH4MEOy', recommended: true },
+        { title: 'Economics and Management Advanced', url: 'https://youtube.com/playlist?list=PLaAhQ2ofZZRC1OFxHoa8qGyFHDgk7PyUN&si=5HtscWYDIA3f9qae' }
       ],
-      oneshot: [
-        { title: 'Computer Organization One Shot 1', url: 'https://youtu.be/DsK35f8wyUw?si=txkw3jBfvMrPRHI9' },
-        { title: 'Computer Organization One Shot 2', url: 'https://youtu.be/nezosHntjPg?si=b07dVQUqLYcwXAak' }
-      ]
+      oneshot: []
     },
-    dsuc: {
-      detailed: [
-        { title: 'DSUC Complete Playlist', url: 'https://youtube.com/playlist?list=PLdo5W4Nhv31bbKJzrsKfMpo_grxuLl8LU&si=ywuxQFLJq-6kBNBz' },
-        { title: 'DSUC Advanced Playlist', url: 'https://youtube.com/playlist?list=PLVlQHNRLflP_OxF1QJoGBwH_TnZszHR_j&si=UoNjnrMNLqIyMOJ7' }
-      ],
-      oneshot: [
-        { title: 'DSUC One Shot Complete', url: 'https://youtu.be/MdG0Vw9f1A4?si=l-gk-33QAWwbhSeC' }
-      ]
+    tofep: {
+      detailed: [],
+      oneshot: []
     },
-    de: {
-      detailed: [
-        { title: 'Digital Electronics by-Vaibhav Jain (Best)', url: 'https://youtube.com/playlist?list=PL0c0N7xv8s06alYrdpsYjGXBs1IqIU8QS&si=YrMsDIvKhqS3pAjx', recommended: true },
-        { title: 'Digital Electronics by- Engg. Funda', url: 'https://youtube.com/playlist?list=PLgwJf8NK-2e7nYSG31YWEUfwgAp2uIOBY&si=gjuY7Q3o8GBTfdR3' }
-      ],
-      oneshot: [
-        { title: 'DE One Shot by- Knowledge Gate', url: 'https://youtu.be/pHNbm-4reIc?si=BAIqs2C-Ga8NRzPJ' },
-        { title: 'DE One Shot by- 5 Min. Engg.', url: 'https://youtu.be/9Tn9M98yER8?si=Mubongdz8rnHGTaz' }
-      ]
+    fmmo: {
+      detailed: [ ],
+      oneshot: []
     },
-    python: {
-      detailed: [
-        { title: 'Python Programming Complete', url: 'https://youtube.com/playlist?list=PLvu-LC7buiaVdESLhxGj0BDQMjSLIEiSL&si=_GpcglKz_pZ78pt_' }
-      ],
-      oneshot: [
-        { title: 'Python Programming One Shot', url: 'https://youtube.com/playlist?list=PL49mRA0Y_C8vu2RWHdPsuRNRAcd89-eaz&si=dTvCvGhRbf7esBPJ' }
-      ]
+    isctc: {
+      detailed: [],
+      oneshot: []
     },
     math2: {
       detailed: [
@@ -80,13 +63,9 @@ const ThirdSemesterPTNotes = () => {
       ],
       oneshot: []
     },
-    itetiict: {
+    cpc: {
       detailed: [],
-      oneshot: [
-        { title: 'ICT Introduction Video 1', url: 'https://youtu.be/6ptZr9VRxPs?si=IRMWuVFfR4-Yj6rM' },
-        { title: 'ICT Introduction Video 2', url: 'https://youtu.be/Pg_9kXV1lXg?si=Z-jfUI57nI_c8_2w' },
-        { title: 'ICT Introduction Video 3', url: 'https://youtu.be/mbdl-Fh5ALg?si=1JQlwxU9UroBsgL8' }
-      ]
+      oneshot: [ ]
     }
   };
 
@@ -114,73 +93,21 @@ const ThirdSemesterPTNotes = () => {
 
   const staticSubjects = [
     {
-      id: 'dsuc',
-      name: 'Data Structures Using C',
-      icon: '💻',
+      id: 'em',
+      name: 'Economics & Management',
+      icon: '💼',
       color: 'bg-blue-500',
       notes: [
-        { title: 'Complete DSUC Best Notes - Quantum', url: 'https://drive.google.com/file/d/1owA6SjSqpZrLk1-qH_W0o96jamAcciOC/view?usp=drive_link' },
-        { title: 'All Most Important Programs for End Sem DSUC', url: 'https://drive.google.com/file/d/16eqDnz71Ir1RulrBmeN7Lsxb54NnFPVs/view?usp=drive_link' },
-        { title: 'DSUC Lab File', url: 'https://drive.google.com/file/d/1-XiDXdsHOUgn_FWc7Vj3nqkPIpvQ6Z00/view?usp=drive_link' },
-        { title: 'DSUC Unit 3 Notes', url: 'https://drive.google.com/file/d/16vyaX2v03fQIIRlPQEuRpZlj9yMkwslJ/view?usp=drive_link' },
-        { title: 'DSUC Unit 1 Notes', url: 'https://drive.google.com/file/d/17AvvwyJt04S2BVhsGaeIPTmKiauFjFt3/view?usp=drive_link' },
-        { title: 'DSUC Unit 2 Notes', url: 'https://drive.google.com/file/d/176a8uPhPDR4sCE0OGOnem3fAJzhEafHp/view?usp=drive_link' },
-        { title: 'DSUC Unit 4 Notes', url: 'https://drive.google.com/file/d/16puOi7D4C8zNYQy7b5g57ldSY4uxKu1U/view?usp=drive_link' },
-        { title: 'DSUC Unit 5 Notes', url: 'https://drive.google.com/file/d/16lSiwGeeApPd-ROVWiHzE2p_lrGl8Nmx/view?usp=drive_link' },
-        { title: 'Best Unit 1 Notes', url: 'https://drive.google.com/file/d/1ox2uuOi9_5E_OykzE4HVFziuaztrG_6h/view?usp=drive_link' }
-      ]
-    },
-    {
-      id: 'itetiict',
-      name: 'Intro to Emerging Technologies in ICT',
-      icon: '🌐',
-      color: 'bg-purple-500',
-      notes: [
-        { title: 'IoT Introduction PDF', url: 'https://drive.google.com/file/d/1_RxHI-c9kG75CDeqvMaq6ZF7kfpcASfr/view?usp=drive_link' },
-        { title: 'Cryptocurrency Notes', url: 'https://drive.google.com/file/d/1nXHy2Yc2Sj9Dbnk5sc8b40WRdR5FEYt-/view?usp=drive_link' },
-        { title: 'IoT Smart City PDF', url: 'https://drive.google.com/file/d/1_Ptg9E0I-o6t8yu_dx3tEEZ1SdF3mk7M/view?usp=drive_link' },
-        { title: 'OSI Model PDF', url: 'https://drive.google.com/file/d/1_UGWKcSl3PlJoPFnh7doApswuIxVDoxA/view?usp=drive_link' },
-        { title: 'Blockchain Notes', url: 'https://drive.google.com/file/d/1naxhYNRX8Jh3F761QKSXgz1GSPvEWQPI/view?usp=drive_link' },
-        { title: 'Mid Sem 2 (Unit 3 & 4 Revision Notes)', url: 'https://drive.google.com/file/d/1o66wwin_5zxme7XQZtLxzrfDfRndVaIN/view?usp=drive_link' },
-        { title: 'Blockchain Reference Book', url: 'https://drive.google.com/file/d/1n31Nl9JGvvB9gu2IcYnHxA_f-_f81Abd/view?usp=drive_link' },
-        { title: 'Unit 3 Topic Smart Contract PDF', url: 'https://drive.google.com/file/d/1ncpHnKX8YdQb0S-qYPjZpy0raJSG6xCx/view?usp=drive_link' },
-        { title: 'AWS, Azure & Cloud Difference - Most Important PDF', url: 'https://drive.google.com/file/d/1_5MPY5RNWggsfMMZ8OfNYwv25cTe5o1J/view?usp=drive_link' },
-        { title: 'Artificial Intelligence Notes', url: 'https://drive.google.com/file/d/1nQMQcUnAiWtmGsA7I8O5uhkGCJfVpumY/view?usp=drive_link' },
-        { title: '10 V\'s of Big Data PDF', url: 'https://drive.google.com/file/d/1n3L4z2CaXd1GEbVE6A3ghpX1wYLWxlCv/view?usp=drive_link' },
-        { title: '10 Use Cases of Blockchain PDF', url: 'https://drive.google.com/file/d/1nWBxdm1CXBihI_yI8BLan6lKeWkshEus/view?usp=drive_link' },
-        { title: 'Unit 1 Short Notes', url: 'https://drive.google.com/file/d/1Yx6KtWPOFZo9r0Gkzz4wB63xGlzcRD7E/view?usp=drive_link' },
-        { title: 'Unit 2 Short Notes', url: 'https://drive.google.com/file/d/1Z75dUAIGpD9BjO6XbTmrC5PLR3hbu4H6/view?usp=drive_link' },
-        { title: 'Unit 3 Short Notes', url: 'https://drive.google.com/file/d/1Z7DnmJZGdh9FvJf-9uzGWb2X0wlAi2ep/view?usp=drive_link' },
-        { title: 'Unit 5 Short Notes', url: 'https://drive.google.com/file/d/1ZIdEag2hUDiDcS0oMMD6_0AYzucWll0n/view?usp=drive_link' }
-      ]
-    },
-    {
-      id: 'co',
-      name: 'Computer Organisation',
-      icon: '🖥️',
-      color: 'bg-green-500',
-      notes: [
-        { title: 'CO Notes', url: 'https://drive.google.com/file/d/1_BSSWlVYgFZrNF2tmNEBhMDATUmCj73B/view?usp=drive_link' },
-        { title: 'CO Unit 3 & 4 Notes', url: 'https://drive.google.com/file/d/1nmTLVoJw-JmThfro0vm5Wk-taA1jDHBn/view?usp=drive_link' },
-        { title: 'CO Unit 3 Handwritten Notes', url: 'https://drive.google.com/file/d/1nt9Llpt9gmc2SlQb0fqwVzcEfAYjZkGD/view?usp=drive_link' },
-        { title: 'Full CO Playlist SS Notes', url: 'https://drive.google.com/file/d/1565sCtaXE8cUAYyQ9t6hlShUkteSK8di/view?usp=drive_link' },
-        { title: 'Control Unit & Design Notes', url: 'https://drive.google.com/file/d/1o3kF8AMJDkFcIFVaaxiB2i8HNejd-GTk/view?usp=drive_link' },
-        { title: 'Full Important CO Material - ESE', url: 'https://drive.google.com/file/d/15Ah5duaHgJSNDRD2chR68rUc1dozjcYW/view?usp=drive_link' },
-        { title: 'RISC Vs CISC PDF', url: 'https://drive.google.com/file/d/1nuRiot85uZwMmsH_4vizdT92BNGGdPEJ/view?usp=drive_link' },
-        { title: 'CO Mid Sem 2 Numericals - Last Minute Revision PDF', url: 'https://drive.google.com/file/d/1o4JJ7-guZ4ttvNNitQd0Vh4aDeoNogRe/view?usp=drive_link' }
-      ]
-    },
-    {
-      id: 'python',
-      name: 'Python Programming',
-      icon: '🐍',
-      color: 'bg-orange-500',
-      notes: [
-        { title: 'PP Notes', url: 'https://drive.google.com/file/d/14MsO70g821_IZrtXEp8bezOKnte8Enak/view?usp=drive_link' },
-        { title: 'PP Lab File', url: 'https://drive.google.com/file/d/1-Vb1JsaRf3VnonTH80EtYzg2W53n5HV5/view?usp=drive_link' },
-        { title: 'PP Best Quantum Notes', url: 'https://drive.google.com/file/d/1ovVLnKwYM1vsYSeAk0UNEqcF-lU7otVH/view?usp=drive_link' },
-        { title: 'Important PP Programs for ESE', url: 'https://drive.google.com/file/d/13viyP84UNb_1UfGWPUnqOapXUSq2jcMz/view?usp=drive_link' },
-        { title: 'Python Full Handwritten Notes', url: 'https://drive.google.com/file/d/1_VF2ORzst49Yu5BtYdhSkTbw16Wge2rE/view?usp=drive_link' }
+        { title: 'Complete Notes (Unit 1 to 5)', url: 'https://drive.google.com/file/d/1FKODzWwkZ4NLUs4J53Jw6aE3qIkfV3NK/view?usp=drivesdk', recommended : true },
+        { title: 'Business Economics Book', url: 'https://drive.google.com/file/d/1XD2CnTGa8tpUzqLPlzzDnc1-P60wdAJO/view?usp=drive_link' },
+        { title: 'E&M Unit 1 (Part-1) Notes', url: 'https://drive.google.com/file/d/1UI4YbkhC7bbb7DpMtNgnciPCFV_c7FaL/view?usp=drive_link' },
+        { title: 'E&M Unit 1 (Part 2) Notes', url: 'https://drive.google.com/file/d/1UObid3Prm9I_JVbxPqaPSukSmQ8qyCV6/view?usp=drive_link' },
+        { title: 'Unit 1 (Elasticity Notes)', url: 'https://drive.google.com/file/d/1U8GWR590L9kRgbe5_fZ6t-myuUoXmqn8/view?usp=drive_link' },
+        { title: 'Complete Unit 2 Notes', url: 'https://drive.google.com/file/d/1UOd_TOHZeOayp-W0NeKdmnv2mXr7-or-/view?usp=drive_link' },
+        { title: 'Unit 3 (Part-1) Notes', url: 'https://drive.google.com/file/d/1UPKMYKBS5k96DWeB2xyVy1ix9gUBnF_o/view?usp=drive_link' },
+        { title: 'Unit 3 (Part-2) Notes', url: 'https://drive.google.com/file/d/1U_rmk9aE-Ge6cxrPqIBbNovw9kwXm56M/view?usp=drive_link' },
+        { title: 'E&M Handwritten Notes', url: 'https://drive.google.com/file/d/1XANMyirw8Bb8Ks4m-R9jOtJ-0CncP5mQ/view?usp=drive_link' },
+        { title: 'Full Last Min. Revision Notes', url: 'https://drive.google.com/file/d/1Tv4l6-DNZygMKa-7AP73LvBki4L3QQcI/view?usp=drive_link' }
       ]
     },
     {
@@ -189,7 +116,7 @@ const ThirdSemesterPTNotes = () => {
       icon: '📐',
       color: 'bg-indigo-500',
       notes: [
-        { title: 'Complete Notes (Unit 1 to 5)', url: 'https://drive.google.com/file/d/1EZQ7WMY4EoS9kewXgqRp-dbkLFcsVx-J/view?usp=drivesdk' },
+        { title: 'Complete Notes (Unit 1 to 5)', url: 'https://drive.google.com/file/d/1EZQ7WMY4EoS9kewXgqRp-dbkLFcsVx-J/view?usp=drivesdk' , recommended : true },
         { title: 'Unit 1 C.F & PI Notes', url: 'https://drive.google.com/file/d/1_OfjdkVBUxb6352LJcCSqv_nKrjz4uSU/view?usp=drive_link' },
         { title: 'Unit 2 Notes', url: 'https://drive.google.com/file/d/1_OSlf-B7K9TFC1LgA6yZDUH2sQL-RTy0/view?usp=drive_link' },
         { title: 'Unit 3 Notes', url: 'https://drive.google.com/file/d/1_PtU2rwcwDjGnrBwBpTtSeohDrbvxDBa/view?usp=drive_link' },
@@ -199,16 +126,116 @@ const ThirdSemesterPTNotes = () => {
       ]
     },
     {
-      id: 'de',
-      name: 'Digital Electronics',
+      id: 'isctc',
+      name: 'Introduction to Surface Coatings & their Components',
+      icon: '🌐',
+      color: 'bg-purple-500',
+      notes: [
+        { title: 'ISCTC Lab Manual PDF', url: 'https://drive.google.com/file/d/1SicKQPQDoaQDrwiGN3qzoLPrmLj4BuF0/view?usp=drivesdk' },
+        { title: 'ISCTC Handwritten Lab Manual(2024-25)', url: 'https://drive.google.com/file/d/15_XZh01dDFy22raYnK-E1Gy7EZYFiebm/view?usp=drivesdk' },
+        { title: 'Lab File PDF (2025-26)', url: 'https://drive.google.com/file/d/1yhFEy1Y61SO5AWhFlB9HPfMQWvK9lJOC/view?usp=drivesdk' },
+        { title: 'ISCTC Material Science Notes', url: 'https://drive.google.com/file/d/1eADE8vXR9e_q_YW77XUmS2tLctzDW59G/view?usp=drivesdk' },
+        { title: 'ISCTC NOTES (Part-1)', url: 'https://drive.google.com/file/d/1BV0U_5NCjihkqVTw6VN1Vz5TYh0IX2iW/view?usp=drivesdk' },
+        { title: 'ISCTC NOTES (Part-2)', url: 'https://drive.google.com/file/d/1dlunt7Ld7zlnpYNCZmWvY7-ypb7IwiNf/view?usp=drivesdk' },
+        { title: 'ISCTC NOTES (Part-3)', url: 'https://drive.google.com/file/d/1N9ALEID284Xkawk9DpGf99bJOdPEQGOs/view?usp=drivesdk' },
+        { title: 'ISCTC NOTES (Part-4A)', url: 'https://drive.google.com/file/d/1Tegayk6H03oo4gyqhbOMOTe4Vt6iKw8F/view?usp=drivesdk' },
+        { title: 'ISCTC NOTES (Part-4B)', url: 'https://drive.google.com/file/d/17_3NQnEx2lq-XCgKJZDvUNI7fcU1MdOC/view?usp=drivesdk' },
+        { title: 'ISCTC NOTES (Part-5)', url: 'https://drive.google.com/file/d/1PkS_pe5gOpo4CVoNqLRrO7sgmoCHCjYE/view?usp=drivesdk' },
+        { title: 'ISCTC NOTES (Part-6)', url: 'https://drive.google.com/file/d/1a7tAQF2D6YrZkk1BKPHO9lITWjhwcXY-/view?usp=drivesdk' },
+        { title: 'ISCTC NOTES (Part-7A)', url: 'https://drive.google.com/file/d/1uFZBjYHqZnfSWzRADhVnq_kFfx2i96hw/view?usp=drivesdk' },
+        { title: 'ISCTC NOTES (Part-7B)', url: 'https://drive.google.com/file/d/1T_QGrdzYKIDmhjZcGhPGajLT9kh6rZJH/view?usp=drivesdk' },
+        { title: 'ISCTC NOTES (Part-17)', url: 'https://drive.google.com/file/d/1xEKfsiqGD5CG6Xg0nUyK5Sr28j6c1iij/view?usp=drivesdk' },
+        { title: 'ISCTC NOTES (Part-20)', url: 'https://drive.google.com/file/d/1CX6cGVitRhKf9FyAi6y8YBMkNLjU8TZt/view?usp=drivesdk' },
+        { title: 'UNIT-1 NOTES', url: 'https://drive.google.com/file/d/1pqPVNSdlt5MCDPkicOxvOF8LaLfPPl1i/view?usp=drivesdk' },
+        { title: 'UNIT-2 NOTES', url: 'https://drive.google.com/file/d/1f6uFKrkjkho-au-JqpskZ9a7yoPB4eZw/view?usp=drivesdk' },
+        { title: 'Unit-3 Modification of Oil', url: 'https://drive.google.com/file/d/18DyNRafEKaiGX5UUmlzuVZAhc9HGYcXY/view?usp=drivesdk' },
+        { title: 'Unit-1,2,3 Class Notes', url: 'https://drive.google.com/file/d/1gb9wH8WicEIwZDUf40kGQGeIqrMNeKQM/view?usp=drivesdk' },
+        { title: 'ISCTC Unit-4&5 Notes', url: 'https://drive.google.com/file/d/1_BZ8jfH52ckWoMkFxQzJOnW9dpow8nAl/view?usp=drivesdk' },
+        { title: 'ISCTC Unit-4 Class Notes', url: 'https://drive.google.com/file/d/1NOmb2eglOFAUX9gJ3H3VHQ4Y_0qwae_J/view?usp=drivesdk' },
+        { title: 'ISCTC Unit-5  Class Notes', url: 'https://drive.google.com/file/d/1CNhrXXrXrlHeivRRaRJJ7UONIJbwMzFy/view?usp=drivesdk' },
+        { title: 'HF Paint-Volume 2 BOOK', url: 'https://drive.google.com/file/d/1XPcSgZwmWXDefe7YFpKMCXq0XAQmgNS9/view?usp=drivesdk' },
+        { title: 'Driers PDF Notes', url: 'https://drive.google.com/file/d/11MLvSqJybl6LQFXpbAfOJu3O7GBPcYsg/view?usp=drivesdk' },
+        { title: 'BOOK Content - Vegetable Oil', url: 'https://drive.google.com/file/d/1JZDaR_05rlsgQenrtAuTSehQ9dxmrdDz/view?usp=drivesdk' },
+        { title: 'BOOK Content - Solvents', url: 'https://drive.google.com/file/d/1DSzJzKo0jk-l8dXPgy214kjKaN6nfBgS/view?usp=drivesdk' },
+        { title: 'BOOK Content - Driers (Part-1)', url: 'https://drive.google.com/file/d/1DyYFJCUmLWMSdgmxicqRkD_KJZRP3-hx/view?usp=drivesdk' },
+        { title: 'BOOK Content - Driers (Part-2)', url: 'https://drive.google.com/file/d/1OHtEQWWgdgYvvAQVNaR3vC_xZhHb9LVw/view?usp=drivesdk' },
+      ]
+    },
+    {
+      id: 'fmmo',
+      name: 'Fluid Mechanics & Mechanical Operations',
+      icon: '🖥️',
+      color: 'bg-green-500',
+      notes: [
+        { title: 'FMMO BOOK By-R.K.Bansal', url: 'https://drive.google.com/file/d/1gUIEEQgB-gr2kzFVMUjjvaP3DBsH0fYA/view?usp=drivesdk' },
+        { title: 'FMMO Unit Operations-I BOOK', url: 'https://drive.google.com/file/d/1vGhqjvUuZpufXPTAT2f_zqULgTwGI2_K/view?usp=drivesdk' },
+        { title: 'Unit-1 PDF (Prof.)', url: 'https://drive.google.com/file/d/1sv5aeZzhBcru7YyyI22SiH0YMD2hh-Vz/view?usp=drivesdk' , recommended : true},
+        { title: 'Unit-1 Notes (BEST)', url: 'https://drive.google.com/file/d/1pBTj_SwMPldAp8SYxBtBEyGJ2IDUo85p/view?usp=drivesdk', recommended : true },
+        { title: 'Unit-2 Notes (BEST)', url: 'https://drive.google.com/file/d/1ZRcG0KYOn1owZTAZgNwbf49bQZ4fX2dU/view?usp=drivesdk' , recommended : true},
+        { title: 'Unit-3 Notes (BEST)', url: 'https://drive.google.com/file/d/1U0pCF65tSsQFNAjvrGvtlxay6qbB1hMk/view?usp=drivesdk', recommended : true },
+        { title: 'Unit-4 Notes (BEST)', url: 'https://drive.google.com/file/d/1IAKxwQTXgo08XTJ_dKHqqeu1hpoRm6aS/view?usp=drivesdk' , recommended : true},
+        { title: 'Unit-5 Notes (BEST)', url: 'https://drive.google.com/file/d/1AWr7NUjpJIdoMSPRCv1JFc55f6ZiF-hx/view?usp=drivesdk', recommended : true },
+        { title: 'Complete FMMO Notes (NEW & BEST)', url: 'https://drive.google.com/file/d/1SJ3aWlJFH-zFs15mvyUz9r0MkM7XuLsL/view?usp=drivesdk' , recommended : true},
+        { title: 'FMMO Full Notes PDF (OLD)', url: 'https://drive.google.com/file/d/1G9NYplt56PH5BGzJObGRybQbPrYB1AOs/view?usp=drivesdk' },
+        { title: 'FMMO PYQS Solution PDF', url: 'https://drive.google.com/file/d/1W57HazGKgGCzYWW-zqAqa7PS5TDKZ8Fq/view?usp=drivesdk' },
+        { title: 'FMMO Unit-5 Diagram PDF', url: 'https://drive.google.com/file/d/1bcqck-B9HE1QPbR6JSgz1RnOn2na7cQq/view?usp=drivesdk' , recommended : true },
+        { title: 'Rotameter PDF', url: 'https://drive.google.com/file/d/1x9JM67WQ-7_ymlpnr7G4FFdxgoMMKIK-/view?usp=drivesdk'  },
+        { title: 'Pump & Valves PDF', url: 'https://drive.google.com/file/d/1MzHpprRwR1j3EyToLPkL5HK-6pd6QLah/view?usp=drivesdk'  },
+        { title: 'Size Reduction Equipments Notes', url: 'https://drive.google.com/file/d/1AIPD6fjZwYaFyCvHj8VQcVb0k62wkXEh/view?usp=drivesdk' , recommended : true },
+        { title: 'FMMO Lab Exp. -Settling PDF', url: 'https://drive.google.com/file/d/1j9Qs-4MWG56ld5CreZGWTh6VRqKdizrH/view?usp=drivesdk'  },
+        { title: 'FMMO Lab Exp. -Screen Analysis PDF', url: 'https://drive.google.com/file/d/1BlYeGIH6WKgTAsCSS2nt_eS8Ce8hPWtq/view?usp=drivesdk' },
+        { title: 'FMMO Lab Exp. -Rotameter PDF', url: 'https://drive.google.com/file/d/12cN4OntYDhyj7J5peP2Rb1AxjAFbn6QV/view?usp=drivesdk'  },
+        { title: 'FMMO Lab Exp. -Jaw Crusher PDF', url: 'https://drive.google.com/file/d/159Z5Hs2YQ2J6NE29ojo65iYhDNHKuGkm/view?usp=drivesdk'  },
+        { title: 'FMMO Lab Exp. -Reynolds PDF', url: 'https://drive.google.com/file/d/1W5EACqOzZfKF4ftkEMNJu7qAXPJOzLXn/view?usp=drivesdk'  },
+        { title: 'FMMO Lab Exp. -Bernoullis Theorem PDF', url: 'https://drive.google.com/file/d/1uUW8X5RnykpdJtanfKf7W0rrEgy93fgl/view?usp=drivesdk'  },
+        { title: 'FMMO Lab Exp. -Ball Mill PDF', url: 'https://drive.google.com/file/d/1o2qXKBm1iYYvLWB1lSUgIEfBicrY-7Pe/view?usp=drivesdk'  },
+        { title: 'FMMO Lab Exp. -Roll Crusher PDF', url: 'https://drive.google.com/file/d/1U_9VVlvaAQv4t2GvAcJTvGAx0Zvrc-KS/view?usp=drivesdk'  },
+        { title: 'FMMO Lab Manual PDF', url: 'https://drive.google.com/file/d/1SeTY3_cjBAXwRPJF-zcXmzir2subMH7Y/view?usp=drivesdk' , recommended : true },
+      ]
+    },
+    {
+      id: 'cpc',
+      name: 'Chemical Process calculations',
+      icon: '🐍',
+      color: 'bg-orange-500',
+      notes: [
+        { title: 'CPC BOOK By-D.C. SIKDAR', url: 'https://drive.google.com/file/d/13MfTeTun6v9N6V23N900a4DCQslGVhLx/view?usp=drivesdk' },
+        { title: 'CPC BOOK PDF By- Richard', url: 'https://drive.google.com/file/d/1YVThx8aLj0LLrwrif1wxTMJ1exoHRfcU/view?usp=drivesdk' },
+        { title: 'CPC Imp. Notes', url: 'https://drive.google.com/file/d/1E4Im3I0DagUzRPz7-t2dzqdt3D6iozTA/view?usp=drivesdk' },
+        { title: 'CPC Notes', url: 'https://drive.google.com/file/d/1IlIEc5WezQ2HJqSzgyAS40bhfPuFB6JJ/view?usp=drivesdk' },
+        { title: 'CPC Class Ques.', url: 'https://drive.google.com/file/d/1D7sM9TggsJCuYrqHe9SSstIkIDBtRm9T/view?usp=drivesdk' },
+        { title: 'CPC Unit-1 Notes', url: 'https://drive.google.com/file/d/1xjEHt0QYO1inJEuOvaoFzvN8pQov5i2c/view?usp=drivesdk' },
+        { title: 'CPC Numerical Notes Plastic', url: 'https://drive.google.com/file/d/1zndHWn8Di_onzrLYqsXg6qQ8w_Mty5vc/view?usp=drivesdk' },
+        { title: 'CPC -Unit & Dimensions Notes', url: 'https://drive.google.com/file/d/1WaDMh8m02FyeO8nJGo36AlJhK914FfBh/view?usp=drivesdk' },
+        { title: 'CPC All Unit Practice Problem', url: 'https://drive.google.com/file/d/1SvFXHNktnf7e7hIAkRrc9fvxEZNhqEN7/view?usp=drivesdk' },
+        { title: 'CPC Theory Part PDF', url: 'https://drive.google.com/file/d/1RaOznhdQL9TSuup6Vw193FupiBclMkIB/view?usp=drivesdk' },
+        { title: 'CPC Unit-1,2 PYQs', url: 'https://drive.google.com/file/d/1TI77F8ycCA1gRXDMq6xaxo0uAhMB-KFc/view?usp=drivesdk' },
+        { title: 'CPC Unit-2 Notes', url: 'https://drive.google.com/file/d/1Bp_prijNXbbdXcN6Eqs-BhPWbtaWFOEU/view?usp=drivesdk' },
+        { title: 'CPC Unit-2,3,4 PYQs', url: 'https://drive.google.com/file/d/1xQ1qfqTyaesMtrhPvNHaGbcozj2Kf7Xn/view?usp=drivesdk' },
+        { title: 'CPC Unit-3 & 4 Notes ', url: 'https://drive.google.com/file/d/1NixNyYKaq0gyU3GmZlBh6WmsiBnyQmUI/view?usp=drivesdk' },
+        { title: 'BEST CPC Notes -Unit Operations & Process', url: 'https://drive.google.com/file/d/1m2VrF8AnRiHrfdGY7eiX6fR8kqbR5kfF/view?usp=drivesdk', recommended : true },
+        { title: 'Idial Gas Law Notes', url: 'https://drive.google.com/file/d/1CzzJqujElxsMlmvED5wM6g-IZ0Wm4FGv/view?usp=drivesdk' },
+        { title: 'CPC Full Handwritten Notes', url: 'https://drive.google.com/file/d/1mqfkuHUGZ9scJ5Erv8qFEXMfm5bXptZy/view?usp=drivesdk', recommended : true },
+        { title: 'Numerical PDF', url: 'https://drive.google.com/file/d/13FFVHJVzOUg6H9r-gEvMyz8mHaxSH2S4/view?usp=drivesdk' },
+      ]
+    },
+    {
+      id: 'tofep',
+      name: 'Technology of Organic, Functional & Effect Pigments',
       icon: '🔌',
       color: 'bg-teal-500',
        notes: [
-        { title: 'DE Complete Notes', url: 'https://drive.google.com/file/d/1BUBUuMlABL7Uu-CxOa8_Q5tbFajxBI8t/view?usp=drivesdk' },
-       { title: 'Full DE Notes - 5 Min. Engg.', url: 'https://drive.google.com/file/d/1LaApEGFI4z5n-6N54CtgmRwq7B03EZq5/view?usp=drivesdk' },
-        { title: 'Question Bank (Chapter Wise)', url: 'https://drive.google.com/file/d/1ANtk5b6Sr6Q6LQLDELmjDsiLis77ThjI/view?usp=drive_link' },
-        { title: 'DE Complete Lab File', url: 'https://drive.google.com/file/d/1-u7KbXNDxNQNw7g64PEbwfqE7FOhZmRb/view?usp=drive_link' }
-       ]
+         { title: 'Unit-1 Notes (Prof.)', url: 'https://drive.google.com/file/d/1Rd194AYuRrzBlpHwutK9wyX5IObAxRnN/view?usp=drivesdk', recommended : true },
+         { title: 'Unit-1 Notes (student)', url: 'https://drive.google.com/file/d/1AA4RV0KFEPbWM_sB27CFcsPC-LytIRjz/view?usp=drivesdk' },
+         { title: 'Unit-2 Notes(Prof.)', url: 'https://drive.google.com/file/d/1M1DvMpvH08uy4Jz9D1zpWKUFIKM8Gfvu/view?usp=drivesdk', recommended : true },
+         { title: 'Full Unit-3 Notes', url: 'https://drive.google.com/file/d/1_1ycfadTfGxxTtvV7EEOQO65Yi3EO1EO/view?usp=drivesdk', recommended : true },
+         { title: 'Unit-4 Notes (Part-1)', url: 'https://drive.google.com/file/d/1a8AdHWHHDa_zl-vP8lQgsBvLLfiwc--v/view?usp=drivesdk', recommended : true },
+         { title: 'Unit-4 Notes (Part-2)', url: 'https://drive.google.com/file/d/1u_JiNsEZ3N3O7TeToMSL-aU6gEIypGt1/view?usp=drivesdk', recommended : true },
+         { title: 'Unit-3 & 4 Notes', url: 'https://drive.google.com/file/d/1RQNw3ezA1-sSHTnE4357uqcIksc7FPDs/view?usp=drivesdk' , recommended : true},
+         { title: 'Unit-5 Notes', url: 'https://drive.google.com/file/d/1M1ODKKsA6nc9hYLnpK4x7665yUgSSkUz/view?usp=drivesdk', recommended : true },
+         { title: 'BOOK -HF PAYNE VOL.1 PDF', url: 'https://drive.google.com/file/d/1fm5Lw8W4uCZQpTxy_ucMeqY10AKbEacI/view?usp=drivesdk' },
+         { title: 'BOOK -OUTLINES OF PAINT TECHNOLOGY (BY-WM MORGANS)', url: 'https://drive.google.com/file/d/1LaApEGFI4z5n-6N54CtgmRwq7B03EZq5/view?usp=drivesdk' },
+        ]
     },
     {
       id: 'assignments',
@@ -216,11 +243,13 @@ const ThirdSemesterPTNotes = () => {
       icon: '📝',
       color: 'bg-yellow-500',
       notes: [
-        { title: 'PP Assignment-1', url: 'https://drive.google.com/file/d/1-dydD1SBZZ7Grggn3whZwA4Fbfo-xupA/view?usp=drive_link' },
-        { title: 'ItETiICT Assignment-1', url: 'https://drive.google.com/file/d/1rXGsAnU9Shr7YNybgAQJVZrtR3QbfOwU/view?usp=drive_link' },
-        { title: 'EM-II Assignment 1', url: 'https://drive.google.com/file/d/1TIUedXB4mRke7CDxuvHnVn9lXXA6KmQf/view?usp=drive_link' },
-        { title: 'EM-II Assignment-2', url: 'https://drive.google.com/file/d/1TKW4nyYuBMe5LJxXLBlEwEIOdSvbWTpI/view?usp=drive_link' },
-        { title: 'EM-II Assignment-3', url: 'https://drive.google.com/file/d/1tDZaX9nQEPecEtrDgjgtPOblvp_GA9TG/view?usp=drive_link' }
+        { title: 'Asssignment-1 PDF', url: 'https://drive.google.com/file/d/1AX9L3O9O3kn6s1TUAx20zHG-FUa-CuIF/view?usp=drivesdk' },
+        { title: 'Asssignment-2 PDF', url: 'https://drive.google.com/file/d/1TUNcZDO9MmMZ42U3LSCkbLcLHNeMniAd/view?usp=drivesdk' },
+        { title: 'Asssignment-3 PDF', url: 'https://drive.google.com/file/d/1nsAGVFz2d8Irrho4Rw8uFGUMmJgvIv6D/view?usp=drivesdk' },
+        { title: 'Asssignment-4 PDF', url: 'https://drive.google.com/file/d/1ZGXG9oFx3FRkAvsqygTmxBm6OA74PaWa/view?usp=drivesdk' },
+        { title: 'Asssignment-5 PDF', url: 'https://drive.google.com/file/d/1VZMjpCRvpJD0UOC-Iwvdquy_m0ahgEFG/view?usp=drivesdk' },
+        { title: 'Assignment-1 to 5 Solutions PDF', url: 'https://drive.google.com/file/d/10OhOmXg5NbN_St5YSnqB8m-A_hSmNLEv/view?usp=drivesdk' },
+
       ]
     },
     {
@@ -229,15 +258,21 @@ const ThirdSemesterPTNotes = () => {
       icon: '❓',
       color: 'bg-red-500',
       notes: [
-        { title: 'Mid Sem 1 PYQs (2025-26)', url: 'https://drive.google.com/file/d/1aYXQlrMqS8wIP_k__SrXBOwTq8g9q42T/view?usp=drivesdk' },
-        { title: 'Mid Sem 2 PYQs (2025-26)', url: 'https://drive.google.com/file/d/1uPEiDJyEzEz2OsyCXJ2ZuyS-m1k8NpR4/view?usp=drivesdk' },
-        { title: 'End Sem PYQs (2025-26)', url: 'https://drive.google.com/file/d/1tK3VnFKhL1Vw13SCqh-NOOLEY1E7glIu/view?usp=drivesdk' },
-        { title: 'Mid Sem 1 PYQs (2024-25)', url: 'https://drive.google.com/file/d/1SFi-2scaPEeehBKK7sW-vuag0-t3Z3Pk/view?usp=drive_link' },
-        { title: 'Mid Sem 2 PYQs (2024-25)', url: 'https://drive.google.com/file/d/1my2tho6uAeNtm2r6wA9Egare2Wsj6MzX/view?usp=drive_link' },
-        { title: 'End Sem PYQs (2024-25)', url: 'https://drive.google.com/file/d/1P6gRk-loWPVrYtclKa9YaXa5AKLiebZ7/view?usp=drive_link' },
-        { title: 'Mid Sem-1 PYQs (2023-24)', url: 'https://drive.google.com/file/d/1TLslQyKp3OofBB61ApE4-5q0epHzVcik/view?usp=drive_link' },
-        { title: 'End Sem PYQs (2023-24)', url: 'https://drive.google.com/file/d/1TeQ1Pee5v93WkAncNgNss9JQaXhg4b0h/view?usp=drive_link' },
-      ]
+        { title: 'Mid Sem 1 & 2 PYQs (2023-24)', url: 'https://drive.google.com/file/d/1TOeiztCSFWqpnRpeQHYNnq-BcXtbmyzi/view?usp=drivesdk' },
+        { title: 'End Sem PYQs (2023-24)', url: 'https://drive.google.com/file/d/1v1htAchF9MpbRT9zlywqiFZWqNQL5zm-/view?usp=drivesdk' },
+        { title: 'Mid Sem 1 & 2 PYQs (2024-25)', url: 'https://drive.google.com/file/d/1eR4KaUm939MyT0RErzv98a1gxPravAVO/view?usp=drivesdk' },
+        { title: 'End Sem PYQs (2024-25)', url: 'https://drive.google.com/file/d/1jPJ0ryFU0kKpLvUhCG8uDSEOspHe_8-W/view?usp=drivesdk' },
+        { title: 'Mid Sem 1 PYQs (2025-26)', url: 'https://drive.google.com/file/d/1lcZ-zCNw_Cj0nyuISjPTaCBAPXDOmWKT/view?usp=drivesdk' },
+        { title: 'Mid Sem-2 PYQs (2025-26)', url: 'https://drive.google.com/file/d/1CRDbW8rmMG6NbcG7iD6QqpYgqgFK2Vp_/view?usp=drivesdk' },
+        { title: 'All CPC PYQs', url: 'https://drive.google.com/file/d/1F5fQM16Y9_OrGDvvDizqsjB_05ip1uq_/view?usp=drivesdk' },
+        { title: 'All E&M PYQs', url: 'https://drive.google.com/file/d/1DuFhji3a_PYAdTIOhkZtYHWEIqL-hu-H/view?usp=drivesdk' },
+        { title: 'All FMMO PYQs', url: 'https://drive.google.com/file/d/1BiRBS_qkvONqMqC5YDwJU4VyAyZqngP6/view?usp=drivesdk' },
+        { title: 'All ISCTC PYQs(Part-I)', url: 'https://drive.google.com/file/d/1JtSxz8bGBOfTFUyGZRnFf_JrJ1uw-b6m/view?usp=drivesdk' },
+        { title: 'All ISCTC PYQs (Part-II)', url: 'https://drive.google.com/file/d/10sCvflNNe9yYmtB6SEt7m6SUYI8PUIvg/view?usp=drivesdk' },
+        { title: 'All EM-II PYQs', url: 'https://drive.google.com/file/d/1m3f0xcG3MUEOfLV9aY0jt4CEJ97fpo2g/view?usp=drivesdk' },
+        { title: 'All TOFEP PYQs', url: 'https://drive.google.com/file/d/18d4EOXKbFKM3ugEJI1zLVrbjW2a-bxBL/view?usp=drivesdk' },
+        { title: 'EM-II -End Sem PYQs Solutions (2023-24)', url: 'https://drive.google.com/file/d/1g0GAIl_67M6b8RMnT8iJ9SEVQOPKJgjh/view?usp=drivesdk' },
+     ]
     }
   ];
 
@@ -274,7 +309,7 @@ const ThirdSemesterPTNotes = () => {
 
   const syllabus = {
     title: '3rd Semester Syllabus',
-    url: 'https://drive.google.com/file/d/1mpACtmx9BF_gInlrOa8U-8ykmGHumQRk/view?usp=drive_link'
+    url: 'https://drive.google.com/file/d/1ikG58R0J9zc-0NmfDZbsFumu2edAJ3Y3/view?usp=drivesdk'
   };
 
   const handleDownload = (url: string, title: string) => smartDownload(url, title);
