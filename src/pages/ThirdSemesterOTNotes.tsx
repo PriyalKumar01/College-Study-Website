@@ -414,6 +414,8 @@ interface Note {
             <p><strong className="text-foreground">✨ Hi Oil Tech Juniors!</strong> A few guidelines for your 3rd semester — read carefully.</p>
             <p>• <strong className="text-foreground">Chemical Process Calculations (CPC):</strong> Practice numericals daily. This forms the analytical core of chemical and oil process calculations.</p>
             <p>• <strong className="text-foreground">Fluid Mechanics & Mechanical Operations (FMMO):</strong> Focus on Bernoulli\'s derivations, pump characteristics, and particle size distribution. Lab files are very useful here.</p>
+            <p>• <strong className="text-foreground">Maths-II (M2):</strong> Make a short formula sheet yourself while watching YouTube lectures. Solve PYQs. That's it.</p>
+            <p>• <strong>E&amp;M:</strong> This subject is easy to crack. Write detailed answers in the exam with clean handwriting and proper presentation to score well. It is only a 2-credit subject, so its impact is limited.</p>
             <p>• <strong className="text-foreground">Maintain CGPA:</strong> Keep a score of <strong className="text-foreground">7.5+ CGPA</strong> minimum to stay safe for placements in core oil and petrochemical companies.</p>
             <p className="text-red-600 dark:text-red-400"><strong>⚠️ Important:</strong> Exam papers must show clean presentations. Draw neat, well-labeled diagrams of process setups and write out step-by-step mathematical calculations clearly.</p>
             <p>✨ Best Wishes — <strong className="text-foreground">Priyal Kumar</strong></p>
