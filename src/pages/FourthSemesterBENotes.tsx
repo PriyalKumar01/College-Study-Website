@@ -144,7 +144,7 @@ const FourthSemesterBENotes = () => {
 
         <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} className="text-center mb-12">
           <h1 className="text-4xl md:text-5xl font-bold mb-4 text-foreground">4th Semester BE Notes</h1>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">Biomedical Engineering study materials</p>
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">B.Tech. Biochemical Engineering — Comprehensive study materials and resources</p>
         </motion.div>
 
         {!selectedSubject ? (

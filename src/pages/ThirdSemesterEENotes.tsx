@@ -1,27 +1,25 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { useCommunityNotes } from '@/hooks/useCommunityNotes';
 import { useAuth } from '@/contexts/AuthContext';
+import { useCommunityNotes } from '@/hooks/useCommunityNotes';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { Download, ArrowLeft, FileText, Play, ChevronDown, ChevronRight, Trash2, ExternalLink, Share2 } from 'lucide-react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { Download, ArrowLeft, FileText, Play, ChevronDown, ChevronRight, Trash2, ExternalLink } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { PlaylistModal } from '@/components/PlaylistModal';
 import { smartDownload } from '@/lib/downloadUtils';
 
-const FifthSemesterBENotes = () => {
+const ThirdSemesterEENotes = () => {
   const navigate = useNavigate();
-  const location = useLocation();
 
-  // Semester key MUST match what the upload form stores: 'BE-5th Semester'
-  const { data: communityNotes, refetch: refreshNotes } = useCommunityNotes('btech', 'BE-5th Semester');
-  const { isOwner } = useAuth();
+  const { data: communityNotes, refetch: refreshNotes } = useCommunityNotes('btech', 'EE-3rd Semester');
+  const { user, isOwner } = useAuth();
   const { toast } = useToast();
 
   const [showPlaylistModal, setShowPlaylistModal] = useState(false);
-  const [selectedPlaylistType, setSelectedPlaylistType] = useState<'detailed' | 'oneshot'>('detailed');
+  const [selectedPlaylistType, setSelectedPlaylistType] = useState<'detailed' | 'oneshot' | 'workshop'>('detailed');
   const [selectedSubjectForPlaylist, setSelectedSubjectForPlaylist] = useState<string>('');
   const [expandedSubjects, setExpandedSubjects] = useState<string[]>([]);
   const [selectedSubject, setSelectedSubject] = useState<string | null>(null);
@@ -46,9 +44,46 @@ const FifthSemesterBENotes = () => {
     );
   };
 
+  // Playlist data for EE subjects
+  const subjectPlaylists = {
+    'network-theory': {
+      detailed: [
+        { title: 'Network Theory Complete (Best)', url: 'https://youtube.com/playlist?list=PLsh2FvSr3n7dY8Z8-q-D4y2vK9YVwMYG9&si=iQiHHTspvuH4MEOy', recommended: true }
+      ],
+      oneshot: []
+    },
+    'electrical-machines-1': {
+      detailed: [
+        { title: 'Electrical Machines-I Playlist', url: 'https://youtube.com/playlist?list=PLBvmdYQH_Z3sFfITPeEv-qg3sgHVIqC&si=p7O3LMHX28BDkQxU', recommended: true }
+      ],
+      oneshot: []
+    },
+    'electromagnetic-theory': {
+      detailed: [],
+      oneshot: []
+    },
+    'digital-electronics': {
+      detailed: [
+        { title: 'Digital Electronics Complete', url: 'https://youtube.com/playlist?list=PL3qvHcrYGy1uF5KAGntUITTJ85Dm3Dtdy&si=1AvreP0F8uaS4Nyw', recommended: true }
+      ],
+      oneshot: []
+    },
+    math2: {
+      detailed: [
+        { title: 'Unit 1 Differential Equation- Fearless', url: 'https://youtube.com/playlist?list=PL5Dqs90qDljW1pwNMiPFDvR6zCbA9kRyd&si=eKIFeUwcRRvEW-iy' },
+        { title: 'Unit 3 Laplace Transform - Fearless', url: 'https://youtube.com/playlist?list=PL5Dqs90qDljWpJyo3QVVyY-o2xVCtxOfF&si=7l12sPrchJuFdEFB' },
+        { title: 'Fourier Series -Pradeep Giri Playlist', url: 'https://youtube.com/playlist?list=PLT3bOBUU3L9garIMWIqgAJ6wqBUe4ckFm&si=sULV2V8F8CxNfLU7' },
+        { title: 'Fourier Series - MKS Playlist', url: 'https://youtube.com/playlist?list=PLhSp9OSVmeyLke5_cby8i8ZhK8FHpw3qs&si=EXY9L4AxKVg58a-8' },
+        { title: 'Partial Diff. Eq.- Gajendra Prohit', url: 'https://youtube.com/playlist?list=PLU6SqdYcYsfJljvy7Goi78EGwjPDQEnSw&si=dJ54yTQ9R4ZYmV7k', recommended: true },
+        { title: 'Complete Engg Math-II -By: Gajendra Prohit', url: 'https://youtube.com/playlist?list=PLU6SqdYcYsfKqa52m3wyMZb1KVWuZsA2T&si=MnC0WGH0egKRZkHx', recommended: true }
+      ],
+      oneshot: []
+    }
+  };
+
   const handlePlaylistClick = (subjectId: string, type: 'detailed' | 'oneshot') => {
-    const subject = staticSubjects.find(s => s.id === subjectId);
-    if (subject?.playlists?.[type]?.length > 0) {
+    const playlistKey = subjectId as keyof typeof subjectPlaylists;
+    if (subjectPlaylists[playlistKey] && subjectPlaylists[playlistKey][type].length > 0) {
       setSelectedSubjectForPlaylist(subjectId);
       setSelectedPlaylistType(type);
       setShowPlaylistModal(true);
@@ -56,81 +91,69 @@ const FifthSemesterBENotes = () => {
   };
 
   const getSubjectPlaylists = (subjectId: string) => {
-    const subject = staticSubjects.find(s => s.id === subjectId);
-    return subject?.playlists || { detailed: [], oneshot: [] };
+    const playlistKey = subjectId as keyof typeof subjectPlaylists;
+    return subjectPlaylists[playlistKey] || { detailed: [], oneshot: [] };
   };
 
-  const handleWhatsAppShare = (subjectName: string) => {
-    const shareUrl = `${window.location.origin}${location.pathname}?subject=${encodeURIComponent(subjectName)}`;
-    const message = `Check out ${subjectName} notes for 5th Semester BE on College Study Hub: ${shareUrl}`;
-    window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, '_blank');
-  };
-
-  // Subject names MUST match courseStructure.ts 'BE-5th Semester' entries EXACTLY
   const staticSubjects = [
     {
-      id: 'medical-imaging',
-      name: 'Medical Imaging',
-      fullName: 'Medical Imaging Techniques',
-      icon: '🩻',
+      id: 'network-theory',
+      name: 'Network Theory',
+      icon: '🔌',
       color: 'bg-blue-500',
-      playlists: { detailed: [], oneshot: [] },
       notes: []
     },
     {
-      id: 'biomechanics',
-      name: 'Biomechanics',
-      fullName: 'Biomechanics',
-      icon: '🦴',
+      id: 'electrical-machines-1',
+      name: 'Electrical Machines-I',
+      icon: '⚡',
+      color: 'bg-amber-500',
+      notes: []
+    },
+    {
+      id: 'electromagnetic-theory',
+      name: 'Electromagnetic Field Theory',
+      icon: '🧲',
       color: 'bg-red-500',
-      playlists: { detailed: [], oneshot: [] },
       notes: []
     },
     {
-      id: 'hospital-engineering',
-      name: 'Hospital Engineering',
-      fullName: 'Hospital Engineering',
-      icon: '🏥',
-      color: 'bg-green-500',
-      playlists: { detailed: [], oneshot: [] },
-      notes: []
-    },
-    {
-      id: 'rehabilitation-engineering',
-      name: 'Rehabilitation Engineering',
-      fullName: 'Rehabilitation Engineering',
-      icon: '♿',
+      id: 'digital-electronics',
+      name: 'Digital Electronics',
+      icon: '🔢',
       color: 'bg-purple-500',
-      playlists: { detailed: [], oneshot: [] },
       notes: []
     },
     {
-      id: 'pyqs',
-      name: 'Previous Year Questions',
-      fullName: 'Previous Year Questions',
-      icon: '❓',
-      color: 'bg-red-500',
-      playlists: { detailed: [], oneshot: [] },
+      id: 'math2',
+      name: 'Engineering Mathematics-II',
+      icon: '📐',
+      color: 'bg-indigo-500',
       notes: []
     },
     {
       id: 'assignments',
       name: 'Assignments',
-      fullName: 'Assignments - All Subjects',
       icon: '📝',
       color: 'bg-yellow-500',
-      playlists: { detailed: [], oneshot: [] },
+      notes: []
+    },
+    {
+      id: 'pyqs',
+      name: 'Previous Year Questions',
+      icon: '❓',
+      color: 'bg-red-500',
       notes: []
     }
   ];
 
-  const subjects = staticSubjects.map(sub => ({
+  const subjects = staticSubjects.map((sub) => ({
     ...sub,
     notes: [
       ...sub.notes,
       ...(communityNotes || [])
-        .filter(cn => cn.subject === sub.name || cn.subject === sub.fullName || cn.subject === sub.id)
-        .map(cn => ({
+        .filter((cn) => cn.subject === sub.name || cn.subject === sub.id)
+        .map((cn) => ({
           id: cn.id,
           title: cn.title,
           url: cn.file_url,
@@ -143,7 +166,7 @@ const FifthSemesterBENotes = () => {
   }));
 
   const syllabus = {
-    title: '5th Semester Syllabus',
+    title: '3rd Semester Syllabus',
     url: '#'
   };
 
@@ -165,9 +188,9 @@ const FifthSemesterBENotes = () => {
               <ArrowLeft className="h-3.5 w-3.5" /> Back to Subjects
             </button>
             <h1 className="text-3xl font-serif leading-tight mb-2">
-              {subject.fullName} Notes
+              {subject.name} Notes
             </h1>
-            <p className="text-xs opacity-50 uppercase tracking-widest">Biochemical Engineering — 5th Semester</p>
+            <p className="text-xs opacity-50 uppercase tracking-widest">Electrical Engineering — 3rd Semester</p>
           </div>
         </div>
 
@@ -245,21 +268,21 @@ const FifthSemesterBENotes = () => {
       <div className="bg-foreground dark:bg-card text-background dark:text-foreground pt-16 pb-12 px-4 sm:px-8">
         <div className="max-w-5xl mx-auto">
           <button
-            onClick={() => navigate('/btech-notes/third-year/semester-5')}
+            onClick={() => navigate('/btech-notes/second-year/semester-3')}
             className="inline-flex items-center gap-2 text-xs font-semibold tracking-widest uppercase opacity-50 hover:opacity-100 transition-opacity mb-8"
           >
             <ArrowLeft className="h-3.5 w-3.5" /> Back to Branches
           </button>
-          <p className="text-xs font-bold tracking-[0.2em] uppercase opacity-50 mb-3">Biochemical Engineering Notes</p>
+          <p className="text-xs font-bold tracking-[0.2em] uppercase opacity-50 mb-3">Electrical Engineering Notes</p>
           <h1 className="text-4xl md:text-5xl font-serif leading-tight mb-3">
-            5th Semester<br />
-            <span className="opacity-60">Biochemical Engineering Notes</span>
+            3rd Semester<br />
+            <span className="opacity-60">Electrical Engineering Notes</span>
           </h1>
-          <p className="text-sm opacity-50 mb-8">B.Tech. Biochemical Engineering — Comprehensive study materials and resources</p>
+          <p className="text-sm opacity-50 mb-8">B.Tech. Electrical Engineering — Comprehensive study materials and resources</p>
           <div className="flex flex-wrap gap-2">
-            <span className="text-xs font-semibold tracking-wider uppercase border border-background/30 px-3 py-1.5 rounded">BE Department</span>
+            <span className="text-xs font-semibold tracking-wider uppercase border border-background/30 px-3 py-1.5 rounded">EE Department</span>
             <span className="text-xs font-semibold tracking-wider uppercase border border-background/30 px-3 py-1.5 rounded">{staticSubjects.filter(s => s.id !== 'pyqs' && s.id !== 'assignments').length} Core Subjects</span>
-            <span className="text-xs font-semibold tracking-wider uppercase border border-background/30 px-3 py-1.5 rounded">5th Semester</span>
+            <span className="text-xs font-semibold tracking-wider uppercase border border-background/30 px-3 py-1.5 rounded">3rd Semester</span>
           </div>
         </div>
       </div>
@@ -272,13 +295,13 @@ const FifthSemesterBENotes = () => {
           transition={{ duration: 0.4 }}
           className="border-l-4 border-primary pl-6 py-4 bg-primary/5 dark:bg-primary/10 rounded-r-xl"
         >
-          <h3 className="text-base font-bold text-foreground mb-3">📚 Biochemical Engg 5th Semester — Important Instructions</h3>
+          <h3 className="text-base font-bold text-foreground mb-3">📚 Electrical Engg 3rd Semester — Important Instructions</h3>
           <div className="space-y-2 text-sm text-muted-foreground">
-            <p><strong className="text-foreground">✨ Hi BE Juniors!</strong> Here are a few important points for your 5th semester — read carefully.</p>
-            <p>• <strong className="text-foreground">Core Focus:</strong> Focus heavily on core Biochemical engineering subjects. Build strong theoretical concepts and clear your doubts early.</p>
-            <p>• <strong className="text-foreground">Maintain CGPA:</strong> Keep aiming for <strong className="text-foreground">8.0+ CGPA</strong>. This is crucial for placement eligibility and higher studies.</p>
-            <p>• <strong className="text-foreground">Practical Work:</strong> Pay close attention to lab practicals and viva preparation. They contribute significantly to your overall grade.</p>
-            <p className="text-red-600 dark:text-red-400"><strong>⚠️ Important:</strong> Present your answers clearly in exams, use headings and diagrams, and practice previous years' questions.</p>
+            <p><strong className="text-foreground">✨ Hi EE Juniors!</strong> A few important things to keep in mind as you progress through 3rd semester — read carefully, this will genuinely help you.</p>
+            <p>• <strong className="text-foreground">Maintain CGPA:</strong> Companies keep a cutoff of <strong className="text-foreground">7 or 7.5 CGPA</strong> — no excuses below that. Those with <strong className="text-foreground">8.5+ are in a very safe zone</strong> — aim for 8+ minimum and maintain it till at least 6th semester.</p>
+            <p>• <strong className="text-foreground">Maths-II (M2):</strong> Make a short formula sheet yourself while watching YouTube lectures. Solve PYQs. That's it.</p>
+            <p>• <strong className="text-foreground">Digital Electronics:</strong> This subject is highly logical. Practice circuit diagrams, K-maps, and multiplexers carefully to secure good marks.</p>
+            <p className="text-red-600 dark:text-red-400"><strong>⚠️ Important:</strong> Always maintain good presentation in exams — use 2 pens, underline important keywords, keep proper spacing after answers, and write sufficiently explained answers for better scoring. Cover every topic from the syllabus using playlists, notes, PYQs, YouTube, Google AI Mode, or any resource possible. Once every topic is understood properly, exams automatically become much easier.</p>
             <p>✨ Best Wishes — <strong className="text-foreground">Priyal Kumar</strong></p>
           </div>
         </motion.div>
@@ -295,8 +318,8 @@ const FifthSemesterBENotes = () => {
               <FileText className="h-5 w-5 text-foreground" />
             </div>
             <div>
-              <p className="font-semibold text-foreground text-sm">5th Semester Syllabus</p>
-              <p className="text-xs text-muted-foreground">Official syllabus for 5th semester B.Tech BE</p>
+              <p className="font-semibold text-foreground text-sm">3rd Semester Syllabus</p>
+              <p className="text-xs text-muted-foreground">Official syllabus for 3rd semester B.Tech EE</p>
             </div>
           </div>
           <button
@@ -312,83 +335,71 @@ const FifthSemesterBENotes = () => {
         <div>
           <p className="text-xs font-bold tracking-[0.15em] uppercase text-muted-foreground mb-5">Study Resources</p>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {subjects.map((subject, index) => {
-              const playlists = getSubjectPlaylists(subject.id);
-              const isExpanded = expandedSubjects.includes(subject.id);
-
-              return (
-                <motion.div
-                  key={subject.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.06, duration: 0.4 }}
-                >
-                  <div className="group border border-border bg-card hover:border-foreground/30 rounded-xl p-5 transition-all duration-300 hover:shadow-lg h-full flex flex-col relative">
-                    <button
-                      className="absolute top-4 right-4 text-green-600 hover:text-green-700 transition-colors p-1.5 rounded hover:bg-muted"
-                      onClick={(e) => { e.stopPropagation(); handleWhatsAppShare(subject.name); }}
-                      title="Share subject notes"
-                    >
-                      <Share2 className="h-4 w-4" />
-                    </button>
-                    <div className="flex items-start justify-between mb-4">
-                      <span className="text-2xl">{subject.icon}</span>
-                      <span className="text-xs font-semibold text-muted-foreground border border-border px-2 py-0.5 rounded-full">
-                        {subject.notes.length} files
-                      </span>
-                    </div>
-                    <h3 className="font-semibold text-foreground text-sm leading-snug mb-1 flex-1">{subject.name}</h3>
-
-                    {/* Playlist section */}
-                    {subject.id !== 'pyqs' && subject.id !== 'assignments' && (
-                      <div className="mt-3 pt-3 border-t border-border">
-                        <button
-                          className="flex items-center justify-between w-full text-xs font-semibold text-muted-foreground hover:text-foreground transition-colors"
-                          onClick={() => toggleSubjectExpansion(subject.id)}
-                        >
-                          <span className="flex items-center gap-1.5">
-                            <Play className="h-3 w-3" /> Study Playlists
-                          </span>
-                          {expandedSubjects.includes(subject.id) ? <ChevronDown className="h-3.5 w-3.5" /> : <ChevronRight className="h-3.5 w-3.5" />}
-                        </button>
-                        {expandedSubjects.includes(subject.id) && (
-                          <div className="mt-2 space-y-1">
-                            {playlists.detailed.length > 0 && (
-                              <button
-                                className="w-full text-left text-xs py-1.5 px-2 rounded-lg hover:bg-muted transition-colors text-muted-foreground hover:text-foreground"
-                                onClick={() => handlePlaylistClick(subject.id, 'detailed')}
-                              >
-                                📚 Detailed ({playlists.detailed.length})
-                              </button>
-                            )}
-                            {playlists.oneshot.length > 0 && (
-                              <button
-                                className="w-full text-left text-xs py-1.5 px-2 rounded-lg hover:bg-muted transition-colors text-muted-foreground hover:text-foreground"
-                                onClick={() => handlePlaylistClick(subject.id, 'oneshot')}
-                              >
-                                ⚡ One Shot ({playlists.oneshot.length})
-                              </button>
-                            )}
-                            {playlists.detailed.length === 0 && playlists.oneshot.length === 0 && (
-                              <p className="text-xs text-muted-foreground px-2 py-1">Not available yet</p>
-                            )}
-                          </div>
-                        )}
-                      </div>
-                    )}
-
-                    <div className="mt-4">
-                      <button
-                        onClick={() => setSelectedSubject(subject.id)}
-                        className="w-full text-xs font-bold tracking-wider uppercase py-2.5 px-4 rounded-lg border border-foreground/20 hover:bg-foreground hover:text-background transition-all duration-200"
-                      >
-                        View Notes
-                      </button>
-                    </div>
+            {subjects.map((subject, index) => (
+              <motion.div
+                key={subject.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.06, duration: 0.4 }}
+              >
+                <div className="group border border-border bg-card hover:border-foreground/30 rounded-xl p-5 transition-all duration-300 hover:shadow-lg h-full flex flex-col">
+                  <div className="flex items-start justify-between mb-4">
+                    <span className="text-2xl">{subject.icon}</span>
+                    <span className="text-xs font-semibold text-muted-foreground border border-border px-2 py-0.5 rounded-full">
+                      {subject.notes.length} files
+                    </span>
                   </div>
-                </motion.div>
-              );
-            })}
+                  <h3 className="font-semibold text-foreground text-sm leading-snug mb-1 flex-1">{subject.name}</h3>
+
+                  {/* Playlist section */}
+                  {subject.id !== 'pyqs' && subject.id !== 'assignments' && (
+                    <div className="mt-3 pt-3 border-t border-border">
+                      <button
+                        className="flex items-center justify-between w-full text-xs font-semibold text-muted-foreground hover:text-foreground transition-colors"
+                        onClick={() => toggleSubjectExpansion(subject.id)}
+                      >
+                        <span className="flex items-center gap-1.5">
+                          <Play className="h-3 w-3" /> Study Playlists
+                        </span>
+                        {expandedSubjects.includes(subject.id) ? <ChevronDown className="h-3.5 w-3.5" /> : <ChevronRight className="h-3.5 w-3.5" />}
+                      </button>
+                      {expandedSubjects.includes(subject.id) && (
+                        <div className="mt-2 space-y-1">
+                          {getSubjectPlaylists(subject.id).detailed.length > 0 && (
+                            <button
+                              className="w-full text-left text-xs py-1.5 px-2 rounded-lg hover:bg-muted transition-colors text-muted-foreground hover:text-foreground"
+                              onClick={() => handlePlaylistClick(subject.id, 'detailed')}
+                            >
+                              📚 Detailed ({getSubjectPlaylists(subject.id).detailed.length})
+                            </button>
+                          )}
+                          {getSubjectPlaylists(subject.id).oneshot.length > 0 && (
+                            <button
+                              className="w-full text-left text-xs py-1.5 px-2 rounded-lg hover:bg-muted transition-colors text-muted-foreground hover:text-foreground"
+                              onClick={() => handlePlaylistClick(subject.id, 'oneshot')}
+                            >
+                              ⚡ One Shot ({getSubjectPlaylists(subject.id).oneshot.length})
+                            </button>
+                          )}
+                          {getSubjectPlaylists(subject.id).detailed.length === 0 && getSubjectPlaylists(subject.id).oneshot.length === 0 && (
+                            <p className="text-xs text-muted-foreground px-2 py-1">Not available yet</p>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  <div className="mt-4">
+                    <button
+                      onClick={() => setSelectedSubject(subject.id)}
+                      className="w-full text-xs font-bold tracking-wider uppercase py-2.5 px-4 rounded-lg border border-foreground/20 hover:bg-foreground hover:text-background transition-all duration-200"
+                    >
+                      View Notes
+                    </button>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
           </div>
         </div>
       </div>
@@ -406,4 +417,4 @@ const FifthSemesterBENotes = () => {
   );
 };
 
-export default FifthSemesterBENotes;
+export default ThirdSemesterEENotes;

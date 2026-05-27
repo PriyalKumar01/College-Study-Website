@@ -1,54 +1,30 @@
-
-import { useCommunityNotes } from '@/hooks/useCommunityNotes';
-import { useAuth } from '@/contexts/AuthContext';
-import { supabase } from '@/integrations/supabase/client';
-import { useToast } from '@/hooks/use-toast';
-import { Trash2 } from 'lucide-react';
-
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Download, ArrowLeft, FileText, ChevronDown, ChevronRight } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
+import { useCommunityNotes } from '@/hooks/useCommunityNotes';
+import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
+import { Download, ArrowLeft, FileText, Play, ChevronDown, ChevronRight, Trash2, ExternalLink } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
+import Footer from '@/components/Footer';
+import { smartDownload } from '@/lib/downloadUtils';
 
 const ThirdSemesterCENotes = () => {
   const navigate = useNavigate();
-
-  const { data: communityNotes, refetch: refreshNotes } = useCommunityNotes('btech', 'CE-3rd Semester');
   const { isOwner } = useAuth();
   const { toast } = useToast();
 
-  const handleDeleteCommunityNote = async (id: string) => {
-    if (!window.confirm('Delete this user-uploaded material?')) return;
-    try {
-      const { error } = await supabase.from('notes').delete().eq('id', id);
-      if (error) throw error;
-      toast({ title: 'Deleted', description: 'Material removed successfully.' });
-      refreshNotes();
-    } catch (error: any) {
-      toast({ title: 'Error', description: error.message, variant: 'destructive' });
-    }
-  };
+  const { data: communityNotes, refetch: refreshNotes } = useCommunityNotes('btech', 'CE-3rd Semester');
 
-  const [expandedSubjects, setExpandedSubjects] = useState<string[]>([]);
-
-  const toggleSubjectExpansion = (subjectId: string) => {
-    setExpandedSubjects(prev => 
-      prev.includes(subjectId) 
-        ? prev.filter(id => id !== subjectId)
-        : [...prev, subjectId]
-    );
-  };
+  const [selectedSubject, setSelectedSubject] = useState<string | null>(null);
 
   const staticSubjects = [
     {
       id: 'math2',
-      name: 'Math-II',
-      fullName: 'Engineering Mathematics-II',
-      description: 'Advanced engineering mathematics concepts',
+      name: 'Engineering Mathematics-II',
+      icon: '📐',
+      color: 'bg-indigo-500',
       notes: [
         { title: 'Complete Notes (Unit 1 to 5)', url: 'https://drive.google.com/file/d/1EZQ7WMY4EoS9kewXgqRp-dbkLFcsVx-J/view?usp=drivesdk' },
         { title: 'Unit 1 C.F & PI Notes', url: 'https://drive.google.com/uc?export=download&id=1_OfjdkVBUxb6352LJcCSqv_nKrjz4uSU' },
@@ -57,35 +33,34 @@ const ThirdSemesterCENotes = () => {
         { title: 'Mid Sem 2 Last Minute Revision', url: 'https://drive.google.com/uc?export=download&id=1oGU5M62XSyErVp3qP4CrEj1v0t5FQqej' },
         { title: 'Best Maths Chapter 1 & 2 Notes', url: 'https://drive.google.com/uc?export=download&id=1_JfBOvZp84amQj6Mo7-KtwrARm1kTHUr' },
         { title: 'Formula Sheet Unit 1', url: 'https://drive.google.com/uc?export=download&id=1T6PERNwiIdoA0Vm2EGyIVwp9TlrG7IrX' }
- ]
+      ]
     },
     {
       id: 'som',
-      name: 'SOM',
-      fullName: 'Strength of Materials',
-      description: 'Study of material behavior under load',
+      name: 'Strength of Materials',
+      icon: '💪',
+      color: 'bg-green-500',
       notes: [
         { title: 'SOM Book-by RK Bansal', url: 'https://drive.google.com/uc?export=download&id=15ahuMSoS3b6XeNwK7WVxOQ93pk9ukMwx' },
-  { title: 'SOM lab Ques.', url: 'https://drive.google.com/uc?export=download&id=15aa0NBdtwFBJUaaK1tMdMM8GTxsDvlcL' },
-  { title: 'Unit-1, 2 & 3 Handwritten Notes', url: 'https://drive.google.com/uc?export=download&id=17blfHAcJBn3xuR72YyZEos8HpX4gah50' },
-  { title: 'Unit-4 Notes', url: 'https://drive.google.com/uc?export=download&id=1oKnyxO-KzRUuu2qFl21zgxyulHTxFZ0S' },
-  { title: 'Unit-5 Notes', url: 'https://drive.google.com/uc?export=download&id=1fJZ2clBRsX8t6hZoA_Sue85IueQzL25e' },
-  { title: 'Unit-1 pdf Notes', url: 'https://drive.google.com/uc?export=download&id=19bTcoGiDiYm6rtoXGe8IJvhgbCTc48h5' }
+        { title: 'SOM lab Ques.', url: 'https://drive.google.com/uc?export=download&id=15aa0NBdtwFBJUaaK1tMdMM8GTxsDvlcL' },
+        { title: 'Unit-1, 2 & 3 Handwritten Notes', url: 'https://drive.google.com/uc?export=download&id=17blfHAcJBn3xuR72YyZEos8HpX4gah50' },
+        { title: 'Unit-4 Notes', url: 'https://drive.google.com/uc?export=download&id=1oKnyxO-KzRUuu2qFl21zgxyulHTxFZ0S' },
+        { title: 'Unit-5 Notes', url: 'https://drive.google.com/uc?export=download&id=1fJZ2clBRsX8t6hZoA_Sue85IueQzL25e' },
+        { title: 'Unit-1 pdf Notes', url: 'https://drive.google.com/uc?export=download&id=19bTcoGiDiYm6rtoXGe8IJvhgbCTc48h5' }
       ]
     },
     {
       id: 'fm',
       name: 'Fluid Mechanics',
-      fullName: 'Fluid Mechanics',
-      description: 'Study of fluid behavior and properties',
-      notes: [],
-      comingSoon: true
+      icon: '💧',
+      color: 'bg-blue-500',
+      notes: []
     },
     {
       id: 'surveying',
       name: 'Surveying',
-      fullName: 'Surveying',
-      description: 'Land surveying techniques and measurements',
+      icon: '🗺️',
+      color: 'bg-orange-500',
       notes: [
         { title: 'Surveying Book', url: 'https://drive.google.com/uc?export=download&id=1qtJeCVp96BCwBEL7VZFnw4ad4s5u5vHi' },
         { title: 'Ch-2 Horizontal Measurement Notes', url: 'https://drive.google.com/uc?export=download&id=1bV1bMacPNYa2zg2cwEsGgSm333f9NIsd' },
@@ -100,8 +75,8 @@ const ThirdSemesterCENotes = () => {
     {
       id: 'geotechnical',
       name: 'Geotechnical Engineering',
-      fullName: 'Geotechnical Engineering',
-      description: 'Soil mechanics and foundation engineering',
+      icon: '🪨',
+      color: 'bg-yellow-600',
       notes: [
         { title: 'Unit-3 Consolidation of Soil', url: 'https://drive.google.com/uc?export=download&id=1-9mhmPtgVA02vg6g3W1eW87extGq3W92' },
         { title: 'Unit-3 Soil Compaction', url: 'https://drive.google.com/uc?export=download&id=1UpGmsD-noROZH64GTt6mrjQ_7cYDlD8l' },
@@ -112,8 +87,8 @@ const ThirdSemesterCENotes = () => {
     {
       id: 'bmc',
       name: 'Building Material & Construction',
-      fullName: 'Building Material & Construction',
-      description: 'Construction materials and techniques',
+      icon: '🧱',
+      color: 'bg-amber-600',
       notes: [
         { title: 'Exp.16- Compressive Strength', url: 'https://drive.google.com/uc?export=download&id=1Ihajiuc7lfFm9VBNJrPDbrtlCgnBnp8j' },
         { title: 'Unit-1 Composition of Good Bricks', url: 'https://drive.google.com/uc?export=download&id=1rVw0nHZSp4mPoyzsbpJwY4mc9Xayyedb' },
@@ -135,20 +110,30 @@ const ThirdSemesterCENotes = () => {
     {
       id: 'pyqs',
       name: 'Previous Year Questions',
-      fullName: 'PYQs for 3rd Semester CE',
-      description: 'Previous year question papers',
+      icon: '❓',
+      color: 'bg-red-500',
       notes: []
     }
   ];
 
-  
-  const subjects: any[] = staticSubjects.map((sub: any) => ({
+interface Note {
+  id?: string;
+  title: string;
+  url: string;
+  recommended?: boolean;
+  isCommunity?: boolean;
+  fileName?: string;
+  uploadedBy?: string;
+  userName?: string;
+}
+
+  const subjects = staticSubjects.map((sub) => ({
     ...sub,
     notes: [
-      ...sub.notes,
+      ...sub.notes.map(n => ({ ...n, isCommunity: false } as Note)),
       ...(communityNotes || [])
-        .filter((cn: any) => cn.subject === sub.name || cn.subject === sub.id)
-        .map((cn: any) => ({
+        .filter((cn) => cn.subject === sub.name || cn.subject === sub.id)
+        .map((cn) => ({
           id: cn.id,
           title: cn.title,
           url: cn.file_url,
@@ -156,127 +141,223 @@ const ThirdSemesterCENotes = () => {
           fileName: cn.file_name,
           uploadedBy: cn.uploaded_by,
           userName: cn.user_name
-        }))
+        } as Note))
     ]
   }));
 
-  return (
-    <div className="min-h-screen bg-gradient-hero">
-      <Navbar />
-      
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <Button
-          variant="outline"
-          onClick={() => navigate('/btech-notes/second-year/semester-3')}
-          className="mb-4"
-        >
-          <ArrowLeft className="h-4 w-4 mr-2" />
-          Back to Branches
-        </Button>
+  const handleDeleteCommunityNote = async (id: string) => {
+    if (!window.confirm('Delete this user-uploaded material?')) return;
+    try {
+      const { error } = await supabase.from('notes').delete().eq('id', id);
+      if (error) throw error;
+      toast({ title: 'Deleted', description: 'Material removed successfully.' });
+      refreshNotes();
+    } catch (error: any) {
+      toast({ title: 'Error', description: error.message, variant: 'destructive' });
+    }
+  };
 
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="text-center mb-12"
-        >
-          <h1 className="text-4xl md:text-5xl font-bold mb-4 text-foreground">
-            3rd Semester - CE Notes
-          </h1>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Civil Engineering - Comprehensive study materials and resources
-          </p>
-        </motion.div>
+  const syllabus = {
+    title: '3rd Semester Syllabus',
+    url: '#'
+  };
 
-        <div className="grid gap-6 max-w-5xl mx-auto">
-          {subjects.map((subject, index) => (
-            <motion.div
-              key={subject.id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.1, duration: 0.5 }}
+  const handleDownload = (url: string, title: string) => smartDownload(url, title);
+
+  if (selectedSubject) {
+    const subject = subjects.find(s => s.id === selectedSubject);
+    if (!subject) return null;
+
+    return (
+      <div className="min-h-screen bg-background flex flex-col">
+        <Navbar />
+        <div className="bg-foreground dark:bg-card text-background dark:text-foreground pt-16 pb-10 px-4 sm:px-8">
+          <div className="max-w-5xl mx-auto">
+            <button
+              onClick={() => setSelectedSubject(null)}
+              className="inline-flex items-center gap-2 text-xs font-semibold tracking-widest uppercase opacity-60 hover:opacity-100 transition-opacity mb-6"
             >
-              <Card className="feature-card relative">
+              <ArrowLeft className="h-3.5 w-3.5" /> Back to Subjects
+            </button>
+            <h1 className="text-3xl font-serif leading-tight mb-2">
+              {subject.name} Notes
+            </h1>
+            <p className="text-xs opacity-50 uppercase tracking-widest">Civil Engineering — 3rd Semester</p>
+          </div>
+        </div>
 
-                <CardHeader>
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-3 mb-2">
-                        <CardTitle className="text-2xl">{subject.name}</CardTitle>
-                        {subject.comingSoon && (
-                          <Badge variant="secondary">Coming Soon</Badge>
-                        )}
-                      </div>
-                      <CardDescription className="text-base mb-1">
-                        {subject.fullName}
-                      </CardDescription>
-                      <p className="text-sm text-muted-foreground">
-                        {subject.description}
-                      </p>
-                    </div>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => toggleSubjectExpansion(subject.id)}
-                      className="ml-4"
-                    >
-                      {expandedSubjects.includes(subject.id) ? (
-                        <ChevronDown className="h-5 w-5" />
-                      ) : (
-                        <ChevronRight className="h-5 w-5" />
-                      )}
-                    </Button>
-                  </div>
-                </CardHeader>
-
-                {expandedSubjects.includes(subject.id) && !subject.comingSoon && (
-                  <CardContent className="space-y-6">
-                    {subject.notes && subject.notes.length > 0 && (
-                      <div>
-                        <h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
-                          <FileText className="h-5 w-5 text-primary" />
-                          Study Notes
-                        </h3>
-                        <div className="grid gap-2">
-                          {subject.notes.map((note: any, idx: number) => (
-                            <div
-                              key={idx}
-                              className="flex items-center justify-between p-3 rounded-lg bg-secondary/50 hover:bg-secondary transition-colors"
-                            >
-                              <a
-                                href={note.url}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="flex-1 text-sm font-medium"
-                              >
-                                {note.title}
-                              </a>
-                              <div className="flex items-center gap-2">
-                                {note.isCommunity && isOwner && (
-                                  <button
-                                    onClick={() => handleDeleteCommunityNote(note.id)}
-                                    className="text-destructive hover:text-destructive/80"
-                                    title="Delete Community Upload"
-                                  >
-                                    <Trash2 className="h-4 w-4" />
-                                  </button>
-                                )}
-                                <a href={note.url} target="_blank" rel="noopener noreferrer">
-                                  <Download className="h-4 w-4 text-primary" />
-                                </a>
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
+        <div className="max-w-5xl mx-auto px-4 sm:px-8 py-10 flex-1 w-full mb-12">
+          {subject.notes.length === 0 ? (
+            <div className="text-center py-16 border border-dashed rounded-xl bg-card">
+              <p className="text-muted-foreground text-sm mb-1">No study materials uploaded yet for this subject.</p>
+              <p className="text-xs text-muted-foreground">Contributions from students are welcome!</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+              {subject.notes.map((note, index) => (
+                <motion.div
+                  key={note.id || index}
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.05, duration: 0.3 }}
+                >
+                  <div className="group border border-border bg-card hover:border-foreground/30 rounded-xl p-4 transition-all duration-300 hover:shadow-md flex flex-col h-full relative">
+                    {note.isCommunity && isOwner && (
+                      <button
+                        className="absolute top-3 right-3 text-red-500 hover:text-red-700 bg-red-50 dark:bg-red-950/20 p-1.5 rounded-lg transition-colors z-10"
+                        onClick={() => handleDeleteCommunityNote(note.id)}
+                        title="Delete material"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </button>
                     )}
-                  </CardContent>
-                )}
-              </Card>
-            </motion.div>
-          ))}
+                    <div className="flex items-center gap-2 mb-3">
+                      <div className={`w-8 h-8 rounded-full ${subject.color} flex items-center justify-center text-white text-xs`}>
+                        <FileText className="h-4 w-4" />
+                      </div>
+                      <span className="text-[10px] font-bold tracking-wider uppercase bg-muted text-muted-foreground px-2 py-0.5 rounded">PDF</span>
+                      {note.isCommunity && (
+                        <span className="text-[10px] font-bold tracking-wider uppercase bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400 px-2 py-0.5 rounded border border-blue-100 dark:border-blue-900/50">Community</span>
+                      )}
+                    </div>
+                    <h3 className="font-semibold text-foreground text-sm leading-tight flex-1 mb-4">{note.title}</h3>
+                    {note.userName && (
+                      <p className="text-[10px] text-muted-foreground mb-3">Uploaded by: {note.userName}</p>
+                    )}
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => handleDownload(note.url, note.title)}
+                        className="flex-1 inline-flex items-center justify-center gap-1.5 text-xs font-bold tracking-wider uppercase py-2 px-3 rounded bg-foreground text-background hover:opacity-85 transition-opacity"
+                        disabled={note.url === '#'}
+                      >
+                        <Download className="h-3.5 w-3.5" /> Download
+                      </button>
+                      <button
+                        onClick={() => window.open(note.url, '_blank')}
+                        className="inline-flex items-center justify-center p-2 rounded border border-foreground/20 hover:bg-muted transition-colors"
+                        disabled={note.url === '#'}
+                        title="Open Link"
+                      >
+                        <ExternalLink className="h-3.5 w-3.5 text-foreground" />
+                      </button>
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          )}
+        </div>
+        <Footer />
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-background flex flex-col">
+      <Navbar />
+
+      {/* Hero Banner */}
+      <div className="bg-foreground dark:bg-card text-background dark:text-foreground pt-16 pb-12 px-4 sm:px-8">
+        <div className="max-w-5xl mx-auto">
+          <button
+            onClick={() => navigate('/btech-notes/second-year/semester-3')}
+            className="inline-flex items-center gap-2 text-xs font-semibold tracking-widest uppercase opacity-50 hover:opacity-100 transition-opacity mb-8"
+          >
+            <ArrowLeft className="h-3.5 w-3.5" /> Back to Branches
+          </button>
+          <p className="text-xs font-bold tracking-[0.2em] uppercase opacity-50 mb-3">Civil Engineering Notes</p>
+          <h1 className="text-4xl md:text-5xl font-serif leading-tight mb-3">
+            3rd Semester<br />
+            <span className="opacity-60">Civil Engineering Notes</span>
+          </h1>
+          <p className="text-sm opacity-50 mb-8">B.Tech. Civil Engineering — Comprehensive study materials and resources</p>
+          <div className="flex flex-wrap gap-2">
+            <span className="text-xs font-semibold tracking-wider uppercase border border-background/30 px-3 py-1.5 rounded">CE Department</span>
+            <span className="text-xs font-semibold tracking-wider uppercase border border-background/30 px-3 py-1.5 rounded">{staticSubjects.filter(s => s.id !== 'pyqs' && s.id !== 'assignments').length} Core Subjects</span>
+            <span className="text-xs font-semibold tracking-wider uppercase border border-background/30 px-3 py-1.5 rounded">3rd Semester</span>
+          </div>
         </div>
       </div>
+
+      <div className="max-w-5xl mx-auto px-4 sm:px-8 py-10 space-y-10 flex-1 w-full mb-12">
+        {/* Instructions */}
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4 }}
+          className="border-l-4 border-primary pl-6 py-4 bg-primary/5 dark:bg-primary/10 rounded-r-xl"
+        >
+          <h3 className="text-base font-bold text-foreground mb-3">📚 Civil Engg 3rd Semester — Important Instructions</h3>
+          <div className="space-y-2 text-sm text-muted-foreground">
+            <p><strong className="text-foreground">✨ Hi CE Juniors!</strong> Here are a few important points for your 3rd semester.</p>
+            <p>• <strong className="text-foreground">Strength of Materials (SOM):</strong> Extremely important. Focus on internal stress distribution, shear force, and bending moments. Practice numerical problems regularly.</p>
+            <p>• <strong className="text-foreground">Surveying:</strong> Understand calculations for traversing and leveling. Lab practicals are very helpful here.</p>
+            <p>• <strong className="text-foreground">Maintain CGPA:</strong> Keep target of <strong className="text-foreground">7.5+ CGPA</strong>. Focus on understanding concepts well.</p>
+            <p className="text-red-600 dark:text-red-400"><strong>⚠️ Important:</strong> Exams require neat sketches for structural elements and step-by-step mathematical reasoning. Make sure to present your answers clearly.</p>
+            <p>✨ Best Wishes — <strong className="text-foreground">Priyal Kumar</strong></p>
+          </div>
+        </motion.div>
+
+        {/* Syllabus */}
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1, duration: 0.4 }}
+          className="border border-border rounded-xl p-5 bg-card flex items-center justify-between gap-4 flex-wrap"
+        >
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-lg bg-foreground/10 flex items-center justify-center">
+              <FileText className="h-5 w-5 text-foreground" />
+            </div>
+            <div>
+              <p className="font-semibold text-foreground text-sm">3rd Semester Syllabus</p>
+              <p className="text-xs text-muted-foreground">Official syllabus for 3rd semester B.Tech CE</p>
+            </div>
+          </div>
+          <button
+            onClick={() => handleDownload(syllabus.url, syllabus.title)}
+            className="inline-flex items-center gap-2 text-xs font-bold tracking-wider uppercase py-2.5 px-5 rounded-lg bg-foreground text-background hover:opacity-80 transition-opacity"
+            disabled={syllabus.url === '#'}
+          >
+            <Download className="h-3.5 w-3.5" /> Download Syllabus
+          </button>
+        </motion.div>
+
+        {/* Subjects Grid */}
+        <div>
+          <p className="text-xs font-bold tracking-[0.15em] uppercase text-muted-foreground mb-5">Study Resources</p>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {subjects.map((subject, index) => (
+              <motion.div
+                key={subject.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.06, duration: 0.4 }}
+              >
+                <div className="group border border-border bg-card hover:border-foreground/30 rounded-xl p-5 transition-all duration-300 hover:shadow-lg h-full flex flex-col">
+                  <div className="flex items-start justify-between mb-4">
+                    <span className="text-2xl">{subject.icon}</span>
+                    <span className="text-xs font-semibold text-muted-foreground border border-border px-2 py-0.5 rounded-full">
+                      {subject.notes.length} files
+                    </span>
+                  </div>
+                  <h3 className="font-semibold text-foreground text-sm leading-snug mb-1 flex-1">{subject.name}</h3>
+
+                  <div className="mt-4">
+                    <button
+                      onClick={() => setSelectedSubject(subject.id)}
+                      className="w-full text-xs font-bold tracking-wider uppercase py-2.5 px-4 rounded-lg border border-foreground/20 hover:bg-foreground hover:text-background transition-all duration-200"
+                    >
+                      View Notes
+                    </button>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </div>
+      <Footer />
     </div>
   );
 };

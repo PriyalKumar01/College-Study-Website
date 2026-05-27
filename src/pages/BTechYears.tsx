@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, BookOpen, Share2, Lock } from "lucide-react";
 import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 import { motion } from "framer-motion";
 
 const years = [
@@ -95,8 +96,7 @@ const BTechYears = () => {
                     alt={year.name}
                     className={`w-full h-full object-cover transition-transform duration-500 ${year.available ? "group-hover:scale-105" : ""}`}
                     onError={(e) => {
-                      // Fall back to existing asset thumbnail
-                      e.currentTarget.src = year.fallbackImg;
+                      e.currentTarget.src = "/placeholder.svg";
                     }}
                   />
 
@@ -161,6 +161,7 @@ const BTechYears = () => {
           ))}
         </div>
       </div>
+      <Footer />
     </div>
   );
 };

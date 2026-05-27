@@ -1,16 +1,14 @@
-import { useNavigate, useLocation } from "react-router-dom";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
 import { ArrowLeft, BookOpen, Share2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 import { motion } from "framer-motion";
-import firstSemImg from "@/assets/1st-sem-thumbnail.jpg";
-import secondSemImg from "@/assets/2nd-sem-thumbnail.jpg";
+import firstSemImg from "@/assets/sem1-thumbnail-new.png";
+import secondSemImg from "@/assets/sem2-thumbnail-new.png";
 
 const FirstYearNotes = () => {
   const navigate = useNavigate();
-  const location = useLocation();
 
   const handleWhatsAppShare = (semName: string, route: string) => {
     const shareUrl = `${window.location.origin}${route}`;
@@ -48,34 +46,29 @@ const FirstYearNotes = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-hero">
+    <div className="min-h-screen bg-background flex flex-col">
       <Navbar />
       
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <Button
-          variant="outline"
-          onClick={() => navigate("/btech-notes")}
-          className="mb-4"
-        >
-          <ArrowLeft className="h-4 w-4 mr-2" />
-          Back to B.Tech Notes
-        </Button>
-
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="text-center mb-12"
-        >
-          <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-primary via-purple-500 to-pink-500 bg-clip-text text-transparent">
-            1st Year B.Tech Notes
+      {/* Page Header */}
+      <div className="bg-foreground dark:bg-card text-background dark:text-foreground pt-14 pb-10 px-4 sm:px-8">
+        <div className="max-w-5xl mx-auto">
+          <button
+            onClick={() => navigate("/btech-notes")}
+            className="inline-flex items-center gap-2 text-xs font-semibold tracking-widest uppercase opacity-50 hover:opacity-100 transition-opacity mb-8"
+          >
+            <ArrowLeft className="h-3.5 w-3.5" /> Back to Years
+          </button>
+          <p className="text-xs font-bold tracking-[0.2em] uppercase opacity-50 mb-3">B.Tech 1st Year</p>
+          <h1 className="text-4xl md:text-5xl font-serif leading-tight mb-3">
+            1st Year Notes
           </h1>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Select your semester to access comprehensive study materials
-          </p>
-        </motion.div>
+          <p className="text-sm opacity-50 mb-8 max-w-xl">Foundation courses covering basic engineering principles for all branches.</p>
+        </div>
+      </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+      <div className="max-w-5xl mx-auto px-4 sm:px-8 py-10 flex-1 w-full mb-12">
+        <p className="text-xs font-bold tracking-[0.15em] uppercase text-muted-foreground mb-6">Select Semester</p>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {semesters.map((semester, index) => (
             <motion.div
               key={semester.name}
@@ -83,73 +76,72 @@ const FirstYearNotes = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1, duration: 0.5 }}
             >
-              <Card
-                className={`feature-card h-full relative ${
-                  semester.available ? "cursor-pointer" : "opacity-60"
-                } transition-all duration-300`}
+              <div
+                className={`group border border-border bg-card rounded-xl overflow-hidden flex flex-col transition-all duration-300 h-full relative hover:border-foreground/30 hover:shadow-lg`}
                 onClick={() => handleSemesterClick(semester)}
+                style={{ cursor: 'pointer' }}
               >
-                {semester.available && (
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="absolute top-2 right-2 z-10 h-8 w-8 text-green-600 hover:text-green-700 hover:bg-green-50 dark:hover:bg-green-900/20"
-                    onClick={(e) => { e.stopPropagation(); handleWhatsAppShare(semester.name, semester.route); }}
-                    title="Share on WhatsApp"
-                  >
-                    <Share2 className="h-4 w-4" />
-                  </Button>
-                )}
-                <CardHeader>
-                  <div className="w-full h-48 rounded-lg overflow-hidden mb-4">
-                    <img
-                      src={semester.thumbnail}
-                      alt={semester.name}
-                      className="w-full h-full object-cover"
-                    />
+                {/* Share button */}
+                <button
+                  className="absolute top-3 right-3 z-10 w-8 h-8 bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm rounded-full flex items-center justify-center text-green-600 hover:scale-110 transition-all shadow-sm"
+                  onClick={(e) => { e.stopPropagation(); handleWhatsAppShare(semester.name, semester.route); }}
+                  title="Share on WhatsApp"
+                >
+                  <Share2 className="h-4 w-4" />
+                </button>
+
+                {/* Thumbnail */}
+                <div className="relative w-full h-48 overflow-hidden bg-muted">
+                  <img
+                    src={semester.thumbnail}
+                    alt={semester.name}
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-103"
+                  />
+                </div>
+
+                {/* Card body */}
+                <div className="p-5 flex flex-col flex-1 gap-4">
+                  <div>
+                    <div className="flex items-center gap-1.5 flex-wrap mb-2">
+                      <span className="text-[10px] font-bold tracking-wider uppercase bg-primary/10 text-primary px-2.5 py-0.5 rounded-full">
+                        {semester.enggLabel}
+                      </span>
+                      <span className="text-[10px] font-bold tracking-wider uppercase bg-orange-100 dark:bg-orange-950/40 text-orange-600 dark:text-orange-400 px-2.5 py-0.5 rounded-full">
+                        {semester.techLabel}
+                      </span>
+                    </div>
+                    <h3 className="text-xl font-bold text-foreground leading-snug group-hover:text-primary transition-colors mb-2">
+                      {semester.name}
+                    </h3>
+                    <p className="text-sm text-muted-foreground leading-relaxed">
+                      {semester.description}
+                    </p>
                   </div>
-                  <div className="flex items-center justify-between mb-3">
-                    <Badge variant={semester.available ? "default" : "secondary"}>
-                      {semester.available ? "Available" : "Coming Soon"}
-                    </Badge>
-                    <BookOpen className="h-5 w-5 text-primary" />
-                  </div>
-                  <CardTitle className="text-2xl mb-2">{semester.name}</CardTitle>
-                  <div className="flex flex-col gap-1 mb-2">
-                    <span className="text-xs font-medium text-primary bg-primary/10 px-2 py-0.5 rounded-full inline-block w-fit">
-                      {semester.enggLabel}
-                    </span>
-                    <span className="text-xs font-medium text-orange-600 bg-orange-100 dark:text-orange-400 dark:bg-orange-900/30 px-2 py-0.5 rounded-full inline-block w-fit">
-                      {semester.techLabel}
-                    </span>
-                  </div>
-                  <CardDescription className="text-base mb-4">
-                    {semester.description}
-                  </CardDescription>
-                  <div className="flex flex-wrap gap-2">
+
+                  <div className="flex flex-wrap gap-1.5 mt-auto">
                     {semester.subjects.map((subject) => (
-                      <Badge key={subject} variant="outline" className="text-xs">
+                      <Badge key={subject} variant="outline" className="text-[10px] py-0 px-2 font-medium">
                         {subject}
                       </Badge>
                     ))}
                   </div>
-                </CardHeader>
-                <CardContent>
-                  {semester.available ? (
-                    <Button className="w-full btn-hero">
+
+                  <div className="pt-2">
+                    <button
+                      className="w-full text-xs font-bold tracking-wider uppercase py-2.5 px-4 rounded-lg bg-foreground text-background hover:opacity-80 transition-opacity flex items-center justify-center gap-2"
+                      onClick={(e) => { e.stopPropagation(); handleSemesterClick(semester); }}
+                    >
+                      <BookOpen className="h-3.5 w-3.5" />
                       View Notes
-                    </Button>
-                  ) : (
-                    <Button className="w-full" variant="secondary" disabled>
-                      Coming Soon
-                    </Button>
-                  )}
-                </CardContent>
-              </Card>
+                    </button>
+                  </div>
+                </div>
+              </div>
             </motion.div>
           ))}
         </div>
       </div>
+      <Footer />
     </div>
   );
 };

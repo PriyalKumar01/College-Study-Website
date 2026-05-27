@@ -57,7 +57,7 @@ export const BTECH_BRANCHES = [
   { code: 'ME', fullName: 'Mechanical Engineering' },
   { code: 'CE', fullName: 'Civil Engineering' },
   { code: 'CHE', fullName: 'Chemical Engineering' },
-  { code: 'BE', fullName: 'Biomedical Engineering' },
+  { code: 'BE', fullName: 'Biochemical Engineering' },
   { code: 'LFT', fullName: 'Leather & Fashion Technology' },
   { code: 'PT', fullName: 'Plastic Technology' },
   { code: 'FT', fullName: 'Food Technology' },

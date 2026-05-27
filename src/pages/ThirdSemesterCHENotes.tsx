@@ -1,48 +1,23 @@
-
-import { useCommunityNotes } from '@/hooks/useCommunityNotes';
-import { useAuth } from '@/contexts/AuthContext';
-import { supabase } from '@/integrations/supabase/client';
-import { useToast } from '@/hooks/use-toast';
-import { Trash2 } from 'lucide-react';
-
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Download, ArrowLeft, FileText } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
+import { useCommunityNotes } from '@/hooks/useCommunityNotes';
+import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
+import { Download, ArrowLeft, FileText, Play, ChevronDown, ChevronRight, Trash2, ExternalLink } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
+import Footer from '@/components/Footer';
 import { smartDownload } from '@/lib/downloadUtils';
 
 const ThirdSemesterCHENotes = () => {
   const navigate = useNavigate();
-
-  const { data: communityNotes, refetch: refreshNotes } = useCommunityNotes('btech', 'CHE-3rd Semester');
-  const { user, isOwner } = useAuth();
+  const { isOwner } = useAuth();
   const { toast } = useToast();
 
-  const handleDeleteCommunityNote = async (id: string, fileName: string) => {
-    if (!user || !isOwner) return;
-    try {
-      if (fileName) {
-        const { error: storageError } = await supabase.storage.from('study-materials').remove([fileName]);
-        if (storageError) console.error('Storage deletion error:', storageError);
-      }
-      const { error: dbError } = await supabase.from('notes').delete().eq('id', id);
-      if (dbError) throw dbError;
-      toast({ title: "Deleted securely", description: "Material removed successfully." });
-      refreshNotes();
-    } catch (error: any) {
-      toast({ title: "Deletion failed", description: error.message, variant: 'destructive' });
-    }
-  };
+  const { data: communityNotes, refetch: refreshNotes } = useCommunityNotes('btech', 'CHE-3rd Semester');
 
   const [selectedSubject, setSelectedSubject] = useState<string | null>(null);
-
-
-
-  const handleDownload = (url: string, title: string) => smartDownload(url, title);
 
   const staticSubjects = [
     {
@@ -116,12 +91,12 @@ const ThirdSemesterCHENotes = () => {
       notes: [
         { title: 'Unit-1 (Part-1)', url: 'https://drive.google.com/file/d/1oCtO7Cpb_qFMZUT_04g1mAvN2a0follZ/view?usp=drivesdk' },
         { title: 'Unit-1 (Part-2)', url: 'https://drive.google.com/file/d/184-BKZyYehJFsqA4hn1nNHgYsVggfR9K/view?usp=drivesdk' },
-        { title: 'Unit-1 (Part-3)', url: 'https://drive.google.com/file/d/12obsM0HJdgMEuOX4rm3wDKQdnBqnikFd/view?usp=drivesdk' },
-        { title: 'Unit-1 (Part-4)', url: 'https://drive.google.com/file/d/1bzW69P-hdYpu1fuFgJAG1Ljs7xgwsJA-/view?usp=drivesdk' },
-        { title: 'Unit-1 (Part-5)', url: 'https://drive.google.com/file/d/1wNMyIADDGr71BEu3gp7JNNMxCVxjGomk/view?usp=drivesdk' },
-        { title: 'Unit-2 (Part-1)', url: 'https://drive.google.com/file/d/1Ty5ocnQ-YxohQyLusRzhz3YF69SSvggz/view?usp=drivesdk' },
-        { title: 'Unit-2 (Part-2)', url: 'https://drive.google.com/file/d/1KBpJNdy9XUQa_9Gg0mIkHpfD6CHKAW8Y/view?usp=drivesdk' },
-        { title: 'Book: Unit Operations of Chemical Engineering', url: 'https://drive.google.com/file/d/1F2mZjPRCxjhYbPqsaowy8C0cbj9Z6arX/view?usp=drivesdk' }
+        { title: 'Unit-1 (Part-3)', url: 'https://drive.google.com/file/d/12obsM0HJdgMEuOX4rm3wDKQdnBqnikFd/view?usp=drive_link' },
+        { title: 'Unit-1 (Part-4)', url: 'https://drive.google.com/file/d/1bzW69P-hdYpu1fuFgJAG1Ljs7xgwsJA-/view?usp=drive_link' },
+        { title: 'Unit-1 (Part-5)', url: 'https://drive.google.com/file/d/1wNMyIADDGr71BEu3gp7JNNMxCVxjGomk/view?usp=drive_link' },
+        { title: 'Unit-2 (Part-1)', url: 'https://drive.google.com/file/d/1Ty5ocnQ-YxohQyLusRzhz3YF69SSvggz/view?usp=drive_link' },
+        { title: 'Unit-2 (Part-2)', url: 'https://drive.google.com/file/d/1KBpJNdy9XUQa_9Gg0mIkHpfD6CHKAW8Y/view?usp=drive_link' },
+        { title: 'Book: Unit Operations of Chemical Engineering', url: 'https://drive.google.com/file/d/1F2mZjPRCxjhYbPqsaowy8C0cbj9Z6arX/view?usp=drive_link' }
       ]
     },
     {
@@ -137,10 +112,21 @@ const ThirdSemesterCHENotes = () => {
     }
   ];
 
+interface Note {
+  id?: string;
+  title: string;
+  url: string;
+  recommended?: boolean;
+  isCommunity?: boolean;
+  fileName?: string;
+  uploadedBy?: string;
+  userName?: string;
+}
+
   const subjects = staticSubjects.map((sub) => ({
     ...sub,
     notes: [
-      ...sub.notes,
+      ...sub.notes.map(n => ({ ...n, isCommunity: false } as Note)),
       ...(communityNotes || [])
         .filter((cn) => cn.subject === sub.name || cn.subject === sub.id)
         .map((cn) => ({
@@ -151,182 +137,223 @@ const ThirdSemesterCHENotes = () => {
           fileName: cn.file_name,
           uploadedBy: cn.uploaded_by,
           userName: cn.user_name
-        }))
+        } as Note))
     ]
   }));
 
+  const handleDeleteCommunityNote = async (id: string) => {
+    if (!window.confirm('Delete this user-uploaded material?')) return;
+    try {
+      const { error } = await supabase.from('notes').delete().eq('id', id);
+      if (error) throw error;
+      toast({ title: 'Deleted', description: 'Material removed successfully.' });
+      refreshNotes();
+    } catch (error: any) {
+      toast({ title: 'Error', description: error.message, variant: 'destructive' });
+    }
+  };
+
   const syllabus = {
-    title: 'CHE Branch Syllabus',
+    title: '3rd Semester Syllabus',
     url: 'https://drive.google.com/file/d/1_tGpmMXBKNe2yUMtVXToWA4VAM-Jj2pk/view?usp=drivesdk'
   };
+
+  const handleDownload = (url: string, title: string) => smartDownload(url, title);
 
   if (selectedSubject) {
     const subject = subjects.find(s => s.id === selectedSubject);
     if (!subject) return null;
 
     return (
-      <div className="min-h-screen bg-gradient-hero">
+      <div className="min-h-screen bg-background flex flex-col">
         <Navbar />
-        
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pt-20">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="mb-8"
-          >
-            <Button
+        <div className="bg-foreground dark:bg-card text-background dark:text-foreground pt-16 pb-10 px-4 sm:px-8">
+          <div className="max-w-5xl mx-auto">
+            <button
               onClick={() => setSelectedSubject(null)}
-              variant="outline"
-              className="mb-4"
+              className="inline-flex items-center gap-2 text-xs font-semibold tracking-widest uppercase opacity-60 hover:opacity-100 transition-opacity mb-6"
             >
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              Back to Subjects
-            </Button>
-            
-            <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-2">
-              {subject.name} 📚
+              <ArrowLeft className="h-3.5 w-3.5" /> Back to Subjects
+            </button>
+            <h1 className="text-3xl font-serif leading-tight mb-2">
+              {subject.name} Notes
             </h1>
-            <p className="text-muted-foreground text-lg">
-              All notes for {subject.name} - 3rd Semester CHE Branch
-            </p>
-          </motion.div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {subject.notes.map((note, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1, duration: 0.5 }}
-                whileHover={{ scale: 1.02 }}
-              >
-                <Card className="feature-card h-full relative">
-
-                  <CardHeader>
-                    <div className="flex items-center gap-3 mb-2">
-                      <div className={`w-10 h-10 ${subject.color} rounded-full flex items-center justify-center text-white text-lg`}>
-                        <FileText className="h-5 w-5" />
-                      </div>
-                      <Badge variant="secondary">PDF</Badge>
-                    </div>
-                    <CardTitle className="text-lg leading-tight">{note.title}</CardTitle>
-                    <CardDescription>
-                      {subject.name} study material
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <Button
-                      onClick={() => handleDownload(note.url, note.title)}
-                      className="w-full btn-hero"
-                    >
-                      <Download className="h-4 w-4 mr-2" />
-                      Download PDF
-                    </Button>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
+            <p className="text-xs opacity-50 uppercase tracking-widest">Chemical Engineering — 3rd Semester</p>
           </div>
         </div>
+
+        <div className="max-w-5xl mx-auto px-4 sm:px-8 py-10 flex-1 w-full mb-12">
+          {subject.notes.length === 0 ? (
+            <div className="text-center py-16 border border-dashed rounded-xl bg-card">
+              <p className="text-muted-foreground text-sm mb-1">No study materials uploaded yet for this subject.</p>
+              <p className="text-xs text-muted-foreground">Contributions from students are welcome!</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+              {subject.notes.map((note, index) => (
+                <motion.div
+                  key={note.id || index}
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.05, duration: 0.3 }}
+                >
+                  <div className="group border border-border bg-card hover:border-foreground/30 rounded-xl p-4 transition-all duration-300 hover:shadow-md flex flex-col h-full relative">
+                    {note.isCommunity && isOwner && (
+                      <button
+                        className="absolute top-3 right-3 text-red-500 hover:text-red-700 bg-red-50 dark:bg-red-950/20 p-1.5 rounded-lg transition-colors z-10"
+                        onClick={() => handleDeleteCommunityNote(note.id)}
+                        title="Delete material"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </button>
+                    )}
+                    <div className="flex items-center gap-2 mb-3">
+                      <div className={`w-8 h-8 rounded-full ${subject.color} flex items-center justify-center text-white text-xs`}>
+                        <FileText className="h-4 w-4" />
+                      </div>
+                      <span className="text-[10px] font-bold tracking-wider uppercase bg-muted text-muted-foreground px-2 py-0.5 rounded">PDF</span>
+                      {note.isCommunity && (
+                        <span className="text-[10px] font-bold tracking-wider uppercase bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400 px-2 py-0.5 rounded border border-blue-100 dark:border-blue-900/50">Community</span>
+                      )}
+                    </div>
+                    <h3 className="font-semibold text-foreground text-sm leading-tight flex-1 mb-4">{note.title}</h3>
+                    {note.userName && (
+                      <p className="text-[10px] text-muted-foreground mb-3">Uploaded by: {note.userName}</p>
+                    )}
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => handleDownload(note.url, note.title)}
+                        className="flex-1 inline-flex items-center justify-center gap-1.5 text-xs font-bold tracking-wider uppercase py-2 px-3 rounded bg-foreground text-background hover:opacity-85 transition-opacity"
+                        disabled={note.url === '#'}
+                      >
+                        <Download className="h-3.5 w-3.5" /> Download
+                      </button>
+                      <button
+                        onClick={() => window.open(note.url, '_blank')}
+                        className="inline-flex items-center justify-center p-2 rounded border border-foreground/20 hover:bg-muted transition-colors"
+                        disabled={note.url === '#'}
+                        title="Open Link"
+                      >
+                        <ExternalLink className="h-3.5 w-3.5 text-foreground" />
+                      </button>
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          )}
+        </div>
+        <Footer />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-hero">
+    <div className="min-h-screen bg-background flex flex-col">
       <Navbar />
-      
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pt-20">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="mb-8"
-        >
-          <Button
+
+      {/* Hero Banner */}
+      <div className="bg-foreground dark:bg-card text-background dark:text-foreground pt-16 pb-12 px-4 sm:px-8">
+        <div className="max-w-5xl mx-auto">
+          <button
             onClick={() => navigate('/btech-notes/second-year/semester-3')}
-            variant="outline"
-            className="mb-4"
+            className="inline-flex items-center gap-2 text-xs font-semibold tracking-widest uppercase opacity-50 hover:opacity-100 transition-opacity mb-8"
           >
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to Branches
-          </Button>
-          
-          <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-2">
-            3rd Semester CHE Branch Notes 📖
+            <ArrowLeft className="h-3.5 w-3.5" /> Back to Branches
+          </button>
+          <p className="text-xs font-bold tracking-[0.2em] uppercase opacity-50 mb-3">Chemical Engineering Notes</p>
+          <h1 className="text-4xl md:text-5xl font-serif leading-tight mb-3">
+            3rd Semester<br />
+            <span className="opacity-60">Chemical Engineering Notes</span>
           </h1>
-          <p className="text-muted-foreground text-lg">
-            Select a subject to access comprehensive study materials for Chemical Engineering
-          </p>
+          <p className="text-sm opacity-50 mb-8">B.Tech. Chemical Engineering — Comprehensive study materials and resources</p>
+          <div className="flex flex-wrap gap-2">
+            <span className="text-xs font-semibold tracking-wider uppercase border border-background/30 px-3 py-1.5 rounded">CHE Department</span>
+            <span className="text-xs font-semibold tracking-wider uppercase border border-background/30 px-3 py-1.5 rounded">{staticSubjects.filter(s => s.id !== 'pyqs' && s.id !== 'assignments').length} Core Subjects</span>
+            <span className="text-xs font-semibold tracking-wider uppercase border border-background/30 px-3 py-1.5 rounded">3rd Semester</span>
+          </div>
+        </div>
+      </div>
+
+      <div className="max-w-5xl mx-auto px-4 sm:px-8 py-10 space-y-10 flex-1 w-full mb-12">
+        {/* Instructions */}
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4 }}
+          className="border-l-4 border-primary pl-6 py-4 bg-primary/5 dark:bg-primary/10 rounded-r-xl"
+        >
+          <h3 className="text-base font-bold text-foreground mb-3">📚 Chemical Engg 3rd Semester — Important Instructions</h3>
+          <div className="space-y-2 text-sm text-muted-foreground">
+            <p><strong className="text-foreground">✨ Hi CHE Juniors!</strong> Here are a few important points for your 3rd semester — read carefully.</p>
+            <p>• <strong className="text-foreground">Chemical Process Calculations (CPC):</strong> Practice material and energy balances regularly. This subject forms the foundation of chemical engineering.</p>
+            <p>• <strong className="text-foreground">Fluid Mechanics (CEFM):</strong> Focus on derivation of equations and dimensional analysis. Draw neat diagrams in exams.</p>
+            <p>• <strong className="text-foreground">Maintain CGPA:</strong> Maintain <strong className="text-foreground">7.5+ CGPA</strong> minimum to be safe for placement cutoffs.</p>
+            <p className="text-red-600 dark:text-red-400"><strong>⚠️ Important:</strong> Present your answers neatly. Practice drawing process flow diagrams and solving numericals systematically.</p>
+            <p>✨ Best Wishes — <strong className="text-foreground">Priyal Kumar</strong></p>
+          </div>
         </motion.div>
 
-        {/* Syllabus Card */}
+        {/* Syllabus */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="mb-8"
+          transition={{ delay: 0.1, duration: 0.4 }}
+          className="border border-border rounded-xl p-5 bg-card flex items-center justify-between gap-4 flex-wrap"
         >
-          <Card className="bg-gradient-to-br from-primary/10 to-secondary/10 border-primary/20">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                📋 Official Syllabus
-              </CardTitle>
-              <CardDescription>
-                Complete syllabus for 3rd Semester CHE Branch
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Button
-                onClick={() => handleDownload(syllabus.url, syllabus.title)}
-                className="btn-hero"
-              >
-                <Download className="h-4 w-4 mr-2" />
-                Download Syllabus
-              </Button>
-            </CardContent>
-          </Card>
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-lg bg-foreground/10 flex items-center justify-center">
+              <FileText className="h-5 w-5 text-foreground" />
+            </div>
+            <div>
+              <p className="font-semibold text-foreground text-sm">3rd Semester Syllabus</p>
+              <p className="text-xs text-muted-foreground">Official syllabus for 3rd semester B.Tech CHE</p>
+            </div>
+          </div>
+          <button
+            onClick={() => handleDownload(syllabus.url, syllabus.title)}
+            className="inline-flex items-center gap-2 text-xs font-bold tracking-wider uppercase py-2.5 px-5 rounded-lg bg-foreground text-background hover:opacity-80 transition-opacity"
+            disabled={syllabus.url === '#'}
+          >
+            <Download className="h-3.5 w-3.5" /> Download Syllabus
+          </button>
         </motion.div>
 
         {/* Subjects Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {subjects.map((subject, index) => (
-            <motion.div
-              key={subject.id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.1, duration: 0.5 }}
-              whileHover={{ scale: 1.02 }}
-            >
-              <Card
-                className="feature-card h-full cursor-pointer"
-                onClick={() => setSelectedSubject(subject.id)}
+        <div>
+          <p className="text-xs font-bold tracking-[0.15em] uppercase text-muted-foreground mb-5">Study Resources</p>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {subjects.map((subject, index) => (
+              <motion.div
+                key={subject.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.06, duration: 0.4 }}
               >
-                <CardHeader>
-                  <div className={`w-16 h-16 ${subject.color} rounded-xl flex items-center justify-center text-white text-3xl mb-4`}>
-                    {subject.icon}
+                <div className="group border border-border bg-card hover:border-foreground/30 rounded-xl p-5 transition-all duration-300 hover:shadow-lg h-full flex flex-col">
+                  <div className="flex items-start justify-between mb-4">
+                    <span className="text-2xl">{subject.icon}</span>
+                    <span className="text-xs font-semibold text-muted-foreground border border-border px-2 py-0.5 rounded-full">
+                      {subject.notes.length} files
+                    </span>
                   </div>
-                  <CardTitle className="text-xl mb-2">{subject.name}</CardTitle>
-                  <CardDescription>
-                    {subject.notes.length} files available
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <Button className="w-full btn-hero">
-                    View Notes
-                  </Button>
-                  <div className="mt-3 text-center">
-                    <Badge variant="outline" className="text-xs">
-                      Playlist: Coming Soon
-                    </Badge>
+                  <h3 className="font-semibold text-foreground text-sm leading-snug mb-1 flex-1">{subject.name}</h3>
+
+                  <div className="mt-4">
+                    <button
+                      onClick={() => setSelectedSubject(subject.id)}
+                      className="w-full text-xs font-bold tracking-wider uppercase py-2.5 px-4 rounded-lg border border-foreground/20 hover:bg-foreground hover:text-background transition-all duration-200"
+                    >
+                      View Notes
+                    </button>
                   </div>
-                </CardContent>
-              </Card>
-            </motion.div>
-          ))}
+                </div>
+              </motion.div>
+            ))}
+          </div>
         </div>
       </div>
+      <Footer />
     </div>
   );
 };
