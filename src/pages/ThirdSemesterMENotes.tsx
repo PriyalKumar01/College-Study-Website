@@ -59,47 +59,105 @@ const ThirdSemesterMENotes = () => {
   };
 
   const staticSubjects = [
-    {
-      id: 'thermodynamics',
-      name: 'Thermodynamics',
-      icon: '🔥',
-      color: 'bg-red-500',
-      notes: []
-    },
-    {
-      id: 'material-science',
-      name: 'Material Science',
-      icon: '💎',
+  {
+      id: 'kom',
+      name: 'Kinematics of Machine',
+      icon: '💻',
       color: 'bg-blue-500',
-      notes: []
+      notes: [
+        { title: 'KOM BOOK By-S.S. Rattan', url: 'https://drive.google.com/file/d/1Ret3lDNQ-Q_aHekhx-1IrVwWN0T1teMN/view?usp=drivesdk' },
+        ]
     },
     {
-      id: 'strength-of-materials',
-      name: 'Strength of Materials',
-      icon: '💪',
+      id: 'ms',
+      name: 'Material Science',
+      icon: '💻',
+      color: 'bg-blue-500',
+      notes: [
+        { title: 'Ferrous Material Notes', url: 'https://drive.google.com/file/d/1tUuPIWhyWBwySY3MwFzkStAjHAffeOdm/view?usp=drivesdk' },
+        { title: 'Unit-1,2 & 3 Notes', url: 'https://drive.google.com/file/d/1oPMef-67CF8M0gDwoNHAfxutsSuCy_Me/view?usp=drivesdk' },
+        { title: 'Unit-4 Notes', url: 'https://drive.google.com/file/d/1WjNZVn-02CXoYFBMYZU3ucP0vbk-KJ0R/view?usp=drivesdk' },
+        { title: 'Unit-5 Notes', url: 'https://drive.google.com/file/d/11RCPAy1-YnHr06_S6eM9u9ay5uKl1twR/view?usp=drivesdk' },
+        { title: 'GATE GPSC_Material Science Unit-1,2& 3 Notes', url: 'https://drive.google.com/file/d/1ibTXNh7As3GPVdt1W-AKZGAjsYF76M2C/view?usp=drivesdk' },
+        { title: 'Imp. PYQS with Solutions', url: 'https://drive.google.com/file/d/1nmlQKBUPfw5RfO0-WRnXSrwyD4V4vvBi/view?usp=drivesdk' },
+        ]
+    },
+    {
+      id: 'md',
+      name: 'Machine Drawing',
+      icon: '🌐',
+      color: 'bg-purple-500',
+      notes: [
+        { title: 'Official MD Syllabus', url: 'https://drive.google.com/file/d/1KwWOJi9yGLwqA5dLJJnF0pPR7rEbVXMq/view?usp=drivesdk' },
+        { title: 'MD Objective Ques.', url: 'https://drive.google.com/file/d/1KEkAFfUTKrlfBZSflaRp-3JSY55W2z69/view?usp=drivesdk' },
+      ]
+    },
+    {
+      id: 'et',
+      name: 'Engg. Thermodynamics',
+      icon: '🖥️',
       color: 'bg-green-500',
-      notes: []
+      notes: [
+        { title: 'Unit-1 ET Notes', url: 'https://drive.google.com/file/d/1L_cqxvSO6djvfa32zliF32MXiLT2nQh7/view?usp=drivesdk' },
+        { title: 'Unit-2 ET Notes (PART-1)', url: 'https://drive.google.com/file/d/1l5qwbL5puPX-SAD5Yc4ww5mSEsWnNvrd/view?usp=drivesdk' },
+        { title: 'Unit-2 ET Notes (PART-2)', url: 'https://drive.google.com/file/d/1BRrCZ5njGVkHWqDa6fG4rpB_ewIIePwG/view?usp=drivesdk' },
+        { title: 'Unit-3 ET Notes', url: 'https://drive.google.com/file/d/1hI6X8tlTlrJlNixbhaGIiRctrppFy9fx/view?usp=drivesdk' },
+        { title: 'Unit-4 ET Notes', url: 'https://drive.google.com/file/d/1_kiMpbsqzcwPwOsl3hQpg9Wl9Q_Sfp75/view?usp=drivesdk' },
+        { title: 'ET Self Study Notes', url: 'https://drive.google.com/file/d/10V0KF21CkXScf__3pLqWgFF7f--VE7mc/view?usp=drivesdk' },
+      ]
     },
     {
-      id: 'manufacturing-process',
-      name: 'Manufacturing Process',
-      icon: '🏭',
+      id: 'som',
+      name: 'Strength of Material',
+      icon: '🐍',
       color: 'bg-orange-500',
-      notes: []
+      notes: [
+        { title: 'Unit-1 Notes', url: 'https://drive.google.com/file/d/19bTcoGiDiYm6rtoXGe8IJvhgbCTc48h5/view?usp=drivesdk', recommended : true },
+        { title: 'Unit-1, 2 & 3 Handwritten Notes', url: 'https://drive.google.com/file/d/17blfHAcJBn3xuR72YyZEos8HpX4gah50/view?usp=drivesdk' , recommended : true},
+        { title: 'Unit-4 Theory of Failure', url: 'https://drive.google.com/file/d/1oKnyxO-KzRUuu2qFl21zgxyulHTxFZ0S/view?usp=drivesdk', recommended : true },
+        { title: 'Unit-5 Thin & thick Cylinder Notes', url: 'https://drive.google.com/file/d/1fJZ2clBRsX8t6hZoA_Sue85IueQzL25e/view?usp=drivesdk' , recommended : true},
+        { title: 'SOM Lab Ques.', url: 'https://drive.google.com/file/d/15aa0NBdtwFBJUaaK1tMdMM8GTxsDvlcL/view?usp=drivesdk' },
+        { title: 'SOM BOOK By- R.K.Bansal', url: 'https://drive.google.com/file/d/15ahuMSoS3b6XeNwK7WVxOQ93pk9ukMwx/view?usp=drivesdk' }
+      ]
     },
     {
       id: 'math2',
-      name: 'Engineering Mathematics-II',
+      name: 'Engg Mathematics-II',
       icon: '📐',
       color: 'bg-indigo-500',
       notes: [
         { title: 'Complete Notes (Unit 1 to 5)', url: 'https://drive.google.com/file/d/1EZQ7WMY4EoS9kewXgqRp-dbkLFcsVx-J/view?usp=drivesdk' },
-        { title: 'Unit 1 C.F & PI Notes', url: 'https://drive.google.com/uc?export=download&id=1_OfjdkVBUxb6352LJcCSqv_nKrjz4uSU' },
-        { title: 'Unit 2 Notes', url: 'https://drive.google.com/uc?export=download&id=1_OSlf-B7K9TFC1LgA6yZDUH2sQL-RTy0' },
-        { title: 'Unit 3 Notes', url: 'https://drive.google.com/uc?export=download&id=1_PtU2rwcwDjGnrBwBpTtSeohDrbvxDBa' },
-        { title: 'Mid Sem 2 Last Minute Revision', url: 'https://drive.google.com/uc?export=download&id=1oGU5M62XSyErVp3qP4CrEj1v0t5FQqej' },
-        { title: 'Best Maths Chapter 1 & 2 Notes', url: 'https://drive.google.com/uc?export=download&id=1_JfBOvZp84amQj6Mo7-KtwrARm1kTHUr' },
-        { title: 'Formula Sheet Unit 1', url: 'https://drive.google.com/uc?export=download&id=1T6PERNwiIdoA0Vm2EGyIVwp9TlrG7IrX' }
+        { title: 'Unit 1 C.F & PI Notes', url: 'https://drive.google.com/file/d/1_OfjdkVBUxb6352LJcCSqv_nKrjz4uSU/view?usp=drive_link' },
+        { title: 'Unit 2 Notes', url: 'https://drive.google.com/file/d/1_OSlf-B7K9TFC1LgA6yZDUH2sQL-RTy0/view?usp=drive_link' },
+        { title: 'Unit 3 Notes', url: 'https://drive.google.com/file/d/1_PtU2rwcwDjGnrBwBpTtSeohDrbvxDBa/view?usp=drive_link' },
+        { title: 'Mid Sem 2 Last Minute Revision', url: 'https://drive.google.com/file/d/1oGU5M62XSyErVp3qP4CrEj1v0t5FQqej/view?usp=drive_link' },
+        { title: 'Best Maths Chapter 1 & 2 Notes', url: 'https://drive.google.com/file/d/1_JfBOvZp84amQj6Mo7-KtwrARm1kTHUr/view?usp=drive_link' },
+        { title: 'Formula Sheet Unit 1', url: 'https://drive.google.com/file/d/1T6PERNwiIdoA0Vm2EGyIVwp9TlrG7IrX/view?usp=drive_link' }
+      ]
+    },
+    {
+      id: 'mes',
+      name: 'MES Notes',
+      icon: '🔌',
+      color: 'bg-teal-500',
+       notes: [
+        { title: 'Unit-2 MES Notes', url: 'https://drive.google.com/file/d/1SQCyclPgRSj_dGA7WVU6lW9Eglw8y3kG/view?usp=drivesdk', recommended : true },
+        { title: 'Unit-3 MES Notes', url: 'https://drive.google.com/file/d/1EO_jaSk0YL-xr8lJT9MZjc1UKQLIgFr3/view?usp=drivesdk', recommended : true },
+        { title: 'Unit-4 MES Notes', url: 'https://drive.google.com/file/d/1hcIsrWh89XAXCJF_pE0zQhVMJkF6EQp2/view?usp=drivesdk', recommended : true },
+        { title: 'Unit-5 MES Notes', url: 'https://drive.google.com/file/d/1CYNvhFWiz3zXyJD90XkJA99kRi6kzq1Q/view?usp=drivesdk', recommended : true },
+        { title: 'Most Imp. PYQS Solutions', url: 'https://drive.google.com/file/d/1kC6iv_fkPr8_JMGN_Ro_CpTPl_-rqymo/view?usp=drivesdk' },
+
+       ]
+    },
+    {
+      id: 'assignments',
+      name: 'Assignments - All Subjects',
+      icon: '📝',
+      color: 'bg-yellow-500',
+      notes: [
+        { title: 'EM-II Assignment 1', url: 'https://drive.google.com/file/d/1TIUedXB4mRke7CDxuvHnVn9lXXA6KmQf/view?usp=drive_link' },
+        { title: 'EM-II Assignment-2', url: 'https://drive.google.com/file/d/1TKW4nyYuBMe5LJxXLBlEwEIOdSvbWTpI/view?usp=drive_link' },
+        { title: 'EM-II Assignment-3', url: 'https://drive.google.com/file/d/1tDZaX9nQEPecEtrDgjgtPOblvp_GA9TG/view?usp=drive_link' }
       ]
     },
     {
@@ -107,14 +165,19 @@ const ThirdSemesterMENotes = () => {
       name: 'Previous Year Questions',
       icon: '❓',
       color: 'bg-red-500',
-      notes: []
-    },
-    {
-      id: 'assignments',
-      name: 'Assignments',
-      icon: '📝',
-      color: 'bg-yellow-500',
-      notes: []
+      notes: [
+        { title: 'Mid Sem-1 & 2 PYQs(2022-23)', url: 'https://drive.google.com/file/d/1CDP18lrpDfpro60B_fNbrwCScqXL_6jR/view?usp=drivesdk' },
+        { title: 'End Sem PYQs(2022-23)', url: 'https://drive.google.com/file/d/1oBDlfMok9kUsvyE-0LzJvI8Qn8eFd_tg/view?usp=drivesdk' },
+        { title: 'Mid Sem PYQs(2023-24)', url: 'https://drive.google.com/file/d/1a4bBTk9Q9NGdPmCv5GJ9wpOBpWYY3gag/view?usp=drivesdk' },
+        { title: 'End Sem PYQs(2023-24)', url: 'https://drive.google.com/file/d/1_yfFyoum1jigWHDTEzKQFpb-Tvet81N4/view?usp=drivesdk' },
+        { title: 'Mid Sem + ESE PYQs(2024-25)', url: 'https://drive.google.com/file/d/1E7bR9519waWe0YzEMspyimXwFoJm9a6r/view?usp=drivesdk' },
+        { title: 'Mid Sem-1 PYQs(2025-26)', url: 'https://drive.google.com/file/d/15t3Iqz4L1mqMcnZA1I_uifLnNag8SEVW/view?usp=drivesdk' },
+        { title: 'Mid Sem-2 PYQs(2025-26)', url: 'https://drive.google.com/file/d/1-bbl32FY01UmQqRtBnbhqzAaENlU1Otv/view?usp=drivesdk' },
+        { title: 'End Sem PYQs(2025-26)', url: 'https://drive.google.com/file/d/12uBuuZClizctXKDOXm0Am4SLftNZab0j/view?usp=drivesdk' },
+        { title: 'SOM OLD PYQS', url: 'https://drive.google.com/file/d/1N3tU3TiSXYWsUDsV3r3z4kHpAIC4s-GP/view?usp=drivesdk' },
+        { title: 'Engg. Thermodynamics PYQs', url: 'https://drive.google.com/file/d/1ob0kQEBoz0soaCFLKiQcgKiR_ggy-1-F/view?usp=drivesdk' },
+
+      ]
     }
   ];
 
@@ -151,7 +214,7 @@ const ThirdSemesterMENotes = () => {
 
   const syllabus = {
     title: '3rd Semester Syllabus',
-    url: '#'
+    url: 'https://drive.google.com/file/d/14vei1z0YQmFEVZFZzel2UEhjO3nRE9oy/view?usp=drivesdk'
   };
 
   const handleDownload = (url: string, title: string) => smartDownload(url, title);
