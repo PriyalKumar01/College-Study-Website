@@ -32,10 +32,35 @@ const BSMSSem5Notes = () => {
   const [expandedSubjects, setExpandedSubjects] = useState<string[]>([]);
 
   const subjectPlaylists: Record<string, { detailed: any[]; oneshot: any[] }> = {
-    'quantum-mech': { detailed: [], oneshot: [] },
-    'math-methods': { detailed: [], oneshot: [] },
-    electrodynamics: { detailed: [], oneshot: [] },
-    'numerical-methods': { detailed: [], oneshot: [] }
+    entrepreneurship : {
+        detailed: [
+            { title: 'Financing Decision -Capital Structure', url: 'https://youtu.be/xO20sAjwbq4?si=EmbYJhfQGf8OBd16' , recommended: true },
+            { title: 'Investment Decision -Capital Budget', url: 'https://youtu.be/KAITRH_Ohss?si=l9ggbusQWH0rbxOL' , recommended: true },
+            { title: 'EBIT/EPS Numerical -Capital Structure', url: 'https://youtu.be/jG0pd7bFMbM?si=dT3qHXuoukRM9cfY' , recommended: true },
+            { title: 'ARR Numerical -Capital Structure', url: 'https://youtu.be/duAS8l4GcgM?si=gWTqjks_LLGCsBmF' , recommended: true },
+            { title: 'IRR Numerical -Capital Structure', url: 'https://youtu.be/EUGU9q1gzR0?si=osFvPbZY0NsGQBX9' , recommended: true },
+            { title: 'NPV Numerical -Capital Structure', url: 'https://youtu.be/sTvV0fkLhh0?si=LeA4JZVzu0ptcFN1' , recommended: true },
+            { title: 'Working Capital Management -Concepts', url: 'https://youtu.be/MDeCGC5G2BI?si=PyGYO7Xb_KioasUg' , recommended: true },
+            { title: 'Working Capital Management -Numericals', url: 'https://youtu.be/8cB2NI3NkgU?si=59kVTIl96ee1YDs2' , recommended: true },
+
+        ],
+        oneshot: [
+          { title: 'Financing Decision -Capital Structure', url: 'https://youtu.be/xO20sAjwbq4?si=EmbYJhfQGf8OBd16' , recommended: true },
+            { title: 'Investment Decision -Capital Budget', url: 'https://youtu.be/KAITRH_Ohss?si=l9ggbusQWH0rbxOL' , recommended: true },
+            { title: 'EBIT/EPS Numerical -Capital Structure', url: 'https://youtu.be/jG0pd7bFMbM?si=dT3qHXuoukRM9cfY' , recommended: true },
+            { title: 'ARR Numerical -Capital Structure', url: 'https://youtu.be/duAS8l4GcgM?si=gWTqjks_LLGCsBmF' , recommended: true },
+            { title: 'IRR Numerical -Capital Structure', url: 'https://youtu.be/EUGU9q1gzR0?si=osFvPbZY0NsGQBX9' , recommended: true },
+            { title: 'NPV Numerical -Capital Structure', url: 'https://youtu.be/sTvV0fkLhh0?si=LeA4JZVzu0ptcFN1' , recommended: true },
+            { title: 'Working Capital Management -Concepts', url: 'https://youtu.be/MDeCGC5G2BI?si=PyGYO7Xb_KioasUg' , recommended: true },
+            { title: 'Working Capital Management -Numericals', url: 'https://youtu.be/8cB2NI3NkgU?si=59kVTIl96ee1YDs2' , recommended: true },
+        ]
+      },
+    ml: { detailed: [], oneshot: [] },
+    ma: { detailed: [], oneshot: [] },
+    TandG: { detailed: [], oneshot: [] },
+    cs: { detailed: [], oneshot: [] },
+    pds: { detailed: [], oneshot: [] },
+    ds3: { detailed: [], oneshot: [] }
   };
 
   const toggleSubjectExpansion = (subjectId: string) => {
@@ -59,37 +84,57 @@ const BSMSSem5Notes = () => {
   };
 
   const staticSubjects = [
+        {
+      id: 'entrepreneurship',
+      name: 'Entrepreneurship Notes',
+      icon: '📘',
+      color: 'bg-green-500',
+      notes: [
+        { title: 'Entrepreneurship Notes (UPTO MID SEM-1)', url: 'https://drive.google.com/file/d/1m6DIjYxnAQhHJ2j7ER4J2-vVRhIfrsY7/view?usp=drivesdk' , recommended: true },
+        { title: 'Full Entrepreneurship Notes (BEST)', url: 'https://docs.google.com/document/d/1-F4WRVvWzW8OZUjUsFtZX0mgtbsq1dGJ5tkl_hJao0I/edit?usp=sharing' , recommended: true },
+        { title: 'Entrepreneurship Extra GPT Notes', url: 'https://drive.google.com/file/d/1epEbIJ_Y8J_V7rkbPM50ufwG8DVNVCq9/view?usp=drivesdk' },
+        { title: 'Imp. Numerical PDF', url: 'https://drive.google.com/file/d/1X2GW3TcZiIp1RLpB_HECRerQQTBGFWIb/view?usp=drivesdk' , recommended: true },
+      ]    
+    },
+    
     {
-      id: 'quantum-mech',
-      name: 'Quantum Mechanics',
+      id: 'pds',
+      name: 'Principles of Data Science',
       icon: '⚛️',
       color: 'bg-indigo-500',
-      notes: [{ title: 'Quantum Mechanics Notes', url: '#' }]
+      notes: []
     },
     {
-      id: 'math-methods',
-      name: 'Mathematical Methods in Physics',
+      id: 'ml',
+      name: 'Machine Learning',
       icon: '📐',
       color: 'bg-purple-500',
-      notes: [{ title: 'Mathematical Methods Notes', url: '#' }]
+      notes: []
     },
     {
-      id: 'electrodynamics',
-      name: 'Electrodynamics',
+      id: 'ma',
+      name: 'Modern Algebra',
       icon: '⚡',
       color: 'bg-blue-500',
-      notes: [{ title: 'Electrodynamics Notes', url: '#' }]
+      notes: []
     },
     {
-      id: 'numerical-methods',
-      name: 'Numerical Methods & Programming',
+      id: 'TandG',
+      name: 'Topology & Geometry',
       icon: '💻',
       color: 'bg-teal-500',
-      notes: [{ title: 'Numerical Methods Notes', url: '#' }]
+      notes: []
+    },
+     {
+      id: 'cs',
+      name: 'Computational Statistics',
+      icon: '📐',
+      color: 'bg-purple-500',
+      notes: []
     },
     {
-      id: 'assignments',
-      name: 'Assignments - All Subjects',
+      id: 'ds3',
+      name: 'Data Science Lab - 3',
       icon: '📝',
       color: 'bg-orange-500',
       notes: []
@@ -99,7 +144,7 @@ const BSMSSem5Notes = () => {
       name: 'Previous Year Questions',
       icon: '❓',
       color: 'bg-red-500',
-      notes: [{ title: 'BS-MS 5th Sem PYQs', url: '#' }]
+      notes: []
     }
   ];
 

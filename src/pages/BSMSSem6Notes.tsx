@@ -32,10 +32,14 @@ const BSMSSem6Notes = () => {
   const [expandedSubjects, setExpandedSubjects] = useState<string[]>([]);
 
   const subjectPlaylists: Record<string, { detailed: any[]; oneshot: any[] }> = {
-    'condensed-matter': { detailed: [], oneshot: [] },
-    'nuclear-physics': { detailed: [], oneshot: [] },
-    optics: { detailed: [], oneshot: [] },
-    elective: { detailed: [], oneshot: [] }
+    ma: { detailed: [], oneshot: [] },
+    foc: { detailed: [], oneshot: [] },
+    fa: { detailed: [], oneshot: [] },
+    Pelective: { detailed: [], oneshot: [] },
+    Oelective: { detailed: [], oneshot: [] },
+    bda: { detailed: [], oneshot: [] },
+    dl: { detailed: [], oneshot: [] },
+
   };
 
   const toggleSubjectExpansion = (subjectId: string) => {
@@ -60,36 +64,50 @@ const BSMSSem6Notes = () => {
 
   const staticSubjects = [
     {
-      id: 'condensed-matter',
-      name: 'Condensed Matter Physics',
+      id: 'dl',
+      name: 'Deep Learning',
       icon: '🌌',
       color: 'bg-violet-500',
-      notes: [{ title: 'Condensed Matter Physics Notes', url: '#' }]
+      notes: []
     },
     {
-      id: 'nuclear-physics',
-      name: 'Nuclear & Particle Physics',
-      icon: '☢️',
-      color: 'bg-red-600',
-      notes: [{ title: 'Nuclear Physics Notes', url: '#' }]
-    },
-    {
-      id: 'optics',
-      name: 'Optics & Photonics',
-      icon: '🔭',
-      color: 'bg-cyan-500',
-      notes: [{ title: 'Optics & Photonics Notes', url: '#' }]
-    },
-    {
-      id: 'elective',
-      name: 'Elective Subject',
+      id: 'foc',
+      name: 'Fundamental of Computing',
       icon: '📚',
       color: 'bg-teal-500',
-      notes: [{ title: 'Elective Subject Notes', url: '#' }]
+      notes: []
     },
     {
-      id: 'assignments',
-      name: 'Assignments - All Subjects',
+      id: 'fa',
+      name: 'Functional Analysis',
+      icon: '☢️',
+      color: 'bg-red-600',
+      notes: []
+    },
+    {
+      id: 'bda',
+      name: 'Big Data Analytics',
+      icon: '🔭',
+      color: 'bg-cyan-500',
+      notes: []
+    },
+    {
+      id: 'Oelective',
+      name: 'Program Elective (POC)',
+      icon: '📚',
+      color: 'bg-teal-500',
+      notes: []
+    },
+    {
+      id: 'Pelective',
+      name: 'Open Elective (OEC)',
+      icon: '📚',
+      color: 'bg-teal-500',
+      notes: []
+    },
+    {
+      id: 'ma',
+      name: 'Multivariate Analysis',
       icon: '📝',
       color: 'bg-orange-500',
       notes: []
@@ -99,7 +117,7 @@ const BSMSSem6Notes = () => {
       name: 'Previous Year Questions',
       icon: '❓',
       color: 'bg-red-500',
-      notes: [{ title: 'BS-MS 6th Sem PYQs', url: '#' }]
+      notes: []
     }
   ];
 
