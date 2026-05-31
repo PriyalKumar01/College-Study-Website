@@ -149,7 +149,10 @@ const ThirdSemesterEENotes = () => {
       name: 'Electromagnetic Field Theory ',
       icon: '❓',
       color: 'bg-red-500',
-      notes: []
+      notes: [
+        { title: 'Electromagnetic Field Theory Notes', url: 'https://vemu.org/uploads/lecture_notes/03_01_2020_1040364250.pdf' , recommended : true },
+
+      ]
     },
     {
       id: 'pyqs',
