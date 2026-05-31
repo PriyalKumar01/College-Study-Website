@@ -112,7 +112,11 @@ const ThirdSemesterCENotes = () => {
       name: 'Previous Year Questions',
       icon: '❓',
       color: 'bg-red-500',
-      notes: []
+      notes: [
+        { title: 'Mid Sem-1 PYQS (2025-26)', url: 'https://drive.google.com/file/d/1AbcNUDNorVmQEvFSnSDDGmL9nW5dtYGm/view?usp=drivesdk' },
+        { title: 'All PYQS (2024-25)', url: 'https://drive.google.com/file/d/1AbcNUDNorVmQEvFSnSDDGmL9nW5dtYGm/view?usp=drivesdk' },
+
+      ]
     }
   ];
 
@@ -159,7 +163,7 @@ interface Note {
 
   const syllabus = {
     title: '3rd Semester Syllabus',
-    url: '#'
+    url: 'https://drive.google.com/file/d/1yGXpaeW4G9unX-fdppgdJHCGgfuUvETn/view?usp=drivesdk'
   };
 
   const handleDownload = (url: string, title: string) => smartDownload(url, title);
