@@ -199,6 +199,20 @@ const ThirdSemesterLFTNotes = () => {
       color: 'bg-amber-500',
       notes: []
     },
+        {
+      id: 'assignments',
+      name: 'Assignments - All Subjects',
+      icon: '📝',
+      color: 'bg-yellow-500',
+      notes: [
+        { title: 'FMMO Asssignment-1 PDF', url: 'https://drive.google.com/file/d/1AX9L3O9O3kn6s1TUAx20zHG-FUa-CuIF/view?usp=drivesdk' },
+        { title: 'FMMO Asssignment-2 PDF', url: 'https://drive.google.com/file/d/1TUNcZDO9MmMZ42U3LSCkbLcLHNeMniAd/view?usp=drivesdk' },
+        { title: 'FMMO Asssignment-3 PDF', url: 'https://drive.google.com/file/d/1nsAGVFz2d8Irrho4Rw8uFGUMmJgvIv6D/view?usp=drivesdk' },
+        { title: 'FMMO Asssignment-4 PDF', url: 'https://drive.google.com/file/d/1ZGXG9oFx3FRkAvsqygTmxBm6OA74PaWa/view?usp=drivesdk' },
+        { title: 'FMMO Asssignment-5 PDF', url: 'https://drive.google.com/file/d/1VZMjpCRvpJD0UOC-Iwvdquy_m0ahgEFG/view?usp=drivesdk' },
+        { title: 'FMMO Assignment-1 to 5 Solutions PDF', url: 'https://drive.google.com/file/d/10OhOmXg5NbN_St5YSnqB8m-A_hSmNLEv/view?usp=drivesdk' }
+      ]
+    },
     {
       id: 'pyqs',
       name: 'Previous Year Questions',
