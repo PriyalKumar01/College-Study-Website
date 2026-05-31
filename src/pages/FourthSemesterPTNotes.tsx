@@ -118,70 +118,28 @@ const FourthSemesterPTNotes = () => {
       name: 'Data Structures Using C',
       icon: '💻',
       color: 'bg-blue-500',
-      notes: [
-        { title: 'Complete DSUC Best Notes - Quantum', url: 'https://drive.google.com/file/d/1owA6SjSqpZrLk1-qH_W0o96jamAcciOC/view?usp=drive_link' },
-        { title: 'All Most Important Programs for End Sem DSUC', url: 'https://drive.google.com/file/d/16eqDnz71Ir1RulrBmeN7Lsxb54NnFPVs/view?usp=drive_link' },
-        { title: 'DSUC Lab File', url: 'https://drive.google.com/file/d/1-XiDXdsHOUgn_FWc7Vj3nqkPIpvQ6Z00/view?usp=drive_link' },
-        { title: 'DSUC Unit 3 Notes', url: 'https://drive.google.com/file/d/16vyaX2v03fQIIRlPQEuRpZlj9yMkwslJ/view?usp=drive_link' },
-        { title: 'DSUC Unit 1 Notes', url: 'https://drive.google.com/file/d/17AvvwyJt04S2BVhsGaeIPTmKiauFjFt3/view?usp=drive_link' },
-        { title: 'DSUC Unit 2 Notes', url: 'https://drive.google.com/file/d/176a8uPhPDR4sCE0OGOnem3fAJzhEafHp/view?usp=drive_link' },
-        { title: 'DSUC Unit 4 Notes', url: 'https://drive.google.com/file/d/16puOi7D4C8zNYQy7b5g57ldSY4uxKu1U/view?usp=drive_link' },
-        { title: 'DSUC Unit 5 Notes', url: 'https://drive.google.com/file/d/16lSiwGeeApPd-ROVWiHzE2p_lrGl8Nmx/view?usp=drive_link' },
-        { title: 'Best Unit 1 Notes', url: 'https://drive.google.com/file/d/1ox2uuOi9_5E_OykzE4HVFziuaztrG_6h/view?usp=drive_link' }
-      ]
+      notes: [ ]
     },
     {
       id: 'itetiict',
       name: 'Intro to Emerging Technologies in ICT',
       icon: '🌐',
       color: 'bg-purple-500',
-      notes: [
-        { title: 'IoT Introduction PDF', url: 'https://drive.google.com/file/d/1_RxHI-c9kG75CDeqvMaq6ZF7kfpcASfr/view?usp=drive_link' },
-        { title: 'Cryptocurrency Notes', url: 'https://drive.google.com/file/d/1nXHy2Yc2Sj9Dbnk5sc8b40WRdR5FEYt-/view?usp=drive_link' },
-        { title: 'IoT Smart City PDF', url: 'https://drive.google.com/file/d/1_Ptg9E0I-o6t8yu_dx3tEEZ1SdF3mk7M/view?usp=drive_link' },
-        { title: 'OSI Model PDF', url: 'https://drive.google.com/file/d/1_UGWKcSl3PlJoPFnh7doApswuIxVDoxA/view?usp=drive_link' },
-        { title: 'Blockchain Notes', url: 'https://drive.google.com/file/d/1naxhYNRX8Jh3F761QKSXgz1GSPvEWQPI/view?usp=drive_link' },
-        { title: 'Mid Sem 2 (Unit 3 & 4 Revision Notes)', url: 'https://drive.google.com/file/d/1o66wwin_5zxme7XQZtLxzrfDfRndVaIN/view?usp=drive_link' },
-        { title: 'Blockchain Reference Book', url: 'https://drive.google.com/file/d/1n31Nl9JGvvB9gu2IcYnHxA_f-_f81Abd/view?usp=drive_link' },
-        { title: 'Unit 3 Topic Smart Contract PDF', url: 'https://drive.google.com/file/d/1ncpHnKX8YdQb0S-qYPjZpy0raJSG6xCx/view?usp=drive_link' },
-        { title: 'AWS, Azure & Cloud Difference - Most Important PDF', url: 'https://drive.google.com/file/d/1_5MPY5RNWggsfMMZ8OfNYwv25cTe5o1J/view?usp=drive_link' },
-        { title: 'Artificial Intelligence Notes', url: 'https://drive.google.com/file/d/1nQMQcUnAiWtmGsA7I8O5uhkGCJfVpumY/view?usp=drive_link' },
-        { title: '10 V\'s of Big Data PDF', url: 'https://drive.google.com/file/d/1n3L4z2CaXd1GEbVE6A3ghpX1wYLWxlCv/view?usp=drive_link' },
-        { title: '10 Use Cases of Blockchain PDF', url: 'https://drive.google.com/file/d/1nWBxdm1CXBihI_yI8BLan6lKeWkshEus/view?usp=drive_link' },
-        { title: 'Unit 1 Short Notes', url: 'https://drive.google.com/file/d/1Yx6KtWPOFZo9r0Gkzz4wB63xGlzcRD7E/view?usp=drive_link' },
-        { title: 'Unit 2 Short Notes', url: 'https://drive.google.com/file/d/1Z75dUAIGpD9BjO6XbTmrC5PLR3hbu4H6/view?usp=drive_link' },
-        { title: 'Unit 3 Short Notes', url: 'https://drive.google.com/file/d/1Z7DnmJZGdh9FvJf-9uzGWb2X0wlAi2ep/view?usp=drive_link' },
-        { title: 'Unit 5 Short Notes', url: 'https://drive.google.com/file/d/1ZIdEag2hUDiDcS0oMMD6_0AYzucWll0n/view?usp=drive_link' }
-      ]
+      notes: []
     },
     {
       id: 'co',
       name: 'Computer Organisation',
       icon: '🖥️',
       color: 'bg-green-500',
-      notes: [
-        { title: 'CO Notes', url: 'https://drive.google.com/file/d/1_BSSWlVYgFZrNF2tmNEBhMDATUmCj73B/view?usp=drive_link' },
-        { title: 'CO Unit 3 & 4 Notes', url: 'https://drive.google.com/file/d/1nmTLVoJw-JmThfro0vm5Wk-taA1jDHBn/view?usp=drive_link' },
-        { title: 'CO Unit 3 Handwritten Notes', url: 'https://drive.google.com/file/d/1nt9Llpt9gmc2SlQb0fqwVzcEfAYjZkGD/view?usp=drive_link' },
-        { title: 'Full CO Playlist SS Notes', url: 'https://drive.google.com/file/d/1565sCtaXE8cUAYyQ9t6hlShUkteSK8di/view?usp=drive_link' },
-        { title: 'Control Unit & Design Notes', url: 'https://drive.google.com/file/d/1o3kF8AMJDkFcIFVaaxiB2i8HNejd-GTk/view?usp=drive_link' },
-        { title: 'Full Important CO Material - ESE', url: 'https://drive.google.com/file/d/15Ah5duaHgJSNDRD2chR68rUc1dozjcYW/view?usp=drive_link' },
-        { title: 'RISC Vs CISC PDF', url: 'https://drive.google.com/file/d/1nuRiot85uZwMmsH_4vizdT92BNGGdPEJ/view?usp=drive_link' },
-        { title: 'CO Mid Sem 2 Numericals - Last Minute Revision PDF', url: 'https://drive.google.com/file/d/1o4JJ7-guZ4ttvNNitQd0Vh4aDeoNogRe/view?usp=drive_link' }
-      ]
+      notes: []
     },
     {
       id: 'python',
       name: 'Python Programming',
       icon: '🐍',
       color: 'bg-orange-500',
-      notes: [
-        { title: 'PP Notes', url: 'https://drive.google.com/file/d/14MsO70g821_IZrtXEp8bezOKnte8Enak/view?usp=drive_link' },
-        { title: 'PP Lab File', url: 'https://drive.google.com/file/d/1-Vb1JsaRf3VnonTH80EtYzg2W53n5HV5/view?usp=drive_link' },
-        { title: 'PP Best Quantum Notes', url: 'https://drive.google.com/file/d/1ovVLnKwYM1vsYSeAk0UNEqcF-lU7otVH/view?usp=drive_link' },
-        { title: 'Important PP Programs for ESE', url: 'https://drive.google.com/file/d/13viyP84UNb_1UfGWPUnqOapXUSq2jcMz/view?usp=drive_link' },
-        { title: 'Python Full Handwritten Notes', url: 'https://drive.google.com/file/d/1_VF2ORzst49Yu5BtYdhSkTbw16Wge2rE/view?usp=drive_link' }
-      ]
+      notes: []
     },
     {
       id: 'math2',

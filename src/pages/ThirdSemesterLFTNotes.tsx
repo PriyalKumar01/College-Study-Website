@@ -200,13 +200,6 @@ const ThirdSemesterLFTNotes = () => {
       notes: []
     },
     {
-      id: 'assignments',
-      name: 'Assignments',
-      icon: '📝',
-      color: 'bg-yellow-500',
-      notes: []
-    },
-    {
       id: 'pyqs',
       name: 'Previous Year Questions',
       icon: '❓',
@@ -246,7 +239,7 @@ interface Note {
 
   const syllabus = {
     title: '3rd Semester Syllabus',
-    url: 'https://drive.google.com/file/d/1PGvnV8-N8vX6O-E-YU8FDPZuO2i_t7NA/view?usp=drivesdk'
+    url: 'https://drive.google.com/file/d/1-VxCb09fwIwohJ05JHK35MB0V7j-8VZp/view?usp=drivesdk'
   };
 
   const handleDownload = (url: string, title: string) => smartDownload(url, title);
