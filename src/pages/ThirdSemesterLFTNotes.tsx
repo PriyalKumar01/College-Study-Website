@@ -88,7 +88,7 @@ const ThirdSemesterLFTNotes = () => {
   const staticSubjects = [
     {
       id: 'fmmo',
-      name: 'Fluid Mechanics & Mechanical Operations',
+      name: 'Fluid Mechanics & Mechanical Operations (FMMO)',
       icon: '🖥️',
       color: 'bg-green-500',
       notes: [
@@ -120,7 +120,7 @@ const ThirdSemesterLFTNotes = () => {
     },
     {
       id: 'cpc',
-      name: 'Chemical Process calculations',
+      name: 'Chemical Process calculations (CPC)',
       icon: '🐍',
       color: 'bg-orange-500',
       notes: [
@@ -161,7 +161,7 @@ const ThirdSemesterLFTNotes = () => {
     },
         {
       id: 'em',
-      name: 'Economics & Management',
+      name: 'Economics & Management (E & M)',
       icon: '💼',
       color: 'bg-blue-500',
       notes: [
@@ -377,10 +377,12 @@ interface Note {
           <h3 className="text-base font-bold text-foreground mb-3">📚 LFT 3rd Semester — Important Instructions</h3>
           <div className="space-y-2 text-sm text-muted-foreground">
             <p><strong className="text-foreground">✨ Hi LFT Juniors!</strong> A few important points for your 3rd semester — read carefully.</p>
-            <p>• <strong className="text-foreground">Leather Chemistry:</strong> Understand the structure of hide proteins and chemistry of various tanning agents. This is key for the core LFT curriculum.</p>
-            <p>• <strong className="text-foreground">Unit Operations:</strong> Pay close attention to fluid dynamics and heat transmission calculations as applied to leather machinery.</p>
-            <p>• <strong className="text-foreground">Maintain CGPA:</strong> Keep your CGPA above <strong className="text-foreground">7.5+</strong> to stay eligible for all campus placements and industry internships.</p>
-            <p className="text-red-600 dark:text-red-400"><strong>⚠️ Important:</strong> Present your answer sheets neatly in semester exams. Diagrams of shoe making machinery and chemical process flows should be clean and well-labeled.</p>
+            <p>• <strong className="text-foreground">Chemical Process Calculations (CPC):</strong> Practice numericals daily. This forms the analytical core of chemical and oil process calculations.</p>
+            <p>• <strong className="text-foreground">Fluid Mechanics & Mechanical Operations (FMMO):</strong> Focus on Bernoulli\'s derivations, pump characteristics, and particle size distribution. Lab files are very useful here.</p>
+            <p>• <strong className="text-foreground">Maths-II (M2):</strong> Make a short formula sheet yourself while watching YouTube lectures. Solve PYQs. That's it.</p>
+            <p>• <strong className="text-foreground">E&amp;M:</strong> This subject is easy to crack. Write detailed answers in the exam with clean handwriting and proper presentation to score well. It is only a 2-credit subject, so its impact is limited.</p>
+            <p>• <strong className="text-foreground">Maintain CGPA:</strong> Companies keep a cutoff of <strong className="text-foreground">7 or 7.5 CGPA</strong> — no excuses below that. Those with <strong className="text-foreground">8.5+ are in a very safe zone</strong> — aim for 8+ minimum and maintain it till at least 6th semester.</p>
+            <p className="text-red-600 dark:text-red-400"><strong>⚠️ Important:</strong> Always maintain good presentation in exams — use 2 pens, underline important keywords, keep proper spacing after answers, and write sufficiently explained answers for better scoring. Cover every topic from the syllabus using playlists, notes, PYQs, YouTube, Google AI Mode, or any resource possible. Once every topic is understood properly, exams automatically become much easier.</p>
             <p>✨ Best Wishes — <strong className="text-foreground">Priyal Kumar</strong></p>
           </div>
         </motion.div>
