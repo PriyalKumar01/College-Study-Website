@@ -257,13 +257,13 @@ const FifthSemesterCSENotes = () => {
         { title: '5th & 6th Sem_Mid & ESE (2021-22)', url: 'https://drive.google.com/uc?export=download&id=1Ri4K7fLnTx3uAi1RyBwG1RSs8PrqFLQn' },
       ]
     },
-    {
-      id: 'assignments',
-      name: 'Assignments - All Subjects',
-      icon: '📝',
-      color: 'bg-yellow-500',
-      notes: []
-    }
+    // {
+    //   id: 'assignments',
+    //   name: 'Assignments - All Subjects',
+    //   icon: '📝',
+    //   color: 'bg-yellow-500',
+    //   notes: []
+    // }
   ];
 
   const { data: communityNotes, refetch: refreshNotes } = useCommunityNotes('btech', 'CSE-5th Semester');

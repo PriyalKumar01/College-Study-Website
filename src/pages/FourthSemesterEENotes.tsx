@@ -88,7 +88,19 @@ const FourthSemesterEENotes = () => {
         { title: 'Digital Electronics One Shot 1', url: 'https://youtu.be/pHNbm-4reIc?si=BAIqs2C-Ga8NRzPJ' },
         { title: 'Digital Electronics One Shot 2', url: 'https://youtu.be/9Tn9M98yER8?si=Mubongdz8rnHGTaz' }
       ]
-    }
+    },
+     eca: {
+      detailed: [ ],
+      oneshot: []
+    },
+     eem: {
+      detailed: [],
+      oneshot: []
+    },
+    'em-II': {
+      detailed: [],
+      oneshot: []
+    },
   };
 
   const toggleSubjectExpansion = (subjectId: string) => {
@@ -131,7 +143,7 @@ const FourthSemesterEENotes = () => {
     },
     {
       id: 'em',
-      name: 'Economics & Management',
+      name: 'Economics & Management (E & M)',
       icon: '💼',
       color: 'bg-blue-500',
       notes: [
@@ -143,13 +155,15 @@ const FourthSemesterEENotes = () => {
         { title: 'Complete Unit 2 Notes', url: 'https://drive.google.com/file/d/1UOd_TOHZeOayp-W0NeKdmnv2mXr7-or-/view?usp=drive_link' },
         { title: 'Unit 3 (Part-1) Notes', url: 'https://drive.google.com/file/d/1UPKMYKBS5k96DWeB2xyVy1ix9gUBnF_o/view?usp=drive_link' },
         { title: 'Unit 3 (Part-2) Notes', url: 'https://drive.google.com/file/d/1U_rmk9aE-Ge6cxrPqIBbNovw9kwXm56M/view?usp=drive_link' },
-        { title: 'E&M Handwritten Notes', url: 'https://drive.google.com/file/d/1XANMyirw8Bb8Ks4m-R9jOtJ-0CncP5mQ/view?usp=drive_link' },
+        { title: 'Unit 4 Notes', url: 'https://drive.google.com/file/d/1oFpjOIShc09HqzTfaLGO9R8ARQh4JQb8/view?usp=drivesdk' },
+        { title: 'Unit 5 Notes', url: 'https://drive.google.com/file/d/1Bo3URn-WujyZCXYY5KuPQdL7itjztXyy/view?usp=drivesdk' },
+        { title: 'E&M Handwritten Notes', url: 'https://drive.google.com/file/d/1XANMyirw8Bb8Ks4m-R9jOtJ-0CncP5mQ/view?usp=drive_link' , recommended: true},
         { title: 'Full Last Min. Revision Notes', url: 'https://drive.google.com/file/d/1Tv4l6-DNZygMKa-7AP73LvBki4L3QQcI/view?usp=drive_link' }
       ]
     },
     {
       id: 'de',
-      name: 'Digital Electronics',
+      name: 'Digital Electronics (DE)',
       icon: '🔌',
       color: 'bg-teal-500',
       notes: [
@@ -168,6 +182,24 @@ const FourthSemesterEENotes = () => {
         { title: 'Complete Notes', url: '#' },
         ]
     },
+     {
+      id: 'eem',
+      name: 'Electrical Engg. Materials',
+      icon: '💻',
+      color: 'bg-teal-500',
+      notes: [
+        { title: 'Complete Notes', url: '#' },
+        ]
+    },
+     {
+      id: 'eca',
+      name: 'Electrical Circuit Analysis (ECA)',
+      icon: '💻',
+      color: 'bg-teal-500',
+      notes: [
+        { title: 'Complete Notes', url: '#' },
+        ]
+    },
     {
       id: 'pyqs',
       name: 'Previous Year Questions',
@@ -175,7 +207,9 @@ const FourthSemesterEENotes = () => {
       icon: '❓',
       color: 'bg-red-600',
       notes: [
-        { title: 'PYQs Coming Soon', url: '#' },
+        { title: 'Mid Sem-1 PYQs (2025-26)', url: 'https://drive.google.com/file/d/1DvtfZK2nZ2zNMvAmcv3Q6WvCL2XSOmPE/view?usp=drivesdk' },
+        { title: 'Mid Sem-2 PYQs (2025-26)', url: 'https://drive.google.com/file/d/1Xkru5BSnBbmwV7wLmVJyvAlUaug2fA_e/view?usp=drivesdk' },
+        { title: 'End Sem PYQs (2025-26)', url: 'https://drive.google.com/file/d/1DQdbHlTiRH6XYbvG43QsJXBmCMjVsfFe/view?usp=drivesdk' },
       ]
     },
   ];

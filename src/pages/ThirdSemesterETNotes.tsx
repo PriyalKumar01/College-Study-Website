@@ -73,7 +73,7 @@ const ThirdSemesterETNotes = () => {
   const staticSubjects = [
     {
       id: 'eca',
-      name: 'Electronic Circuit Analysis',
+      name: 'Electronic Circuit Analysis (ECA)',
       icon: '🔌',
       color: 'bg-blue-500',
       notes: [
@@ -82,7 +82,7 @@ const ThirdSemesterETNotes = () => {
     },
     {
       id: 'de',
-      name: 'Digital Electronics',
+      name: 'Digital Electronics (DE)',
       icon: '🔢',
       color: 'bg-teal-500',
       notes: [
@@ -102,7 +102,7 @@ const ThirdSemesterETNotes = () => {
     },
     {
       id: 'emmi',
-      name: 'Electrical Machines & Measurements Instrumentation',
+      name: 'Electrical Machines & Measurements Instrumentation (EMMI)',
       icon: '⚡',
       color: 'bg-amber-500',
       notes: [
@@ -113,7 +113,7 @@ const ThirdSemesterETNotes = () => {
     },
     {
       id: 'hdl',
-      name: 'Hardware Description Language',
+      name: 'Hardware Description Language (HDL)',
       icon: '💻',
       color: 'bg-purple-500',
       notes: [
@@ -125,7 +125,7 @@ const ThirdSemesterETNotes = () => {
     },
     {
       id: 'ssd',
-      name: 'Solid State Devices',
+      name: 'Solid State Devices & Circuit (SSDC)',
       icon: '🧲',
       color: 'bg-red-500',
       notes: [
@@ -232,7 +232,7 @@ interface Note {
             <h1 className="text-3xl font-serif leading-tight mb-2">
               {subject.name} Notes
             </h1>
-            <p className="text-xs opacity-50 uppercase tracking-widest">Electronics Technology — 3rd Semester</p>
+            <p className="text-xs opacity-50 uppercase tracking-widest">Electronics Engg. — 3rd Semester</p>
           </div>
         </div>
 
@@ -318,9 +318,9 @@ interface Note {
           <p className="text-xs font-bold tracking-[0.2em] uppercase opacity-50 mb-3">Electronics Technology Notes</p>
           <h1 className="text-4xl md:text-5xl font-serif leading-tight mb-3">
             3rd Semester<br />
-            <span className="opacity-60">Electronics Technology Notes</span>
+            <span className="opacity-60">Electronics Engg. Notes</span>
           </h1>
-          <p className="text-sm opacity-50 mb-8">B.Tech. Electronics Technology — Comprehensive study materials and resources</p>
+          <p className="text-sm opacity-50 mb-8">B.Tech. Electronics Engg. — Comprehensive study materials and resources</p>
           <div className="flex flex-wrap gap-2">
             <span className="text-xs font-semibold tracking-wider uppercase border border-background/30 px-3 py-1.5 rounded">ET Department</span>
             <span className="text-xs font-semibold tracking-wider uppercase border border-background/30 px-3 py-1.5 rounded">{staticSubjects.filter(s => s.id !== 'pyqs' && s.id !== 'assignments').length} Core Subjects</span>
@@ -337,13 +337,13 @@ interface Note {
           transition={{ duration: 0.4 }}
           className="border-l-4 border-primary pl-6 py-4 bg-primary/5 dark:bg-primary/10 rounded-r-xl"
         >
-          <h3 className="text-base font-bold text-foreground mb-3">📚 Electronics Tech 3rd Semester — Important Instructions</h3>
+          <h3 className="text-base font-bold text-foreground mb-3">📚 Electronics Engg. 3rd Semester — Important Instructions</h3>
           <div className="space-y-2 text-sm text-muted-foreground">
             <p><strong className="text-foreground">✨ Hi ET Juniors!</strong> A few tips to help you sail through the 3rd semester.</p>
             <p>• <strong className="text-foreground">ECA & SSD:</strong> These subjects are highly analytical. Solve circuit numericals regularly and practice device characteristics.</p>
             <p>• <strong className="text-foreground">Digital Electronics & HDL:</strong> Highly logical and scoring. Pay attention to Boolean algebra, logic gates, and VHDL coding syntax.</p>
             <p>• <strong className="text-foreground">Maintain CGPA:</strong> Keep your targets high, aim for <strong className="text-foreground">8.0+ CGPA</strong>. It helps in both placements and higher education.</p>
-            <p className="text-red-600 dark:text-red-400"><strong>⚠️ Important:</strong> Always present your answers clearly with proper circuit diagrams and step-by-step mathematical steps for maximum scoring.</p>
+            <p className="text-red-600 dark:text-red-400"><strong>⚠️ Important:</strong> Always present your answers clearly with proper circuit diagrams and step-by-step mathematical steps for maximum scoring. — use 2 pens, underline important keywords, keep proper spacing after answers, and write sufficiently explained answers for better scoring. Cover every topic from the syllabus using playlists, notes, PYQs, YouTube, Google AI Mode, or any resource possible. Once every topic is understood properly, exams automatically become much easier.</p>
             <p>✨ Best Wishes — <strong className="text-foreground">Priyal Kumar</strong></p>
           </div>
         </motion.div>

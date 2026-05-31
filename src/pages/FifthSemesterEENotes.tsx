@@ -32,11 +32,11 @@ const FifthSemesterEENotes = () => {
   const [expandedSubjects, setExpandedSubjects] = useState<string[]>([]);
 
   const subjectPlaylists: Record<string, { detailed: any[]; oneshot: any[] }> = {
-    math4: { detailed: [], oneshot: [] },
+    emd: { detailed: [], oneshot: [] },
     'power-systems': { detailed: [], oneshot: [] },
     'control-systems': { detailed: [], oneshot: [] },
-    'electrical-machines': { detailed: [], oneshot: [] },
-    measurement: { detailed: [], oneshot: [] }
+    uet: { detailed: [], oneshot: [] },
+    mp: { detailed: [], oneshot: [] }
   };
 
   const toggleSubjectExpansion = (subjectId: string) => {
@@ -61,45 +61,38 @@ const FifthSemesterEENotes = () => {
 
   const staticSubjects = [
     {
-      id: 'math4',
-      name: 'Engineering Mathematics-IV',
+      id: 'emd',
+      name: 'Electrical Machine design (EMD)',
       icon: '📐',
       color: 'bg-purple-500',
-      notes: [{ title: 'EM-IV Notes', url: '#' }]
+      notes: []
     },
     {
       id: 'power-systems',
       name: 'Power Systems-I',
       icon: '⚡',
       color: 'bg-yellow-500',
-      notes: [{ title: 'Power Systems Notes', url: '#' }]
+      notes: []
     },
     {
       id: 'control-systems',
       name: 'Control Systems',
       icon: '🎛️',
       color: 'bg-blue-500',
-      notes: [{ title: 'Control Systems Notes', url: '#' }]
+      notes: []
     },
     {
-      id: 'electrical-machines',
-      name: 'Electrical Machines-II',
+      id: 'mp',
+      name: 'Micro-Processors',
       icon: '🔌',
       color: 'bg-green-500',
-      notes: [{ title: 'Electrical Machines-II Notes', url: '#' }]
+      notes: []
     },
     {
-      id: 'measurement',
-      name: 'Measurement & Instrumentation',
+      id: 'uet',
+      name: 'Utilization of Electrical Energy & Traction',
       icon: '📊',
       color: 'bg-teal-500',
-      notes: [{ title: 'M&I Notes', url: '#' }]
-    },
-    {
-      id: 'assignments',
-      name: 'Assignments - All Subjects',
-      icon: '📝',
-      color: 'bg-orange-500',
       notes: []
     },
     {
@@ -107,7 +100,7 @@ const FifthSemesterEENotes = () => {
       name: 'Previous Year Questions',
       icon: '❓',
       color: 'bg-red-500',
-      notes: [{ title: 'All 5th Sem EE PYQs', url: '#' }]
+      notes: []
     }
   ];
 
@@ -142,7 +135,7 @@ const FifthSemesterEENotes = () => {
     }
   };
 
-  const syllabus = { title: '5th Sem EE Syllabus', url: '#' };
+  const syllabus = { title: '5th Sem EE Syllabus', url: 'https://drive.google.com/file/d/1zNMeOMvwcrj6eQgjUvC0KQZn9HTaVMIM/view?usp=drivesdk' };
   const handleDownload = (url: string, title: string) => smartDownload(url, title);
 
   if (selectedSubject) {
@@ -289,8 +282,38 @@ const FifthSemesterEENotes = () => {
                   </div>
                 </CardContent>
               </Card>
-            </motion.div>
+            </motion.div> 
           ))}
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: (subjects.length + 1) * 0.1, duration: 0.5 }}
+                      whileHover={{ scale: 1.02 }}
+                    >
+                      <Card 
+                        className="feature-card h-full cursor-pointer transition-all duration-300 border-2 border-yellow-500/50 hover:border-yellow-500 shadow-lg hover:shadow-xl bg-gradient-to-br from-yellow-50 to-amber-50 dark:from-yellow-900/20 dark:to-amber-900/20"
+                        onClick={() => navigate('/fifth-semester-cse-open-electives')}
+                      >
+                        <CardHeader>
+                          <div className="w-16 h-16 bg-gradient-to-br from-yellow-500 to-amber-500 rounded-full flex items-center justify-center text-white text-2xl mb-4 mx-auto shadow-lg">
+                            📚
+                          </div>
+                          <CardTitle className="text-lg text-center">Open Electives</CardTitle>
+                          <CardDescription className="text-center">
+                            7 elective subjects available
+                          </CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                          <div className="flex items-center justify-between mb-4">
+                            <Badge className="bg-yellow-500 text-white">7 Subjects</Badge>
+                            <Button variant="outline" size="sm">View All</Button>
+                          </div>
+                          <p className="text-xs text-muted-foreground text-center">
+                            Choose from Business Ethics, Environment & Ecology, Soft Skills, and more...
+                          </p>
+                        </CardContent>
+                      </Card>
+                    </motion.div>
         </div>
 
         {showPlaylistModal && (

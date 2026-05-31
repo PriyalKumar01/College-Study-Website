@@ -46,26 +46,24 @@ const ThirdSemesterEENotes = () => {
 
   // Playlist data for EE subjects
   const subjectPlaylists = {
-    'network-theory': {
-      detailed: [
-        { title: 'Network Theory Complete (Best)', url: 'https://youtube.com/playlist?list=PLsh2FvSr3n7dY8Z8-q-D4y2vK9YVwMYG9&si=iQiHHTspvuH4MEOy', recommended: true }
-      ],
-      oneshot: []
-    },
-    'electrical-machines-1': {
-      detailed: [
-        { title: 'Electrical Machines-I Playlist', url: 'https://youtube.com/playlist?list=PLBvmdYQH_Z3sFfITPeEv-qg3sgHVIqC&si=p7O3LMHX28BDkQxU', recommended: true }
-      ],
-      oneshot: []
-    },
-    'electromagnetic-theory': {
+    bsa: {
       detailed: [],
       oneshot: []
     },
-    'digital-electronics': {
-      detailed: [
-        { title: 'Digital Electronics Complete', url: 'https://youtube.com/playlist?list=PL3qvHcrYGy1uF5KAGntUITTJ85Dm3Dtdy&si=1AvreP0F8uaS4Nyw', recommended: true }
-      ],
+    'electrical-machines-1': {
+      detailed: [],
+      oneshot: []
+    },
+    eemi: {
+      detailed: [],
+      oneshot: []
+    },
+    ssd: {
+      detailed: [],
+      oneshot: []
+    },
+    emft: {
+      detailed: [],
       oneshot: []
     },
     math2: {
@@ -96,12 +94,15 @@ const ThirdSemesterEENotes = () => {
   };
 
   const staticSubjects = [
-    {
-      id: 'network-theory',
-      name: 'Network Theory',
-      icon: '🔌',
-      color: 'bg-blue-500',
-      notes: []
+       {
+      id: 'ssd',
+      name: 'Solid State Devices & Circuit (SSDC)',
+      icon: '🧲',
+      color: 'bg-red-500',
+      notes: [
+        { title: 'Microelectronic Circuit Book', url: 'https://drive.google.com/uc?export=download&id=1h-Xz0wo9m_tmzIUHI4a2GK1Wms5ICEqH' },
+        { title: 'SSD Unit-5 Notes', url: 'https://drive.google.com/uc?export=download&id=1Xkf5f7V7SMXGYsvu6x9HTFAcpiNBOFy_' }
+      ]
     },
     {
       id: 'electrical-machines-1',
@@ -111,31 +112,43 @@ const ThirdSemesterEENotes = () => {
       notes: []
     },
     {
-      id: 'electromagnetic-theory',
-      name: 'Electromagnetic Field Theory',
+      id: 'bsa',
+      name: 'Basic System Analysis',
       icon: '🧲',
       color: 'bg-red-500',
       notes: []
     },
-    {
-      id: 'digital-electronics',
-      name: 'Digital Electronics',
-      icon: '🔢',
-      color: 'bg-purple-500',
-      notes: []
+      {
+      id: 'emmi',
+      name: 'Electrical Machines & Measurements Instrumentation (EMMI)',
+      icon: '⚡',
+      color: 'bg-amber-500',
+      notes: [
+        { title: 'Unit-1 Notes', url: 'https://drive.google.com/uc?export=download&id=122gY7moNtAZyisChZzdgtvkGI0dEHIux' },
+        { title: 'Unit-3 Notes', url: 'https://drive.google.com/uc?export=download&id=1wLj4vhrI_P-AY3yHWcjDo2bKbRXPY9jY' },
+        { title: 'Unit-4 & 5 Notes', url: 'https://drive.google.com/uc?export=download&id=1-L15l3RWjJfZYbIymeVjnwxSYevcDgGh' }
+      ]
     },
     {
       id: 'math2',
       name: 'Engineering Mathematics-II',
       icon: '📐',
       color: 'bg-indigo-500',
-      notes: []
+      notes: [
+        { title: 'Complete Notes (Unit 1 to 5)', url: 'https://drive.google.com/file/d/1EZQ7WMY4EoS9kewXgqRp-dbkLFcsVx-J/view?usp=drivesdk' },
+        { title: 'Unit 1 C.F & PI Notes', url: 'https://drive.google.com/file/d/1_OfjdkVBUxb6352LJcCSqv_nKrjz4uSU/view?usp=drive_link' },
+        { title: 'Unit 2 Notes', url: 'https://drive.google.com/file/d/1_OSlf-B7K9TFC1LgA6yZDUH2sQL-RTy0/view?usp=drive_link' },
+        { title: 'Unit 3 Notes', url: 'https://drive.google.com/file/d/1_PtU2rwcwDjGnrBwBpTtSeohDrbvxDBa/view?usp=drive_link' },
+        { title: 'Mid Sem 2 Last Minute Revision', url: 'https://drive.google.com/file/d/1oGU5M62XSyErVp3qP4CrEj1v0t5FQqej/view?usp=drive_link' },
+        { title: 'Best Maths Chapter 1 & 2 Notes', url: 'https://drive.google.com/file/d/1_JfBOvZp84amQj6Mo7-KtwrARm1kTHUr/view?usp=drive_link' },
+        { title: 'Formula Sheet Unit 1', url: 'https://drive.google.com/file/d/1T6PERNwiIdoA0Vm2EGyIVwp9TlrG7IrX/view?usp=drive_link' },
+      ]
     },
     {
-      id: 'assignments',
-      name: 'Assignments',
-      icon: '📝',
-      color: 'bg-yellow-500',
+      id: 'emft',
+      name: 'Electromagnetic Field Theory ',
+      icon: '❓',
+      color: 'bg-red-500',
       notes: []
     },
     {
@@ -167,7 +180,7 @@ const ThirdSemesterEENotes = () => {
 
   const syllabus = {
     title: '3rd Semester Syllabus',
-    url: '#'
+    url: 'https://drive.google.com/file/d/1S8SRzy10r8ggFpxCW2fMbV6bbGW7skzq/view?usp=drivesdk'
   };
 
   const handleDownload = (url: string, title: string) => smartDownload(url, title);
