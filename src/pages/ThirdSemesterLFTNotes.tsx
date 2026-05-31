@@ -46,9 +46,18 @@ const ThirdSemesterLFTNotes = () => {
 
   // Playlist data for LFT subjects (mostly empty, except Math-II)
   const subjectPlaylists = {
-    'leather-chemistry': { detailed: [], oneshot: [] },
-    'unit-operations': { detailed: [], oneshot: [] },
-    'shoe-making': { detailed: [], oneshot: [] },
+    em: {
+      detailed: [
+        { title: 'Economics and Management Complete (Best)', url: 'https://youtube.com/playlist?list=PLsh2FvSr3n7cjVNULjFnVvI_DMVoMYG9o&si=iQiHHTspvuH4MEOy', recommended: true },
+        { title: 'Economics and Management Advanced', url: 'https://youtube.com/playlist?list=PLaAhQ2ofZZRC1OFxHoa8qGyFHDgk7PyUN&si=5HtscWYDIA3f9qae' }
+      ],
+      oneshot: []
+    },
+    fmmo: { detailed: [], oneshot: [] },
+    cpc: { detailed: [], oneshot: [] },
+    pths: { detailed: [], oneshot: [] },
+    lmsp: { detailed: [], oneshot: [] },
+    lmspl: { detailed: [], oneshot: [] },
     math2: {
       detailed: [
         { title: 'Unit 1 Differential Equation- Fearless', url: 'https://youtube.com/playlist?list=PL5Dqs90qDljW1pwNMiPFDvR6zCbA9kRyd&si=eKIFeUwcRRvEW-iy' },
