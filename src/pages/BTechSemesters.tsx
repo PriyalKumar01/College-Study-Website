@@ -8,6 +8,8 @@ import thirdSemImg from "@/assets/sem3-thumbnail-new.png";
 import fourthSemImg from "@/assets/sem4-thumbnail-new.png";
 import fifthSemImg from "@/assets/5th-sem-thumbnail.jpg";
 import sixthSemImg from "@/assets/6th-sem-thumbnail.jpg";
+import seventhSemImg from "@/assets/7th-sem-thumbnail-new.png";
+import eighthSemImg from "@/assets/8th-sem-thumbnail-new.png";
 
 const BTechSemesters = () => {
   const navigate = useNavigate();
@@ -62,7 +64,7 @@ const BTechSemesters = () => {
         description: "Final year electives and major project",
         available: true,
         route: "/btech-notes/fourth-year/semester-7",
-        thumbnail: thirdSemImg,
+        thumbnail: seventhSemImg,
         branches: ["CSE/IT", "ME", "CE", "CHE", "ET", "EE", "BE", "LFT"],
       },
       {
@@ -70,7 +72,7 @@ const BTechSemesters = () => {
         description: "Project completion and placement preparation",
         available: true,
         route: "/btech-notes/fourth-year/semester-8",
-        thumbnail: fourthSemImg,
+        thumbnail: eighthSemImg,
         branches: ["CSE/IT", "ME", "CE", "CHE", "ET", "EE", "BE", "LFT"],
       },
     ],

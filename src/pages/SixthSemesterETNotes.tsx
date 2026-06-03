@@ -216,7 +216,7 @@ const SixthSemesterETNotes = () => {
                         <ArrowLeft className="h-4 w-4 mr-2" /> Back to Branches
                     </Button>
                     <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-2">6th Semester ET Notes 📖</h1>
-                    <p className="text-muted-foreground text-lg">Electronics Technology notes and resources</p>
+                    <p className="text-muted-foreground text-lg">Electronics Engineering notes and resources</p>
                 </motion.div>
 
                 {/* Syllabus Section */}

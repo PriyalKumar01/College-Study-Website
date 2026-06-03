@@ -4,8 +4,8 @@ import { useCommunityNotes } from '@/hooks/useCommunityNotes';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { Download, ArrowLeft, FileText, Play, ChevronDown, ChevronRight, Trash2, ExternalLink, Share2 } from 'lucide-react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { Download, ArrowLeft, FileText, Play, ChevronDown, ChevronRight, Trash2, ExternalLink } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { PlaylistModal } from '@/components/PlaylistModal';
@@ -13,7 +13,6 @@ import { smartDownload } from '@/lib/downloadUtils';
 
 const FifthSemesterBENotes = () => {
   const navigate = useNavigate();
-  const location = useLocation();
 
   // Semester key MUST match what the upload form stores: 'BE-5th Semester'
   const { data: communityNotes, refetch: refreshNotes } = useCommunityNotes('btech', 'BE-5th Semester');
@@ -58,12 +57,6 @@ const FifthSemesterBENotes = () => {
   const getSubjectPlaylists = (subjectId: string) => {
     const subject = staticSubjects.find(s => s.id === subjectId);
     return subject?.playlists || { detailed: [], oneshot: [] };
-  };
-
-  const handleWhatsAppShare = (subjectName: string) => {
-    const shareUrl = `${window.location.origin}${location.pathname}?subject=${encodeURIComponent(subjectName)}`;
-    const message = `Check out ${subjectName} notes for 5th Semester BE on College Study Hub: ${shareUrl}`;
-    window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, '_blank');
   };
 
   // Subject names MUST match courseStructure.ts 'BE-5th Semester' entries EXACTLY
@@ -324,16 +317,9 @@ const FifthSemesterBENotes = () => {
                   transition={{ delay: index * 0.06, duration: 0.4 }}
                 >
                   <div className="group border border-border bg-card hover:border-foreground/30 rounded-xl p-5 transition-all duration-300 hover:shadow-lg h-full flex flex-col relative">
-                    <button
-                      className="absolute top-4 right-4 text-green-600 hover:text-green-700 transition-colors p-1.5 rounded hover:bg-muted"
-                      onClick={(e) => { e.stopPropagation(); handleWhatsAppShare(subject.name); }}
-                      title="Share subject notes"
-                    >
-                      <Share2 className="h-4 w-4" />
-                    </button>
                     <div className="flex items-start justify-between mb-4">
                       <span className="text-2xl">{subject.icon}</span>
-                      <span className="text-xs font-semibold text-muted-foreground border border-border px-2 py-0.5 rounded-full">
+                      <span className="text-xs font-bold text-white bg-green-500 px-2 py-0.5 rounded-full">
                         {subject.notes.length} files
                       </span>
                     </div>
@@ -349,9 +335,9 @@ const FifthSemesterBENotes = () => {
                           <span className="flex items-center gap-1.5">
                             <Play className="h-3 w-3" /> Study Playlists
                           </span>
-                          {expandedSubjects.includes(subject.id) ? <ChevronDown className="h-3.5 w-3.5" /> : <ChevronRight className="h-3.5 w-3.5" />}
+                          {isExpanded ? <ChevronDown className="h-3.5 w-3.5" /> : <ChevronRight className="h-3.5 w-3.5" />}
                         </button>
-                        {expandedSubjects.includes(subject.id) && (
+                        {isExpanded && (
                           <div className="mt-2 space-y-1">
                             {playlists.detailed.length > 0 && (
                               <button

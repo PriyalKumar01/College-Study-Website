@@ -113,7 +113,7 @@ const BTechBranches = () => {
     { name: "CHE", fullName: "Chemical Engineering", description: "Chemical processes, reaction engineering, and material transformation", thumbnail: cheImg },
     { name: "ME", fullName: "Mechanical Engineering", description: "Machines, thermodynamics, fluid mechanics, and manufacturing", thumbnail: meImg },
     { name: "CE", fullName: "Civil Engineering", description: "Infrastructure, construction, and structural design", thumbnail: ceImg },
-    { name: "ET", fullName: "Electronics Technology", description: "Electronic circuits, embedded systems, and communication devices", thumbnail: etImg },
+    { name: "ET", fullName: "Electronics Engineering", description: "Electronic circuits, embedded systems, and communication devices", thumbnail: etImg },
     { name: "EE", fullName: "Electrical Engineering", description: "Power systems, control engineering, and electrical networks", thumbnail: eeImg },
     { name: "BE", fullName: "Biochemical Engineering", description: "Bioprocesses, fermentation, and biochemical system design", thumbnail: beImg },
     { name: "LFT", fullName: "Leather & Fashion Technology", description: "Leather processing, footwear design, and fashion manufacturing", thumbnail: lftImg },
