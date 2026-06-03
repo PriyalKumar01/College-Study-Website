@@ -1,27 +1,23 @@
-
-import { useCommunityNotes } from '@/hooks/useCommunityNotes';
-import { useAuth } from '@/contexts/AuthContext';
-import { supabase } from '@/integrations/supabase/client';
-import { useToast } from '@/hooks/use-toast';
-import { Trash2 } from 'lucide-react';
-
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Download, ArrowLeft, FileText, Play, ChevronDown, ChevronRight, Share2 } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
+import { useCommunityNotes } from '@/hooks/useCommunityNotes';
+import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
+import { Download, ArrowLeft, FileText, Play, ChevronDown, ChevronRight, Trash2, ExternalLink } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
+import Footer from '@/components/Footer';
 import { PlaylistModal } from '@/components/PlaylistModal';
 import { smartDownload } from '@/lib/downloadUtils';
 
 const FourthSemesterEENotes = () => {
   const navigate = useNavigate();
-
-  const { data: communityNotes, refetch: refreshNotes } = useCommunityNotes('btech', 'EE-4th Semester');
+  const location = useLocation();
   const { user, isOwner } = useAuth();
   const { toast } = useToast();
+
+  const { data: communityNotes, refetch: refreshNotes } = useCommunityNotes('btech', 'EE-4th Semester');
 
   const handleDeleteCommunityNote = async (id: string, fileName: string) => {
     if (!user || !isOwner) return;
@@ -39,18 +35,11 @@ const FourthSemesterEENotes = () => {
     }
   };
 
-  const location = useLocation();
   const [selectedSubject, setSelectedSubject] = useState<string | null>(null);
   const [showPlaylistModal, setShowPlaylistModal] = useState(false);
   const [selectedPlaylistType, setSelectedPlaylistType] = useState<'detailed' | 'oneshot'>('detailed');
   const [selectedSubjectForPlaylist, setSelectedSubjectForPlaylist] = useState<string>('');
   const [expandedSubjects, setExpandedSubjects] = useState<string[]>([]);
-
-  const handleWhatsAppShare = (subjectName: string) => {
-    const shareUrl = `${window.location.origin}${location.pathname}?subject=${encodeURIComponent(subjectName)}`;
-    const message = `Check out ${subjectName} notes for 4th Semester EE on College Study Hub: ${shareUrl}`;
-    window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, '_blank');
-  };
 
   const subjectPlaylists = {
     math3: {
@@ -167,14 +156,13 @@ const FourthSemesterEENotes = () => {
       icon: '🔢',
       color: 'bg-teal-500',
       notes: [
-        { title: 'DE Complete Notes (BEST)', url: 'https://drive.google.com/file/d/1BUBUuMlABL7Uu-CxOa8_Q5tbFajxBI8t/view?usp=drivesdk' , recomended: true },
-        { title: 'Full DE Notes - 5 Min. Engg.', url: 'https://drive.google.com/file/d/1LaApEGFI4z5n-6N54CtgmRwq7B03EZq5/view?usp=drivesdk' , recomended: true},
-        { title: 'Question Bank (Chapter Wise)', url: 'https://drive.google.com/file/d/1ANtk5b6Sr6Q6LQLDELmjDsiLis77ThjI/view?usp=drive_link' , recomended: true},
-        { title: 'DE Complete Lab File', url: 'https://drive.google.com/file/d/1-u7KbXNDxNQNw7g64PEbwfqE7FOhZmRb/view?usp=drive_link' , recomended: true },
-
+        { title: 'DE Complete Notes (BEST)', url: 'https://drive.google.com/file/d/1BUBUuMlABL7Uu-CxOa8_Q5tbFajxBI8t/view?usp=drivesdk' , recommended: true },
+        { title: 'Full DE Notes - 5 Min. Engg.', url: 'https://drive.google.com/file/d/1LaApEGFI4z5n-6N54CtgmRwq7B03EZq5/view?usp=drivesdk' , recommended: true},
+        { title: 'Question Bank (Chapter Wise)', url: 'https://drive.google.com/file/d/1ANtk5b6Sr6Q6LQLDELmjDsiLis77ThjI/view?usp=drive_link' , recommended: true},
+        { title: 'DE Complete Lab File', url: 'https://drive.google.com/file/d/1-u7KbXNDxNQNw7g64PEbwfqE7FOhZmRb/view?usp=drive_link' , recommended: true },
         { title: 'Digital Circuit Book PDF', url: 'https://drive.google.com/uc?export=download&id=1M7-WFp832omjfPALcua0haNhY8-SBgv6' },
         { title: 'Digital Design Book', url: 'https://drive.google.com/uc?export=download&id=1ws89s_RjCm6ze8z2K1jknxTkZtgZTCgF' },
-        { title: 'Digital Electronics Quantum PDF (Best)', url: 'https://drive.google.com/uc?export=download&id=1ksW_xMibmzUZRFScn3NenGzYYc2yxNS0' , recomended: true },
+        { title: 'Digital Electronics Quantum PDF (Best)', url: 'https://drive.google.com/uc?export=download&id=1ksW_xMibmzUZRFScn3NenGzYYc2yxNS0' , recommended: true },
         { title: 'Semiconductor Material PDF', url: 'https://drive.google.com/uc?export=download&id=1P1X9JiJzdGg7FbEL3arfw4uTVISMcvbs' },
         { title: 'MOS Logic Family', url: 'https://drive.google.com/uc?export=download&id=1Yy9cysGTwmRHwfZAsdRY6YI3sRIYwAlR' },
         { title: 'Transistor Logic Circuit', url: 'https://drive.google.com/uc?export=download&id=1DqjPJwWjDvJ3ZBVFCQ3m6Nkg5I0XQp4l' },
@@ -186,7 +174,6 @@ const FourthSemesterEENotes = () => {
         { title: 'Minimize Output Logical Expression (Assignment)', url: 'https://drive.google.com/uc?export=download&id=1FKVUTDtpTANotGo8gQQ4ul8uqv6oY0tI' }
       ]
     },
-
     {
       id: 'em-II',
       name: 'Electrical Machine-II',
@@ -219,7 +206,7 @@ const FourthSemesterEENotes = () => {
     {
       id: 'pyqs',
       name: 'Previous Year Questions',
-      fullName: 'PYQs for 4th Semester ET',
+      fullName: 'PYQs for 4th Semester EE',
       icon: '❓',
       color: 'bg-red-600',
       notes: [
@@ -234,7 +221,6 @@ const FourthSemesterEENotes = () => {
     url: 'https://drive.google.com/file/d/1S8SRzy10r8ggFpxCW2fMbV6bbGW7skzq/view?usp=drivesdk'
   };
 
-  
   const subjects: any[] = staticSubjects.map(sub => ({
     ...sub,
     notes: [
@@ -260,295 +246,256 @@ const FourthSemesterEENotes = () => {
     if (!subject) return null;
 
     return (
-      <div className="min-h-screen bg-gradient-hero">
+      <div className="min-h-screen bg-background flex flex-col">
         <Navbar />
-
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="mb-8"
-          >
-            <Button
+        <div className="bg-foreground dark:bg-card text-background dark:text-foreground pt-16 pb-10 px-4 sm:px-8">
+          <div className="max-w-5xl mx-auto">
+            <button
               onClick={() => setSelectedSubject(null)}
-              variant="outline"
-              className="mb-4"
+              className="inline-flex items-center gap-2 text-xs font-semibold tracking-widest uppercase opacity-60 hover:opacity-100 transition-opacity mb-6"
             >
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              Back to Subjects
-            </Button>
-
-            <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-2">
-              {subject.name} 📚
+              <ArrowLeft className="h-3.5 w-3.5" /> Back to Subjects
+            </button>
+            <h1 className="text-3xl font-serif leading-tight mb-2">
+              {subject.name} Notes
             </h1>
-            <p className="text-muted-foreground text-lg">
-              All notes for {subject.name} - 4th Semester B.Tech
-            </p>
-          </motion.div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {subject.notes.map((note, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1, duration: 0.5 }}
-                whileHover={{ scale: 1.02 }}
-              >
-                <Card className="feature-card h-full border-2 border-transparent hover:border-primary/20 shadow-lg hover:shadow-xl transition-all duration-300 relative">
-
-                  <CardHeader>
-                    <div className="flex items-center gap-3 mb-2">
-                      <div className={`w-10 h-10 ${subject.color} rounded-full flex items-center justify-center text-white text-lg`}>
-                        <FileText className="h-5 w-5" />
-                      </div>
-                      <Badge variant="secondary" >PDF</Badge>
-                    </div>
-                    <CardTitle className="text-lg leading-tight">{note.title}</CardTitle>
-                    <CardDescription>
-                      {subject.name} study material
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <Button
-                      onClick={() => handleDownload(note.url, note.title)}
-                      className="w-full btn-hero"
-                    >
-                      <Download className="h-4 w-4 mr-2" />
-                      Download PDF
-                    </Button>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
+            <p className="text-xs opacity-50 uppercase tracking-widest">Electrical Engineering — 4th Semester</p>
           </div>
         </div>
+
+        <div className="max-w-5xl mx-auto px-4 sm:px-8 py-10 flex-1 w-full mb-12">
+          {subject.notes.length === 0 ? (
+            <div className="text-center py-16 border border-dashed rounded-xl bg-card">
+              <p className="text-muted-foreground text-sm mb-1">No study materials uploaded yet for this subject.</p>
+              <p className="text-xs text-muted-foreground">Contributions from students are welcome!</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+              {subject.notes.map((note, index) => (
+                <motion.div
+                  key={note.id || index}
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.05, duration: 0.3 }}
+                >
+                  <div className="group border border-border bg-card hover:border-foreground/30 rounded-xl p-4 transition-all duration-300 hover:shadow-md flex flex-col h-full relative">
+                    {note.isCommunity && isOwner && (
+                      <button
+                        className="absolute top-3 right-3 text-red-500 hover:text-red-700 bg-red-50 dark:bg-red-950/20 p-1.5 rounded-lg transition-colors z-10"
+                        onClick={() => handleDeleteCommunityNote(note.id, note.fileName)}
+                        title="Delete material"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </button>
+                    )}
+                    <div className="flex items-center gap-2 mb-3">
+                      <div className={`w-8 h-8 rounded-full ${subject.color} flex items-center justify-center text-white text-xs`}>
+                        <FileText className="h-4 w-4" />
+                      </div>
+                      <span className="text-[10px] font-bold tracking-wider uppercase bg-muted text-muted-foreground px-2 py-0.5 rounded">PDF</span>
+                      {note.isCommunity && (
+                        <span className="text-[10px] font-bold tracking-wider uppercase bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400 px-2 py-0.5 rounded border border-blue-100 dark:border-blue-900/50">Community</span>
+                      )}
+                    </div>
+                    <h3 className="font-semibold text-foreground text-sm leading-tight flex-1 mb-4">{note.title}</h3>
+                    {note.userName && (
+                      <p className="text-[10px] text-muted-foreground mb-3">Uploaded by: {note.userName}</p>
+                    )}
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => handleDownload(note.url, note.title)}
+                        className="flex-1 inline-flex items-center justify-center gap-1.5 text-xs font-bold tracking-wider uppercase py-2 px-3 rounded bg-foreground text-background hover:opacity-85 transition-opacity"
+                        disabled={note.url === '#'}
+                      >
+                        <Download className="h-3.5 w-3.5" /> Download
+                      </button>
+                      <button
+                        onClick={() => window.open(note.url, '_blank')}
+                        className="inline-flex items-center justify-center p-2 rounded border border-foreground/20 hover:bg-muted transition-colors"
+                        disabled={note.url === '#'}
+                        title="Open Link"
+                      >
+                        <ExternalLink className="h-3.5 w-3.5 text-foreground" />
+                      </button>
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          )}
+        </div>
+        <Footer />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-hero">
+    <div className="min-h-screen bg-background flex flex-col">
       <Navbar />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="mb-8"
-        >
-          <Button
+      {/* Hero Banner */}
+      <div className="bg-foreground dark:bg-card text-background dark:text-foreground pt-16 pb-12 px-4 sm:px-8">
+        <div className="max-w-5xl mx-auto">
+          <button
             onClick={() => navigate('/btech-notes/second-year/semester-4')}
-            variant="outline"
-            className="mb-4"
+            className="inline-flex items-center gap-2 text-xs font-semibold tracking-widest uppercase opacity-50 hover:opacity-100 transition-opacity mb-8"
           >
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to Semester Selection
-          </Button>
-
-          <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-2">
-            4th Semester B.Tech Notes 📖
+            <ArrowLeft className="h-3.5 w-3.5" /> Back to branches
+          </button>
+          <p className="text-xs font-bold tracking-[0.2em] uppercase opacity-50 mb-3">Electrical Engineering Notes</p>
+          <h1 className="text-4xl md:text-5xl font-serif leading-tight mb-3">
+            4th Semester<br />
+            <span className="opacity-60">Electrical Engineering Notes</span>
           </h1>
-        </motion.div>
+          <p className="text-sm opacity-50 mb-8">B.Tech. Electrical Engineering — Comprehensive study materials and resources</p>
+          <div className="flex flex-wrap gap-2">
+            <span className="text-xs font-semibold tracking-wider uppercase border border-background/30 px-3 py-1.5 rounded">EE Department</span>
+            <span className="text-xs font-semibold tracking-wider uppercase border border-background/30 px-3 py-1.5 rounded">{staticSubjects.filter(s => s.id !== 'pyqs' && s.id !== 'assignments').length} Core Subjects</span>
+            <span className="text-xs font-semibold tracking-wider uppercase border border-background/30 px-3 py-1.5 rounded">4th Semester</span>
+          </div>
+        </div>
+      </div>
 
+      <div className="max-w-5xl mx-auto px-4 sm:px-8 py-10 space-y-10 flex-1 w-full mb-12">
         {/* Important Information */}
+        <div className="border-l-4 border-primary pl-6 py-4 bg-primary/5 dark:bg-primary/10 rounded-r-xl">
+          <h3 className="text-base font-bold text-foreground mb-3">📚 Important Branch Information</h3>
+          <div className="space-y-2 text-sm text-muted-foreground">
+            <p><strong>✨ Only for EE 4th Semester students:</strong> These notes are specifically designed for Electrical Engineering students.</p>
+            <p>1. We try to cover the <strong>maximum possible subjects’ notes</strong> for the EE branch. However, some notes are freely available here for you.</p>
+            <p>2. <strong>Contribution Welcome:</strong><br />
+              - If you want to contribute your notes for this section, you are most welcome! Just drop your msg via "Contact us" button. <br />
+              - Your name will be added to our <strong>Notes Contributors List</strong>, and it will also help your juniors and other students of your branch.</p>
+            <p>3. <strong>Available Notes:</strong><br />
+              - <strong>Math-III</strong><br />
+              - <strong>Digital Electronics</strong><br />
+              - <strong>Electromagnetics (E&M)</strong><br />
+              These are available with <strong>curated playlists</strong>, so make sure to use them in the best possible way.</p>
+            <p>4. <strong>Instructions for Math-III:</strong><br />
+              - Make <strong>short, cheat-sheet type notes</strong> before college exams.<br />
+              - This makes <strong>revision easier</strong> and helps you <strong>score better</strong>.</p>
+            <p>5. <strong>Instructions for Economics & Management Exam:</strong><br />
+              - Try to write <strong>long answers</strong> in a <strong>structured manner</strong>.<br />
+              - Keep <strong>proper lining on both sides</strong> of the page.<br />
+              - Draw a <strong>line after each answer</strong>.<br />
+              - Make your <strong>copy eye-catching and attractive</strong> along with correct answers.<br />
+              - This strategy works well in <strong>almost all humanities subjects</strong>, even if no one reads the copy carefully.</p>
+            <p>6. <strong>Instructions for Digital Electronics:</strong><br />
+              - Watch <strong>Vaibhav Jain’s playlist</strong> carefully.<br />
+              - A night before the exam, watch <strong>5-minute engineering videos</strong> – they really help!<br />
+              - Practice <strong>numerical problems</strong> and <strong>follow instructions given by the professor</strong>.</p>
+            <p>✨ <strong>All the best!</strong><br /><strong>- Priyal Kumar (CSE ’27, HBTU)</strong></p>
+          </div>
+        </div>
+
+        {/* Syllabus */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1, duration: 0.5 }}
-          className="mb-8 p-6 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-lg border-2 border-blue-200 dark:border-blue-800"
+          transition={{ delay: 0.1, duration: 0.4 }}
+          className="border border-border rounded-xl p-5 bg-card flex items-center justify-between gap-4 flex-wrap"
         >
-          <div className="flex items-start gap-3">
-            <div className="flex-shrink-0 w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
-              <span className="text-white text-sm font-bold">!</span>
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-lg bg-foreground/10 flex items-center justify-center">
+              <FileText className="h-5 w-5 text-foreground" />
             </div>
             <div>
-              <h3 className="text-lg font-semibold text-blue-800 dark:text-blue-200 mb-2">
-                📚 Important Branch Information
-              </h3>
-              <div className="space-y-2 text-sm text-green-700 dark:text-blue-300">
-
-                <p><strong>✨ Only for EE 4th Semester students:</strong> These notes are specifically designed for Electrical Engineering students.</p>
-
-                <p>1. We try to cover the <strong>maximum possible subjects’ notes</strong> for the EE branch. However, some notes are freely available here for you.</p>
-
-                <p>2. <strong>Contribution Welcome:</strong><br />
-                  - If you want to contribute your notes for this section, you are most welcome! Just drop your msg via "Contact us" botton. <br />
-                  - Your name will be added to our <strong>Notes Contributors List</strong>, and it will also help your juniors and other students of your branch.</p>
-
-                <p>3. <strong>Available Notes:</strong><br />
-                  - <strong>Math-III</strong><br />
-                  - <strong>Digital Electronics</strong><br />
-                  - <strong>Electromagnetics (E&M)</strong><br />
-                  These are available with <strong>curated playlists</strong>, so make sure to use them in the best possible way.</p>
-
-                <p>4. <strong>Instructions for Math-III:</strong><br />
-                  - Make <strong>short, cheat-sheet type notes</strong> before college exams.<br />
-                  - This makes <strong>revision easier</strong> and helps you <strong>score better</strong>.</p>
-
-                <p>5. <strong>Instructions for Economics & Management Exam:</strong><br />
-                  - Try to write <strong>long answers</strong> in a <strong>structured manner</strong>.<br />
-                  - Keep <strong>proper lining on both sides</strong> of the page.<br />
-                  - Draw a <strong>line after each answer</strong>.<br />
-                  - Make your <strong>copy eye-catching and attractive</strong> along with correct answers.<br />
-                  - This strategy works well in <strong>almost all humanities subjects</strong>, even if no one reads the copy carefully.</p>
-
-                <p>6. <strong>Instructions for Digital Electronics:</strong><br />
-                  - Watch <strong>Vaibhav Jain’s playlist</strong> carefully.<br />
-                  - A night before the exam, watch <strong>5-minute engineering videos</strong> – they really help!<br />
-                  - Practice <strong>numerical problems</strong> and <strong>follow instructions given by the professor</strong>.</p>
-
-                <p>
-                  ✨ <strong>All the best!</strong><br />
-                  <strong>- Priyal Kumar (CSE ’27, HBTU)</strong>
-                </p>
-
-
-              </div>
+              <p className="font-semibold text-foreground text-sm">4th Semester Syllabus</p>
+              <p className="text-xs text-muted-foreground">Official syllabus for 4th semester B.Tech EE</p>
             </div>
           </div>
-        </motion.div>
-
-        {/* Syllabus Card */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2, duration: 0.5 }}
-          className="mb-8"
-        >
-          <Card className="gradient-card border-2 border-primary/20 shadow-lg">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <FileText className="h-5 w-5" />
-                4th Semester Syllabus
-              </CardTitle>
-              <CardDescription>
-                Official syllabus for 4th semester B.Tech
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Button
-                onClick={() => handleDownload(syllabus.url, syllabus.title)}
-                className="btn-hero"
-              >
-                <Download className="h-4 w-4 mr-2" />
-                Download Syllabus
-              </Button>
-            </CardContent>
-          </Card>
+          <button
+            onClick={() => handleDownload(syllabus.url, syllabus.title)}
+            className="inline-flex items-center gap-2 text-xs font-bold tracking-wider uppercase py-2.5 px-5 rounded-lg bg-foreground text-background hover:opacity-80 transition-opacity"
+            disabled={syllabus.url === '#'}
+          >
+            <Download className="h-3.5 w-3.5" /> Download Syllabus
+          </button>
         </motion.div>
 
         {/* Subjects Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {subjects.map((subject, index) => (
-            <motion.div
-              key={subject.id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: (index + 1) * 0.1, duration: 0.5 }}
-              whileHover={{ scale: 1.02 }}
-            >
-              <Card
-                className="feature-card h-full cursor-pointer transition-all duration-300 border-2 border-transparent hover:border-primary/20 shadow-lg hover:shadow-xl"
-                onClick={() => setSelectedSubject(subject.id)}
+        <div>
+          <p className="text-xs font-bold tracking-[0.15em] uppercase text-muted-foreground mb-5">Study Resources</p>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {subjects.map((subject, index) => (
+              <motion.div
+                key={subject.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.06, duration: 0.4 }}
               >
-                <CardHeader>
-                  <div className={`w-16 h-16 ${subject.color} rounded-full flex items-center justify-center text-white text-2xl mb-4 mx-auto shadow-lg`}>
-                    {subject.icon}
+                <div className="group border border-border bg-card hover:border-foreground/30 rounded-xl p-5 transition-all duration-300 hover:shadow-lg h-full flex flex-col relative">
+                  <div className="flex items-start justify-between mb-4">
+                    <span className="text-2xl">{subject.icon}</span>
+                    <span className="text-xs font-bold text-white bg-green-500 px-2 py-0.5 rounded-full">
+                      {subject.notes.length} files
+                    </span>
                   </div>
-                  <CardTitle className="text-lg text-center">{subject.name}</CardTitle>
-                  <CardDescription className="text-center">
-                    {subject.notes.length} notes available
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex flex-col gap-3">
-                    {/* Study Playlists Section */}
-                    {subject.id !== 'pyqs' && subject.id !== "assignments" && (
-                      <div className="border-t pt-4">
-                        <div
-                          className="flex items-center justify-between cursor-pointer hover:bg-muted/50 rounded p-2 -m-2"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            toggleSubjectExpansion(subject.id);
-                          }}
-                        >
-                          <div className="flex items-center gap-2">
-                            <Play className="h-4 w-4 text-primary" />
-                            <span className="text-sm font-medium">Study Playlists</span>
-                          </div>
-                          {expandedSubjects.includes(subject.id) ?
-                            <ChevronDown className="h-4 w-4" /> :
-                            <ChevronRight className="h-4 w-4" />
-                          }
-                        </div>
+                  <h3 className="font-semibold text-foreground text-sm leading-snug mb-1 flex-1">{subject.name}</h3>
 
-                        {expandedSubjects.includes(subject.id) && (
-                          <div className="mt-3 space-y-2 pl-2">
-                            {getSubjectPlaylists(subject.id).detailed.length > 0 && (
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                className="w-full justify-start text-xs h-8"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  handlePlaylistClick(subject.id, 'detailed');
-                                }}
-                              >
-                                📚 Detailed Playlists ({getSubjectPlaylists(subject.id).detailed.length})
-                              </Button>
-                            )}
-                            {getSubjectPlaylists(subject.id).oneshot.length > 0 && (
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                className="w-full justify-start text-xs h-8"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  handlePlaylistClick(subject.id, 'oneshot');
-                                }}
-                              >
-                                ⚡ One Shot Videos ({getSubjectPlaylists(subject.id).oneshot.length})
-                              </Button>
-                            )}
-                            {getSubjectPlaylists(subject.id).detailed.length === 0 &&
-                              getSubjectPlaylists(subject.id).oneshot.length === 0 && (
-                                <p className="text-xs text-muted-foreground pl-2">Not available...</p>
-                              )}
-                          </div>
-                        )}
-                      </div>
-                    )}
-
-                    <div className="flex items-center justify-between">
-                      <Badge variant="secondary">{subject.notes.length} Files</Badge>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => setSelectedSubject(subject.id)}
+                  {/* Playlist section */}
+                  {subject.id !== 'pyqs' && subject.id !== 'assignments' && (
+                    <div className="mt-3 pt-3 border-t border-border">
+                      <button
+                        className="flex items-center justify-between w-full text-xs font-semibold text-muted-foreground hover:text-foreground transition-colors"
+                        onClick={() => toggleSubjectExpansion(subject.id)}
                       >
-                        View Notes
-                      </Button>
+                        <span className="flex items-center gap-1.5">
+                          <Play className="h-3 w-3" /> Study Playlists
+                        </span>
+                        {expandedSubjects.includes(subject.id) ? <ChevronDown className="h-3.5 w-3.5" /> : <ChevronRight className="h-3.5 w-3.5" />}
+                      </button>
+                      {expandedSubjects.includes(subject.id) && (
+                        <div className="mt-2 space-y-1">
+                          {getSubjectPlaylists(subject.id).detailed && getSubjectPlaylists(subject.id).detailed.length > 0 && (
+                            <button
+                              className="w-full text-left text-xs py-1.5 px-2 rounded-lg hover:bg-muted transition-colors text-muted-foreground hover:text-foreground"
+                              onClick={() => handlePlaylistClick(subject.id, 'detailed')}
+                            >
+                              📚 Detailed ({getSubjectPlaylists(subject.id).detailed.length})
+                            </button>
+                          )}
+                          {getSubjectPlaylists(subject.id).oneshot && getSubjectPlaylists(subject.id).oneshot.length > 0 && (
+                            <button
+                              className="w-full text-left text-xs py-1.5 px-2 rounded-lg hover:bg-muted transition-colors text-muted-foreground hover:text-foreground"
+                              onClick={() => handlePlaylistClick(subject.id, 'oneshot')}
+                            >
+                              ⚡ One Shot ({getSubjectPlaylists(subject.id).oneshot.length})
+                            </button>
+                          )}
+                          {(!getSubjectPlaylists(subject.id).detailed || getSubjectPlaylists(subject.id).detailed.length === 0) &&
+                           (!getSubjectPlaylists(subject.id).oneshot || getSubjectPlaylists(subject.id).oneshot.length === 0) && (
+                            <p className="text-xs text-muted-foreground px-2 py-1">Not available yet</p>
+                          )}
+                        </div>
+                      )}
                     </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </motion.div>
-          ))}
-        </div>
+                  )}
 
-        {showPlaylistModal && (
-          <PlaylistModal
-            isOpen={showPlaylistModal}
-            onClose={() => setShowPlaylistModal(false)}
-            title={subjects.find(s => s.id === selectedSubjectForPlaylist)?.name || ''}
-            playlists={selectedSubjectForPlaylist ? getSubjectPlaylists(selectedSubjectForPlaylist)[selectedPlaylistType] : []}
-            type={selectedPlaylistType}
-          />
-        )}
+                  <div className="mt-4">
+                    <button
+                      onClick={() => setSelectedSubject(subject.id)}
+                      className="w-full text-xs font-bold tracking-wider uppercase py-2.5 px-4 rounded-lg border border-foreground/20 hover:bg-foreground hover:text-background transition-all duration-200"
+                    >
+                      View Notes
+                    </button>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
       </div>
+      <Footer />
+
+      {/* Playlist Modal */}
+      <PlaylistModal
+        isOpen={showPlaylistModal}
+        onClose={() => setShowPlaylistModal(false)}
+        title={subjects.find(s => s.id === selectedSubjectForPlaylist)?.name || ''}
+        playlists={selectedSubjectForPlaylist ? getSubjectPlaylists(selectedSubjectForPlaylist)[selectedPlaylistType] : []}
+        type={selectedPlaylistType}
+      />
     </div>
   );
 };
