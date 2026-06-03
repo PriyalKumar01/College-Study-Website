@@ -4,7 +4,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useCommunityNotes } from '@/hooks/useCommunityNotes';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { Download, ArrowLeft, FileText, Play, ChevronDown, ChevronRight, Share2, Trash2, ExternalLink } from 'lucide-react';
+import { Download, ArrowLeft, FileText, Play, ChevronDown, ChevronRight, Trash2, ExternalLink } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
@@ -497,16 +497,9 @@ interface Note {
                 transition={{ delay: index * 0.06, duration: 0.4 }}
               >
                 <div className="group border border-border bg-card hover:border-foreground/30 rounded-xl p-5 transition-all duration-300 hover:shadow-lg h-full flex flex-col relative">
-                  <button
-                    className="absolute top-4 right-4 text-green-600 hover:text-green-700 transition-colors p-1.5 rounded hover:bg-muted"
-                    onClick={(e) => { e.stopPropagation(); handleWhatsAppShare(subject.name); }}
-                    title="Share subject notes"
-                  >
-                    <Share2 className="h-4 w-4" />
-                  </button>
                   <div className="flex items-start justify-between mb-4">
                     <span className="text-2xl">{subject.icon}</span>
-                    <span className="text-xs font-semibold text-muted-foreground border border-border px-2 py-0.5 rounded-full">
+                    <span className="text-xs font-bold text-white bg-green-500 px-2 py-0.5 rounded-full">
                       {subject.notes.length} files
                     </span>
                   </div>

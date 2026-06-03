@@ -357,7 +357,7 @@ interface Note {
                 <div className="group border border-border bg-card hover:border-foreground/30 rounded-xl p-5 transition-all duration-300 hover:shadow-lg h-full flex flex-col">
                   <div className="flex items-start justify-between mb-4">
                     <span className="text-2xl">{subject.icon}</span>
-                    <span className="text-xs font-semibold text-muted-foreground border border-border px-2 py-0.5 rounded-full">
+                    <span className="text-xs font-bold text-white bg-green-500 px-2 py-0.5 rounded-full">
                       {subject.notes.length} files
                     </span>
                   </div>
