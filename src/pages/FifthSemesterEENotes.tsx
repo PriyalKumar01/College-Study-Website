@@ -369,7 +369,7 @@ const FifthSemesterEENotes = () => {
               transition={{ delay: (subjects.length + 1) * 0.06, duration: 0.4 }}
             >
               <div 
-                onClick={() => navigate('/fifth-semester-cse-open-electives')}
+                onClick={() => navigate('/fifth-semester-open-electives')}
                 className="group border-2 border-yellow-500/50 hover:border-yellow-500 bg-gradient-to-br from-yellow-50 to-amber-50 dark:from-yellow-900/20 dark:to-amber-900/20 rounded-xl p-5 transition-all duration-300 hover:shadow-lg h-full flex flex-col cursor-pointer relative"
               >
                 <div className="flex items-start justify-between mb-4">

@@ -250,7 +250,7 @@ const FifthSemesterPTNotes = () => {
                   >
                     <div 
                       className="group border-2 border-primary/35 bg-gradient-to-br from-primary/5 to-purple-500/5 hover:border-primary rounded-xl p-5 transition-all duration-300 hover:shadow-lg h-full flex flex-col relative cursor-pointer"
-                      onClick={() => navigate('/fifth-semester-cse-open-electives')}
+                      onClick={() => navigate('/fifth-semester-open-electives')}
                     >
                       <div className="flex items-start justify-between mb-4">
                         <span className="text-2xl">{subject.icon}</span>

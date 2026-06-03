@@ -524,7 +524,7 @@ const FifthSemesterCSENotes = () => {
             >
               <div
                 className="group border border-yellow-500/50 hover:border-yellow-500 rounded-xl p-5 bg-gradient-to-br from-yellow-50 to-amber-50 dark:from-yellow-900/20 dark:to-amber-900/20 transition-all duration-300 hover:shadow-lg h-full flex flex-col cursor-pointer"
-                onClick={() => navigate('/fifth-semester-cse-open-electives')}
+                onClick={() => navigate('/fifth-semester-open-electives')}
               >
                 <div className="flex items-start justify-between mb-4">
                   <span className="text-2xl">📚</span>

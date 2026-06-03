@@ -1,10 +1,9 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Download, ArrowLeft, FileText, ChevronDown, ChevronRight } from 'lucide-react';
+import { Download, ArrowLeft, FileText, ChevronDown, ChevronRight, ExternalLink } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
+import Footer from '@/components/Footer';
 
 const BBANotes = () => {
   const navigate = useNavigate();
@@ -97,99 +96,98 @@ const BBANotes = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-hero">
+    <div className="min-h-screen bg-background flex flex-col">
       <Navbar />
-      
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <Button
-          variant="outline"
-          onClick={() => navigate('/notes')}
-          className="mb-4"
-        >
-          <ArrowLeft className="h-4 w-4 mr-2" />
-          Back to Notes
-        </Button>
 
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="text-center mb-12"
-        >
-          <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-primary via-purple-500 to-pink-500 bg-clip-text text-transparent">
-            BBA Notes
+      {/* Hero Banner */}
+      <div className="bg-foreground dark:bg-card text-background dark:text-foreground pt-16 pb-12 px-4 sm:px-8">
+        <div className="max-w-5xl mx-auto">
+          <button
+            onClick={() => navigate('/notes')}
+            className="inline-flex items-center gap-2 text-xs font-semibold tracking-widest uppercase opacity-50 hover:opacity-100 transition-opacity mb-8"
+          >
+            <ArrowLeft className="h-3.5 w-3.5" /> Back to Notes
+          </button>
+          <p className="text-xs font-bold tracking-[0.2em] uppercase opacity-50 mb-3">Management Studies</p>
+          <h1 className="text-4xl md:text-5xl font-serif leading-tight mb-3">
+            BBA Notes<br />
+            <span className="opacity-60">Study Resources</span>
           </h1>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Bachelor of Business Administration - Comprehensive study materials
-          </p>
-        </motion.div>
+          <p className="text-sm opacity-50 mb-8">Bachelor of Business Administration — Comprehensive study materials and resources</p>
+          <div className="flex flex-wrap gap-2">
+            <span className="text-xs font-semibold tracking-wider uppercase border border-background/30 px-3 py-1.5 rounded">BBA Department</span>
+            <span className="text-xs font-semibold tracking-wider uppercase border border-background/30 px-3 py-1.5 rounded">{subjects.length} Core Subjects</span>
+          </div>
+        </div>
+      </div>
 
-        <div className="grid gap-6 max-w-5xl mx-auto">
-          {subjects.map((subject, index) => (
-            <motion.div
-              key={subject.id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.1, duration: 0.5 }}
-            >
-              <Card className="feature-card">
-                <CardHeader>
+      <div className="max-w-5xl mx-auto px-4 sm:px-8 py-10 space-y-6 flex-1 w-full mb-12">
+        <p className="text-xs font-bold tracking-[0.15em] uppercase text-muted-foreground mb-4">Core Subjects</p>
+        <div className="grid gap-4">
+          {subjects.map((subject, index) => {
+            const isExpanded = expandedSubjects.includes(subject.id);
+            return (
+              <motion.div
+                key={subject.id}
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.05, duration: 0.3 }}
+              >
+                <div className="group border border-border bg-card rounded-xl p-5 transition-all duration-300 hover:shadow-md">
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
-                      <div className="flex items-center gap-3 mb-2">
-                        <CardTitle className="text-2xl">{subject.name}</CardTitle>
+                      <div className="flex items-center gap-3 mb-2 flex-wrap">
+                        <h3 className="font-semibold text-foreground text-lg leading-snug">{subject.name}</h3>
+                        <span className="text-xs font-bold text-white bg-green-500 px-2 py-0.5 rounded-full">
+                          {subject.notes.length} files
+                        </span>
                       </div>
-                      <CardDescription className="text-base mb-1">
-                        {subject.fullName}
-                      </CardDescription>
-                      <p className="text-sm text-muted-foreground">
-                        {subject.description}
-                      </p>
+                      <p className="text-sm font-medium text-foreground opacity-80 mb-1">{subject.fullName}</p>
+                      <p className="text-xs text-muted-foreground">{subject.description}</p>
                     </div>
-                    <Button
-                      variant="ghost"
-                      size="sm"
+                    <button
                       onClick={() => toggleSubjectExpansion(subject.id)}
-                      className="ml-4"
+                      className="ml-4 p-1.5 rounded-lg hover:bg-muted text-muted-foreground hover:text-foreground transition-colors"
                     >
-                      {expandedSubjects.includes(subject.id) ? (
+                      {isExpanded ? (
                         <ChevronDown className="h-5 w-5" />
                       ) : (
                         <ChevronRight className="h-5 w-5" />
                       )}
-                    </Button>
+                    </button>
                   </div>
-                </CardHeader>
 
-                {expandedSubjects.includes(subject.id) && (
-                  <CardContent className="space-y-6">
-                    <div>
-                      <h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
-                        <FileText className="h-5 w-5 text-primary" />
-                        Study Notes
-                      </h3>
-                      <div className="grid gap-2">
+                  {isExpanded && (
+                    <div className="mt-5 pt-5 border-t border-border space-y-4 animate-fade-in">
+                      <h4 className="text-xs font-bold tracking-wider uppercase text-muted-foreground flex items-center gap-1.5">
+                        <FileText className="h-4 w-4 text-primary" /> Study Notes
+                      </h4>
+                      <div className="grid gap-2 sm:grid-cols-2">
                         {subject.notes.map((note: any, idx: number) => (
                           <a
                             key={idx}
                             href={note.url}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="flex items-center justify-between p-3 rounded-lg bg-secondary/50 hover:bg-secondary transition-colors"
+                            className="flex items-center justify-between p-3 rounded-lg bg-card hover:bg-muted transition-all duration-200 border border-border group"
                           >
-                            <span className="text-sm font-medium">{note.title}</span>
-                            <Download className="h-4 w-4 text-primary" />
+                            <span className="text-xs font-medium text-foreground line-clamp-1">{note.title}</span>
+                            <div className="flex items-center gap-1.5 opacity-60 group-hover:opacity-100 transition-opacity flex-shrink-0">
+                              <Download className="h-3.5 w-3.5 text-foreground" />
+                              <ExternalLink className="h-3.5 w-3.5 text-foreground" />
+                            </div>
                           </a>
                         ))}
                       </div>
                     </div>
-                  </CardContent>
-                )}
-              </Card>
-            </motion.div>
-          ))}
+                  )}
+                </div>
+              </motion.div>
+            );
+          })}
         </div>
       </div>
+      <Footer />
     </div>
   );
 };

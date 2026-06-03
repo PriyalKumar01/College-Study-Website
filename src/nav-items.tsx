@@ -14,7 +14,7 @@ import SecondSemesterNotes from "./pages/SecondSemesterNotes";
 import ThirdSemesterCSENotes from "./pages/ThirdSemesterCSENotes";
 import FourthSemesterCSENotes from "./pages/FourthSemesterCSENotes";
 import FifthSemesterCSENotes from "./pages/FifthSemesterCSENotes";
-import FifthSemesterCSEOpenElectives from "./pages/FifthSemesterCSEOpenElectives";
+import FifthSemesterOpenElectives from "./pages/FifthSemesterOpenElectives";
 import ThirdSemesterMENotes from "./pages/ThirdSemesterMENotes";
 import ThirdSemesterCHENotes from "./pages/ThirdSemesterCHENotes";
 import ThirdSemesterCENotes from "./pages/ThirdSemesterCENotes";
@@ -59,7 +59,7 @@ import FifthSemesterPTNotes from "./pages/FifthSemesterPTNotes";
 import FifthSemesterOTNotes from "./pages/FifthSemesterOTNotes";
 import FifthSemesterFTNotes from "./pages/FifthSemesterFTNotes";
 import SixthSemesterCSENotes from "./pages/SixthSemesterCSENotes";
-import SixthSemesterCSEOpenElectives from "./pages/SixthSemesterCSEOpenElectives";
+import SixthSemesterOpenElectives from "./pages/SixthSemesterOpenElectives";
 import SixthSemesterETNotes from "./pages/SixthSemesterETNotes";
 import SixthSemesterMENotes from "./pages/SixthSemesterMENotes";
 import SixthSemesterCENotes from "./pages/SixthSemesterCENotes";
@@ -127,7 +127,7 @@ export const navItems = [
   { to: "/fourth-semester-ot", page: <FourthSemesterOTNotes /> },
   { to: "/fourth-semester-ft", page: <FourthSemesterFTNotes /> },
   { to: "/fifth-semester-cse", page: <FifthSemesterCSENotes /> },
-  { to: "/fifth-semester-cse-open-electives", page: <FifthSemesterCSEOpenElectives /> },
+  { to: "/fifth-semester-open-electives", page: <FifthSemesterOpenElectives /> },
   { to: "/fifth-semester-me", page: <FifthSemesterMENotes /> },
   { to: "/fifth-semester-ce", page: <FifthSemesterCENotes /> },
   { to: "/fifth-semester-che", page: <FifthSemesterCHENotes /> },
@@ -139,7 +139,7 @@ export const navItems = [
   { to: "/fifth-semester-ot", page: <FifthSemesterOTNotes /> },
   { to: "/fifth-semester-ft", page: <FifthSemesterFTNotes /> },
   { to: "/sixth-semester-cse", page: <SixthSemesterCSENotes /> },
-  { to: "/sixth-semester-cse-open-electives", page: <SixthSemesterCSEOpenElectives /> },
+  { to: "/sixth-semester-open-electives", page: <SixthSemesterOpenElectives /> },
   { to: "/sixth-semester-me", page: <SixthSemesterMENotes /> },
   { to: "/sixth-semester-ce", page: <SixthSemesterCENotes /> },
   { to: "/sixth-semester-che", page: <SixthSemesterCHENotes /> },

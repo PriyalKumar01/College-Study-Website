@@ -1,16 +1,16 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Download, ArrowLeft, FileText, Play, ChevronDown, ChevronRight } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { Download, ArrowLeft, FileText, Play, ChevronDown, ChevronRight, ExternalLink } from 'lucide-react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
+import Footer from '@/components/Footer';
 import { PlaylistModal } from '@/components/PlaylistModal';
 import { smartDownload } from '@/lib/downloadUtils';
 
-const FifthSemesterCSEOpenElectives = () => {
+const FifthSemesterOpenElectives = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const source = searchParams.get('source');
   const [selectedSubject, setSelectedSubject] = useState<string | null>(null);
   const [showPlaylistModal, setShowPlaylistModal] = useState(false);
   const [selectedPlaylistType, setSelectedPlaylistType] = useState<'detailed' | 'oneshot'>('detailed');
@@ -53,13 +53,13 @@ const FifthSemesterCSEOpenElectives = () => {
           { title: 'Playlist -Only watch topics-wise', url: 'https://youtube.com/playlist?list=PLeUIXA68NobWnEOojETHpolPkR6qXszU2&si=AoNt743N0d1I3_A7', recommended: true },
         ],
         oneshot: [
-         { title: 'Business Ethics', url: 'https://youtu.be/ltW7KVYJ1go?si=VNMtqFzwF6Ge7wq3' },
+          { title: 'Business Ethics', url: 'https://youtu.be/ltW7KVYJ1go?si=VNMtqFzwF6Ge7wq3' },
           { title: 'Ethical Decision Making', url: 'https://youtu.be/73MnDxDPv6w?si=Q9EnJRn2xxf-vpSw' },
           { title: 'Corporate Social Responsibility', url: 'https://youtu.be/BWQ56WOMTT4?si=GoS-gd2AdrgKY5a2' },
           { title: 'Marketing Ethics', url: 'https://youtu.be/rfAWVcORC_M?si=pDupNteELaSY3L3P' },
           { title: 'Corporate Governance', url: 'https://youtu.be/hVOkmReERiE?si=CihY_vL13DjYlj14' },
           { title: 'Theories of Corporate Governance', url: 'https://youtu.be/SZAHAXYxX34?si=OEhJaTeZ3Y_a8I4k' },
-            ]
+        ]
       },
       notes: [
         { title: 'Syllabus', url: 'https://drive.google.com/uc?export=download&id=1Q7abTYsAJ14M2VgXaKWKYWYKZ1VHzR7O' },
@@ -109,7 +109,6 @@ const FifthSemesterCSEOpenElectives = () => {
         { title: 'Unit-3 Notes', url: 'https://drive.google.com/file/d/14fH-6bnIUW5-YXjCp7pW-fL9I1-KG3Ty/view?usp=drivesdk' },
         { title: 'Unit-4 Notes', url: 'https://drive.google.com/file/d/1qsCpiTxYAqg8p2zkMnqSl0IcszHUYZYv/view?usp=drivesdk' },
         { title: 'Unit-5 Notes', url: 'https://drive.google.com/file/d/1zmi0qVacaSHXZYALEbIyXAzLL_ZnLGnU/view?usp=drivesdk' },
-
       ]
     },
     {
@@ -133,8 +132,6 @@ const FifthSemesterCSEOpenElectives = () => {
         { title: 'Central Receiver System Notes', url: 'https://drive.google.com/file/d/1ua4vQxqB0ZbkTB-bDTYelEMurSjmTmBI/view?usp=drivesdk' },
         { title: 'Comparision of analysis of collectors Notes', url: 'https://drive.google.com/file/d/1WIwb0YH1wwvG7g2xm3abQ9lYmgQDSiC-/view?usp=drivesdk' },
         { title: 'All Year - PYQS', url: 'https://drive.google.com/file/d/1QOAVF7JMHNMx98oWkrWkgnZSlGJoAq72/view?usp=drivesdk' },
-        
-
       ]
     },
     {
@@ -147,7 +144,6 @@ const FifthSemesterCSEOpenElectives = () => {
       notes: [
         { title: 'Env. & Ecology Lecture Notes', url: 'https://drive.google.com/file/d/1taWO5of2LSvA1MTtIvI6AdSf3t-ZrVJ-/view?usp=drivesdk' },
         { title: 'Env. & Ecology Notes', url: 'https://drive.google.com/file/d/12LxbDeBxI4bUNx6lKqct5YCHzuQueCe4/view?usp=drivesdk' },
-
       ]
     },
     {
@@ -160,7 +156,6 @@ const FifthSemesterCSEOpenElectives = () => {
       notes: [
         { title: 'Discrete Math Book', url: 'https://drive.google.com/file/d/1qrF_EAftAlDNmb-5AIfTcqxEK1YYqouW/view?usp=drivesdk' },
         { title: 'Discrete Math Handwritten Notes', url: 'https://drive.google.com/file/d/1s07BRK08It_XdHn3FgNnWpru_DCwYe8Z/view?usp=drivesdk' },
-        
       ]
     },
     {
@@ -181,103 +176,189 @@ const FifthSemesterCSEOpenElectives = () => {
     if (!subject) return null;
 
     return (
-      <div className="min-h-screen bg-gradient-hero">
+      <div className="min-h-screen bg-background flex flex-col">
         <Navbar />
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
-            <Button onClick={() => setSelectedSubject(null)} variant="outline" className="mb-4">
-              <ArrowLeft className="h-4 w-4 mr-2" />Back to Open Electives
-            </Button>
-            <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-2">{subject.name} 📚</h1>
-            <p className="text-muted-foreground text-lg">{subject.fullName}</p>
-          </motion.div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {subject.notes.map((note, index) => (
-              <motion.div key={index} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.05 }} whileHover={{ scale: 1.02 }}>
-                <Card className="feature-card h-full border-2 border-transparent hover:border-primary/20 shadow-lg">
-                  <CardHeader>
-                    <div className="flex items-center gap-3 mb-2">
-                      <div className={`w-10 h-10 ${subject.color} rounded-full flex items-center justify-center text-white`}><FileText className="h-5 w-5" /></div>
-                      <Badge variant="secondary">PDF</Badge>
-                    </div>
-                    <CardTitle className="text-lg leading-tight">{note.title}</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <Button onClick={() => handleDownload(note.url, note.title)} className="w-full btn-hero" disabled={note.url === '#'}>
-                      <Download className="h-4 w-4 mr-2" />{note.url === '#' ? 'Coming Soon' : 'Download PDF'}
-                    </Button>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
+        {/* Detail Hero */}
+        <div className="bg-foreground dark:bg-card text-background dark:text-foreground pt-16 pb-10 px-4 sm:px-8">
+          <div className="max-w-5xl mx-auto">
+            <button
+              onClick={() => setSelectedSubject(null)}
+              className="inline-flex items-center gap-2 text-xs font-semibold tracking-widest uppercase opacity-60 hover:opacity-100 transition-opacity mb-6"
+            >
+              <ArrowLeft className="h-3.5 w-3.5" /> Back to Open Electives
+            </button>
+            <h1 className="text-3xl font-serif leading-tight mb-2">
+              {subject.name} Notes
+            </h1>
+            <p className="text-xs opacity-50 uppercase tracking-widest">{subject.fullName} — 5th Semester</p>
           </div>
         </div>
+
+        {/* Detail Content */}
+        <div className="max-w-5xl mx-auto px-4 sm:px-8 py-10 flex-1 w-full mb-12">
+          {subject.notes.length === 0 || (subject.notes.length === 1 && subject.notes[0].url === '#') ? (
+            <div className="text-center py-16 border border-dashed rounded-xl bg-card">
+              <p className="text-muted-foreground text-sm mb-1">No study materials uploaded yet for this subject.</p>
+              <p className="text-xs text-muted-foreground">Contributions from students are welcome!</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+              {subject.notes.map((note, index) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.05, duration: 0.3 }}
+                >
+                  <div className="group border border-border bg-card hover:border-foreground/30 rounded-xl p-4 transition-all duration-300 hover:shadow-md flex flex-col h-full relative">
+                    <div className="flex items-center gap-2 mb-3">
+                      <div className={`w-8 h-8 rounded-full ${subject.color} flex items-center justify-center text-white text-xs`}>
+                        <FileText className="h-4 w-4" />
+                      </div>
+                      <span className="text-[10px] font-bold tracking-wider uppercase bg-muted text-muted-foreground px-2 py-0.5 rounded">PDF</span>
+                    </div>
+                    <h3 className="font-semibold text-foreground text-sm leading-tight flex-1 mb-4">{note.title}</h3>
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => handleDownload(note.url, note.title)}
+                        className="flex-1 inline-flex items-center justify-center gap-1.5 text-xs font-bold tracking-wider uppercase py-2 px-3 rounded bg-foreground text-background hover:opacity-85 transition-opacity"
+                        disabled={note.url === '#'}
+                      >
+                        <Download className="h-3.5 w-3.5" /> Download
+                      </button>
+                      <button
+                        onClick={() => window.open(note.url, '_blank')}
+                        className="inline-flex items-center justify-center p-2 rounded border border-foreground/20 hover:bg-muted transition-colors"
+                        disabled={note.url === '#'}
+                        title="Open Link"
+                      >
+                        <ExternalLink className="h-3.5 w-3.5 text-foreground" />
+                      </button>
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          )}
+        </div>
+        <Footer />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-hero">
+    <div className="min-h-screen bg-background flex flex-col">
       <Navbar />
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
-          <Button onClick={() => navigate('/btech-notes/third-year/semester-5')} variant="outline" className="mb-4">
-            <ArrowLeft className="h-4 w-4 mr-2" />Back to 5th Sem
-          </Button>
-          <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-2">Open Elective Subjects 📖</h1>
-          <p className="text-muted-foreground text-lg mb-6">Choose your preferred open elective subject - One will be allotted based on GPA</p>
-        </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {subjects.map((subject, index) => {
-            const playlists = getSubjectPlaylists(subject.id);
-            const hasPlaylists = (playlists.detailed?.length > 0 && playlists.detailed[0].url !== '#') || (playlists.oneshot?.length > 0);
+      {/* Hero Banner */}
+      <div className="bg-foreground dark:bg-card text-background dark:text-foreground pt-16 pb-12 px-4 sm:px-8">
+        <div className="max-w-5xl mx-auto">
+          <button
+            onClick={() => navigate(source === 'bsms' ? '/bsms/sem-5' : '/btech-notes/third-year/semester-5')}
+            className="inline-flex items-center gap-2 text-xs font-semibold tracking-widest uppercase opacity-50 hover:opacity-100 transition-opacity mb-8"
+          >
+            <ArrowLeft className="h-3.5 w-3.5" /> {source === 'bsms' ? 'Back to 5th Sem BS-MS' : 'Back to 5th Sem'}
+          </button>
+          <p className="text-xs font-bold tracking-[0.2em] uppercase opacity-50 mb-3">Open Elective Subjects</p>
+          <h1 className="text-4xl md:text-5xl font-serif leading-tight mb-3">
+            Open Electives<br />
+            <span className="opacity-60">5th Semester Study Resources</span>
+          </h1>
+          <p className="text-sm opacity-50 mb-8">Choose your preferred open elective subject — One will be allotted based on GPA</p>
+          <div className="flex flex-wrap gap-2">
+            <span className="text-xs font-semibold tracking-wider uppercase border border-background/30 px-3 py-1.5 rounded">{source === 'bsms' ? 'BS-MS Electives' : 'B.Tech Electives'}</span>
+            <span className="text-xs font-semibold tracking-wider uppercase border border-background/30 px-3 py-1.5 rounded">{subjects.length} Subjects Available</span>
+            <span className="text-xs font-semibold tracking-wider uppercase border border-background/30 px-3 py-1.5 rounded">5th Semester</span>
+          </div>
+        </div>
+      </div>
 
-            return (
-              <motion.div key={subject.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.1 }} whileHover={{ scale: 1.02 }}>
-                <Card className="feature-card h-full cursor-pointer border-2 border-transparent hover:border-primary/20 shadow-lg" onClick={() => setSelectedSubject(subject.id)}>
-                  <CardHeader>
-                    <div className={`w-16 h-16 ${subject.color} rounded-full flex items-center justify-center text-2xl mb-4 mx-auto shadow-lg`}>{subject.icon}</div>
-                    <CardTitle className="text-lg text-center">{subject.name}</CardTitle>
-                    <CardDescription className="text-center">{subject.notes.length} notes available</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="flex items-center justify-between mb-4">
-                      <Badge className="bg-green-500 text-white">{subject.notes.length} Files</Badge>
-                      <Button variant="outline" size="sm">View Notes</Button>
+      <div className="max-w-5xl mx-auto px-4 sm:px-8 py-10 space-y-10 flex-1 w-full mb-12">
+        <div>
+          <p className="text-xs font-bold tracking-[0.15em] uppercase text-muted-foreground mb-5">Available Electives</p>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {subjects.map((subject, index) => {
+              const playlists = getSubjectPlaylists(subject.id);
+              const hasPlaylists = (playlists.detailed?.length > 0 && playlists.detailed[0].url !== '#') || (playlists.oneshot?.length > 0);
+
+              return (
+                <motion.div
+                  key={subject.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.06, duration: 0.4 }}
+                >
+                  <div 
+                    className="group border border-border bg-card hover:border-foreground/30 rounded-xl p-5 transition-all duration-300 hover:shadow-lg h-full flex flex-col relative cursor-pointer"
+                    onClick={() => setSelectedSubject(subject.id)}
+                  >
+                    <div className="flex items-start justify-between mb-4">
+                      <div className={`w-16 h-16 ${subject.color} rounded-full flex items-center justify-center text-2xl shadow-lg`}>
+                        {subject.icon}
+                      </div>
+                      <span className="text-xs font-bold text-white bg-green-500 px-2 py-0.5 rounded-full">
+                        {subject.notes[0].url === '#' ? 0 : subject.notes.length} files
+                      </span>
                     </div>
+
+                    <h3 className="font-semibold text-foreground text-sm leading-snug mb-1 flex-1">{subject.name}</h3>
+                    
                     {hasPlaylists && (
-                      <div className="border-t pt-4">
-                        <div className="flex items-center justify-between cursor-pointer hover:bg-muted/50 rounded p-2 -m-2" onClick={(e) => { e.stopPropagation(); toggleSubjectExpansion(subject.id); }}>
-                          <div className="flex items-center gap-2"><Play className="h-4 w-4 text-primary" /><span className="text-sm font-medium">Study Playlists</span></div>
-                          {expandedSubjects.includes(subject.id) ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
-                        </div>
+                      <div className="mt-3 pt-3 border-t border-border" onClick={(e) => e.stopPropagation()}>
+                        <button
+                          className="flex items-center justify-between w-full text-xs font-semibold text-muted-foreground hover:text-foreground transition-colors"
+                          onClick={() => toggleSubjectExpansion(subject.id)}
+                        >
+                          <span className="flex items-center gap-1.5">
+                            <Play className="h-3 w-3" /> Study Playlists
+                          </span>
+                          {expandedSubjects.includes(subject.id) ? <ChevronDown className="h-3.5 w-3.5" /> : <ChevronRight className="h-3.5 w-3.5" />}
+                        </button>
                         {expandedSubjects.includes(subject.id) && (
-                          <div className="mt-3 space-y-2 pl-2">
+                          <div className="mt-2 space-y-1">
                             {playlists.detailed?.length > 0 && playlists.detailed[0].url !== '#' && (
-                              <Button variant="ghost" size="sm" className="w-full justify-start text-xs h-8" onClick={(e) => { e.stopPropagation(); handlePlaylistClick(subject.id, 'detailed'); }}>
-                                📚 Detailed Playlists ({playlists.detailed.length})
-                              </Button>
+                              <button
+                                className="w-full text-left text-xs py-1.5 px-2 rounded-lg hover:bg-muted transition-colors text-muted-foreground hover:text-foreground"
+                                onClick={() => handlePlaylistClick(subject.id, 'detailed')}
+                              >
+                                📚 Detailed ({playlists.detailed.length})
+                              </button>
                             )}
                             {playlists.oneshot?.length > 0 && (
-                              <Button variant="ghost" size="sm" className="w-full justify-start text-xs h-8" onClick={(e) => { e.stopPropagation(); handlePlaylistClick(subject.id, 'oneshot'); }}>
-                                ⚡ One Shot Videos ({playlists.oneshot.length})
-                              </Button>
+                              <button
+                                className="w-full text-left text-xs py-1.5 px-2 rounded-lg hover:bg-muted transition-colors text-muted-foreground hover:text-foreground"
+                                onClick={() => handlePlaylistClick(subject.id, 'oneshot')}
+                              >
+                                ⚡ One Shot ({playlists.oneshot.length})
+                              </button>
                             )}
                           </div>
                         )}
                       </div>
                     )}
-                  </CardContent>
-                </Card>
-              </motion.div>
-            );
-          })}
+
+                    <div className="mt-4">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setSelectedSubject(subject.id);
+                        }}
+                        className="w-full text-xs font-bold tracking-wider uppercase py-2.5 px-4 rounded-lg border border-foreground/20 hover:bg-foreground hover:text-background transition-all duration-200"
+                      >
+                        View Notes
+                      </button>
+                    </div>
+                  </div>
+                </motion.div>
+              );
+            })}
+          </div>
         </div>
       </div>
+      <Footer />
       <PlaylistModal isOpen={showPlaylistModal} onClose={() => setShowPlaylistModal(false)} playlists={getSubjectPlaylists(selectedSubjectForPlaylist)[selectedPlaylistType] || []} type={selectedPlaylistType} title={subjects.find(s => s.id === selectedSubjectForPlaylist)?.name || ''} />
     </div>
   );
 };
 
-export default FifthSemesterCSEOpenElectives;
+export default FifthSemesterOpenElectives;
