@@ -9,7 +9,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { PlaylistModal } from '@/components/PlaylistModal';
-import { smartDownload } from '@/lib/downloadUtils';
+import { smartDownload, viewInBrowser } from '@/lib/downloadUtils';
 
 const FourthSemesterCHENotes = () => {
   const navigate = useNavigate();
@@ -295,10 +295,10 @@ const FourthSemesterCHENotes = () => {
                         <Download className="h-3.5 w-3.5" /> Download
                       </button>
                       <button
-                        onClick={() => window.open(note.url, '_blank')}
+                        onClick={() => viewInBrowser(note.url)}
                         className="inline-flex items-center justify-center p-2 rounded border border-foreground/20 hover:bg-muted transition-colors"
                         disabled={note.url === '#'}
-                        title="Open Link"
+                        title="View in Browser"
                       >
                         <ExternalLink className="h-3.5 w-3.5 text-foreground" />
                       </button>
@@ -455,3 +455,6 @@ const FourthSemesterCHENotes = () => {
 };
 
 export default FourthSemesterCHENotes;
+
+
+

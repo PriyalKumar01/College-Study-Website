@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { PlaylistModal } from '@/components/PlaylistModal';
-import { smartDownload } from '@/lib/downloadUtils';
+import { smartDownload, viewInBrowser } from '@/lib/downloadUtils';
 
 const ThirdSemesterMENotes = () => {
   const navigate = useNavigate();
@@ -185,14 +185,14 @@ const ThirdSemesterMENotes = () => {
   const subjects = staticSubjects.map((sub) => ({
     ...sub,
     notes: [
-      ...sub.notes,
+      ...sub.notes.map(n => ({ ...n, isCommunity: false as const })),
       ...(communityNotes || [])
         .filter((cn) => cn.subject === sub.name || cn.subject === sub.id)
         .map((cn) => ({
           id: cn.id,
           title: cn.title,
           url: cn.file_url,
-          isCommunity: true,
+          isCommunity: true as const,
           fileName: cn.file_name,
           uploadedBy: cn.uploaded_by,
           userName: cn.user_name
@@ -260,7 +260,7 @@ const ThirdSemesterMENotes = () => {
                     {note.isCommunity && isOwner && (
                       <button
                         className="absolute top-3 right-3 text-red-500 hover:text-red-700 bg-red-50 dark:bg-red-950/20 p-1.5 rounded-lg transition-colors z-10"
-                        onClick={() => handleDeleteCommunityNote(note.id)}
+                        onClick={() => handleDeleteCommunityNote(note.id!)}
                         title="Delete material"
                       >
                         <Trash2 className="h-4 w-4" />
@@ -288,10 +288,10 @@ const ThirdSemesterMENotes = () => {
                         <Download className="h-3.5 w-3.5" /> Download
                       </button>
                       <button
-                        onClick={() => window.open(note.url, '_blank')}
+                        onClick={() => viewInBrowser(note.url)}
                         className="inline-flex items-center justify-center p-2 rounded border border-foreground/20 hover:bg-muted transition-colors"
                         disabled={note.url === '#'}
-                        title="Open Link"
+                        title="View in Browser"
                       >
                         <ExternalLink className="h-3.5 w-3.5 text-foreground" />
                       </button>

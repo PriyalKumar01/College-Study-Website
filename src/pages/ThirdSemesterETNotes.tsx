@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { PlaylistModal } from '@/components/PlaylistModal';
-import { smartDownload } from '@/lib/downloadUtils';
+import { smartDownload, viewInBrowser } from '@/lib/downloadUtils';
 
 const ThirdSemesterETNotes = () => {
   const navigate = useNavigate();
@@ -34,6 +34,13 @@ const ThirdSemesterETNotes = () => {
         { title: 'DE One Shot by- Knowledge Gate', url: 'https://youtu.be/pHNbm-4reIc?si=BAIqs2C-Ga8NRzPJ' },
         { title: 'DE One Shot by- 5 Min. Engg.', url: 'https://youtu.be/9Tn9M98yER8?si=Mubongdz8rnHGTaz' }
       ]
+    },
+    ssdc: {
+      detailed: [
+        { title: 'Analog Electronics Playlist', url: 'https://youtube.com/playlist?list=PLs5_Rtf2P2r5MplAOADz3fTWIyBZTkGbB&si=7kE-IzLhxTi_ZYd8', recommended: true },
+        { title: 'EDC Complete YouTube Playlist', url: 'https://youtube.com/playlist?list=PLs5_Rtf2P2r75okkE2V9oXbwJI-8m-63Q&si=1zgs2v-uAFM46ddP' , recommended: true},
+      ],
+      oneshot: []
     },
     math2: {
       detailed: [
@@ -130,7 +137,7 @@ const ThirdSemesterETNotes = () => {
       ]
     },
     {
-      id: 'ssd',
+      id: 'ssdc',
       name: 'Solid State Devices & Circuit (SSDC)',
       icon: '🧲',
       color: 'bg-red-500',
@@ -265,7 +272,7 @@ interface Note {
                     {note.isCommunity && isOwner && (
                       <button
                         className="absolute top-3 right-3 text-red-500 hover:text-red-700 bg-red-50 dark:bg-red-950/20 p-1.5 rounded-lg transition-colors z-10"
-                        onClick={() => handleDeleteCommunityNote(note.id)}
+                        onClick={() => handleDeleteCommunityNote(note.id!)}
                         title="Delete material"
                       >
                         <Trash2 className="h-4 w-4" />
@@ -293,10 +300,10 @@ interface Note {
                         <Download className="h-3.5 w-3.5" /> Download
                       </button>
                       <button
-                        onClick={() => window.open(note.url, '_blank')}
+                        onClick={() => viewInBrowser(note.url)}
                         className="inline-flex items-center justify-center p-2 rounded border border-foreground/20 hover:bg-muted transition-colors"
                         disabled={note.url === '#'}
-                        title="Open Link"
+                        title="View in Browser"
                       >
                         <ExternalLink className="h-3.5 w-3.5 text-foreground" />
                       </button>
