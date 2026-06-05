@@ -69,18 +69,19 @@ const NotesContributors = () => {
     { rank: 18, name: "Sumit Chaurasia", branch: "ET", batch: "28", coins: 10, socialUrl: "#" },
     { rank: 19, name: "Rakesh Varun", branch: "PL", batch: "29", coins: 8, socialUrl: "https://www.linkedin.com/in/rakesh-varun-618309381/" },
     { rank: 20, name: "Anshika chaudhary", branch: "CSE", batch: "29", coins: 7, socialUrl: "https://www.linkedin.com/in/anshika-chaudhary-5535763a1/"},
-    { rank: 21, name: "Sudhir Kumar Gupta", branch: "CSE", batch: "27", coins: 4, socialUrl: "https://www.linkedin.com/in/spidy-sudhir/" },
-    { rank: 22, name: "Vishal Yadav", branch: "CSE", batch: "27", coins: 2, socialUrl: "#" },
-    { rank: 23, name: "Tanya Verma", branch: "FT", batch: "28", coins: 2, socialUrl: "https://www.linkedin.com/in/verma-tanya-18t/" }, // Sequential ranks
-    { rank: 24, name: "Soni Rawat", branch: "ME", batch: "28", coins: 2, socialUrl: "https://www.linkedin.com/in/soni-rawat-717768332/" },
-    { rank: 25, name: "Kanishtha Mishra", branch: "LFT", batch: "28", coins: 2, socialUrl: "https://www.linkedin.com/in/kanishtha-mishra-8709932ba/" },
-    { rank: 26, name: "Satyam Tripathi", branch: "IT", batch: "28", coins: 2, socialUrl: "#" },
-    { rank: 27, name: "Ankit Yadav", branch: "FT", batch: "27", coins: 1, socialUrl: "#" },
-    { rank: 28, name: "Aryan Gaurav", branch: "IT", batch: "27", coins: 1, socialUrl: "https://www.linkedin.com/in/aryan-gaurav-420744242/" },
-    { rank: 29, name: "Laxita Rajora", branch: "PT", batch: "29", coins: 1, socialUrl: "https://www.linkedin.com/in/laxita-rajora-3000b7380/" },
-    { rank: 30, name: "Jaideep Kumar", branch: "CSE", batch: "29", coins: 1, socialUrl: "#" },
-    { rank: 31, name: "Arjun Gupta", branch: "CHE", batch: "28", coins: 1, socialUrl: "https://www.linkedin.com/in/arjun-gupta-9597a8329/" },
-    { rank: 32, name: "Radhika Goyal", branch: "ET", batch: "29", coins: 1, socialUrl: "https://www.linkedin.com/in/radhika-goyal-8b7950383/" },
+    { rank: 21, name: "Ghanisth Umrao", branch: "ET", batch: "28", coins: 5, socialUrl: "https://www.linkedin.com/in/ghanisth-umrao-98a66732a/" },
+    { rank: 22, name: "Sudhir Kumar Gupta", branch: "CSE", batch: "27", coins: 4, socialUrl: "https://www.linkedin.com/in/spidy-sudhir/" },
+    { rank: 23, name: "Vishal Yadav", branch: "CSE", batch: "27", coins: 2, socialUrl: "#" },
+    { rank: 24, name: "Tanya Verma", branch: "FT", batch: "28", coins: 2, socialUrl: "https://www.linkedin.com/in/verma-tanya-18t/" }, // Sequential ranks
+    { rank: 25, name: "Soni Rawat", branch: "ME", batch: "28", coins: 2, socialUrl: "https://www.linkedin.com/in/soni-rawat-717768332/" },
+    { rank: 26, name: "Kanishtha Mishra", branch: "LFT", batch: "28", coins: 2, socialUrl: "https://www.linkedin.com/in/kanishtha-mishra-8709932ba/" },
+    { rank: 27, name: "Satyam Tripathi", branch: "IT", batch: "28", coins: 2, socialUrl: "#" },
+    { rank: 28, name: "Ankit Yadav", branch: "FT", batch: "27", coins: 1, socialUrl: "#" },
+    { rank: 29, name: "Aryan Gaurav", branch: "IT", batch: "27", coins: 1, socialUrl: "https://www.linkedin.com/in/aryan-gaurav-420744242/" },
+    { rank: 30, name: "Laxita Rajora", branch: "PT", batch: "29", coins: 1, socialUrl: "https://www.linkedin.com/in/laxita-rajora-3000b7380/" },
+    { rank: 31, name: "Jaideep Kumar", branch: "CSE", batch: "29", coins: 1, socialUrl: "#" },
+    { rank: 32, name: "Arjun Gupta", branch: "CHE", batch: "28", coins: 1, socialUrl: "https://www.linkedin.com/in/arjun-gupta-9597a8329/" },
+    { rank: 33, name: "Radhika Goyal", branch: "ET", batch: "29", coins: 1, socialUrl: "https://www.linkedin.com/in/radhika-goyal-8b7950383/" },
   ];
 
   const getMedalIcon = (medal?: string) => {

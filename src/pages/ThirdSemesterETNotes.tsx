@@ -135,8 +135,12 @@ const ThirdSemesterETNotes = () => {
       icon: '🧲',
       color: 'bg-red-500',
       notes: [
+        { title: 'SSD Unit-1 & 2 Notes', url: 'https://drive.google.com/file/d/1X-NSopwUOC9A6BsD__AhnjmnFEg7TSkE/view?usp=drivesdk' , recommended: true },
+        { title: 'SSD Unit- 2 (Rest Part) Notes', url: 'https://drive.google.com/file/d/16KAdJDK18p5DkKFfkKkdZZFGpDX37Eyz/view?usp=drivesdk' , recommended : true},
+        { title: 'SSD Unit-3 Notes', url: 'https://drive.google.com/file/d/1XTvScS9PfCq7Nmwfvbb6lmdLhINN7vt0/view?usp=drivesdk' , recommended : true},
+        { title: 'SSD Unit-4 Notes', url: 'https://drive.google.com/file/d/1HY1UPSAbC8ortyoHtNx1EiFAL6ik2fc_/view?usp=drivesdk' , recommended : true},
+        { title: 'SSD Unit-5 Notes', url: 'https://drive.google.com/file/d/1IpAE2s8LN6DkuHgQtx2EtATV6l3DoUr-/view?usp=drivesdk' , recommended : true},
         { title: 'Microelectronic Circuit Book', url: 'https://drive.google.com/uc?export=download&id=1h-Xz0wo9m_tmzIUHI4a2GK1Wms5ICEqH' },
-        { title: 'SSD Unit-5 Notes', url: 'https://drive.google.com/uc?export=download&id=1Xkf5f7V7SMXGYsvu6x9HTFAcpiNBOFy_' }
       ]
     },
     {
