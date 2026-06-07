@@ -147,7 +147,7 @@ const BSMSSem6Notes = () => {
     }
   };
 
-  const syllabus = { title: 'BS-MS 6th Sem Syllabus', url: '#' };
+  const syllabus = { title: 'BS-MS 6th Sem Syllabus', url: 'https://hbtu.ac.in/wp-content/uploads/2024/11/BS-MS-Course-Structure.pdf' };
   const handleDownload = (url: string, title: string) => smartDownload(url, title);
 
   if (selectedSubject) {
