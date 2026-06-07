@@ -166,7 +166,7 @@ const BSMSSem5Notes = () => {
     }
   };
 
-  const syllabus = { title: 'BS-MS 5th Sem Syllabus', url: '#' };
+  const syllabus = { title: 'BS-MS 5th Sem Syllabus', url: 'https://hbtu.ac.in/wp-content/uploads/2024/11/BS-MS-Course-Structure.pdf' };
   const handleDownload = (url: string, title: string) => smartDownload(url, title);
 
   if (selectedSubject) {
@@ -390,30 +390,6 @@ const BSMSSem5Notes = () => {
                 </div>
               </motion.div>
             ))}
-
-            {/* Open Elective Card */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: subjects.length * 0.06, duration: 0.4 }}
-            >
-              <div
-                className="group border border-yellow-500/50 hover:border-yellow-500 rounded-xl p-5 bg-gradient-to-br from-yellow-50 to-amber-50 dark:from-yellow-900/20 dark:to-amber-900/20 transition-all duration-300 hover:shadow-lg h-full flex flex-col cursor-pointer"
-                onClick={() => navigate('/fifth-semester-open-electives?source=bsms')}
-              >
-                <div className="flex items-start justify-between mb-4">
-                  <span className="text-2xl">📚</span>
-                  <span className="text-xs font-bold text-white bg-yellow-500 px-2 py-0.5 rounded-full">7 Subjects</span>
-                </div>
-                <h3 className="font-semibold text-foreground text-sm leading-snug mb-1 flex-1">Open Electives</h3>
-                <p className="text-xs text-muted-foreground mb-4">Business Ethics, Environment & Ecology, Soft Skills, and more...</p>
-                <div className="mt-auto">
-                  <button className="w-full text-xs font-bold tracking-wider uppercase py-2.5 px-4 rounded-lg border border-yellow-500/50 hover:bg-yellow-500 hover:text-white transition-all duration-200">
-                    View All
-                  </button>
-                </div>
-              </div>
-            </motion.div>
           </div>
         </div>
       </div>
