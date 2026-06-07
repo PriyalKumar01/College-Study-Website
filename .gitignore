@@ -26,3 +26,7 @@ dist-ssr
 
 # TypeScript build cache (auto-generated, should not be committed)
 *.tsbuildinfo
+
+# Developer scripts
+scripts/
+
