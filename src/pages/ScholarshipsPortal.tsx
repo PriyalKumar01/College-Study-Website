@@ -1,7 +1,7 @@
 import { useState, useMemo, useEffect, useRef } from 'react';
 import {
   ExternalLink, Download, Search, X, ChevronDown, Eye, Sparkles, ArrowLeft,
-  Bookmark, BookmarkCheck, Clock, TrendingUp, GraduationCap, Loader2, Trash2, Share2, ChevronUp
+  Bookmark, BookmarkCheck, Clock, TrendingUp, GraduationCap, Loader2, Trash2, ChevronUp, Pencil
 } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import { Button } from '@/components/ui/button';
@@ -9,6 +9,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
+import EditScholarshipModal from '@/components/admin/EditScholarshipModal';
 
 // Helper: convert scholarship name → URL slug
 const toSlug = (name: string) =>
@@ -44,6 +45,8 @@ interface Scholarship {
   deadline: string;
   apply_url: string;
   tags: string[];
+  image_url?: string;
+  submitted_by_email?: string;
 }
 
 interface FilterOption { label: string; value: string; }
@@ -105,7 +108,7 @@ export default function ScholarshipsPortal() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const highlightId = searchParams.get('highlight');
-  const { isOwner } = useAuth();
+  const { isOwner, isAdmin, user } = useAuth();
   const { toast } = useToast();
   const [scholarships, setScholarships] = useState<Scholarship[]>([]);
   const [loading, setLoading] = useState(true);
@@ -114,6 +117,7 @@ export default function ScholarshipsPortal() {
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const [saved, setSaved] = useState<Set<string>>(new Set());
   const [expandedDesc, setExpandedDesc] = useState<Set<string>>(new Set());
+  const [editingScholarship, setEditingScholarship] = useState<Scholarship | null>(null);
   const filterBarRef = useRef<HTMLDivElement>(null);
   const highlightRef = useRef<HTMLDivElement>(null);
 
@@ -531,13 +535,26 @@ export default function ScholarshipsPortal() {
                       <div
                         key={sc.id}
                         ref={highlightId === sc.id ? highlightRef : undefined}
-                        className={`sc-card-hover bg-card border rounded-xl p-4 sm:p-5 transition-all ${
+                        className={`sc-card-hover bg-card border rounded-xl overflow-hidden transition-all ${
                           highlightId === sc.id
                             ? 'border-primary/60 shadow-[0_0_0_3px_hsl(var(--primary)/0.15)]'
                             : 'border-border'
                         }`}
                       >
-                        <div className="sc-card-cols flex items-stretch">
+                        {/* Scholarship banner image (if present) */}
+                        {sc.image_url && (
+                          <div className="w-full overflow-hidden" style={{ maxHeight: 130 }}>
+                            <img
+                              src={sc.image_url}
+                              alt={sc.name}
+                              className="w-full object-cover"
+                              style={{ maxHeight: 130, objectPosition: 'center' }}
+                              onError={e => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }}
+                            />
+                          </div>
+                        )}
+
+                        <div className="sc-card-cols flex items-stretch p-4 sm:p-5">
 
                           {/* LEFT */}
                           <div className="flex-1 min-w-0 sm:pr-5" style={{ flexBasis: '45%' }}>
@@ -554,12 +571,20 @@ export default function ScholarshipsPortal() {
                                   title="Share on WhatsApp"
                                   className="p-1 rounded-md bg-transparent border-0 cursor-pointer text-muted-foreground hover:text-[#25D366] transition-colors inline-flex items-center justify-center"
                                 >
-                                  {/* Official WhatsApp green icon */}
                                   <svg width="15" height="15" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <circle cx="16" cy="16" r="16" fill="#25D366"/>
                                     <path d="M22.7 9.3A9.5 9.5 0 0 0 7.1 20.6L6 26l5.6-1.1a9.5 9.5 0 0 0 4.5 1.1 9.5 9.5 0 0 0 6.6-16.7zm-6.6 14.6a7.9 7.9 0 0 1-4-1.1l-.3-.2-3.3.6.7-3.2-.2-.3a7.9 7.9 0 1 1 7.1 4.2zm4.3-5.9c-.2-.1-1.4-.7-1.6-.8-.2-.1-.4-.1-.5.1-.2.2-.6.8-.8 1-.1.2-.3.2-.5.1a6.5 6.5 0 0 1-1.9-1.2 7.2 7.2 0 0 1-1.3-1.7c-.1-.2 0-.4.1-.5l.4-.4.2-.4v-.4l-.8-1.9c-.2-.5-.4-.4-.5-.4h-.5c-.2 0-.4.1-.6.3a2.7 2.7 0 0 0-.8 2c0 1.2.9 2.4 1 2.5.1.2 1.7 2.6 4.1 3.6.6.2 1 .4 1.4.5.6.2 1.1.2 1.5.1.5-.1 1.4-.6 1.6-1.1.2-.5.2-1 .1-1.1-.1-.1-.3-.2-.5-.3z" fill="#fff"/>
                                   </svg>
                                 </a>
+                                {/* Edit button: for owner OR for the admin who submitted */}
+                                {(isOwner || (isAdmin && user?.email && sc.submitted_by_email === user.email)) && (
+                                  <button onClick={() => setEditingScholarship(sc)}
+                                    title="Edit scholarship"
+                                    className="p-1 rounded-md bg-transparent border-0 cursor-pointer text-primary hover:bg-primary/10 transition-colors"
+                                  >
+                                    <Pencil size={13} />
+                                  </button>
+                                )}
                                 <button onClick={() => toggleSave(sc.id)}
                                   className={`p-0 bg-transparent border-0 cursor-pointer transition-colors ${
                                     isSaved ? 'text-primary' : 'text-muted-foreground'
@@ -661,31 +686,35 @@ export default function ScholarshipsPortal() {
 
               {scholarships.length > 0 && (
                 <>
-                  <div className="bg-card border border-border rounded-xl p-4 mb-3.5">
-                    <div className="flex items-center gap-1.5 mb-3.5">
-                      <Clock size={14} className="text-amber-500" />
-                      <span className="text-[13px] font-bold text-foreground">Closing Soon</span>
+                  {/* Closing Soon — red alert border */}
+                  <div className="bg-card border-2 border-red-400/70 rounded-xl p-4 mb-3.5 shadow-sm" style={{ boxShadow: '0 0 0 1px rgba(239,68,68,0.1), 0 4px 14px rgba(239,68,68,0.08)' }}>
+                    <div className="flex items-center gap-1.5 mb-3">
+                      <span className="flex items-center justify-center w-5 h-5 rounded-full bg-red-100 dark:bg-red-900/30">
+                        <Clock size={11} className="text-red-500" />
+                      </span>
+                      <span className="text-[13px] font-bold text-red-600 dark:text-red-400">⚠ Closing Soon</span>
                     </div>
                     {closingSoon.length === 0 ? (
                       <div className="text-xs text-muted-foreground">No open scholarships.</div>
                     ) : closingSoon.map(sc => (
                       <a key={sc.id} href={sc.apply_url} target="_blank" rel="noreferrer"
-                        className="block mb-3 pb-3 border-b border-border no-underline last:border-0 last:pb-0 last:mb-0"
+                        className="block mb-3 pb-3 border-b border-red-100 dark:border-red-900/20 no-underline last:border-0 last:pb-0 last:mb-0 hover:opacity-80 transition-opacity"
                       >
                         <div className="text-[12.5px] font-semibold text-foreground leading-tight mb-0.5">{sc.name}</div>
-                        <div className="text-[11px] text-muted-foreground">Deadline: {sc.deadline}</div>
+                        <div className="text-[11px] text-red-500 font-medium">Deadline: {sc.deadline}</div>
                       </a>
                     ))}
                   </div>
 
-                  <div className="bg-card border border-border rounded-xl p-4 mb-3.5">
+                  {/* Highest Value */}
+                  <div className="bg-card border-2 border-primary/30 rounded-xl p-4 mb-3.5 shadow-sm">
                     <div className="flex items-center gap-1.5 mb-3.5">
                       <TrendingUp size={14} className="text-primary" />
                       <span className="text-[13px] font-bold text-foreground">Highest Value</span>
                     </div>
                     {highValue.map(sc => (
                       <a key={sc.id} href={sc.apply_url} target="_blank" rel="noreferrer"
-                        className="flex items-center justify-between mb-2.5 no-underline gap-2 last:mb-0"
+                        className="flex items-center justify-between mb-2.5 no-underline gap-2 last:mb-0 hover:opacity-80 transition-opacity"
                       >
                         <div className="text-xs text-foreground font-medium leading-tight flex-1 min-w-0 truncate">
                           {sc.name}
@@ -699,9 +728,11 @@ export default function ScholarshipsPortal() {
                 </>
               )}
 
-              <div className="bg-card border border-border rounded-xl p-4">
-                <div className="text-[13px] font-bold text-foreground mb-3">
-                  Official Portals
+              {/* Official Portals — highlighted */}
+              <div className="bg-card border-2 border-primary/20 rounded-xl p-4 shadow-sm">
+                <div className="flex items-center gap-1.5 mb-3">
+                  <ExternalLink size={13} className="text-primary" />
+                  <span className="text-[13px] font-bold text-foreground">Official Portals</span>
                 </div>
                 {[
                   { label: 'NSP — scholarships.gov.in', href: 'https://scholarships.gov.in' },
@@ -729,6 +760,15 @@ export default function ScholarshipsPortal() {
           </div>
         </div>
       </div>
+
+      {/* Edit Scholarship Modal */}
+      {editingScholarship && (
+        <EditScholarshipModal
+          scholarship={editingScholarship}
+          onClose={() => setEditingScholarship(null)}
+          onSaved={fetchScholarships}
+        />
+      )}
     </>
   );
 }

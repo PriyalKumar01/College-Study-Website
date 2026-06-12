@@ -10,6 +10,7 @@ import { useTheme } from '@/providers/ThemeProvider';
 import { useAuth } from '@/contexts/AuthContext';
 import { Link, useLocation } from 'react-router-dom';
 import ProfileDropdown from './ProfileDropdown';
+import NotificationBell from './NotificationBell';
 import {
   Sheet,
   SheetContent,
@@ -104,6 +105,9 @@ const Navbar = ({ onOpenAuth }: NavbarProps) => {
           </div>
 
           <div className="flex items-center gap-3">
+            {/* Notification Bell - visible always */}
+            <NotificationBell />
+
             {/* Desktop Theme Toggle & Auth */}
             <div className="hidden md:flex items-center gap-3">
               <Button variant="ghost" size="icon" onClick={toggleTheme} className="h-9 w-9">

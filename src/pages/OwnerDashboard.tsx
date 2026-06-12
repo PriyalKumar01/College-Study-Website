@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   CheckCircle, XCircle, User, Calendar, BookOpen, ShieldAlert,
-  Eye, Trash2, Crown, UserPlus, UserMinus, Search, Loader2, FileText, Download, GraduationCap, ExternalLink
+  Eye, Trash2, Crown, UserPlus, UserMinus, Search, Loader2, FileText, Download, GraduationCap, ExternalLink, Bell, Send, Pencil
 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
@@ -35,9 +35,12 @@ interface Material {
 interface AdminRole {
   id: string;
   user_email: string;
+  user_name: string | null;
   role: string;
   created_at: string | null;
   created_by: string | null;
+  from_date: string | null;
+  to_date: string | null;
 }
 
 interface Scholarship {
@@ -55,6 +58,149 @@ interface Scholarship {
   created_at: string | null;
 }
 
+// ─── AdminRoleCard — shows name/email/dates, owner can edit inline ────────────
+interface AdminRoleCardProps {
+  role: AdminRole;
+  currentUserEmail?: string;
+  onRemove: (id: string, email: string) => void;
+  onRefresh: () => void;
+}
+
+function AdminRoleCard({ role, currentUserEmail, onRemove, onRefresh }: AdminRoleCardProps) {
+  const { toast } = useToast();
+  const isOwnerRole = role.role === 'owner';
+  const [editing, setEditing] = useState(false);
+  const [editName, setEditName] = useState(role.user_name || '');
+  const [editFromDate, setEditFromDate] = useState(role.from_date || '');
+  const [editToDate, setEditToDate] = useState(role.to_date || '');
+  const [saving, setSaving] = useState(false);
+
+  const handleSave = async () => {
+    setSaving(true);
+    try {
+      const { error } = await (supabase as any)
+        .from('admin_roles')
+        .update({
+          user_name: editName.trim() || null,
+          from_date: editFromDate || null,
+          to_date: editToDate || null,
+        })
+        .eq('id', role.id);
+      if (error) throw error;
+      toast({ title: 'Updated ✅', description: 'Admin details saved.' });
+      setEditing(false);
+      onRefresh();
+    } catch (err: any) {
+      toast({ title: 'Error', description: err.message, variant: 'destructive' });
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const formatDate = (d: string | null) => {
+    if (!d) return null;
+    return new Date(d).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+  };
+
+  return (
+    <Card className={`feature-card border-l-4 ${isOwnerRole ? 'border-l-amber-400' : 'border-l-blue-400'}`}>
+      <CardContent className="p-4">
+        <div className="flex items-start justify-between gap-3 flex-wrap">
+          {/* Left: Avatar + Info */}
+          <div className="flex items-start gap-3 flex-1 min-w-0">
+            <div className={`w-11 h-11 rounded-full flex items-center justify-center flex-shrink-0 text-base font-bold ${
+              isOwnerRole ? 'bg-amber-100 dark:bg-amber-900/30 text-amber-600' : 'bg-blue-100 dark:bg-blue-900/30 text-blue-600'
+            }`}>
+              {isOwnerRole
+                ? <Crown className="h-5 w-5" />
+                : (role.user_name || role.user_email).charAt(0).toUpperCase()
+              }
+            </div>
+            <div className="flex-1 min-w-0">
+              {editing ? (
+                <div className="space-y-2">
+                  <input
+                    value={editName}
+                    onChange={e => setEditName(e.target.value)}
+                    placeholder="Full Name"
+                    className="w-full text-sm px-2 py-1 rounded border border-border bg-background text-foreground outline-none"
+                  />
+                  <div className="flex gap-2 flex-wrap text-xs text-muted-foreground items-center">
+                    <span className="font-semibold">From:</span>
+                    <input type="date" value={editFromDate} onChange={e => setEditFromDate(e.target.value)}
+                      className="px-2 py-0.5 rounded border border-border bg-background text-foreground text-xs outline-none" />
+                    <span className="font-semibold">To:</span>
+                    <input type="date" value={editToDate} onChange={e => setEditToDate(e.target.value)}
+                      className="px-2 py-0.5 rounded border border-border bg-background text-foreground text-xs outline-none" />
+                    <span className="text-[10px] text-muted-foreground">(leave 'To' empty if currently active)</span>
+                  </div>
+                  <div className="flex gap-2">
+                    <button onClick={handleSave} disabled={saving}
+                      className="px-3 py-1 text-[11px] font-bold rounded-md text-white"
+                      style={{ background: 'hsl(var(--primary))' }}>
+                      {saving ? 'Saving…' : 'Save'}
+                    </button>
+                    <button onClick={() => setEditing(false)}
+                      className="px-3 py-1 text-[11px] font-bold rounded-md border border-border text-foreground">
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <>
+                  <div className="flex items-center gap-2 flex-wrap">
+                    {role.user_name && (
+                      <span className="text-sm font-bold text-foreground">{role.user_name}</span>
+                    )}
+                    <Badge variant="outline" className={`text-[10px] capitalize ${
+                      isOwnerRole ? 'border-amber-400 text-amber-600' : 'border-blue-400 text-blue-600'
+                    }`}>
+                      {role.role}
+                    </Badge>
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-0.5 truncate">{role.user_email}</p>
+                  {/* Date range */}
+                  {(role.from_date || role.to_date) && (
+                    <p className="text-[11px] text-muted-foreground mt-0.5">
+                      📅 {formatDate(role.from_date) || '?'} → {role.to_date ? formatDate(role.to_date) : <span className="text-green-600 font-semibold">Present</span>}
+                    </p>
+                  )}
+                </>
+              )}
+            </div>
+          </div>
+
+          {/* Right: Actions */}
+          {!editing && (
+            <div className="flex gap-2 items-center flex-shrink-0">
+              {/* Edit dates/name — owner only */}
+              {!isOwnerRole && (
+                <Button
+                  variant="ghost" size="sm"
+                  className="text-primary hover:bg-primary/10 h-8 px-2"
+                  onClick={() => { setEditName(role.user_name || ''); setEditFromDate(role.from_date || ''); setEditToDate(role.to_date || ''); setEditing(true); }}
+                >
+                  <Pencil className="h-3.5 w-3.5 mr-1" /> Edit
+                </Button>
+              )}
+              {/* Remove — only for non-owner, not self */}
+              {!isOwnerRole && role.user_email !== currentUserEmail && (
+                <Button
+                  variant="ghost" size="sm"
+                  className="text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20 h-8 px-2"
+                  onClick={() => onRemove(role.id, role.user_email)}
+                >
+                  <UserMinus className="h-3.5 w-3.5 mr-1" /> Remove
+                </Button>
+              )}
+            </div>
+          )}
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
 const OwnerDashboard = () => {
   const { user, isOwner, loading: authLoading } = useAuth();
   const { toast } = useToast();
@@ -65,16 +211,59 @@ const OwnerDashboard = () => {
   const [scholarships, setScholarships] = useState<Scholarship[]>([]);
   const [loading, setLoading] = useState(true);
   const [newAdminEmail, setNewAdminEmail] = useState('');
+  const [newAdminName, setNewAdminName] = useState('');
   const [isPromoting, setIsPromoting] = useState(false);
   const [materialFilter, setMaterialFilter] = useState<'all' | 'pending' | 'approved' | 'rejected'>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [scholarshipFilter, setScholarshipFilter] = useState<'all' | 'pending' | 'approved'>('all');
+  const [notifTitle, setNotifTitle] = useState('');
+  const [notifBody, setNotifBody] = useState('');
+  const [sendingNotif, setSendingNotif] = useState(false);
+  const [notifications, setNotifications] = useState<Array<{id:string; title:string; body:string; sent_by:string; created_at:string}>>([]);
 
   useEffect(() => {
     if (isOwner) {
       fetchAll();
+      fetchNotifications();
     }
   }, [isOwner]);
+
+  const fetchNotifications = async () => {
+    const { data } = await (supabase as any)
+      .from('notifications')
+      .select('*')
+      .order('created_at', { ascending: false })
+      .limit(20);
+    if (data) setNotifications(data);
+  };
+
+  const handleSendNotification = async () => {
+    if (!notifTitle.trim() || !notifBody.trim()) return;
+    setSendingNotif(true);
+    try {
+      const { error } = await (supabase as any).from('notifications').insert({
+        title: notifTitle.trim(),
+        body: notifBody.trim(),
+        sent_by: user?.user_metadata?.first_name || 'Priyal Kumar',
+        sent_by_email: user?.email,
+        is_active: true,
+      });
+      if (error) throw error;
+      toast({ title: '🔔 Notification sent!', description: 'All users will see it in the notification bell.' });
+      setNotifTitle('');
+      setNotifBody('');
+      fetchNotifications();
+    } catch (err: any) {
+      toast({ title: 'Failed to send', description: err.message, variant: 'destructive' });
+    } finally {
+      setSendingNotif(false);
+    }
+  };
+
+  const handleDeleteNotification = async (id: string) => {
+    await (supabase as any).from('notifications').delete().eq('id', id);
+    fetchNotifications();
+  };
 
   const fetchAll = async () => {
     setLoading(true);
@@ -185,6 +374,7 @@ const OwnerDashboard = () => {
   const handlePromoteAdmin = async () => {
     if (!newAdminEmail.trim()) return;
     const email = newAdminEmail.trim().toLowerCase();
+    const name = newAdminName.trim();
 
     if (email === user?.email) {
       toast({ title: 'Cannot modify', description: "You can't change your own role.", variant: 'destructive' });
@@ -195,7 +385,13 @@ const OwnerDashboard = () => {
     try {
       const { error } = await supabase
         .from('admin_roles')
-        .insert({ user_email: email, role: 'admin', created_by: user?.email || 'owner' });
+        .insert({ 
+          user_email: email, 
+          user_name: name || null,
+          role: 'admin', 
+          created_by: user?.email || 'owner',
+          from_date: new Date().toISOString().split('T')[0],
+        });
 
       if (error) {
         if (error.code === '23505') {
@@ -204,8 +400,9 @@ const OwnerDashboard = () => {
           throw error;
         }
       } else {
-        toast({ title: 'Admin added ✅', description: `${email} is now an admin.` });
+        toast({ title: 'Admin added ✅', description: `${name || email} is now an admin.` });
         setNewAdminEmail('');
+        setNewAdminName('');
         fetchAdminRoles();
       }
     } catch (err: any) {
@@ -325,7 +522,7 @@ const OwnerDashboard = () => {
         </motion.div>
 
         <Tabs defaultValue="pending" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-2 md:grid-cols-4">
+          <TabsList className="grid w-full grid-cols-2 md:grid-cols-5">
             <TabsTrigger value="pending" className="flex items-center gap-2">
               <BookOpen className="h-4 w-4" />
               Pending ({pendingMaterials.length})
@@ -333,6 +530,10 @@ const OwnerDashboard = () => {
             <TabsTrigger value="scholarships" className="flex items-center gap-2">
               <GraduationCap className="h-4 w-4" />
               Scholarships ({scholarships.filter(s => s.approval_status === 'pending').length})
+            </TabsTrigger>
+            <TabsTrigger value="notifications" className="flex items-center gap-2">
+              <Bell className="h-4 w-4" />
+              Notifications
             </TabsTrigger>
             <TabsTrigger value="admins" className="flex items-center gap-2">
               <Crown className="h-4 w-4" />
@@ -516,20 +717,103 @@ const OwnerDashboard = () => {
             })()}
           </TabsContent>
 
+          {/* TAB: Notifications */}
+          <TabsContent value="notifications" className="space-y-6">
+            {/* Compose */}
+            <Card className="gradient-card border-2 border-primary/10">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Bell className="h-5 w-5 text-primary" /> Send Notification to All Users
+                </CardTitle>
+                <CardDescription>
+                  Compose a message that will appear in the 🔔 bell icon for all visitors. Your name will be shown as the sender.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <div>
+                  <label className="text-sm font-semibold mb-1 block">Title *</label>
+                  <Input
+                    value={notifTitle}
+                    onChange={e => setNotifTitle(e.target.value)}
+                    placeholder="e.g., 🎉 New Feature: CGPA Calculator Updated!"
+                  />
+                </div>
+                <div>
+                  <label className="text-sm font-semibold mb-1 block">Message *</label>
+                  <textarea
+                    value={notifBody}
+                    onChange={e => setNotifBody(e.target.value)}
+                    rows={3}
+                    placeholder="Describe the update, new feature, or announcement..."
+                    className="w-full px-3 py-2 rounded-lg border border-border bg-background text-foreground text-sm resize-none outline-none focus:border-primary transition-colors"
+                  />
+                </div>
+                <Button
+                  onClick={handleSendNotification}
+                  disabled={sendingNotif || !notifTitle.trim() || !notifBody.trim()}
+                  className="gap-2"
+                >
+                  {sendingNotif ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
+                  {sendingNotif ? 'Sending…' : 'Send to All Users'}
+                </Button>
+              </CardContent>
+            </Card>
+
+            {/* Sent notifications */}
+            <div className="space-y-3">
+              <h3 className="text-base font-bold">Sent Notifications ({notifications.length})</h3>
+              {notifications.length === 0 ? (
+                <Card className="gradient-card text-center py-10">
+                  <CardContent>
+                    <Bell className="h-12 w-12 text-muted-foreground mx-auto mb-3 opacity-40" />
+                    <p className="text-muted-foreground text-sm">No notifications sent yet.</p>
+                  </CardContent>
+                </Card>
+              ) : notifications.map(n => (
+                <Card key={n.id} className="feature-card border-l-4 border-l-primary">
+                  <CardContent className="flex items-start justify-between p-4 gap-3">
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-0.5 flex-wrap">
+                        <span className="text-sm font-bold text-foreground">{n.title}</span>
+                        <Badge variant="outline" className="text-[10px]">
+                          by {n.sent_by}
+                        </Badge>
+                      </div>
+                      <p className="text-xs text-muted-foreground mb-1">{n.body}</p>
+                      <p className="text-[11px] text-muted-foreground">
+                        {new Date(n.created_at).toLocaleString('en-IN', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
+                      </p>
+                    </div>
+                    <Button variant="ghost" size="sm" className="text-red-500 flex-shrink-0"
+                      onClick={() => handleDeleteNotification(n.id)}>
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </TabsContent>
+
           {/* TAB 2: Manage Admins */}
           <TabsContent value="admins" className="space-y-6">
-            {/* Promote new admin */}
+            {/* Add new admin */}
             <Card className="gradient-card border-2 border-primary/10">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <UserPlus className="h-5 w-5" /> Add New Admin
                 </CardTitle>
                 <CardDescription>
-                  Enter the email of a registered user to grant admin privileges.
+                  Enter the name and email of the user to grant admin privileges.
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="flex gap-3">
+                <div className="flex flex-col sm:flex-row gap-3">
+                  <Input
+                    value={newAdminName}
+                    onChange={(e) => setNewAdminName(e.target.value)}
+                    placeholder="Full Name (e.g. Rahul Singh)"
+                    className="flex-1"
+                  />
                   <Input
                     value={newAdminEmail}
                     onChange={(e) => setNewAdminEmail(e.target.value)}
@@ -539,14 +823,12 @@ const OwnerDashboard = () => {
                   <Button
                     onClick={handlePromoteAdmin}
                     disabled={isPromoting || !newAdminEmail.trim()}
-                    className="btn-hero"
+                    className="btn-hero flex-shrink-0"
                   >
                     {isPromoting ? (
                       <Loader2 className="h-4 w-4 animate-spin" />
                     ) : (
-                      <>
-                        <UserPlus className="h-4 w-4 mr-2" /> Add Admin
-                      </>
+                      <><UserPlus className="h-4 w-4 mr-2" /> Add Admin</>
                     )}
                   </Button>
                 </div>
@@ -556,39 +838,13 @@ const OwnerDashboard = () => {
             {/* Admin list */}
             <div className="space-y-3">
               {adminRoles.map((role) => (
-                <Card key={role.id} className="feature-card">
-                  <CardContent className="flex items-center justify-between p-4">
-                    <div className="flex items-center gap-3">
-                      <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                        role.role === 'owner' 
-                          ? 'bg-amber-100 dark:bg-amber-900/30' 
-                          : 'bg-blue-100 dark:bg-blue-900/30'
-                      }`}>
-                        {role.role === 'owner' ? (
-                          <Crown className="h-5 w-5 text-amber-600" />
-                        ) : (
-                          <User className="h-5 w-5 text-blue-600" />
-                        )}
-                      </div>
-                      <div>
-                        <p className="font-medium text-sm">{role.user_email}</p>
-                        <Badge variant="outline" className="text-xs capitalize mt-1">
-                          {role.role}
-                        </Badge>
-                      </div>
-                    </div>
-                    {role.role !== 'owner' && (
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20"
-                        onClick={() => handleRemoveAdmin(role.id, role.user_email)}
-                      >
-                        <UserMinus className="h-4 w-4 mr-1" /> Remove
-                      </Button>
-                    )}
-                  </CardContent>
-                </Card>
+                <AdminRoleCard
+                  key={role.id}
+                  role={role}
+                  currentUserEmail={user?.email}
+                  onRemove={handleRemoveAdmin}
+                  onRefresh={fetchAdminRoles}
+                />
               ))}
             </div>
           </TabsContent>

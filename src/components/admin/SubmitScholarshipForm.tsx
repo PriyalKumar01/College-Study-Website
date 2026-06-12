@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Loader2, GraduationCap, CheckCircle2, AlertTriangle } from 'lucide-react';
+import { Loader2, GraduationCap, CheckCircle2, AlertTriangle, ImageIcon } from 'lucide-react';
 
 const STREAM_OPTIONS = [
   { value: 'all', label: 'All Streams' },
@@ -52,6 +52,7 @@ export default function SubmitScholarshipForm({ onSuccess }: SubmitScholarshipFo
   const [schStatus, setSchStatus] = useState('open');
   const [selectedStreams, setSelectedStreams] = useState<string[]>([]);
   const [selectedWho, setSelectedWho] = useState<string[]>([]);
+  const [imageUrl, setImageUrl] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
@@ -94,6 +95,7 @@ export default function SubmitScholarshipForm({ onSuccess }: SubmitScholarshipFo
           status: schStatus,
           streams: selectedStreams,
           who: selectedWho,
+          image_url: imageUrl.trim() || null,
           approval_status: 'pending',
           submitted_by: user.user_metadata?.first_name || user.email?.split('@')[0],
           submitted_by_email: user.email,
@@ -112,7 +114,7 @@ export default function SubmitScholarshipForm({ onSuccess }: SubmitScholarshipFo
   const reset = () => {
     setName(''); setOrg(''); setDescription(''); setAmount(''); setAmountNum('');
     setApplyUrl(''); setDeadline(''); setIncome(''); setMarks(''); setTags('');
-    setType('government'); setSchStatus('open');
+    setType('government'); setSchStatus('open'); setImageUrl('');
     setSelectedStreams([]); setSelectedWho([]);
     setSubmitted(false);
   };
@@ -194,6 +196,22 @@ export default function SubmitScholarshipForm({ onSuccess }: SubmitScholarshipFo
           <textarea value={description} onChange={e => setDescription(e.target.value)}
             rows={3} placeholder="Brief description of the scholarship — who it's for, what it covers, special features..."
             style={{ ...inputStyle, resize: 'vertical' }} />
+        </div>
+        {/* Optional Banner Image */}
+        <div style={{ marginTop: 14 }}>
+          <label style={{ ...labelStyle, display: 'flex', alignItems: 'center', gap: 6 }}>
+            <ImageIcon size={13} style={{ color: 'hsl(var(--primary))' }} />
+            Banner Image URL <span style={{ fontSize: 11, fontWeight: 400, color: 'hsl(var(--muted-foreground))' }}>(optional — paste a direct image URL)</span>
+          </label>
+          {imageUrl && (
+            <div style={{ marginBottom: 8, borderRadius: 8, overflow: 'hidden', height: 80 }}>
+              <img src={imageUrl} alt="Preview" style={{ width: '100%', height: 80, objectFit: 'cover' }}
+                onError={e => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }} />
+            </div>
+          )}
+          <input value={imageUrl} onChange={e => setImageUrl(e.target.value)}
+            placeholder="https://example.com/scholarship-banner.jpg"
+            style={inputStyle} />
         </div>
       </div>
 
