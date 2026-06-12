@@ -1,14 +1,26 @@
 import { useState, useMemo, useEffect, useRef } from 'react';
 import {
   ExternalLink, Download, Search, X, ChevronDown, Eye, Sparkles, ArrowLeft,
-  Bookmark, BookmarkCheck, Clock, TrendingUp, GraduationCap, Loader2, Trash2
+  Bookmark, BookmarkCheck, Clock, TrendingUp, GraduationCap, Loader2, Trash2, Share2, ChevronUp
 } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import { Button } from '@/components/ui/button';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
+
+// Helper: convert scholarship name → URL slug
+const toSlug = (name: string) =>
+  name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+
+// Build the shareable WhatsApp link
+const getWhatsAppShareUrl = (sc: { name: string }) => {
+  const slug = toSlug(sc.name);
+  const pageUrl = `${window.location.origin}/scholarship/${slug}`;
+  const text = `🎓 Check out this scholarship on CollegeStudy!\n\n*${sc.name}*\n\nClick to view full details & apply:\n${pageUrl}`;
+  return `https://wa.me/?text=${encodeURIComponent(text)}`;
+};
 
 // ─── Featured UP Scholarship PDF ─────────────────────────────────────────────
 const UP_PDF_URL = 'https://drive.google.com/file/d/17o2G4M_n602fXOWlCwIse0gxVPmfuAn9/view?usp=drivesdk';
@@ -91,6 +103,8 @@ interface Filters {
 // ==================== MAIN COMPONENT ====================
 export default function ScholarshipsPortal() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const highlightId = searchParams.get('highlight');
   const { isOwner } = useAuth();
   const { toast } = useToast();
   const [scholarships, setScholarships] = useState<Scholarship[]>([]);
@@ -99,7 +113,9 @@ export default function ScholarshipsPortal() {
   const [search, setSearch] = useState('');
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const [saved, setSaved] = useState<Set<string>>(new Set());
+  const [expandedDesc, setExpandedDesc] = useState<Set<string>>(new Set());
   const filterBarRef = useRef<HTMLDivElement>(null);
+  const highlightRef = useRef<HTMLDivElement>(null);
 
   // Load scholarships from Supabase
   const fetchScholarships = async () => {
@@ -119,6 +135,15 @@ export default function ScholarshipsPortal() {
   useEffect(() => {
     fetchScholarships();
   }, []);
+
+  // Scroll to highlighted scholarship
+  useEffect(() => {
+    if (highlightId && highlightRef.current && !loading) {
+      setTimeout(() => {
+        highlightRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 300);
+    }
+  }, [highlightId, loading]);
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -197,6 +222,14 @@ export default function ScholarshipsPortal() {
 
   const toggleSave = (id: string) => {
     setSaved(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id); else next.add(id);
+      return next;
+    });
+  };
+
+  const toggleDesc = (id: string) => {
+    setExpandedDesc(prev => {
       const next = new Set(prev);
       if (next.has(id)) next.delete(id); else next.add(id);
       return next;
@@ -313,41 +346,30 @@ export default function ScholarshipsPortal() {
             <ArrowLeft size={14} /> Back to Dashboard
           </button>
 
-          {/* ─── HERO HEADER (clean, professional) ─── */}
-          <div className="relative bg-card border border-border rounded-xl mb-6 sm:mb-8 overflow-hidden">
-            {/* Subtle accent bar on top */}
-            <div className="absolute top-0 left-0 right-0 h-1 bg-primary" />
-
-            <div className="p-5 sm:p-7 md:p-8">
-              <div className="flex items-start gap-3 sm:gap-4">
-                <div className="flex-shrink-0 w-11 h-11 sm:w-12 sm:h-12 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center">
-                  <GraduationCap className="w-5 h-5 sm:w-6 sm:h-6 text-primary" strokeWidth={2.2} />
-                </div>
-                <div className="min-w-0 flex-1">
-                  <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[10px] sm:text-[11px] font-semibold bg-primary/10 text-primary border border-primary/20 uppercase tracking-wider mb-2">
-                    Verified Scholarships
-                  </div>
-                  <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-foreground leading-tight tracking-tight mb-1.5">
-                    Scholarships for College Students
-                  </h1>
-                  <p className="text-sm sm:text-[15px] text-muted-foreground leading-relaxed max-w-2xl">
-                    Curated government &amp; private scholarships across India. Check eligibility, deadlines, and apply directly from official portals.
-                  </p>
-                </div>
+          {/* ─── HERO HEADER (compact, single-line feel) ─── */}
+          <div className="relative bg-card border border-border rounded-xl mb-5 overflow-hidden">
+            <div className="absolute top-0 left-0 right-0 h-[3px] bg-primary" />
+            <div className="px-4 sm:px-6 py-3.5 sm:py-4 flex items-center gap-3 flex-wrap">
+              <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center">
+                <GraduationCap className="w-4 h-4 text-primary" strokeWidth={2.2} />
               </div>
-
-              {/* Stats row */}
-              <div className="flex flex-wrap gap-2 mt-4 sm:mt-5 sm:pl-[60px]">
-                <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-muted/50 border border-border text-xs font-medium text-foreground">
+              <div className="flex items-center gap-2 flex-wrap flex-1 min-w-0">
+                <h1 className="text-base sm:text-lg font-bold text-foreground tracking-tight leading-tight m-0">
+                  Scholarships for College Students
+                </h1>
+                <span className="hidden sm:inline text-muted-foreground text-xs">—</span>
+                <span className="text-xs text-muted-foreground leading-snug hidden sm:inline">
+                  Curated govt &amp; private · verified sources · apply directly
+                </span>
+              </div>
+              <div className="flex items-center gap-1.5 flex-shrink-0">
+                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-muted/50 border border-border text-[11px] font-medium text-foreground">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
                   {scholarships.length} Active
-                </div>
-                <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-muted/50 border border-border text-xs font-medium text-muted-foreground">
-                  Government &amp; Private
-                </div>
-                <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-muted/50 border border-border text-xs font-medium text-muted-foreground">
-                  Verified Sources
-                </div>
+                </span>
+                <span className="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-muted/50 border border-border text-[11px] font-medium text-muted-foreground">
+                  Verified
+                </span>
               </div>
             </div>
           </div>
@@ -506,7 +528,15 @@ export default function ScholarshipsPortal() {
                     const st = STATUS_DISPLAY[sc.status] || STATUS_DISPLAY.open;
                     const isSaved = saved.has(sc.id);
                     return (
-                      <div key={sc.id} className="sc-card-hover bg-card border border-border rounded-xl p-4 sm:p-5">
+                      <div
+                        key={sc.id}
+                        ref={highlightId === sc.id ? highlightRef : undefined}
+                        className={`sc-card-hover bg-card border rounded-xl p-4 sm:p-5 transition-all ${
+                          highlightId === sc.id
+                            ? 'border-primary/60 shadow-[0_0_0_3px_hsl(var(--primary)/0.15)]'
+                            : 'border-border'
+                        }`}
+                      >
                         <div className="sc-card-cols flex items-stretch">
 
                           {/* LEFT */}
@@ -516,6 +546,20 @@ export default function ScholarshipsPortal() {
                                 {sc.name}
                               </h3>
                               <div className="flex items-center gap-1 flex-shrink-0">
+                                {/* WhatsApp Share Button */}
+                                <a
+                                  href={getWhatsAppShareUrl(sc)}
+                                  target="_blank"
+                                  rel="noreferrer"
+                                  title="Share on WhatsApp"
+                                  className="p-1 rounded-md bg-transparent border-0 cursor-pointer text-muted-foreground hover:text-[#25D366] transition-colors inline-flex items-center justify-center"
+                                >
+                                  {/* Official WhatsApp green icon */}
+                                  <svg width="15" height="15" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <circle cx="16" cy="16" r="16" fill="#25D366"/>
+                                    <path d="M22.7 9.3A9.5 9.5 0 0 0 7.1 20.6L6 26l5.6-1.1a9.5 9.5 0 0 0 4.5 1.1 9.5 9.5 0 0 0 6.6-16.7zm-6.6 14.6a7.9 7.9 0 0 1-4-1.1l-.3-.2-3.3.6.7-3.2-.2-.3a7.9 7.9 0 1 1 7.1 4.2zm4.3-5.9c-.2-.1-1.4-.7-1.6-.8-.2-.1-.4-.1-.5.1-.2.2-.6.8-.8 1-.1.2-.3.2-.5.1a6.5 6.5 0 0 1-1.9-1.2 7.2 7.2 0 0 1-1.3-1.7c-.1-.2 0-.4.1-.5l.4-.4.2-.4v-.4l-.8-1.9c-.2-.5-.4-.4-.5-.4h-.5c-.2 0-.4.1-.6.3a2.7 2.7 0 0 0-.8 2c0 1.2.9 2.4 1 2.5.1.2 1.7 2.6 4.1 3.6.6.2 1 .4 1.4.5.6.2 1.1.2 1.5.1.5-.1 1.4-.6 1.6-1.1.2-.5.2-1 .1-1.1-.1-.1-.3-.2-.5-.3z" fill="#fff"/>
+                                  </svg>
+                                </a>
                                 <button onClick={() => toggleSave(sc.id)}
                                   className={`p-0 bg-transparent border-0 cursor-pointer transition-colors ${
                                     isSaved ? 'text-primary' : 'text-muted-foreground'
@@ -533,12 +577,29 @@ export default function ScholarshipsPortal() {
                                 )}
                               </div>
                             </div>
-                            <div className="text-xs text-muted-foreground font-medium mb-2.5">
+                            <div className="text-xs text-muted-foreground font-medium mb-2">
                               {sc.org}
                             </div>
-                            <p className="text-[13px] text-muted-foreground leading-relaxed m-0 line-clamp-2">
-                              {sc.description}
-                            </p>
+                            {/* Expandable Description */}
+                            <div>
+                              <p className={`text-[13px] text-muted-foreground leading-relaxed m-0 ${
+                                expandedDesc.has(sc.id) ? '' : 'line-clamp-2'
+                              }`}>
+                                {sc.description}
+                              </p>
+                              {sc.description && sc.description.length > 120 && (
+                                <button
+                                  onClick={() => toggleDesc(sc.id)}
+                                  className="mt-1 flex items-center gap-0.5 text-[11px] font-semibold text-primary bg-transparent border-0 cursor-pointer p-0 hover:opacity-75 transition-opacity"
+                                >
+                                  {expandedDesc.has(sc.id) ? (
+                                    <><ChevronUp size={12} /> Show less</>
+                                  ) : (
+                                    <><ChevronDown size={12} /> Read more</>
+                                  )}
+                                </button>
+                              )}
+                            </div>
                           </div>
 
                           {/* MIDDLE */}

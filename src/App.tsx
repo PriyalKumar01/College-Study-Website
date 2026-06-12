@@ -15,6 +15,7 @@ import About from './pages/About';
 import TermsOfService from './pages/TermsOfService';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import AppLayout from "./components/AppLayout";
+import ScholarshipDeepLink from "./pages/ScholarshipDeepLink";
 
 import ProtectedRoute from "./components/ProtectedRoute";
 import Maintenance from "./pages/Maintenance";
@@ -45,6 +46,8 @@ const App = () => {
                 <Route path="/auth" element={<Auth />} />
                 <Route path="/terms" element={<TermsOfService />} />
                 <Route path="/privacy" element={<PrivacyPolicy />} />
+                {/* Public deep-link for shared scholarship URLs */}
+                <Route path="/scholarship/:slug" element={<ScholarshipDeepLink />} />
 
                 {/* Main Layout routes */}
                 <Route element={<AppLayout />}>
