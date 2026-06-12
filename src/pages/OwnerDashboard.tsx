@@ -78,6 +78,7 @@ function AdminRoleCard({ role, currentUserEmail, onRemove, onRefresh }: AdminRol
   const handleSave = async () => {
     setSaving(true);
     try {
+      // Try full update with all new columns
       const { error } = await (supabase as any)
         .from('admin_roles')
         .update({
@@ -86,10 +87,39 @@ function AdminRoleCard({ role, currentUserEmail, onRemove, onRefresh }: AdminRol
           to_date: editToDate || null,
         })
         .eq('id', role.id);
-      if (error) throw error;
-      toast({ title: 'Updated ✅', description: 'Admin details saved.' });
-      setEditing(false);
-      onRefresh();
+
+      if (error) {
+        // If columns don't exist yet (migration not run), try name-only update
+        if (error.message?.includes('from_date') || error.message?.includes('to_date') || error.message?.includes('user_name')) {
+          // Fallback: try saving just user_name if that column exists
+          const { error: nameError } = await (supabase as any)
+            .from('admin_roles')
+            .update({ user_name: editName.trim() || null })
+            .eq('id', role.id);
+
+          if (nameError) {
+            // Columns truly don't exist — show migration instructions
+            toast({
+              title: '⚠️ Migration Required',
+              description: 'Please run the SQL migration in Supabase Dashboard → SQL Editor to enable name & date fields.',
+              variant: 'destructive',
+            });
+          } else {
+            toast({
+              title: 'Name saved ✅',
+              description: 'Run the migration SQL in Supabase to also save dates.',
+            });
+            setEditing(false);
+            onRefresh();
+          }
+        } else {
+          throw error;
+        }
+      } else {
+        toast({ title: 'Updated ✅', description: 'Admin details saved.' });
+        setEditing(false);
+        onRefresh();
+      }
     } catch (err: any) {
       toast({ title: 'Error', description: err.message, variant: 'destructive' });
     } finally {
