@@ -81,8 +81,9 @@ const NotesContributors = () => {
     { rank: 33, name: "Radhika Goyal", branch: "ET", batch: "29", coins: 1, socialUrl: "https://www.linkedin.com/in/radhika-goyal-8b7950383/" },
   ];
 
+  // Always refetch when switching to admins tab
   useEffect(() => {
-    if (tab === 'admins' && admins.length === 0) {
+    if (tab === 'admins') {
       setLoadingAdmins(true);
       (supabase as any)
         .from('admin_roles')
@@ -374,83 +375,104 @@ const NotesContributors = () => {
                 <div className="w-8 h-8 rounded-full border-2 border-primary border-t-transparent animate-spin" />
               </div>
             ) : (
-              <div className="max-w-3xl mx-auto space-y-4">
+              <div className="max-w-3xl mx-auto space-y-3">
                 {admins.map((admin, i) => {
                   const isOwnerRole = admin.role === 'owner';
                   const isActive = !admin.to_date;
-                  const displayName = admin.user_name || admin.user_email.split('@')[0];
-                  const initial = displayName.charAt(0).toUpperCase();
+                  const displayName = admin.user_name || null;
+                  const adminRank = i + 1;
                   return (
                     <motion.div
                       key={admin.id}
-                      initial={{ opacity: 0, x: -20 }}
+                      initial={{ opacity: 0, x: -16 }}
                       animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: i * 0.07 }}
+                      transition={{ delay: i * 0.06 }}
                     >
                       <Card
-                        className={`border-0 shadow-sm hover:shadow-md transition-all duration-200 ${
+                        className={`border-0 shadow-sm transition-all duration-200 ${
                           isOwnerRole
-                            ? 'bg-gradient-to-r from-amber-50 to-yellow-50 dark:from-amber-900/20 dark:to-amber-800/10 border-l-4 border-l-amber-400'
+                            ? 'bg-gradient-to-r from-amber-50 to-yellow-50/60 dark:from-amber-900/20 dark:to-amber-800/10 border-l-4 border-l-amber-400'
                             : isActive
-                              ? 'bg-gradient-to-r from-blue-50/60 to-white dark:from-blue-900/10 dark:to-slate-800 border-l-4 border-l-blue-400'
-                              : 'bg-white dark:bg-slate-800 border-l-4 border-l-slate-300 opacity-75'
+                              ? 'bg-white dark:bg-slate-800 border-l-4 border-l-blue-400 hover:shadow-md'
+                              : 'bg-slate-50 dark:bg-slate-800/60 border-l-4 border-l-slate-300 opacity-70'
                         }`}
                       >
                         <div className="p-4 sm:p-5 flex items-center gap-4">
-                          {/* Avatar */}
+                          {/* Rank number — no circle photo */}
                           <div
-                            className="w-12 h-12 sm:w-14 sm:h-14 rounded-full flex items-center justify-center flex-shrink-0 text-xl font-bold shadow-sm"
-                            style={{
-                              background: isOwnerRole
-                                ? 'linear-gradient(135deg, #F59E0B, #D97706)'
-                                : isActive
-                                  ? 'linear-gradient(135deg, #3B82F6, #6366F1)'
-                                  : '#94A3B8',
-                              color: '#fff',
-                            }}
+                            className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 text-sm font-bold ${
+                              isOwnerRole
+                                ? 'bg-amber-100 dark:bg-amber-900/40 text-amber-600'
+                                : 'bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400'
+                            }`}
                           >
-                            {isOwnerRole ? <Crown className="h-6 w-6" /> : initial}
+                            {isOwnerRole ? <Crown className="h-4 w-4" /> : adminRank}
                           </div>
 
-                          {/* Info */}
+                          {/* Name + Email + Badges */}
                           <div className="flex-1 min-w-0">
-                            <div className="flex items-center gap-2 flex-wrap mb-0.5">
-                              <span className="font-bold text-base text-foreground">{displayName}</span>
+                            <div className="flex items-center gap-2 flex-wrap">
+                              <span className={`font-bold text-[15px] ${
+                                displayName ? 'text-foreground' : 'text-muted-foreground italic text-sm'
+                              }`}>
+                                {displayName || admin.user_email.split('@')[0]}
+                              </span>
                               <Badge
                                 variant="outline"
-                                className={`text-[10px] capitalize font-semibold px-2 ${
-                                  isOwnerRole ? 'border-amber-400 text-amber-600 bg-amber-50 dark:bg-amber-900/20' : 'border-blue-400 text-blue-600 bg-blue-50 dark:bg-blue-900/20'
+                                className={`text-[10px] px-2 py-0 capitalize font-semibold ${
+                                  isOwnerRole
+                                    ? 'border-amber-300 text-amber-600 bg-amber-50 dark:bg-amber-900/20'
+                                    : 'border-blue-300 text-blue-600 bg-blue-50 dark:bg-blue-900/20'
                                 }`}
                               >
                                 {isOwnerRole ? '👑 Owner' : '🛡️ Admin'}
                               </Badge>
-                              {isActive && !isOwnerRole && (
+                              {!isOwnerRole && isActive && (
                                 <span className="flex items-center gap-1 text-[10px] font-semibold text-green-600 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 px-2 py-0.5 rounded-full">
-                                  <span className="w-1.5 h-1.5 rounded-full bg-green-500 inline-block" style={{ animation: 'pulse 2s infinite' }} />
+                                  <span className="w-1.5 h-1.5 rounded-full bg-green-500 inline-block animate-pulse" />
                                   Active
                                 </span>
                               )}
                             </div>
-                            <p className="text-xs text-muted-foreground truncate">{admin.user_email}</p>
-                            {/* Duration */}
-                            {(admin.from_date || admin.to_date) && (
-                              <div className="flex items-center gap-1.5 mt-1 text-[11px] text-muted-foreground">
-                                <Calendar className="h-3 w-3" />
-                                <span>
-                                  {admin.from_date
-                                    ? new Date(admin.from_date).toLocaleDateString('en-IN', { month: 'short', year: 'numeric' })
-                                    : '?'
-                                  }
-                                  {' → '}
+                            <p className="text-xs text-muted-foreground mt-0.5 truncate">
+                              {admin.user_email}
+                            </p>
+                          </div>
+
+                          {/* Duration — right side */}
+                          <div className="text-right flex-shrink-0 min-w-[100px] hidden sm:block">
+                            {admin.from_date ? (
+                              <>
+                                <p className="text-[12px] font-semibold text-foreground/70">
+                                  {new Date(admin.from_date).toLocaleDateString('en-IN', { month: 'short', year: 'numeric' })}
+                                </p>
+                                <p className="text-[11px] text-muted-foreground">
+                                  →{' '}
                                   {admin.to_date
                                     ? new Date(admin.to_date).toLocaleDateString('en-IN', { month: 'short', year: 'numeric' })
-                                    : <span className="text-green-600 font-semibold">Present</span>
+                                    : <span className="text-green-600 font-bold">Present</span>
                                   }
-                                </span>
-                              </div>
+                                </p>
+                              </>
+                            ) : (
+                              <p className="text-[10px] text-muted-foreground italic">—</p>
                             )}
                           </div>
                         </div>
+
+                        {/* Mobile: show date below on small screens */}
+                        {admin.from_date && (
+                          <div className="sm:hidden px-4 pb-3 -mt-1">
+                            <p className="text-[11px] text-muted-foreground">
+                              📅 {new Date(admin.from_date).toLocaleDateString('en-IN', { month: 'short', year: 'numeric' })}
+                              {' → '}
+                              {admin.to_date
+                                ? new Date(admin.to_date).toLocaleDateString('en-IN', { month: 'short', year: 'numeric' })
+                                : <span className="text-green-600 font-semibold">Present</span>
+                              }
+                            </p>
+                          </div>
+                        )}
                       </Card>
                     </motion.div>
                   );

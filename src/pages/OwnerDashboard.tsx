@@ -61,175 +61,190 @@ interface Scholarship {
 // ─── AdminRoleCard — shows name/email/dates, owner can edit inline ────────────
 interface AdminRoleCardProps {
   role: AdminRole;
+  rank: number;
   currentUserEmail?: string;
   onRemove: (id: string, email: string) => void;
   onRefresh: () => void;
 }
 
-function AdminRoleCard({ role, currentUserEmail, onRemove, onRefresh }: AdminRoleCardProps) {
+function AdminRoleCard({ role, rank, currentUserEmail, onRemove, onRefresh }: AdminRoleCardProps) {
   const { toast } = useToast();
   const isOwnerRole = role.role === 'owner';
   const [editing, setEditing] = useState(false);
+  const [saving, setSaving] = useState(false);
+
+  // Local display state — optimistic update immediately after save
+  const [displayName, setDisplayName] = useState(role.user_name || '');
+  const [displayFrom, setDisplayFrom] = useState(role.from_date || '');
+  const [displayTo, setDisplayTo] = useState(role.to_date || '');
+
+  // Edit form state
   const [editName, setEditName] = useState(role.user_name || '');
   const [editFromDate, setEditFromDate] = useState(role.from_date || '');
   const [editToDate, setEditToDate] = useState(role.to_date || '');
-  const [saving, setSaving] = useState(false);
+
+  // Sync when parent passes fresh role data
+  useEffect(() => {
+    setDisplayName(role.user_name || '');
+    setDisplayFrom(role.from_date || '');
+    setDisplayTo(role.to_date || '');
+    setEditName(role.user_name || '');
+    setEditFromDate(role.from_date || '');
+    setEditToDate(role.to_date || '');
+  }, [role.user_name, role.from_date, role.to_date]);
 
   const handleSave = async () => {
     setSaving(true);
+    const nameVal = editName.trim() || null;
+    const fromVal = editFromDate || null;
+    const toVal   = editToDate   || null;
     try {
-      // Try full update with all new columns
       const { error } = await (supabase as any)
         .from('admin_roles')
-        .update({
-          user_name: editName.trim() || null,
-          from_date: editFromDate || null,
-          to_date: editToDate || null,
-        })
+        .update({ user_name: nameVal, from_date: fromVal, to_date: toVal })
         .eq('id', role.id);
-
-      if (error) {
-        // If columns don't exist yet (migration not run), try name-only update
-        if (error.message?.includes('from_date') || error.message?.includes('to_date') || error.message?.includes('user_name')) {
-          // Fallback: try saving just user_name if that column exists
-          const { error: nameError } = await (supabase as any)
-            .from('admin_roles')
-            .update({ user_name: editName.trim() || null })
-            .eq('id', role.id);
-
-          if (nameError) {
-            // Columns truly don't exist — show migration instructions
-            toast({
-              title: '⚠️ Migration Required',
-              description: 'Please run the SQL migration in Supabase Dashboard → SQL Editor to enable name & date fields.',
-              variant: 'destructive',
-            });
-          } else {
-            toast({
-              title: 'Name saved ✅',
-              description: 'Run the migration SQL in Supabase to also save dates.',
-            });
-            setEditing(false);
-            onRefresh();
-          }
-        } else {
-          throw error;
-        }
-      } else {
-        toast({ title: 'Updated ✅', description: 'Admin details saved.' });
-        setEditing(false);
-        onRefresh();
-      }
+      if (error) throw error;
+      // Optimistic display update immediately
+      setDisplayName(nameVal || '');
+      setDisplayFrom(fromVal || '');
+      setDisplayTo(toVal || '');
+      toast({ title: 'Updated ✅', description: 'Admin details saved.' });
+      setEditing(false);
+      onRefresh();
     } catch (err: any) {
-      toast({ title: 'Error', description: err.message, variant: 'destructive' });
+      toast({ title: 'Error saving', description: err.message, variant: 'destructive' });
     } finally {
       setSaving(false);
     }
   };
 
-  const formatDate = (d: string | null) => {
-    if (!d) return null;
-    return new Date(d).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+  const fmtDate = (d: string) => {
+    if (!d) return '';
+    return new Date(d).toLocaleDateString('en-IN', { month: 'short', year: 'numeric' });
   };
 
+  const isActive = !displayTo;
+
   return (
-    <Card className={`feature-card border-l-4 ${isOwnerRole ? 'border-l-amber-400' : 'border-l-blue-400'}`}>
+    <Card className={`border-0 shadow-sm transition-all duration-200 ${
+      isOwnerRole
+        ? 'bg-gradient-to-r from-amber-50 to-yellow-50/60 dark:from-amber-900/20 dark:to-amber-800/10 border-l-4 border-l-amber-400'
+        : isActive
+          ? 'bg-white dark:bg-slate-800 border-l-4 border-l-blue-400 hover:shadow-md'
+          : 'bg-slate-50 dark:bg-slate-800/60 border-l-4 border-l-slate-300'
+    }`}>
       <CardContent className="p-4">
-        <div className="flex items-start justify-between gap-3 flex-wrap">
-          {/* Left: Avatar + Info */}
-          <div className="flex items-start gap-3 flex-1 min-w-0">
-            <div className={`w-11 h-11 rounded-full flex items-center justify-center flex-shrink-0 text-base font-bold ${
-              isOwnerRole ? 'bg-amber-100 dark:bg-amber-900/30 text-amber-600' : 'bg-blue-100 dark:bg-blue-900/30 text-blue-600'
-            }`}>
-              {isOwnerRole
-                ? <Crown className="h-5 w-5" />
-                : (role.user_name || role.user_email).charAt(0).toUpperCase()
-              }
+        {editing ? (
+          /* ── Edit mode ── */
+          <div className="space-y-3">
+            <div className="flex items-center gap-2 mb-1">
+              <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Editing: {role.user_email}</span>
             </div>
-            <div className="flex-1 min-w-0">
-              {editing ? (
-                <div className="space-y-2">
-                  <input
-                    value={editName}
-                    onChange={e => setEditName(e.target.value)}
-                    placeholder="Full Name"
-                    className="w-full text-sm px-2 py-1 rounded border border-border bg-background text-foreground outline-none"
-                  />
-                  <div className="flex gap-2 flex-wrap text-xs text-muted-foreground items-center">
-                    <span className="font-semibold">From:</span>
-                    <input type="date" value={editFromDate} onChange={e => setEditFromDate(e.target.value)}
-                      className="px-2 py-0.5 rounded border border-border bg-background text-foreground text-xs outline-none" />
-                    <span className="font-semibold">To:</span>
-                    <input type="date" value={editToDate} onChange={e => setEditToDate(e.target.value)}
-                      className="px-2 py-0.5 rounded border border-border bg-background text-foreground text-xs outline-none" />
-                    <span className="text-[10px] text-muted-foreground">(leave 'To' empty if currently active)</span>
-                  </div>
-                  <div className="flex gap-2">
-                    <button onClick={handleSave} disabled={saving}
-                      className="px-3 py-1 text-[11px] font-bold rounded-md text-white"
-                      style={{ background: 'hsl(var(--primary))' }}>
-                      {saving ? 'Saving…' : 'Save'}
-                    </button>
-                    <button onClick={() => setEditing(false)}
-                      className="px-3 py-1 text-[11px] font-bold rounded-md border border-border text-foreground">
-                      Cancel
-                    </button>
-                  </div>
-                </div>
-              ) : (
-                <>
-                  <div className="flex items-center gap-2 flex-wrap">
-                    {role.user_name && (
-                      <span className="text-sm font-bold text-foreground">{role.user_name}</span>
-                    )}
-                    <Badge variant="outline" className={`text-[10px] capitalize ${
-                      isOwnerRole ? 'border-amber-400 text-amber-600' : 'border-blue-400 text-blue-600'
-                    }`}>
-                      {role.role}
-                    </Badge>
-                  </div>
-                  <p className="text-xs text-muted-foreground mt-0.5 truncate">{role.user_email}</p>
-                  {/* Date range */}
-                  {(role.from_date || role.to_date) && (
-                    <p className="text-[11px] text-muted-foreground mt-0.5">
-                      📅 {formatDate(role.from_date) || '?'} → {role.to_date ? formatDate(role.to_date) : <span className="text-green-600 font-semibold">Present</span>}
-                    </p>
-                  )}
-                </>
-              )}
+            <input
+              value={editName}
+              onChange={e => setEditName(e.target.value)}
+              placeholder="Full Name (e.g. Rahul Singh)"
+              className="w-full text-sm px-3 py-1.5 rounded-lg border border-border bg-background text-foreground outline-none focus:border-primary transition-colors"
+            />
+            <div className="flex gap-3 flex-wrap items-center text-xs">
+              <label className="flex items-center gap-2 text-muted-foreground">
+                <span className="font-semibold">From:</span>
+                <input type="date" value={editFromDate} onChange={e => setEditFromDate(e.target.value)}
+                  className="px-2 py-1 rounded border border-border bg-background text-foreground text-xs outline-none" />
+              </label>
+              <label className="flex items-center gap-2 text-muted-foreground">
+                <span className="font-semibold">To:</span>
+                <input type="date" value={editToDate} onChange={e => setEditToDate(e.target.value)}
+                  className="px-2 py-1 rounded border border-border bg-background text-foreground text-xs outline-none" />
+              </label>
+              <span className="text-[10px] text-muted-foreground italic">Leave 'To' empty if currently active</span>
+            </div>
+            <div className="flex gap-2">
+              <button onClick={handleSave} disabled={saving}
+                className="px-4 py-1.5 text-xs font-bold rounded-lg text-white transition-opacity"
+                style={{ background: 'hsl(var(--primary))', opacity: saving ? 0.7 : 1 }}>
+                {saving ? 'Saving…' : 'Save Changes'}
+              </button>
+              <button onClick={() => { setEditing(false); setEditName(displayName); setEditFromDate(displayFrom); setEditToDate(displayTo); }}
+                className="px-4 py-1.5 text-xs font-bold rounded-lg border border-border text-foreground hover:bg-muted transition-colors">
+                Cancel
+              </button>
             </div>
           </div>
+        ) : (
+          /* ── Display mode ── */
+          <div className="flex items-center gap-4">
+            {/* Rank number */}
+            <div className={`w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 text-sm font-bold ${
+              isOwnerRole ? 'bg-amber-100 dark:bg-amber-900/40 text-amber-600' : 'bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400'
+            }`}>
+              {isOwnerRole ? <Crown className="h-4 w-4" /> : rank}
+            </div>
 
-          {/* Right: Actions */}
-          {!editing && (
-            <div className="flex gap-2 items-center flex-shrink-0">
-              {/* Edit dates/name — owner only */}
-              {!isOwnerRole && (
-                <Button
-                  variant="ghost" size="sm"
-                  className="text-primary hover:bg-primary/10 h-8 px-2"
-                  onClick={() => { setEditName(role.user_name || ''); setEditFromDate(role.from_date || ''); setEditToDate(role.to_date || ''); setEditing(true); }}
-                >
-                  <Pencil className="h-3.5 w-3.5 mr-1" /> Edit
-                </Button>
-              )}
-              {/* Remove — only for non-owner, not self */}
-              {!isOwnerRole && role.user_email !== currentUserEmail && (
-                <Button
-                  variant="ghost" size="sm"
-                  className="text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20 h-8 px-2"
-                  onClick={() => onRemove(role.id, role.user_email)}
-                >
-                  <UserMinus className="h-3.5 w-3.5 mr-1" /> Remove
-                </Button>
+            {/* Name + Email */}
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className={`font-bold text-sm ${
+                  displayName ? 'text-foreground' : 'text-muted-foreground italic'
+                }`}>
+                  {displayName || '(no name set)'}
+                </span>
+                <Badge variant="outline" className={`text-[10px] capitalize px-2 py-0 ${
+                  isOwnerRole ? 'border-amber-300 text-amber-600 bg-amber-50 dark:bg-amber-900/20'
+                    : 'border-blue-300 text-blue-600 bg-blue-50 dark:bg-blue-900/20'
+                }`}>
+                  {isOwnerRole ? '👑 Owner' : '🛡️ Admin'}
+                </Badge>
+                {!isOwnerRole && isActive && (
+                  <span className="flex items-center gap-1 text-[10px] font-semibold text-green-600 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 px-1.5 py-0.5 rounded-full">
+                    <span className="w-1.5 h-1.5 rounded-full bg-green-500 inline-block animate-pulse" />
+                    Active
+                  </span>
+                )}
+              </div>
+              <p className="text-xs text-muted-foreground mt-0.5 truncate">{role.user_email}</p>
+            </div>
+
+            {/* Date range — right side */}
+            <div className="text-right flex-shrink-0 min-w-[110px]">
+              {(displayFrom || displayTo) ? (
+                <>
+                  <p className="text-[11px] font-semibold text-foreground/70">
+                    {displayFrom ? fmtDate(displayFrom) : '?'}
+                  </p>
+                  <p className="text-[11px] text-muted-foreground">
+                    → {displayTo ? fmtDate(displayTo) : <span className="text-green-600 font-bold">Present</span>}
+                  </p>
+                </>
+              ) : (
+                <p className="text-[10px] text-muted-foreground italic">No dates set</p>
               )}
             </div>
-          )}
-        </div>
+
+            {/* Actions */}
+            {!isOwnerRole && (
+              <div className="flex gap-1 items-center flex-shrink-0">
+                <Button variant="ghost" size="sm" className="text-primary hover:bg-primary/10 h-8 px-2"
+                  onClick={() => setEditing(true)}>
+                  <Pencil className="h-3.5 w-3.5" />
+                </Button>
+                {role.user_email !== currentUserEmail && (
+                  <Button variant="ghost" size="sm"
+                    className="text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20 h-8 px-2"
+                    onClick={() => onRemove(role.id, role.user_email)}>
+                    <UserMinus className="h-3.5 w-3.5" />
+                  </Button>
+                )}
+              </div>
+            )}
+          </div>
+        )}
       </CardContent>
     </Card>
   );
 }
+
+
 
 const OwnerDashboard = () => {
   const { user, isOwner, loading: authLoading } = useAuth();
@@ -867,10 +882,11 @@ const OwnerDashboard = () => {
 
             {/* Admin list */}
             <div className="space-y-3">
-              {adminRoles.map((role) => (
+              {adminRoles.map((role, idx) => (
                 <AdminRoleCard
                   key={role.id}
                   role={role}
+                  rank={idx + 1}
                   currentUserEmail={user?.email}
                   onRemove={handleRemoveAdmin}
                   onRefresh={fetchAdminRoles}
