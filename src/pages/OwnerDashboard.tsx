@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   CheckCircle, XCircle, User, Calendar, BookOpen, ShieldAlert,
-  Eye, Trash2, Crown, UserPlus, UserMinus, Search, Loader2, FileText, Download, GraduationCap, ExternalLink, Bell, Send, Pencil
+  Eye, Trash2, Crown, UserPlus, UserMinus, Search, Loader2, FileText, Download, GraduationCap, ExternalLink, Bell, Send, Pencil, Trophy, Coins, Link
 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
@@ -41,6 +41,17 @@ interface AdminRole {
   created_by: string | null;
   from_date: string | null;
   to_date: string | null;
+}
+
+interface ContributorRecord {
+  id: string;
+  name: string;
+  branch: string;
+  batch: string;
+  coins: number;
+  linkedin_url: string | null;
+  image_url: string | null;
+  created_at: string | null;
 }
 
 interface Scholarship {
@@ -244,6 +255,128 @@ function AdminRoleCard({ role, rank, currentUserEmail, onRemove, onRefresh }: Ad
   );
 }
 
+// ─── ContributorCard — inline edit/delete for each contributor ────────────────
+interface ContributorCardProps {
+  contributor: ContributorRecord;
+  rank: number;
+  onRefresh: () => void;
+}
+
+function ContributorCard({ contributor, rank, onRefresh }: ContributorCardProps) {
+  const { toast } = useToast();
+  const [editing, setEditing] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [editName, setEditName] = useState(contributor.name);
+  const [editBranch, setEditBranch] = useState(contributor.branch);
+  const [editBatch, setEditBatch] = useState(contributor.batch);
+  const [editCoins, setEditCoins] = useState(String(contributor.coins));
+  const [editLinkedin, setEditLinkedin] = useState(contributor.linkedin_url || '');
+  const [editImage, setEditImage] = useState(contributor.image_url || '');
+
+  const MEDAL: Record<number, string> = { 1: '🥇', 2: '🥈', 3: '🥉' };
+
+  const handleSave = async () => {
+    if (!editName.trim()) return;
+    setSaving(true);
+    try {
+      const { error } = await (supabase as any)
+        .from('contributors')
+        .update({
+          name: editName.trim(),
+          branch: editBranch.trim(),
+          batch: editBatch.trim(),
+          coins: Math.max(0, parseInt(editCoins) || 0),
+          linkedin_url: editLinkedin.trim() || null,
+          image_url: editImage.trim() || null,
+        })
+        .eq('id', contributor.id);
+      if (error) throw error;
+      toast({ title: 'Updated ✅', description: 'Contributor saved.' });
+      setEditing(false);
+      onRefresh();
+    } catch (err: any) {
+      toast({ title: 'Error', description: err.message, variant: 'destructive' });
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!confirm(`Remove ${contributor.name} from contributors list?`)) return;
+    try {
+      const { error } = await (supabase as any).from('contributors').delete().eq('id', contributor.id);
+      if (error) throw error;
+      toast({ title: 'Removed', description: `${contributor.name} deleted.` });
+      onRefresh();
+    } catch (err: any) {
+      toast({ title: 'Error', description: err.message, variant: 'destructive' });
+    }
+  };
+
+  return (
+    <Card className="feature-card">
+      <CardContent className="p-4">
+        {editing ? (
+          <div className="space-y-3">
+            <p className="text-xs text-muted-foreground font-semibold uppercase tracking-wide">Editing: {contributor.name}</p>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+              <Input value={editName} onChange={e => setEditName(e.target.value)} placeholder="Full Name *" className="col-span-2" />
+              <Input value={editBranch} onChange={e => setEditBranch(e.target.value)} placeholder="Branch" />
+              <Input value={editBatch} onChange={e => setEditBatch(e.target.value)} placeholder="Batch" />
+            </div>
+            <div className="grid grid-cols-2 gap-2">
+              <Input type="number" value={editCoins} onChange={e => setEditCoins(e.target.value)} placeholder="Coins" />
+              <Input value={editLinkedin} onChange={e => setEditLinkedin(e.target.value)} placeholder="LinkedIn URL (optional)" />
+            </div>
+            <Input value={editImage} onChange={e => setEditImage(e.target.value)} placeholder="Image path/URL (optional, e.g. /Devanshi.png)" />
+            <div className="flex gap-2">
+              <Button size="sm" onClick={handleSave} disabled={saving || !editName.trim()}
+                style={{ background: 'hsl(var(--primary))' }} className="text-white">
+                {saving ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : 'Save Changes'}
+              </Button>
+              <Button size="sm" variant="outline" onClick={() => { setEditing(false); setEditName(contributor.name); setEditBranch(contributor.branch); setEditBatch(contributor.batch); setEditCoins(String(contributor.coins)); setEditLinkedin(contributor.linkedin_url || ''); setEditImage(contributor.image_url || ''); }}>
+                Cancel
+              </Button>
+            </div>
+          </div>
+        ) : (
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full flex items-center justify-center text-lg font-bold bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 flex-shrink-0">
+              {MEDAL[rank] || rank}
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="font-semibold text-sm">{contributor.name}</span>
+                <Badge variant="outline" className="text-xs">{contributor.branch} '{contributor.batch} • HBTU</Badge>
+                <Badge className="text-xs bg-yellow-50 text-yellow-700 border-yellow-200 dark:bg-yellow-900/20 dark:text-yellow-400">
+                  <Coins className="h-3 w-3 mr-1" />{contributor.coins}
+                </Badge>
+              </div>
+              <div className="flex items-center gap-3 mt-0.5 flex-wrap">
+                <span className="text-xs text-muted-foreground">Rank #{rank}</span>
+                {contributor.linkedin_url && (
+                  <a href={contributor.linkedin_url} target="_blank" rel="noopener noreferrer" className="text-xs text-blue-500 hover:underline flex items-center gap-1">
+                    <Link className="h-3 w-3" /> LinkedIn
+                  </a>
+                )}
+                {contributor.image_url && <span className="text-xs text-green-600">📷 Image set</span>}
+              </div>
+            </div>
+            <div className="flex gap-1 flex-shrink-0">
+              <Button variant="ghost" size="sm" className="text-primary hover:bg-primary/10 h-8 px-2" onClick={() => setEditing(true)}>
+                <Pencil className="h-3.5 w-3.5" />
+              </Button>
+              <Button variant="ghost" size="sm" className="text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 h-8 px-2" onClick={handleDelete}>
+                <Trash2 className="h-3.5 w-3.5" />
+              </Button>
+            </div>
+          </div>
+        )}
+      </CardContent>
+    </Card>
+  );
+}
+
 
 
 const OwnerDashboard = () => {
@@ -265,6 +398,9 @@ const OwnerDashboard = () => {
   const [notifBody, setNotifBody] = useState('');
   const [sendingNotif, setSendingNotif] = useState(false);
   const [notifications, setNotifications] = useState<Array<{id:string; title:string; body:string; sent_by:string; created_at:string}>>([]);
+  const [contributors, setContributors] = useState<ContributorRecord[]>([]);
+  const [newContrib, setNewContrib] = useState({ name: '', branch: '', batch: '', coins: '', linkedin_url: '', image_url: '' });
+  const [isAddingContrib, setIsAddingContrib] = useState(false);
 
   useEffect(() => {
     if (isOwner) {
@@ -312,8 +448,42 @@ const OwnerDashboard = () => {
 
   const fetchAll = async () => {
     setLoading(true);
-    await Promise.all([fetchPendingMaterials(), fetchAllMaterials(), fetchAdminRoles(), fetchScholarships()]);
+    await Promise.all([fetchPendingMaterials(), fetchAllMaterials(), fetchAdminRoles(), fetchScholarships(), fetchContributors()]);
     setLoading(false);
+  };
+
+  const fetchContributors = async () => {
+    const { data, error } = await (supabase as any)
+      .from('contributors')
+      .select('*')
+      .order('coins', { ascending: false });
+    if (!error) setContributors((data || []) as ContributorRecord[]);
+  };
+
+  const handleAddContributor = async () => {
+    if (!newContrib.name.trim() || !newContrib.branch.trim() || !newContrib.batch.trim()) {
+      toast({ title: 'Missing fields', description: 'Name, Branch and Batch are required.', variant: 'destructive' });
+      return;
+    }
+    setIsAddingContrib(true);
+    try {
+      const { error } = await (supabase as any).from('contributors').insert({
+        name: newContrib.name.trim(),
+        branch: newContrib.branch.trim(),
+        batch: newContrib.batch.trim(),
+        coins: Math.max(0, parseInt(newContrib.coins) || 0),
+        linkedin_url: newContrib.linkedin_url.trim() || null,
+        image_url: newContrib.image_url.trim() || null,
+      });
+      if (error) throw error;
+      toast({ title: 'Contributor added ✅', description: `${newContrib.name} added and auto-ranked by coins.` });
+      setNewContrib({ name: '', branch: '', batch: '', coins: '', linkedin_url: '', image_url: '' });
+      fetchContributors();
+    } catch (err: any) {
+      toast({ title: 'Error', description: err.message, variant: 'destructive' });
+    } finally {
+      setIsAddingContrib(false);
+    }
   };
 
   const fetchScholarships = async () => {
@@ -567,18 +737,22 @@ const OwnerDashboard = () => {
         </motion.div>
 
         <Tabs defaultValue="pending" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-2 md:grid-cols-5">
+          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-6">
             <TabsTrigger value="pending" className="flex items-center gap-2">
               <BookOpen className="h-4 w-4" />
               Pending ({pendingMaterials.length})
             </TabsTrigger>
             <TabsTrigger value="scholarships" className="flex items-center gap-2">
               <GraduationCap className="h-4 w-4" />
-              Scholarships ({scholarships.filter(s => s.approval_status === 'pending').length})
+              Scholarships
             </TabsTrigger>
             <TabsTrigger value="notifications" className="flex items-center gap-2">
               <Bell className="h-4 w-4" />
               Notifications
+            </TabsTrigger>
+            <TabsTrigger value="contributors" className="flex items-center gap-2">
+              <Trophy className="h-4 w-4" />
+              Contributors ({contributors.length})
             </TabsTrigger>
             <TabsTrigger value="admins" className="flex items-center gap-2">
               <Crown className="h-4 w-4" />
@@ -836,6 +1010,64 @@ const OwnerDashboard = () => {
                   </CardContent>
                 </Card>
               ))}
+            </div>
+          </TabsContent>
+
+          {/* TAB: Contributors Management */}
+          <TabsContent value="contributors" className="space-y-6">
+            {/* Add form */}
+            <Card className="gradient-card border-2 border-primary/10">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Trophy className="h-5 w-5 text-yellow-500" /> Add New Contributor
+                </CardTitle>
+                <CardDescription>
+                  Contributors auto-sort by coins. Top 3 with image show on the podium.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                  <Input value={newContrib.name} onChange={e => setNewContrib({...newContrib, name: e.target.value})} placeholder="Full Name *" className="col-span-2" />
+                  <Input value={newContrib.branch} onChange={e => setNewContrib({...newContrib, branch: e.target.value})} placeholder="Branch * (e.g. CSE)" />
+                  <Input value={newContrib.batch} onChange={e => setNewContrib({...newContrib, batch: e.target.value})} placeholder="Batch * (e.g. 28)" />
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <Input type="number" value={newContrib.coins} onChange={e => setNewContrib({...newContrib, coins: e.target.value})} placeholder="Coins (notes count)" />
+                  <Input value={newContrib.linkedin_url} onChange={e => setNewContrib({...newContrib, linkedin_url: e.target.value})} placeholder="LinkedIn URL (optional)" />
+                </div>
+                <Input value={newContrib.image_url} onChange={e => setNewContrib({...newContrib, image_url: e.target.value})} placeholder="Image path or URL (optional, e.g. /Devanshi.png or https://...)" />
+                <p className="text-xs text-muted-foreground">💡 Image is only shown for top-3 podium. Upload image to /public folder first, then enter path like /Name.png</p>
+                <Button
+                  onClick={handleAddContributor}
+                  disabled={isAddingContrib || !newContrib.name.trim() || !newContrib.branch.trim() || !newContrib.batch.trim()}
+                  className="btn-hero gap-2"
+                >
+                  {isAddingContrib ? <Loader2 className="h-4 w-4 animate-spin" /> : <UserPlus className="h-4 w-4" />}
+                  Add Contributor
+                </Button>
+              </CardContent>
+            </Card>
+
+            {/* Contributors list */}
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <h3 className="text-base font-bold">All Contributors ({contributors.length}) — sorted by coins</h3>
+                <Button variant="outline" size="sm" onClick={fetchContributors}>
+                  Refresh
+                </Button>
+              </div>
+              {contributors.length === 0 ? (
+                <Card className="gradient-card text-center py-10">
+                  <CardContent>
+                    <Trophy className="h-12 w-12 text-muted-foreground mx-auto mb-3 opacity-40" />
+                    <p className="text-muted-foreground text-sm">No contributors yet. Add the first one above.</p>
+                  </CardContent>
+                </Card>
+              ) : (
+                contributors.map((c, idx) => (
+                  <ContributorCard key={c.id} contributor={c} rank={idx + 1} onRefresh={fetchContributors} />
+                ))
+              )}
             </div>
           </TabsContent>
 
