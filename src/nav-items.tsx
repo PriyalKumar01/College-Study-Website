@@ -30,6 +30,8 @@ import ThirdSemesterEENotes from "./pages/ThirdSemesterEENotes";
 import LearningPlatforms from "./pages/LearningPlatforms";
 import NotFound from "./pages/NotFound";
 import Opportunities from "./pages/Opportunities";
+import PremiumDirectory from "./pages/PremiumDirectory";
+import PremiumContent from "./pages/PremiumContent";
 import OpportunityUpload from "./pages/OpportunityUpload";
 import PlacementPreparation from "./pages/PlacementPreparation";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
@@ -152,6 +154,8 @@ export const navItems = [
   { to: "/sixth-semester-ft", page: <SixthSemesterFTNotes /> },
   { to: "/learning-platforms", page: <LearningPlatforms /> },
   { to: "/opportunities", page: <Opportunities /> },
+  { to: "/opportunities/directory", page: <PremiumDirectory /> },
+  { to: "/premium-content", page: <PremiumContent /> },
   { to: "/opportunity-upload", page: <OpportunityUpload /> },
   { to: "/placement-preparation", page: <PlacementPreparation /> },
   { to: "/privacy-policy", page: <PrivacyPolicy /> },
