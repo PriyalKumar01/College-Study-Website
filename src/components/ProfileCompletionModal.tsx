@@ -168,7 +168,10 @@ export function ProfileCompletionModal() {
 
             if (!isMetaComplete || !data || !data.first_name || !data.college) {
                 setIsUpdateMode(false);
-                setAskForPassword(true);
+                // Only ask for password if user signed up via email (not OAuth like Google)
+                const isOAuthUser = user.app_metadata?.provider === "google" ||
+                    (user.app_metadata?.providers || []).includes("google");
+                setAskForPassword(!isOAuthUser);
 
                 if (user.user_metadata) {
                     const { full_name, name, college: metaCollege, branch: metaBranch, year: metaYear } = user.user_metadata;
@@ -193,8 +196,12 @@ export function ProfileCompletionModal() {
                     }
                 }
                 setIsOpen(true);
+                // DO NOT set hasChecked=true here — profile is still incomplete.
+                // hasChecked will be set true only after successful submit.
+                return;
             }
 
+            // Profile is complete — no modal needed
             setHasChecked(true);
         } catch (err) {
             console.error("Profile check failed:", err);
@@ -253,6 +260,7 @@ export function ProfileCompletionModal() {
                 data: { year: finalYear, college: resolvedCollege, branch: finalBranch, profile_completed: true },
             });
 
+            setHasChecked(true); // Mark as checked after successful update
             toast({ title: "Profile Updated ✓", description: "Your profile has been saved!" });
             setIsOpen(false);
             window.location.reload();
@@ -289,7 +297,7 @@ export function ProfileCompletionModal() {
             toast({ title: "Password Required", description: "Please set a password for your account.", variant: "destructive" });
             return;
         }
-        if (password) {
+        if (askForPassword && password) {
             const isOk = password.length >= 6 && /[A-Z]/.test(password) && /[a-z]/.test(password) && /[0-9]/.test(password) && /[!@#$%^&*(),.?":{}|<>]/.test(password);
             if (!isOk) {
                 toast({ title: "Weak Password", description: "Please meet all password requirements.", variant: "destructive" });
@@ -318,6 +326,7 @@ export function ProfileCompletionModal() {
             const { error: userError } = await supabase.auth.updateUser(authUpdates);
             if (userError) throw userError;
 
+            setHasChecked(true); // Mark as checked only after successful save
             toast({ title: "Profile Saved ✓", description: "Welcome aboard! You're all set." });
             setIsOpen(false);
             window.location.reload();
