@@ -28,7 +28,8 @@ import {
   Home,
   BadgeCheck,
   Shield,
-  Crown
+  Crown,
+  Lock
 } from 'lucide-react';
 
 interface AppSidebarProps {
@@ -103,7 +104,7 @@ const AppSidebar = ({ className }: AppSidebarProps) => {
       ]
     },
     { icon: <Calculator className="h-4 w-4" />, label: 'CGPA Calculator', href: '/cgpa-calculator' },
-    { icon: <FileText className="h-4 w-4" />, label: 'ATS Friendly Resume', href: '/ats-friendly-resume' },
+    { icon: <Lock className="h-4 w-4" />, label: 'Premium Content', href: '/premium-content' },
     { icon: <Users className="h-4 w-4" />, label: 'Contributor List', href: '/notes-contributors' },
     { icon: <Layers className="h-4 w-4" />, label: 'Integrated Platforms', href: '/learning-platforms' },
     { icon: <Award className="h-4 w-4" />, label: 'Scholarships', href: '/scholarship-portal' },
@@ -246,20 +247,36 @@ const AppSidebar = ({ className }: AppSidebarProps) => {
             ) : (
               <button
                 onClick={() => navigate(item.href)}
-                className={`w-full flex items-center gap-3 p-2 rounded-xl transition-all group ${isActive(item.href) ? 'bg-slate-800 border border-slate-700' : 'hover:bg-slate-800/50 border border-transparent'
-                  } ${isCollapsed ? 'justify-center' : ''}`}
+                className={`w-full flex items-center gap-3 p-2 rounded-xl transition-all group ${
+                  item.label === 'Premium Content'
+                    ? isActive(item.href)
+                      ? 'bg-amber-500/15 border border-amber-500/40 text-amber-400'
+                      : 'bg-amber-500/5 hover:bg-amber-500/10 border border-amber-500/20 hover:border-amber-500/40 text-amber-400/90 hover:text-amber-400'
+                    : isActive(item.href)
+                      ? 'bg-slate-800 border border-slate-700'
+                      : 'hover:bg-slate-800/50 border border-transparent'
+                } ${isCollapsed ? 'justify-center' : ''}`}
                 title={isCollapsed ? item.label : undefined}
               >
                 {/* 3D Icon Container */}
-                <div className={`flex-shrink-0 flex items-center justify-center w-9 h-9 rounded-lg shadow-lg border border-white/10 transition-transform duration-200 group-hover:scale-110 ${isActive(item.href)
-                  ? 'bg-gradient-to-br from-blue-500 to-indigo-600 text-white shadow-blue-500/20'
-                  : 'bg-gradient-to-br from-slate-700 to-slate-800 text-slate-300 group-hover:from-blue-600 group-hover:to-indigo-700 group-hover:text-white'
-                  }`}>
+                <div className={`flex-shrink-0 flex items-center justify-center w-9 h-9 rounded-lg shadow-lg border border-white/10 transition-transform duration-200 group-hover:scale-110 ${
+                  item.label === 'Premium Content'
+                    ? 'bg-gradient-to-br from-amber-400 to-yellow-600 text-slate-900 font-bold'
+                    : isActive(item.href)
+                      ? 'bg-gradient-to-br from-blue-500 to-indigo-600 text-white shadow-blue-500/20'
+                      : 'bg-gradient-to-br from-slate-700 to-slate-800 text-slate-300 group-hover:from-blue-600 group-hover:to-indigo-700 group-hover:text-white'
+                }`}>
                   {item.icon}
                 </div>
 
                 {!isCollapsed && (
-                  <span className={`text-sm font-medium transition-colors ${isActive(item.href) ? 'text-white' : 'text-slate-300 group-hover:text-white'}`}>
+                  <span className={`text-sm font-medium transition-colors ${
+                    item.label === 'Premium Content'
+                      ? 'text-amber-400 font-bold'
+                      : isActive(item.href)
+                        ? 'text-white'
+                        : 'text-slate-300 group-hover:text-white'
+                  }`}>
                     {item.label}
                   </span>
                 )}
