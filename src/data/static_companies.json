@@ -1,0 +1,1362 @@
+[
+  {
+    "no": 1,
+    "name": "TCS",
+    "type": "MNC",
+    "sector": "IT/Software",
+    "url": "https://www.tcs.com/careers/india",
+    "mode": "Campus + Off-Campus",
+    "branches": "CSE/IT, ME, CE, EE, ECE, CHE",
+    "note": "TCS NextStep portal; Smart Hiring for non-CS"
+  },
+  {
+    "no": 2,
+    "name": "Infosys",
+    "type": "MNC",
+    "sector": "IT/Software",
+    "url": "https://www.infosys.com/careers/apply.html",
+    "mode": "Campus + Off-Campus",
+    "branches": "CSE/IT, ME, EE, ECE, CHE",
+    "note": "InfyTQ platform for freshers"
+  },
+  {
+    "no": 3,
+    "name": "Wipro",
+    "type": "MNC",
+    "sector": "IT/Software",
+    "url": "https://careers.wipro.com/",
+    "mode": "Campus + Off-Campus",
+    "branches": "CSE/IT, ME, EE, ECE",
+    "note": "WILP program for non-CS branches"
+  },
+  {
+    "no": 4,
+    "name": "HCLTech",
+    "type": "MNC",
+    "sector": "IT/Software",
+    "url": "https://www.hcltech.com/careers",
+    "mode": "Campus + Off-Campus",
+    "branches": "CSE/IT, ME, EE, ECE, CE",
+    "note": "HCL TechBee for freshers"
+  },
+  {
+    "no": 5,
+    "name": "Accenture",
+    "type": "MNC",
+    "sector": "IT/Consulting",
+    "url": "https://www.accenture.com/in-en/careers",
+    "mode": "Campus + Off-Campus",
+    "branches": "CSE/IT, ME, EE, ECE, CHE, CE",
+    "note": "ASE and Packaged App roles"
+  },
+  {
+    "no": 6,
+    "name": "Cognizant",
+    "type": "MNC",
+    "sector": "IT/Software",
+    "url": "https://careers.cognizant.com/global/en",
+    "mode": "Campus + Off-Campus",
+    "branches": "CSE/IT, ME, EE, ECE",
+    "note": "GenC program for freshers"
+  },
+  {
+    "no": 7,
+    "name": "Capgemini",
+    "type": "MNC",
+    "sector": "IT/Consulting",
+    "url": "https://www.capgemini.com/in-en/careers/",
+    "mode": "Campus + Off-Campus",
+    "branches": "CSE/IT, ME, EE, ECE",
+    "note": "Fresher roles via campus drives"
+  },
+  {
+    "no": 8,
+    "name": "IBM India",
+    "type": "MNC",
+    "sector": "IT/Software",
+    "url": "https://www.ibm.com/in-en/employment/",
+    "mode": "Campus + Off-Campus",
+    "branches": "CSE/IT, ME, EE",
+    "note": "IBM Campus Connect program"
+  },
+  {
+    "no": 9,
+    "name": "Tech Mahindra",
+    "type": "MNC",
+    "sector": "IT/Software",
+    "url": "https://careers.techmahindra.com/",
+    "mode": "Campus + Off-Campus",
+    "branches": "CSE/IT, ME, EE, ECE",
+    "note": ""
+  },
+  {
+    "no": 10,
+    "name": "Mphasis",
+    "type": "MNC",
+    "sector": "IT/Software",
+    "url": "https://careers.mphasis.com/",
+    "mode": "Off-Campus",
+    "branches": "CSE/IT, EE, ECE",
+    "note": ""
+  },
+  {
+    "no": 11,
+    "name": "L&T Infotech (LTIMindtree)",
+    "type": "MNC",
+    "sector": "IT/Software",
+    "url": "https://www.ltimindtree.com/careers/",
+    "mode": "Campus + Off-Campus",
+    "branches": "CSE/IT, ME, EE, ECE",
+    "note": "MOSAIC fresher program"
+  },
+  {
+    "no": 12,
+    "name": "Hexaware",
+    "type": "MNC",
+    "sector": "IT/Software",
+    "url": "https://hexaware.com/careers/",
+    "mode": "Off-Campus",
+    "branches": "CSE/IT, EE, ECE",
+    "note": ""
+  },
+  {
+    "no": 13,
+    "name": "Mindtree (now LTIMindtree)",
+    "type": "MNC",
+    "sector": "IT/Software",
+    "url": "https://www.ltimindtree.com/careers/",
+    "mode": "Campus",
+    "branches": "CSE/IT",
+    "note": "Merged with LTI"
+  },
+  {
+    "no": 14,
+    "name": "Google India",
+    "type": "MNC",
+    "sector": "Product/Tech",
+    "url": "https://careers.google.com/",
+    "mode": "Off-Campus + Intern",
+    "branches": "CSE/IT",
+    "note": "STEP Internship for students"
+  },
+  {
+    "no": 15,
+    "name": "Microsoft India",
+    "type": "MNC",
+    "sector": "Product/Tech",
+    "url": "https://careers.microsoft.com/",
+    "mode": "Off-Campus + Intern",
+    "branches": "CSE/IT, EE, ECE",
+    "note": "Explore program for freshers"
+  },
+  {
+    "no": 16,
+    "name": "Amazon India",
+    "type": "MNC",
+    "sector": "Product/Tech",
+    "url": "https://www.amazon.jobs/en/",
+    "mode": "Off-Campus + Intern",
+    "branches": "CSE/IT, ME, EE",
+    "note": "Amazon Future Engineer program"
+  },
+  {
+    "no": 17,
+    "name": "Adobe India",
+    "type": "MNC",
+    "sector": "Product/Tech",
+    "url": "https://www.adobe.com/in/careers.html",
+    "mode": "Off-Campus + Intern",
+    "branches": "CSE/IT",
+    "note": ""
+  },
+  {
+    "no": 18,
+    "name": "SAP India",
+    "type": "MNC",
+    "sector": "Product/Tech",
+    "url": "https://www.sap.com/india/careers.html",
+    "mode": "Campus + Off-Campus",
+    "branches": "CSE/IT, ME, EE",
+    "note": "SAP Labs India"
+  },
+  {
+    "no": 19,
+    "name": "Oracle India",
+    "type": "MNC",
+    "sector": "Product/Tech",
+    "url": "https://www.oracle.com/in/corporate/careers/",
+    "mode": "Off-Campus",
+    "branches": "CSE/IT",
+    "note": ""
+  },
+  {
+    "no": 20,
+    "name": "Salesforce India",
+    "type": "MNC",
+    "sector": "Product/Tech",
+    "url": "https://www.salesforce.com/in/company/careers/",
+    "mode": "Off-Campus",
+    "branches": "CSE/IT",
+    "note": "Futureforce program"
+  },
+  {
+    "no": 21,
+    "name": "VMware (Broadcom)",
+    "type": "MNC",
+    "sector": "Product/Tech",
+    "url": "https://careers.broadcom.com/",
+    "mode": "Off-Campus",
+    "branches": "CSE/IT, EE",
+    "note": ""
+  },
+  {
+    "no": 22,
+    "name": "Qualcomm India",
+    "type": "MNC",
+    "sector": "Semiconductor",
+    "url": "https://www.qualcomm.com/company/careers",
+    "mode": "Off-Campus + Intern",
+    "branches": "CSE/IT, EE, ECE",
+    "note": "Strong ECE hiring"
+  },
+  {
+    "no": 23,
+    "name": "Intel India",
+    "type": "MNC",
+    "sector": "Semiconductor",
+    "url": "https://jobs.intel.com/",
+    "mode": "Off-Campus + Intern",
+    "branches": "CSE/IT, EE, ECE",
+    "note": ""
+  },
+  {
+    "no": 24,
+    "name": "Texas Instruments India",
+    "type": "MNC",
+    "sector": "Semiconductor",
+    "url": "https://careers.ti.com/",
+    "mode": "Campus + Intern",
+    "branches": "CSE/IT, EE, ECE",
+    "note": "Strong campus presence at IITs/NITs"
+  },
+  {
+    "no": 25,
+    "name": "NXP Semiconductors",
+    "type": "MNC",
+    "sector": "Semiconductor",
+    "url": "https://www.nxp.com/company/careers:CAREERS",
+    "mode": "Off-Campus",
+    "branches": "ECE, EE",
+    "note": ""
+  },
+  {
+    "no": 26,
+    "name": "Nvidia India",
+    "type": "MNC",
+    "sector": "Product/Tech",
+    "url": "https://www.nvidia.com/en-in/about-nvidia/careers/",
+    "mode": "Off-Campus",
+    "branches": "CSE/IT, EE, ECE",
+    "note": ""
+  },
+  {
+    "no": 27,
+    "name": "Cisco India",
+    "type": "MNC",
+    "sector": "Networking/Tech",
+    "url": "https://jobs.cisco.com/",
+    "mode": "Campus + Off-Campus",
+    "branches": "CSE/IT, EE, ECE",
+    "note": ""
+  },
+  {
+    "no": 28,
+    "name": "Dell India",
+    "type": "MNC",
+    "sector": "IT/Hardware",
+    "url": "https://jobs.dell.com/",
+    "mode": "Off-Campus",
+    "branches": "CSE/IT, ME, EE",
+    "note": ""
+  },
+  {
+    "no": 29,
+    "name": "HP India",
+    "type": "MNC",
+    "sector": "IT/Hardware",
+    "url": "https://jobs.hp.com/",
+    "mode": "Off-Campus",
+    "branches": "CSE/IT, ME, EE",
+    "note": ""
+  },
+  {
+    "no": 30,
+    "name": "Siemens India",
+    "type": "MNC",
+    "sector": "Engineering/Tech",
+    "url": "https://jobs.siemens.com/careers",
+    "mode": "Campus + Off-Campus",
+    "branches": "ME, EE, ECE, CE, CHE",
+    "note": "Strong core engineering hiring"
+  },
+  {
+    "no": 31,
+    "name": "ABB India",
+    "type": "MNC",
+    "sector": "Engineering/Tech",
+    "url": "https://careers.abb/global/en",
+    "mode": "Campus + Off-Campus",
+    "branches": "ME, EE, ECE",
+    "note": ""
+  },
+  {
+    "no": 32,
+    "name": "Bosch India",
+    "type": "MNC",
+    "sector": "Automotive/Eng",
+    "url": "https://www.bosch.in/careers/",
+    "mode": "Campus + Off-Campus",
+    "branches": "ME, EE, ECE, CSE/IT",
+    "note": "BGSW for software; Bosch for core"
+  },
+  {
+    "no": 33,
+    "name": "Honeywell India",
+    "type": "MNC",
+    "sector": "Engineering",
+    "url": "https://careers.honeywell.com/",
+    "mode": "Off-Campus",
+    "branches": "ME, EE, ECE, CHE, CSE/IT",
+    "note": ""
+  },
+  {
+    "no": 34,
+    "name": "GE India",
+    "type": "MNC",
+    "sector": "Engineering",
+    "url": "https://jobs.gecareers.com/",
+    "mode": "Off-Campus",
+    "branches": "ME, EE, ECE",
+    "note": "GE Aerospace and Power"
+  },
+  {
+    "no": 35,
+    "name": "Caterpillar India",
+    "type": "MNC",
+    "sector": "Manufacturing",
+    "url": "https://careers.caterpillar.com/",
+    "mode": "Off-Campus",
+    "branches": "ME, CE",
+    "note": ""
+  },
+  {
+    "no": 36,
+    "name": "3M India",
+    "type": "MNC",
+    "sector": "Manufacturing",
+    "url": "https://www.3m.com/3M/en_US/careers-us/",
+    "mode": "Off-Campus",
+    "branches": "ME, CHE, EE",
+    "note": ""
+  },
+  {
+    "no": 37,
+    "name": "Shell India",
+    "type": "MNC",
+    "sector": "Oil & Gas",
+    "url": "https://www.shell.in/careers.html",
+    "mode": "Off-Campus",
+    "branches": "CHE, ME, EE, CE",
+    "note": ""
+  },
+  {
+    "no": 38,
+    "name": "ExxonMobil India",
+    "type": "MNC",
+    "sector": "Oil & Gas",
+    "url": "https://jobs.exxonmobil.com/",
+    "mode": "Off-Campus",
+    "branches": "CHE, ME, CSE/IT",
+    "note": ""
+  },
+  {
+    "no": 39,
+    "name": "Dow India",
+    "type": "MNC",
+    "sector": "Chemicals",
+    "url": "https://careers.dow.com/",
+    "mode": "Off-Campus",
+    "branches": "CHE, ME",
+    "note": ""
+  },
+  {
+    "no": 40,
+    "name": "BASF India",
+    "type": "MNC",
+    "sector": "Chemicals",
+    "url": "https://www.basf.com/in/en/careers.html",
+    "mode": "Off-Campus",
+    "branches": "CHE, ME",
+    "note": ""
+  },
+  {
+    "no": 41,
+    "name": "Deloitte India",
+    "type": "MNC",
+    "sector": "Consulting",
+    "url": "https://www2.deloitte.com/in/en/careers.html",
+    "mode": "Campus + Off-Campus",
+    "branches": "CSE/IT, ME, CE, CHE, EE",
+    "note": "USI hiring across branches"
+  },
+  {
+    "no": 42,
+    "name": "PwC India",
+    "type": "MNC",
+    "sector": "Consulting",
+    "url": "https://www.pwc.in/careers.html",
+    "mode": "Off-Campus",
+    "branches": "CSE/IT, ME, CE",
+    "note": ""
+  },
+  {
+    "no": 43,
+    "name": "KPMG India",
+    "type": "MNC",
+    "sector": "Consulting",
+    "url": "https://kpmg.com/in/en/home/careers.html",
+    "mode": "Off-Campus",
+    "branches": "CSE/IT, ME",
+    "note": ""
+  },
+  {
+    "no": 44,
+    "name": "McKinsey India",
+    "type": "MNC",
+    "sector": "Consulting",
+    "url": "https://www.mckinsey.com/careers",
+    "mode": "Off-Campus",
+    "branches": "All branches",
+    "note": "BAI program for freshers"
+  },
+  {
+    "no": 45,
+    "name": "BCG India",
+    "type": "MNC",
+    "sector": "Consulting",
+    "url": "https://careers.bcg.com/",
+    "mode": "Off-Campus",
+    "branches": "All branches",
+    "note": ""
+  },
+  {
+    "no": 46,
+    "name": "EY India",
+    "type": "MNC",
+    "sector": "Consulting",
+    "url": "https://www.ey.com/en_in/careers",
+    "mode": "Off-Campus",
+    "branches": "CSE/IT, ME, CHE",
+    "note": "GDS division for tech roles"
+  },
+  {
+    "no": 47,
+    "name": "BHEL",
+    "type": "PSU",
+    "sector": "Power/Engineering",
+    "url": "https://careers.bhel.in/",
+    "mode": "GATE",
+    "branches": "ME, EE, ECE, CE, CHE",
+    "note": "Engineer/Executive Trainee via GATE"
+  },
+  {
+    "no": 48,
+    "name": "NTPC",
+    "type": "PSU",
+    "sector": "Power",
+    "url": "https://www.ntpc.co.in/en/career",
+    "mode": "GATE",
+    "branches": "ME, EE, ECE, CE, CHE",
+    "note": "GET program"
+  },
+  {
+    "no": 49,
+    "name": "ONGC",
+    "type": "PSU",
+    "sector": "Oil & Gas",
+    "url": "https://ongcindia.com/web/eng/career-recruitments",
+    "mode": "Own Exam + GATE",
+    "branches": "ME, CHE, EE, ECE, CE",
+    "note": "Graduate Trainee"
+  },
+  {
+    "no": 50,
+    "name": "IOCL",
+    "type": "PSU",
+    "sector": "Oil & Gas",
+    "url": "https://iocl.com/career-recruitment",
+    "mode": "GATE",
+    "branches": "ME, CHE, EE, ECE, CE, CSE/IT",
+    "note": "Engineer Officer via GATE"
+  },
+  {
+    "no": 51,
+    "name": "GAIL",
+    "type": "PSU",
+    "sector": "Oil & Gas",
+    "url": "https://gailonline.com/Careers.html",
+    "mode": "GATE",
+    "branches": "ME, CHE, EE, ECE, CE, CSE/IT",
+    "note": "Executive Trainee via GATE"
+  },
+  {
+    "no": 52,
+    "name": "HPCL",
+    "type": "PSU",
+    "sector": "Oil & Gas",
+    "url": "https://hindustanpetroleum.com/HR-Careers",
+    "mode": "GATE",
+    "branches": "ME, CHE, EE, ECE, CE, CSE/IT",
+    "note": ""
+  },
+  {
+    "no": 53,
+    "name": "BPCL",
+    "type": "PSU",
+    "sector": "Oil & Gas",
+    "url": "https://www.bharatpetroleum.in/our-company/career.aspx",
+    "mode": "GATE",
+    "branches": "ME, CHE, EE, ECE, CSE/IT",
+    "note": ""
+  },
+  {
+    "no": 54,
+    "name": "Power Grid (PGCIL)",
+    "type": "PSU",
+    "sector": "Power",
+    "url": "https://www.powergridindia.com/career",
+    "mode": "GATE",
+    "branches": "EE, ECE, CE, CSE/IT",
+    "note": "Executive Trainee"
+  },
+  {
+    "no": 55,
+    "name": "SAIL",
+    "type": "PSU",
+    "sector": "Steel/Manufacturing",
+    "url": "https://www.sail.co.in/en/careers",
+    "mode": "Own Exam + GATE",
+    "branches": "ME, EE, ECE, CE, CHE",
+    "note": "Management Trainee"
+  },
+  {
+    "no": 56,
+    "name": "HAL",
+    "type": "PSU",
+    "sector": "Aerospace/Defense",
+    "url": "https://hal-india.co.in/Main/frmHome.aspx",
+    "mode": "GATE + Own Exam",
+    "branches": "ME, EE, ECE, CSE/IT",
+    "note": ""
+  },
+  {
+    "no": 57,
+    "name": "BEL",
+    "type": "PSU",
+    "sector": "Electronics/Defense",
+    "url": "https://bel-india.in/content.aspx?LinkID=21&MId=0",
+    "mode": "Own Exam",
+    "branches": "EE, ECE, CSE/IT, ME",
+    "note": "Probationary Engineer"
+  },
+  {
+    "no": 58,
+    "name": "DRDO",
+    "type": "PSU",
+    "sector": "Defense R&D",
+    "url": "https://www.drdo.gov.in/join-drdo",
+    "mode": "GATE + NET",
+    "branches": "ME, EE, ECE, CE, CHE, CSE/IT",
+    "note": "Scientist B"
+  },
+  {
+    "no": 59,
+    "name": "ISRO",
+    "type": "PSU",
+    "sector": "Space/Research",
+    "url": "https://www.isro.gov.in/Careers.html",
+    "mode": "Own Exam",
+    "branches": "ME, EE, ECE, CE, CSE/IT",
+    "note": "ICRB exam"
+  },
+  {
+    "no": 60,
+    "name": "Coal India (CIL)",
+    "type": "PSU",
+    "sector": "Mining",
+    "url": "https://coalindia.in/en-us/human-resource/careers.aspx",
+    "mode": "Own Exam",
+    "branches": "ME, EE, CE",
+    "note": "MT program"
+  },
+  {
+    "no": 61,
+    "name": "NPCIL",
+    "type": "PSU",
+    "sector": "Nuclear Power",
+    "url": "https://npcilcareers.co.in/",
+    "mode": "Own Exam",
+    "branches": "ME, EE, ECE, CE, CHE",
+    "note": "Executive Trainee"
+  },
+  {
+    "no": 62,
+    "name": "NALCO",
+    "type": "PSU",
+    "sector": "Aluminium/Mining",
+    "url": "https://nalcoindia.com/career-opportunity/",
+    "mode": "GATE",
+    "branches": "ME, EE, CHE, CE",
+    "note": "Graduate Engineer Trainee"
+  },
+  {
+    "no": 63,
+    "name": "NLC India",
+    "type": "PSU",
+    "sector": "Power/Mining",
+    "url": "https://nlcindia.in/new_web/careers/careers.htm",
+    "mode": "GATE",
+    "branches": "ME, EE, CE",
+    "note": ""
+  },
+  {
+    "no": 64,
+    "name": "RITES",
+    "type": "PSU",
+    "sector": "Infrastructure/Rail",
+    "url": "https://www.rites.com/web/index.php/career",
+    "mode": "Own Exam",
+    "branches": "CE, ME, EE",
+    "note": ""
+  },
+  {
+    "no": 65,
+    "name": "IRCON",
+    "type": "PSU",
+    "sector": "Infrastructure/Rail",
+    "url": "https://ircon.org/index.php/career",
+    "mode": "Own Exam",
+    "branches": "CE, ME, EE",
+    "note": ""
+  },
+  {
+    "no": 66,
+    "name": "NMDC",
+    "type": "PSU",
+    "sector": "Mining/Steel",
+    "url": "https://nmdc.co.in/Careers/Recruitments",
+    "mode": "GATE",
+    "branches": "ME, EE, CE, CHE",
+    "note": ""
+  },
+  {
+    "no": 67,
+    "name": "MRPL",
+    "type": "PSU",
+    "sector": "Oil Refining",
+    "url": "https://www.mrpl.co.in/content/careers",
+    "mode": "GATE",
+    "branches": "ME, CHE, EE",
+    "note": ""
+  },
+  {
+    "no": 68,
+    "name": "L&T (Larsen & Toubro)",
+    "type": "Indian MNC",
+    "sector": "Engineering/Infra",
+    "url": "https://www.larsentoubro.com/careers/",
+    "mode": "Campus + Off-Campus",
+    "branches": "CE, ME, EE, ECE, CHE, CSE/IT",
+    "note": "Huge core + IT hiring"
+  },
+  {
+    "no": 69,
+    "name": "Tata Steel",
+    "type": "Indian MNC",
+    "sector": "Steel/Manufacturing",
+    "url": "https://www.tatasteel.com/careers/",
+    "mode": "Campus + Off-Campus",
+    "branches": "ME, EE, CHE, CE",
+    "note": "GET program"
+  },
+  {
+    "no": 70,
+    "name": "Tata Motors",
+    "type": "Indian MNC",
+    "sector": "Automotive",
+    "url": "https://www.tatamotors.com/careers/",
+    "mode": "Campus + Off-Campus",
+    "branches": "ME, EE, ECE",
+    "note": "EDP program"
+  },
+  {
+    "no": 71,
+    "name": "Tata Projects",
+    "type": "Indian MNC",
+    "sector": "Infrastructure",
+    "url": "https://www.tataprojects.com/careers",
+    "mode": "Campus",
+    "branches": "CE, ME, EE",
+    "note": ""
+  },
+  {
+    "no": 72,
+    "name": "Tata Chemicals",
+    "type": "Indian MNC",
+    "sector": "Chemicals",
+    "url": "https://www.tatachemicals.com/careers",
+    "mode": "Off-Campus",
+    "branches": "CHE, ME",
+    "note": ""
+  },
+  {
+    "no": 73,
+    "name": "Mahindra & Mahindra",
+    "type": "Indian MNC",
+    "sector": "Automotive",
+    "url": "https://careers.mahindra.com/",
+    "mode": "Campus + Off-Campus",
+    "branches": "ME, EE, ECE",
+    "note": ""
+  },
+  {
+    "no": 74,
+    "name": "Bajaj Auto",
+    "type": "Indian MNC",
+    "sector": "Automotive",
+    "url": "https://www.bajajauto.com/careers",
+    "mode": "Campus",
+    "branches": "ME, EE",
+    "note": ""
+  },
+  {
+    "no": 75,
+    "name": "Hero MotoCorp",
+    "type": "Indian MNC",
+    "sector": "Automotive",
+    "url": "https://www.heromotocorp.com/en-in/careers",
+    "mode": "Campus + Off-Campus",
+    "branches": "ME, EE",
+    "note": ""
+  },
+  {
+    "no": 76,
+    "name": "Maruti Suzuki",
+    "type": "Indian MNC",
+    "sector": "Automotive",
+    "url": "https://www.marutisuzuki.com/corporate/careers",
+    "mode": "Campus + Off-Campus",
+    "branches": "ME, EE, ECE, CE",
+    "note": "GET program"
+  },
+  {
+    "no": 77,
+    "name": "Ashok Leyland",
+    "type": "Indian MNC",
+    "sector": "Automotive",
+    "url": "https://www.ashokleyland.com/en/careers",
+    "mode": "Campus",
+    "branches": "ME, EE",
+    "note": ""
+  },
+  {
+    "no": 78,
+    "name": "Ultratech Cement",
+    "type": "Indian MNC",
+    "sector": "Cement/Manufacturing",
+    "url": "https://www.ultratechcement.com/careers",
+    "mode": "Off-Campus",
+    "branches": "CE, ME, CHE, EE",
+    "note": ""
+  },
+  {
+    "no": 79,
+    "name": "ACC Cement",
+    "type": "Indian MNC",
+    "sector": "Cement",
+    "url": "https://www.acclimited.com/careers",
+    "mode": "Off-Campus",
+    "branches": "CE, ME, CHE",
+    "note": ""
+  },
+  {
+    "no": 80,
+    "name": "Reliance Industries",
+    "type": "Indian MNC",
+    "sector": "Oil/Petrochem",
+    "url": "https://careers.ril.com/",
+    "mode": "Campus + Off-Campus",
+    "branches": "ME, CHE, EE, ECE, CSE/IT, CE",
+    "note": "RIL has multiple verticals"
+  },
+  {
+    "no": 81,
+    "name": "Reliance Jio",
+    "type": "Indian MNC",
+    "sector": "Telecom/Tech",
+    "url": "https://www.jio.com/en-in/career",
+    "mode": "Off-Campus",
+    "branches": "CSE/IT, EE, ECE",
+    "note": ""
+  },
+  {
+    "no": 82,
+    "name": "Adani Group",
+    "type": "Indian MNC",
+    "sector": "Energy/Infra",
+    "url": "https://www.adani.com/careers",
+    "mode": "Off-Campus",
+    "branches": "ME, CE, EE, CHE, CSE/IT",
+    "note": "Multiple group companies"
+  },
+  {
+    "no": 83,
+    "name": "JSW Steel",
+    "type": "Indian MNC",
+    "sector": "Steel",
+    "url": "https://www.jsw.in/careers/steel",
+    "mode": "Campus + Off-Campus",
+    "branches": "ME, EE, CE, CHE",
+    "note": "GET program"
+  },
+  {
+    "no": 84,
+    "name": "Vedanta",
+    "type": "Indian MNC",
+    "sector": "Mining/Metals",
+    "url": "https://www.vedantalimited.com/eng/careers.aspx",
+    "mode": "Off-Campus",
+    "branches": "ME, EE, CHE, CE",
+    "note": ""
+  },
+  {
+    "no": 85,
+    "name": "Hindalco",
+    "type": "Indian MNC",
+    "sector": "Aluminium",
+    "url": "https://www.hindalco.com/about/careers",
+    "mode": "Off-Campus",
+    "branches": "ME, EE, CHE",
+    "note": ""
+  },
+  {
+    "no": 86,
+    "name": "Asian Paints",
+    "type": "Indian MNC",
+    "sector": "Chemicals/FMCG",
+    "url": "https://www.asianpaints.com/career.html",
+    "mode": "Campus + Off-Campus",
+    "branches": "CHE, ME, CSE/IT",
+    "note": "ME Trainee + IT roles"
+  },
+  {
+    "no": 87,
+    "name": "Pidilite",
+    "type": "Indian MNC",
+    "sector": "Chemicals",
+    "url": "https://careers.pidilite.com/",
+    "mode": "Off-Campus",
+    "branches": "CHE, ME",
+    "note": ""
+  },
+  {
+    "no": 88,
+    "name": "Sun Pharma",
+    "type": "Indian MNC",
+    "sector": "Pharma",
+    "url": "https://www.sunpharma.com/careers",
+    "mode": "Off-Campus",
+    "branches": "CHE, Pharma",
+    "note": ""
+  },
+  {
+    "no": 89,
+    "name": "Dr. Reddy's",
+    "type": "Indian MNC",
+    "sector": "Pharma",
+    "url": "https://www.drreddys.com/careers/",
+    "mode": "Off-Campus",
+    "branches": "CHE, Pharma, ME",
+    "note": ""
+  },
+  {
+    "no": 90,
+    "name": "Cipla",
+    "type": "Indian MNC",
+    "sector": "Pharma",
+    "url": "https://www.cipla.com/careers",
+    "mode": "Off-Campus",
+    "branches": "CHE, Pharma",
+    "note": ""
+  },
+  {
+    "no": 91,
+    "name": "AECOM India",
+    "type": "Indian MNC",
+    "sector": "Infrastructure",
+    "url": "https://aecom.com/careers/",
+    "mode": "Off-Campus",
+    "branches": "CE, ME, EE",
+    "note": ""
+  },
+  {
+    "no": 92,
+    "name": "Sterlite Power",
+    "type": "Indian MNC",
+    "sector": "Power/Infra",
+    "url": "https://sterlitepower.com/career",
+    "mode": "Off-Campus",
+    "branches": "EE, CE, ME",
+    "note": ""
+  },
+  {
+    "no": 93,
+    "name": "Flipkart",
+    "type": "Startup/Unicorn",
+    "sector": "E-Commerce",
+    "url": "https://www.flipkartcareers.com/#!/",
+    "mode": "Off-Campus",
+    "branches": "CSE/IT",
+    "note": "SDE, Data, Product roles"
+  },
+  {
+    "no": 94,
+    "name": "Zomato",
+    "type": "Startup/Unicorn",
+    "sector": "Foodtech",
+    "url": "https://www.zomato.com/jobs",
+    "mode": "Off-Campus",
+    "branches": "CSE/IT, ME",
+    "note": "Tech + Ops roles"
+  },
+  {
+    "no": 95,
+    "name": "Swiggy",
+    "type": "Startup/Unicorn",
+    "sector": "Foodtech",
+    "url": "https://careers.swiggy.com/",
+    "mode": "Off-Campus",
+    "branches": "CSE/IT",
+    "note": "Tech + Supply Chain"
+  },
+  {
+    "no": 96,
+    "name": "Ola",
+    "type": "Startup/Unicorn",
+    "sector": "Mobility",
+    "url": "https://www.olacabs.com/careers",
+    "mode": "Off-Campus",
+    "branches": "CSE/IT, ME",
+    "note": "Ola Electric also hiring ME"
+  },
+  {
+    "no": 97,
+    "name": "Paytm",
+    "type": "Startup/Unicorn",
+    "sector": "Fintech",
+    "url": "https://paytm.com/offer/careers/",
+    "mode": "Off-Campus",
+    "branches": "CSE/IT",
+    "note": ""
+  },
+  {
+    "no": 98,
+    "name": "Razorpay",
+    "type": "Startup/Unicorn",
+    "sector": "Fintech",
+    "url": "https://razorpay.com/jobs/",
+    "mode": "Off-Campus",
+    "branches": "CSE/IT",
+    "note": ""
+  },
+  {
+    "no": 99,
+    "name": "CRED",
+    "type": "Startup/Unicorn",
+    "sector": "Fintech",
+    "url": "https://careers.cred.club/",
+    "mode": "Off-Campus",
+    "branches": "CSE/IT",
+    "note": "Premium culture, tough hiring bar"
+  },
+  {
+    "no": 100,
+    "name": "Meesho",
+    "type": "Startup/Unicorn",
+    "sector": "E-Commerce",
+    "url": "https://meesho.io/jobs",
+    "mode": "Off-Campus",
+    "branches": "CSE/IT",
+    "note": ""
+  },
+  {
+    "no": 101,
+    "name": "PhonePe",
+    "type": "Startup/Unicorn",
+    "sector": "Fintech",
+    "url": "https://www.phonepe.com/careers/",
+    "mode": "Off-Campus",
+    "branches": "CSE/IT",
+    "note": ""
+  },
+  {
+    "no": 102,
+    "name": "Zepto",
+    "type": "Startup/Unicorn",
+    "sector": "Quick Commerce",
+    "url": "https://jobs.lever.co/zepto",
+    "mode": "Off-Campus",
+    "branches": "CSE/IT, ME",
+    "note": "Supply chain for ME"
+  },
+  {
+    "no": 103,
+    "name": "Groww",
+    "type": "Startup/Unicorn",
+    "sector": "Fintech",
+    "url": "https://groww.in/careers",
+    "mode": "Off-Campus",
+    "branches": "CSE/IT",
+    "note": ""
+  },
+  {
+    "no": 104,
+    "name": "Zerodha",
+    "type": "Startup",
+    "sector": "Fintech",
+    "url": "https://zerodha.com/careers/",
+    "mode": "Off-Campus",
+    "branches": "CSE/IT",
+    "note": "Bootstrapped, selective hiring"
+  },
+  {
+    "no": 105,
+    "name": "Nykaa",
+    "type": "Startup/Unicorn",
+    "sector": "E-Commerce",
+    "url": "https://careers.nykaa.com/",
+    "mode": "Off-Campus",
+    "branches": "CSE/IT, ME",
+    "note": "Tech + Supply Chain"
+  },
+  {
+    "no": 106,
+    "name": "Dream11",
+    "type": "Startup/Unicorn",
+    "sector": "Gaming/Sports",
+    "url": "https://www.dreamsports.group/careers/",
+    "mode": "Off-Campus",
+    "branches": "CSE/IT",
+    "note": ""
+  },
+  {
+    "no": 107,
+    "name": "upGrad",
+    "type": "Startup/Unicorn",
+    "sector": "Edtech",
+    "url": "https://careers.upgrad.com/",
+    "mode": "Off-Campus",
+    "branches": "CSE/IT",
+    "note": ""
+  },
+  {
+    "no": 108,
+    "name": "Unacademy",
+    "type": "Startup/Unicorn",
+    "sector": "Edtech",
+    "url": "https://unacademy.com/company/careers",
+    "mode": "Off-Campus",
+    "branches": "CSE/IT",
+    "note": ""
+  },
+  {
+    "no": 109,
+    "name": "Physics Wallah (PW)",
+    "type": "Startup/Unicorn",
+    "sector": "Edtech",
+    "url": "https://jobs.lever.co/physicswallah",
+    "mode": "Off-Campus",
+    "branches": "CSE/IT",
+    "note": ""
+  },
+  {
+    "no": 110,
+    "name": "Delhivery",
+    "type": "Startup/Unicorn",
+    "sector": "Logistics",
+    "url": "https://www.delhivery.com/careers",
+    "mode": "Off-Campus",
+    "branches": "CSE/IT, ME, CE",
+    "note": "Good for supply chain + ME"
+  },
+  {
+    "no": 111,
+    "name": "Freshworks",
+    "type": "Startup/Unicorn",
+    "sector": "SaaS",
+    "url": "https://www.freshworks.com/company/careers/",
+    "mode": "Off-Campus",
+    "branches": "CSE/IT",
+    "note": "Listed company now"
+  },
+  {
+    "no": 112,
+    "name": "Zoho",
+    "type": "Indian MNC",
+    "sector": "SaaS",
+    "url": "https://www.zoho.com/careers.html",
+    "mode": "Campus + Off-Campus",
+    "branches": "CSE/IT",
+    "note": "ZOHO Campus Recruitment"
+  },
+  {
+    "no": 113,
+    "name": "BrowserStack",
+    "type": "Startup/Unicorn",
+    "sector": "SaaS/Dev Tools",
+    "url": "https://www.browserstack.com/careers",
+    "mode": "Off-Campus",
+    "branches": "CSE/IT",
+    "note": ""
+  },
+  {
+    "no": 114,
+    "name": "Postman",
+    "type": "Startup/Unicorn",
+    "sector": "Dev Tools",
+    "url": "https://www.postman.com/company/careers/",
+    "mode": "Off-Campus",
+    "branches": "CSE/IT",
+    "note": ""
+  },
+  {
+    "no": 115,
+    "name": "Chargebee",
+    "type": "Startup",
+    "sector": "SaaS/Fintech",
+    "url": "https://www.chargebee.com/careers/",
+    "mode": "Off-Campus",
+    "branches": "CSE/IT",
+    "note": ""
+  },
+  {
+    "no": 116,
+    "name": "Urban Company",
+    "type": "Startup/Unicorn",
+    "sector": "Services",
+    "url": "https://careers.urbancompany.com/",
+    "mode": "Off-Campus",
+    "branches": "CSE/IT, ME",
+    "note": "Supply chain for ME"
+  },
+  {
+    "no": 117,
+    "name": "Lenskart",
+    "type": "Startup/Unicorn",
+    "sector": "Retail/Tech",
+    "url": "https://jobs.lever.co/lenskart",
+    "mode": "Off-Campus",
+    "branches": "CSE/IT, ME",
+    "note": "Ops + Manufacturing for ME"
+  },
+  {
+    "no": 118,
+    "name": "OYO",
+    "type": "Startup/Unicorn",
+    "sector": "Hospitality/Tech",
+    "url": "https://careers.oyorooms.com/",
+    "mode": "Off-Campus",
+    "branches": "CSE/IT",
+    "note": ""
+  },
+  {
+    "no": 119,
+    "name": "Cars24",
+    "type": "Startup/Unicorn",
+    "sector": "Auto/Tech",
+    "url": "https://www.cars24.com/careers/",
+    "mode": "Off-Campus",
+    "branches": "CSE/IT, ME",
+    "note": "ME for quality/ops"
+  },
+  {
+    "no": 120,
+    "name": "BlackBuck",
+    "type": "Startup/Unicorn",
+    "sector": "Logistics",
+    "url": "https://blackbuck.com/careers/",
+    "mode": "Off-Campus",
+    "branches": "CSE/IT, ME, CE",
+    "note": ""
+  },
+  {
+    "no": 121,
+    "name": "Zetwerk",
+    "type": "Startup/Unicorn",
+    "sector": "B2B Manufacturing",
+    "url": "https://www.zetwerk.com/careers/",
+    "mode": "Off-Campus",
+    "branches": "ME, CE, EE, CSE/IT",
+    "note": "Core manufacturing focus"
+  },
+  {
+    "no": 122,
+    "name": "Moglix",
+    "type": "Startup/Unicorn",
+    "sector": "B2B E-Commerce",
+    "url": "https://www.moglix.com/careers",
+    "mode": "Off-Campus",
+    "branches": "ME, CSE/IT",
+    "note": "Industrial B2B"
+  },
+  {
+    "no": 123,
+    "name": "InfraMarket",
+    "type": "Startup/Unicorn",
+    "sector": "Construction Tech",
+    "url": "https://www.infra.market/careers",
+    "mode": "Off-Campus",
+    "branches": "CE, ME, CSE/IT",
+    "note": ""
+  },
+  {
+    "no": 124,
+    "name": "Porter",
+    "type": "Startup",
+    "sector": "Logistics",
+    "url": "https://porter.in/careers",
+    "mode": "Off-Campus",
+    "branches": "CSE/IT, ME",
+    "note": ""
+  },
+  {
+    "no": 125,
+    "name": "Shadowfax",
+    "type": "Startup",
+    "sector": "Logistics",
+    "url": "https://www.shadowfax.in/careers",
+    "mode": "Off-Campus",
+    "branches": "CSE/IT, ME",
+    "note": ""
+  },
+  {
+    "no": 126,
+    "name": "Mu Sigma",
+    "type": "Indian MNC",
+    "sector": "Analytics",
+    "url": "https://www.mu-sigma.com/careers/",
+    "mode": "Campus + Off-Campus",
+    "branches": "CSE/IT, ME, EE, CE, CHE",
+    "note": "Accepts all branches; training provided"
+  },
+  {
+    "no": 127,
+    "name": "Fractal Analytics",
+    "type": "Indian MNC",
+    "sector": "Analytics",
+    "url": "https://fractal.ai/careers/",
+    "mode": "Off-Campus",
+    "branches": "CSE/IT, ME",
+    "note": ""
+  },
+  {
+    "no": 128,
+    "name": "Absolutdata",
+    "type": "Indian MNC",
+    "sector": "Analytics",
+    "url": "https://absolutdata.com/careers/",
+    "mode": "Off-Campus",
+    "branches": "CSE/IT, ME",
+    "note": ""
+  },
+  {
+    "no": 129,
+    "name": "ICICI Bank IT",
+    "type": "Indian MNC",
+    "sector": "Banking/Fintech",
+    "url": "https://www.icicicareers.com/",
+    "mode": "Off-Campus",
+    "branches": "CSE/IT, ME, EE",
+    "note": "Tech roles for engineers"
+  },
+  {
+    "no": 130,
+    "name": "HDFC Bank IT",
+    "type": "Indian MNC",
+    "sector": "Banking/Fintech",
+    "url": "https://www.hdfcbank.com/personal/about-us/careers",
+    "mode": "Off-Campus",
+    "branches": "CSE/IT",
+    "note": ""
+  },
+  {
+    "no": 131,
+    "name": "Axis Bank IT",
+    "type": "Indian MNC",
+    "sector": "Banking/Fintech",
+    "url": "https://www.axisbank.com/about-us/career-with-us",
+    "mode": "Off-Campus",
+    "branches": "CSE/IT",
+    "note": ""
+  },
+  {
+    "no": 132,
+    "name": "PolicyBazaar",
+    "type": "Startup/Unicorn",
+    "sector": "InsurTech",
+    "url": "https://www.policybazaar.com/info/career-opportunities/",
+    "mode": "Off-Campus",
+    "branches": "CSE/IT",
+    "note": ""
+  },
+  {
+    "no": 133,
+    "name": "BARC",
+    "type": "Government",
+    "sector": "Nuclear Research",
+    "url": "https://www.barc.gov.in/",
+    "mode": "Own Exam (GATE/OCES)",
+    "branches": "ME, EE, ECE, CHE, CE, CSE/IT",
+    "note": "OCES/DGFS program via GATE"
+  },
+  {
+    "no": 134,
+    "name": "IITs (Faculty/Research)",
+    "type": "Government",
+    "sector": "Research/Academics",
+    "url": "https://www.iitjobs.com/",
+    "mode": "Competitive Exam",
+    "branches": "All branches",
+    "note": "JRF/Project positions"
+  },
+  {
+    "no": 135,
+    "name": "NIT (Faculty/Research)",
+    "type": "Government",
+    "sector": "Research/Academics",
+    "url": "https://www.nits.ac.in/pages/careers",
+    "mode": "Competitive Exam",
+    "branches": "All branches",
+    "note": ""
+  },
+  {
+    "no": 136,
+    "name": "CSIR Labs",
+    "type": "Government",
+    "sector": "Research",
+    "url": "https://www.csir.res.in/jobs",
+    "mode": "NET/GATE",
+    "branches": "ME, CHE, CE, EE, CSE/IT",
+    "note": "Multiple national labs"
+  }
+]
