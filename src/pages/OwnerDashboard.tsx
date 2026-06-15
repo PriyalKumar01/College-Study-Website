@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   CheckCircle, XCircle, User, Calendar, BookOpen, ShieldAlert,
-  Eye, Trash2, Crown, UserPlus, UserMinus, Search, Loader2, FileText, Download, GraduationCap, ExternalLink, Bell, Send, Pencil, Trophy, Coins, Link
+  Eye, Trash2, Crown, UserPlus, UserMinus, Search, Loader2, FileText, Download, GraduationCap, ExternalLink, Bell, Send, Pencil, Trophy, Coins, Link, Lock
 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
@@ -402,6 +402,10 @@ const OwnerDashboard = () => {
   const [newContrib, setNewContrib] = useState({ name: '', branch: '', batch: '', coins: '', linkedin_url: '', image_url: '' });
   const [isAddingContrib, setIsAddingContrib] = useState(false);
 
+  const [premiumPurchases, setPremiumPurchases] = useState<any[]>([]);
+  const [searchPremiumQuery, setSearchPremiumQuery] = useState('');
+  const [revokingId, setRevokingId] = useState<string | null>(null);
+
   useEffect(() => {
     if (isOwner) {
       fetchAll();
@@ -448,8 +452,121 @@ const OwnerDashboard = () => {
 
   const fetchAll = async () => {
     setLoading(true);
-    await Promise.all([fetchPendingMaterials(), fetchAllMaterials(), fetchAdminRoles(), fetchScholarships(), fetchContributors()]);
+    await Promise.all([
+      fetchPendingMaterials(),
+      fetchAllMaterials(),
+      fetchAdminRoles(),
+      fetchScholarships(),
+      fetchContributors(),
+      fetchPremiumPurchases()
+    ]);
     setLoading(false);
+  };
+
+  const fetchPremiumPurchases = async () => {
+    try {
+      const { data: purchases, error: purchaseError } = await (supabase as any)
+        .from('premium_purchases')
+        .select('*')
+        .in('payment_status', ['completed', 'free'])
+        .order('purchased_at', { ascending: false });
+
+      if (purchaseError) throw purchaseError;
+      if (!purchases || purchases.length === 0) {
+        setPremiumPurchases([]);
+        return;
+      }
+
+      const userIds = Array.from(new Set(purchases.map((p: any) => p.user_id)));
+      const { data: profiles, error: profileError } = await supabase
+        .from('profiles')
+        .select('user_id, first_name, last_name, branch, email')
+        .in('user_id', userIds);
+
+      if (profileError) {
+        console.error('Error fetching profiles for premium purchases:', profileError);
+      }
+
+      const profileMap = new Map(
+        (profiles || []).map((p: any) => [p.user_id, p])
+      );
+
+      const joined = purchases.map((p: any) => {
+        const prof = profileMap.get(p.user_id);
+        return {
+          ...p,
+          first_name: prof?.first_name || '',
+          last_name: prof?.last_name || '',
+          branch: prof?.branch || '',
+          email: prof?.email || p.user_email,
+        };
+      });
+
+      setPremiumPurchases(joined);
+    } catch (err: any) {
+      console.error('Error in fetchPremiumPurchases:', err);
+    }
+  };
+
+  const handleRevokeAccess = async (userId: string, planCode: string, userName: string) => {
+    if (!window.confirm(`Are you sure you want to revoke "${planCode}" access for ${userName}?`)) {
+      return;
+    }
+    setRevokingId(`${userId}-${planCode}`);
+    try {
+      const { error } = await (supabase as any)
+        .from('premium_purchases')
+        .delete()
+        .eq('user_id', userId)
+        .eq('plan', planCode);
+
+      if (error) throw error;
+
+      toast({
+        title: 'Access Revoked 🚫',
+        description: `Successfully revoked "${planCode}" access for ${userName}.`
+      });
+
+      await fetchPremiumPurchases();
+    } catch (err: any) {
+      toast({
+        title: 'Revocation Failed',
+        description: err.message,
+        variant: 'destructive'
+      });
+    } finally {
+      setRevokingId(null);
+    }
+  };
+
+  const handleRevokeAllAccess = async (userId: string, userName: string) => {
+    if (!window.confirm(`Are you sure you want to revoke ALL premium access for ${userName}?`)) {
+      return;
+    }
+    setRevokingId(`${userId}-all`);
+    try {
+      const { error } = await (supabase as any)
+        .from('premium_purchases')
+        .delete()
+        .eq('user_id', userId);
+
+      if (error) throw error;
+
+      toast({
+        title: 'All Access Revoked 🚫',
+        description: `Successfully revoked all premium access for ${userName}.`
+      });
+
+      await fetchPremiumPurchases();
+    } catch (err: any) {
+      toast({
+        title: 'Revocation Failed',
+        description: err.message,
+        variant: 'destructive'
+      });
+    } finally {
+      setRevokingId(null);
+    }
   };
 
   const fetchContributors = async () => {
@@ -692,6 +809,35 @@ const OwnerDashboard = () => {
     return <Badge className={configs[status] || ''}>{status}</Badge>;
   };
 
+  // Group premium purchases by user
+  const groupedPremiumUsers = premiumPurchases.reduce((acc: any, purchase: any) => {
+    const userId = purchase.user_id;
+    if (!acc[userId]) {
+      acc[userId] = {
+        user_id: userId,
+        first_name: purchase.first_name || '',
+        last_name: purchase.last_name || '',
+        branch: purchase.branch || '',
+        email: purchase.email || purchase.user_email,
+        purchases: [],
+      };
+    }
+    acc[userId].purchases.push(purchase);
+    return acc;
+  }, {});
+
+  const groupedList = Object.values(groupedPremiumUsers);
+
+  const filteredGroupedList = groupedList.filter((item: any) => {
+    const search = searchPremiumQuery.toLowerCase();
+    const fullName = `${item.first_name} ${item.last_name}`.toLowerCase();
+    return (
+      fullName.includes(search) ||
+      item.email.toLowerCase().includes(search) ||
+      item.branch.toLowerCase().includes(search)
+    );
+  });
+
   return (
     <div className="min-h-screen bg-gradient-hero">
       <Navbar />
@@ -737,7 +883,7 @@ const OwnerDashboard = () => {
         </motion.div>
 
         <Tabs defaultValue="pending" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-6">
+          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-7">
             <TabsTrigger value="pending" className="flex items-center gap-2">
               <BookOpen className="h-4 w-4" />
               Pending ({pendingMaterials.length})
@@ -745,6 +891,10 @@ const OwnerDashboard = () => {
             <TabsTrigger value="scholarships" className="flex items-center gap-2">
               <GraduationCap className="h-4 w-4" />
               Scholarships
+            </TabsTrigger>
+            <TabsTrigger value="premium" className="flex items-center gap-2">
+              <Lock className="h-4 w-4" />
+              Premium Access
             </TabsTrigger>
             <TabsTrigger value="notifications" className="flex items-center gap-2">
               <Bell className="h-4 w-4" />
@@ -934,6 +1084,127 @@ const OwnerDashboard = () => {
                 </div>
               );
             })()}
+          </TabsContent>
+
+          {/* TAB: Premium Access Management */}
+          <TabsContent value="premium" className="space-y-6">
+            <Card className="border-0 shadow-sm bg-white dark:bg-slate-900">
+              <CardHeader className="pb-4">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                  <div>
+                    <CardTitle className="text-xl font-bold flex items-center gap-2 text-indigo-600 dark:text-indigo-400">
+                      <Lock className="h-5 w-5" />
+                      Premium Content Access Manager
+                    </CardTitle>
+                    <CardDescription>
+                      Monitor and manage active student accesses to the premium resources. Revoke access package-wise if needed.
+                    </CardDescription>
+                  </div>
+                  <div className="relative w-full md:w-80">
+                    <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      placeholder="Search by name, email or branch..."
+                      value={searchPremiumQuery}
+                      onChange={(e) => setSearchPremiumQuery(e.target.value)}
+                      className="pl-9 bg-slate-50 dark:bg-slate-800/50 border-0 focus-visible:ring-1"
+                    />
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent>
+                {filteredGroupedList.length === 0 ? (
+                  <div className="text-center py-12 text-muted-foreground">
+                    <UserMinus className="h-12 w-12 mx-auto text-slate-300 dark:text-slate-700 mb-3" />
+                    <p className="font-semibold text-sm">No premium members found.</p>
+                    <p className="text-xs">Either no users have purchased, or the search filter didn't match any records.</p>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {filteredGroupedList.map((item: any) => {
+                      const fullName = `${item.first_name} ${item.last_name}`.trim() || 'Anonymous User';
+                      return (
+                        <div
+                          key={item.user_id}
+                          className="p-5 rounded-2xl border border-slate-150 dark:border-slate-800/80 bg-slate-50/50 dark:bg-slate-900/40 hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors"
+                        >
+                          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+                            {/* User details */}
+                            <div className="space-y-1">
+                              <div className="flex items-center gap-2.5">
+                                <h4 className="font-bold text-slate-900 dark:text-white text-base">
+                                  {fullName}
+                                </h4>
+                                {item.branch && (
+                                  <Badge variant="outline" className="text-xs bg-slate-100 dark:bg-slate-800 border-0 text-slate-600 dark:text-slate-400 font-semibold px-2 py-0.5 rounded-lg">
+                                    {item.branch}
+                                  </Badge>
+                                )}
+                              </div>
+                              <p className="text-xs text-muted-foreground font-medium">{item.email}</p>
+                            </div>
+
+                            {/* Actions and Packages */}
+                            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 flex-wrap lg:justify-end">
+                              {item.purchases.map((pur: any) => {
+                                const isCoupon = pur.payment_status === 'free';
+                                const planLabel =
+                                  pur.plan === 'companies'
+                                    ? 'Companies Page'
+                                    : pur.plan === 'hr_emails'
+                                    ? 'HR Emails'
+                                    : pur.plan === 'resume'
+                                    ? 'Resume Guide'
+                                    : pur.plan;
+                                
+                                const planColor =
+                                  pur.plan === 'companies'
+                                    ? 'border-violet-250 bg-violet-50 text-violet-700 dark:bg-violet-950/20 dark:text-violet-400 dark:border-violet-900/50'
+                                    : pur.plan === 'hr_emails'
+                                    ? 'border-emerald-250 bg-emerald-50 text-emerald-700 dark:bg-emerald-950/20 dark:text-emerald-400 dark:border-emerald-900/50'
+                                    : 'border-orange-255 bg-orange-50 text-orange-700 dark:bg-orange-950/20 dark:text-orange-400 dark:border-orange-900/50';
+
+                                return (
+                                  <div
+                                    key={pur.id}
+                                    className={`flex items-center gap-2 px-3 py-1.5 rounded-xl border ${planColor} text-xs font-semibold`}
+                                  >
+                                    <span>{planLabel}</span>
+                                    <span className="text-[10px] opacity-75">
+                                      ({isCoupon ? `Coupon: ${pur.coupon_used || 'FREE'}` : `₹${pur.amount_paid / 100}`})
+                                    </span>
+                                    <button
+                                      onClick={() => handleRevokeAccess(item.user_id, pur.plan, fullName)}
+                                      disabled={revokingId !== null}
+                                      className="ml-1 text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 disabled:opacity-50 transition-colors p-0.5 hover:bg-red-150 dark:hover:bg-red-950/40 rounded-lg"
+                                      title={`Revoke access to ${planLabel}`}
+                                    >
+                                      <Trash2 className="w-3.5 h-3.5" />
+                                    </button>
+                                  </div>
+                                );
+                              })}
+
+                              {item.purchases.length > 1 && (
+                                <Button
+                                  variant="destructive"
+                                  size="sm"
+                                  onClick={() => handleRevokeAllAccess(item.user_id, fullName)}
+                                  disabled={revokingId !== null}
+                                  className="h-8 rounded-xl text-xs font-bold px-3 py-1.5 flex items-center gap-1.5"
+                                >
+                                  <Trash2 className="w-3.5 h-3.5" />
+                                  Revoke All
+                                </Button>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
           </TabsContent>
 
           {/* TAB: Notifications */}
