@@ -460,7 +460,7 @@ export default function ScholarshipsPortal() {
           {/* ══════════════════════════════════════
               FILTER BAR
           ══════════════════════════════════════ */}
-          <div ref={filterBarRef} className="sticky top-0 z-[100] bg-background/95 backdrop-blur-md border-b border-border -mx-1 px-1 py-3 mb-5">
+          <div ref={filterBarRef} className="sticky top-0 z-30 bg-background/95 backdrop-blur-md border-b border-border -mx-1 px-1 py-3 mb-5">
             <div className="flex items-center gap-2 flex-wrap">
               <Dropdown id="streams" label="Course" options={STREAM_OPTS} selected={filters.streams} />
               <Dropdown id="who" label="Category" options={WHO_OPTS} selected={filters.who} />
