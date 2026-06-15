@@ -105,7 +105,7 @@ export default function PremiumContent() {
       <Navbar />
 
       {/* ══════════ HERO SECTION ══════════ */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-indigo-950 to-violet-950 pt-24 pb-12">
+      <section className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-indigo-950 to-violet-950 pt-12 pb-12">
         {/* Orbs */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute top-10 left-10 w-72 h-72 bg-indigo-500/10 rounded-full blur-3xl" />
@@ -209,7 +209,17 @@ export default function PremiumContent() {
             <div className="pt-3 border-t border-gray-200/50 dark:border-gray-800/50 flex items-center justify-between gap-3 mt-auto">
               <div>
                 <span className="text-xs text-gray-400 block leading-none font-medium mb-0.5">Price</span>
-                <span className="text-xl font-black text-gray-900 dark:text-white">{hasCompaniesAccess ? 'UNLOCKED' : '₹149'}</span>
+                {hasCompaniesAccess ? (
+                  <span className="text-xl font-black text-gray-900 dark:text-white">UNLOCKED</span>
+                ) : (
+                  <div className="flex flex-col">
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-xs text-gray-400 line-through">₹499</span>
+                      <span className="text-[10px] font-bold text-emerald-500 bg-emerald-50 dark:bg-emerald-950/50 px-1 rounded">70% OFF</span>
+                    </div>
+                    <span className="text-xl font-black text-gray-900 dark:text-white">₹149</span>
+                  </div>
+                )}
               </div>
               {hasCompaniesAccess ? (
                 <button 
@@ -268,7 +278,17 @@ export default function PremiumContent() {
             <div className="pt-3 border-t border-gray-200/50 dark:border-gray-800/50 flex items-center justify-between gap-3 mt-auto">
               <div>
                 <span className="text-xs text-gray-400 block leading-none font-medium mb-0.5">Price</span>
-                <span className="text-xl font-black text-gray-900 dark:text-white">{hasHRAccess ? 'UNLOCKED' : '₹999'}</span>
+                {hasHRAccess ? (
+                  <span className="text-xl font-black text-gray-900 dark:text-white">UNLOCKED</span>
+                ) : (
+                  <div className="flex flex-col">
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-xs text-gray-400 line-through">₹3330</span>
+                      <span className="text-[10px] font-bold text-emerald-500 bg-emerald-50 dark:bg-emerald-950/50 px-1 rounded">70% OFF</span>
+                    </div>
+                    <span className="text-xl font-black text-gray-900 dark:text-white">₹999</span>
+                  </div>
+                )}
               </div>
               {hasHRAccess ? (
                 <button 
@@ -327,7 +347,17 @@ export default function PremiumContent() {
             <div className="pt-3 border-t border-gray-200/50 dark:border-gray-800/50 flex items-center justify-between gap-3 mt-auto">
               <div>
                 <span className="text-xs text-gray-400 block leading-none font-medium mb-0.5">Price</span>
-                <span className="text-xl font-black text-gray-900 dark:text-white">{hasResumeAccess ? 'UNLOCKED' : '₹167'}</span>
+                {hasResumeAccess ? (
+                  <span className="text-xl font-black text-gray-900 dark:text-white">UNLOCKED</span>
+                ) : (
+                  <div className="flex flex-col">
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-xs text-gray-400 line-through">₹559</span>
+                      <span className="text-[10px] font-bold text-emerald-500 bg-emerald-50 dark:bg-emerald-950/50 px-1 rounded">70% OFF</span>
+                    </div>
+                    <span className="text-xl font-black text-gray-900 dark:text-white">₹167</span>
+                  </div>
+                )}
               </div>
               {hasResumeAccess ? (
                 <button 
