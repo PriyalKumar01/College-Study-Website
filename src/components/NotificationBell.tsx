@@ -114,9 +114,9 @@ export default function NotificationBell() {
       {/* Dropdown */}
       {open && (
         <div
-          className="absolute right-0 top-full mt-2 z-[300] overflow-hidden"
+          className="fixed md:absolute right-4 md:right-0 top-16 md:top-full mt-2 z-[300] overflow-hidden"
           style={{
-            width: 'min(380px, calc(100vw - 24px))',
+            width: 'min(380px, calc(100vw - 32px))',
             background: 'hsl(var(--card))',
             border: '1px solid hsl(var(--border))',
             borderRadius: 16,
