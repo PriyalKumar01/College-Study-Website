@@ -27,7 +27,6 @@ import ThirdSemesterBENotes from "./pages/ThirdSemesterBENotes";
 import ThirdSemesterFTNotes from "./pages/ThirdSemesterFTNotes";
 import ThirdSemesterOTNotes from "./pages/ThirdSemesterOTNotes";
 import ThirdSemesterEENotes from "./pages/ThirdSemesterEENotes";
-import LearningPlatforms from "./pages/LearningPlatforms";
 import NotFound from "./pages/NotFound";
 import Opportunities from "./pages/Opportunities";
 import PremiumDirectory from "./pages/PremiumDirectory";
@@ -152,7 +151,6 @@ export const navItems = [
   { to: "/sixth-semester-pt", page: <SixthSemesterPTNotes /> },
   { to: "/sixth-semester-ot", page: <SixthSemesterOTNotes /> },
   { to: "/sixth-semester-ft", page: <SixthSemesterFTNotes /> },
-  { to: "/learning-platforms", page: <LearningPlatforms /> },
   { to: "/opportunities", page: <Opportunities /> },
   { to: "/opportunities/directory", page: <PremiumDirectory /> },
   { to: "/premium-content", page: <PremiumContent /> },
