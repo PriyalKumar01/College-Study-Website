@@ -2,8 +2,8 @@ import { useState } from 'react';
 import { 
   Menu, Moon, Sun, User, LogOut, Home, 
   LayoutDashboard, BookOpen, Calculator, FileText, 
-  Users, Layers, Award, Briefcase, Brain, Info,
-  Shield, Crown
+  Users, Award, Briefcase, Brain, Info,
+  Shield, Crown, Lock
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useTheme } from '@/providers/ThemeProvider';
@@ -43,15 +43,10 @@ const Navbar = ({ onOpenAuth }: NavbarProps) => {
   // Mobile AppSidebar Items shown when logged in
   const authenticatedMobileItems = [
     { href: '/', label: 'Home', icon: Home },
-    { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-    { href: '/notes', label: 'Notes', icon: BookOpen },
     { href: '/cgpa-calculator', label: 'CGPA Calculator', icon: Calculator },
-    { href: '/ats-friendly-resume', label: 'ATS Friendly Resume', icon: FileText },
-    { href: '/notes-contributors', label: 'Contributor List', icon: Users },
-    { href: '/learning-platforms', label: 'Integrated Platforms', icon: Layers },
-    { href: '/scholarship-portal', label: 'Scholarships', icon: Award },
-    { href: '/opportunities', label: 'Opportunities', icon: Briefcase },
+    { href: '/premium-content', label: 'Premium Content', icon: Lock },
     { href: '/useful-ai-tools', label: 'AI Tools', icon: Brain },
+    { href: '/notes-contributors', label: 'Contributor List', icon: Users },
     { href: '/about', label: 'About', icon: Info },
     ...(isAdmin ? [{ href: '/admin-portal', label: 'Admin Portal', icon: Shield }] : []),
     ...(isOwner ? [{ href: '/owner-dashboard', label: 'Owner Dashboard', icon: Crown }] : []),
@@ -59,8 +54,6 @@ const Navbar = ({ onOpenAuth }: NavbarProps) => {
 
   const defaultMobileItems = [
     { href: '/', label: 'Home', icon: Home },
-    { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-    { href: '/notes', label: 'Notes', icon: BookOpen },
     { href: '/about', label: 'About', icon: Info },
   ];
 
@@ -105,8 +98,8 @@ const Navbar = ({ onOpenAuth }: NavbarProps) => {
           </div>
 
           <div className="flex items-center gap-3">
-            {/* Notification Bell - visible always */}
-            <NotificationBell />
+            {/* Notification Bell - visible only when logged in */}
+            {user && <NotificationBell />}
 
             {/* Desktop Theme Toggle & Auth */}
             <div className="hidden md:flex items-center gap-3">
