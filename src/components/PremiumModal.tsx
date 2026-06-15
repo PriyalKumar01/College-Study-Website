@@ -56,8 +56,9 @@ export function PremiumModal({ open, onClose, plan, onSuccess }: PremiumModalPro
     }
   }, [open, plan]);
 
-  const originalPrice = plan === 'companies' ? 149 : plan === 'resume' ? 167 : 999;
-  const discountedPrice = Math.round(originalPrice * (1 - discount / 100));
+  const basePrice = plan === 'companies' ? 149 : plan === 'resume' ? 167 : 999;
+  const originalPrice = plan === 'companies' ? 499 : plan === 'resume' ? 559 : 3330;
+  const discountedPrice = Math.round(basePrice * (1 - discount / 100));
   const isFree = discountedPrice === 0;
 
   const planConfig = {
@@ -240,17 +241,21 @@ export function PremiumModal({ open, onClose, plan, onSuccess }: PremiumModalPro
               <div className="flex items-end justify-between">
                 <div>
                   <div className="text-xs text-gray-500 dark:text-gray-400 font-medium mb-1">One-time Price</div>
-                  <div className="flex items-center gap-3">
-                    {couponApplied && discount > 0 && (
-                      <span className="text-xl font-bold text-gray-400 line-through">₹{originalPrice}</span>
+                  <div className="flex items-center gap-3 flex-wrap">
+                    <span className="text-sm font-bold text-gray-400 line-through">₹{originalPrice}</span>
+                    <span className="text-xs font-bold text-emerald-500 bg-emerald-100 dark:bg-emerald-950 px-1.5 py-0.5 rounded">70% OFF</span>
+                    
+                    {couponApplied && discount > 0 && discount < 100 && (
+                      <span className="text-sm font-medium text-gray-400 line-through">₹{basePrice}</span>
                     )}
+
                     <span className={`text-3xl font-black ${isFree ? 'text-emerald-500' : 'text-gray-900 dark:text-white'}`}>
                       {isFree ? 'FREE' : `₹${discountedPrice}`}
                     </span>
                   </div>
                   {couponApplied && discount > 0 && (
                     <span className="inline-flex items-center gap-1 mt-1.5 px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 text-xs font-semibold">
-                      <Tag className="w-3 h-3" /> {discount}% off applied!
+                      <Tag className="w-3 h-3" /> Extra {discount}% coupon discount applied!
                     </span>
                   )}
                 </div>
