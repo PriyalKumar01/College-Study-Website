@@ -395,13 +395,13 @@ export default function PremiumDirectory() {
     <div className="min-h-screen bg-gray-50 dark:bg-gray-950 pb-12">
       <Navbar />
 
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 pt-24">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 pt-8">
         {/* Back navigation */}
         <button
-          onClick={() => navigate('/opportunities')}
+          onClick={() => navigate('/premium-content')}
           className="inline-flex items-center gap-1.5 text-xs font-bold text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200 mb-6 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 px-3 py-1.5 rounded-xl transition-all shadow-sm"
         >
-          <ArrowLeft className="w-3.5 h-3.5" /> Back to Opportunities
+          <ArrowLeft className="w-3.5 h-3.5" /> Back to Previous Page
         </button>
 
         {/* Serif Header */}
