@@ -75,8 +75,12 @@ export function LockedSection({ plan, onUnlock, hasAccess }: LockedSectionProps)
           </p>
           <div className="flex items-center justify-center gap-3 mb-5">
             <div className="text-center">
+              <div className="flex items-center justify-center gap-1.5 mb-0.5">
+                <span className="text-xs text-gray-400 line-through">₹{plan === 'companies' ? 499 : plan === 'resume' ? 559 : 3330}</span>
+                <span className="text-[10px] font-bold text-emerald-500 bg-emerald-50 dark:bg-emerald-950/50 px-1 rounded">70% OFF</span>
+              </div>
               <div className="text-2xl font-black text-gray-900 dark:text-white">₹{config.price}</div>
-              <div className="text-xs text-gray-400 font-medium">One-time · Lifetime</div>
+              <div className="text-[10px] text-gray-400 font-medium">One-time · Lifetime</div>
             </div>
           </div>
           <button
