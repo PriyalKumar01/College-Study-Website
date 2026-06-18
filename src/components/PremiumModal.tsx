@@ -56,8 +56,8 @@ export function PremiumModal({ open, onClose, plan, onSuccess }: PremiumModalPro
     }
   }, [open, plan]);
 
-  const basePrice = plan === 'companies' ? 149 : plan === 'resume' ? 167 : 999;
-  const originalPrice = plan === 'companies' ? 499 : plan === 'resume' ? 559 : 3330;
+  const basePrice = plan === 'companies' ? 149 : plan === 'resume' ? 167 : plan === 'roadmaps' ? 549 : 999;
+  const originalPrice = plan === 'companies' ? 499 : plan === 'resume' ? 559 : plan === 'roadmaps' ? 2196 : 3330;
   const discountedPrice = Math.round(basePrice * (1 - discount / 100));
   const isFree = discountedPrice === 0;
 
@@ -101,6 +101,19 @@ export function PremiumModal({ open, onClose, plan, onSuccess }: PremiumModalPro
         'One-time access forever'
       ]
     },
+    roadmaps: {
+      title: 'Placement Roadmap & Tool Guide',
+      subtitle: 'Complete fresher placement roadmap & curated resource guides',
+      icon: '🗺️',
+      color: 'from-sky-500 to-indigo-600',
+      features: [
+        'Step-by-step 5-stage fresher placement roadmap',
+        'Direct links to top-tier recommended YouTube creators',
+        'Curated interview prep playlists & directories',
+        'Resume & LinkedIn profile optimization strategies',
+        'One-time access forever with lifetime updates'
+      ]
+    },
   }[plan];
 
   const handleApplyCoupon = async () => {
@@ -113,6 +126,16 @@ export function PremiumModal({ open, onClose, plan, onSuccess }: PremiumModalPro
       toast({
         title: `🎉 Coupon Applied! 100% off`,
         description: 'HBTU Special Discount Applied!'
+      });
+      return;
+    }
+
+    if (coupon.trim().toUpperCase() === 'PLACE@75' && plan === 'roadmaps') {
+      setDiscount(100);
+      setCouponApplied(true);
+      toast({
+        title: `🎉 Coupon Applied! 100% off`,
+        description: 'Placement Roadmap Special Offer Applied!'
       });
       return;
     }
