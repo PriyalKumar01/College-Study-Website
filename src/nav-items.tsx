@@ -89,6 +89,7 @@ import FourthSemesterBTNotes from "./pages/FourthSemesterBTNotes";
 import FourthSemesterPLNotes from "./pages/FourthSemesterPLNotes";
 import SeventhSemesterCSENotes from "./pages/SeventhSemesterCSENotes";
 import EighthSemesterCSENotes from "./pages/EighthSemesterCSENotes";
+import RoadmapGuide from "./pages/RoadmapGuide";
 
 export const navItems = [
   { to: "/", page: <Index /> },
@@ -183,5 +184,6 @@ export const navItems = [
   { to: "/fourth-semester-pl", page: <FourthSemesterPLNotes /> },
   { to: "/seventh-semester-cse", page: <SeventhSemesterCSENotes /> },
   { to: "/eighth-semester-cse", page: <EighthSemesterCSENotes /> },
+  { to: "/roadmaps/fresher-job-guide", page: <RoadmapGuide /> },
   { to: "*", page: <NotFound /> },
 ];
