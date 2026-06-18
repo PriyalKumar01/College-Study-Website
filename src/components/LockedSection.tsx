@@ -2,7 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Lock, Crown } from 'lucide-react';
 
-export type PremiumPlan = 'companies' | 'hr_emails' | 'resume';
+export type PremiumPlan = 'companies' | 'hr_emails' | 'resume' | 'roadmaps';
 
 interface LockedSectionProps {
   plan: PremiumPlan;
@@ -32,6 +32,13 @@ export function LockedSection({ plan, onUnlock, hasAccess }: LockedSectionProps)
       icon: '📄',
       color: 'from-orange-500 to-amber-600',
       desc: 'Unlock the complete step-by-step Overleaf resume template and ATS optimization guide.',
+    },
+    roadmaps: {
+      title: 'Fresher Placement Roadmap & Tool Guide',
+      price: 549,
+      icon: '🗺️',
+      color: 'from-sky-500 to-indigo-600',
+      desc: 'Unlock the complete step-by-step fresher placement preparation roadmap, recommended learning channels, and premium AI/SaaS tools directory comparison.',
     },
   }[plan];
 
