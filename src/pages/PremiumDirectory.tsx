@@ -178,7 +178,7 @@ function EntryModal({ open, onClose, mode, editingCompany, editingHR, onSaved }:
   };
 
   if (!open) return null;
-  const inputCls = "w-full rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-805 text-sm px-3 py-2.5 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-violet-400 transition-all";
+  const inputCls = "w-full rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm px-3 py-2.5 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-slate-400 transition-all";
   const gradient = mode === 'company' ? 'from-violet-500 to-indigo-600' : 'from-emerald-500 to-teal-600';
 
   return (
@@ -276,8 +276,8 @@ export default function PremiumDirectory() {
       .in('payment_status', ['completed', 'free']);
     
     const unlockedPlans = data ? data.map((p: any) => p.plan) : [];
-    setHasCompaniesAccess(isOwner || unlockedPlans.includes('companies'));
-    setHasHRAccess(isOwner || unlockedPlans.includes('hr_emails'));
+    setHasCompaniesAccess(unlockedPlans.includes('companies'));
+    setHasHRAccess(unlockedPlans.includes('hr_emails'));
   }, [user, isOwner]);
 
   const fetchCompanies = async () => {
@@ -392,7 +392,7 @@ export default function PremiumDirectory() {
   const currentHasAccess = activeTab === 'companies' ? hasCompaniesAccess : hasHRAccess;
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-950 pb-12">
+    <div className="min-h-screen bg-[#f9faf7] dark:bg-slate-950 pb-12">
       <Navbar />
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6 pt-8">
@@ -503,7 +503,7 @@ export default function PremiumDirectory() {
                         className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all border ${
                           companyTypeFilter === t
                             ? 'bg-violet-600 text-white border-violet-500 shadow-sm'
-                            : 'bg-white dark:bg-gray-805 border-gray-200 dark:border-gray-750 text-gray-650 dark:text-gray-300 hover:border-violet-400'
+                            : 'bg-white dark:bg-slate-800 border-gray-200 dark:border-slate-700 text-gray-650 dark:text-gray-300 hover:border-violet-400'
                         }`}
                       >
                         {t}
@@ -537,7 +537,7 @@ export default function PremiumDirectory() {
                   {activeTab === 'companies' ? (
                     <table className="w-full text-sm">
                       <thead>
-                        <tr className="bg-gray-50 dark:bg-gray-800/50 border-b border-gray-100 dark:border-gray-750">
+                        <tr className="bg-gray-50 dark:bg-gray-800/50 border-b border-gray-100 dark:border-slate-700">
                           <th className="px-4 py-3 text-left font-bold text-gray-500 dark:text-gray-450 text-xs uppercase">#</th>
                           <th className="px-4 py-3 text-left font-bold text-gray-500 dark:text-gray-450 text-xs uppercase">Company</th>
                           <th className="px-4 py-3 text-left font-bold text-gray-500 dark:text-gray-450 text-xs uppercase hidden sm:table-cell">Type</th>
@@ -569,7 +569,7 @@ export default function PremiumDirectory() {
                                 href={c.url}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-violet-50 dark:bg-violet-900/20 text-violet-650 dark:text-violet-400 text-xs font-bold hover:bg-violet-100 dark:hover:bg-violet-900/40 transition-colors shadow-sm border border-violet-100 dark:border-violet-900/30"
+                                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-950 dark:bg-slate-800 dark:hover:bg-slate-750 text-white hover:text-emerald-400 transition-colors shadow-sm border border-slate-800 dark:border-slate-700 text-xs font-bold"
                               >
                                 Open Portal <ArrowRight className="w-3.5 h-3.5" />
                               </a>
@@ -591,7 +591,7 @@ export default function PremiumDirectory() {
                   ) : (
                     <table className="w-full text-sm">
                       <thead>
-                        <tr className="bg-gray-50 dark:bg-gray-800/50 border-b border-gray-100 dark:border-gray-750">
+                        <tr className="bg-gray-50 dark:bg-gray-800/50 border-b border-gray-100 dark:border-slate-700">
                           <th className="px-4 py-3 text-left font-bold text-gray-500 dark:text-gray-450 text-xs uppercase">#</th>
                           <th className="px-4 py-3 text-left font-bold text-gray-500 dark:text-gray-450 text-xs uppercase">Company</th>
                           <th className="px-4 py-3 text-left font-bold text-gray-500 dark:text-gray-450 text-xs uppercase hidden sm:table-cell">Type</th>
@@ -618,7 +618,7 @@ export default function PremiumDirectory() {
                             <td className="px-4 py-3">
                               <a
                                 href={`mailto:${h.hr_email}`}
-                                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-50 dark:bg-emerald-900/20 text-emerald-650 dark:text-emerald-400 text-xs font-bold hover:bg-emerald-100 dark:hover:bg-emerald-900/40 transition-colors shadow-sm border border-emerald-100 dark:border-emerald-900/30 font-mono"
+                                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 text-xs font-bold hover:bg-emerald-100 dark:hover:bg-emerald-900/40 transition-colors shadow-sm border border-emerald-100 dark:border-emerald-900/30 font-mono"
                               >
                                 <Mail className="w-3.5 h-3.5 flex-shrink-0" />
                                 {h.hr_email}
