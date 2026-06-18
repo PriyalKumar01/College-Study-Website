@@ -64,6 +64,9 @@ const AboutStatCounterInline = ({ targetVal, decimals = 0, isK = false }: { targ
 };
 
 const About = () => {
+  const [stackIndex, setStackIndex] = useState(0);
+  const [swiping, setSwiping] = useState(false);
+
   // 12 Curated platform serves representing the actual and newly added modules
   const platformServes = [
     { 
@@ -140,8 +143,31 @@ const About = () => {
     },
   ];
 
+  const handleSwipe = () => {
+    if (swiping) return;
+    setSwiping(true);
+    setTimeout(() => {
+      setStackIndex(prev => (prev + 1) % platformServes.length);
+      setSwiping(false);
+    }, 300);
+  };
+
+  const getCardStyle = (index: number) => {
+    const total = platformServes.length;
+    const position = (index - stackIndex + total) % total;
+    if (position === 0) {
+      return { zIndex: 30, scale: 1, y: 0, opacity: 1, pointerEvents: 'auto' as const };
+    } else if (position === 1) {
+      return { zIndex: 20, scale: 0.96, y: 12, opacity: 0.85, pointerEvents: 'none' as const };
+    } else if (position === 2) {
+      return { zIndex: 10, scale: 0.92, y: 24, opacity: 0.60, pointerEvents: 'none' as const };
+    } else {
+      return { zIndex: 0, scale: 0.88, y: 36, opacity: 0, pointerEvents: 'none' as const };
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-background transition-colors duration-300">
+    <div className="min-h-screen bg-[#f9faf7] dark:bg-background transition-colors duration-300">
       <Navbar />
 
       {/* Main Container */}
@@ -281,35 +307,79 @@ const About = () => {
         </div>
 
         {/* 3. What Our Platform Serves */}
-        <div className="space-y-8">
+        <div className="space-y-8 flex flex-col items-center">
           <div className="text-center max-w-2xl mx-auto space-y-2">
             <h2 className="text-2xl md:text-4xl font-black text-slate-800 dark:text-white tracking-tight">
               What Our Platform Serves
             </h2>
-            <p className="text-xs md:text-sm font-semibold text-slate-505 dark:text-slate-400 max-w-xl mx-auto leading-relaxed">
-              We provide a comprehensive academic ecosystem structured to serve every dimension of a college student's life.
+            <p className="text-xs md:text-sm font-semibold text-slate-500 dark:text-slate-400 max-w-xl mx-auto leading-relaxed">
+              We provide a comprehensive academic ecosystem. Click the active card or use controls below to swipe and explore our modules.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-            {platformServes.map((item, idx) => (
-              <motion.div
-                key={item.title}
-                initial={{ opacity: 0, y: 15 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: idx * 0.03, duration: 0.4 }}
-                className="bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800 p-5 rounded-2xl shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300 text-left flex flex-col justify-between"
-              >
-                <div>
-                  <div className={`w-10 h-10 rounded-xl ${item.iconBg} flex items-center justify-center mb-4 shrink-0`}>
-                    {item.icon}
+          {/* Interactive Stack Container */}
+          <div className="relative w-full max-w-md h-[270px] sm:h-[240px] mb-4">
+            {platformServes.map((item, idx) => {
+              const isTop = idx === stackIndex;
+              const style = getCardStyle(idx);
+              return (
+                <motion.div
+                  key={item.title}
+                  onClick={isTop ? handleSwipe : undefined}
+                  style={{ pointerEvents: style.pointerEvents }}
+                  animate={
+                    isTop && swiping
+                      ? { x: 320, rotate: 10, opacity: 0, scale: 0.95 }
+                      : { x: 0, rotate: 0, scale: style.scale, y: style.y, opacity: style.opacity, zIndex: style.zIndex }
+                  }
+                  transition={{ type: 'spring', stiffness: 300, damping: 28 }}
+                  className="absolute inset-0 bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-3xl p-6 shadow-lg flex flex-col justify-between cursor-pointer select-none text-left"
+                >
+                  <div>
+                    <div className="flex items-center justify-between pb-3.5 border-b border-slate-100 dark:border-slate-800 mb-4">
+                      <div className="flex items-center gap-3">
+                        <div className={`w-9 h-9 rounded-xl ${item.iconBg} flex items-center justify-center shrink-0 shadow-sm`}>
+                          {item.icon}
+                        </div>
+                        <h3 className="text-sm font-black text-slate-850 dark:text-slate-100 leading-tight">
+                          {item.title}
+                        </h3>
+                      </div>
+                      <span className="text-[10px] font-mono font-bold text-slate-400">
+                        {idx + 1} / {platformServes.length}
+                      </span>
+                    </div>
+                    <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 leading-relaxed font-semibold">
+                      {item.desc}
+                    </p>
                   </div>
-                  <h3 className="text-sm font-bold text-slate-850 dark:text-slate-100 mb-1.5">{item.title}</h3>
-                  <p className="text-xs text-slate-505 dark:text-slate-450 leading-relaxed font-semibold">{item.desc}</p>
-                </div>
-              </motion.div>
-            ))}
+                  
+                  <div className="flex items-center justify-between pt-3 border-t border-slate-100 dark:border-slate-800 text-[10px] font-bold text-slate-450 dark:text-slate-500">
+                    <span>MODULE FEATURE</span>
+                    <span className="text-blue-500 dark:text-blue-400 flex items-center gap-0.5 group-hover:text-emerald-500 transition-colors">
+                      Click Card to Swipe →
+                    </span>
+                  </div>
+                </motion.div>
+              );
+            })}
+          </div>
+
+          {/* Stack Navigation controls */}
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => setStackIndex(prev => (prev - 1 + platformServes.length) % platformServes.length)}
+              className="px-4.5 py-2 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs font-bold text-slate-700 dark:text-slate-300 hover:bg-emerald-50/50 dark:hover:bg-emerald-950/20 hover:text-emerald-600 dark:hover:text-emerald-400 hover:border-emerald-200 dark:hover:border-emerald-900 transition-all shadow-sm"
+            >
+              ← Previous
+            </button>
+            <button
+              onClick={handleSwipe}
+              disabled={swiping}
+              className="px-5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 dark:bg-slate-800 dark:hover:bg-slate-700 text-white hover:text-emerald-400 text-xs font-black shadow-md transition-all"
+            >
+              Next Feature →
+            </button>
           </div>
         </div>
 
