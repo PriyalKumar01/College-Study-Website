@@ -42,7 +42,7 @@ const ATSFriendlyResume = () => {
       .in('payment_status', ['completed', 'free']);
     
     const unlockedPlans = data ? data.map((p: any) => p.plan) : [];
-    setHasAccess(isOwner || unlockedPlans.includes('resume'));
+    setHasAccess(unlockedPlans.includes('resume'));
   }, [user, isOwner]);
 
   useEffect(() => {
