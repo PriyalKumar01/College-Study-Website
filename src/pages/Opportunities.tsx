@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { supabase } from '@/integrations/supabase/client';
@@ -9,7 +9,7 @@ import {
   Briefcase, Code2, Trophy, Rocket, Plus, Pencil, Trash2,
   X, Share2, Globe, Loader2, Filter,
   ArrowRight, Lock, Tag, CheckCircle2,
-  Crown, Sparkles, Mail
+  Crown, Sparkles, Mail, ChevronDown, ChevronUp
 } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import { PremiumModal } from '@/components/PremiumModal';
@@ -120,20 +120,41 @@ function OpportunityCard({ item, isOwner, activeTab, onEdit, onDelete }: {
   onEdit: (item: Opportunity) => void; onDelete: (id: string) => void;
 }) {
   const tab = TABS.find(t => t.id === activeTab)!;
+  const { toast } = useToast();
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  const isFuture = item.created_at ? new Date(item.created_at) > new Date() : false;
   const isExpired = item.deadline ? new Date(item.deadline) < new Date() : false;
+  const isActive = !isExpired && !isFuture;
+
   const daysLeft = item.deadline ? Math.ceil((new Date(item.deadline).getTime() - Date.now()) / 86400000) : null;
 
   const handleShare = async () => {
-    const text = `Check out: ${item.title} at ${item.company}\n${item.apply_url}`;
-    if (navigator.share) await navigator.share({ title: item.title, text, url: item.apply_url });
-    else { await navigator.clipboard.writeText(text); }
+    const shareUrl = `${window.location.origin}/opportunity/${item.id}`;
+    const text = `Check out this opportunity on CollegeStudy!\n\n*${item.title}* at *${item.company}*\n\nClick to view full details & apply:\n${shareUrl}`;
+    if (navigator.share) {
+      try {
+        await navigator.share({ title: item.title, text, url: shareUrl });
+      } catch (err) {
+        console.error(err);
+      }
+    } else {
+      try {
+        await navigator.clipboard.writeText(text);
+        toast({ title: 'Link Copied', description: 'Opportunity details link copied to clipboard.' });
+      } catch (err) {
+        console.error(err);
+      }
+    }
   };
 
   return (
     <motion.div
       layout initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -16 }} whileHover={{ y: -5, transition: { duration: 0.2 } }}
-      className="group relative bg-white dark:bg-gray-900 rounded-3xl border border-gray-100 dark:border-gray-800 p-6 flex flex-col justify-between overflow-hidden shadow-sm hover:shadow-md transition-all duration-300"
+      exit={{ opacity: 0, y: -16 }} whileHover={isActive ? { y: -5, transition: { duration: 0.2 } } : undefined}
+      className={`group relative bg-white dark:bg-gray-900 rounded-3xl border border-gray-100 dark:border-gray-800 p-6 flex flex-col justify-between overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 ${
+        !isActive ? 'opacity-60 grayscale-[20%]' : ''
+      }`}
     >
       <div>
         <div className="flex items-start justify-between gap-2 mb-4">
@@ -146,16 +167,35 @@ function OpportunityCard({ item, isOwner, activeTab, onEdit, onDelete }: {
             </h3>
           </div>
           <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold ${
-            isExpired ? 'bg-red-50 dark:bg-red-950/20 text-red-600 dark:text-red-400' : 'bg-violet-50 dark:bg-violet-950/20 text-violet-600 dark:text-violet-400'
+            isExpired 
+              ? 'bg-red-50 dark:bg-red-950/20 text-red-600 dark:text-red-400' 
+              : isFuture 
+                ? 'bg-amber-50 dark:bg-amber-950/20 text-amber-600 dark:text-amber-400'
+                : 'bg-violet-50 dark:bg-violet-950/20 text-violet-600 dark:text-violet-400'
           }`}>
             <Clock className="w-3 h-3" />
-            {isExpired ? 'Expired' : daysLeft ? `${daysLeft}d left` : 'Open'}
+            {isExpired ? 'Expired' : isFuture ? 'Upcoming' : daysLeft ? `${daysLeft}d left` : 'Open'}
           </span>
         </div>
 
-        <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed line-clamp-3 mb-5">
+        <p className={`text-xs text-gray-500 dark:text-gray-400 leading-relaxed whitespace-pre-wrap ${
+          isExpanded ? 'mb-4' : 'line-clamp-3 mb-1'
+        }`}>
           {item.description}
         </p>
+
+        {item.description && item.description.length > 120 && (
+          <button
+            onClick={() => setIsExpanded(!isExpanded)}
+            className="mb-4 flex items-center gap-0.5 text-[11px] font-semibold text-primary bg-transparent border-0 cursor-pointer p-0 hover:opacity-75 transition-opacity"
+          >
+            {isExpanded ? (
+              <><ChevronUp className="w-3 h-3" /> Show less</>
+            ) : (
+              <><ChevronDown className="w-3 h-3" /> Read more</>
+            )}
+          </button>
+        )}
 
         <div className="flex flex-wrap gap-1.5 mb-5">
           <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md text-[10px] font-bold bg-gray-50 dark:bg-gray-800 text-gray-655 dark:text-gray-300 border border-gray-150 dark:border-gray-700">
@@ -176,8 +216,8 @@ function OpportunityCard({ item, isOwner, activeTab, onEdit, onDelete }: {
 
       <div className="flex items-center gap-2 pt-4 border-t border-gray-50 dark:border-gray-800/80">
         <a href={item.apply_url} target="_blank" rel="noopener noreferrer"
-          className={`flex-1 inline-flex items-center justify-center gap-1.5 py-2.5 rounded-2xl text-xs font-black text-white bg-gradient-to-r ${tab.gradient} hover:opacity-90 transition-opacity`}>
-          Apply Now <ExternalLink className="w-3.5 h-3.5" />
+          className={`flex-1 inline-flex items-center justify-center gap-1.5 py-2.5 rounded-2xl text-xs font-black text-white bg-gradient-to-r ${tab.gradient} hover:opacity-90 transition-opacity ${!isActive ? 'pointer-events-none opacity-50' : ''}`}>
+          {isFuture ? 'Upcoming' : isExpired ? 'Expired' : <>Apply Now <ExternalLink className="w-3.5 h-3.5" /></>}
         </a>
         <button onClick={handleShare}
           className="p-2.5 rounded-2xl bg-gray-50 hover:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-750 text-gray-500 dark:text-gray-400 transition-colors border border-gray-200/50 dark:border-gray-700/50">
@@ -205,6 +245,7 @@ function OpportunityModal({ open, onClose, editing, activeTab, onSaved }: {
   const [form, setForm] = useState<any>({
     title: '', company: '', type: 'Job', location: '', deadline: '',
     description: '', apply_url: '', duration: '', eligibility: '', category: '',
+    created_at: '',
   });
   const [saving, setSaving] = useState(false);
 
@@ -214,11 +255,13 @@ function OpportunityModal({ open, onClose, editing, activeTab, onSaved }: {
         ...editing,
         deadline: editing.deadline ? editing.deadline.slice(0, 10) : '',
         eligibility: editing.eligibility ? editing.eligibility.join(', ') : '',
+        created_at: editing.created_at ? editing.created_at.slice(0, 10) : '',
       });
     } else {
       setForm({
         title: '', company: '', type: activeTab === 'Jobs' ? 'Job' : activeTab === 'Internships' ? 'Internship' : activeTab === 'Hackathons' ? 'Hackathon' : 'Competition',
         location: 'Remote', deadline: '', description: '', apply_url: '', duration: '', eligibility: '', category: '',
+        created_at: new Date().toISOString().slice(0, 10),
       });
     }
   }, [open, editing, activeTab]);
@@ -237,6 +280,7 @@ function OpportunityModal({ open, onClose, editing, activeTab, onSaved }: {
         created_by: user?.id || 'admin',
         user_name: user?.user_metadata?.full_name || 'Admin',
         deadline: form.deadline ? new Date(form.deadline).toISOString() : null,
+        created_at: form.created_at ? new Date(form.created_at).toISOString() : new Date().toISOString(),
         eligibility: form.eligibility ? form.eligibility.split(',').map((s: string) => s.trim()).filter(Boolean) : [],
       };
 
@@ -286,6 +330,7 @@ function OpportunityModal({ open, onClose, editing, activeTab, onSaved }: {
                 </select>
               </div>
               <div><label className="block text-xs font-semibold text-gray-600 dark:text-gray-400 mb-1">Location *</label><input className={inputCls} value={form.location} onChange={e => f('location', e.target.value)} placeholder="e.g. Remote, Bangalore" /></div>
+              <div><label className="block text-xs font-semibold text-gray-600 dark:text-gray-400 mb-1">Start Date</label><input type="date" className={inputCls} value={form.created_at} onChange={e => f('created_at', e.target.value)} /></div>
               <div><label className="block text-xs font-semibold text-gray-600 dark:text-gray-400 mb-1">Deadline</label><input type="date" className={inputCls} value={form.deadline} onChange={e => f('deadline', e.target.value)} /></div>
               <div><label className="block text-xs font-semibold text-gray-600 dark:text-gray-400 mb-1">Duration</label><input className={inputCls} value={form.duration} onChange={e => f('duration', e.target.value)} placeholder="e.g. 3 months, Permanent" /></div>
               <div><label className="block text-xs font-semibold text-gray-600 dark:text-gray-400 mb-1">Category</label><input className={inputCls} value={form.category} onChange={e => f('category', e.target.value)} placeholder="e.g. AI/ML, Full-stack..." /></div>
@@ -386,6 +431,15 @@ const Opportunities = () => {
   const [listingsPage, setListingsPage] = useState(1);
   const LISTINGS_PER_PAGE = 9;
 
+  const filtered = opportunities.filter(o => {
+    const t = (o.type || '').toLowerCase();
+    const tabMatch = tabTypeMap[activeTab].some(kw => t.includes(kw));
+    const searchL = search.toLowerCase();
+    const searchMatch = !search || o.title.toLowerCase().includes(searchL) || o.company.toLowerCase().includes(searchL) || o.description.toLowerCase().includes(searchL);
+    const locMatch = filterLoc === 'all' || o.location.toLowerCase().includes(filterLoc.toLowerCase());
+    return tabMatch && searchMatch && locMatch;
+  });
+
   // Premium state
   const [premiumModal, setPremiumModal] = useState<{ open: boolean; plan: PremiumPlan }>({ open: false, plan: 'companies' });
   const [hasCompaniesAccess, setHasCompaniesAccess] = useState(false);
@@ -440,20 +494,50 @@ const Opportunities = () => {
     setLoading(false);
   };
 
+  const highlightId = new URLSearchParams(window.location.search).get('highlight');
+  const highlightRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     fetchOpportunities();
     const p = new URLSearchParams(window.location.search).get('tab') as TabType;
     if (p && ['Jobs', 'Internships', 'Hackathons', 'Competitions'].includes(p)) setActiveTab(p);
   }, []);
 
-  const filtered = opportunities.filter(o => {
-    const t = (o.type || '').toLowerCase();
-    const tabMatch = tabTypeMap[activeTab].some(kw => t.includes(kw));
-    const searchL = search.toLowerCase();
-    const searchMatch = !search || o.title.toLowerCase().includes(searchL) || o.company.toLowerCase().includes(searchL) || o.description.toLowerCase().includes(searchL);
-    const locMatch = filterLoc === 'all' || o.location.toLowerCase().includes(filterLoc.toLowerCase());
-    return tabMatch && searchMatch && locMatch;
-  });
+  useEffect(() => {
+    if (highlightId && opportunities.length > 0) {
+      const opp = opportunities.find(o => o.id === highlightId);
+      if (opp) {
+        const typeLower = (opp.type || '').toLowerCase();
+        const matchedTab = (Object.keys(tabTypeMap) as TabType[]).find(tabId => 
+          tabTypeMap[tabId].some(kw => typeLower.includes(kw))
+        );
+        if (matchedTab) {
+          setActiveTab(matchedTab);
+        }
+      }
+    }
+  }, [highlightId, opportunities]);
+
+  useEffect(() => {
+    if (highlightId && filtered.length > 0) {
+      const idx = filtered.findIndex(o => o.id === highlightId);
+      if (idx !== -1) {
+        const page = Math.floor(idx / LISTINGS_PER_PAGE) + 1;
+        setListingsPage(page);
+      }
+    }
+  }, [highlightId, filtered]);
+
+  useEffect(() => {
+    if (highlightId && highlightRef.current && !loading) {
+      const timer = setTimeout(() => {
+        highlightRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 600);
+      return () => clearTimeout(timer);
+    }
+  }, [highlightId, loading, listingsPage]);
+
+  // filtered was moved above to avoid TDZ reference errors
 
   const handleDelete = async (id: string) => {
     if (!confirm('Delete this opportunity?')) return;
@@ -614,8 +698,14 @@ const Opportunities = () => {
                 <AnimatePresence mode="popLayout">
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
                     {pagedListings.map(item => (
-                      <OpportunityCard key={item.id} item={item} isOwner={!!isOwner} activeTab={activeTab}
-                        onEdit={o => { setEditing(o); setModalOpen(true); }} onDelete={handleDelete} />
+                      <div
+                        key={item.id}
+                        ref={highlightId === item.id ? highlightRef : undefined}
+                        className={highlightId === item.id ? "ring-2 ring-indigo-500 dark:ring-indigo-400 ring-offset-2 rounded-3xl animate-pulse shadow-lg" : ""}
+                      >
+                        <OpportunityCard item={item} isOwner={!!isOwner} activeTab={activeTab}
+                          onEdit={o => { setEditing(o); setModalOpen(true); }} onDelete={handleDelete} />
+                      </div>
                     ))}
                   </div>
                 </AnimatePresence>
