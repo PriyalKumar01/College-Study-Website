@@ -28,6 +28,7 @@ const OpportunityUpload = () => {
     location: '',
     apply_url: '',
     deadline: '',
+    created_at: new Date().toISOString().slice(0, 10),
     image: null as File | null,
   });
 
@@ -146,6 +147,7 @@ const OpportunityUpload = () => {
           location: formData.location,
           apply_url: formData.apply_url,
           deadline: formData.deadline || null,
+          created_at: formData.created_at ? new Date(formData.created_at).toISOString() : new Date().toISOString(),
           image_url: imageUrl,
           created_by: user.id,
           user_name: user.email?.split('@')[0] || 'Admin',
@@ -169,6 +171,7 @@ const OpportunityUpload = () => {
         location: '',
         apply_url: '',
         deadline: '',
+        created_at: new Date().toISOString().slice(0, 10),
         image: null,
       });
 
@@ -324,16 +327,26 @@ const OpportunityUpload = () => {
                     />
                   </div>
 
+                  <div>
+                    <Label htmlFor="apply_url">Apply URL *</Label>
+                    <Input
+                      id="apply_url"
+                      type="url"
+                      value={formData.apply_url}
+                      onChange={(e) => setFormData({ ...formData, apply_url: e.target.value })}
+                      placeholder="https://company.com/careers/apply"
+                      required
+                    />
+                  </div>
+
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <Label htmlFor="apply_url">Apply URL *</Label>
+                      <Label htmlFor="created_at">Start Date</Label>
                       <Input
-                        id="apply_url"
-                        type="url"
-                        value={formData.apply_url}
-                        onChange={(e) => setFormData({ ...formData, apply_url: e.target.value })}
-                        placeholder="https://company.com/careers/apply"
-                        required
+                        id="created_at"
+                        type="date"
+                        value={formData.created_at}
+                        onChange={(e) => setFormData({ ...formData, created_at: e.target.value })}
                       />
                     </div>
                     <div>
