@@ -45,7 +45,7 @@ const Navbar = ({ onOpenAuth }: NavbarProps) => {
     { href: '/', label: 'Home', icon: Home },
     { href: '/cgpa-calculator', label: 'CGPA Calculator', icon: Calculator },
     { href: '/premium-content', label: 'Premium Content', icon: Lock },
-    { href: '/useful-ai-tools', label: 'AI Tools', icon: Brain },
+    { href: '/useful-ai-tools', label: '500+ AI Tools', icon: Brain },
     { href: '/notes-contributors', label: 'Contributor List', icon: Users },
     { href: '/about', label: 'About', icon: Info },
     ...(isAdmin ? [{ href: '/admin-portal', label: 'Admin Portal', icon: Shield }] : []),

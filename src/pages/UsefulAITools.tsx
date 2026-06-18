@@ -1,533 +1,284 @@
 import { useState } from 'react';
-import { motion } from 'framer-motion';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, ArrowRight, Rocket } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import {
+  Code, Globe, Terminal, Laptop, Video, Music, FileText, Award,
+  Shield, Compass, Image, Users, Brain, Search, ChevronDown, ChevronUp,
+  ArrowUpRight, ArrowLeft, ArrowRight, Check, Sparkles, HelpCircle
+} from 'lucide-react';
 import Navbar from '@/components/Navbar';
-import { useNavigate } from 'react-router-dom';
+import Footer from '@/components/Footer';
+import { AI_CATEGORIES_DATA } from '@/data/aiToolsData';
 
-const UsefulAITools = () => {
-  const navigate = useNavigate();
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+export default function UsefulAITools() {
+  const [searchTerm, setSearchTerm] = useState('');
+  const [openCategories, setOpenCategories] = useState<Record<string, boolean>>({
+    'coding-dev': true, // Keep first one open by default
+  });
 
-  const tools = [
-    {
-      id: 'education',
-      name: 'Education / Study Tools',
-      icon: '🧠',
-      color: 'bg-cyan-500',
-      tools: [
-        { title: 'Notion AI', url: 'https://www.notion.so/product/ai', description: 'Productivity booster inside Notion.', access: 'Free + Paid' },
-        { title: 'Owlift', url: 'https://owlift.io', description: 'Explains complex topics in simple words.', access: 'Free' },
-        { title: 'Illuminate by Google', url: 'https://illuminate.withgoogle.com', description: 'Turns papers into podcasts.', access: 'Free' },
-        { title: 'Mindmap.ai', url: 'https://mindmap.ai', description: 'Turn ideas into visual mind maps.', access: 'Free' },
-        { title: 'Learn About by Google', url: 'https://learnabout.withgoogle.com', description: 'PDF Q&A with level-based explanations.', access: 'Free' },
-        { title: 'AI Dictionary by Sider', url: 'https://sider.ai/tools/dictionary', description: 'Multilingual dictionary with examples.', access: 'Free' },
-        { title: 'Glitter AI', url: 'https://glitterai.app', description: 'Turn steps into tutorials from voice/text.', access: 'Free + Paid' },
-        { title: 'Write For Me GPT', url: 'https://writeforme.io', description: 'Generate scripts, vlogs & essays using AI.', access: 'Free-Trial'},
-       { title: 'Consensus', url: 'https://consensus.app', description: 'Research paper-based answers powered by AI.', access: 'Free' },
-        { title: 'Scispace', url: 'https://scispace.com', description: 'AI reader for scientific PDFs with explanations.', access: 'Free' },
-        { title: 'ScholarGPT', url: 'https://scholargpt.net', description: 'Academic search with ChatGPT interface.', access: 'Free' },
-        { title: 'Perplexity AI', url: 'https://www.perplexity.ai', description: 'Ask anything and get web-linked answers.', access: 'Free' }
-      ]
-    }, 
-    {
-      id: 'presentationTools',
-      name: 'Presentation & Media AI Tools',
-      icon: '📊',
-      color: 'bg-yellow-600',
-      tools: [
-        { title: 'Gamma App', url: 'https://gamma.app', description: 'Auto-generate PPTs from ideas.', access: 'Freemium' },
-        { title: 'Jasper', url: 'https://jasper.ai', description: 'Create high-quality branded content.', access: 'Paid' },
-        { title: 'Pitch', url: 'https://pitch.com', description: 'Modern presentation builder for teams.', access: 'Free + Paid' },
-        { title: 'Runway', url: 'https://runwayml.com', description: 'AI video editing and generation.', access: 'Freemium' },
-        { title: 'Pika Labs', url: 'https://pika.art', description: 'Text to video animations and scenes.', access: 'Free' },
-        { title: 'InVideo', url: 'https://invideo.io', description: 'Create engaging videos with AI templates.', access: 'Freemium' },
-        { title: 'Paper Animator AI', url: 'https://paperanimator.com/', description: 'Transform hand-drawn sketches into animated sequences using AI.', access: 'Free'}
-      ]
-    },
-{
-      id: 'linkedinTools',
-      name: 'LinkedIn & Career Boosters',
-      icon: '💼',
-      color: 'bg-blue-500',
-      tools: [
-        {
-          title: 'Rocket Reach',
-          url: 'https://rocketreach.co',
-          description: 'Find email, phone & LinkedIn profiles for professionals.',
-          access: 'Freemium'
-        },
-        {
-          title: 'Intouch Tool',
-          url: 'https://intouchtool.com',
-          description: 'Automated LinkedIn outreach & connection tool.',
-          access: 'Paid'
-        },
-        {
-          title: 'Careerflow AI',
-          url: 'https://careerflow.ai',
-          description: 'Optimize LinkedIn profile and job tracking.',
-          access: 'Freemium'
-        },
-        {
-          title: 'Taplio X',
-          url: 'https://taplio.com',
-          description: 'Grow LinkedIn audience with daily post suggestions & analytics.',
-          access: 'Paid'
-        }
-      ]
-    },
-    {
-    id: 'aiagents',
-    name: 'AI Agents & Automation',
-    icon: '🧠',
-    color: 'bg-purple-600',
-    tools: [
-      {
-        title: 'AutoGPT',
-        url: 'https://github.com/Torantulino/Auto-GPT',
-        type: 'Free',
-        description: 'Open-source AI agent that performs tasks autonomously.' , access: 'Free'
-      },
-      {
-        title: 'Jarvis (Microsoft)',
-        url: 'https://www.microsoft.com/en-us/ai',
-        type: 'Free',
-        description: 'Microsoft’s personal assistant powered by AI agents.', access: 'Free'
-      },
-      {
-        title: 'Replit Agent',
-        url: 'https://replit.com',
-        type: 'Free-Trial',
-        description: 'AI assistant that builds apps from natural language.', access: 'Free trial'
-      },
-      {
-        title: 'Do Browser',
-        url: 'https://dobrowser.com',
-        type: 'Paid',
-        description: 'Automate tasks in Chrome using voice or text commands.' , access: 'Paid'
-      },
-      {
-        title: 'Deep Research (OpenAI)',
-        url: 'https://openai.com/deep-research',
-        type: 'Paid',
-        description: 'Get deeply researched AI answers with web synthesis.' , access: 'Paid'
-      },
-      {
-    title: "Synthflow AI",
-    description: "AI voice assistant with human voice to automate your sales or appointment calls 24/7.",
-    url: "https://synthflow.ai",
-    access: "Free-Trial", type: 'Free-Trial',
-  },
-  {
-    title: "Fini AI",
-    description: "Turn your docs into a conversational AI assistant to resolve 70% of customer questions instantly.",
-    url: "https://fini.so",
-    access: "Free",
-    type: 'Free',
-  },
-  {
-    title: "SWE-agent",
-    description: "Fix bugs in your GitHub repo using GPT-4 with automated PRs.",
-    url: "https://github.com/Autonomous-AI/SWE-agent",
-    access: "Free",
-    type: 'Free',
-  },
-  {
-    title: "GoalGPT",
-    description: "Autonomous OpenAI-powered agent that completes tasks with minimal input.",
-    url: "https://github.com/goalgpt/GoalGPT",
-    access: "Free",
-    type: 'Free',
-  },
-  {
-    title: "AgentLLM",
-    description: "Open-source autonomous agent framework compatible with LLaMA models.",
-    url: "https://github.com/josh-xt/Agent-LLM",
-    access: "Free",
-    type: 'Free',
-  },
-  {
-    title: "OpenAGI",
-    description: "Experimental multimodal agent that can manipulate images autonomously.",
-    url: "https://github.com/opentibi/OpenAGI",
-    access: "Free",
-    type: 'Free',
-  },
-  {
-    title: "DreamGPT",
-    description: "Generates innovative ideas from hallucinations using GPT-style architecture.",
-    url: "https://github.com/smangrul/DreamGPT",
-    access: "Free",
-    type: 'Free',
-  },
-  {
-    title: "ChatArena",
-    description: "Simulates social interactions between AI agents via language games.",
-    url: "https://github.com/facebookresearch/ChatArena",
-    access: "Free",
-    type: 'Free',
-  },
-  {
-    title: "LoopGPT",
-    description: "Multi-tasking autonomous agent that can be paused and redirected mid-task.",
-    url: "https://github.com/melih-unsal/loopgpt",
-    access: "Freemium",
-    type: 'Freemium',
-  },
-  {
-    title: "Soul Machines AI Agents",
-    description: "Create emotionally intelligent AI agents for businesses and HR.",
-    url: "https://www.soulmachines.com/",
-    access: "Free-Trial",
-    type: 'Free',
-  },
-    ]
-  },
-    {
-      id: 'text-to-speech',
-      name: 'Text-To-Speech / Audio Tools',
-      icon: '🗣️',
-      color: 'bg-green-500',
-      tools: [
-        { title: 'PDF2Audio', url: 'https://pdf2audio.com', description: 'Convert PDFs to audio instantly.', access: 'Free' },
-        { title: 'ElevenLabs Studio', url: 'https://elevenlabs.io/studio', description: 'Generate realistic AI voices.', access: 'Free + Paid' },
-        { title: 'ElevenLabs Projects', url: 'https://elevenlabs.io/projects', description: 'Create full podcast/audio from text.', access: 'Free + Paid' }
-      ]
-    },
-    {
-      id: 'productivity',
-      name: 'Productivity & Automation',
-      icon: '📊',
-      color: 'bg-purple-600',
-      tools: [
-        { title: 'Zapier', url: 'https://zapier.com', description: 'Automate apps and workflows.', access: 'Free + Paid' },
-        { title: 'AppSumo', url: 'https://appsumo.com', description: 'Discounted tools for productivity.', access: 'Free' },
-        { title: 'Fiverr AI Services', url: 'https://www.fiverr.com/categories/programming-tech/ai-services', description: 'Hire AI experts for fast tasks.', access: 'Paid' }
-      ]
-    },
-    {
-      id: 'llm',
-      name: 'AI Chatbots & Model Comparison',
-      icon: '🤖',
-      color: 'bg-indigo-500',
-      tools: [
-        { title: 'AnyChat', url: 'https://anychat.one', description: 'Compare ChatGPT, Claude, Gemini etc.', access: 'Free' },
-        { title: 'ChatALL', url: 'https://chatall.io', description: 'Query multiple AIs together.', access: 'Free' },
-        { title: 'Perplexity Labs', url: 'https://labs.perplexity.ai', description: 'Try Mixtral, Llama etc. for free.', access: 'Free' },
-        { title: 'Ollama', url: 'https://ollama.com', description: 'Run LLMs like LLaMA locally.', access: 'Free' }
-      ]
-    },
-    {
-      id: 'image',
-      name: 'Image & Design Tools',
-      icon: '🖼️',
-      color: 'bg-pink-600',
-      tools: [
-        { title: 'Upscale.media', url: 'https://upscale.media', description: 'Enhance image resolution.', access: 'Free' },
-        { title: 'AI Images Database', url: 'https://aiimagesdatabase.com', description: 'Search free AI-generated images.', access: 'Free' },
-        { title: 'Image to Prompt', url: 'https://imagetoprompt.com', description: 'Convert image to prompt.', access: 'Free' }
-      ]
-    },
-    {
-      id: 'dev',
-      name: 'Developer / Utility Tools',
-      icon: '🛠️',
-      color: 'bg-orange-500',
-      tools: [
-        { title: 'Pinokio', url: 'https://pinokio.computer', description: '1-click AI setup like SD, LLaMA.', access: 'Free' },
-        { title: 'Fal AI', url: 'https://fal.ai', description: 'Deploy CV/NLP AI in apps fast.', access: 'Free' },
-      { title: 'Microsoft Designer', url: 'https://designer.microsoft.com', description: 'Design social posts & visuals with AI.', access: 'Free' },
-        { title: 'Copy AI', url: 'https://copy.ai', description: 'Generate ad copy, captions & content.', access: 'Free + Paid' },
-        { title: 'Pixlr', url: 'https://pixlr.com', description: 'Free online photo editor with AI tools.', access: 'Freemium' },
-        { title: 'Photopea', url: 'https://photopea.com', description: 'Free Photoshop alternative in browser.', access: 'Free' },
-        { title: '10Web', url: 'https://10web.io', description: 'Build full WordPress sites using AI.', access: 'Freemium' },
-        { title: 'Screenshot to Code', url: 'https://screenshottocode.com/', description: 'Convert screenshots to HTML code.', access: 'Free' },
-        { title: 'Replit', url: 'https://replit.com', description: 'AI IDE with Ghostwriter for fast dev work.', access: 'Free + Paid' },
-        { title: 'CodeJS', url: 'https://www.yeschat.ai/', description: 'AI coding assistant in the browser.', access: 'Free' },
-        { title: 'Blackbox AI', url: 'https://www.blackbox.ai/', description: 'Autocompletes code and explains it in seconds.', access: 'Freemium'},
-        { title: 'HTTPie AI',url: 'https://httpie.io',description: 'Gather APIs and integrate them easily with a modern interface.', access: 'Free' },
-        {title: 'RTutor', url: 'https://rtutor.ai', description: 'Generate and test R code with GPT-powered assistant.',access: 'Free' },
-        { title: 'Fast AI', url: 'https://www.fast.ai',description: 'Learn AI fundamentals and advanced topics.',access: 'Free'},
-        { title: 'Teachable Machine', url: 'https://teachablemachine.withgoogle.com', description: 'Design and train ML models with zero code.', access: 'Free'},
-        {title: 'Cursor AI', url: 'https://cursor.so',description: 'Your AI coding assistant for faster development.',access: 'Free'},
-        {title: 'OWL by Camel AI',url: 'https://www.camel-ai.com/owl', description: 'Multi-agent AI framework to automate complex tasks.',access: 'Free'},
-        { title: 'Cline', url: 'https://cline.ai', description: 'Real-time AI pair programming environment.',access: 'Free'},
-        { title: 'Kaggle', url: 'https://www.kaggle.com', description: 'AI/ML competitions, datasets, code and community.', access: 'Freemium' },
-        { title: 'Cades', url: 'https://www.cades.ai', description: 'Turn app ideas into real screens, code, and publish-ready UI.',access: 'Free'},
-        { title: 'Create AI', url: 'https://create.ai', description: 'Free AI app builder using GPT-4 with templates.',access: 'Free'},
-        {title: 'DeepSeek-V3', url: 'https://deepseek.com',description: 'Open-source LLM model for text and code generation.',access: 'Free'},
-        {title: 'Google AI Edge',url: 'https://ai.google/discover/edge',description: 'Deploy AI models to edge devices securely and offline.', access: 'Free'},
-        { title: 'Lovable AI', url: 'https://lovable.dev/', description: 'AI tools platform for students and devs with multiple utilities.', access: 'Free' },
-        { title: 'Volt',url: 'https://bolt.new/',description: 'Build AI-powered workflows and actions visually.',  access: 'Free-Trial'},
-        { title: 'Clerk.dev',url: 'https://clerk.dev',description: 'Authentication & user management for React apps.', access: 'Freemium' },
-        { title: 'Supabase',url: 'https://supabase.com',description: 'Open-source Firebase alternative with built-in auth, DB, and edge functions.', access: 'Free + Paid'}  
-      ]
-    },
-    {
-      id: 'writing',
-      name: 'Writing & Translation',
-      icon: '✍️',
-      color: 'bg-yellow-500',
-      tools: [
-        { title: 'Deepl', url: 'https://deepl.com', description: 'Translate accurately in many languages.', access: 'Free + Paid' },
-        { title: 'Machine Translation AI', url: 'https://machinetranslation.ai', description: 'Use multiple translators together.', access: 'Free' },
-        { title: 'Deepl Write', url: 'https://www.deepl.com/write', description: 'Fix grammar & rephrase better.', access: 'Free' },
-        { title: 'AI Social Bio', url: 'https://aisocialbio.com', description: 'Make Insta/Twitter bios instantly.', access: 'Free' }
-      ]
-    },
-    {
-  id: 'aidetection',
-  name: 'AI Detection & Humanizer',
-  icon: '🛡️',
-  color: 'bg-red-500',
-  tools: [
-    { title: 'Undetectable AI', url: 'https://undetectable.ai/', type: 'Freemium',
-      description: 'Make AI-generated text human-like. Ideal for students, SEO writers, etc.', access: 'Free'
-    },
-    {
-      title: 'GPTZero',
-      url: 'https://gptzero.me/',
-      type: 'Free',
-      description: 'Detect if your text is AI-written. Fast and reliable plagiarism checker.',access: 'Free'
-    },
-    {
-      title: 'QuillBot Humanizer',
-      url: 'https://quillbot.com/humanizer',
-      type: 'Free',
-      description: 'Refine text to bypass AI detectors with natural phrasing.' , access: 'Free'
-    },
-    {
-      title: 'Humanizer AI Tools',
-      url: 'https://www.humanizeraitools.com/',
-      type: 'Free',
-      description: 'Paste any text and instantly convert it to sound like a human wrote it.' , access: 'Free'
-    }
-  ] 
-},
-{
-  id: '3dAITools',
-  name: '3D AI & Creative Tools',
-  icon: '🧊',
-  color: 'bg-blue-600',
-  tools: [
-  {
-    title: "Leonardo AI",
-    description: "Design platform for generating 3D assets, textures, and illustrations for games, fashion, etc.",
-    url: "https://leonardo.ai",
-    type: "Freemium"
-  },
-  {
-    title: "Genie by Lumalabs",
-    description: "3D model builder with animations, particles, and Discord integration.",
-    url: "https://lumalabs.ai/genie",
-    type: "Free"
-  },
-  {
-    title: "Kinetix",
-    description: "Create 3D animations with no technical experience required.",
-    url: "https://www.kinetix.tech",
-    type: "Paid"
-  },
-  {
-    title: "Tripo AI",
-    description: "Generate high-quality 3D models from text prompts. Includes API.",
-    url: "https://www.tripo.ai",
-    type: "Free"
-  },
-  {
-    title: "DreamFusion 3D",
-    description: "Text-to-3D object generator project from Google researchers.",
-    url: "https://github.com/ashawkey/dreamfusion",
-    type: "Free"
-  },
-  {
-    title: "Get3D Nvidia",
-    description: "Realistic 3D model generator by Nvidia Labs.",
-    url: "https://nvlabs.github.io/GET3D/",
-    type: "Free"
-  },
-  {
-    title: "Hunyuan3D",
-    description: "Generate 3D characters with animation from text descriptions.",
-    url: "https://hunyuan3d.tencent.com/",
-    type: "Free"
-  },
-  {
-    title: "Krikey AI",
-    description: "3D avatar and scene creation with auto-animation.",
-    url: "https://www.krikey.ai",
-    type: "Freemium"
-  },
-  {
-    title: "Edify 3D",
-    description: "NVIDIA-backed ultra-realistic 3D asset generator with 4K textures.",
-    url: "https://www.edify.ai",
-    type: "Free"
-  },
-  {
-    title: "DeepMotion",
-    description: "Convert videos into animated 3D characters in real-time.",
-    url: "https://www.deepmotion.com/",
-    type: "Freemium"
-  },
-  {
-    title: "DimensionX",
-    description: "Transform images into 3D/4D interactive environments with camera control.",
-    url: "https://dimensionx.ai",
-    type: "Free"
-  },
-  {
-    title: "3D LHM (Alibaba)",
-    description: "Instant image-to-animated-3D converter by Alibaba for VR & games.",
-    url: "https://open.alizila.com/3d-lhm",
-    type: "Free"
-  }
-]
-},{
-  id: 'facedetection',
-  name: 'Face & Image Search Tools',
-  icon: '🖼️',
-  color: 'bg-cyan-600',
-  tools: [
-    {
-      title: 'FaceCheck ID',
-      url: 'https://facecheck.id/',
-      type: 'Freemium',
-      description: 'Find people online using their face image. Reverse face search.', access: 'Free + Paid'
-    },
-    {
-      title: 'DeepFake Detector',
-      url: 'https://deepware.ai/deepfake-detector/',
-      type: 'Free',
-      description: 'Detect fake or AI-edited images in seconds.', access: 'Free'
-    },
-    {
-      title: 'PimEyes',
-      url: 'https://pimeyes.com/',
-      type: 'Freemium',
-      description: 'Upload a photo and find where it appears on the internet.' , access: 'Free + Paid'
-    },
-    {
-      title: 'Lenso.ai',
-      url: 'https://lenso.ai/',
-      type: 'Freemium',
-      description: 'AI-powered reverse image search engine with face recognition.', access: 'Free+ Paid'
-    }
-  ]
-},
-    {
-      id: 'life',
-      name: 'Life Assistant Tools',
-      icon: '🛍️',
-      color: 'bg-teal-500',
-      tools: [
-        { title: 'Shop.app', url: 'https://shop.app', description: 'Track orders & rewards.', access: 'Free' },
-        { title: 'Amazon AI Shopping Guides', url: 'https://www.amazon.com/shopping-guides', description: 'Personalized shopping with AI.', access: 'Free' },
-        { title: 'The StoryGraph', url: 'https://app.thestorygraph.com', description: 'Track & discover books by mood.', access: 'Free' }
-      ]
-    }
-  ];
-
-  const handleVisit = (url: string) => {
-    window.open(url, '_blank');
+  const toggleCategory = (id: string) => {
+    setOpenCategories(prev => ({
+      ...prev,
+      [id]: !prev[id]
+    }));
   };
 
-  if (selectedCategory) {
-    const category = tools.find(t => t.id === selectedCategory);
-    if (!category) return null;
+  const getCategoryIcon = (id: string) => {
+    switch (id) {
+      case 'coding-dev': return <Code className="w-4.5 h-4.5 text-indigo-500" />;
+      case 'web-builders': return <Globe className="w-4.5 h-4.5 text-indigo-500" />;
+      case 'ml-data-science': return <Terminal className="w-4.5 h-4.5 text-indigo-500" />;
+      case 'presentations-docs': return <Laptop className="w-4.5 h-4.5 text-indigo-500" />;
+      case 'video-creation': return <Video className="w-4.5 h-4.5 text-indigo-500" />;
+      case 'audio-voice': return <Music className="w-4.5 h-4.5 text-indigo-500" />;
+      case 'docs-formatters': return <FileText className="w-4.5 h-4.5 text-indigo-500" />;
+      case 'careers-resumes': return <Award className="w-4.5 h-4.5 text-indigo-500" />;
+      case 'writing-seo': return <FileText className="w-4.5 h-4.5 text-indigo-500" />;
+      case 'ai-detection': return <Shield className="w-4.5 h-4.5 text-indigo-500" />;
+      case 'diagrams-drawing': return <Compass className="w-4.5 h-4.5 text-indigo-500" />;
+      case 'images-editing': return <Image className="w-4.5 h-4.5 text-indigo-500" />;
+      case 'linkedin-growth': return <Users className="w-4.5 h-4.5 text-indigo-500" />;
+      case 'ai-agents': return <Brain className="w-4.5 h-4.5 text-indigo-500" />;
+      default: return <Brain className="w-4.5 h-4.5 text-indigo-500" />;
+    }
+  };
 
-    return (
-      <div className="min-h-screen bg-gradient-hero">
-        <Navbar />
-        <div className="max-w-7xl mx-auto px-4 py-8">
-          <Button onClick={() => setSelectedCategory(null)} variant="outline" className="mb-6">
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to Categories
-          </Button>
-          <h1 className="text-3xl md:text-4xl font-bold mb-2 text-foreground">{category.name}</h1>
-          <p className="text-muted-foreground text-lg mb-6">
-            Explore handpicked tools in {category.name}
-          </p>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {category.tools.map((tool, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.1, duration: 0.5 }}
-              >
-                <Card className="feature-card relative h-full hover:border-primary/30 hover:shadow-xl transition-all duration-300">
-                  <div className="absolute top-3 right-3">
-                    <Badge variant="secondary">{tool.access}</Badge>
-                  </div>
-                  <CardHeader>
-                    <div className={`w-10 h-10 ${category.color} rounded-full flex items-center justify-center text-white text-lg`}>
-                      <Rocket className="h-5 w-5" />
-                    </div>
-                    <CardTitle className="text-lg leading-tight mt-2">{tool.title}</CardTitle>
-                    <CardDescription>{tool.description}</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <Button className="w-full btn-hero" onClick={() => handleVisit(tool.url)}>
-                      Visit Tool <ArrowRight className="ml-2 h-4 w-4" />
-                    </Button>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </div>
+  // Filter tools based on search term
+  const searchFilteredResults = AI_CATEGORIES_DATA.reduce((acc, category) => {
+    const matchedTools = category.tools.filter(tool => 
+      tool.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      tool.description.toLowerCase().includes(searchTerm.toLowerCase())
     );
-  }
+    if (matchedTools.length > 0) {
+      acc.push({
+        ...category,
+        tools: matchedTools
+      });
+    }
+    return acc;
+  }, [] as typeof AI_CATEGORIES_DATA);
+
+  // Total count of tools in the dataset
+  const totalToolsCount = AI_CATEGORIES_DATA.reduce((sum, cat) => sum + cat.tools.length, 0);
 
   return (
-    <div className="min-h-screen bg-gradient-hero">
+    <div className="min-h-screen bg-[#f9faf7] dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col font-sans antialiased transition-colors duration-300">
       <Navbar />
-      <div className="max-w-7xl mx-auto px-4 py-8">
-        <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-2">
-          Useful AI Tools 💡
-        </h1>
-        <p className="text-muted-foreground text-lg mb-8">
-          Priyal has curated this powerful list of AI tools to help students like you study smarter, code faster, create better and save time.
-        </p>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {tools.map((category, i) => (
-            <motion.div
-              key={category.id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.1, duration: 0.5 }}
-              whileHover={{ scale: 1.02 }}
-            >
-              <Card
-                className="feature-card h-full cursor-pointer hover:border-primary/30 hover:shadow-xl"
-                onClick={() => setSelectedCategory(category.id)}
+      <div className="flex-1 w-full max-w-5xl mx-auto px-4 sm:px-6 py-8 md:py-12 animate-fade-in">
+        {/* Header Banner - Attracting Premium Design */}
+        <div className="relative rounded-3xl overflow-hidden mb-10 border border-slate-800 dark:border-slate-800 bg-gradient-to-br from-slate-900 via-slate-950 to-black p-8 sm:p-10 shadow-xl shadow-slate-950/40">
+          {/* Glowing Gradient Background Shapes */}
+          <div className="absolute top-[-50%] left-[-20%] w-[80%] h-[200%] rounded-full bg-gradient-to-br from-indigo-500/10 to-transparent pointer-events-none blur-3xl animate-pulse-slow" />
+          <div className="absolute bottom-[-50%] right-[-20%] w-[60%] h-[150%] rounded-full bg-gradient-to-br from-emerald-500/5 to-teal-500/10 pointer-events-none blur-3xl" />
+
+          {/* Subtle background tech grid pattern */}
+          <div className="absolute inset-0 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:14px_24px] pointer-events-none opacity-20" />
+
+          <div className="relative flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <div className="flex-1">
+              <span className="px-3 py-1 rounded-full text-xs font-bold bg-white/5 text-slate-300 border border-white/10 uppercase tracking-widest inline-flex items-center gap-1.5 mb-4 shadow-sm">
+                <Sparkles className="w-3.5 h-3.5 text-indigo-400" /> Curated Productivity Suite
+              </span>
+              
+              <h1 className="text-3xl sm:text-4xl font-black text-white tracking-tight flex items-center gap-3 flex-wrap">
+                <Brain className="w-9 h-9 text-indigo-400 animate-pulse shrink-0" />
+                <span className="bg-gradient-to-r from-white via-slate-100 to-indigo-200 bg-clip-text text-transparent">
+                  500+ Curated AI Tools Directory
+                </span>
+              </h1>
+              
+              <p className="text-slate-300 text-xs sm:text-sm mt-3 max-w-2xl leading-relaxed font-medium">
+                Smarter studying, faster programming, premium video creation, audio generation, and ATS optimization. Graded and organized for college students and developers.
+              </p>
+            </div>
+            
+            <div className="shrink-0 flex items-center">
+              <div className="relative overflow-hidden bg-gradient-to-r from-indigo-500/15 to-blue-500/5 border border-indigo-500/30 rounded-2xl px-4 py-3 flex items-center gap-3 backdrop-blur-md shadow-lg shadow-indigo-500/5">
+                <div className="relative flex h-2.5 w-2.5 shrink-0">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+                </div>
+                <div className="flex flex-col font-mono text-[9px] font-black uppercase tracking-widest">
+                  <span className="text-indigo-400">Total Curated Tools</span>
+                  <span className="text-white text-xs mt-1 font-bold">{totalToolsCount} Tools Active</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Search Box in Header */}
+          <div className="mt-8 relative max-w-xl">
+            <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+              <Search className="w-4 h-4" />
+            </div>
+            <input
+              type="text"
+              placeholder="Search tools by name, utility, or keywords (e.g. 'lovable', 'video', 'pdf')..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full bg-white/10 hover:bg-white/15 focus:bg-white/20 border border-white/10 focus:border-white/20 rounded-2xl py-3.5 pl-10 pr-4 text-xs font-bold text-white placeholder-slate-400 focus:outline-none transition-all shadow-inner backdrop-blur-md"
+            />
+            {searchTerm && (
+              <button 
+                onClick={() => setSearchTerm('')} 
+                className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-[10px] font-black text-indigo-300 hover:text-white uppercase tracking-wider transition-colors"
               >
-                <CardHeader>
-                  <div className={`w-16 h-16 ${category.color} rounded-full flex items-center justify-center text-white text-2xl mb-4 mx-auto shadow-lg`}>
-                    {category.icon}
+                Clear
+              </button>
+            )}
+          </div>
+        </div>
+
+        {/* ACCORDIONS / RESULTS CONTAINER */}
+        <div className="space-y-5 mb-12">
+          {searchTerm ? (
+            /* Search Results View */
+            <div className="space-y-6">
+              <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
+                <span className="text-xs font-black text-slate-500 uppercase tracking-wider">
+                  Search Results
+                </span>
+                <span className="px-2.5 py-1 bg-indigo-50 dark:bg-indigo-950/20 text-indigo-600 dark:text-indigo-400 border border-indigo-100 dark:border-indigo-900/30 text-[10px] font-black rounded-lg uppercase tracking-wide">
+                  Found {searchFilteredResults.reduce((sum, c) => sum + c.tools.length, 0)} Matches
+                </span>
+              </div>
+
+              {searchFilteredResults.length > 0 ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {searchFilteredResults.flatMap(category => 
+                    category.tools.map(tool => (
+                      <a
+                        key={tool.title}
+                        href={tool.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="group bg-white dark:bg-slate-900 border border-slate-150 dark:border-slate-800 hover:border-emerald-250 dark:hover:border-emerald-900 hover:bg-emerald-50/20 dark:hover:bg-emerald-955/10 rounded-2xl p-4 flex flex-col justify-between hover:shadow-md transition-all duration-300 cursor-pointer"
+                      >
+                        <div className="space-y-2">
+                          <div className="flex items-center justify-between gap-2">
+                            <span className="text-[9px] font-black uppercase tracking-wider text-slate-400 dark:text-slate-500 px-1.5 py-0.5 rounded bg-slate-50 dark:bg-slate-950 border border-slate-100 dark:border-slate-850">
+                              {category.name}
+                            </span>
+                            <span className="text-[9px] font-bold text-slate-505 bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded">
+                              {tool.access}
+                            </span>
+                          </div>
+                          <h4 className="text-xs font-black text-slate-900 dark:text-white leading-tight group-hover:text-emerald-600 dark:group-hover:text-emerald-450 transition-colors">
+                            {tool.title}
+                          </h4>
+                          <p className="text-[11px] text-slate-550 dark:text-slate-400 leading-normal">
+                            {tool.description}
+                          </p>
+                        </div>
+                        <div className="mt-3 pt-2 border-t border-slate-100 dark:border-slate-850 flex items-center justify-end text-[10px] font-black text-blue-605 group-hover:text-emerald-500 transition-colors gap-0.5">
+                          <span>Visit Tool</span>
+                          <ArrowUpRight className="w-3.5 h-3.5" />
+                        </div>
+                      </a>
+                    ))
+                  )}
+                </div>
+              ) : (
+                <div className="bg-white dark:bg-slate-900 border border-slate-150 dark:border-slate-800 rounded-2xl p-10 text-center flex flex-col items-center gap-3">
+                  <span className="text-3xl">🔍</span>
+                  <h4 className="font-extrabold text-sm text-slate-900 dark:text-white uppercase tracking-wider">No AI Tools Found</h4>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 max-w-sm">
+                    We couldn't find any tools matching "{searchTerm}". Try checking your spelling or searching other keywords.
+                  </p>
+                  <button 
+                    onClick={() => setSearchTerm('')} 
+                    className="mt-2 bg-slate-900 hover:bg-slate-850 text-white font-bold px-4 py-2 rounded-xl text-xs transition-colors"
+                  >
+                    Browse Categories
+                  </button>
+                </div>
+              )}
+            </div>
+          ) : (
+            /* Accordion Categories View */
+            AI_CATEGORIES_DATA.map(category => (
+              <div key={category.id} className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden shadow-xs">
+                <button
+                  onClick={() => toggleCategory(category.id)}
+                  className="w-full flex items-center justify-between p-5 hover:bg-slate-50 dark:hover:bg-slate-855/50 transition-colors text-left"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-lg bg-indigo-500/15 dark:bg-indigo-500/10 flex items-center justify-center text-indigo-600 dark:text-indigo-400 shrink-0">
+                      {getCategoryIcon(category.id)}
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-extrabold text-slate-900 dark:text-white uppercase tracking-wider">
+                        {category.name}
+                      </h3>
+                      <p className="text-[11px] text-slate-400 mt-0.5">Explore {category.tools.length} curated AI resources and platforms</p>
+                    </div>
                   </div>
-                  <CardTitle className="text-lg text-center">{category.name}</CardTitle>
-                  <CardDescription className="text-center">
-                    {category.tools.length} tools available
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="flex justify-center">
-                  <Badge variant="secondary">{category.tools.length} Tools</Badge>
-                </CardContent>
-              </Card>
-            </motion.div>
-          ))}
+                  <div className="flex items-center gap-3.5">
+                    <span className="px-2 py-0.5 bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 text-[10px] font-black rounded-lg uppercase tracking-wide">
+                      {category.tools.length} Tools
+                    </span>
+                    {openCategories[category.id] ? <ChevronUp className="w-4 h-4 text-slate-400" /> : <ChevronDown className="w-4 h-4 text-slate-400" />}
+                  </div>
+                </button>
+
+                <AnimatePresence>
+                  {openCategories[category.id] && (
+                    <motion.div
+                      initial={{ height: 0 }}
+                      animate={{ height: 'auto' }}
+                      exit={{ height: 0 }}
+                      className="overflow-hidden border-t border-slate-150 dark:border-slate-800"
+                    >
+                      <div className="p-4 sm:p-6 bg-slate-50/50 dark:bg-slate-950/20">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+                          {category.tools.map(tool => (
+                            <a
+                              key={tool.title}
+                              href={tool.url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="group bg-white dark:bg-slate-900 border border-slate-150 dark:border-slate-800 hover:border-emerald-250 dark:hover:border-emerald-900 hover:bg-emerald-50/20 dark:hover:bg-emerald-950/10 rounded-2xl p-4 flex flex-col justify-between hover:shadow-md transition-all duration-300 cursor-pointer"
+                            >
+                              <div className="space-y-2">
+                                <div className="flex items-center justify-between gap-2">
+                                  <span className="text-[9px] font-bold text-slate-500 bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded">
+                                    {tool.access}
+                                  </span>
+                                </div>
+                                <h4 className="text-xs font-black text-slate-900 dark:text-white leading-tight group-hover:text-emerald-600 dark:group-hover:text-emerald-450 transition-colors">
+                                  {tool.title}
+                                </h4>
+                                <p className="text-[11px] text-slate-550 dark:text-slate-400 leading-normal">
+                                  {tool.description}
+                                </p>
+                              </div>
+                              <div className="mt-3 pt-2 border-t border-slate-100 dark:border-slate-855 flex items-center justify-end text-[10px] font-black text-blue-605 group-hover:text-emerald-500 transition-colors gap-0.5">
+                                <span>Visit Tool</span>
+                                <ArrowUpRight className="w-3.5 h-3.5" />
+                              </div>
+                            </a>
+                          ))}
+                        </div>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            ))
+          )}
+        </div>
+
+        {/* Action Banner */}
+        <div className="mt-8 border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm text-center max-w-2xl mx-auto flex flex-col items-center gap-3">
+          <span className="text-2xl">⚡</span>
+          <h3 className="font-extrabold text-sm uppercase tracking-wider text-slate-900 dark:text-white">Save Time with AI Automations</h3>
+          <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed max-w-md">
+            Integrate these AI utilities into your daily learning stack. Build websites, check resume ATS grades, humanize documents, and accelerate your coding tasks.
+          </p>
         </div>
       </div>
+
+      <Footer />
     </div>
   );
-};
-
-export default UsefulAITools;
+}
