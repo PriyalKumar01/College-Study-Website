@@ -543,12 +543,12 @@ export default function ScholarshipsPortal() {
                       >
                         {/* Scholarship banner image (if present) */}
                         {sc.image_url && (
-                          <div className="w-full overflow-hidden" style={{ maxHeight: 130 }}>
+                          <div className="w-full overflow-hidden max-h-[140px] sm:max-h-[220px] md:max-h-[260px]">
                             <img
                               src={sc.image_url}
                               alt={sc.name}
-                              className="w-full object-cover"
-                              style={{ maxHeight: 130, objectPosition: 'center' }}
+                              className="w-full object-cover h-[140px] sm:h-[220px] md:h-[260px]"
+                              style={{ objectPosition: 'center' }}
                               onError={e => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }}
                             />
                           </div>
