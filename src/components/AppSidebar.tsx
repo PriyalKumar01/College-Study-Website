@@ -52,6 +52,9 @@ const AppSidebar = ({ className }: AppSidebarProps) => {
 
   // Local state for profile avatar to override metadata if available
   const [profileAvatar, setProfileAvatar] = useState<string | null>(null);
+  const [oppCount, setOppCount] = useState<number | null>(null);
+
+  const PREMIUM_PLANS = ['companies', 'hr_emails', 'resume', 'roadmaps'];
 
   useEffect(() => {
     if (user?.id) {
@@ -70,6 +73,34 @@ const AppSidebar = ({ className }: AppSidebarProps) => {
       fetchProfileAvatar();
     }
   }, [user?.id]);
+
+  useEffect(() => {
+    const fetchOppCount = async () => {
+      try {
+        const { count, error } = await supabase
+          .from('opportunities')
+          .select('*', { count: 'exact', head: true });
+        if (!error && count !== null) {
+          setOppCount(count);
+        }
+      } catch (err) {
+        console.error('Error fetching opportunities count for sidebar:', err);
+      }
+    };
+    fetchOppCount();
+
+    // Set up real-time subscription to update count automatically
+    const channel = supabase
+      .channel('opportunities-count-changes')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'opportunities' }, () => {
+        fetchOppCount();
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, []);
 
   const userEmail = user?.email || '';
   const userMetadata = user?.user_metadata || {};
@@ -103,9 +134,9 @@ const AppSidebar = ({ className }: AppSidebarProps) => {
       ]
     },
     { icon: <Calculator className="h-4 w-4" />, label: 'CGPA Calculator', href: '/cgpa-calculator' },
-    { icon: <Lock className="h-4 w-4" />, label: 'Premium Content', href: '/premium-content' },
+    { icon: <Lock className="h-4 w-4" />, label: `Premium Content (${PREMIUM_PLANS.length})`, href: '/premium-content' },
     { icon: <Award className="h-4 w-4" />, label: 'Scholarships', href: '/scholarship-portal' },
-    { icon: <Briefcase className="h-4 w-4" />, label: 'Opportunities', href: '/opportunities' },
+    { icon: <Briefcase className="h-4 w-4" />, label: `Opportunities${oppCount !== null ? ` (${oppCount})` : ''}`, href: '/opportunities' },
     { icon: <Brain className="h-4 w-4" />, label: 'AI Tools', href: '/useful-ai-tools' },
     { icon: <Users className="h-4 w-4" />, label: 'Contributor List', href: '/notes-contributors' },
     { icon: <Info className="h-4 w-4" />, label: 'About', href: '/about' },
@@ -246,7 +277,7 @@ const AppSidebar = ({ className }: AppSidebarProps) => {
               <button
                 onClick={() => navigate(item.href)}
                 className={`w-full flex items-center gap-3 p-2 rounded-xl transition-all group ${
-                  item.label === 'Premium Content'
+                  item.label.startsWith('Premium Content')
                     ? isActive(item.href)
                       ? 'bg-amber-500/15 border border-amber-500/40 text-amber-400'
                       : 'bg-amber-500/5 hover:bg-amber-500/10 border border-amber-500/20 hover:border-amber-500/40 text-amber-400/90 hover:text-amber-400'
@@ -258,7 +289,7 @@ const AppSidebar = ({ className }: AppSidebarProps) => {
               >
                 {/* 3D Icon Container */}
                 <div className={`flex-shrink-0 flex items-center justify-center w-9 h-9 rounded-lg shadow-lg border border-white/10 transition-transform duration-200 group-hover:scale-110 ${
-                  item.label === 'Premium Content'
+                  item.label.startsWith('Premium Content')
                     ? 'bg-gradient-to-br from-amber-400 to-yellow-600 text-slate-900 font-bold'
                     : isActive(item.href)
                       ? 'bg-gradient-to-br from-blue-500 to-indigo-600 text-white shadow-blue-500/20'
@@ -269,7 +300,7 @@ const AppSidebar = ({ className }: AppSidebarProps) => {
 
                 {!isCollapsed && (
                   <span className={`text-sm font-medium transition-colors ${
-                    item.label === 'Premium Content'
+                    item.label.startsWith('Premium Content')
                       ? 'text-amber-400 font-bold'
                       : isActive(item.href)
                         ? 'text-white'
