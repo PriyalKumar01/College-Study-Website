@@ -5,10 +5,11 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import {
   Briefcase, Rocket, Code2, Trophy, ChevronRight, CheckCircle2,
-  Crown, Sparkles, ArrowRight, Lock
+  Crown, Sparkles, ArrowRight, Lock, ArrowUpRight, ArrowRightLeft
 } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import { PremiumModal } from '@/components/PremiumModal';
+import Footer from '@/components/Footer';
 
 // --- Platforms Data ---
 const JOB_PLATFORMS = [
@@ -60,18 +61,31 @@ const COMPETITION_PLATFORMS = [
   { name: 'Smart India Hackathon', url: 'https://www.sih.gov.in/', icon: '🇮🇳', desc: 'India\'s biggest innovation contest', color: '#FF9800', badge: null },
 ];
 
+const AI_TOOL_SHIFTS = [
+  { task: 'Writing & Coding', oldName: 'ChatGPT', oldUrl: 'https://chatgpt.com', newName: 'Claude', newUrl: 'https://claude.ai', desc: 'Claude offers superior logical reasoning, cleaner code generation, and reads codebase contexts better.' },
+  { task: 'Video Editing', oldName: 'Adobe Premiere', oldUrl: 'https://www.adobe.com/products/premiere.html', newName: 'Opus Clip', newUrl: 'https://www.opus.pro', desc: 'Opus Clip uses AI to parse long videos and auto-generate viral shorts with animated captions instantly.' },
+  { task: 'Web Development', oldName: 'Replit Sandbox', oldUrl: 'https://replit.com', newName: 'Blink Editor', newUrl: 'https://blink.dev', desc: 'Blink offers a next-gen, zero-config mobile & web development workspace designed for rapid building.' },
+  { task: 'Image Generation', oldName: 'Ideogram', oldUrl: 'https://ideogram.ai', newName: 'Nano Banana', newUrl: 'https://nanobanana.com', desc: 'Nano Banana outputs hyper-realistic and context-optimized image generation with accurate typography.' },
+  { task: 'Presentations', oldName: 'Microsoft PowerPoint', oldUrl: 'https://www.microsoft.com/en-us/microsoft-365/powerpoint', newName: 'Gamma App', newUrl: 'https://gamma.app', desc: 'Gamma generates high-end, responsive presentation decks and web pages from simple text inputs.' },
+  { task: 'Workflow Automation', oldName: 'n8n Workflows', oldUrl: 'https://n8n.io', newName: 'Zapier Automation', newUrl: 'https://zapier.com', desc: 'Zapier bridges 5000+ app integrations seamlessly, making web automation simple for any workflow.' },
+  { task: 'Voice Dictation', oldName: 'Legacy Keyboard', oldUrl: 'https://www.google.com/search?q=keyboard', newName: 'Wispr dictation', newUrl: 'https://www.wisprflow.com', desc: 'Wispr acts as a voice-to-text writing system that types exactly what you say, naturally and fast.' },
+  { task: 'Meeting Notes', oldName: 'Otter.ai', oldUrl: 'https://otter.ai', newName: 'Granola', newUrl: 'https://www.granola.so', desc: 'Granola generates clean, actionable AI meeting notes right inside your Mac/Windows menu bar.' },
+  { task: 'LinkedIn Content', oldName: 'Taplio Scheduler', oldUrl: 'https://taplio.com', newName: 'EasyGen Writer', newUrl: 'https://easygen.io', desc: 'EasyGen speeds up personal brand building with hyper-optimized LinkedIn post formats.' }
+];
+
 const CATEGORIES = [
-  { id: 'jobs', label: 'Job Search Platforms', icon: <Briefcase className="w-4 h-4" />, items: JOB_PLATFORMS, gradient: 'from-indigo-500 to-violet-600' },
-  { id: 'internships', label: 'Internship Platforms', icon: <Rocket className="w-4 h-4" />, items: INTERNSHIP_PLATFORMS, gradient: 'from-sky-500 to-cyan-500' },
-  { id: 'hackathons', label: 'Hackathon Platforms', icon: <Code2 className="w-4 h-4" />, items: HACKATHON_PLATFORMS, gradient: 'from-amber-500 to-orange-500' },
-  { id: 'competitions', label: 'Competition Platforms', icon: <Trophy className="w-4 h-4" />, items: COMPETITION_PLATFORMS, gradient: 'from-emerald-500 to-teal-500' },
+  { id: 'jobs', label: 'Job Search Platforms', icon: <Briefcase className="w-4 h-4" />, items: JOB_PLATFORMS, gradient: 'from-slate-800 to-slate-950' },
+  { id: 'internships', label: 'Internship Platforms', icon: <Rocket className="w-4 h-4" />, items: INTERNSHIP_PLATFORMS, gradient: 'from-emerald-600 to-teal-700' },
+  { id: 'hackathons', label: 'Hackathon Platforms', icon: <Code2 className="w-4 h-4" />, items: HACKATHON_PLATFORMS, gradient: 'from-amber-500 to-yellow-600' },
+  { id: 'competitions', label: 'Competition Platforms', icon: <Trophy className="w-4 h-4" />, items: COMPETITION_PLATFORMS, gradient: 'from-slate-700 to-slate-900' },
+  { id: 'aitools', label: 'Then vs Now: AI Tool Shift', icon: <ArrowRightLeft className="w-4 h-4" />, items: AI_TOOL_SHIFTS, gradient: 'from-amber-600 to-orange-600' },
 ];
 
 export default function PremiumContent() {
   const navigate = useNavigate();
   const { user, isOwner } = useAuth();
   const [unlockedPlans, setUnlockedPlans] = useState<string[]>([]);
-  const [premiumModal, setPremiumModal] = useState<{ open: boolean; plan: 'companies' | 'hr_emails' | 'resume' }>({ open: false, plan: 'companies' });
+  const [premiumModal, setPremiumModal] = useState<{ open: boolean; plan: 'companies' | 'hr_emails' | 'resume' | 'roadmaps' }>({ open: false, plan: 'companies' });
   const [expandedCategories, setExpandedCategories] = useState<string[]>([]);
 
   const checkPurchases = useCallback(async () => {
@@ -90,9 +104,10 @@ export default function PremiumContent() {
     checkPurchases();
   }, [checkPurchases]);
 
-  const hasCompaniesAccess = isOwner || unlockedPlans.includes('companies');
-  const hasHRAccess = isOwner || unlockedPlans.includes('hr_emails');
-  const hasResumeAccess = isOwner || unlockedPlans.includes('resume');
+  const hasCompaniesAccess = unlockedPlans.includes('companies');
+  const hasHRAccess = unlockedPlans.includes('hr_emails');
+  const hasResumeAccess = unlockedPlans.includes('resume');
+  const hasRoadmapsAccess = unlockedPlans.includes('roadmaps');
 
   const toggleCategory = (catId: string) => {
     setExpandedCategories(prev =>
@@ -101,15 +116,15 @@ export default function PremiumContent() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
+    <div className="min-h-screen bg-[#f9faf7] dark:bg-slate-950">
       <Navbar />
 
       {/* ══════════ HERO SECTION ══════════ */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-indigo-950 to-violet-950 pt-12 pb-12">
+      <section className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-slate-950 to-black pt-12 pb-12">
         {/* Orbs */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute top-10 left-10 w-72 h-72 bg-indigo-500/10 rounded-full blur-3xl" />
-          <div className="absolute bottom-10 right-20 w-96 h-96 bg-violet-500/10 rounded-full blur-3xl" />
+          <div className="absolute top-10 left-10 w-72 h-72 bg-amber-500/10 rounded-full blur-3xl" />
+          <div className="absolute bottom-10 right-20 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl" />
         </div>
 
         <div className="relative max-w-6xl mx-auto px-4 sm:px-6 text-center">
@@ -168,8 +183,8 @@ export default function PremiumContent() {
       </section>
 
       {/* ══════════ PREMIUM CARDS ══════════ */}
-      <section className="max-w-6xl mx-auto px-4 sm:px-6 py-12 -mt-6">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 py-12 -mt-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           
           {/* Card A: Company Directory */}
           <motion.div
@@ -193,14 +208,14 @@ export default function PremiumContent() {
                 </span>
                 <span className="text-xs font-mono font-bold text-gray-500 dark:text-gray-400">130+ MNC/PSU/GOV</span>
               </div>
-              <h3 className="text-lg font-black text-gray-900 dark:text-white mb-2">Company Career Pages Directory</h3>
-              <p className="text-sm text-gray-600 dark:text-gray-400 mb-4 leading-relaxed">
-                Direct, official links to the careers page of top MNCs, PSUs, Unicorns, and Government sectors. Fully filterable by branch and type.
+              <h3 className="text-lg font-black text-gray-900 dark:text-white mb-2">Company Career Pages</h3>
+              <p className="text-xs text-gray-600 dark:text-gray-400 mb-4 leading-relaxed line-clamp-3">
+                Direct, official links to the careers page of top MNCs, PSUs, Unicorns, and Government sectors. Fully filterable.
               </p>
-              <div className="space-y-2 mb-5">
+              <div className="space-y-1.5 mb-5">
                 {['Direct Official Links', 'Filter by Branch/Type', 'Real-time Updates', 'Lifetime Access'].map(f => (
                   <div key={f} className="flex items-center gap-1.5 text-xs text-gray-700 dark:text-gray-300 font-medium">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 flex-shrink-0" /> {f}
+                    <CheckCircle2 className="w-3 h-3 text-emerald-500 flex-shrink-0" /> {f}
                   </div>
                 ))}
               </div>
@@ -208,32 +223,32 @@ export default function PremiumContent() {
             
             <div className="pt-3 border-t border-gray-200/50 dark:border-gray-800/50 flex items-center justify-between gap-3 mt-auto">
               <div>
-                <span className="text-xs text-gray-400 block leading-none font-medium mb-0.5">Price</span>
+                <span className="text-[10px] text-gray-400 block leading-none font-medium mb-0.5">Price</span>
                 {hasCompaniesAccess ? (
-                  <span className="text-xl font-black text-gray-900 dark:text-white">UNLOCKED</span>
+                  <span className="text-lg font-black text-gray-900 dark:text-white">UNLOCKED</span>
                 ) : (
                   <div className="flex flex-col">
-                    <div className="flex items-center gap-1.5">
-                      <span className="text-xs text-gray-400 line-through">₹499</span>
-                      <span className="text-[10px] font-bold text-emerald-500 bg-emerald-50 dark:bg-emerald-950/50 px-1 rounded">70% OFF</span>
+                    <div className="flex items-center gap-1">
+                      <span className="text-[10px] text-gray-400 line-through">₹499</span>
+                      <span className="text-[9px] font-bold text-emerald-500 bg-emerald-50 dark:bg-emerald-950/50 px-1 rounded">70% OFF</span>
                     </div>
-                    <span className="text-xl font-black text-gray-900 dark:text-white">₹149</span>
+                    <span className="text-lg font-black text-gray-900 dark:text-white">₹149</span>
                   </div>
                 )}
               </div>
               {hasCompaniesAccess ? (
                 <button 
                   onClick={() => navigate('/opportunities/directory?tab=companies')}
-                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-green-600 hover:opacity-90 text-white font-bold text-xs shadow-md transition-opacity"
+                  className="inline-flex items-center gap-1 px-4 py-2 rounded-xl bg-gradient-to-r from-emerald-500 to-green-600 hover:opacity-90 text-white font-bold text-[11px] shadow-sm transition-opacity"
                 >
-                  <Sparkles className="w-3.5 h-3.5" /> Explore <ArrowRight className="w-3.5 h-3.5" />
+                  <Sparkles className="w-3 h-3" /> Explore <ArrowRight className="w-3 h-3" />
                 </button>
               ) : (
                 <button 
                   onClick={() => setPremiumModal({ open: true, plan: 'companies' })}
-                  className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-yellow-600 hover:opacity-90 text-white font-bold text-xs shadow-md transition-opacity"
+                  className="px-4 py-2 rounded-xl bg-gradient-to-r from-amber-500 to-yellow-600 hover:opacity-90 text-white font-bold text-[11px] shadow-sm transition-opacity"
                 >
-                  Unlock Directory
+                  Unlock
                 </button>
               )}
             </div>
@@ -262,14 +277,14 @@ export default function PremiumContent() {
                 </span>
                 <span className="text-xs font-mono font-bold text-gray-500 dark:text-gray-400">1800+ CONTACTS</span>
               </div>
-              <h3 className="text-lg font-black text-gray-900 dark:text-white mb-2">1800+ HR Email Contacts Directory</h3>
-              <p className="text-sm text-gray-600 dark:text-gray-400 mb-4 leading-relaxed">
-                Direct email addresses of verified HR managers. Send personalized applications directly to decision makers, bypassing ATS filters.
+              <h3 className="text-lg font-black text-gray-900 dark:text-white mb-2">HR Email Directory</h3>
+              <p className="text-xs text-gray-600 dark:text-gray-400 mb-4 leading-relaxed line-clamp-3">
+                Direct email addresses of verified HR managers. Send applications directly to decision makers, bypassing ATS.
               </p>
-              <div className="space-y-2 mb-5">
+              <div className="space-y-1.5 mb-5">
                 {['1800+ Verified Emails', 'Direct Email Application', 'MNCs & Unicorns', 'Lifetime Updates'].map(f => (
                   <div key={f} className="flex items-center gap-1.5 text-xs text-gray-700 dark:text-gray-300 font-medium">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 flex-shrink-0" /> {f}
+                    <CheckCircle2 className="w-3 h-3 text-emerald-500 flex-shrink-0" /> {f}
                   </div>
                 ))}
               </div>
@@ -277,32 +292,32 @@ export default function PremiumContent() {
             
             <div className="pt-3 border-t border-gray-200/50 dark:border-gray-800/50 flex items-center justify-between gap-3 mt-auto">
               <div>
-                <span className="text-xs text-gray-400 block leading-none font-medium mb-0.5">Price</span>
+                <span className="text-[10px] text-gray-400 block leading-none font-medium mb-0.5">Price</span>
                 {hasHRAccess ? (
-                  <span className="text-xl font-black text-gray-900 dark:text-white">UNLOCKED</span>
+                  <span className="text-lg font-black text-gray-900 dark:text-white">UNLOCKED</span>
                 ) : (
                   <div className="flex flex-col">
-                    <div className="flex items-center gap-1.5">
-                      <span className="text-xs text-gray-400 line-through">₹3330</span>
-                      <span className="text-[10px] font-bold text-emerald-500 bg-emerald-50 dark:bg-emerald-950/50 px-1 rounded">70% OFF</span>
+                    <div className="flex items-center gap-1">
+                      <span className="text-[10px] text-gray-400 line-through">₹3330</span>
+                      <span className="text-[9px] font-bold text-emerald-500 bg-emerald-50 dark:bg-emerald-950/50 px-1 rounded">70% OFF</span>
                     </div>
-                    <span className="text-xl font-black text-gray-900 dark:text-white">₹999</span>
+                    <span className="text-lg font-black text-gray-900 dark:text-white">₹999</span>
                   </div>
                 )}
               </div>
               {hasHRAccess ? (
                 <button 
                   onClick={() => navigate('/opportunities/directory?tab=hr')}
-                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-green-600 hover:opacity-90 text-white font-bold text-xs shadow-md transition-opacity"
+                  className="inline-flex items-center gap-1 px-4 py-2 rounded-xl bg-gradient-to-r from-emerald-500 to-green-600 hover:opacity-90 text-white font-bold text-[11px] shadow-sm transition-opacity"
                 >
-                  <Sparkles className="w-3.5 h-3.5" /> Explore <ArrowRight className="w-3.5 h-3.5" />
+                  <Sparkles className="w-3 h-3" /> Explore <ArrowRight className="w-3 h-3" />
                 </button>
               ) : (
                 <button 
                   onClick={() => setPremiumModal({ open: true, plan: 'hr_emails' })}
-                  className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:opacity-90 text-white font-bold text-xs shadow-md transition-opacity"
+                  className="px-4 py-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:opacity-90 text-white font-bold text-[11px] shadow-sm transition-opacity"
                 >
-                  Unlock Directory
+                  Unlock
                 </button>
               )}
             </div>
@@ -332,13 +347,13 @@ export default function PremiumContent() {
                 <span className="text-xs font-mono font-bold text-gray-500 dark:text-gray-400">OVERLEAF MODEL</span>
               </div>
               <h3 className="text-lg font-black text-gray-900 dark:text-white mb-2">ATS Friendly Resume Guide</h3>
-              <p className="text-sm text-gray-600 dark:text-gray-400 mb-4 leading-relaxed">
-                Step-by-step formatting and writing guide with direct access to highly optimized resume templates. Pass automated ATS screening with ease.
+              <p className="text-xs text-gray-600 dark:text-gray-400 mb-4 leading-relaxed line-clamp-3">
+                Step-by-step formatting and writing guide with direct access to highly optimized resume templates. Pass ATS screenings easily.
               </p>
-              <div className="space-y-2 mb-5">
+              <div className="space-y-1.5 mb-5">
                 {['Overleaf Template Links', 'Bullet Point Optimizer', 'Do\'s and Don\'ts Rules', 'CGPA Calculator Integration'].map(f => (
                   <div key={f} className="flex items-center gap-1.5 text-xs text-gray-700 dark:text-gray-300 font-medium">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 flex-shrink-0" /> {f}
+                    <CheckCircle2 className="w-3 h-3 text-emerald-500 flex-shrink-0" /> {f}
                   </div>
                 ))}
               </div>
@@ -346,32 +361,101 @@ export default function PremiumContent() {
             
             <div className="pt-3 border-t border-gray-200/50 dark:border-gray-800/50 flex items-center justify-between gap-3 mt-auto">
               <div>
-                <span className="text-xs text-gray-400 block leading-none font-medium mb-0.5">Price</span>
+                <span className="text-[10px] text-gray-400 block leading-none font-medium mb-0.5">Price</span>
                 {hasResumeAccess ? (
-                  <span className="text-xl font-black text-gray-900 dark:text-white">UNLOCKED</span>
+                  <span className="text-lg font-black text-gray-900 dark:text-white">UNLOCKED</span>
                 ) : (
                   <div className="flex flex-col">
-                    <div className="flex items-center gap-1.5">
-                      <span className="text-xs text-gray-400 line-through">₹559</span>
-                      <span className="text-[10px] font-bold text-emerald-500 bg-emerald-50 dark:bg-emerald-950/50 px-1 rounded">70% OFF</span>
+                    <div className="flex items-center gap-1">
+                      <span className="text-[10px] text-gray-400 line-through">₹559</span>
+                      <span className="text-[9px] font-bold text-emerald-500 bg-emerald-50 dark:bg-emerald-950/50 px-1 rounded">70% OFF</span>
                     </div>
-                    <span className="text-xl font-black text-gray-900 dark:text-white">₹167</span>
+                    <span className="text-lg font-black text-gray-900 dark:text-white">₹167</span>
                   </div>
                 )}
               </div>
               {hasResumeAccess ? (
                 <button 
                   onClick={() => navigate('/ats-friendly-resume')}
-                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-green-600 hover:opacity-90 text-white font-bold text-xs shadow-md transition-opacity"
+                  className="inline-flex items-center gap-1 px-4 py-2 rounded-xl bg-gradient-to-r from-emerald-500 to-green-600 hover:opacity-90 text-white font-bold text-[11px] shadow-sm transition-opacity"
                 >
-                  <Sparkles className="w-3.5 h-3.5" /> Explore <ArrowRight className="w-3.5 h-3.5" />
+                  <Sparkles className="w-3 h-3" /> Explore <ArrowRight className="w-3 h-3" />
                 </button>
               ) : (
                 <button 
                   onClick={() => setPremiumModal({ open: true, plan: 'resume' })}
-                  className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-orange-500 to-amber-600 hover:opacity-90 text-white font-bold text-xs shadow-md transition-opacity"
+                  className="px-4 py-2 rounded-xl bg-gradient-to-r from-orange-500 to-amber-600 hover:opacity-90 text-white font-bold text-[11px] shadow-sm transition-opacity"
                 >
-                  Unlock Guide
+                  Unlock
+                </button>
+              )}
+            </div>
+          </motion.div>
+
+          {/* Card D: Fresher Placement Roadmap & Tool Guide */}
+          <motion.div
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+            className={`relative rounded-3xl p-6 border-2 flex flex-col justify-between overflow-hidden shadow-lg transition-all ${
+              hasRoadmapsAccess 
+                ? 'bg-gradient-to-br from-violet-50/70 to-indigo-50/70 dark:from-violet-950/20 dark:to-indigo-950/20 border-violet-200 dark:border-violet-800/60 shadow-violet-500/5'
+                : 'bg-gradient-to-br from-slate-50/70 to-slate-100/70 dark:from-slate-900/40 dark:to-slate-950/40 border-slate-200 dark:border-slate-800 shadow-slate-500/5'
+            }`}
+          >
+            <div className="absolute top-2 right-4 text-7xl opacity-10 pointer-events-none">🗺️</div>
+            <div>
+              <div className="flex items-center justify-between mb-3">
+                <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold ${
+                  hasRoadmapsAccess 
+                    ? 'bg-violet-100 dark:bg-violet-900/50 text-violet-700 dark:text-violet-300'
+                    : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300'
+                }`}>
+                  <Crown className="w-3.5 h-3.5" /> {hasRoadmapsAccess ? 'Access Granted' : 'Premium Access'}
+                </span>
+                <span className="text-xs font-mono font-bold text-gray-500 dark:text-gray-400">ROADMAP & TOOLS</span>
+              </div>
+              <h3 className="text-lg font-black text-gray-900 dark:text-white mb-2">Placement Roadmap & Tool Guide</h3>
+              <p className="text-xs text-gray-600 dark:text-gray-400 mb-4 leading-relaxed line-clamp-3">
+                Step-by-step career path, master DSA from the right resources, optimize resume/LinkedIn, and explore curated playlists and directories.
+              </p>
+              <div className="space-y-1.5 mb-5">
+                {['5-Stage Fresher Roadmap', 'Instructors & Channels List', 'Interview Prep Playlists', 'Resume & LinkedIn Blueprints'].map(f => (
+                  <div key={f} className="flex items-center gap-1.5 text-xs text-gray-700 dark:text-gray-300 font-medium">
+                    <CheckCircle2 className="w-3 h-3 text-emerald-500 flex-shrink-0" /> {f}
+                  </div>
+                ))}
+              </div>
+            </div>
+            
+            <div className="pt-3 border-t border-gray-200/50 dark:border-gray-800/50 flex items-center justify-between gap-3 mt-auto">
+              <div>
+                <span className="text-[10px] text-gray-400 block leading-none font-medium mb-0.5">Price</span>
+                {hasRoadmapsAccess ? (
+                  <span className="text-lg font-black text-gray-900 dark:text-white">UNLOCKED</span>
+                ) : (
+                  <div className="flex flex-col">
+                    <div className="flex items-center gap-1">
+                      <span className="text-[10px] text-gray-400 line-through">₹2196</span>
+                      <span className="text-[9px] font-bold text-emerald-500 bg-emerald-50 dark:bg-emerald-950/50 px-1 rounded">75% OFF</span>
+                    </div>
+                    <span className="text-lg font-black text-gray-900 dark:text-white">₹549</span>
+                  </div>
+                )}
+              </div>
+              {hasRoadmapsAccess ? (
+                <button 
+                  onClick={() => navigate('/roadmaps/fresher-job-guide')}
+                  className="inline-flex items-center gap-1 px-4 py-2 rounded-xl bg-gradient-to-r from-emerald-500 to-green-600 hover:opacity-90 text-white font-bold text-[11px] shadow-sm transition-opacity"
+                >
+                  <Sparkles className="w-3 h-3" /> Explore <ArrowRight className="w-3 h-3" />
+                </button>
+              ) : (
+                <button 
+                  onClick={() => setPremiumModal({ open: true, plan: 'roadmaps' })}
+                  className="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 dark:bg-slate-800 dark:hover:bg-slate-700 text-white font-bold text-[11px] shadow-sm transition-all border border-slate-800 dark:border-slate-700"
+                >
+                  Unlock
                 </button>
               )}
             </div>
@@ -388,7 +472,7 @@ export default function PremiumContent() {
               <Sparkles className="w-5 h-5" />
             </div>
             <div>
-              <h2 className="text-xl font-black text-gray-950 dark:text-white">Curated Platform Directories</h2>
+              <h2 className="text-xl font-black text-gray-900 dark:text-white">Curated Platform Directories</h2>
               <p className="text-xs text-gray-500 dark:text-gray-400">Click any category below to expand and open platforms directly</p>
             </div>
           </div>
@@ -400,8 +484,8 @@ export default function PremiumContent() {
                 <div key={category.id} className="border border-gray-100 dark:border-gray-800 rounded-2xl overflow-hidden shadow-sm">
                   {/* Collapsible Header */}
                   <button
-                    onClick={() => toggleCategory(category.id)}
-                    className="w-full flex items-center justify-between p-4 bg-gray-50/70 hover:bg-gray-50 dark:bg-gray-955/20 dark:hover:bg-gray-955/40 transition-colors text-left"
+                     onClick={() => toggleCategory(category.id)}
+                     className="w-full flex items-center justify-between p-4 bg-gray-50/70 hover:bg-gray-50 dark:bg-slate-800/20 dark:hover:bg-slate-800/40 transition-colors text-left"
                   >
                     <div className="flex items-center gap-3">
                       <div className={`w-8 h-8 rounded-xl bg-gradient-to-br ${category.gradient} flex items-center justify-center text-white shadow-md`}>
@@ -428,37 +512,118 @@ export default function PremiumContent() {
                         transition={{ duration: 0.25, ease: 'easeInOut' }}
                       >
                         <div className="p-4 bg-white dark:bg-gray-900 border-t border-gray-100 dark:border-gray-800">
-                          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                            {category.items.map(p => (
-                              <a
-                                key={p.name}
-                                href={p.url}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="group relative bg-gray-50 hover:bg-gray-100/50 dark:bg-gray-950/30 dark:hover:bg-gray-950/60 rounded-2xl border border-gray-100 dark:border-gray-800 hover:border-gray-200 dark:hover:border-gray-700 p-4 flex flex-col gap-3 transition-all duration-200 cursor-pointer overflow-hidden"
-                              >
-                                {p.badge && (
-                                  <span className="absolute top-2.5 right-2.5 text-[9px] font-black uppercase px-2 py-0.5 rounded-full bg-gradient-to-r from-amber-500 to-yellow-600 text-white leading-none">
-                                    {p.badge}
-                                  </span>
-                                )}
-                                <div className="flex items-center gap-3">
+                          {category.id === 'aitools' ? (
+                            <div className="flex flex-col gap-3">
+                              {/* Header Row */}
+                              <div className="hidden md:flex items-center text-[10px] font-black uppercase tracking-wider text-slate-400 dark:text-slate-500 pb-3 border-b border-slate-100 dark:border-slate-800 px-4">
+                                <div className="w-1/4">Workflow / Task</div>
+                                <div className="w-1/5 text-center">Then (Legacy)</div>
+                                <div className="w-12 text-center"></div>
+                                <div className="w-1/5 text-center">Now (AI Shift)</div>
+                                <div className="flex-1 pl-6">Key Enhancements &amp; Advantages</div>
+                              </div>
+
+                              {/* Rows */}
+                              {category.items.map((p: any, idx) => (
+                                <div key={idx} className="flex flex-col md:flex-row md:items-center p-4 bg-white dark:bg-slate-900 hover:bg-slate-50/50 dark:hover:bg-slate-850/30 border border-slate-100 dark:border-slate-850 rounded-2xl transition-all duration-200 gap-3 md:gap-0">
+                                  {/* Workflow Category */}
+                                  <div className="w-full md:w-1/4">
+                                    <span className="inline-block px-2.5 py-1 rounded-lg text-[10px] font-black uppercase bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 tracking-wider font-mono">
+                                      {p.task}
+                                    </span>
+                                  </div>
+
+                                  {/* Desktop: Legacy Tool */}
+                                  <div className="hidden md:flex w-1/5 justify-center">
+                                    <a 
+                                      href={p.oldUrl} 
+                                      target="_blank" 
+                                      rel="noopener noreferrer" 
+                                      className="group/old inline-flex items-center gap-1 text-xs font-extrabold text-blue-600 dark:text-blue-400 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors"
+                                    >
+                                      <span>{p.oldName}</span>
+                                      <ArrowUpRight className="w-3.5 h-3.5 text-blue-500 group-hover/old:text-emerald-500 transition-colors shrink-0" />
+                                    </a>
+                                  </div>
+
+                                  {/* Desktop: Transition Arrow */}
+                                  <div className="hidden md:flex w-12 justify-center text-slate-300 dark:text-slate-700 font-bold text-sm">
+                                    →
+                                  </div>
+
+                                  {/* Desktop: Modern AI Tool */}
+                                  <div className="hidden md:flex w-1/5 justify-center">
+                                    <a 
+                                      href={p.newUrl} 
+                                      target="_blank" 
+                                      rel="noopener noreferrer" 
+                                      className="group/new inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-900 hover:bg-slate-950 dark:bg-slate-800 dark:hover:bg-slate-750 border border-slate-800 dark:border-slate-700 rounded-xl text-xs font-bold text-slate-100 hover:text-emerald-400 transition-colors shadow-sm"
+                                    >
+                                      <span>{p.newName}</span>
+                                      <ArrowUpRight className="w-3.5 h-3.5 text-blue-450 dark:text-blue-400 group-hover/new:text-emerald-400 group-hover/new:translate-x-0.5 group-hover/new:-translate-y-0.5 transition-transform shrink-0" />
+                                    </a>
+                                  </div>
+
+                                  {/* Mobile: Split Legacy/New Row */}
+                                  <div className="flex items-center justify-between md:hidden bg-slate-50/50 dark:bg-slate-950/40 p-2.5 rounded-xl border border-slate-100 dark:border-slate-850">
+                                    <a 
+                                      href={p.oldUrl} 
+                                      target="_blank" 
+                                      rel="noopener noreferrer" 
+                                      className="group/old text-xs font-extrabold text-blue-600 dark:text-blue-400 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors"
+                                    >
+                                      {p.oldName}
+                                    </a>
+                                    <span className="text-slate-300 dark:text-slate-700 font-bold text-xs">→</span>
+                                    <a 
+                                      href={p.newUrl} 
+                                      target="_blank" 
+                                      rel="noopener noreferrer" 
+                                      className="group/new flex items-center gap-1 px-2.5 py-1 bg-slate-900 hover:bg-slate-950 dark:bg-slate-800 dark:hover:bg-slate-750 border border-slate-800 dark:border-slate-700 rounded-lg text-xs font-bold text-slate-100 dark:text-slate-300 hover:text-emerald-400 transition-colors"
+                                    >
+                                      {p.newName}
+                                      <ArrowUpRight className="w-3 h-3 text-blue-400 group-hover/new:text-emerald-400 shrink-0" />
+                                    </a>
+                                  </div>
+
+                                  {/* Description */}
+                                  <div className="w-full md:flex-1 md:pl-6">
+                                    <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed font-medium">
+                                      {p.desc}
+                                    </p>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          ) : (
+                            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
+                              {category.items.map(p => (
+                                <a
+                                  key={p.name}
+                                  href={p.url}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="group relative bg-white dark:bg-gray-900 hover:bg-emerald-50/50 dark:hover:bg-emerald-955/20 rounded-2xl border border-gray-100 dark:border-gray-800 hover:border-emerald-250 dark:hover:border-emerald-900 p-4 flex items-center gap-3.5 h-[88px] transition-all duration-300 cursor-pointer overflow-hidden shadow-sm hover:shadow-md"
+                                >
+                                  {p.badge && (
+                                    <span className="absolute top-1.5 right-1.5 text-[8px] font-black uppercase px-1.5 py-0.5 rounded-md bg-gradient-to-r from-amber-500 to-yellow-600 text-white leading-none scale-90">
+                                      {p.badge}
+                                    </span>
+                                  )}
                                   <div className="w-10 h-10 rounded-xl flex items-center justify-center text-xl shrink-0 shadow-sm" style={{ background: `${p.color}15`, border: `1px solid ${p.color}35` }}>
                                     {p.icon}
                                   </div>
                                   <div className="flex-1 min-w-0">
-                                    <span className="font-bold text-sm text-gray-900 dark:text-white block leading-snug line-clamp-1 group-hover:text-amber-500 transition-colors">{p.name}</span>
-                                    <span className="text-[11px] text-gray-500 dark:text-gray-400 line-clamp-1 leading-snug">{p.desc}</span>
+                                    <div className="flex items-center gap-1.5">
+                                      <span className="font-extrabold text-sm text-blue-600 dark:text-blue-400 block leading-snug line-clamp-1 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">{p.name}</span>
+                                      <ArrowUpRight className="w-3.5 h-3.5 text-blue-500 group-hover:text-emerald-500 transition-colors shrink-0" />
+                                    </div>
+                                    <span className="text-[11px] text-slate-500 dark:text-slate-400 line-clamp-1 leading-snug mt-0.5">{p.desc}</span>
                                   </div>
-                                </div>
-                                <div className="flex items-center justify-end mt-1">
-                                  <span className={`inline-flex items-center gap-1 text-[11px] font-bold px-3 py-1 rounded-lg bg-gradient-to-r ${category.gradient} text-white group-hover:opacity-100 opacity-90 transition-opacity`}>
-                                    Open <ArrowRight className="w-3 h-3" />
-                                  </span>
-                                </div>
-                              </a>
-                            ))}
-                          </div>
+                                </a>
+                              ))}
+                            </div>
+                          )}
                         </div>
                       </motion.div>
                     )}
@@ -477,6 +642,7 @@ export default function PremiumContent() {
         plan={premiumModal.plan}
         onSuccess={checkPurchases}
       />
+      <Footer />
     </div>
   );
 }
