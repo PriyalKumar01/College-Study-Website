@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Label } from '@/components/ui/label';
 import {
   CheckCircle, XCircle, User, Calendar, BookOpen, ShieldAlert,
   Eye, Trash2, Crown, UserPlus, UserMinus, Search, Loader2, FileText, Download, GraduationCap, ExternalLink, Bell, Send, Pencil, Trophy, Coins, Link, Lock
@@ -406,6 +407,10 @@ const OwnerDashboard = () => {
   const [searchPremiumQuery, setSearchPremiumQuery] = useState('');
   const [revokingId, setRevokingId] = useState<string | null>(null);
 
+  const [grantEmail, setGrantEmail] = useState('');
+  const [grantPlan, setGrantPlan] = useState('companies');
+  const [isGranting, setIsGranting] = useState(false);
+
   useEffect(() => {
     if (isOwner) {
       fetchAll();
@@ -566,6 +571,78 @@ const OwnerDashboard = () => {
       });
     } finally {
       setRevokingId(null);
+    }
+  };
+
+  const handleGrantPremiumAccess = async () => {
+    if (!grantEmail.trim()) return;
+    setIsGranting(true);
+    try {
+      const emailLower = grantEmail.trim().toLowerCase();
+      const { data: profile, error: profileErr } = await supabase
+        .from('profiles')
+        .select('user_id, first_name, last_name')
+        .eq('email', emailLower)
+        .maybeSingle();
+
+      if (profileErr) throw profileErr;
+      if (!profile) {
+        toast({
+          title: 'User Not Found',
+          description: 'No registered user found with this email. Please ask them to sign up first.',
+          variant: 'destructive',
+        });
+        setIsGranting(false);
+        return;
+      }
+
+      const { data: existing } = await (supabase as any)
+        .from('premium_purchases')
+        .select('id')
+        .eq('user_id', profile.user_id)
+        .eq('plan', grantPlan)
+        .in('payment_status', ['completed', 'free'])
+        .maybeSingle();
+
+      if (existing) {
+        toast({
+          title: 'Access Already Granted',
+          description: 'This user already has access to this premium plan.',
+          variant: 'destructive',
+        });
+        setIsGranting(false);
+        return;
+      }
+
+      const { error: insertErr } = await (supabase as any)
+        .from('premium_purchases')
+        .insert({
+          user_id: profile.user_id,
+          user_email: emailLower,
+          plan: grantPlan,
+          amount_paid: 0,
+          original_amount: 0,
+          payment_status: 'free',
+          razorpay_payment_id: 'granted_by_owner',
+        });
+
+      if (insertErr) throw insertErr;
+
+      toast({
+        title: 'Access Granted! 🎉',
+        description: `Successfully granted "${grantPlan}" access to ${profile.first_name || emailLower}.`,
+      });
+
+      setGrantEmail('');
+      await fetchPremiumPurchases();
+    } catch (err: any) {
+      toast({
+        title: 'Granting Failed',
+        description: err.message,
+        variant: 'destructive',
+      });
+    } finally {
+      setIsGranting(false);
     }
   };
 
@@ -883,7 +960,7 @@ const OwnerDashboard = () => {
         </motion.div>
 
         <Tabs defaultValue="pending" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-7">
+          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 h-auto gap-1 bg-slate-100 dark:bg-slate-800 p-1">
             <TabsTrigger value="pending" className="flex items-center gap-2">
               <BookOpen className="h-4 w-4" />
               Pending ({pendingMaterials.length})
@@ -1088,6 +1165,57 @@ const OwnerDashboard = () => {
 
           {/* TAB: Premium Access Management */}
           <TabsContent value="premium" className="space-y-6">
+            {/* Grant Premium Access Card */}
+            <Card className="gradient-card border border-indigo-100 dark:border-indigo-950 shadow-sm bg-white dark:bg-slate-900">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-lg font-bold flex items-center gap-2 text-indigo-600 dark:text-indigo-400">
+                  <UserPlus className="h-5 w-5" /> Grant Premium Access
+                </CardTitle>
+                <CardDescription>
+                  Enter a registered user's email and select the premium resource package to grant access.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="flex flex-col sm:flex-row gap-3 items-end sm:items-center">
+                  <div className="flex-1 w-full space-y-1">
+                    <Label htmlFor="grant-email" className="text-xs font-semibold text-gray-500">User Email Address</Label>
+                    <Input
+                      id="grant-email"
+                      value={grantEmail}
+                      onChange={(e) => setGrantEmail(e.target.value)}
+                      placeholder="user@gmail.com"
+                      className="bg-slate-50 dark:bg-slate-800/50"
+                    />
+                  </div>
+                  <div className="flex-1 w-full space-y-1">
+                    <Label htmlFor="grant-plan" className="text-xs font-semibold text-gray-500">Premium Package Plan</Label>
+                    <select
+                      id="grant-plan"
+                      value={grantPlan}
+                      onChange={(e) => setGrantPlan(e.target.value)}
+                      className="w-full rounded-md border border-input bg-slate-50 dark:bg-slate-800/50 px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                    >
+                      <option value="companies">Company Career Pages Directory (₹149)</option>
+                      <option value="hr_emails">1800+ HR Email Contacts Directory (₹999)</option>
+                      <option value="resume">ATS Friendly Resume Guide (₹167)</option>
+                      <option value="roadmaps">Fresher Placement Roadmap & Tool Guide (₹549)</option>
+                    </select>
+                  </div>
+                  <Button
+                    onClick={handleGrantPremiumAccess}
+                    disabled={isGranting || !grantEmail.trim()}
+                    className="btn-hero flex-shrink-0 h-10 w-full sm:w-auto"
+                  >
+                    {isGranting ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : (
+                      <><Lock className="h-4 w-4 mr-2" /> Grant Access</>
+                    )}
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+
             <Card className="border-0 shadow-sm bg-white dark:bg-slate-900">
               <CardHeader className="pb-4">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -1154,6 +1282,8 @@ const OwnerDashboard = () => {
                                     ? 'HR Emails'
                                     : pur.plan === 'resume'
                                     ? 'Resume Guide'
+                                    : pur.plan === 'roadmaps'
+                                    ? 'Roadmap Guide'
                                     : pur.plan;
                                 
                                 const planColor =
@@ -1161,6 +1291,8 @@ const OwnerDashboard = () => {
                                     ? 'border-violet-250 bg-violet-50 text-violet-700 dark:bg-violet-950/20 dark:text-violet-400 dark:border-violet-900/50'
                                     : pur.plan === 'hr_emails'
                                     ? 'border-emerald-250 bg-emerald-50 text-emerald-700 dark:bg-emerald-950/20 dark:text-emerald-400 dark:border-emerald-900/50'
+                                    : pur.plan === 'roadmaps'
+                                    ? 'border-sky-250 bg-sky-50 text-sky-700 dark:bg-sky-950/20 dark:text-sky-400 dark:border-sky-900/50'
                                     : 'border-orange-255 bg-orange-50 text-orange-700 dark:bg-orange-950/20 dark:text-orange-400 dark:border-orange-900/50';
 
                                 return (
