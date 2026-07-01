@@ -41,7 +41,7 @@ export default defineConfig(({ mode }) => ({
       },
       workbox: {
         globPatterns: ['**/*.{js,css,html,ico,png,svg,jpg,jpeg}'],
-        maximumFileSizeToCacheInBytes: 3 * 1024 * 1024, // 3MB
+        maximumFileSizeToCacheInBytes: 50 * 1024 * 1024, // 50MB
         runtimeCaching: [
           {
             urlPattern: /^https:\/\/drive\.google\.com\/.*/i,
