@@ -220,3 +220,83 @@ body {
 .animate-scroll {
   animation: scroll var(--animation-duration, 40s) var(--animation-direction, forwards) linear infinite;
 }
+
+/* Quiz HTML rendering overrides for math, equations, images, and tables */
+.quiz-html img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 1.5rem auto;
+  border-radius: 0.5rem;
+  border: 1px solid #334155;
+  background-color: #ffffff; /* ensure white background for figures with transparency */
+  padding: 0.5rem;
+}
+
+.quiz-html table {
+  border-collapse: collapse;
+  margin: 1rem 0;
+  font-size: 0.9em;
+}
+
+.quiz-html th, .quiz-html td {
+  border: 1px solid #334155;
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+}
+
+.quiz-html th {
+  background-color: #1e293b;
+  font-weight: 600;
+}
+
+.quiz-html p {
+  margin-bottom: 0.75rem;
+  line-height: 1.6;
+}
+
+.quiz-html sub, .quiz-html sup {
+  font-size: 75%;
+  line-height: 0;
+  position: relative;
+  vertical-align: baseline;
+}
+
+.quiz-html sub {
+  bottom: -0.25em;
+}
+
+.quiz-html sup {
+  top: -0.5em;
+}
+
+.quiz-html pre {
+  background-color: #0f172a;
+  padding: 1rem;
+  border-radius: 0.375rem;
+  overflow-x: auto;
+  border: 1px solid #1e293b;
+  margin: 1rem 0;
+}
+
+@keyframes slow-coin-spin {
+  0% {
+    transform: rotateY(0deg);
+  }
+  35% {
+    transform: rotateY(0deg);
+  }
+  50% {
+    transform: rotateY(180deg);
+  }
+  85% {
+    transform: rotateY(180deg);
+  }
+  100% {
+    transform: rotateY(360deg);
+  }
+}
+
+.animate-slow-coin {
+  animation: slow-coin-spin 10s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
