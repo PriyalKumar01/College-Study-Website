@@ -1199,6 +1199,7 @@ const OwnerDashboard = () => {
                       <option value="hr_emails">1800+ HR Email Contacts Directory (₹999)</option>
                       <option value="resume">ATS Friendly Resume Guide (₹167)</option>
                       <option value="roadmaps">Fresher Placement Roadmap & Tool Guide (₹549)</option>
+                      <option value="gate_study">GATE Prep Section Access (Free/Premium)</option>
                     </select>
                   </div>
                   <Button
