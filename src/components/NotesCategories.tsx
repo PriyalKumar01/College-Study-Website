@@ -86,6 +86,8 @@ const NotesCategories = () => {
                   window.location.href = '/coding-study-material';
                 } else if (category.id === 'web-dev') {
                   window.location.href = '/web-development-notes';
+                } else if (category.id === 'gate') {
+                  window.location.href = '/gate-study';
                 }
               }}
             >
@@ -99,7 +101,7 @@ const NotesCategories = () => {
               <CardContent>
                 <div className="flex items-center justify-between">
                   <Badge variant="secondary">
-                    {['btech', 'dsa-notes', 'coding-material', 'web-dev'].includes(category.id) ? 'Available' : 'Coming Soon'}
+                    {['btech', 'dsa-notes', 'coding-material', 'web-dev', 'gate'].includes(category.id) ? 'Available' : 'Coming Soon'}
                   </Badge>
                   <Button 
                     variant="outline" 
@@ -114,6 +116,8 @@ const NotesCategories = () => {
                         window.location.href = '/coding-study-material';
                       } else if (category.id === 'web-dev') {
                         window.location.href = '/web-development-notes';
+                      } else if (category.id === 'gate') {
+                        window.location.href = '/gate-study';
                       }
                     }}
                   >
