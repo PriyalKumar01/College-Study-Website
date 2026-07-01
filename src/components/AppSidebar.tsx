@@ -162,7 +162,11 @@ const AppSidebar = ({ className }: AppSidebarProps) => {
 
   const getItemStyles = (label: string, href: string) => {
     const isAct = isActive(href);
-    if (label.startsWith('Premium Content')) {
+    
+    // Normalize label for comparison (handling dynamic opportunity count and premium plans)
+    const normalizedLabel = label.split(' (')[0].split('(')[0].trim().toLowerCase();
+
+    if (normalizedLabel.startsWith('premium content')) {
       return {
         container: isAct
           ? 'bg-amber-500/15 border border-amber-500/40 text-amber-400 shadow-[0_0_12px_rgba(245,158,11,0.15)] font-semibold'
@@ -172,7 +176,7 @@ const AppSidebar = ({ className }: AppSidebarProps) => {
         badge: { text: 'EXCLUSIVE', className: 'bg-amber-500/10 text-amber-400 border border-amber-500/20' }
       };
     }
-    if (label === 'Gate Study') {
+    if (normalizedLabel === 'gate study') {
       return {
         container: isAct
           ? 'bg-emerald-500/15 border border-emerald-500/40 text-emerald-400 shadow-[0_0_12px_rgba(16,185,129,0.15)] font-semibold'
@@ -182,7 +186,7 @@ const AppSidebar = ({ className }: AppSidebarProps) => {
         badge: { text: 'NEW', className: 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' }
       };
     }
-    if (label === 'Notes') {
+    if (normalizedLabel === 'notes') {
       return {
         container: isAct || expandedGroups.includes('notes')
           ? 'bg-sky-500/15 border border-sky-500/40 text-sky-400 shadow-[0_0_12px_rgba(56,189,248,0.15)] font-semibold'
@@ -192,7 +196,7 @@ const AppSidebar = ({ className }: AppSidebarProps) => {
         badge: { text: 'MOST POPULAR', className: 'bg-sky-500/10 text-sky-400 border border-sky-500/20' }
       };
     }
-    if (label === 'Scholarships') {
+    if (normalizedLabel === 'scholarships') {
       return {
         container: isAct
           ? 'bg-purple-500/15 border border-purple-500/40 text-purple-400 shadow-[0_0_12px_rgba(168,85,247,0.15)] font-semibold'
@@ -202,12 +206,94 @@ const AppSidebar = ({ className }: AppSidebarProps) => {
         badge: { text: 'APPLY NOW', className: 'bg-purple-500/10 text-purple-400 border border-purple-500/20 animate-pulse' }
       };
     }
+    if (normalizedLabel === 'cgpa calculator') {
+      return {
+        container: isAct
+          ? 'bg-rose-500/15 border border-rose-500/40 text-rose-400 shadow-[0_0_12px_rgba(244,63,94,0.15)] font-semibold'
+          : 'bg-rose-500/5 hover:bg-rose-500/10 border border-rose-500/20 hover:border-rose-500/40 text-rose-400/90 hover:text-rose-400',
+        iconContainer: 'bg-gradient-to-br from-rose-400 to-pink-600 text-white',
+        text: 'text-rose-400 font-semibold',
+        badge: { text: 'QUICK', className: 'bg-rose-500/10 text-rose-400 border border-rose-500/20' }
+      };
+    }
+    if (normalizedLabel.startsWith('opportunities')) {
+      return {
+        container: isAct
+          ? 'bg-orange-500/15 border border-orange-500/40 text-orange-400 shadow-[0_0_12px_rgba(249,115,22,0.15)] font-semibold'
+          : 'bg-orange-500/5 hover:bg-orange-500/10 border border-orange-500/20 hover:border-orange-500/40 text-orange-400/90 hover:text-orange-400',
+        iconContainer: 'bg-gradient-to-br from-orange-400 to-red-600 text-white',
+        text: 'text-orange-400 font-semibold',
+        badge: { text: 'HIRING', className: 'bg-orange-500/10 text-orange-400 border border-orange-500/20' }
+      };
+    }
+    if (normalizedLabel.includes('ai tools')) {
+      return {
+        container: isAct
+          ? 'bg-violet-500/15 border border-violet-500/40 text-violet-400 shadow-[0_0_12px_rgba(139,92,246,0.15)] font-semibold'
+          : 'bg-violet-500/5 hover:bg-violet-500/10 border border-violet-500/20 hover:border-violet-500/40 text-violet-400/90 hover:text-violet-400',
+        iconContainer: 'bg-gradient-to-br from-violet-400 to-indigo-600 text-white',
+        text: 'text-violet-400 font-semibold',
+        badge: { text: 'SMART', className: 'bg-violet-500/10 text-violet-400 border border-violet-500/20' }
+      };
+    }
+    if (normalizedLabel === 'contributor list') {
+      return {
+        container: isAct
+          ? 'bg-teal-500/15 border border-teal-500/40 text-teal-400 shadow-[0_0_12px_rgba(20,184,166,0.15)] font-semibold'
+          : 'bg-teal-500/5 hover:bg-teal-500/10 border border-teal-500/20 hover:border-teal-500/40 text-teal-400/90 hover:text-teal-400',
+        iconContainer: 'bg-gradient-to-br from-teal-400 to-emerald-600 text-white',
+        text: 'text-teal-400 font-semibold',
+        badge: { text: 'HEROES', className: 'bg-teal-500/10 text-teal-400 border border-teal-500/20' }
+      };
+    }
+    if (normalizedLabel === 'home') {
+      return {
+        container: isAct
+          ? 'bg-blue-500/15 border border-blue-500/40 text-blue-400 shadow-[0_0_12px_rgba(59,130,246,0.15)] font-semibold'
+          : 'bg-slate-800/10 hover:bg-slate-800/30 border border-slate-800/60 hover:border-slate-700/50 text-slate-300 hover:text-white',
+        iconContainer: isAct
+          ? 'bg-gradient-to-br from-blue-400 to-indigo-600 text-white'
+          : 'bg-gradient-to-br from-slate-600 to-slate-800 text-slate-300 group-hover:from-blue-600 group-hover:to-indigo-700 group-hover:text-white',
+        text: isAct ? 'text-blue-400 font-semibold' : 'text-slate-300 group-hover:text-white',
+        badge: { text: 'EXPLORE', className: 'bg-slate-700/30 text-slate-400 border border-slate-700/50' }
+      };
+    }
+    if (normalizedLabel === 'about') {
+      return {
+        container: isAct
+          ? 'bg-slate-700 border border-slate-500 text-white font-semibold shadow-md'
+          : 'bg-slate-800/10 hover:bg-slate-800/30 border border-slate-800/60 hover:border-slate-700/50 text-slate-300 hover:text-white',
+        iconContainer: 'bg-gradient-to-br from-slate-500 to-slate-700 text-white',
+        text: isAct ? 'text-white font-semibold' : 'text-slate-300 group-hover:text-white',
+        badge: { text: 'INFO', className: 'bg-slate-700/30 text-slate-400 border border-slate-700/50' }
+      };
+    }
+    if (normalizedLabel === 'admin portal') {
+      return {
+        container: isAct
+          ? 'bg-red-500/15 border border-red-500/40 text-red-400 shadow-[0_0_12px_rgba(239,68,68,0.15)] font-semibold'
+          : 'bg-red-500/5 hover:bg-red-500/10 border border-red-500/20 hover:border-red-500/40 text-red-400/90 hover:text-red-400',
+        iconContainer: 'bg-gradient-to-br from-red-500 to-rose-700 text-white',
+        text: 'text-red-400 font-semibold',
+        badge: { text: 'ADMIN', className: 'bg-red-500/10 text-red-400 border border-red-500/20' }
+      };
+    }
+    if (normalizedLabel === 'owner dashboard') {
+      return {
+        container: isAct
+          ? 'bg-yellow-500/15 border border-yellow-500/40 text-yellow-400 shadow-[0_0_12px_rgba(234,179,8,0.15)] font-semibold'
+          : 'bg-yellow-500/5 hover:bg-yellow-500/10 border border-yellow-500/20 hover:border-yellow-500/40 text-yellow-400/90 hover:text-yellow-400',
+        iconContainer: 'bg-gradient-to-br from-yellow-400 to-amber-600 text-slate-900 font-bold',
+        text: 'text-yellow-400 font-semibold',
+        badge: { text: 'OWNER', className: 'bg-yellow-500/10 text-yellow-400 border border-yellow-500/20' }
+      };
+    }
 
-    // Default
+    // Default fallback
     return {
       container: isAct
         ? 'bg-slate-800 border border-slate-700 text-white font-semibold'
-        : 'hover:bg-slate-800/50 border border-transparent text-slate-300 hover:text-white',
+        : 'bg-slate-800/10 hover:bg-slate-800/30 border border-slate-800/60 hover:border-slate-700/50 text-slate-300 hover:text-white',
       iconContainer: isAct
         ? 'bg-gradient-to-br from-blue-500 to-indigo-600 text-white shadow-blue-500/20'
         : 'bg-gradient-to-br from-slate-700 to-slate-800 text-slate-300 group-hover:from-blue-600 group-hover:to-indigo-700 group-hover:text-white',
