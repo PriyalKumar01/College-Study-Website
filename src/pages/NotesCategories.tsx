@@ -84,6 +84,16 @@ const noteCategories = [
     badgeColor: 'bg-teal-100 text-teal-700',
     accentColor: 'from-teal-500 to-cyan-600',
   },
+  {
+    id: 'gate',
+    title: 'GATE Study',
+    description: 'GATE exam preparation notes, syllabus, materials & PYQs Quiz',
+    route: '/gate-study',
+    image: '/card_gate.png',
+    badge: 'PYQs Quiz Included',
+    badgeColor: 'bg-red-100 text-red-700',
+    accentColor: 'from-purple-600 to-indigo-600',
+  },
 ];
 
 const NotesCategories = () => {
