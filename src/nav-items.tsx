@@ -90,6 +90,8 @@ import FourthSemesterPLNotes from "./pages/FourthSemesterPLNotes";
 import SeventhSemesterCSENotes from "./pages/SeventhSemesterCSENotes";
 import EighthSemesterCSENotes from "./pages/EighthSemesterCSENotes";
 import RoadmapGuide from "./pages/RoadmapGuide";
+import GateStudy from "./pages/GateStudy";
+import GateStudyQuiz from "./pages/GateStudyQuiz";
 
 export const navItems = [
   { to: "/", page: <Index /> },
@@ -103,6 +105,8 @@ export const navItems = [
   { to: "/cgpa-calculator", page: <CGPACalculator /> },
   { to: "/coding-study-material", page: <CodingStudyMaterial /> },
   { to: "/dsa-notes", page: <DSANotes /> },
+  { to: "/gate-study", page: <GateStudy /> },
+  { to: "/gate-study/quiz/:branch/:year", page: <GateStudyQuiz /> },
   { to: "/dashboard", page: <Dashboard /> },
   { to: "/first-semester", page: <FirstSemesterNotes /> },
   { to: "/second-semester", page: <SecondSemesterNotes /> },
