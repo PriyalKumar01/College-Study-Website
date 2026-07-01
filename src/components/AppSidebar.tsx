@@ -135,6 +135,7 @@ const AppSidebar = ({ className }: AppSidebarProps) => {
         { icon: <Trophy className="h-4 w-4" />, label: 'Gate Study', href: '/gate-study' },
       ]
     },
+    { icon: <Trophy className="h-4 w-4" />, label: 'Gate Study', href: '/gate-study' },
     { icon: <Calculator className="h-4 w-4" />, label: 'CGPA Calculator', href: '/cgpa-calculator' },
     { icon: <Lock className="h-4 w-4" />, label: `Premium Content (${PREMIUM_PLANS.length})`, href: '/premium-content' },
     { icon: <Award className="h-4 w-4" />, label: 'Scholarships', href: '/scholarship-portal' },
@@ -146,6 +147,17 @@ const AppSidebar = ({ className }: AppSidebarProps) => {
     ...(isAdmin ? [{ icon: <Shield className="h-4 w-4" />, label: 'Admin Portal', href: '/admin-portal' }] : []),
     ...(isOwner ? [{ icon: <Crown className="h-4 w-4" />, label: 'Owner Dashboard', href: '/owner-dashboard' }] : []),
   ];
+
+  useEffect(() => {
+    navItems.forEach(item => {
+      if (item.children && item.children.some(child => location.pathname === child.href)) {
+        const groupLabel = item.label.toLowerCase();
+        if (!expandedGroups.includes(groupLabel)) {
+          setExpandedGroups(prev => [...prev, groupLabel]);
+        }
+      }
+    });
+  }, [location.pathname]);
 
   const isActive = (href: string) => location.pathname === href;
 

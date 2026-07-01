@@ -3,7 +3,7 @@ import {
   Menu, Moon, Sun, User, LogOut, Home, 
   LayoutDashboard, BookOpen, Calculator, FileText, 
   Users, Award, Briefcase, Brain, Info,
-  Shield, Crown, Lock
+  Shield, Crown, Lock, Trophy
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useTheme } from '@/providers/ThemeProvider';
@@ -43,6 +43,8 @@ const Navbar = ({ onOpenAuth }: NavbarProps) => {
   // Mobile AppSidebar Items shown when logged in
   const authenticatedMobileItems = [
     { href: '/', label: 'Home', icon: Home },
+    { href: '/notes', label: 'Notes', icon: BookOpen },
+    { href: '/gate-study', label: 'Gate Study', icon: Trophy },
     { href: '/cgpa-calculator', label: 'CGPA Calculator', icon: Calculator },
     { href: '/premium-content', label: 'Premium Content', icon: Lock },
     { href: '/useful-ai-tools', label: '500+ AI Tools', icon: Brain },
