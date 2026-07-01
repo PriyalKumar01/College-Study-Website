@@ -21,6 +21,105 @@ import { Textarea } from "@/components/ui/textarea";
 import { Star, MessageSquarePlus } from 'lucide-react';
 import StudentSuccessStories from '@/components/StudentSuccessStories';
 
+const HOME_CAROUSEL_SLIDES = [
+  {
+    id: 1,
+    bgImage: "https://images.unsplash.com/photo-1506784983877-45594efa4cbe?auto=format&fit=crop&q=80&w=1200",
+    header: "COMPREHENSIVE STUDY RESOURCES",
+    title: "Premium Handwritten & Reference Notes",
+    subtitle: "Access high-quality class notes, reference books, syllabus sheets, and previous year papers for B.Tech, BS-MS, BBA, and MBA.",
+    ctaText: "Browse Notes",
+    badgeColor: "bg-blue-500/10 text-blue-400 border-blue-500/20",
+    ctaBg: "bg-blue-600 hover:bg-blue-500",
+    tags: ["B.Tech", "BS-MS", "BBA", "MBA", "Syllabus", "Class Notes"],
+    href: "/notes"
+  },
+  {
+    id: 2,
+    bgImage: "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&q=80&w=1200",
+    header: "100% FREE MOCK TESTS & QUIZZES",
+    title: "GATE Preparation Portal",
+    subtitle: "Practice chapter-wise quizzes, attempt full-length mock tests with live timers, and analyze your performance. Available for CSE, DA, ME, CE, ECE, EE, IN.",
+    ctaText: "Start Prep Now",
+    badgeColor: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20",
+    ctaBg: "bg-emerald-600 hover:bg-emerald-500",
+    tags: ["GATE CSE", "GATE DA", "Core Subjects", "General Aptitude", "Mock Tests"],
+    href: "/gate-study"
+  },
+  {
+    id: 3,
+    bgImage: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&q=80&w=1200",
+    header: "PLACEMENT PREPARATION KIT",
+    title: "Premium Placement Resources",
+    subtitle: "Unlock exclusive resources, company-specific preparation guides, HR contact lists, active hiring directories, and resume templates.",
+    ctaText: "Access Premium",
+    badgeColor: "bg-amber-500/10 text-amber-400 border-amber-500/20",
+    ctaBg: "bg-amber-600 hover:bg-amber-500",
+    tags: ["Companies Directory", "HR Email list", "Resume Templates", "Roadmaps"],
+    href: "/premium-content"
+  },
+  {
+    id: 4,
+    bgImage: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&q=80&w=1200",
+    header: "EDUCATION FUNDING & SCHOLARSHIPS",
+    title: "Active Scholarships Portal",
+    subtitle: "Never miss out on financial aid. Browse actively updated scholarship programs, eligibility criteria, and direct application links.",
+    ctaText: "Find Scholarships",
+    badgeColor: "bg-purple-500/10 text-purple-400 border-purple-500/20",
+    ctaBg: "bg-purple-600 hover:bg-purple-500",
+    tags: ["Sarkari Scholarships", "Private Grants", "International Internships"],
+    href: "/scholarship-portal"
+  },
+  {
+    id: 5,
+    bgImage: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&q=80&w=1200",
+    header: "CODING & SYSTEM DESIGN NOTES",
+    title: "Master DSA and Development",
+    subtitle: "Get step-by-step programming notes, comprehensive DSA sheets, and complete guides for web development and software engineering.",
+    ctaText: "Learn Coding",
+    badgeColor: "bg-sky-500/10 text-sky-400 border-sky-500/20",
+    ctaBg: "bg-sky-600 hover:bg-sky-500",
+    tags: ["DSA", "Web Dev", "Coding Notes", "Roadmaps", "Practice Sets"],
+    href: "/coding-study-material"
+  },
+  {
+    id: 6,
+    bgImage: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=1200",
+    header: "BOOST PRODUCTIVITY",
+    title: "500+ Curated AI Tools Directory",
+    subtitle: "Leverage artificial intelligence to automate research, write cleaner code, generate stunning designs, and speed up study workflows.",
+    ctaText: "Explore AI Tools",
+    badgeColor: "bg-indigo-500/10 text-indigo-400 border-indigo-500/20",
+    ctaBg: "bg-indigo-600 hover:bg-indigo-500",
+    tags: ["AI Coding Helpers", "Writing Assistants", "Design Tools", "Study Aids"],
+    href: "/useful-ai-tools"
+  },
+  {
+    id: 7,
+    bgImage: "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&q=80&w=1200",
+    header: "ACADEMIC UTILITIES",
+    title: "Precision CGPA Calculator",
+    subtitle: "Instantly estimate your GPA and CGPA using precise university grading systems. Share and track your academic progression online.",
+    ctaText: "Calculate CGPA",
+    badgeColor: "bg-rose-500/10 text-rose-400 border-rose-500/20",
+    ctaBg: "bg-rose-600 hover:bg-rose-500",
+    tags: ["Semester CGPA", "SGPA Calculator", "Target Grades"],
+    href: "/cgpa-calculator"
+  },
+  {
+    id: 8,
+    bgImage: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80&w=1200",
+    header: "CAREER LAUNCHPAD",
+    title: "Jobs & Internship Opportunities",
+    subtitle: "Direct portal to active job postings, off-campus hiring drives, and internship vacancies updated daily to kickstart your career.",
+    ctaText: "Find Jobs",
+    badgeColor: "bg-orange-500/10 text-orange-400 border-orange-500/20",
+    ctaBg: "bg-orange-600 hover:bg-orange-500",
+    tags: ["Software Internships", "Off-Campus Drives", "HR Contacts", "Daily Openings"],
+    href: "/opportunities"
+  }
+];
+
 const Index = () => {
   const { user, isOwner } = useAuth();
   const navigate = useNavigate();
@@ -28,6 +127,7 @@ const Index = () => {
   const [authMode, setAuthMode] = useState<'signin' | 'signup'>('signin');
   const [hasShownScrollPopup, setHasShownScrollPopup] = useState(false);
   const [hasClosedInitialPopup, setHasClosedInitialPopup] = useState(false);
+  const [currentHomeSlide, setCurrentHomeSlide] = useState(0);
 
 
 
@@ -47,7 +147,6 @@ const Index = () => {
       setShowAuthModal(true);
     }
   }, [user, location.state]);
-
   // Auto-show signup popup on first visit
   useEffect(() => {
     if (user) return; // Don't show if logged in
@@ -67,7 +166,14 @@ const Index = () => {
     }
   }, [user]);
 
-  // Handle scroll-based popup via Intersection Observer or just Timer
+  // Home Slide Auto-Scroll Timer
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentHomeSlide((prev) => (prev + 1) % HOME_CAROUSEL_SLIDES.length);
+    }, 5000);
+    return () => clearInterval(timer);
+  }, []);
+
   // Since we are in a custom scroll container (AppLayout main), window scroll won't work easily.
   // We'll rely on the initial timer for now, which is user-friendly enough.
 
@@ -293,6 +399,87 @@ const Index = () => {
         </div>
       </section>
 
+
+      {/* Beautiful Auto-Scrolling Features Banner Carousel */}
+      <section className="py-10 bg-slate-50 dark:bg-slate-950/40">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="w-full relative h-[280px] md:h-[230px] rounded-3xl overflow-hidden border border-slate-200 dark:border-slate-800 shadow-lg bg-slate-900 select-none">
+            <div 
+              className="w-full h-full flex transition-transform duration-700 ease-in-out"
+              style={{ transform: `translateX(-${currentHomeSlide * 100}%)` }}
+            >
+              {HOME_CAROUSEL_SLIDES.map((slide) => (
+                <div 
+                  key={slide.id}
+                  className="w-full h-full shrink-0 relative flex flex-col justify-center p-6 md:p-8 text-white"
+                  style={{
+                    backgroundImage: `url(${slide.bgImage})`,
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center',
+                  }}
+                >
+                  {/* Backdrop overlay with modern deep dark glass effect */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/85 to-transparent z-0" />
+                  
+                  {/* Content */}
+                  <div className="relative z-10 flex flex-col justify-between h-full">
+                    {/* Header */}
+                    <div className="space-y-1.5 md:space-y-2">
+                      <span className="text-[10px] md:text-xs font-extrabold uppercase tracking-widest text-blue-400 dark:text-blue-300">
+                        {slide.header}
+                      </span>
+                      <h2 className="text-xl md:text-3xl font-serif font-extrabold leading-tight tracking-tight max-w-2xl text-white">
+                        {slide.title}
+                      </h2>
+                      <p className="text-xs md:text-sm text-slate-300 max-w-xl font-medium leading-relaxed hidden sm:block">
+                        {slide.subtitle}
+                      </p>
+                    </div>
+
+                    {/* Footer Info & CTA */}
+                    <div className="flex flex-wrap items-end justify-between gap-4 pt-2">
+                      <div className="space-y-1.5">
+                        {/* Tags / Features List */}
+                        <div className="flex flex-wrap gap-1.5">
+                          {slide.tags.map((tag) => (
+                            <span 
+                              key={tag} 
+                              className={`text-[9px] font-extrabold tracking-wider uppercase px-2 py-0.5 rounded-md border ${slide.badgeColor}`}
+                            >
+                              {tag}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+
+                      <Button
+                        onClick={() => handleNavigation(slide.href)}
+                        className={`h-9 px-6 text-xs md:text-sm font-bold rounded-xl shadow-lg transition-transform hover:scale-105 active:scale-95 text-white ${slide.ctaBg}`}
+                      >
+                        {slide.ctaText}
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Navigation Dots */}
+            <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-1.5 z-20">
+              {HOME_CAROUSEL_SLIDES.map((_, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => setCurrentHomeSlide(idx)}
+                  className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                    currentHomeSlide === idx ? 'bg-white w-6' : 'bg-white/40 hover:bg-white/60'
+                  }`}
+                  aria-label={`Go to slide ${idx + 1}`}
+                />
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* Student Success Stories (3D Hall of Fame) */}
       <StudentSuccessStories />
