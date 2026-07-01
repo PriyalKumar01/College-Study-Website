@@ -16,7 +16,8 @@ const AppLayout = () => {
     setMobileOpen(false);
   }, [location.pathname]);
 
-  const showSidebar = !!user;
+  const isQuizExam = location.pathname.includes('/gate-study/quiz') && new URLSearchParams(location.search).get('mode') === 'exam';
+  const showSidebar = !!user && !isQuizExam;
 
   const isActiveTab = (path: string) => {
     if (path === '/notes') {
@@ -62,7 +63,7 @@ const AppLayout = () => {
       </div>
 
       {/* Sticky Mobile Bottom Navigation Bar */}
-      {user && (
+      {user && !isQuizExam && (
         <div 
           className="md:hidden fixed bottom-0 left-0 right-0 z-[150] bg-white/95 dark:bg-slate-950/95 border-t border-slate-200 dark:border-slate-800/80 backdrop-blur-md shadow-[0_-4px_24px_rgba(0,0,0,0.04)] dark:shadow-none transition-all duration-300"
           style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}
