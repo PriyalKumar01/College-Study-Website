@@ -28,7 +28,8 @@ import {
   BadgeCheck,
   Shield,
   Crown,
-  Lock
+  Lock,
+  Trophy
 } from 'lucide-react';
 
 interface AppSidebarProps {
@@ -131,6 +132,7 @@ const AppSidebar = ({ className }: AppSidebarProps) => {
         { icon: <Code className="h-4 w-4" />, label: 'DSA', href: '/dsa-notes' },
         { icon: <Laptop className="h-4 w-4" />, label: 'Development', href: '/web-development-notes' },
         { icon: <Code className="h-4 w-4" />, label: 'Coding Notes', href: '/coding-study-material' },
+        { icon: <Trophy className="h-4 w-4" />, label: 'Gate Study', href: '/gate-study' },
       ]
     },
     { icon: <Calculator className="h-4 w-4" />, label: 'CGPA Calculator', href: '/cgpa-calculator' },
