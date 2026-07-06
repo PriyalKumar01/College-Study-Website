@@ -65,7 +65,7 @@ serve(async (req) => {
 
   const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY") || "re_7oYzeKGo_FPFyksyTHad8KrwsX3oA92qM";
   const RESEND_FROM = Deno.env.get("RESEND_FROM") || "College Study <onboarding@resend.dev>";
-  const SITE_URL = Deno.env.get("SITE_URL") || "https://collegestudy.in"; // Fallback URL
+  const SITE_URL = Deno.env.get("SITE_URL") || "https://college-study.netlify.app"; // Fallback URL
 
   try {
     const body: SendCampaignRequest = await req.json();
