@@ -97,9 +97,9 @@ export default function MassEmailDashboard() {
   const [templateName, setTemplateName] = useState('My Custom Template');
   const [emailSubject, setEmailSubject] = useState('New Updates on College Study website! 🚀');
   const [logoUrl, setLogoUrl] = useState('https://axalbmmjqdezbkpffore.supabase.co/storage/v1/object/public/study-materials/logo.png');
-  const [headerUrl, setHeaderUrl] = useState('/college_study_email_header.png');
+  const [headerUrl, setHeaderUrl] = useState('https://college-study.netlify.app/college_study_email_header.png');
   const [showHeaderImage, setShowHeaderImage] = useState(false);
-  const [bannerUrl, setBannerUrl] = useState('/college_study_email_poster.png');
+  const [bannerUrl, setBannerUrl] = useState('https://college-study.netlify.app/college_study_email_poster.png');
   const [bodyText, setBodyText] = useState(`We have added some amazing resources, scholarships, and opportunities for college students on the **College Study** website. 
 
 Check them out now to stay ahead in your academics and career!`);
@@ -142,9 +142,9 @@ To complete your registration in seconds with zero hassle, please use the **Cont
 
 Simply click one of the buttons below to log in or sign up immediately.`,
       logoUrl: 'https://axalbmmjqdezbkpffore.supabase.co/storage/v1/object/public/study-materials/logo.png',
-      headerUrl: '/college_study_email_header.png',
+      headerUrl: 'https://college-study.netlify.app/college_study_otp_banner.png',
       showHeaderImage: true,
-      bannerUrl: '/college_study_email_poster.png',
+      bannerUrl: 'https://college-study.netlify.app/college_study_email_poster.png',
       btn1Text: 'Login with Google 🌐',
       btn1Url: '/auth?provider=google',
       btn2Text: 'Login with GitHub 💻',
@@ -161,9 +161,9 @@ Check out the eligible lists, application guidelines, and links directly on our 
 
 Click the buttons below to view the latest active scholarships immediately.`,
       logoUrl: 'https://axalbmmjqdezbkpffore.supabase.co/storage/v1/object/public/study-materials/logo.png',
-      headerUrl: '/college_study_scholarship_header.png',
+      headerUrl: 'https://college-study.netlify.app/college_study_scholarship_header.png',
       showHeaderImage: true,
-      bannerUrl: '/college_study_email_poster.png',
+      bannerUrl: 'https://college-study.netlify.app/college_study_email_poster.png',
       btn1Text: 'View Scholarships 🎓',
       btn1Url: '/scholarship-portal',
       btn2Text: 'Explore Opportunities 💼',
@@ -180,9 +180,9 @@ Form your teams, prepare your IDEs, and register before slots fill up!
 
 Click below to check out the details, themes, and registration links.`,
       logoUrl: 'https://axalbmmjqdezbkpffore.supabase.co/storage/v1/object/public/study-materials/logo.png',
-      headerUrl: '/college_study_hackathon_header.png',
+      headerUrl: 'https://college-study.netlify.app/college_study_hackathon_header.png',
       showHeaderImage: true,
-      bannerUrl: '/college_study_email_poster.png',
+      bannerUrl: 'https://college-study.netlify.app/college_study_email_poster.png',
       btn1Text: 'Check Hackathons 💻',
       btn1Url: '/opportunities',
       btn2Text: 'Coding Prep Resources 🚀',
@@ -367,7 +367,7 @@ Click below to check out the details, themes, and registration links.`,
       // Fetch from failed signup attempts (errors / blocked temp emails)
       const uniqueFailedEmails = new Map<string, typeof signupAttempts[0]>();
       signupAttempts.forEach(attempt => {
-        if (attempt.status === 'failed' && attempt.email !== 'oauth-attempt@collegestudy.in' && attempt.email !== 'oauth-callback-failed@collegestudy.in') {
+        if (attempt.status === 'failed' && attempt.email !== 'oauth-attempt@college-study.netlify.app' && attempt.email !== 'oauth-callback-failed@college-study.netlify.app') {
           // Avoid duplicate emails, keep the latest attempt
           if (!uniqueFailedEmails.has(attempt.email)) {
             uniqueFailedEmails.set(attempt.email, attempt);
@@ -410,7 +410,7 @@ Click below to check out the details, themes, and registration links.`,
       // 3. Google auth failures (if logged in attempts)
       signupAttempts.forEach(attempt => {
         if (attempt.status === 'failed' && attempt.error_reason?.toLowerCase().includes('google')) {
-          const emailStr = attempt.email.includes('@') ? attempt.email : 'oauth-fail-user@collegestudy.in';
+          const emailStr = attempt.email.includes('@') ? attempt.email : 'oauth-fail-user@college-study.netlify.app';
           if (!unverifiedMap.has(emailStr)) {
             unverifiedMap.set(emailStr, {
               email: emailStr,
