@@ -24,7 +24,7 @@ const Auth = () => {
       
       // Log the OAuth callback failure
       supabase.from('signup_attempts').insert({
-        email: 'oauth-callback-failed@collegestudy.in',
+        email: 'oauth-callback-failed@college-study.netlify.app',
         status: 'failed',
         error_reason: `Google/OAuth Callback Error: ${decodedError}`
       }).then(() => {});
