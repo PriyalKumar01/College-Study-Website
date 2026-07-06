@@ -416,6 +416,7 @@ const OwnerDashboard = () => {
   // Analytics and signup stats
   const [signupStats, setSignupStats] = useState<{ verified: number; failed: number; pending: number; disposableBlocked: number }>({ verified: 0, failed: 0, pending: 0, disposableBlocked: 0 });
   const [campaignStats, setCampaignStats] = useState<{ total: number; sent: number; failed: number }>({ total: 0, sent: 0, failed: 0 });
+  const [totalStudentsCount, setTotalStudentsCount] = useState(0);
 
   useEffect(() => {
     if (isOwner) {
