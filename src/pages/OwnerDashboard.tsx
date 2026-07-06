@@ -515,6 +515,19 @@ const OwnerDashboard = () => {
     }
   };
 
+  const fetchTotalStudents = async () => {
+    try {
+      const { count, error } = await supabase
+        .from('profiles')
+        .select('*', { count: 'exact', head: true });
+      
+      if (error) throw error;
+      setTotalStudentsCount(count || 0);
+    } catch (err) {
+      console.error('Error fetching total students count:', err);
+    }
+  };
+
   const fetchAll = async () => {
     setLoading(true);
     await Promise.all([
@@ -525,7 +538,8 @@ const OwnerDashboard = () => {
       fetchContributors(),
       fetchPremiumPurchases(),
       fetchSignupStats(),
-      fetchCampaignStats()
+      fetchCampaignStats(),
+      fetchTotalStudents()
     ]);
     setLoading(false);
   };
