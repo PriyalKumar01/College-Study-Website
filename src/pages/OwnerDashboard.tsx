@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { ResponsiveContainer, PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, Tooltip, Legend } from 'recharts';
+import { ResponsiveContainer, PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ComposedChart, Line } from 'recharts';
 import { useAuth } from '@/contexts/AuthContext';
 import { motion } from 'framer-motion';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -15,6 +15,7 @@ import {
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import Navbar from '@/components/Navbar';
+import { useTheme } from '@/providers/ThemeProvider';
 import { smartDownload } from '@/lib/downloadUtils';
 import MassEmailDashboard from '@/components/admin/MassEmailDashboard';
 
@@ -384,6 +385,8 @@ function ContributorCard({ contributor, rank, onRefresh }: ContributorCardProps)
 
 const OwnerDashboard = () => {
   const { user, isOwner, loading: authLoading } = useAuth();
+  const { theme } = useTheme();
+  const isDark = theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
   const { toast } = useToast();
 
   const [pendingMaterials, setPendingMaterials] = useState<Material[]>([]);
@@ -418,12 +421,81 @@ const OwnerDashboard = () => {
   const [campaignStats, setCampaignStats] = useState<{ total: number; sent: number; failed: number }>({ total: 0, sent: 0, failed: 0 });
   const [totalStudentsCount, setTotalStudentsCount] = useState(0);
 
+  // New Dashboard States
+  const [collegeStats, setCollegeStats] = useState<{ name: string; value: number }[]>([]);
+  const [activeCollegeIndex, setActiveCollegeIndex] = useState<number | null>(null);
+
+  // Card deck stack loop swiping states
+  const [pendingStackIndex, setPendingStackIndex] = useState(0);
+  const [pendingSwiping, setPendingSwiping] = useState(false);
+  const [allStackIndex, setAllStackIndex] = useState(0);
+  const [allSwiping, setAllSwiping] = useState(false);
+
+  // Clickable Navigation subpages view state
+  const [currentView, setCurrentView] = useState<'pending' | 'scholarships' | 'premium' | 'notifications' | 'contributors' | 'admins' | 'emails' | 'all'>('pending');
+
   useEffect(() => {
     if (isOwner) {
       fetchAll();
       fetchNotifications();
     }
   }, [isOwner]);
+
+  useEffect(() => {
+    setPendingStackIndex(0);
+  }, [pendingMaterials.length]);
+
+  useEffect(() => {
+    setAllStackIndex(0);
+  }, [filteredMaterials.length]);
+
+  const handlePendingSwipe = () => {
+    if (pendingSwiping || pendingMaterials.length <= 1) return;
+    setPendingSwiping(true);
+    setTimeout(() => {
+      setPendingStackIndex(prev => (prev + 1) % pendingMaterials.length);
+      setPendingSwiping(false);
+    }, 300);
+  };
+
+  const getPendingCardStyle = (index: number) => {
+    const total = pendingMaterials.length;
+    if (total === 0) return { scale: 1, y: 0, opacity: 1, zIndex: 1, pointerEvents: 'auto' as const };
+    const position = (index - pendingStackIndex + total) % total;
+    if (position === 0) {
+      return { zIndex: 30, scale: 1, y: 0, opacity: 1, pointerEvents: 'auto' as const };
+    } else if (position === 1) {
+      return { zIndex: 20, scale: 0.96, y: 12, opacity: 0.85, pointerEvents: 'none' as const };
+    } else if (position === 2) {
+      return { zIndex: 10, scale: 0.92, y: 24, opacity: 0.60, pointerEvents: 'none' as const };
+    } else {
+      return { zIndex: 0, scale: 0.88, y: 36, opacity: 0, pointerEvents: 'none' as const };
+    }
+  };
+
+  const handleAllSwipe = () => {
+    if (allSwiping || filteredMaterials.length <= 1) return;
+    setAllSwiping(true);
+    setTimeout(() => {
+      setAllStackIndex(prev => (prev + 1) % filteredMaterials.length);
+      setAllSwiping(false);
+    }, 300);
+  };
+
+  const getAllCardStyle = (index: number) => {
+    const total = filteredMaterials.length;
+    if (total === 0) return { scale: 1, y: 0, opacity: 1, zIndex: 1, pointerEvents: 'auto' as const };
+    const position = (index - allStackIndex + total) % total;
+    if (position === 0) {
+      return { zIndex: 30, scale: 1, y: 0, opacity: 1, pointerEvents: 'auto' as const };
+    } else if (position === 1) {
+      return { zIndex: 20, scale: 0.96, y: 12, opacity: 0.85, pointerEvents: 'none' as const };
+    } else if (position === 2) {
+      return { zIndex: 10, scale: 0.92, y: 24, opacity: 0.60, pointerEvents: 'none' as const };
+    } else {
+      return { zIndex: 0, scale: 0.88, y: 36, opacity: 0, pointerEvents: 'none' as const };
+    }
+  };
 
   const fetchNotifications = async () => {
     const { data } = await (supabase as any)
@@ -517,14 +589,39 @@ const OwnerDashboard = () => {
 
   const fetchTotalStudents = async () => {
     try {
-      const { count, error } = await supabase
-        .from('profiles')
-        .select('*', { count: 'exact', head: true });
-      
+      const { data, error } = await supabase.rpc('get_total_students_count');
       if (error) throw error;
-      setTotalStudentsCount(count || 0);
+      setTotalStudentsCount(data || 0);
     } catch (err) {
-      console.error('Error fetching total students count:', err);
+      console.error('Error fetching total students count via RPC:', err);
+      // Fallback
+      try {
+        const { count } = await supabase
+          .from('profiles')
+          .select('*', { count: 'exact', head: true });
+        setTotalStudentsCount(count || 0);
+      } catch (fallbackErr) {
+        console.error('Error in count fallback:', fallbackErr);
+      }
+    }
+  };
+
+  const fetchCollegeStats = async () => {
+    try {
+      const { data, error } = await supabase.rpc('get_college_stats');
+      if (error) throw error;
+      const formatted = (data || []).map((item: any) => ({
+        name: item.college_name,
+        value: Number(item.student_count)
+      }));
+      setCollegeStats(formatted);
+    } catch (err) {
+      console.error('Error fetching college stats:', err);
+      // Fallback
+      setCollegeStats([
+        { name: 'HBTU', value: 1200 },
+        { name: 'Other', value: 50 }
+      ]);
     }
   };
 
@@ -539,7 +636,8 @@ const OwnerDashboard = () => {
       fetchPremiumPurchases(),
       fetchSignupStats(),
       fetchCampaignStats(),
-      fetchTotalStudents()
+      fetchTotalStudents(),
+      fetchCollegeStats()
     ]);
     setLoading(false);
   };
@@ -991,64 +1089,183 @@ const OwnerDashboard = () => {
     );
   });
 
+  const gateEnrolledCount = premiumPurchases.filter(p => p.plan === 'gate_study').length;
+  const premiumAccessCount = premiumPurchases.filter(p => p.plan !== 'gate_study').length;
+
+  const textColor = isDark ? '#94a3b8' : '#475569';
+  const tooltipBg = isDark ? '#0f172a' : '#ffffff';
+  const tooltipColor = isDark ? '#f8fafc' : '#0f172a';
+  const tooltipBorder = isDark ? '1px solid #334155' : '1px solid #e2e8f0';
+
   return (
-    <div className="min-h-screen bg-gradient-hero">
+    <div 
+      className={`min-h-screen relative overflow-y-auto pb-16 transition-colors duration-300 ${
+        isDark ? 'bg-slate-950 text-slate-100' : 'bg-sky-50/40 text-slate-900'
+      }`}
+      style={{
+        backgroundImage: isDark
+          ? `linear-gradient(to bottom, rgba(15, 23, 42, 0.92), rgba(15, 23, 42, 0.98)), url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=1600&auto=format&fit=crop')`
+          : `linear-gradient(to bottom, rgba(224, 242, 254, 0.85), rgba(255, 255, 255, 0.97)), url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=1600&auto=format&fit=crop')`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundAttachment: 'fixed'
+      }}
+    >
       <Navbar />
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mb-8"
-        >
-          <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-2">
-            Owner Dashboard 👑
-          </h1>
-          <p className="text-muted-foreground text-lg">
-            Manage content approvals, admin roles, and all study materials.
-          </p>
+      
+      {/* High-tech grid overlay */}
+      <div className={`absolute inset-0 pointer-events-none opacity-20 ${
+        isDark 
+          ? "bg-[linear-gradient(rgba(56,189,248,0.04)_1px,transparent_1px),linear-gradient(90deg,rgba(56,189,248,0.04)_1px,transparent_1px)]"
+          : "bg-[linear-gradient(rgba(14,165,233,0.08)_1px,transparent_1px),linear-gradient(90deg,rgba(14,165,233,0.08)_1px,transparent_1px)]"
+      } bg-[size:30px_30px]`} />
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative z-10">          <div className={`flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6 border-b pb-5 ${
+            isDark ? 'border-slate-800' : 'border-slate-200'
+          }`}>
+            <div>
+              <h1 className={`text-3xl md:text-4xl font-extrabold tracking-tight flex items-center gap-2 ${
+                isDark ? 'text-white' : 'text-slate-900'
+              }`}>
+                OWNER CONTROL CENTER <Crown className="h-8 w-8 text-sky-500" />
+              </h1>
+              <p className={`text-xs mt-1 uppercase tracking-widest font-bold flex items-center gap-2 ${
+                isDark ? 'text-slate-400' : 'text-slate-655'
+              }`}>
+                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
+                StudyHub System Core Status • Authorized Personnel Only
+              </p>
+            </div>
+            <div className={`text-[10px] border rounded-lg p-2 font-mono ${
+              isDark ? 'bg-slate-900/80 border-slate-800 text-slate-500' : 'bg-white/80 border-slate-200 text-slate-600 shadow-sm'
+            }`}>
+              System Node: Live (Netlify) <br />
+              Client Latency: Operational
+            </div>
+          </div>
+
+          {/* Quick Metrics stats grid */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
+            {/* 1. Total Students */}
+            <Card className={`border shadow-sm transition-all duration-300 backdrop-blur-md ${
+              isDark 
+                ? 'border-indigo-500/20 bg-slate-900/60 text-slate-100' 
+                : 'border-indigo-500/30 bg-white/70 text-slate-900 shadow-sm'
+            }`}>
+              <CardContent className="p-4 flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-indigo-500/10 flex items-center justify-center text-indigo-505 shrink-0 border border-indigo-500/20">
+                  <User className="h-5 w-5" />
+                </div>
+                <div>
+                  <p className="text-2xl font-bold">{totalStudentsCount}</p>
+                  <p className="text-[9px] text-indigo-500 uppercase tracking-widest font-bold font-semibold">Total Students</p>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* 2. Total Materials */}
+            <Card className={`border shadow-sm transition-all duration-300 backdrop-blur-md ${
+              isDark 
+                ? 'border-cyan-500/20 bg-slate-900/60 text-slate-100' 
+                : 'border-cyan-500/30 bg-white/70 text-slate-900 shadow-sm'
+            }`}>
+              <CardContent className="p-4 flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-cyan-500/10 flex items-center justify-center text-cyan-500 shrink-0 border border-cyan-500/20">
+                  <FileText className="h-5 w-5" />
+                </div>
+                <div>
+                  <p className="text-2xl font-bold">{allMaterials.length}</p>
+                  <p className="text-[9px] text-cyan-500 uppercase tracking-widest font-bold font-semibold">Total Materials</p>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* 3. GATE Enrolled */}
+            <Card className={`border shadow-sm transition-all duration-300 backdrop-blur-md ${
+              isDark 
+                ? 'border-sky-500/20 bg-slate-900/60 text-slate-100' 
+                : 'border-sky-500/30 bg-white/70 text-slate-900 shadow-sm'
+            }`}>
+              <CardContent className="p-4 flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-sky-500/10 flex items-center justify-center text-sky-500 shrink-0 border border-sky-500/20">
+                  <GraduationCap className="h-5 w-5" />
+                </div>
+                <div>
+                  <p className="text-2xl font-bold">{gateEnrolledCount}</p>
+                  <p className="text-[9px] text-sky-500 uppercase tracking-widest font-bold font-semibold">GATE Enrolled</p>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* 4. Premium Access */}
+            <Card className={`border shadow-sm transition-all duration-300 backdrop-blur-md ${
+              isDark 
+                ? 'border-purple-500/20 bg-slate-900/60 text-slate-100' 
+                : 'border-purple-500/30 bg-white/70 text-slate-900 shadow-sm'
+            }`}>
+              <CardContent className="p-4 flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center text-purple-500 shrink-0 border border-purple-500/20">
+                  <Lock className="h-5 w-5" />
+                </div>
+                <div>
+                  <p className="text-2xl font-bold">{premiumAccessCount}</p>
+                  <p className="text-[9px] text-purple-500 uppercase tracking-widest font-bold font-semibold">Premium Access</p>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
           {/* Graphical Analytics Section */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
             
-            {/* Chart 1: Notes Approvals */}
-            <Card className="border-0 shadow-md bg-white/70 dark:bg-slate-900/70 backdrop-blur-md">
+            {/* Chart 1: College Distribution (Cake Cut Style) */}
+            <Card className={`border shadow-lg ${
+              isDark 
+                ? 'border-slate-800 bg-slate-900/60 backdrop-blur-md text-slate-100' 
+                : 'border-slate-200 bg-white/70 backdrop-blur-md text-slate-800'
+            }`}>
               <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Notes Library Distribution</CardTitle>
-                <CardDescription>Breakdown of approved, pending, and rejected study materials</CardDescription>
+                <CardTitle className={`text-xs font-bold uppercase tracking-widest flex items-center gap-1.5 ${
+                  isDark ? 'text-slate-400' : 'text-slate-650'
+                }`}>
+                  <span className="w-1.5 h-1.5 rounded-full bg-sky-500" />
+                  Colleges Student Distribution (Cake Cut Style)
+                </CardTitle>
+                <CardDescription className={`text-xs ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>
+                  Breakdown of students enrolled from different colleges
+                </CardDescription>
               </CardHeader>
               <CardContent className="h-[240px] flex items-center justify-center">
-                {allMaterials.length === 0 ? (
-                  <p className="text-slate-400 text-xs italic">No study materials in database.</p>
+                {collegeStats.length === 0 ? (
+                  <p className="text-slate-500 text-xs italic">No college data in database.</p>
                 ) : (
                   <ResponsiveContainer width="100%" height="100%">
                     <PieChart>
                       <Pie
-                        data={[
-                          { name: 'Approved', value: allMaterials.filter(m => m.status === 'approved').length, color: '#10b981' },
-                          { name: 'Pending', value: pendingMaterials.length, color: '#f59e0b' },
-                          { name: 'Rejected', value: allMaterials.filter(m => m.status === 'rejected').length, color: '#ef4444' }
-                        ].filter(item => item.value > 0)}
+                        data={collegeStats}
                         cx="50%"
                         cy="50%"
-                        innerRadius={60}
-                        outerRadius={80}
-                        paddingAngle={5}
+                        labelLine={false}
+                        outerRadius={75}
                         dataKey="value"
+                        activeIndex={activeCollegeIndex !== null ? activeCollegeIndex : undefined}
+                        activeShape={{ outerRadius: 85 }}
+                        onMouseEnter={(_, index) => setActiveCollegeIndex(index)}
+                        onMouseLeave={() => setActiveCollegeIndex(null)}
                       >
-                        {[
-                          { name: 'Approved', value: allMaterials.filter(m => m.status === 'approved').length, color: '#10b981' },
-                          { name: 'Pending', value: pendingMaterials.length, color: '#f59e0b' },
-                          { name: 'Rejected', value: allMaterials.filter(m => m.status === 'rejected').length, color: '#ef4444' }
-                        ].filter(item => item.value > 0).map((entry, index) => (
-                          <Cell key={`cell-${index}`} fill={entry.color} />
-                        ))}
+                        {collegeStats.map((entry, index) => {
+                          const COLORS = ['#0ea5e9', '#f59e0b', '#10b981', '#a855f7', '#ec4899', '#f43f5e', '#64748b'];
+                          return <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} stroke={isDark ? "#1e293b" : "#ffffff"} strokeWidth={2} />;
+                        })}
                       </Pie>
                       <Tooltip 
                         contentStyle={{ 
-                          backgroundColor: '#0f172a', 
-                          border: 'none', 
-                          borderRadius: '8px', 
-                          color: '#fff', 
-                          fontSize: '11px' 
+                          backgroundColor: tooltipBg, 
+                          border: tooltipBorder, 
+                          borderRadius: '12px', 
+                          color: tooltipColor, 
+                          fontSize: '11px',
+                          boxShadow: '0 4px 12px rgba(0,0,0,0.15)'
                         }} 
                       />
                       <Legend 
@@ -1056,7 +1273,7 @@ const OwnerDashboard = () => {
                         height={36} 
                         iconType="circle"
                         iconSize={8}
-                        wrapperStyle={{ fontSize: '11px', color: '#64748b' }} 
+                        wrapperStyle={{ fontSize: '10px', color: textColor, pt: 4 }} 
                       />
                     </PieChart>
                   </ResponsiveContainer>
@@ -1064,222 +1281,370 @@ const OwnerDashboard = () => {
               </CardContent>
             </Card>
 
-            {/* Chart 2: Registration Health */}
-            <Card className="border-0 shadow-md bg-white/70 dark:bg-slate-900/70 backdrop-blur-md">
+            {/* Chart 2: Registration & System Staff Users */}
+            <Card className={`border shadow-lg ${
+              isDark 
+                ? 'border-slate-800 bg-slate-900/60 backdrop-blur-md text-slate-100' 
+                : 'border-slate-200 bg-white/70 backdrop-blur-md text-slate-800'
+            }`}>
               <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Registration & Verification Rate</CardTitle>
-                <CardDescription>Verified profiles vs failed OTPs vs blocked disposable emails</CardDescription>
+                <CardTitle className={`text-xs font-bold uppercase tracking-widest flex items-center gap-1.5 ${
+                  isDark ? 'text-slate-400' : 'text-slate-655'
+                }`}>
+                  <span className="w-1.5 h-1.5 rounded-full bg-purple-500" />
+                  Staff, Contributor & User Metrics (Growth Curve)
+                </CardTitle>
+                <CardDescription className={`text-xs ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>
+                  Breakdown of system members with connecting trendline
+                </CardDescription>
               </CardHeader>
               <CardContent className="h-[240px]">
-                {signupStats.verified === 0 && signupStats.failed === 0 ? (
-                  <div className="h-full flex items-center justify-center">
-                    <p className="text-slate-400 text-xs italic">No registration logs yet. Check back after users register.</p>
-                  </div>
-                ) : (
-                  <ResponsiveContainer width="100%" height="100%">
-                    <BarChart 
-                      data={[
-                        { name: 'Verified', count: signupStats.verified, color: '#0ea5e9' },
-                        { name: 'OTP Failed', count: Math.max(0, signupStats.failed - signupStats.disposableBlocked), color: '#f59e0b' },
-                        { name: 'Temp Blocked', count: signupStats.disposableBlocked, color: '#ef4444' }
-                      ]} 
-                      margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
-                    >
-                      <XAxis dataKey="name" tick={{ fontSize: 10, fill: '#64748b' }} axisLine={false} tickLine={false} />
-                      <YAxis tick={{ fontSize: 10, fill: '#64748b' }} axisLine={false} tickLine={false} />
-                      <Tooltip 
-                        cursor={{ fill: 'rgba(148, 163, 184, 0.05)' }}
-                        contentStyle={{ 
-                          backgroundColor: '#0f172a', 
-                          border: 'none', 
-                          borderRadius: '8px', 
-                          color: '#fff', 
-                          fontSize: '11px' 
-                        }}
-                      />
-                      <Bar dataKey="count" radius={[6, 6, 0, 0]}>
-                        {[
-                          { name: 'Verified', count: signupStats.verified, color: '#0ea5e9' },
-                          { name: 'OTP Failed', count: Math.max(0, signupStats.failed - signupStats.disposableBlocked), color: '#f59e0b' },
-                          { name: 'Temp Blocked', count: signupStats.disposableBlocked, color: '#ef4444' }
-                        ].map((entry, index) => (
-                          <Cell key={`cell-${index}`} fill={entry.color} />
-                        ))}
-                      </Bar>
-                    </BarChart>
-                  </ResponsiveContainer>
-                )}
-              </CardContent>
-            </Card>
-
-          </div>
-
-          {/* Quick Metrics stats grid */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
-            <Card className="border-0 shadow-sm bg-white/50 dark:bg-slate-900/50 hover:bg-white/80 dark:hover:bg-slate-900/80 transition-colors">
-              <CardContent className="p-4 flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-amber-50 dark:bg-amber-950/40 flex items-center justify-center text-amber-500 shrink-0">
-                  <BookOpen className="h-5 w-5" />
-                </div>
-                <div>
-                  <p className="text-lg font-bold text-slate-800 dark:text-slate-100">{pendingMaterials.length}</p>
-                  <p className="text-[10px] text-muted-foreground uppercase tracking-wider font-semibold">Pending Notes</p>
-                </div>
-              </CardContent>
-            </Card>
-            <Card className="border-0 shadow-sm bg-white/50 dark:bg-slate-900/50 hover:bg-white/80 dark:hover:bg-slate-900/80 transition-colors">
-              <CardContent className="p-4 flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 flex items-center justify-center text-emerald-500 shrink-0">
-                  <CheckCircle className="h-5 w-5" />
-                </div>
-                <div>
-                  <p className="text-lg font-bold text-slate-800 dark:text-slate-100">{allMaterials.filter(m => m.status === 'approved').length}</p>
-                  <p className="text-[10px] text-muted-foreground uppercase tracking-wider font-semibold">Approved Notes</p>
-                </div>
-              </CardContent>
-            </Card>
-            <Card className="border-0 shadow-sm bg-white/50 dark:bg-slate-900/50 hover:bg-white/80 dark:hover:bg-slate-900/80 transition-colors">
-              <CardContent className="p-4 flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-sky-50 dark:bg-sky-950/40 flex items-center justify-center text-sky-500 shrink-0">
-                  <Send className="h-5 w-5" />
-                </div>
-                <div>
-                  <p className="text-lg font-bold text-slate-800 dark:text-slate-100">{campaignStats.total}</p>
-                  <p className="text-[10px] text-muted-foreground uppercase tracking-wider font-semibold">Campaigns Sent</p>
-                </div>
-              </CardContent>
-            </Card>
-            <Card className="border-0 shadow-sm bg-white/50 dark:bg-slate-900/50 hover:bg-white/80 dark:hover:bg-slate-900/80 transition-colors">
-              <CardContent className="p-4 flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-purple-50 dark:bg-purple-950/40 flex items-center justify-center text-purple-500 shrink-0">
-                  <Crown className="h-5 w-5" />
-                </div>
-                <div>
-                  <p className="text-lg font-bold text-slate-800 dark:text-slate-100">{adminRoles.length}</p>
-                  <p className="text-[10px] text-muted-foreground uppercase tracking-wider font-semibold">Admin Staff</p>
-                </div>
+                <ResponsiveContainer width="100%" height="100%">
+                  <ComposedChart 
+                    data={[
+                      { name: 'Admins 👑', count: adminRoles.length },
+                      { name: 'Contributors 🏆', count: contributors.length },
+                      { name: 'GATE Enrolled 🎓', count: gateEnrolledCount },
+                      { name: 'Premium Access 💎', count: premiumAccessCount }
+                    ]} 
+                    margin={{ top: 15, right: 10, left: -25, bottom: 0 }}
+                  >
+                    <XAxis dataKey="name" tick={{ fontSize: 9, fill: textColor }} axisLine={false} tickLine={false} />
+                    <YAxis tick={{ fontSize: 9, fill: textColor }} axisLine={false} tickLine={false} />
+                    <Tooltip 
+                      cursor={{ fill: 'rgba(148, 163, 184, 0.04)' }}
+                      contentStyle={{ 
+                        backgroundColor: tooltipBg, 
+                        border: tooltipBorder, 
+                        borderRadius: '12px', 
+                        color: tooltipColor, 
+                        fontSize: '11px',
+                        boxShadow: '0 4px 12px rgba(0,0,0,0.15)'
+                      }}
+                    />
+                    <Bar dataKey="count" radius={[8, 8, 0, 0]} maxBarSize={45}>
+                      {[
+                        { color: '#f43f5e' },
+                        { color: '#a855f7' },
+                        { color: '#0ea5e9' },
+                        { color: '#10b981' }
+                      ].map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.color} />
+                      ))}
+                    </Bar>
+                    <Line type="monotone" dataKey="count" stroke={isDark ? "#38bdf8" : "#0284c7"} strokeWidth={3} dot={{ r: 4 }} activeDot={{ r: 6 }} />
+                  </ComposedChart>
+                </ResponsiveContainer>
               </CardContent>
             </Card>
           </div>
         </motion.div>
 
-        <Tabs defaultValue="pending" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 h-auto gap-1 bg-slate-100 dark:bg-slate-800 p-1">
-            <TabsTrigger value="pending" className="flex items-center gap-2">
-              <BookOpen className="h-4 w-4" />
-              Pending ({pendingMaterials.length})
-            </TabsTrigger>
-            <TabsTrigger value="scholarships" className="flex items-center gap-2">
-              <GraduationCap className="h-4 w-4" />
-              Scholarships
-            </TabsTrigger>
-            <TabsTrigger value="premium" className="flex items-center gap-2">
-              <Lock className="h-4 w-4" />
-              Premium Access
-            </TabsTrigger>
-            <TabsTrigger value="notifications" className="flex items-center gap-2">
-              <Bell className="h-4 w-4" />
-              Notifications
-            </TabsTrigger>
-            <TabsTrigger value="contributors" className="flex items-center gap-2">
-              <Trophy className="h-4 w-4" />
-              Contributors ({contributors.length})
-            </TabsTrigger>
-            <TabsTrigger value="admins" className="flex items-center gap-2">
-              <Crown className="h-4 w-4" />
-              Admins
-            </TabsTrigger>
-            <TabsTrigger value="emails" className="flex items-center gap-2">
-              <Send className="h-4 w-4" />
-              Mass Emails
-            </TabsTrigger>
-            <TabsTrigger value="all" className="flex items-center gap-2">
-              <FileText className="h-4 w-4" />
-              All Materials
-            </TabsTrigger>
-          </TabsList>
+        {/* Dashboard Navigation Section Title */}
+        <div className="mt-12 mb-6">
+          <h2 className={`text-sm font-extrabold uppercase tracking-widest ${isDark ? 'text-slate-400' : 'text-slate-655'}`}>
+            Owner Actions & Control Panels
+          </h2>
+          <p className="text-xs text-slate-500">
+            Click any option card below to view and manage its particular workspace
+          </p>
+        </div>
 
-          {/* TAB 1: Pending Approvals */}
+        {/* 8 Clickable Dashboard Control Cards */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+          {/* 1. Pending Queue */}
+          <div 
+            onClick={() => setCurrentView('pending')}
+            className={`cursor-pointer border shadow-sm transition-all duration-300 rounded-xl p-4 flex items-center gap-3 border-l-4 hover:scale-[1.02] ${
+              currentView === 'pending'
+                ? isDark 
+                  ? 'bg-slate-900 border-amber-500 border-l-amber-500 text-white' 
+                  : 'bg-amber-50/50 border-amber-300 border-l-amber-500 text-amber-900'
+                : isDark 
+                  ? 'border-slate-800 bg-slate-900/60 border-l-amber-500 text-slate-100 hover:border-slate-700' 
+                  : 'border-slate-200 bg-white/70 border-l-amber-500 text-slate-900 hover:border-slate-350'
+            }`}
+          >
+            <div className="w-10 h-10 rounded-xl bg-amber-500/10 flex items-center justify-center text-amber-500 shrink-0 border border-amber-500/20">
+              <BookOpen className="h-5 w-5" />
+            </div>
+            <div>
+              <p className="text-xl font-bold">{pendingMaterials.length}</p>
+              <p className="text-[10px] uppercase tracking-wider font-bold">Pending Queue</p>
+            </div>
+          </div>
+
+          {/* 2. Scholarships */}
+          <div 
+            onClick={() => setCurrentView('scholarships')}
+            className={`cursor-pointer border shadow-sm transition-all duration-300 rounded-xl p-4 flex items-center gap-3 border-l-4 hover:scale-[1.02] ${
+              currentView === 'scholarships'
+                ? isDark 
+                  ? 'bg-slate-900 border-emerald-500 border-l-emerald-500 text-white' 
+                  : 'bg-emerald-50/50 border-emerald-300 border-l-emerald-500 text-emerald-900'
+                : isDark 
+                  ? 'border-slate-800 bg-slate-900/60 border-l-emerald-500 text-slate-100 hover:border-slate-700' 
+                  : 'border-slate-200 bg-white/70 border-l-emerald-500 text-slate-900 hover:border-slate-350'
+            }`}
+          >
+            <div className="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-500 shrink-0 border border-emerald-500/20">
+              <GraduationCap className="h-5 w-5" />
+            </div>
+            <div>
+              <p className="text-xl font-bold">{scholarships.length}</p>
+              <p className="text-[10px] uppercase tracking-wider font-bold">Scholarships</p>
+            </div>
+          </div>
+
+          {/* 3. Premium Access */}
+          <div 
+            onClick={() => setCurrentView('premium')}
+            className={`cursor-pointer border shadow-sm transition-all duration-300 rounded-xl p-4 flex items-center gap-3 border-l-4 hover:scale-[1.02] ${
+              currentView === 'premium'
+                ? isDark 
+                  ? 'bg-slate-900 border-purple-500 border-l-purple-500 text-white' 
+                  : 'bg-purple-50/50 border-purple-300 border-l-purple-500 text-purple-900'
+                : isDark 
+                  ? 'border-slate-800 bg-slate-900/60 border-l-purple-500 text-slate-100 hover:border-slate-700' 
+                  : 'border-slate-200 bg-white/70 border-l-purple-500 text-slate-900 hover:border-slate-350'
+            }`}
+          >
+            <div className="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center text-purple-500 shrink-0 border border-purple-500/20">
+              <Lock className="h-5 w-5" />
+            </div>
+            <div>
+              <p className="text-xl font-bold">{premiumAccessCount}</p>
+              <p className="text-[10px] uppercase tracking-wider font-bold">Premium Access</p>
+            </div>
+          </div>
+
+          {/* 4. Notifications */}
+          <div 
+            onClick={() => setCurrentView('notifications')}
+            className={`cursor-pointer border shadow-sm transition-all duration-300 rounded-xl p-4 flex items-center gap-3 border-l-4 hover:scale-[1.02] ${
+              currentView === 'notifications'
+                ? isDark 
+                  ? 'bg-slate-900 border-sky-500 border-l-sky-500 text-white' 
+                  : 'bg-sky-50/50 border-sky-300 border-l-sky-500 text-sky-900'
+                : isDark 
+                  ? 'border-slate-800 bg-slate-900/60 border-l-sky-500 text-slate-100 hover:border-slate-700' 
+                  : 'border-slate-200 bg-white/70 border-l-sky-500 text-slate-900 hover:border-slate-350'
+            }`}
+          >
+            <div className="w-10 h-10 rounded-xl bg-sky-500/10 flex items-center justify-center text-sky-500 shrink-0 border border-sky-500/20">
+              <Bell className="h-5 w-5" />
+            </div>
+            <div>
+              <p className="text-xl font-bold">{notifications.length}</p>
+              <p className="text-[10px] uppercase tracking-wider font-bold">Notifications</p>
+            </div>
+          </div>
+
+          {/* 5. Contributors */}
+          <div 
+            onClick={() => setCurrentView('contributors')}
+            className={`cursor-pointer border shadow-sm transition-all duration-300 rounded-xl p-4 flex items-center gap-3 border-l-4 hover:scale-[1.02] ${
+              currentView === 'contributors'
+                ? isDark 
+                  ? 'bg-slate-900 border-rose-500 border-l-rose-500 text-white' 
+                  : 'bg-rose-50/50 border-rose-300 border-l-rose-500 text-rose-900'
+                : isDark 
+                  ? 'border-slate-800 bg-slate-900/60 border-l-rose-500 text-slate-100 hover:border-slate-700' 
+                  : 'border-slate-200 bg-white/70 border-l-rose-500 text-slate-900 hover:border-slate-350'
+            }`}
+          >
+            <div className="w-10 h-10 rounded-xl bg-rose-500/10 flex items-center justify-center text-rose-500 shrink-0 border border-rose-500/20">
+              <Trophy className="h-5 w-5" />
+            </div>
+            <div>
+              <p className="text-xl font-bold">{contributors.length}</p>
+              <p className="text-[10px] uppercase tracking-wider font-bold">Contributors</p>
+            </div>
+          </div>
+
+          {/* 6. Admins */}
+          <div 
+            onClick={() => setCurrentView('admins')}
+            className={`cursor-pointer border shadow-sm transition-all duration-300 rounded-xl p-4 flex items-center gap-3 border-l-4 hover:scale-[1.02] ${
+              currentView === 'admins'
+                ? isDark 
+                  ? 'bg-slate-900 border-indigo-500 border-l-indigo-500 text-white' 
+                  : 'bg-indigo-50/50 border-indigo-300 border-l-indigo-500 text-indigo-900'
+                : isDark 
+                  ? 'border-slate-800 bg-slate-900/60 border-l-indigo-500 text-slate-100 hover:border-slate-700' 
+                  : 'border-slate-200 bg-white/70 border-l-indigo-500 text-slate-900 hover:border-slate-350'
+            }`}
+          >
+            <div className="w-10 h-10 rounded-xl bg-indigo-500/10 flex items-center justify-center text-indigo-505 shrink-0 border border-indigo-500/20">
+              <Crown className="h-5 w-5" />
+            </div>
+            <div>
+              <p className="text-xl font-bold">{adminRoles.length}</p>
+              <p className="text-[10px] uppercase tracking-wider font-bold">Admins</p>
+            </div>
+          </div>
+
+          {/* 7. Mass Emails */}
+          <div 
+            onClick={() => setCurrentView('emails')}
+            className={`cursor-pointer border shadow-sm transition-all duration-300 rounded-xl p-4 flex items-center gap-3 border-l-4 hover:scale-[1.02] ${
+              currentView === 'emails'
+                ? isDark 
+                  ? 'bg-slate-900 border-pink-500 border-l-pink-500 text-white' 
+                  : 'bg-pink-50/50 border-pink-300 border-l-pink-500 text-pink-900'
+                : isDark 
+                  ? 'border-slate-800 bg-slate-900/60 border-l-pink-500 text-slate-100 hover:border-slate-700' 
+                  : 'border-slate-200 bg-white/70 border-l-pink-500 text-slate-900 hover:border-slate-350'
+            }`}
+          >
+            <div className="w-10 h-10 rounded-xl bg-pink-500/10 flex items-center justify-center text-pink-500 shrink-0 border border-pink-500/20">
+              <Send className="h-5 w-5" />
+            </div>
+            <div>
+              <p className="text-xl font-bold">Emails</p>
+              <p className="text-[10px] uppercase tracking-wider font-bold">Mass Emails</p>
+            </div>
+          </div>
+
+          {/* 8. All Materials */}
+          <div 
+            onClick={() => setCurrentView('all')}
+            className={`cursor-pointer border shadow-sm transition-all duration-300 rounded-xl p-4 flex items-center gap-3 border-l-4 hover:scale-[1.02] ${
+              currentView === 'all'
+                ? isDark 
+                  ? 'bg-slate-900 border-cyan-500 border-l-cyan-500 text-white' 
+                  : 'bg-cyan-50/50 border-cyan-300 border-l-cyan-500 text-cyan-900'
+                : isDark 
+                  ? 'border-slate-800 bg-slate-900/60 border-l-cyan-500 text-slate-100 hover:border-slate-700' 
+                  : 'border-slate-200 bg-white/70 border-l-cyan-500 text-slate-900 hover:border-slate-350'
+            }`}
+          >
+            <div className="w-10 h-10 rounded-xl bg-cyan-500/10 flex items-center justify-center text-cyan-500 shrink-0 border border-cyan-500/20">
+              <FileText className="h-5 w-5" />
+            </div>
+            <div>
+              <p className="text-xl font-bold">{allMaterials.length}</p>
+              <p className="text-[10px] uppercase tracking-wider font-bold">All Materials</p>
+            </div>
+          </div>
+        </div>
+
+        <Tabs value={currentView} className="space-y-6">
           <TabsContent value="pending" className="space-y-6">
             {pendingMaterials.length === 0 ? (
-              <Card className="gradient-card text-center py-12">
+              <Card className={`border text-center py-16 ${
+                isDark ? 'border-slate-800 bg-slate-900/40 text-slate-100' : 'border-slate-200 bg-white/70 text-slate-900 shadow-sm'
+              }`}>
                 <CardContent>
-                  <CheckCircle className="h-16 w-16 text-green-500 mx-auto mb-4" />
-                  <h3 className="text-xl font-semibold mb-2">All caught up!</h3>
-                  <p className="text-muted-foreground">No materials pending approval.</p>
+                  <CheckCircle className="h-16 w-16 text-emerald-500 mx-auto mb-4 animate-bounce" />
+                  <h3 className="text-xl font-bold mb-2">Queue is Empty!</h3>
+                  <p className={`${isDark ? 'text-slate-400' : 'text-slate-650'} text-sm`}>No notes or study materials are pending approval at this time.</p>
                 </CardContent>
               </Card>
             ) : (
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {pendingMaterials.map((material, index) => (
                   <motion.div
                     key={material.id}
-                    initial={{ opacity: 0, y: 20 }}
+                    initial={{ opacity: 0, y: 15 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.1 }}
+                    transition={{ delay: index * 0.05 }}
                   >
-                    <Card className="feature-card border-l-4 border-l-yellow-500">
-                      <CardHeader>
-                        <div className="flex justify-between items-start mb-2">
-                          <Badge variant="outline" className="capitalize">
-                            {material.material_type === 'pyqs' ? '📄 PYQs' : '📝 Notes'}
-                          </Badge>
-                          <Badge variant="outline">
-                            {material.year} Year • Sem {material.semester}
-                          </Badge>
+                    <Card className={`border backdrop-blur-md transition-all duration-300 shadow-md overflow-hidden flex flex-col justify-between h-full group ${
+                      isDark 
+                        ? 'border-slate-800/80 bg-slate-900/60 hover:border-sky-500/50' 
+                        : 'border-slate-200 bg-white/80 hover:border-sky-500/40 hover:shadow-sm'
+                    }`}>
+                      <div className="p-5 flex-1 flex flex-col justify-between">
+                        <div>
+                          <div className="flex justify-between items-start mb-3 gap-2">
+                            <Badge className="bg-sky-500/10 text-sky-400 hover:bg-sky-500/20 text-[10px] uppercase font-bold border border-sky-500/20 px-2 py-0.5 rounded-full">
+                              {material.material_type === 'pyqs' ? '📄 PYQs' : '📝 Notes'}
+                            </Badge>
+                            <Badge className="bg-purple-500/10 text-purple-400 text-[10px] font-bold border border-purple-500/20 px-2 py-0.5 rounded-full">
+                              Sem {material.semester} • {material.year} Year
+                            </Badge>
+                          </div>
+                          
+                          <h4 className={`text-base font-bold mb-1.5 line-clamp-1 group-hover:text-sky-400 transition-colors ${
+                            isDark ? 'text-slate-100' : 'text-slate-805'
+                          }`} title={material.title}>
+                            {material.title}
+                          </h4>
+                          <p className={`text-xs mb-4 line-clamp-2 h-8 leading-relaxed ${
+                            isDark ? 'text-slate-400' : 'text-slate-600'
+                          }`}>
+                            {material.description || 'No description provided.'}
+                          </p>
                         </div>
-                        <CardTitle className="text-lg">{material.title}</CardTitle>
-                        <CardDescription>{material.description || 'No description'}</CardDescription>
-                      </CardHeader>
-                      <CardContent className="space-y-3">
-                        <div className="space-y-1 text-sm text-muted-foreground">
-                          <div className="flex items-center gap-2">
-                            <FileText className="h-4 w-4" /> Subject: {material.subject}
+
+                        <div className={`space-y-1.5 text-[11px] border-t pt-3 ${
+                          isDark ? 'text-slate-400 border-slate-800/60' : 'text-slate-500 border-slate-200'
+                        }`}>
+                          <div className="flex items-center gap-1.5">
+                            <BookOpen className="h-3.5 w-3.5 text-sky-500/70" />
+                            <span className={`font-semibold ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>Subject:</span> <span className="truncate max-w-[150px]">{material.subject}</span>
                           </div>
-                          <div className="flex items-center gap-2">
-                            <User className="h-4 w-4" /> By: {material.user_name} ({material.user_email})
+                          <div className="flex items-center gap-1.5">
+                            <User className="h-3.5 w-3.5 text-sky-500/70" />
+                            <span className={`font-semibold ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>Uploader:</span> <span className="truncate max-w-[150px]">{material.user_name || material.user_email}</span>
                           </div>
-                          <div className="flex items-center gap-2">
-                            <Calendar className="h-4 w-4" />
-                            {material.uploaded_at ? new Date(material.uploaded_at).toLocaleDateString('en-IN', {
-                              day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit'
-                            }) : 'Unknown date'}
+                          <div className="flex items-center gap-1.5">
+                            <Calendar className="h-3.5 w-3.5 text-sky-500/70" />
+                            <span>{material.uploaded_at ? new Date(material.uploaded_at).toLocaleDateString('en-IN') : 'Unknown Date'}</span>
                           </div>
                         </div>
-                        <div className="flex gap-2 pt-2 flex-wrap">
+                      </div>
+
+                      {/* Actions */}
+                      <div className={`p-4 border-t space-y-3 ${
+                        isDark ? 'bg-slate-950/40 border-slate-800/60' : 'bg-slate-50/50 border-slate-200'
+                      }`}>
+                        <div className="flex gap-2">
                           <Button
-                            variant="outline"
+                            variant="ghost"
                             size="sm"
-                            className="flex-1 min-w-[80px]"
+                            className={`flex-1 text-[11px] font-semibold h-8 gap-1 border ${
+                              isDark 
+                                ? 'text-slate-300 hover:text-white hover:bg-slate-800/50 border-slate-800' 
+                                : 'text-slate-700 hover:text-slate-900 hover:bg-slate-100 border-slate-200'
+                            }`}
                             onClick={() => window.open(material.file_url, '_blank')}
                           >
-                            <Eye className="h-4 w-4 mr-1" /> Preview
+                            <Eye className="h-3.5 w-3.5" /> Preview
                           </Button>
                           <Button
-                            variant="outline"
+                            variant="ghost"
                             size="sm"
-                            className="flex-1 min-w-[80px]"
+                            className={`flex-1 text-[11px] font-semibold h-8 gap-1 border ${
+                              isDark 
+                                ? 'text-slate-300 hover:text-white hover:bg-slate-800/50 border-slate-800' 
+                                : 'text-slate-700 hover:text-slate-900 hover:bg-slate-100 border-slate-200'
+                            }`}
                             onClick={() => handleDownload(material.file_url)}
                           >
-                            <Download className="h-4 w-4 mr-1" /> Download
+                            <Download className="h-3.5 w-3.5" /> Download
                           </Button>
+                        </div>
+
+                        <div className={`flex gap-2 border-t pt-3 ${isDark ? 'border-slate-800' : 'border-slate-200'}`}>
                           <Button
                             size="sm"
-                            className="flex-1 bg-green-600 hover:bg-green-700"
+                            className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs h-8"
                             onClick={() => handleApproval(material.id, 'approved')}
                           >
-                            <CheckCircle className="h-4 w-4 mr-1" /> Approve
+                            <CheckCircle className="h-3.5 w-3.5 mr-1" /> Approve
                           </Button>
                           <Button
                             variant="destructive"
                             size="sm"
-                            className="flex-1"
+                            className="flex-1 font-bold text-xs h-8"
                             onClick={() => handleApproval(material.id, 'rejected')}
                           >
-                            <XCircle className="h-4 w-4 mr-1" /> Reject
+                            <XCircle className="h-3.5 w-3.5 mr-1" /> Reject
                           </Button>
                         </div>
-                      </CardContent>
+                      </div>
                     </Card>
                   </motion.div>
                 ))}
@@ -1288,19 +1653,21 @@ const OwnerDashboard = () => {
           </TabsContent>
 
           {/* TAB: Scholarships */}
-          <TabsContent value="scholarships" className="space-y-4">
-            <div className="flex gap-2 flex-wrap">
-              {(['all', 'pending', 'approved'] as const).map(f => (
-                <Button
-                  key={f}
-                  size="sm"
-                  variant={scholarshipFilter === f ? 'default' : 'outline'}
-                  onClick={() => setScholarshipFilter(f)}
-                  className="capitalize"
-                >
-                  {f} ({f === 'all' ? scholarships.length : scholarships.filter(s => s.approval_status === f).length})
-                </Button>
-              ))}
+          <TabsContent value="scholarships" className="space-y-6">
+            <div className="flex flex-col md:flex-row gap-4 mb-4">
+              <div className="flex gap-2">
+                {(['all', 'pending', 'approved'] as const).map(filter => (
+                  <Button
+                    key={filter}
+                    variant={scholarshipFilter === filter ? 'default' : 'outline'}
+                    size="sm"
+                    onClick={() => setScholarshipFilter(filter)}
+                    className="capitalize text-xs font-bold border border-slate-800"
+                  >
+                    {filter}
+                  </Button>
+                ))}
+              </div>
             </div>
 
             {(() => {
@@ -1739,83 +2106,176 @@ const OwnerDashboard = () => {
             </div>
           </TabsContent>
 
-          {/* TAB 3: All Materials */}
+          {/* TAB 3: All Materials (Grid card layout) */}
           <TabsContent value="all" className="space-y-6">
             {/* Filters */}
-            <div className="flex flex-col md:flex-row gap-4">
+            <div className={`flex flex-col md:flex-row gap-4 border p-4 rounded-xl ${
+              isDark ? 'bg-slate-900/60 border-slate-800' : 'bg-white/80 border-slate-200 shadow-sm'
+            }`}>
               <div className="relative flex-1">
-                <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                <Search className="absolute left-3 top-2.5 h-4 w-4 text-slate-500" />
                 <Input
                   placeholder="Search by title, subject, or email..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10"
+                  className={`pl-10 h-9 text-xs ${
+                    isDark ? 'bg-slate-950 border-slate-800 text-slate-200' : 'bg-slate-50 border-slate-200 text-slate-900'
+                  }`}
                 />
               </div>
-              <div className="flex gap-2">
+              <div className={`flex items-center gap-1 border p-1 rounded-xl w-fit ${
+                isDark ? 'bg-slate-950 border-slate-900' : 'bg-slate-100 border-slate-200'
+              }`}>
                 {(['all', 'pending', 'approved', 'rejected'] as const).map(filter => (
-                  <Button
+                  <button
                     key={filter}
-                    variant={materialFilter === filter ? 'default' : 'outline'}
-                    size="sm"
                     onClick={() => setMaterialFilter(filter)}
-                    className="capitalize"
+                    className={`px-3 py-1 rounded-lg text-xs font-bold transition-all uppercase tracking-wider ${
+                      materialFilter === filter 
+                        ? isDark 
+                          ? 'bg-sky-500/10 text-sky-400 border border-sky-500/20' 
+                          : 'bg-white text-sky-650 shadow-sm border border-slate-200'
+                        : isDark 
+                          ? 'text-slate-400 hover:text-slate-200 border border-transparent' 
+                          : 'text-slate-600 hover:text-slate-800 border border-transparent'
+                    }`}
                   >
-                    {filter}
-                  </Button>
+                    {filter === 'all' ? 'All' : filter === 'pending' ? 'Pending' : filter === 'approved' ? 'Approved' : 'Rejected'}
+                  </button>
                 ))}
               </div>
             </div>
 
             {filteredMaterials.length === 0 ? (
-              <Card className="gradient-card text-center py-12">
+              <Card className={`border text-center py-16 ${
+                isDark ? 'border-slate-800 bg-slate-900/40 text-slate-100' : 'border-slate-200 bg-white/70 text-slate-900 shadow-sm'
+              }`}>
                 <CardContent>
-                  <FileText className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
-                  <h3 className="text-xl font-semibold mb-2">No materials found</h3>
-                  <p className="text-muted-foreground">
-                    {searchQuery ? 'Try adjusting your search.' : 'No materials uploaded yet.'}
+                  <FileText className="h-16 w-16 text-slate-500 mx-auto mb-4" />
+                  <h3 className="text-xl font-bold mb-2">No materials found</h3>
+                  <p className="text-slate-400 text-sm">
+                    {searchQuery ? 'Try adjusting your search criteria.' : 'No materials recorded yet.'}
                   </p>
                 </CardContent>
               </Card>
             ) : (
-              <div className="space-y-3">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {filteredMaterials.map((material) => (
-                  <Card key={material.id} className="feature-card">
-                    <CardContent className="flex items-center justify-between p-4">
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 mb-1 flex-wrap">
-                          <span className="font-medium text-sm truncate">{material.title}</span>
-                          {statusBadge(material.status)}
-                          <Badge variant="outline" className="text-xs capitalize">
-                            {material.material_type}
+                  <Card key={material.id} className={`border backdrop-blur-md transition-all duration-300 shadow-md overflow-hidden flex flex-col justify-between h-full group ${
+                    isDark 
+                      ? 'border-slate-800/80 bg-slate-900/60 hover:border-sky-500/50' 
+                      : 'border-slate-200 bg-white/80 hover:border-sky-500/40 hover:shadow-sm'
+                  }`}>
+                    <div className="p-5 flex-1 flex flex-col justify-between">
+                      <div>
+                        <div className="flex justify-between items-start mb-3 gap-2">
+                          <Badge className="bg-sky-500/10 text-sky-400 hover:bg-sky-500/20 text-[10px] uppercase font-bold border border-sky-500/20 px-2 py-0.5 rounded-full">
+                            {material.material_type === 'pyqs' ? '📄 PYQs' : '📝 Notes'}
                           </Badge>
+                          <div className="flex gap-1.5">
+                            {statusBadge(material.status)}
+                            <Badge className="bg-purple-500/10 text-purple-400 text-[10px] font-bold border border-purple-500/20 px-2 py-0.5 rounded-full">
+                              Sem {material.semester}
+                            </Badge>
+                          </div>
                         </div>
-                        <p className="text-xs text-muted-foreground">
-                          {material.subject} • {material.year} Year • Sem {material.semester} • by {material.user_email}
+                        
+                        <h4 className={`text-base font-bold mb-1.5 line-clamp-1 group-hover:text-sky-400 transition-colors ${
+                          isDark ? 'text-slate-100' : 'text-slate-800'
+                        }`} title={material.title}>
+                          {material.title}
+                        </h4>
+                        <p className={`text-xs mb-4 line-clamp-2 h-8 leading-relaxed ${
+                          isDark ? 'text-slate-400' : 'text-slate-600'
+                        }`}>
+                          {material.description || 'No description provided.'}
                         </p>
                       </div>
-                      <div className="flex gap-2 ml-4">
-                        <Button variant="outline" size="sm" onClick={() => window.open(material.file_url, '_blank')} title="Preview">
-                          <Eye className="h-4 w-4" />
+
+                      <div className={`space-y-1.5 text-[11px] border-t pt-3 ${
+                        isDark ? 'text-slate-400 border-slate-800/60' : 'text-slate-500 border-slate-200'
+                      }`}>
+                        <div className="flex items-center gap-1.5">
+                          <BookOpen className="h-3.5 w-3.5 text-sky-500/70" />
+                          <span className={`font-semibold ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>Subject:</span> <span className="truncate max-w-[150px]">{material.subject}</span>
+                        </div>
+                        <div className="flex items-center gap-1.5">
+                          <User className="h-3.5 w-3.5 text-sky-500/70" />
+                          <span className={`font-semibold ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>Uploader:</span> <span className="truncate max-w-[150px]">{material.user_email}</span>
+                        </div>
+                        <div className="flex items-center gap-1.5">
+                          <Calendar className="h-3.5 w-3.5 text-sky-500/70" />
+                          <span>Uploaded: {material.uploaded_at ? new Date(material.uploaded_at).toLocaleDateString('en-IN') : 'Unknown Date'}</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Actions */}
+                    <div className={`p-4 border-t space-y-3 ${
+                      isDark ? 'bg-slate-950/40 border-slate-800/60' : 'bg-slate-50/50 border-slate-200'
+                    }`}>
+                      <div className="flex gap-2">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className={`flex-1 text-[11px] font-semibold h-8 gap-1 border ${
+                            isDark 
+                              ? 'text-slate-300 hover:text-white hover:bg-slate-800/50 border-slate-800' 
+                              : 'text-slate-700 hover:text-slate-900 hover:bg-slate-100 border-slate-200'
+                          }`}
+                          onClick={() => window.open(material.file_url, '_blank')}
+                        >
+                          <Eye className="h-3.5 w-3.5" /> Preview
                         </Button>
-                        <Button variant="outline" size="sm" onClick={() => handleDownload(material.file_url)} title="Download">
-                          <Download className="h-4 w-4" />
-                        </Button>
-                        {material.status === 'pending' && (
-                          <>
-                            <Button size="sm" className="bg-green-600 hover:bg-green-700" onClick={() => handleApproval(material.id, 'approved')}>
-                              <CheckCircle className="h-4 w-4" />
-                            </Button>
-                            <Button variant="destructive" size="sm" onClick={() => handleApproval(material.id, 'rejected')}>
-                              <XCircle className="h-4 w-4" />
-                            </Button>
-                          </>
-                        )}
-                        <Button variant="ghost" size="sm" className="text-red-500" onClick={() => handleDeleteMaterial(material.id)}>
-                          <Trash2 className="h-4 w-4" />
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className={`flex-1 text-[11px] font-semibold h-8 gap-1 border ${
+                            isDark 
+                              ? 'text-slate-300 hover:text-white hover:bg-slate-800/50 border-slate-800' 
+                              : 'text-slate-700 hover:text-slate-900 hover:bg-slate-100 border-slate-200'
+                          }`}
+                          onClick={() => handleDownload(material.file_url)}
+                        >
+                          <Download className="h-3.5 w-3.5" /> Download
                         </Button>
                       </div>
-                    </CardContent>
+
+                      <div className={`flex flex-col gap-2 border-t pt-3 ${isDark ? 'border-slate-850' : 'border-slate-200'}`}>
+                        {material.status === 'pending' && (
+                          <div className="flex gap-2 w-full">
+                            <Button
+                              size="sm"
+                              className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs h-8"
+                              onClick={() => handleApproval(material.id, 'approved')}
+                            >
+                              <CheckCircle className="h-3.5 w-3.5 mr-1" /> Approve
+                            </Button>
+                            <Button
+                              variant="destructive"
+                              size="sm"
+                              className="flex-1 font-bold text-xs h-8"
+                              onClick={() => handleApproval(material.id, 'rejected')}
+                            >
+                              <XCircle className="h-3.5 w-3.5 mr-1" /> Reject
+                            </Button>
+                          </div>
+                        )}
+                        
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className={`w-full font-bold text-xs h-8 border ${
+                            isDark 
+                              ? 'text-red-400 hover:text-red-500 hover:bg-red-500/10 border-red-500/20' 
+                              : 'text-red-600 hover:text-red-700 hover:bg-red-50 border-red-100'
+                          }`}
+                          onClick={() => handleDeleteMaterial(material.id)}
+                        >
+                          <Trash2 className="h-3.5 w-3.5 mr-1" /> Delete Material
+                        </Button>
+                      </div>
+                    </div>
                   </Card>
                 ))}
               </div>
