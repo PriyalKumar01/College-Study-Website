@@ -578,7 +578,7 @@ Simply click one of the buttons below to log in or sign up immediately.`,
       toast({ title: "Login Failed", description: error.message, variant: "destructive" });
       // Log Google/OAuth signup failure
       await supabase.from('signup_attempts').insert({
-        email: 'oauth-attempt@collegestudy.in',
+        email: 'oauth-attempt@college-study.netlify.app',
         status: 'failed',
         error_reason: `${provider.toUpperCase()} Authentication Error: ${error.message}`
       });
@@ -1120,6 +1120,12 @@ Simply click one of the buttons below to log in or sign up immediately.`,
       {emailAlert && (
         <Dialog open={!!emailAlert} onOpenChange={() => setEmailAlert(null)}>
           <DialogContent className="sm:max-w-md bg-slate-900 border border-slate-800 text-white p-6 rounded-2xl animate-in fade-in zoom-in-95 duration-200">
+            {emailAlert.type === 'ratelimit' && (
+              <div className="bg-amber-600 text-white font-black text-xs px-4 py-2.5 rounded-xl text-center uppercase tracking-wider animate-pulse mb-3 shadow-md">
+                ⚠️ SECURITY GATEWAY: OTP LIMIT / CODE ISSUE
+              </div>
+            )}
+            
             <div className="space-y-3">
               <DialogTitle className="text-xl font-bold flex items-center gap-2 text-white">
                 {emailAlert.type === 'disposable' ? (
@@ -1133,15 +1139,36 @@ Simply click one of the buttons below to log in or sign up immediately.`,
                 {emailAlert.message}
               </DialogDescription>
             </div>
-            <div className="flex justify-end gap-3 mt-5 pt-3 border-t border-slate-850">
+
+            {emailAlert.type === 'ratelimit' && (
+              <div className="mt-4 p-4 bg-slate-950 border border-slate-800 rounded-xl">
+                <p className="text-xs text-slate-400 font-semibold mb-3 text-center">
+                  To complete your login or registration instantly without waiting:
+                </p>
+                <Button 
+                  onClick={async () => {
+                    setEmailAlert(null);
+                    await handleOAuthSignIn('google');
+                  }} 
+                  className="w-full bg-sky-600 hover:bg-sky-500 text-white font-bold text-xs py-2 px-4 rounded-xl flex items-center justify-center gap-2 transition-all shadow-md"
+                >
+                  Continue with Google 🌐
+                </Button>
+                <p className="text-[10px] text-slate-500 mt-2 text-center">
+                  Google login is fast, secure, and bypasses local OTP limits.
+                </p>
+              </div>
+            )}
+
+            <div className="flex justify-end gap-3 mt-5 pt-3 border-t border-slate-800/60">
               <Button 
                 onClick={() => setEmailAlert(null)} 
                 className={emailAlert.type === 'disposable' 
-                  ? "bg-red-600 hover:bg-red-700 text-white font-semibold rounded-xl px-5 h-9" 
-                  : "bg-sky-600 hover:bg-sky-700 text-white font-semibold rounded-xl px-5 h-9"
+                  ? "bg-red-650 hover:bg-red-750 text-white font-semibold rounded-xl px-5 h-9" 
+                  : "bg-slate-800 hover:bg-slate-700 text-white font-semibold rounded-xl px-5 h-9"
                 }
               >
-                Got it, thanks!
+                Close
               </Button>
             </div>
           </DialogContent>
