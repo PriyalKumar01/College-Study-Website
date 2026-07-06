@@ -1542,112 +1542,147 @@ const OwnerDashboard = () => {
                 </CardContent>
               </Card>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {pendingMaterials.map((material, index) => (
-                  <motion.div
-                    key={material.id}
-                    initial={{ opacity: 0, y: 15 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.05 }}
-                  >
-                    <Card className={`border backdrop-blur-md transition-all duration-300 shadow-md overflow-hidden flex flex-col justify-between h-full group ${
-                      isDark 
-                        ? 'border-slate-800/80 bg-slate-900/60 hover:border-sky-500/50' 
-                        : 'border-slate-200 bg-white/80 hover:border-sky-500/40 hover:shadow-sm'
-                    }`}>
-                      <div className="p-5 flex-1 flex flex-col justify-between">
+              <div className="flex flex-col items-center w-full">
+                {/* Interactive Stack Container */}
+                <div className="relative w-full max-w-md h-[380px] mb-4">
+                  {pendingMaterials.map((material, idx) => {
+                    const isTop = idx === pendingStackIndex;
+                    const style = getPendingCardStyle(idx);
+                    return (
+                      <motion.div
+                        key={material.id}
+                        onClick={isTop ? handlePendingSwipe : undefined}
+                        style={{ pointerEvents: style.pointerEvents }}
+                        animate={
+                          isTop && pendingSwiping
+                            ? { x: 320, rotate: 10, opacity: 0, scale: 0.95 }
+                            : { x: 0, rotate: 0, scale: style.scale, y: style.y, opacity: style.opacity, zIndex: style.zIndex }
+                        }
+                        transition={{ type: 'spring', stiffness: 300, damping: 28 }}
+                        className={`absolute inset-0 border backdrop-blur-md rounded-3xl p-6 shadow-xl flex flex-col justify-between cursor-pointer select-none text-left ${
+                          isDark 
+                            ? 'border-slate-800 bg-slate-900' 
+                            : 'border-slate-200 bg-white shadow-sky-100/50'
+                        }`}
+                      >
                         <div>
-                          <div className="flex justify-between items-start mb-3 gap-2">
-                            <Badge className="bg-sky-500/10 text-sky-400 hover:bg-sky-500/20 text-[10px] uppercase font-bold border border-sky-500/20 px-2 py-0.5 rounded-full">
+                          <div className="flex justify-between items-start mb-3 gap-2 pb-3 border-b border-slate-100 dark:border-slate-800">
+                            <Badge className="bg-sky-500/10 text-sky-500 hover:bg-sky-500/20 text-[10px] uppercase font-bold border border-sky-500/20 px-2 py-0.5 rounded-full">
                               {material.material_type === 'pyqs' ? '📄 PYQs' : '📝 Notes'}
                             </Badge>
-                            <Badge className="bg-purple-500/10 text-purple-400 text-[10px] font-bold border border-purple-500/20 px-2 py-0.5 rounded-full">
-                              Sem {material.semester} • {material.year} Year
-                            </Badge>
+                            <div className="flex items-center gap-2">
+                              <Badge className="bg-purple-500/10 text-purple-400 text-[10px] font-bold border border-purple-500/20 px-2 py-0.5 rounded-full">
+                                Sem {material.semester}
+                              </Badge>
+                              <span className="text-[10px] font-mono font-bold text-slate-400">
+                                {idx + 1} / {pendingMaterials.length}
+                              </span>
+                            </div>
                           </div>
                           
-                          <h4 className={`text-base font-bold mb-1.5 line-clamp-1 group-hover:text-sky-400 transition-colors ${
-                            isDark ? 'text-slate-100' : 'text-slate-805'
+                          <h4 className={`text-base font-extrabold mb-1.5 line-clamp-1 group-hover:text-sky-400 transition-colors ${
+                            isDark ? 'text-slate-100' : 'text-slate-900'
                           }`} title={material.title}>
                             {material.title}
                           </h4>
-                          <p className={`text-xs mb-4 line-clamp-2 h-8 leading-relaxed ${
-                            isDark ? 'text-slate-400' : 'text-slate-600'
+                          <p className={`text-xs mb-4 line-clamp-3 h-12 leading-relaxed ${
+                            isDark ? 'text-slate-400' : 'text-slate-650'
                           }`}>
                             {material.description || 'No description provided.'}
                           </p>
                         </div>
 
-                        <div className={`space-y-1.5 text-[11px] border-t pt-3 ${
+                        <div className={`space-y-1.5 text-[11px] border-t pt-3 mb-2 ${
                           isDark ? 'text-slate-400 border-slate-800/60' : 'text-slate-500 border-slate-200'
                         }`}>
                           <div className="flex items-center gap-1.5">
-                            <BookOpen className="h-3.5 w-3.5 text-sky-500/70" />
-                            <span className={`font-semibold ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>Subject:</span> <span className="truncate max-w-[150px]">{material.subject}</span>
+                            <BookOpen className="h-3.5 w-3.5 text-sky-500" />
+                            <span className={`font-semibold ${isDark ? 'text-slate-305' : 'text-slate-700'}`}>Subject:</span> <span className="truncate max-w-[180px]">{material.subject}</span>
                           </div>
                           <div className="flex items-center gap-1.5">
-                            <User className="h-3.5 w-3.5 text-sky-500/70" />
-                            <span className={`font-semibold ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>Uploader:</span> <span className="truncate max-w-[150px]">{material.user_name || material.user_email}</span>
+                            <User className="h-3.5 w-3.5 text-sky-500" />
+                            <span className={`font-semibold ${isDark ? 'text-slate-305' : 'text-slate-700'}`}>Uploader:</span> <span className="truncate max-w-[180px]">{material.user_name || material.user_email}</span>
                           </div>
                           <div className="flex items-center gap-1.5">
-                            <Calendar className="h-3.5 w-3.5 text-sky-500/70" />
+                            <Calendar className="h-3.5 w-3.5 text-sky-500" />
                             <span>{material.uploaded_at ? new Date(material.uploaded_at).toLocaleDateString('en-IN') : 'Unknown Date'}</span>
                           </div>
                         </div>
-                      </div>
 
-                      {/* Actions */}
-                      <div className={`p-4 border-t space-y-3 ${
-                        isDark ? 'bg-slate-950/40 border-slate-800/60' : 'bg-slate-50/50 border-slate-200'
-                      }`}>
-                        <div className="flex gap-2">
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            className={`flex-1 text-[11px] font-semibold h-8 gap-1 border ${
-                              isDark 
-                                ? 'text-slate-300 hover:text-white hover:bg-slate-800/50 border-slate-800' 
-                                : 'text-slate-700 hover:text-slate-900 hover:bg-slate-100 border-slate-200'
-                            }`}
-                            onClick={() => window.open(material.file_url, '_blank')}
-                          >
-                            <Eye className="h-3.5 w-3.5" /> Preview
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            className={`flex-1 text-[11px] font-semibold h-8 gap-1 border ${
-                              isDark 
-                                ? 'text-slate-300 hover:text-white hover:bg-slate-800/50 border-slate-800' 
-                                : 'text-slate-700 hover:text-slate-900 hover:bg-slate-100 border-slate-200'
-                            }`}
-                            onClick={() => handleDownload(material.file_url)}
-                          >
-                            <Download className="h-3.5 w-3.5" /> Download
-                          </Button>
-                        </div>
+                        {/* Actions */}
+                        <div className="space-y-3 pt-3 border-t border-slate-100 dark:border-slate-850">
+                          <div className="flex gap-2">
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className={`flex-1 text-[11px] font-semibold h-8 gap-1 border ${
+                                isDark 
+                                  ? 'text-slate-300 hover:text-white hover:bg-slate-800/50 border-slate-800' 
+                                  : 'text-slate-750 hover:text-slate-900 hover:bg-slate-100 border-slate-200'
+                              }`}
+                              onClick={(e) => { e.stopPropagation(); window.open(material.file_url, '_blank'); }}
+                            >
+                              <Eye className="h-3.5 w-3.5" /> Preview
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className={`flex-1 text-[11px] font-semibold h-8 gap-1 border ${
+                                isDark 
+                                  ? 'text-slate-300 hover:text-white hover:bg-slate-800/50 border-slate-800' 
+                                  : 'text-slate-750 hover:text-slate-900 hover:bg-slate-100 border-slate-200'
+                              }`}
+                              onClick={(e) => { e.stopPropagation(); handleDownload(material.file_url); }}
+                            >
+                              <Download className="h-3.5 w-3.5" /> Download
+                            </Button>
+                          </div>
 
-                        <div className={`flex gap-2 border-t pt-3 ${isDark ? 'border-slate-800' : 'border-slate-200'}`}>
-                          <Button
-                            size="sm"
-                            className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs h-8"
-                            onClick={() => handleApproval(material.id, 'approved')}
-                          >
-                            <CheckCircle className="h-3.5 w-3.5 mr-1" /> Approve
-                          </Button>
-                          <Button
-                            variant="destructive"
-                            size="sm"
-                            className="flex-1 font-bold text-xs h-8"
-                            onClick={() => handleApproval(material.id, 'rejected')}
-                          >
-                            <XCircle className="h-3.5 w-3.5 mr-1" /> Reject
-                          </Button>
+                          <div className="flex gap-2">
+                            <Button
+                              size="sm"
+                              className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs h-8"
+                              onClick={(e) => { e.stopPropagation(); handleApproval(material.id, 'approved'); }}
+                            >
+                              <CheckCircle className="h-3.5 w-3.5 mr-1" /> Approve
+                            </Button>
+                            <Button
+                              variant="destructive"
+                              size="sm"
+                              className="flex-1 font-bold text-xs h-8"
+                              onClick={(e) => { e.stopPropagation(); handleApproval(material.id, 'rejected'); }}
+                            >
+                              <XCircle className="h-3.5 w-3.5 mr-1" /> Reject
+                            </Button>
+                          </div>
                         </div>
-                      </div>
-                    </Card>
-                  </motion.div>
-                ))}
+                      </motion.div>
+                    );
+                  })}
+                </div>
+
+                {/* Stack Navigation controls */}
+                <div className="flex items-center gap-3 mt-4">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      if (pendingSwiping) return;
+                      setPendingStackIndex(prev => (prev - 1 + pendingMaterials.length) % pendingMaterials.length);
+                    }}
+                    className={`text-xs font-bold ${
+                      isDark ? 'border-slate-800 hover:bg-slate-850 text-slate-300' : 'border-slate-200 hover:bg-slate-50 text-slate-700'
+                    }`}
+                  >
+                    ← Previous
+                  </Button>
+                  <Button
+                    onClick={handlePendingSwipe}
+                    className="bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs px-4 h-9 rounded-xl shadow-md border border-slate-850"
+                  >
+                    Swipe Next Note →
+                  </Button>
+                </div>
               </div>
             )}
           </TabsContent>
