@@ -287,7 +287,7 @@ const NotesCategories = () => {
               </div>
 
               <a
-                href="mailto:priyalkumar06@gmail.com"
+                href="mailto:collegestudy.support@gmail.com"
                 className="flex items-center gap-3 bg-white rounded-2xl px-5 py-3 shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300"
               >
                 <div className="w-9 h-9 bg-blue-100 rounded-full flex items-center justify-center">
@@ -295,7 +295,7 @@ const NotesCategories = () => {
                 </div>
                 <div>
                   <p className="text-gray-400 text-[11px] uppercase tracking-wide">Email</p>
-                  <p className="text-blue-600 font-semibold text-sm">priyalkumar06@gmail.com</p>
+                  <p className="text-blue-600 font-semibold text-sm">collegestudy.support@gmail.com</p>
                 </div>
               </a>
             </div>

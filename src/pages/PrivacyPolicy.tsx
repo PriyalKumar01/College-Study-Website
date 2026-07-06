@@ -151,7 +151,7 @@ const PrivacyPolicy = () => {
                     <p className="text-muted-foreground leading-relaxed">
                       If you have questions about this Privacy Policy or our privacy practices, please contact us at:
                       <br />
-                      Email: priyalkumar06@gmail.com
+                      Email: collegestudy.support@gmail.com
                       <br />
                       Phone: +91 8957221543
                       <br />

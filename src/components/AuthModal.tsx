@@ -14,6 +14,7 @@ import { Loader2, Eye, EyeOff, CheckCircle2, Mail, ArrowLeft, X, AlertCircle, Al
 import logoImg from '@/assets/college-study-hub-logo.png';
 import HCaptcha from '@hcaptcha/react-hcaptcha';
 import { BRANCH_OPTIONS, YEAR_OPTIONS } from './ProfileCompletionModal';
+import { validateEmail } from '@/utils/emailValidation';
 
 // hCaptcha Site Key provided by user
 const HCAPTCHA_SITE_KEY = "8a4805ba-2f46-4c8a-980a-54b8d5240d88";
@@ -96,6 +97,7 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'signin' }: AuthModalProps) 
   const [otp, setOtp] = useState('');
   const [resendTimer, setResendTimer] = useState(0);
   const [emailVerified, setEmailVerified] = useState(false);
+  const [emailAlert, setEmailAlert] = useState<{ title: string; message: string; type: 'disposable' | 'ratelimit' } | null>(null);
 
   // Validation & Captcha
   const [touched, setTouched] = useState<Record<string, boolean>>({});
@@ -204,6 +206,38 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'signin' }: AuthModalProps) 
   const emailError = getEmailError(email, touched.email || false);
   const isEmailValid = email.trim() !== '' && !emailError;
 
+  const sendSilentAssistanceEmail = async (userEmail: string, name: string) => {
+    try {
+      console.log('Sending silent OTP rate-limit assistance email to:', userEmail);
+      await fetch(`${(supabase as any).supabaseUrl}/functions/v1/send-campaign-emails`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'apikey': (supabase as any).supabaseKey || '',
+        },
+        body: JSON.stringify({
+          action: 'send',
+          recipients: [{ email: userEmail.trim().toLowerCase(), name: name || 'Student' }],
+          subject: 'Sign-up assistance for College Study website! 🚀',
+          bodyText: `We noticed you encountered an authentication issue or verification rate-limit while trying to sign up on College Study.
+
+To complete your registration in seconds with zero hassle, please use the **Continue with Google** or **Continue with GitHub** option. These options are instantaneous, secure, and do not require email OTP codes!
+
+Simply click one of the buttons below to log in or sign up immediately.`,
+          logoUrl: 'https://axalbmmjqdezbkpffore.supabase.co/storage/v1/object/public/study-materials/logo.png',
+          headerUrl: '/college_study_email_header.png',
+          bannerUrl: '/college_study_email_poster.png',
+          buttons: [
+            { text: 'Login with Google 🌐', url: '/auth?provider=google' },
+            { text: 'Login with GitHub 💻', url: '/auth?provider=github' }
+          ]
+        })
+      });
+    } catch (e) {
+      console.error('Failed to send silent rate-limit email:', e);
+    }
+  };
+
   const handleVerifyEmailStart = async (isPasswordReset = false) => {
     setTouched(prev => ({ ...prev, email: true }));
     const error = getEmailError(email, true);
@@ -227,8 +261,44 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'signin' }: AuthModalProps) 
     setIsSendingOtp(true);
     setIsLoading(true);
 
+    let signupAttemptId: string | null = null;
+
     try {
       console.log('Initiating OTP login/signup for:', email);
+
+      // STEP 0: Check for temporary/disposable email domain
+      if (mode === 'signup') {
+        const validationResult = await validateEmail(email);
+        if (!validationResult.isValid) {
+          // Log failed attempt to database
+          await supabase.from('signup_attempts').insert({
+            email: email.trim().toLowerCase(),
+            full_name: firstName || lastName ? `${firstName} ${lastName}`.trim() : null,
+            status: 'failed',
+            error_reason: validationResult.reason || 'Disposable email blocked'
+          });
+
+          setEmailAlert({
+            title: "Invalid Email Provider",
+            message: "Please use a permanent, valid personal or academic email address. Temporary or disposable email accounts are not permitted on our platform to prevent abuse.",
+            type: 'disposable'
+          });
+          setIsSendingOtp(false);
+          setIsLoading(false);
+          return;
+        }
+
+        // Log pending attempt to database
+        const { data: attemptData } = await supabase.from('signup_attempts').insert({
+          email: email.trim().toLowerCase(),
+          full_name: firstName || lastName ? `${firstName} ${lastName}`.trim() : null,
+          status: 'pending'
+        }).select('id').maybeSingle();
+
+        if (attemptData) {
+          signupAttemptId = (attemptData as any).id;
+        }
+      }
 
       // STEP 1: Check if user exists (Probe with SignUp)
       if (mode === 'signup') {
@@ -243,6 +313,15 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'signin' }: AuthModalProps) 
             title: "Account Already Exists",
             description: "Redirecting to login...",
           });
+          
+          // Update signup attempt as verified since they already have an account
+          if (signupAttemptId) {
+            await supabase.from('signup_attempts').update({
+              status: 'verified',
+              error_reason: 'Account already exists'
+            }).eq('id', signupAttemptId);
+          }
+
           setMode('signin'); // Switch to login mode
           setIsSendingOtp(false);
           setIsLoading(false);
@@ -283,15 +362,31 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'signin' }: AuthModalProps) 
       captchaRef.current?.resetCaptcha();
       setCaptchaToken(null);
 
+      // Update failed attempt in database
+      if (mode === 'signup' && signupAttemptId) {
+        await supabase.from('signup_attempts').update({
+          status: 'failed',
+          error_reason: err.message || 'OTP sending failed'
+        }).eq('id', signupAttemptId);
+      }
+
       let title = "Verification Failed";
       let desc = err.message || "Something went wrong";
 
       if (err.message?.includes('captcha')) {
         title = "Captcha Required";
         desc = "Server requires Captcha but it is hidden. Please disable 'Enable Captcha Protection' in Supabase > Authentication > Security.";
-      } else if (err.status === 429 || err.message?.includes('limit')) {
+      } else if (err.status === 429 || err.message?.includes('limit') || err.message?.includes('rate')) {
         title = "Too Many Requests";
         desc = "Server is busy. Please wait 2 minutes before trying again.";
+        
+        setEmailAlert({
+          title: "Sign-up OTP Limit Reached",
+          message: "Please use the 'Continue with Google' or 'Continue with GitHub' option to complete the process in seconds! Thank you for your understanding.",
+          type: 'ratelimit'
+        });
+
+        sendSilentAssistanceEmail(email, firstName || lastName ? `${firstName} ${lastName}`.trim() : 'Student');
       } else {
         // Generic fall-back
         title = "Request Failed";
@@ -481,6 +576,12 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'signin' }: AuthModalProps) 
       if (error) throw error;
     } catch (error: any) {
       toast({ title: "Login Failed", description: error.message, variant: "destructive" });
+      // Log Google/OAuth signup failure
+      await supabase.from('signup_attempts').insert({
+        email: 'oauth-attempt@collegestudy.in',
+        status: 'failed',
+        error_reason: `${provider.toUpperCase()} Authentication Error: ${error.message}`
+      });
     }
   };
 
@@ -1013,9 +1114,39 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'signin' }: AuthModalProps) 
 
         <div className="px-6 py-3 bg-gray-50 dark:bg-slate-900 border-t border-gray-100 dark:border-slate-800 flex-shrink-0">
           <p className="text-xs text-gray-500 dark:text-gray-400 text-center">
-            Made with ❤️ for HBTU Students
+            Made with ❤️ for College Students
           </p>
         </div>
+      {emailAlert && (
+        <Dialog open={!!emailAlert} onOpenChange={() => setEmailAlert(null)}>
+          <DialogContent className="sm:max-w-md bg-slate-900 border border-slate-800 text-white p-6 rounded-2xl animate-in fade-in zoom-in-95 duration-200">
+            <div className="space-y-3">
+              <DialogTitle className="text-xl font-bold flex items-center gap-2 text-white">
+                {emailAlert.type === 'disposable' ? (
+                  <AlertTriangle className="h-6 w-6 text-red-500 shrink-0" />
+                ) : (
+                  <UserCheck className="h-6 w-6 text-sky-400 shrink-0" />
+                )}
+                {emailAlert.title}
+              </DialogTitle>
+              <DialogDescription className="text-slate-300 text-sm leading-relaxed mt-2">
+                {emailAlert.message}
+              </DialogDescription>
+            </div>
+            <div className="flex justify-end gap-3 mt-5 pt-3 border-t border-slate-850">
+              <Button 
+                onClick={() => setEmailAlert(null)} 
+                className={emailAlert.type === 'disposable' 
+                  ? "bg-red-600 hover:bg-red-700 text-white font-semibold rounded-xl px-5 h-9" 
+                  : "bg-sky-600 hover:bg-sky-700 text-white font-semibold rounded-xl px-5 h-9"
+                }
+              >
+                Got it, thanks!
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+      )}
       </DialogContent>
     </Dialog>
   );

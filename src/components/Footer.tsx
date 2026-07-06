@@ -78,8 +78,8 @@ const Footer = () => {
               <div className="flex items-start gap-2.5">
                 <Mail className="h-4 w-4 text-slate-400 mt-0.5 shrink-0" />
                 <div>
-                  <p className="text-slate-350 hover:text-white transition-colors cursor-pointer font-semibold break-all" onClick={() => window.open('mailto:priyalkumar06@gmail.com')}>
-                    priyalkumar06@gmail.com
+                  <p className="text-slate-355 hover:text-white transition-colors cursor-pointer font-semibold break-all" onClick={() => window.open('mailto:collegestudy.support@gmail.com')}>
+                    collegestudy.support@gmail.com
                   </p>
                   <p className="text-[11px] text-slate-500 mt-0.5">For queries & verification support</p>
                 </div>

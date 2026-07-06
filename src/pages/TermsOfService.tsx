@@ -137,7 +137,7 @@ const TermsOfService = () => {
                     <p className="text-muted-foreground leading-relaxed">
                       For questions about these Terms of Service, please contact us at:
                       <br />
-                      Email: priyalkumar06@gmail.com
+                      Email: collegestudy.support@gmail.com
                       <br />
                       Phone: +91 8957221543
                     </p>

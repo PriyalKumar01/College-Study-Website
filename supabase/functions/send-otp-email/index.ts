@@ -1,6 +1,6 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 
-const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
+const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY") || "re_7oYzeKGo_FPFyksyTHad8KrwsX3oA92qM";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -151,10 +151,10 @@ const handler = async (req: Request): Promise<Response> => {
           <tr>
             <td style="padding: 20px 32px; background-color: #fafafa; border-top: 1px solid #e5e5e5; text-align: center;">
               <p style="margin: 0 0 4px; font-size: 13px; color: #4a4a4a;">
-                Made with ❤️ for HBTU Students
+                Made with ❤️ for College Students
               </p>
               <p style="margin: 0; font-size: 11px; color: #888888;">
-                © 2025 College Study. All rights reserved.
+                © 2026 College Study. All rights reserved.
               </p>
             </td>
           </tr>
@@ -176,6 +176,7 @@ const handler = async (req: Request): Promise<Response> => {
       body: JSON.stringify({
         from: fromAddress,
         to: [email],
+        reply_to: "collegestudy.support@gmail.com",
         subject,
         html: emailHtml,
       }),

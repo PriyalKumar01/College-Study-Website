@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { ResponsiveContainer, PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, Tooltip, Legend } from 'recharts';
 import { useAuth } from '@/contexts/AuthContext';
 import { motion } from 'framer-motion';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -15,6 +16,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import Navbar from '@/components/Navbar';
 import { smartDownload } from '@/lib/downloadUtils';
+import MassEmailDashboard from '@/components/admin/MassEmailDashboard';
 
 interface Material {
   id: string;
@@ -411,6 +413,10 @@ const OwnerDashboard = () => {
   const [grantPlan, setGrantPlan] = useState('companies');
   const [isGranting, setIsGranting] = useState(false);
 
+  // Analytics and signup stats
+  const [signupStats, setSignupStats] = useState<{ verified: number; failed: number; pending: number; disposableBlocked: number }>({ verified: 0, failed: 0, pending: 0, disposableBlocked: 0 });
+  const [campaignStats, setCampaignStats] = useState<{ total: number; sent: number; failed: number }>({ total: 0, sent: 0, failed: 0 });
+
   useEffect(() => {
     if (isOwner) {
       fetchAll();
@@ -455,6 +461,59 @@ const OwnerDashboard = () => {
     fetchNotifications();
   };
 
+  const fetchSignupStats = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('signup_attempts')
+        .select('status, error_reason');
+      
+      if (error) throw error;
+      
+      let verified = 0;
+      let failed = 0;
+      let pending = 0;
+      let disposableBlocked = 0;
+      
+      data?.forEach(attempt => {
+        if (attempt.status === 'verified') verified++;
+        else if (attempt.status === 'pending') pending++;
+        else {
+          failed++;
+          if (attempt.error_reason?.toLowerCase().includes('disposable') || attempt.error_reason?.toLowerCase().includes('temp')) {
+            disposableBlocked++;
+          }
+        }
+      });
+      
+      setSignupStats({ verified, failed, pending, disposableBlocked });
+    } catch (err) {
+      console.error('Error fetching signup stats:', err);
+    }
+  };
+
+  const fetchCampaignStats = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('email_campaigns')
+        .select('sent_count, failed_count');
+      
+      if (error) throw error;
+      
+      let total = data?.length || 0;
+      let sent = 0;
+      let failed = 0;
+      
+      data?.forEach(camp => {
+        sent += camp.sent_count || 0;
+        failed += camp.failed_count || 0;
+      });
+      
+      setCampaignStats({ total, sent, failed });
+    } catch (err) {
+      console.error('Error fetching campaign stats:', err);
+    }
+  };
+
   const fetchAll = async () => {
     setLoading(true);
     await Promise.all([
@@ -463,7 +522,9 @@ const OwnerDashboard = () => {
       fetchAdminRoles(),
       fetchScholarships(),
       fetchContributors(),
-      fetchPremiumPurchases()
+      fetchPremiumPurchases(),
+      fetchSignupStats(),
+      fetchCampaignStats()
     ]);
     setLoading(false);
   };
@@ -930,37 +991,165 @@ const OwnerDashboard = () => {
           <p className="text-muted-foreground text-lg">
             Manage content approvals, admin roles, and all study materials.
           </p>
-          {/* Stats */}
+          {/* Graphical Analytics Section */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
+            
+            {/* Chart 1: Notes Approvals */}
+            <Card className="border-0 shadow-md bg-white/70 dark:bg-slate-900/70 backdrop-blur-md">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Notes Library Distribution</CardTitle>
+                <CardDescription>Breakdown of approved, pending, and rejected study materials</CardDescription>
+              </CardHeader>
+              <CardContent className="h-[240px] flex items-center justify-center">
+                {allMaterials.length === 0 ? (
+                  <p className="text-slate-400 text-xs italic">No study materials in database.</p>
+                ) : (
+                  <ResponsiveContainer width="100%" height="100%">
+                    <PieChart>
+                      <Pie
+                        data={[
+                          { name: 'Approved', value: allMaterials.filter(m => m.status === 'approved').length, color: '#10b981' },
+                          { name: 'Pending', value: pendingMaterials.length, color: '#f59e0b' },
+                          { name: 'Rejected', value: allMaterials.filter(m => m.status === 'rejected').length, color: '#ef4444' }
+                        ].filter(item => item.value > 0)}
+                        cx="50%"
+                        cy="50%"
+                        innerRadius={60}
+                        outerRadius={80}
+                        paddingAngle={5}
+                        dataKey="value"
+                      >
+                        {[
+                          { name: 'Approved', value: allMaterials.filter(m => m.status === 'approved').length, color: '#10b981' },
+                          { name: 'Pending', value: pendingMaterials.length, color: '#f59e0b' },
+                          { name: 'Rejected', value: allMaterials.filter(m => m.status === 'rejected').length, color: '#ef4444' }
+                        ].filter(item => item.value > 0).map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={entry.color} />
+                        ))}
+                      </Pie>
+                      <Tooltip 
+                        contentStyle={{ 
+                          backgroundColor: '#0f172a', 
+                          border: 'none', 
+                          borderRadius: '8px', 
+                          color: '#fff', 
+                          fontSize: '11px' 
+                        }} 
+                      />
+                      <Legend 
+                        verticalAlign="bottom" 
+                        height={36} 
+                        iconType="circle"
+                        iconSize={8}
+                        wrapperStyle={{ fontSize: '11px', color: '#64748b' }} 
+                      />
+                    </PieChart>
+                  </ResponsiveContainer>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* Chart 2: Registration Health */}
+            <Card className="border-0 shadow-md bg-white/70 dark:bg-slate-900/70 backdrop-blur-md">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Registration & Verification Rate</CardTitle>
+                <CardDescription>Verified profiles vs failed OTPs vs blocked disposable emails</CardDescription>
+              </CardHeader>
+              <CardContent className="h-[240px]">
+                {signupStats.verified === 0 && signupStats.failed === 0 ? (
+                  <div className="h-full flex items-center justify-center">
+                    <p className="text-slate-400 text-xs italic">No registration logs yet. Check back after users register.</p>
+                  </div>
+                ) : (
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart 
+                      data={[
+                        { name: 'Verified', count: signupStats.verified, color: '#0ea5e9' },
+                        { name: 'OTP Failed', count: Math.max(0, signupStats.failed - signupStats.disposableBlocked), color: '#f59e0b' },
+                        { name: 'Temp Blocked', count: signupStats.disposableBlocked, color: '#ef4444' }
+                      ]} 
+                      margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
+                    >
+                      <XAxis dataKey="name" tick={{ fontSize: 10, fill: '#64748b' }} axisLine={false} tickLine={false} />
+                      <YAxis tick={{ fontSize: 10, fill: '#64748b' }} axisLine={false} tickLine={false} />
+                      <Tooltip 
+                        cursor={{ fill: 'rgba(148, 163, 184, 0.05)' }}
+                        contentStyle={{ 
+                          backgroundColor: '#0f172a', 
+                          border: 'none', 
+                          borderRadius: '8px', 
+                          color: '#fff', 
+                          fontSize: '11px' 
+                        }}
+                      />
+                      <Bar dataKey="count" radius={[6, 6, 0, 0]}>
+                        {[
+                          { name: 'Verified', count: signupStats.verified, color: '#0ea5e9' },
+                          { name: 'OTP Failed', count: Math.max(0, signupStats.failed - signupStats.disposableBlocked), color: '#f59e0b' },
+                          { name: 'Temp Blocked', count: signupStats.disposableBlocked, color: '#ef4444' }
+                        ].map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={entry.color} />
+                        ))}
+                      </Bar>
+                    </BarChart>
+                  </ResponsiveContainer>
+                )}
+              </CardContent>
+            </Card>
+
+          </div>
+
+          {/* Quick Metrics stats grid */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
-            <Card className="gradient-card">
-              <CardContent className="p-4 text-center">
-                <p className="text-2xl font-bold text-yellow-600">{pendingMaterials.length}</p>
-                <p className="text-xs text-muted-foreground">Pending</p>
+            <Card className="border-0 shadow-sm bg-white/50 dark:bg-slate-900/50 hover:bg-white/80 dark:hover:bg-slate-900/80 transition-colors">
+              <CardContent className="p-4 flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-amber-50 dark:bg-amber-950/40 flex items-center justify-center text-amber-500 shrink-0">
+                  <BookOpen className="h-5 w-5" />
+                </div>
+                <div>
+                  <p className="text-lg font-bold text-slate-800 dark:text-slate-100">{pendingMaterials.length}</p>
+                  <p className="text-[10px] text-muted-foreground uppercase tracking-wider font-semibold">Pending Notes</p>
+                </div>
               </CardContent>
             </Card>
-            <Card className="gradient-card">
-              <CardContent className="p-4 text-center">
-                <p className="text-2xl font-bold text-green-600">{allMaterials.filter(m => m.status === 'approved').length}</p>
-                <p className="text-xs text-muted-foreground">Approved</p>
+            <Card className="border-0 shadow-sm bg-white/50 dark:bg-slate-900/50 hover:bg-white/80 dark:hover:bg-slate-900/80 transition-colors">
+              <CardContent className="p-4 flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 flex items-center justify-center text-emerald-500 shrink-0">
+                  <CheckCircle className="h-5 w-5" />
+                </div>
+                <div>
+                  <p className="text-lg font-bold text-slate-800 dark:text-slate-100">{allMaterials.filter(m => m.status === 'approved').length}</p>
+                  <p className="text-[10px] text-muted-foreground uppercase tracking-wider font-semibold">Approved Notes</p>
+                </div>
               </CardContent>
             </Card>
-            <Card className="gradient-card">
-              <CardContent className="p-4 text-center">
-                <p className="text-2xl font-bold text-red-600">{allMaterials.filter(m => m.status === 'rejected').length}</p>
-                <p className="text-xs text-muted-foreground">Rejected</p>
+            <Card className="border-0 shadow-sm bg-white/50 dark:bg-slate-900/50 hover:bg-white/80 dark:hover:bg-slate-900/80 transition-colors">
+              <CardContent className="p-4 flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-sky-50 dark:bg-sky-950/40 flex items-center justify-center text-sky-500 shrink-0">
+                  <Send className="h-5 w-5" />
+                </div>
+                <div>
+                  <p className="text-lg font-bold text-slate-800 dark:text-slate-100">{campaignStats.total}</p>
+                  <p className="text-[10px] text-muted-foreground uppercase tracking-wider font-semibold">Campaigns Sent</p>
+                </div>
               </CardContent>
             </Card>
-            <Card className="gradient-card">
-              <CardContent className="p-4 text-center">
-                <p className="text-2xl font-bold text-blue-600">{adminRoles.length}</p>
-                <p className="text-xs text-muted-foreground">Admin Users</p>
+            <Card className="border-0 shadow-sm bg-white/50 dark:bg-slate-900/50 hover:bg-white/80 dark:hover:bg-slate-900/80 transition-colors">
+              <CardContent className="p-4 flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-purple-50 dark:bg-purple-950/40 flex items-center justify-center text-purple-500 shrink-0">
+                  <Crown className="h-5 w-5" />
+                </div>
+                <div>
+                  <p className="text-lg font-bold text-slate-800 dark:text-slate-100">{adminRoles.length}</p>
+                  <p className="text-[10px] text-muted-foreground uppercase tracking-wider font-semibold">Admin Staff</p>
+                </div>
               </CardContent>
             </Card>
           </div>
         </motion.div>
 
         <Tabs defaultValue="pending" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 h-auto gap-1 bg-slate-100 dark:bg-slate-800 p-1">
+          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 h-auto gap-1 bg-slate-100 dark:bg-slate-800 p-1">
             <TabsTrigger value="pending" className="flex items-center gap-2">
               <BookOpen className="h-4 w-4" />
               Pending ({pendingMaterials.length})
@@ -984,6 +1173,10 @@ const OwnerDashboard = () => {
             <TabsTrigger value="admins" className="flex items-center gap-2">
               <Crown className="h-4 w-4" />
               Admins
+            </TabsTrigger>
+            <TabsTrigger value="emails" className="flex items-center gap-2">
+              <Send className="h-4 w-4" />
+              Mass Emails
             </TabsTrigger>
             <TabsTrigger value="all" className="flex items-center gap-2">
               <FileText className="h-4 w-4" />
@@ -1612,6 +1805,10 @@ const OwnerDashboard = () => {
                 ))}
               </div>
             )}
+          </TabsContent>
+
+          <TabsContent value="emails" className="space-y-6">
+            <MassEmailDashboard />
           </TabsContent>
         </Tabs>
       </div>

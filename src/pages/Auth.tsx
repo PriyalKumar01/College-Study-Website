@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { Loader2, AlertTriangle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { supabase } from '@/integrations/supabase/client';
 
 const Auth = () => {
   const navigate = useNavigate();
@@ -18,7 +19,16 @@ const Auth = () => {
     const errorCode = params.get('error_code');
 
     if (errorDescription) {
-      setErrorMsg(decodeURIComponent(errorDescription).replace(/\+/g, ' '));
+      const decodedError = decodeURIComponent(errorDescription).replace(/\+/g, ' ');
+      setErrorMsg(decodedError);
+      
+      // Log the OAuth callback failure
+      supabase.from('signup_attempts').insert({
+        email: 'oauth-callback-failed@collegestudy.in',
+        status: 'failed',
+        error_reason: `Google/OAuth Callback Error: ${decodedError}`
+      }).then(() => {});
+      
       return;
     }
 
