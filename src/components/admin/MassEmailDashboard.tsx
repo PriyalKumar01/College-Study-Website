@@ -110,7 +110,7 @@ Check them out now to stay ahead in your academics and career!`);
   const [btn3Text, setBtn3Text] = useState('Gate Study 📚');
   const [btn3Url, setBtn3Url] = useState('https://college-study.netlify.app/gate-study');
 
-  const [fromAddress, setFromAddress] = useState('College Study <onboarding@resend.dev>');
+  const [fromAddress, setFromAddress] = useState('College Study <collegestudy.support@gmail.com>');
   const [sendAsBcc, setSendAsBcc] = useState(false);
 
   const [selectedPreset, setSelectedPreset] = useState<string>('none');
@@ -595,9 +595,9 @@ Click below to check out the details, themes, and registration links.`,
       const result = await response.json();
 
       if (!response.ok) {
-        // If 429 daily rate limit hit
+        // If 429 daily rate limit hit (Brevo free tier: 300 emails/day)
         if (response.status === 429) {
-          setSendLogs(prev => [...prev, `[WARNING] Daily sending limit hit (Resend rate limit). Pausing queue.`]);
+          setSendLogs(prev => [...prev, `[WARNING] Daily sending limit hit (Brevo: 300 emails/day on free tier). Pausing queue.`]);
           setIsPaused(true);
           await supabase.from('email_campaigns').update({ status: 'paused' }).eq('id', campaignId);
           return;
@@ -608,38 +608,36 @@ Click below to check out the details, themes, and registration links.`,
       let localSent = 0;
       let localFailed = 0;
 
-      // Result returns batch details
+      // Result returns per-email details
       const batchLogs: any[] = [];
       
       if (result.results && Array.isArray(result.results)) {
-        for (const resBatch of result.results) {
-          if (resBatch.success && Array.isArray(resBatch.data)) {
-            // Success sends
-            resBatch.data.forEach((emailItem: any, idx: number) => {
-              const recipientEmail = resBatch.recipients[idx];
-              localSent++;
-              
-              batchLogs.push({
-                campaign_id: campaignId,
-                recipient_email: recipientEmail,
-                recipient_name: queue.find(q => q.email === recipientEmail)?.name || null,
-                resend_email_id: emailItem.id,
-                status: 'sent'
-              });
+        for (const emailResult of result.results) {
+          const recipientEmail = emailResult.recipientEmail;
+          
+          if (emailResult.success && (emailResult.brevoMessageId || emailResult.resendEmailId)) {
+            localSent++;
+            batchLogs.push({
+              campaign_id: campaignId,
+              recipient_email: recipientEmail,
+              recipient_name: queue.find(q => q.email === recipientEmail)?.name || null,
+              resend_email_id: emailResult.brevoMessageId || emailResult.resendEmailId || null,
+              status: 'sent'
             });
           } else {
-            // Failed batch
-            resBatch.recipients.forEach((recipientEmail: string) => {
-              localFailed++;
-              
-              batchLogs.push({
-                campaign_id: campaignId,
-                recipient_email: recipientEmail,
-                recipient_name: queue.find(q => q.email === recipientEmail)?.name || null,
-                status: 'failed',
-                error_message: resBatch.error || 'Resend API rejected payload'
-              });
+            localFailed++;
+            const errMsg = emailResult.error || 'Brevo rejected this email';
+            batchLogs.push({
+              campaign_id: campaignId,
+              recipient_email: recipientEmail,
+              recipient_name: queue.find(q => q.email === recipientEmail)?.name || null,
+              status: 'failed',
+              error_message: errMsg
             });
+            // Log first error to the output console so user sees the real reason
+            if (localFailed === 1) {
+              setSendLogs(prev => [...prev, `[WARN] Sample failure reason: ${errMsg}`]);
+            }
           }
         }
       }
@@ -1022,9 +1020,9 @@ Click below to check out the details, themes, and registration links.`,
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-1.5">
               <Label htmlFor="from-address" className="text-xs font-bold text-slate-500">Sender Email (From Address)</Label>
-              <Input id="from-address" value={fromAddress} onChange={e => setFromAddress(e.target.value)} placeholder="College Study <onboarding@resend.dev>" />
-              <p className="text-[10px] text-slate-400 mt-0.5">
-                Must be a verified sender domain on your Resend account. By default, it uses the onboarding address.
+              <Input id="from-address" value={fromAddress} onChange={e => setFromAddress(e.target.value)} placeholder="College Study <collegestudy.support@gmail.com>" />
+              <p className="text-[10px] text-slate-400 mt-1">
+                Must match your verified sender email on Brevo (collegestudy.support@gmail.com is pre-verified).
               </p>
             </div>
             <div className="flex items-center justify-between border border-slate-100 dark:border-slate-800 rounded-lg p-3 bg-slate-50/50 dark:bg-slate-900/50">
@@ -1135,7 +1133,7 @@ Click below to check out the details, themes, and registration links.`,
             <Users className="h-5 w-5 text-sky-500" />
             Target Audience Selection & Batch Queue
           </CardTitle>
-          <CardDescription>Filter recipients and manage delivery throttle to stay within Resend limits</CardDescription>
+          <CardDescription>Filter recipients and manage delivery throttle to stay within Brevo limits (300/day free)</CardDescription>
         </CardHeader>
         
         <CardContent className="pt-6 space-y-6">
@@ -1196,7 +1194,7 @@ Click below to check out the details, themes, and registration links.`,
                         <SelectItem value="60">Exclude if inactive &gt; 60 Days</SelectItem>
                       </SelectContent>
                     </Select>
-                    <p className="text-[10px] text-slate-400 mt-0.5">Filters out users who haven't logged in recently to preserve Resend limits.</p>
+                    <p className="text-[10px] text-slate-400 mt-0.5">Filters out users who haven't logged in recently to stay within Brevo's 300 emails/day free limit.</p>
                   </div>
                 </div>
               )}

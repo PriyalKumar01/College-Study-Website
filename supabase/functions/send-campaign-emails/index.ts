@@ -31,8 +31,8 @@ interface SendCampaignRequest {
   buttons?: CampaignButton[];
   fromAddress?: string;
   sendAsBcc?: boolean;
-  // For action === 'sync'
-  emailIds?: string[]; // Resend email IDs to sync status
+  // For action === 'sync' (kept for backward compat but Brevo doesn't support this)
+  emailIds?: string[];
 }
 
 // Simple markdown-to-html formatter for body text
@@ -60,109 +60,19 @@ function formatMarkdownToHtml(text: string): string {
   return html;
 }
 
-serve(async (req) => {
-  // Handle CORS preflight requests
-  if (req.method === "OPTIONS") {
-    return new Response("ok", { headers: corsHeaders });
-  }
-
-  const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY") || "re_7oYzeKGo_FPFyksyTHad8KrwsX3oA92qM";
-  const RESEND_FROM = Deno.env.get("RESEND_FROM") || "College Study <onboarding@resend.dev>";
-
-  try {
-    const body: SendCampaignRequest = await req.json();
-    const { action, siteUrl } = body;
-
-    const rawSiteUrl = siteUrl || Deno.env.get("SITE_URL") || "https://college-study.netlify.app";
-    const cleanSiteUrl = (rawSiteUrl && !rawSiteUrl.includes('localhost') && !rawSiteUrl.includes('127.0.0.1'))
-      ? rawSiteUrl
-      : "https://college-study.netlify.app";
-    const SITE_URL = cleanSiteUrl.endsWith('/') ? cleanSiteUrl.slice(0, -1) : cleanSiteUrl;
-
-    if (action === "send") {
-      const { recipients, subject, bodyText, logoUrl, headerUrl, bannerUrl, buttons, fromAddress, sendAsBcc } = body;
-
-      if (!recipients || !Array.isArray(recipients) || recipients.length === 0) {
-        return new Response(
-          JSON.stringify({ success: false, error: "Recipients array is required and must not be empty" }),
-          { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } }
-        );
-      }
-
-      if (!subject || !bodyText) {
-        return new Response(
-          JSON.stringify({ success: false, error: "Subject and bodyText are required" }),
-          { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } }
-        );
-      }
-
-      console.log(`Sending campaign with ${recipients.length} recipients. Subject: "${subject}"`);
-
-      // We will prepare the batch send array for Resend API
-      const emailBatch = recipients.map((recipient) => {
-        const name = recipient.name || "Student";
-        const email = recipient.email;
-
-        // Custom personalization based on whether it is a google auth failure or standard verification failure
-        let introGreeting = `Hi ${name}! 👋`;
-        let processedBody = bodyText;
-
-        if (recipient.isGoogleAuthFail) {
-          introGreeting = `Dear ${name},`;
-          processedBody = `We noticed you encountered an authentication issue while trying to sign up using your Google Account. 
-
-Usually, this is a temporary connection glitch. Please wait for 5 minutes and try registering again. We've optimized our portal to make sure your next attempt is smooth!
-
-${bodyText}`;
-        }
-
-        const formattedHtmlBody = formatMarkdownToHtml(processedBody);
-        
-        // Buttons rendering HTML
-        let buttonsHtml = "";
-        if (buttons && buttons.length > 0) {
-          buttonsHtml = `
-            <div style="margin: 24px 0; text-align: center;">
-              <table role="presentation" border="0" cellpadding="0" cellspacing="0" style="margin: 0 auto; border-collapse: collapse;">
-                <tr>
-          `;
-
-          buttons.forEach((btn, idx) => {
-            const btnUrl = btn.url.startsWith("http") ? btn.url : `${SITE_URL}${btn.url}`;
-            const lowerText = btn.text.toLowerCase();
-            
-            let buttonStyle = "background-color: #0284c7; color: #ffffff; border: 1px solid #0284c7; padding: 12px 20px; font-weight: 600; font-size: 14px; text-decoration: none; border-radius: 8px; display: inline-block; transition: background-color 0.2s;";
-            let iconHtml = "";
-
-            if (lowerText.includes("google")) {
-              buttonStyle = "background-color: #ffffff; color: #1e293b; border: 1px solid #cbd5e1; padding: 12px 20px; font-weight: 600; font-size: 14px; text-decoration: none; border-radius: 8px; display: inline-block; transition: background-color 0.2s; box-shadow: 0 1px 2px rgba(0,0,0,0.05);";
-              iconHtml = `<img src="https://img.icons8.com/color/48/000000/google-logo.png" alt="Google" style="width: 16px; height: 16px; margin-right: 8px; vertical-align: middle; display: inline-block; border: 0;" />`;
-            } else if (lowerText.includes("github")) {
-              buttonStyle = "background-color: #ffffff; color: #1e293b; border: 1px solid #cbd5e1; padding: 12px 20px; font-weight: 600; font-size: 14px; text-decoration: none; border-radius: 8px; display: inline-block; transition: background-color 0.2s; box-shadow: 0 1px 2px rgba(0,0,0,0.05);";
-              iconHtml = `<img src="https://img.icons8.com/material-outlined/48/000000/github.png" alt="GitHub" style="width: 16px; height: 16px; margin-right: 8px; vertical-align: middle; display: inline-block; border: 0;" />`;
-            }
-
-            const cleanText = btn.text.replace(/🌐|💻/g, "").trim();
-
-            buttonsHtml += `
-              <td style="padding: 0 8px 12px 8px;">
-                <a href="${btnUrl}" target="_blank" style="${buttonStyle}">
-                  ${iconHtml}<span style="vertical-align: middle;">${cleanText}</span>
-                </a>
-              </td>
-            `;
-          });
-
-          buttonsHtml += `
-                </tr>
-              </table>
-            </div>
-          `;
-        }
-
-        // Render full responsive HTML email template
-        // Using high-quality sky blue and white aesthetics as requested
-        const emailHtml = `
+// Build the responsive HTML email template
+function buildEmailHtml(params: {
+  subject: string;
+  introGreeting: string;
+  formattedHtmlBody: string;
+  buttonsHtml: string;
+  logoUrl?: string;
+  headerUrl?: string;
+  bannerUrl?: string;
+  SITE_URL: string;
+}): string {
+  const { subject, introGreeting, formattedHtmlBody, buttonsHtml, logoUrl, headerUrl, bannerUrl, SITE_URL } = params;
+  return `
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -200,10 +110,7 @@ ${bodyText}`;
               <h2 style="margin: 0 0 20px; font-size: 20px; font-weight: 700; color: #0f172a;">
                 ${introGreeting}
               </h2>
-              
               ${formattedHtmlBody}
-              
-              <!-- Action Buttons -->
               ${buttonsHtml}
             </td>
           </tr>
@@ -243,60 +150,181 @@ ${bodyText}`;
   </table>
 </body>
 </html>
-        `;
+  `;
+}
 
-        const mailTo = sendAsBcc ? ["College Study <no-reply@college-study.netlify.app>"] : [email];
-        const mailBcc = sendAsBcc ? [email] : undefined;
+serve(async (req) => {
+  // Handle CORS preflight requests
+  if (req.method === "OPTIONS") {
+    return new Response("ok", { headers: corsHeaders });
+  }
 
-        return {
-          from: fromAddress || RESEND_FROM,
-          to: mailTo,
-          bcc: mailBcc,
-          reply_to: "collegestudy.support@gmail.com", // Set reply-to to support Gmail
-          subject: subject,
-          html: emailHtml,
-        };
-      });
+  // ─── Brevo (Sendinblue) Configuration ───────────────────────────────────────
+  // Set BREVO_API_KEY in Supabase Edge Function secrets:
+  //   npx supabase secrets set BREVO_API_KEY=your_key --project-ref axalbmmjqdezbkpffore
+  // Brevo free tier: 300 emails/day, no custom domain needed — just verify your Gmail sender!
+  const BREVO_API_KEY = Deno.env.get("BREVO_API_KEY") || "";
+  const SENDER_NAME = "College Study";
+  const SENDER_EMAIL = Deno.env.get("BREVO_SENDER_EMAIL") || "collegestudy.support@gmail.com";
 
-      // Split into batches of 100 (Resend Batch API limit)
-      const batches = [];
-      const batchSize = 100;
-      for (let i = 0; i < emailBatch.length; i += batchSize) {
-        batches.push(emailBatch.slice(i, i + batchSize));
+  if (!BREVO_API_KEY) {
+    return new Response(
+      JSON.stringify({ success: false, error: "BREVO_API_KEY is not configured. Please set it in Supabase Edge Function secrets." }),
+      { status: 500, headers: { "Content-Type": "application/json", ...corsHeaders } }
+    );
+  }
+
+  try {
+    const body: SendCampaignRequest = await req.json();
+    const { action, siteUrl } = body;
+
+    const rawSiteUrl = siteUrl || Deno.env.get("SITE_URL") || "https://college-study.netlify.app";
+    const cleanSiteUrl = (rawSiteUrl && !rawSiteUrl.includes('localhost') && !rawSiteUrl.includes('127.0.0.1'))
+      ? rawSiteUrl
+      : "https://college-study.netlify.app";
+    const SITE_URL = cleanSiteUrl.endsWith('/') ? cleanSiteUrl.slice(0, -1) : cleanSiteUrl;
+
+    if (action === "send") {
+      const { recipients, subject, bodyText, logoUrl, headerUrl, bannerUrl, buttons, fromAddress } = body;
+
+      if (!recipients || !Array.isArray(recipients) || recipients.length === 0) {
+        return new Response(
+          JSON.stringify({ success: false, error: "Recipients array is required and must not be empty" }),
+          { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } }
+        );
       }
 
-      const results = [];
+      if (!subject || !bodyText) {
+        return new Response(
+          JSON.stringify({ success: false, error: "Subject and bodyText are required" }),
+          { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } }
+        );
+      }
 
-      for (const batch of batches) {
-        console.log(`Posting batch of ${batch.length} emails to Resend...`);
-        const resendResponse = await fetch("https://api.resend.com/emails/batch", {
-          method: "POST",
-          headers: {
-            "Authorization": `Bearer ${RESEND_API_KEY}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(batch),
+      console.log(`[Brevo] Sending campaign: "${subject}" to ${recipients.length} recipients`);
+
+      // Parse optional custom fromAddress (format: "Name <email>" or just "email")
+      let senderName = SENDER_NAME;
+      let senderEmail = SENDER_EMAIL;
+      if (fromAddress) {
+        const match = fromAddress.match(/^(.*?)\s*<(.+)>$/);
+        if (match) {
+          senderName = match[1].trim() || SENDER_NAME;
+          senderEmail = match[2].trim();
+        } else {
+          senderEmail = fromAddress.trim();
+        }
+      }
+
+      // Build buttons HTML
+      function buildButtonsHtml(buttons?: CampaignButton[]): string {
+        if (!buttons || buttons.length === 0) return "";
+        let html = `<div style="margin: 24px 0; text-align: center;"><table role="presentation" border="0" cellpadding="0" cellspacing="0" style="margin: 0 auto; border-collapse: collapse;"><tr>`;
+        buttons.forEach((btn) => {
+          const btnUrl = btn.url.startsWith("http") ? btn.url : `${SITE_URL}${btn.url}`;
+          const lowerText = btn.text.toLowerCase();
+          let buttonStyle = "background-color: #0284c7; color: #ffffff; border: 1px solid #0284c7; padding: 12px 20px; font-weight: 600; font-size: 14px; text-decoration: none; border-radius: 8px; display: inline-block;";
+          let iconHtml = "";
+          if (lowerText.includes("google")) {
+            buttonStyle = "background-color: #ffffff; color: #1e293b; border: 1px solid #cbd5e1; padding: 12px 20px; font-weight: 600; font-size: 14px; text-decoration: none; border-radius: 8px; display: inline-block; box-shadow: 0 1px 2px rgba(0,0,0,0.05);";
+            iconHtml = `<img src="https://img.icons8.com/color/48/000000/google-logo.png" alt="Google" style="width: 16px; height: 16px; margin-right: 8px; vertical-align: middle; display: inline-block; border: 0;" />`;
+          } else if (lowerText.includes("github")) {
+            buttonStyle = "background-color: #ffffff; color: #1e293b; border: 1px solid #cbd5e1; padding: 12px 20px; font-weight: 600; font-size: 14px; text-decoration: none; border-radius: 8px; display: inline-block; box-shadow: 0 1px 2px rgba(0,0,0,0.05);";
+            iconHtml = `<img src="https://img.icons8.com/material-outlined/48/000000/github.png" alt="GitHub" style="width: 16px; height: 16px; margin-right: 8px; vertical-align: middle; display: inline-block; border: 0;" />`;
+          }
+          const cleanText = btn.text.replace(/🌐|💻/g, "").trim();
+          html += `<td style="padding: 0 8px 12px 8px;"><a href="${btnUrl}" target="_blank" style="${buttonStyle}">${iconHtml}<span style="vertical-align: middle;">${cleanText}</span></a></td>`;
+        });
+        html += `</tr></table></div>`;
+        return html;
+      }
+
+      const buttonsHtml = buildButtonsHtml(buttons);
+
+      // Send emails individually via Brevo transactional API
+      const results: Array<{
+        success: boolean;
+        recipientEmail: string;
+        brevoMessageId?: string;
+        error?: string;
+      }> = [];
+
+      for (const recipient of recipients) {
+        const name = recipient.name || "Student";
+        const email = recipient.email;
+
+        let introGreeting = `Hi ${name}! 👋`;
+        let processedBody = bodyText!;
+
+        if (recipient.isGoogleAuthFail) {
+          introGreeting = `Dear ${name},`;
+          processedBody = `We noticed you encountered an authentication issue while trying to sign up using your Google Account.\n\nUsually, this is a temporary connection glitch. Please wait for 5 minutes and try registering again. We've optimized our portal to make sure your next attempt is smooth!\n\n${bodyText}`;
+        }
+
+        const formattedHtmlBody = formatMarkdownToHtml(processedBody);
+
+        const emailHtml = buildEmailHtml({
+          subject: subject!,
+          introGreeting,
+          formattedHtmlBody,
+          buttonsHtml,
+          logoUrl,
+          headerUrl,
+          bannerUrl,
+          SITE_URL,
         });
 
-        const resendData = await resendResponse.json();
-        console.log("Resend Batch response status:", resendResponse.status);
+        // Brevo transactional email payload
+        const brevoPayload = {
+          sender: { name: senderName, email: senderEmail },
+          to: [{ email, name }],
+          replyTo: { email: "collegestudy.support@gmail.com", name: "College Study Support" },
+          subject: subject,
+          htmlContent: emailHtml,
+        };
 
-        if (!resendResponse.ok) {
-          console.error("Resend API batch failed:", resendData);
+        try {
+          const brevoResponse = await fetch("https://api.brevo.com/v3/smtp/email", {
+            method: "POST",
+            headers: {
+              "api-key": BREVO_API_KEY,
+              "Content-Type": "application/json",
+              "Accept": "application/json",
+            },
+            body: JSON.stringify(brevoPayload),
+          });
+
+          const brevoData = await brevoResponse.json();
+
+          if (brevoResponse.ok && brevoData.messageId) {
+            console.log(`[Brevo] ✓ Sent to ${email} | messageId: ${brevoData.messageId}`);
+            results.push({
+              success: true,
+              recipientEmail: email,
+              brevoMessageId: brevoData.messageId,
+            });
+          } else {
+            const errMsg = brevoData?.message || brevoData?.error || `HTTP ${brevoResponse.status}`;
+            console.error(`[Brevo] ✗ Failed to send to ${email}: ${errMsg}`, JSON.stringify(brevoData));
+            results.push({
+              success: false,
+              recipientEmail: email,
+              error: errMsg,
+            });
+          }
+        } catch (emailErr: any) {
+          console.error(`[Brevo] Exception sending to ${email}:`, emailErr.message);
           results.push({
             success: false,
-            error: resendData.error?.message || resendData.message || "Failed to send batch",
-            recipients: batch.map(b => b.to[0])
-          });
-        } else {
-          // Resend returns an array of { id } objects
-          results.push({
-            success: true,
-            data: resendData.data || resendData, // returns array of email status ids
-            recipients: batch.map(b => b.to[0])
+            recipientEmail: email,
+            error: emailErr.message || "Network error",
           });
         }
       }
+
+      const totalSent = results.filter(r => r.success).length;
+      const totalFailed = results.filter(r => !r.success).length;
+      console.log(`[Brevo] Campaign complete: ${totalSent} sent, ${totalFailed} failed`);
 
       return new Response(
         JSON.stringify({ success: true, results }),
@@ -304,56 +332,10 @@ ${bodyText}`;
       );
 
     } else if (action === "sync") {
-      const { emailIds } = body;
-
-      if (!emailIds || !Array.isArray(emailIds) || emailIds.length === 0) {
-        return new Response(
-          JSON.stringify({ success: false, error: "emailIds array is required" }),
-          { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } }
-        );
-      }
-
-      console.log(`Syncing status for ${emailIds.length} emails...`);
-
-      const syncResults = [];
-
-      // Query Resend API for status of each email ID
-      for (const id of emailIds) {
-        try {
-          const res = await fetch(`https://api.resend.com/emails/${id}`, {
-            method: "GET",
-            headers: {
-              "Authorization": `Bearer ${RESEND_API_KEY}`,
-              "Content-Type": "application/json",
-            }
-          });
-
-          if (res.ok) {
-            const emailDetails = await res.json();
-            // Statuses can be: 'sent', 'delivered', 'opened', 'clicked', 'bounced', 'complained'
-            syncResults.push({
-              resendEmailId: id,
-              status: emailDetails.last_event || "sent"
-            });
-          } else {
-            console.warn(`Failed to fetch status for email ${id}: ${res.statusText}`);
-            syncResults.push({
-              resendEmailId: id,
-              status: "unknown",
-              error: `API error: ${res.status}`
-            });
-          }
-        } catch (err: any) {
-          syncResults.push({
-            resendEmailId: id,
-            status: "error",
-            error: err.message
-          });
-        }
-      }
-
+      // Brevo doesn't have a per-message status API like Resend
+      // Return empty statuses — sync button will gracefully handle this
       return new Response(
-        JSON.stringify({ success: true, statuses: syncResults }),
+        JSON.stringify({ success: true, statuses: [], message: "Status sync not available with Brevo on free tier." }),
         { status: 200, headers: { "Content-Type": "application/json", ...corsHeaders } }
       );
 
