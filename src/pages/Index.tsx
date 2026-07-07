@@ -136,17 +136,30 @@ const Index = () => {
 
 
 
-  // If redirected here from a protected route, prompt sign-in immediately
+  // If redirected here from a protected route or query parameter, prompt sign-in/sign-up immediately
   const location = useLocation();
   useEffect(() => {
     if (user) return;
+    const searchParams = new URLSearchParams(location.search);
+    const authModalParam = searchParams.get('auth_modal');
+    if (authModalParam === 'signup') {
+      setAuthMode('signup');
+      setShowAuthModal(true);
+      return;
+    }
+    if (authModalParam === 'signin') {
+      setAuthMode('signin');
+      setShowAuthModal(true);
+      return;
+    }
+
     const fromState = (location.state as any)?.from;
     const stored = (() => { try { return sessionStorage.getItem('postLoginRedirect'); } catch { return null; } })();
     if (fromState || stored) {
       setAuthMode('signin');
       setShowAuthModal(true);
     }
-  }, [user, location.state]);
+  }, [user, location.search, location.state]);
   // Auto-show signup popup on first visit
   useEffect(() => {
     if (user) return; // Don't show if logged in
