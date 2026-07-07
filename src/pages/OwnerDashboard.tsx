@@ -351,7 +351,7 @@ function ContributorCard({ contributor, rank, onRefresh }: ContributorCardProps)
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 flex-wrap">
                 <span className="font-semibold text-sm">{contributor.name}</span>
-                <Badge variant="outline" className="text-xs">{contributor.branch} '{contributor.batch} • HBTU</Badge>
+                <Badge variant="outline" className="text-xs">{contributor.branch} {"'"}{contributor.batch} • HBTU</Badge>
                 <Badge className="text-xs bg-yellow-50 text-yellow-700 border-yellow-200 dark:bg-yellow-900/20 dark:text-yellow-400">
                   <Coins className="h-3 w-3 mr-1" />{contributor.coins}
                 </Badge>
@@ -433,6 +433,54 @@ const OwnerDashboard = () => {
 
   // Clickable Navigation subpages view state
   const [currentView, setCurrentView] = useState<'pending' | 'scholarships' | 'premium' | 'notifications' | 'contributors' | 'admins' | 'emails' | 'all'>('pending');
+
+  // ─── Computed variables (must be before useEffect hooks) ─────────────────────
+  const filteredMaterials = allMaterials.filter(m => {
+    const matchesFilter = materialFilter === 'all' || m.status === materialFilter;
+    const matchesSearch = !searchQuery || 
+      m.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      m.subject.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      m.user_email.toLowerCase().includes(searchQuery.toLowerCase());
+    return matchesFilter && matchesSearch;
+  });
+
+
+  // Group premium purchases by user
+  const groupedPremiumUsers = premiumPurchases.reduce((acc: any, purchase: any) => {
+    const userId = purchase.user_id;
+    if (!acc[userId]) {
+      acc[userId] = {
+        user_id: userId,
+        first_name: purchase.first_name || '',
+        last_name: purchase.last_name || '',
+        branch: purchase.branch || '',
+        email: purchase.email || purchase.user_email,
+        purchases: [],
+      };
+    }
+    acc[userId].purchases.push(purchase);
+    return acc;
+  }, {});
+
+  const groupedList = Object.values(groupedPremiumUsers);
+
+  const filteredGroupedList = groupedList.filter((item: any) => {
+    const search = searchPremiumQuery.toLowerCase();
+    const fullName = `${item.first_name} ${item.last_name}`.toLowerCase();
+    return (
+      fullName.includes(search) ||
+      item.email.toLowerCase().includes(search) ||
+      item.branch.toLowerCase().includes(search)
+    );
+  });
+
+  const gateEnrolledCount = premiumPurchases.filter(p => p.plan === 'gate_study').length;
+  const premiumAccessCount = premiumPurchases.filter(p => p.plan !== 'gate_study').length;
+
+  const textColor = isDark ? '#94a3b8' : '#475569';
+  const tooltipBg = isDark ? '#0f172a' : '#ffffff';
+  const tooltipColor = isDark ? '#f8fafc' : '#0f172a';
+  const tooltipBorder = isDark ? '1px solid #334155' : '1px solid #e2e8f0';
 
   useEffect(() => {
     if (isOwner) {
@@ -1042,66 +1090,9 @@ const OwnerDashboard = () => {
     );
   }
 
-  const filteredMaterials = allMaterials.filter(m => {
-    const matchesFilter = materialFilter === 'all' || m.status === materialFilter;
-    const matchesSearch = !searchQuery || 
-      m.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      m.subject.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      m.user_email.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesFilter && matchesSearch;
-  });
-
-  const statusBadge = (status: string) => {
-    const configs: Record<string, string> = {
-      pending: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400',
-      approved: 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400',
-      rejected: 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400',
-    };
-    return <Badge className={configs[status] || ''}>{status}</Badge>;
-  };
-
-  // Group premium purchases by user
-  const groupedPremiumUsers = premiumPurchases.reduce((acc: any, purchase: any) => {
-    const userId = purchase.user_id;
-    if (!acc[userId]) {
-      acc[userId] = {
-        user_id: userId,
-        first_name: purchase.first_name || '',
-        last_name: purchase.last_name || '',
-        branch: purchase.branch || '',
-        email: purchase.email || purchase.user_email,
-        purchases: [],
-      };
-    }
-    acc[userId].purchases.push(purchase);
-    return acc;
-  }, {});
-
-  const groupedList = Object.values(groupedPremiumUsers);
-
-  const filteredGroupedList = groupedList.filter((item: any) => {
-    const search = searchPremiumQuery.toLowerCase();
-    const fullName = `${item.first_name} ${item.last_name}`.toLowerCase();
-    return (
-      fullName.includes(search) ||
-      item.email.toLowerCase().includes(search) ||
-      item.branch.toLowerCase().includes(search)
-    );
-  });
-
-  const gateEnrolledCount = premiumPurchases.filter(p => p.plan === 'gate_study').length;
-  const premiumAccessCount = premiumPurchases.filter(p => p.plan !== 'gate_study').length;
-
-  const textColor = isDark ? '#94a3b8' : '#475569';
-  const tooltipBg = isDark ? '#0f172a' : '#ffffff';
-  const tooltipColor = isDark ? '#f8fafc' : '#0f172a';
-  const tooltipBorder = isDark ? '1px solid #334155' : '1px solid #e2e8f0';
-
   return (
     <div 
-      className={`min-h-screen relative overflow-y-auto pb-16 transition-colors duration-300 ${
-        isDark ? 'bg-slate-950 text-slate-100' : 'bg-sky-50/40 text-slate-900'
-      }`}
+      className={isDark ? 'min-h-screen relative overflow-y-auto pb-16 transition-colors duration-300 bg-slate-950 text-slate-100' : 'min-h-screen relative overflow-y-auto pb-16 transition-colors duration-300 bg-sky-50/40 text-slate-900'}
       style={{
         backgroundImage: isDark
           ? `linear-gradient(to bottom, rgba(15, 23, 42, 0.92), rgba(15, 23, 42, 0.98)), url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=1600&auto=format&fit=crop')`
@@ -1114,13 +1105,10 @@ const OwnerDashboard = () => {
       <Navbar />
       
       {/* High-tech grid overlay */}
-      <div className={`absolute inset-0 pointer-events-none opacity-20 ${
-        isDark 
-          ? "bg-[linear-gradient(rgba(56,189,248,0.04)_1px,transparent_1px),linear-gradient(90deg,rgba(56,189,248,0.04)_1px,transparent_1px)]"
-          : "bg-[linear-gradient(rgba(14,165,233,0.08)_1px,transparent_1px),linear-gradient(90deg,rgba(14,165,233,0.08)_1px,transparent_1px)]"
-      } bg-[size:30px_30px]`} />
+      <div className={isDark ? "absolute inset-0 pointer-events-none opacity-20 bg-[linear-gradient(rgba(56,189,248,0.04)_1px,transparent_1px),linear-gradient(90deg,rgba(56,189,248,0.04)_1px,transparent_1px)] bg-[size:30px_30px]" : "absolute inset-0 pointer-events-none opacity-20 bg-[linear-gradient(rgba(14,165,233,0.08)_1px,transparent_1px),linear-gradient(90deg,rgba(14,165,233,0.08)_1px,transparent_1px)] bg-[size:30px_30px]"} />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative z-10">          <div className={`flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6 border-b pb-5 ${
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative z-10">
+          <div className={`flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6 border-b pb-5 ${
             isDark ? 'border-slate-800' : 'border-slate-200'
           }`}>
             <div>
@@ -1338,7 +1326,6 @@ const OwnerDashboard = () => {
               </CardContent>
             </Card>
           </div>
-        </motion.div>
 
         {/* Dashboard Navigation Section Title */}
         <div className="mt-12 mb-6">
@@ -1782,7 +1769,7 @@ const OwnerDashboard = () => {
                   <UserPlus className="h-5 w-5" /> Grant Premium Access
                 </CardTitle>
                 <CardDescription>
-                  Enter a registered user's email and select the premium resource package to grant access.
+                  Enter a registered user&apos;s email and select the premium resource package to grant access.
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -1855,7 +1842,7 @@ const OwnerDashboard = () => {
                   <div className="text-center py-12 text-muted-foreground">
                     <UserMinus className="h-12 w-12 mx-auto text-slate-300 dark:text-slate-700 mb-3" />
                     <p className="font-semibold text-sm">No premium members found.</p>
-                    <p className="text-xs">Either no users have purchased, or the search filter didn't match any records.</p>
+                    <p className="text-xs">Either no users have purchased, or the search filter didn&apos;t match any records.</p>
                   </div>
                 ) : (
                   <div className="space-y-4">
@@ -2208,7 +2195,7 @@ const OwnerDashboard = () => {
                             {material.material_type === 'pyqs' ? '📄 PYQs' : '📝 Notes'}
                           </Badge>
                           <div className="flex gap-1.5">
-                            {statusBadge(material.status)}
+                            <Badge className={material.status === 'pending' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400' : material.status === 'approved' ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400' : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'}>{material.status}</Badge>
                             <Badge className="bg-purple-500/10 text-purple-400 text-[10px] font-bold border border-purple-500/20 px-2 py-0.5 rounded-full">
                               Sem {material.semester}
                             </Badge>
