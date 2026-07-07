@@ -12,7 +12,10 @@ export default defineConfig(({ mode }) => ({
   plugins: [
     react(),
     VitePWA({
+      selfDestroying: true,
       registerType: 'autoUpdate',
+      strategies: 'generateSW',
+      injectRegister: 'auto',
       includeAssets: ['icon-192.png', 'icon-512.png'],
       manifest: {
         name: 'College Study - College Notes & Resources',
@@ -42,6 +45,7 @@ export default defineConfig(({ mode }) => ({
       workbox: {
         globPatterns: ['**/*.{js,css,html,ico,png,svg,jpg,jpeg}'],
         maximumFileSizeToCacheInBytes: 50 * 1024 * 1024, // 50MB
+        sourcemap: false,
         runtimeCaching: [
           {
             urlPattern: /^https:\/\/drive\.google\.com\/.*/i,
