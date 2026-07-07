@@ -578,6 +578,7 @@ Click below to check out the details, themes, and registration links.`,
           logoUrl,
           headerUrl: showHeaderImage ? headerUrl : undefined,
           bannerUrl,
+          siteUrl: window.location.origin,
           buttons: [
             { text: btn1Text, url: btn1Url },
             { text: btn2Text, url: btn2Url },
@@ -1130,8 +1131,8 @@ Click below to check out the details, themes, and registration links.`,
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="0">Do Not Exclude (Send to All)</SelectItem>
-                        <SelectItem value="30">Exclude if inactive > 30 Days</SelectItem>
-                        <SelectItem value="60">Exclude if inactive > 60 Days</SelectItem>
+                        <SelectItem value="30">Exclude if inactive &gt; 30 Days</SelectItem>
+                        <SelectItem value="60">Exclude if inactive &gt; 60 Days</SelectItem>
                       </SelectContent>
                     </Select>
                     <p className="text-[10px] text-slate-400 mt-0.5">Filters out users who haven't logged in recently to preserve Resend limits.</p>
