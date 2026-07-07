@@ -227,6 +227,7 @@ Simply click one of the buttons below to log in or sign up immediately.`,
           logoUrl: 'https://axalbmmjqdezbkpffore.supabase.co/storage/v1/object/public/study-materials/logo.png',
           headerUrl: '/college_study_email_header.png',
           bannerUrl: '/college_study_email_poster.png',
+          siteUrl: window.location.origin,
           buttons: [
             { text: 'Login with Google 🌐', url: '/auth?provider=google' },
             { text: 'Login with GitHub 💻', url: '/auth?provider=github' }
