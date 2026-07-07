@@ -29,6 +29,8 @@ interface SendCampaignRequest {
   headerUrl?: string;
   bannerUrl?: string;
   buttons?: CampaignButton[];
+  fromAddress?: string;
+  sendAsBcc?: boolean;
   // For action === 'sync'
   emailIds?: string[]; // Resend email IDs to sync status
 }
@@ -72,10 +74,13 @@ serve(async (req) => {
     const { action, siteUrl } = body;
 
     const rawSiteUrl = siteUrl || Deno.env.get("SITE_URL") || "https://college-study.netlify.app";
-    const SITE_URL = rawSiteUrl.endsWith('/') ? rawSiteUrl.slice(0, -1) : rawSiteUrl;
+    const cleanSiteUrl = (rawSiteUrl && !rawSiteUrl.includes('localhost') && !rawSiteUrl.includes('127.0.0.1'))
+      ? rawSiteUrl
+      : "https://college-study.netlify.app";
+    const SITE_URL = cleanSiteUrl.endsWith('/') ? cleanSiteUrl.slice(0, -1) : cleanSiteUrl;
 
     if (action === "send") {
-      const { recipients, subject, bodyText, logoUrl, headerUrl, bannerUrl, buttons } = body;
+      const { recipients, subject, bodyText, logoUrl, headerUrl, bannerUrl, buttons, fromAddress, sendAsBcc } = body;
 
       if (!recipients || !Array.isArray(recipients) || recipients.length === 0) {
         return new Response(
@@ -174,7 +179,7 @@ ${bodyText}`;
           <!-- Email Header (Logo) -->
           <tr>
             <td style="padding: 32px 32px 20px; background-color: #ffffff; text-align: center; border-bottom: 1px solid #f0f9ff;">
-              <img src="${logoUrl || 'https://axalbmmjqdezbkpffore.supabase.co/storage/v1/object/public/study-materials/logo.png'}" alt="College Study" style="height: 50px; width: auto; margin-bottom: 8px;" />
+              <img src="${logoUrl || 'https://college-study.netlify.app/logo.png'}" alt="College Study" style="height: 50px; width: auto; margin-bottom: 8px;" />
               <p style="margin: 0; font-size: 20px; font-weight: 700; color: #0369a1; letter-spacing: 0.5px;">College Study</p>
               <p style="margin: 0; font-size: 11px; color: #0284c7; text-transform: uppercase; letter-spacing: 1px; font-weight: 600;">Your Ultimate Academic Hub</p>
             </td>
@@ -219,8 +224,7 @@ ${bodyText}`;
                 Have questions or need help?
               </p>
               <p style="margin: 0 0 24px; font-size: 13px; color: #64748b; line-height: 1.5;">
-                Reach out to us at <a href="mailto:collegestudy.support@gmail.com" style="color: #0284c7; text-decoration: none; font-weight: 500;">collegestudy.support@gmail.com</a>.<br>
-                For verified and fast registration, we always recommend using the <strong>Continue with Google</strong> option.
+                Reach out to us at <a href="mailto:collegestudy.support@gmail.com" style="color: #0284c7; text-decoration: none; font-weight: 500;">collegestudy.support@gmail.com</a>.
               </p>
               <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 20px 0;">
               <p style="margin: 0 0 6px; font-size: 12px; color: #0284c7; font-weight: 600;">
@@ -241,9 +245,13 @@ ${bodyText}`;
 </html>
         `;
 
+        const mailTo = sendAsBcc ? ["College Study <no-reply@college-study.netlify.app>"] : [email];
+        const mailBcc = sendAsBcc ? [email] : undefined;
+
         return {
-          from: RESEND_FROM,
-          to: [email],
+          from: fromAddress || RESEND_FROM,
+          to: mailTo,
+          bcc: mailBcc,
           reply_to: "collegestudy.support@gmail.com", // Set reply-to to support Gmail
           subject: subject,
           html: emailHtml,
