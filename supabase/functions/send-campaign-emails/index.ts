@@ -19,6 +19,7 @@ interface CampaignButton {
 
 interface SendCampaignRequest {
   action: "send" | "sync";
+  siteUrl?: string;
   // For action === 'send'
   campaignId?: string;
   recipients?: Recipient[];
@@ -65,11 +66,13 @@ serve(async (req) => {
 
   const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY") || "re_7oYzeKGo_FPFyksyTHad8KrwsX3oA92qM";
   const RESEND_FROM = Deno.env.get("RESEND_FROM") || "College Study <onboarding@resend.dev>";
-  const SITE_URL = Deno.env.get("SITE_URL") || "https://college-study.netlify.app"; // Fallback URL
 
   try {
     const body: SendCampaignRequest = await req.json();
-    const { action } = body;
+    const { action, siteUrl } = body;
+
+    const rawSiteUrl = siteUrl || Deno.env.get("SITE_URL") || "https://college-study.netlify.app";
+    const SITE_URL = rawSiteUrl.endsWith('/') ? rawSiteUrl.slice(0, -1) : rawSiteUrl;
 
     if (action === "send") {
       const { recipients, subject, bodyText, logoUrl, headerUrl, bannerUrl, buttons } = body;
@@ -120,12 +123,26 @@ ${bodyText}`;
           `;
 
           buttons.forEach((btn, idx) => {
-            // Absolute URL check
             const btnUrl = btn.url.startsWith("http") ? btn.url : `${SITE_URL}${btn.url}`;
+            const lowerText = btn.text.toLowerCase();
+            
+            let buttonStyle = "background-color: #0284c7; color: #ffffff; border: 1px solid #0284c7; padding: 12px 20px; font-weight: 600; font-size: 14px; text-decoration: none; border-radius: 8px; display: inline-block; transition: background-color 0.2s;";
+            let iconHtml = "";
+
+            if (lowerText.includes("google")) {
+              buttonStyle = "background-color: #ffffff; color: #1e293b; border: 1px solid #cbd5e1; padding: 12px 20px; font-weight: 600; font-size: 14px; text-decoration: none; border-radius: 8px; display: inline-block; transition: background-color 0.2s; box-shadow: 0 1px 2px rgba(0,0,0,0.05);";
+              iconHtml = `<img src="https://img.icons8.com/color/48/000000/google-logo.png" alt="Google" style="width: 16px; height: 16px; margin-right: 8px; vertical-align: middle; display: inline-block; border: 0;" />`;
+            } else if (lowerText.includes("github")) {
+              buttonStyle = "background-color: #ffffff; color: #1e293b; border: 1px solid #cbd5e1; padding: 12px 20px; font-weight: 600; font-size: 14px; text-decoration: none; border-radius: 8px; display: inline-block; transition: background-color 0.2s; box-shadow: 0 1px 2px rgba(0,0,0,0.05);";
+              iconHtml = `<img src="https://img.icons8.com/material-outlined/48/000000/github.png" alt="GitHub" style="width: 16px; height: 16px; margin-right: 8px; vertical-align: middle; display: inline-block; border: 0;" />`;
+            }
+
+            const cleanText = btn.text.replace(/🌐|💻/g, "").trim();
+
             buttonsHtml += `
               <td style="padding: 0 8px 12px 8px;">
-                <a href="${btnUrl}" target="_blank" style="background-color: #0284c7; color: #ffffff; padding: 12px 20px; font-weight: 600; font-size: 14px; text-decoration: none; border-radius: 8px; display: inline-block; transition: background-color 0.2s;">
-                  ${btn.text}
+                <a href="${btnUrl}" target="_blank" style="${buttonStyle}">
+                  ${iconHtml}<span style="vertical-align: middle;">${cleanText}</span>
                 </a>
               </td>
             `;
