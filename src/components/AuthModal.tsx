@@ -224,13 +224,13 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'signin' }: AuthModalProps) 
 To complete your registration in seconds with zero hassle, please use the **Continue with Google** or **Continue with GitHub** option. These options are instantaneous, secure, and do not require email OTP codes!
 
 Simply click one of the buttons below to log in or sign up immediately.`,
-          logoUrl: 'https://axalbmmjqdezbkpffore.supabase.co/storage/v1/object/public/study-materials/logo.png',
+          logoUrl: 'https://college-study.netlify.app/logo.png',
           headerUrl: '/college_study_email_header.png',
           bannerUrl: '/college_study_email_poster.png',
-          siteUrl: window.location.origin,
+          siteUrl: 'https://college-study.netlify.app',
           buttons: [
-            { text: 'Login with Google 🌐', url: '/auth?provider=google' },
-            { text: 'Login with GitHub 💻', url: '/auth?provider=github' }
+            { text: 'Login with Google 🌐', url: 'https://college-study.netlify.app/auth?provider=google' },
+            { text: 'Login with GitHub 💻', url: 'https://college-study.netlify.app/auth?provider=github' }
           ]
         })
       });
