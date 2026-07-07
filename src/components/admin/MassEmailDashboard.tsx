@@ -96,19 +96,22 @@ export default function MassEmailDashboard() {
   const [selectedTemplateId, setSelectedTemplateId] = useState<string>('new');
   const [templateName, setTemplateName] = useState('My Custom Template');
   const [emailSubject, setEmailSubject] = useState('New Updates on College Study website! 🚀');
-  const [logoUrl, setLogoUrl] = useState('https://axalbmmjqdezbkpffore.supabase.co/storage/v1/object/public/study-materials/logo.png');
-  const [headerUrl, setHeaderUrl] = useState('https://college-study.netlify.app/college_study_email_header.png');
+  const [logoUrl, setLogoUrl] = useState('https://college-study.netlify.app/logo.png');
+  const [headerUrl, setHeaderUrl] = useState('https://college-study.netlify.app/scholarship_banner.png');
   const [showHeaderImage, setShowHeaderImage] = useState(false);
-  const [bannerUrl, setBannerUrl] = useState('https://college-study.netlify.app/college_study_email_poster.png');
+  const [bannerUrl, setBannerUrl] = useState('https://college-study.netlify.app/');
   const [bodyText, setBodyText] = useState(`We have added some amazing resources, scholarships, and opportunities for college students on the **College Study** website. 
 
 Check them out now to stay ahead in your academics and career!`);
   const [btn1Text, setBtn1Text] = useState('Check Scholarships 🎓');
-  const [btn1Url, setBtn1Url] = useState('/scholarship-portal');
+  const [btn1Url, setBtn1Url] = useState('https://college-study.netlify.app/scholarship-portal');
   const [btn2Text, setBtn2Text] = useState('Explore Opportunities 💼');
-  const [btn2Url, setBtn2Url] = useState('/opportunities');
-  const [btn3Text, setBtn3Text] = useState('Placement Prep 🚀');
-  const [btn3Url, setBtn3Url] = useState('/placement-preparation');
+  const [btn2Url, setBtn2Url] = useState('https://college-study.netlify.app/opportunities');
+  const [btn3Text, setBtn3Text] = useState('Gate Study 📚');
+  const [btn3Url, setBtn3Url] = useState('https://college-study.netlify.app/gate-study');
+
+  const [fromAddress, setFromAddress] = useState('College Study <onboarding@resend.dev>');
+  const [sendAsBcc, setSendAsBcc] = useState(true);
 
   const [selectedPreset, setSelectedPreset] = useState<string>('none');
   const [showPreviewModal, setShowPreviewModal] = useState(false);
@@ -141,14 +144,14 @@ Check them out now to stay ahead in your academics and career!`);
 To complete your registration in seconds with zero hassle, please use the **Continue with Google** or **Continue with GitHub** option. These options are instantaneous, secure, and do not require email OTP codes!
 
 Simply click one of the buttons below to log in or sign up immediately.`,
-      logoUrl: 'https://axalbmmjqdezbkpffore.supabase.co/storage/v1/object/public/study-materials/logo.png',
-      headerUrl: 'https://college-study.netlify.app/college_study_otp_banner.png',
+      logoUrl: 'https://college-study.netlify.app/logo.png',
+      headerUrl: 'https://college-study.netlify.app/important_update_banner.png',
       showHeaderImage: true,
-      bannerUrl: 'https://college-study.netlify.app/college_study_email_poster.png',
+      bannerUrl: 'https://college-study.netlify.app/new_update_banner.png',
       btn1Text: 'Login with Google 🌐',
-      btn1Url: '/auth?provider=google',
+      btn1Url: 'https://college-study.netlify.app/auth?provider=google',
       btn2Text: 'Login with GitHub 💻',
-      btn2Url: '/auth?provider=github',
+      btn2Url: 'https://college-study.netlify.app/auth?provider=github',
       btn3Text: '',
       btn3Url: ''
     },
@@ -160,16 +163,16 @@ Simply click one of the buttons below to log in or sign up immediately.`,
 Check out the eligible lists, application guidelines, and links directly on our portal.
 
 Click the buttons below to view the latest active scholarships immediately.`,
-      logoUrl: 'https://axalbmmjqdezbkpffore.supabase.co/storage/v1/object/public/study-materials/logo.png',
-      headerUrl: 'https://college-study.netlify.app/college_study_scholarship_header.png',
+      logoUrl: 'https://college-study.netlify.app/logo.png',
+      headerUrl: 'https://college-study.netlify.app/scholarship_banner.png',
       showHeaderImage: true,
-      bannerUrl: 'https://college-study.netlify.app/college_study_email_poster.png',
+      bannerUrl: 'https://college-study.netlify.app/deadline_banner.png',
       btn1Text: 'View Scholarships 🎓',
-      btn1Url: '/scholarship-portal',
+      btn1Url: 'https://college-study.netlify.app/scholarship-portal',
       btn2Text: 'Explore Opportunities 💼',
-      btn2Url: '/opportunities',
-      btn3Text: '',
-      btn3Url: ''
+      btn2Url: 'https://college-study.netlify.app/opportunities',
+      btn3Text: 'Gate Study 📚',
+      btn3Url: 'https://college-study.netlify.app/gate-study'
     },
     hackathon_alert: {
       name: 'Preset: New Hackathons & Coding Alert 🏆',
@@ -179,14 +182,14 @@ Click the buttons below to view the latest active scholarships immediately.`,
 Form your teams, prepare your IDEs, and register before slots fill up!
 
 Click below to check out the details, themes, and registration links.`,
-      logoUrl: 'https://axalbmmjqdezbkpffore.supabase.co/storage/v1/object/public/study-materials/logo.png',
-      headerUrl: 'https://college-study.netlify.app/college_study_hackathon_header.png',
+      logoUrl: 'https://college-study.netlify.app/logo.png',
+      headerUrl: 'https://college-study.netlify.app/hackathon_banner.png',
       showHeaderImage: true,
-      bannerUrl: 'https://college-study.netlify.app/college_study_email_poster.png',
-      btn1Text: 'Check Hackathons 💻',
-      btn1Url: '/opportunities',
-      btn2Text: 'Coding Prep Resources 🚀',
-      btn2Url: '/placement-preparation',
+      bannerUrl: 'https://college-study.netlify.app/new_update_banner.png',
+      btn1Text: 'Check Opportunities 💼',
+      btn1Url: 'https://college-study.netlify.app/opportunities',
+      btn2Text: 'Premium Content 👑',
+      btn2Url: 'https://college-study.netlify.app/premium-content',
       btn3Text: '',
       btn3Url: ''
     }
@@ -578,7 +581,9 @@ Click below to check out the details, themes, and registration links.`,
           logoUrl,
           headerUrl: showHeaderImage ? headerUrl : undefined,
           bannerUrl,
-          siteUrl: window.location.origin,
+          siteUrl: 'https://college-study.netlify.app',
+          fromAddress,
+          sendAsBcc,
           buttons: [
             { text: btn1Text, url: btn1Url },
             { text: btn2Text, url: btn2Url },
@@ -790,6 +795,44 @@ Click below to check out the details, themes, and registration links.`,
     }
   };
 
+  const handleDeleteCampaign = async (campaignId: string, event: React.MouseEvent) => {
+    event.stopPropagation();
+    
+    if (!window.confirm("Are you sure you want to delete this campaign? This will also delete all associated email delivery logs.")) {
+      return;
+    }
+    
+    try {
+      // First delete associated logs
+      const { error: logsError } = await supabase
+        .from('email_logs')
+        .delete()
+        .eq('campaign_id', campaignId);
+        
+      if (logsError) throw logsError;
+
+      // Then delete the campaign itself
+      const { error: campaignError } = await supabase
+        .from('email_campaigns')
+        .delete()
+        .eq('id', campaignId);
+
+      if (campaignError) throw campaignError;
+
+      toast({ title: 'Campaign Deleted 🗑️', description: 'The campaign and its logs were deleted.' });
+      
+      // If the deleted campaign was currently selected, clear selection
+      if (selectedCampaignId === campaignId) {
+        setSelectedCampaignId(null);
+        setSelectedCampaignLogs([]);
+      }
+      
+      fetchCampaigns();
+    } catch (err: any) {
+      toast({ title: 'Failed to delete campaign', description: err.message, variant: 'destructive' });
+    }
+  };
+
   // Compile markdown-to-html preview dynamically on the screen
   const htmlPreviewBody = useMemo(() => {
     let html = bodyText
@@ -907,7 +950,7 @@ Click below to check out the details, themes, and registration links.`,
                       {showHeaderImage && headerUrl && (
                         <div className="px-4 pt-3">
                           <img 
-                            src={headerUrl.startsWith('http') ? headerUrl : `${window.location.origin}${headerUrl}`} 
+                            src={headerUrl.startsWith('http') ? headerUrl : `https://college-study.netlify.app${headerUrl}`} 
                             alt="Header Banner" 
                             className="w-full h-auto rounded-xl border border-[#e0f2fe]" 
                           />
@@ -976,6 +1019,23 @@ Click below to check out the details, themes, and registration links.`,
             </div>
           </div>
 
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-1.5">
+              <Label htmlFor="from-address" className="text-xs font-bold text-slate-500">Sender Email (From Address)</Label>
+              <Input id="from-address" value={fromAddress} onChange={e => setFromAddress(e.target.value)} placeholder="College Study <onboarding@resend.dev>" />
+              <p className="text-[10px] text-slate-400 mt-0.5">
+                Must be a verified sender domain on your Resend account. By default, it uses the onboarding address.
+              </p>
+            </div>
+            <div className="flex items-center justify-between border border-slate-100 dark:border-slate-800 rounded-lg p-3 bg-slate-50/50 dark:bg-slate-900/50">
+              <div className="space-y-0.5">
+                <Label className="text-xs font-bold text-slate-700 dark:text-slate-350">Send via BCC (Recipient Privacy)</Label>
+                <p className="text-[10px] text-slate-400">Hides recipient email list from other users. (Highly Recommended)</p>
+              </div>
+              <Switch checked={sendAsBcc} onCheckedChange={setSendAsBcc} />
+            </div>
+          </div>
+
           {/* Optional Header Banner Configuration */}
           <div className="border border-slate-100 dark:border-slate-800 rounded-lg p-4 bg-slate-50/50 dark:bg-slate-900/50 space-y-4">
             <div className="flex items-center justify-between">
@@ -991,7 +1051,7 @@ Click below to check out the details, themes, and registration links.`,
                 <div className="space-y-1.5">
                   <Label className="text-xs font-bold text-slate-500">Preset Header Options</Label>
                   <Select 
-                    value={['/college_study_email_header.png', 'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?q=80&w=600&auto=format&fit=crop', 'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?q=80&w=600&auto=format&fit=crop', 'https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?q=80&w=600&auto=format&fit=crop'].includes(headerUrl) ? headerUrl : 'custom'} 
+                    value={['/scholarship_banner.png', '/hackathon_banner.png', '/important_update_banner.png', '/deadline_banner.png', '/new_update_banner.png'].includes(headerUrl) ? headerUrl : 'custom'} 
                     onValueChange={(val) => {
                       if (val !== 'custom') {
                         setHeaderUrl(val);
@@ -1004,10 +1064,11 @@ Click below to check out the details, themes, and registration links.`,
                       <SelectValue placeholder="Select Banner Option" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="/college_study_email_header.png">Default College Study Banner</SelectItem>
-                      <SelectItem value="https://images.unsplash.com/photo-1523050854058-8df90110c9f1?q=80&w=600&auto=format&fit=crop">Back to College Theme</SelectItem>
-                      <SelectItem value="https://images.unsplash.com/photo-1434030216411-0b793f4b4173?q=80&w=600&auto=format&fit=crop">Exam Preparation Theme</SelectItem>
-                      <SelectItem value="https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?q=80&w=600&auto=format&fit=crop">Student Discussions Theme</SelectItem>
+                      <SelectItem value="/scholarship_banner.png">Scholarship Portal Banner</SelectItem>
+                      <SelectItem value="/hackathon_banner.png">Opportunities & Hackathons Banner</SelectItem>
+                      <SelectItem value="/important_update_banner.png">Important Update Banner</SelectItem>
+                      <SelectItem value="/deadline_banner.png">Deadline Reminder Banner</SelectItem>
+                      <SelectItem value="/new_update_banner.png">New Feature/Update Banner</SelectItem>
                       <SelectItem value="custom">-- Custom Header Image URL --</SelectItem>
                     </SelectContent>
                   </Select>
@@ -1017,7 +1078,7 @@ Click below to check out the details, themes, and registration links.`,
                   <Input 
                     value={headerUrl} 
                     onChange={e => setHeaderUrl(e.target.value)} 
-                    disabled={headerUrl !== '/college_study_email_header.png' && !headerUrl.startsWith('http') && headerUrl !== ''} 
+                    disabled={['/scholarship_banner.png', '/hackathon_banner.png', '/important_update_banner.png', '/deadline_banner.png', '/new_update_banner.png'].includes(headerUrl)} 
                     placeholder="Enter custom image URL" 
                   />
                 </div>
@@ -1321,21 +1382,32 @@ Click below to check out the details, themes, and registration links.`,
                     <div 
                       key={camp.id} 
                       onClick={() => fetchCampaignLogs(camp.id)}
-                      className={`p-3.5 hover:bg-slate-100/50 dark:hover:bg-slate-800/40 cursor-pointer text-xs transition-colors ${
+                      className={`p-3.5 hover:bg-slate-100/50 dark:hover:bg-slate-800/40 cursor-pointer text-xs transition-colors group relative ${
                         selectedCampaignId === camp.id ? 'bg-sky-50/50 dark:bg-sky-950/20 border-l-4 border-sky-500' : ''
                       }`}
                     >
-                      <div className="font-bold text-slate-700 dark:text-slate-200 flex justify-between items-start gap-1">
+                      <div className="font-bold text-slate-700 dark:text-slate-200 flex justify-between items-start gap-1 pr-6">
                         <span className="truncate">{camp.name}</span>
-                        {camp.status === 'completed' && <Badge className="bg-green-50 text-green-600 border-0 text-[8px] scale-90">Done</Badge>}
-                        {camp.status === 'sending' && <Badge className="bg-sky-50 text-sky-600 border-0 text-[8px] scale-90 animate-pulse">Sending</Badge>}
-                        {camp.status === 'paused' && <Badge className="bg-yellow-50 text-yellow-600 border-0 text-[8px] scale-90">Paused</Badge>}
+                        <div className="flex items-center gap-1.5 shrink-0">
+                          {camp.status === 'completed' && <Badge className="bg-green-50 text-green-600 border-0 text-[8px] scale-90">Done</Badge>}
+                          {camp.status === 'sending' && <Badge className="bg-sky-50 text-sky-600 border-0 text-[8px] scale-90 animate-pulse">Sending</Badge>}
+                          {camp.status === 'paused' && <Badge className="bg-yellow-50 text-yellow-600 border-0 text-[8px] scale-90">Paused</Badge>}
+                        </div>
                       </div>
                       
-                      <div className="text-[10px] text-slate-500 mt-1 flex justify-between items-center">
+                      <div className="text-[10px] text-slate-500 mt-1 flex justify-between items-center pr-6">
                         <span>Total: {camp.total_count} (S: {camp.sent_count} | F: {camp.failed_count})</span>
                         <span className="text-[9px]">{new Date(camp.created_at).toLocaleDateString()}</span>
                       </div>
+
+                      {/* Delete Campaign Button - Shown on Hover */}
+                      <button
+                        onClick={(e) => handleDeleteCampaign(camp.id, e)}
+                        className="absolute right-2 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 p-1 text-slate-400 hover:text-red-500 rounded transition-opacity duration-150"
+                        title="Delete Campaign"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </button>
                     </div>
                   ))
                 )}
