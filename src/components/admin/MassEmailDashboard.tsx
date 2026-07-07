@@ -111,7 +111,7 @@ Check them out now to stay ahead in your academics and career!`);
   const [btn3Url, setBtn3Url] = useState('https://college-study.netlify.app/gate-study');
 
   const [fromAddress, setFromAddress] = useState('College Study <onboarding@resend.dev>');
-  const [sendAsBcc, setSendAsBcc] = useState(true);
+  const [sendAsBcc, setSendAsBcc] = useState(false);
 
   const [selectedPreset, setSelectedPreset] = useState<string>('none');
   const [showPreviewModal, setShowPreviewModal] = useState(false);
