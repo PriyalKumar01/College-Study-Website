@@ -301,38 +301,9 @@ Simply click one of the buttons below to log in or sign up immediately.`,
         }
       }
 
-      // STEP 1: Check if user exists (Probe with SignUp)
-      if (mode === 'signup') {
-        const dummyPassword = "ProbePassword123!@#"; // Temporary password for probing
-        const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
-          email: email.trim().toLowerCase(),
-          password: dummyPassword,
-        });
-
-        if (signUpError && signUpError.message.includes("already registered")) {
-          toast({
-            title: "Account Already Exists",
-            description: "Redirecting to login...",
-          });
-          
-          // Update signup attempt as verified since they already have an account
-          if (signupAttemptId) {
-            await supabase.from('signup_attempts').update({
-              status: 'verified',
-              error_reason: 'Account already exists'
-            }).eq('id', signupAttemptId);
-          }
-
-          setMode('signin'); // Switch to login mode
-          setIsSendingOtp(false);
-          setIsLoading(false);
-          return;
-        }
-
-        // If no error, the user is either created (new) or the probe didn't catch it (unlikely for existing).
-        // If created, we continue to send OTP so they can verify.
-        // We do NOT stop here.
-      }
+      // We do not run a signUp probe here because it creates the user immediately
+      // with a dummy password and sends an email, which causes subsequent signInWithOtp
+      // to hit a rate limit (429). Instead, we directly use signInWithOtp to initiate verification.
 
       const { error } = await supabase.auth.signInWithOtp({
         email: email.trim().toLowerCase(),
