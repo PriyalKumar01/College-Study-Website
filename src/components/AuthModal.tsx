@@ -268,7 +268,9 @@ Simply click one of the buttons below to log in or sign up immediately.`,
       console.log('Initiating OTP login/signup for:', email);
 
       // STEP 0: Check for temporary/disposable email domain
-      if (mode === 'signup') {
+      // Block temporary emails for both sign-up and sign-in to prevent exploit where
+      // signing in with a new/non-existent email auto-registers the account.
+      if (mode === 'signup' || mode === 'signin') {
         const validationResult = await validateEmail(email);
         if (!validationResult.isValid) {
           // Log failed attempt to database
@@ -289,15 +291,17 @@ Simply click one of the buttons below to log in or sign up immediately.`,
           return;
         }
 
-        // Log pending attempt to database
-        const { data: attemptData } = await supabase.from('signup_attempts').insert({
-          email: email.trim().toLowerCase(),
-          full_name: firstName || lastName ? `${firstName} ${lastName}`.trim() : null,
-          status: 'pending'
-        }).select('id').maybeSingle();
+        // Log pending attempt to database (only for signup mode to keep table clean)
+        if (mode === 'signup') {
+          const { data: attemptData } = await supabase.from('signup_attempts').insert({
+            email: email.trim().toLowerCase(),
+            full_name: firstName || lastName ? `${firstName} ${lastName}`.trim() : null,
+            status: 'pending'
+          }).select('id').maybeSingle();
 
-        if (attemptData) {
-          signupAttemptId = (attemptData as any).id;
+          if (attemptData) {
+            signupAttemptId = (attemptData as any).id;
+          }
         }
       }
 
