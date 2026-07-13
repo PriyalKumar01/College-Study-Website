@@ -27,136 +27,72 @@ const PrivacyPolicy = () => {
             </CardHeader>
             <CardContent>
               <ScrollArea className="h-[70vh] pr-4">
-                <div className="space-y-6">
+                <div className="space-y-6 text-gray-800 dark:text-gray-200">
                   <section>
-                    <h2 className="text-2xl font-semibold mb-4">1. Information We Collect</h2>
+                    <h2 className="text-2xl font-bold text-blue-600 dark:text-blue-500 mb-3">1. Information We Collect</h2>
                     <div className="space-y-3 text-muted-foreground leading-relaxed">
-                      <p>We collect information you provide directly to us, such as:</p>
+                      <p>To keep the platform authentic and secure, we collect the following data:</p>
                       <ul className="list-disc list-inside space-y-2 ml-4">
-                        <li>Account information (name, email, student ID)</li>
-                        <li>Profile information (branch, semester, bio)</li>
-                        <li>Uploaded study materials and notes</li>
-                        <li>Resume and career information</li>
-                        <li>Communication with our support team</li>
+                        <li><strong>Account Details:</strong> Verifiable name, email address, and authentication status.</li>
+                        <li><strong>Academic Profile:</strong> Real college name, branch, and graduating year. Using disposable emails or false details is strictly prohibited.</li>
+                        <li><strong>Content Uploads:</strong> Shared study materials, notes, roadmaps, and contributor metadata.</li>
+                        <li><strong>Security Logs:</strong> IP address, device fingerprints, and signup attempt history (to prevent bot registrations).</li>
                       </ul>
                     </div>
                   </section>
 
                   <section>
-                    <h2 className="text-2xl font-semibold mb-4">2. How We Use Your Information</h2>
+                    <h2 className="text-2xl font-bold text-blue-600 dark:text-blue-500 mb-3">2. How We Use Your Information</h2>
                     <div className="space-y-3 text-muted-foreground leading-relaxed">
-                      <p>We use the information we collect to:</p>
+                      <p>We use the collected information solely to:</p>
                       <ul className="list-disc list-inside space-y-2 ml-4">
-                        <li>Provide and maintain our educational platform</li>
-                        <li>Process and display your uploaded study materials</li>
-                        <li>Send you notifications about platform updates</li>
-                        <li>Improve our services and user experience</li>
-                        <li>Ensure platform security and prevent abuse</li>
-                        <li>Provide customer support</li>
+                        <li>Maintain a safe, academic learning environment for students.</li>
+                        <li>Verify that users are real students from legitimate colleges.</li>
+                        <li>Display uploaded notes and recognize contributors in the Hall of Fame.</li>
+                        <li>Moderate content uploads and prevent spam or commercial abuse.</li>
+                        <li>Enforce device/IP blocks for users violating terms (e.g., using temp mail or selling notes).</li>
                       </ul>
                     </div>
                   </section>
 
                   <section>
-                    <h2 className="text-2xl font-semibold mb-4">3. Information Sharing</h2>
+                    <h2 className="text-2xl font-bold text-blue-600 dark:text-blue-500 mb-3">3. Data Sharing & Protection</h2>
                     <div className="space-y-3 text-muted-foreground leading-relaxed">
-                      <p>We may share your information in the following circumstances:</p>
-                      <ul className="list-disc list-inside space-y-2 ml-4">
-                        <li><strong>With other users:</strong> Your name and uploaded content are visible to other platform users</li>
-                        <li><strong>For educational purposes:</strong> Study materials you upload are shared with the student community</li>
-                        <li><strong>Legal requirements:</strong> When required by law or to protect our rights</li>
-                        <li><strong>Service providers:</strong> With trusted third-party services that help us operate the platform</li>
-                      </ul>
-                      <p className="mt-4">
-                        <strong>We do not sell, rent, or trade your personal information to third parties for commercial purposes.</strong>
+                      <p>
+                        We do not sell, rent, or trade your personal information. Your profile details (name, college, branch, year) 
+                        and uploaded notes are displayed only within the platform to facilitate student collaboration.
+                      </p>
+                      <p className="mt-2 text-red-500 font-bold">
+                        Any attempt to scrape or harvest profile data or notes from this website is strictly illegal and will lead to legal action.
                       </p>
                     </div>
                   </section>
 
                   <section>
-                    <h2 className="text-2xl font-semibold mb-4">4. Data Security</h2>
+                    <h2 className="text-2xl font-bold text-blue-600 dark:text-blue-500 mb-3">4. Cookies & Session Security</h2>
                     <p className="text-muted-foreground leading-relaxed">
-                      We implement appropriate security measures to protect your personal information against 
-                      unauthorized access, alteration, disclosure, or destruction. This includes encryption of 
-                      sensitive data and regular security assessments.
+                      We use cookies and secure local storage to keep you logged in and preserve your settings. 
+                      You can control cookies in your browser settings, but blocking them may prevent login.
                     </p>
                   </section>
 
                   <section>
-                    <h2 className="text-2xl font-semibold mb-4">5. Data Retention</h2>
+                    <h2 className="text-2xl font-bold text-blue-600 dark:text-blue-500 mb-3">5. Data Retention & Account Deletion</h2>
                     <p className="text-muted-foreground leading-relaxed">
-                      We retain your information for as long as your account is active or as needed to provide 
-                      services. You may request deletion of your account and personal information at any time, 
-                      though some information may be retained for legal or administrative purposes.
+                      We retain your account details as long as your account is active. If your account is suspended or banned 
+                      due to term violations (like using fake details or temporary email addresses), we retain your device details 
+                      and IP logs indefinitely to enforce the ban.
                     </p>
                   </section>
 
                   <section>
-                    <h2 className="text-2xl font-semibold mb-4">6. Cookies and Tracking</h2>
-                    <div className="space-y-3 text-muted-foreground leading-relaxed">
-                      <p>We use cookies and similar tracking technologies to:</p>
-                      <ul className="list-disc list-inside space-y-2 ml-4">
-                        <li>Remember your login status and preferences</li>
-                        <li>Analyze platform usage and improve performance</li>
-                        <li>Provide personalized content recommendations</li>
-                        <li>Ensure platform security</li>
-                      </ul>
-                      <p>You can control cookie settings through your browser preferences.</p>
-                    </div>
-                  </section>
-
-                  <section>
-                    <h2 className="text-2xl font-semibold mb-4">7. Your Rights and Choices</h2>
-                    <div className="space-y-3 text-muted-foreground leading-relaxed">
-                      <p>You have the right to:</p>
-                      <ul className="list-disc list-inside space-y-2 ml-4">
-                        <li>Access and update your personal information</li>
-                        <li>Delete your account and associated data</li>
-                        <li>Opt out of non-essential communications</li>
-                        <li>Request a copy of your data</li>
-                        <li>Lodge a complaint with relevant authorities</li>
-                      </ul>
-                    </div>
-                  </section>
-
-                  <section>
-                    <h2 className="text-2xl font-semibold mb-4">8. Third-Party Services</h2>
+                    <h2 className="text-2xl font-bold text-blue-600 dark:text-blue-500 mb-3">6. Policy Updates & Contact</h2>
                     <p className="text-muted-foreground leading-relaxed">
-                      Our platform may contain links to third-party websites or integrate with external services. 
-                      We are not responsible for the privacy practices of these third parties. We encourage you 
-                      to review their privacy policies before providing any personal information.
-                    </p>
-                  </section>
-
-                  <section>
-                    <h2 className="text-2xl font-semibold mb-4">9. Children's Privacy</h2>
-                    <p className="text-muted-foreground leading-relaxed">
-                      Our platform is designed for college students and users must be at least 18 years old. 
-                      We do not knowingly collect personal information from children under 18. If we become 
-                      aware of such collection, we will take steps to delete the information promptly.
-                    </p>
-                  </section>
-
-                  <section>
-                    <h2 className="text-2xl font-semibold mb-4">10. Changes to Privacy Policy</h2>
-                    <p className="text-muted-foreground leading-relaxed">
-                      We may update this Privacy Policy periodically to reflect changes in our practices or 
-                      applicable laws. We will notify you of significant changes by posting the updated policy 
-                      on our platform and updating the "Last updated" date.
-                    </p>
-                  </section>
-
-                  <section>
-                    <h2 className="text-2xl font-semibold mb-4">11. Contact Us</h2>
-                    <p className="text-muted-foreground leading-relaxed">
-                      If you have questions about this Privacy Policy or our privacy practices, please contact us at:
+                      We may update this Privacy Policy periodically. For any privacy-related questions or data deletion requests, contact us at:
+                      <br /><br />
+                      <strong>Email:</strong> collegestudy.support@gmail.com
                       <br />
-                      Email: collegestudy.support@gmail.com
-                      <br />
-                      Phone: +91 8957221543
-                      <br />
-                      <br />
-                      We will respond to your inquiries within a reasonable timeframe.
+                      <strong>Phone:</strong> +91 8957221543
                     </p>
                   </section>
                 </div>
