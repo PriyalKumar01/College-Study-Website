@@ -2,3 +2,6 @@ project_id = "axalbmmjqdezbkpffore"
 
 [functions.send-otp-email]
 verify_jwt = false
+
+[functions.update-blocked-domains]
+verify_jwt = false
