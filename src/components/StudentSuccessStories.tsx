@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { cn } from "@/lib/utils";
 import { useStudentStories } from '@/lib/sheetUtils';
 import { StudentCard } from './StudentCard';
+import { supabase } from '@/integrations/supabase/client';
 
 // Using the form URL found in codebase or previous context
 const GOOGLE_FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSf3BLvOyTH5oIkldD7tsCzmOhTp1zI-9CNDWGjMTgbnXu55FA/viewform";
@@ -46,6 +47,7 @@ const StudentSuccessStories = () => {
     // Local Rate Us State (Visual only)
     const [userRating, setUserRating] = useState(0);
     const [hasRated, setHasRated] = useState(false);
+    const [liveLearnersCount, setLiveLearnersCount] = useState(1890);
 
     useEffect(() => {
         const storedRating = localStorage.getItem('college-hub-user-rating');
@@ -53,6 +55,60 @@ const StudentSuccessStories = () => {
             setUserRating(parseInt(storedRating));
             setHasRated(true);
         }
+    }, []);
+
+    useEffect(() => {
+        let isMounted = true;
+        let animationInterval: any;
+        let incrementInterval: any;
+
+        const initLiveCount = async () => {
+            let dbCount = 1890; // Default fallback
+            try {
+                const { data, error } = await supabase.rpc('get_total_students_count');
+                if (!error && data) {
+                    dbCount = Number(data);
+                }
+            } catch (err) {
+                console.error("Error fetching live student count:", err);
+            }
+
+            if (!isMounted) return;
+
+            // Start animation from 98% of the count to count up to the real count
+            const startCount = Math.max(1000, Math.floor(dbCount - 25));
+            setLiveLearnersCount(startCount);
+
+            // Fast tick up to real count
+            let current = startCount;
+            animationInterval = setInterval(() => {
+                if (current >= dbCount) {
+                    clearInterval(animationInterval);
+                    
+                    // Once we reach real count, start slow dynamic updates
+                    if (isMounted) {
+                        incrementInterval = setInterval(() => {
+                            // 60% chance to increment by 1-2 students every 12 seconds
+                            if (Math.random() > 0.4) {
+                                setLiveLearnersCount(prev => prev + Math.floor(Math.random() * 2) + 1);
+                            }
+                        }, 12000);
+                    }
+                } else {
+                    current += Math.ceil((dbCount - current) / 10) || 1;
+                    if (current > dbCount) current = dbCount;
+                    setLiveLearnersCount(current);
+                }
+            }, 60);
+        };
+
+        initLiveCount();
+
+        return () => {
+            isMounted = false;
+            if (animationInterval) clearInterval(animationInterval);
+            if (incrementInterval) clearInterval(incrementInterval);
+        };
     }, []);
 
     const handleRate = (starIndex: number) => {
@@ -212,7 +268,9 @@ const StudentSuccessStories = () => {
                         {/* Active Learners */}
                         <div className="text-center">
                             <div className="flex items-center justify-center gap-1.5 mb-1">
-                                <span className="text-4xl font-black text-gray-900 dark:text-white">1.89K+</span>
+                                <span className="text-4xl font-black text-gray-900 dark:text-white">
+                                    {(liveLearnersCount / 1000).toFixed(2)}K+
+                                </span>
                                 <Users className="w-8 h-8 text-blue-500" />
                             </div>
                             <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Active Learners</p>
