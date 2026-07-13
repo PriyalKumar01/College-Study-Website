@@ -27,119 +27,82 @@ const TermsOfService = () => {
             </CardHeader>
             <CardContent>
               <ScrollArea className="h-[70vh] pr-4">
-                <div className="space-y-6">
+                <div className="space-y-6 text-gray-800 dark:text-gray-200">
                   <section>
-                    <h2 className="text-2xl font-semibold mb-4">1. Acceptance of Terms</h2>
+                    <h2 className="text-2xl font-bold text-blue-600 dark:text-blue-500 mb-3">1. Acceptance of Terms & Educational Scope</h2>
                     <p className="text-muted-foreground leading-relaxed">
-                      By accessing and using College Study Hub, you accept and agree to be bound by the terms 
-                      and provision of this agreement. College Study Hub is an educational platform designed 
-                      for students to share study materials and career resources.
+                      By accessing and using College Study Hub, you agree to comply with and be bound by these Terms of Service. 
+                      This platform is built exclusively for students to share academic resources, notes, and roadmaps, facilitating peer-to-peer 
+                      learning and collaboration between batchmates and juniors.
                     </p>
                   </section>
 
                   <section>
-                    <h2 className="text-2xl font-semibold mb-4">2. Educational Use Only</h2>
+                    <h2 className="text-2xl font-bold text-blue-600 dark:text-blue-500 mb-3">2. Strictly Non-Commercial (Low & Middle-Income Family Support)</h2>
                     <p className="text-muted-foreground leading-relaxed">
-                      <strong>The platform is strictly for educational purposes only.</strong> Users may access, 
-                      download, and use shared materials solely for personal educational and academic purposes. 
-                      Commercial use of any content is strictly prohibited.
+                      College Study Hub is a non-profit academic initiative designed to support students, particularly those from <strong>low-income and middle-class families</strong>, 
+                      by providing free or highly minimalistic-priced study materials. 
+                      <strong className="text-red-500 block mt-2">Any commercial exploitation, selling of notes, charging for shared materials, or using platform resources for commercial purposes is strictly prohibited and illegal.</strong>
                     </p>
                   </section>
 
                   <section>
-                    <h2 className="text-2xl font-semibold mb-4">3. Content Sharing and Distribution</h2>
-                    <div className="space-y-3 text-muted-foreground leading-relaxed">
-                      <p>
-                        <strong>Users are not allowed to sell, redistribute, or publicly share any uploaded 
-                        notes without explicit permission</strong> from the original author and platform administrators.
-                      </p>
-                      <p>
-                        All shared content must be:
-                      </p>
-                      <ul className="list-disc list-inside space-y-2 ml-4">
-                        <li>Original work or properly credited with permissions</li>
-                        <li>Free from copyright violations</li>
-                        <li>Educationally relevant and appropriate</li>
-                        <li>Not harmful, offensive, or discriminatory</li>
-                      </ul>
-                    </div>
-                  </section>
-
-                  <section>
-                    <h2 className="text-2xl font-semibold mb-4">4. Admin Approval Process</h2>
+                    <h2 className="text-2xl font-bold text-blue-600 dark:text-blue-500 mb-3">3. False Information & Disposable Email Abuse</h2>
                     <p className="text-muted-foreground leading-relaxed">
-                      <strong>All shared notes are subject to approval by admin.</strong> Content will be manually uploaded by College Study Hub administrators, with proper credit to the original creators by adding their name in contributor list which is available on home page. The platform 
-                      <strong> reserves the right to review, reject, or remove any content </strong> that violates these terms 
-                      or is deemed inappropriate for the educational community.
+                      To maintain a secure and accountable learning community, <strong>all users must register using their real, verifiable academic credentials</strong> 
+                      (including full legal name, real college name, branch, and graduation year). 
+                      <strong className="text-red-500 block mt-2">Signing up using fake names, false college details, or disposable/temporary/fake email services is strictly prohibited and constitutes a breach of service.</strong> 
+                      Any account detected using fake information or disposable emails will be permanently terminated immediately. We reserve the right to report such fraud to college administrations and initiate legal proceedings if necessary.
                     </p>
                   </section>
 
                   <section>
-                    <h2 className="text-2xl font-semibold mb-4">5. User Responsibilities</h2>
-                    <div className="space-y-3 text-muted-foreground leading-relaxed">
-                      <p>Users are responsible for:</p>
-                      <ul className="list-disc list-inside space-y-2 ml-4">
-                        <li>Ensuring they have the right to share any uploaded content</li>
-                        <li>Providing accurate and truthful information</li>
-                        <li>Respecting other users and maintaining a positive learning environment</li>
-                        <li>Not sharing personal contact information in public areas</li>
-                        <li>Not attempting to hack, spam, or misuse the platform</li>
-                      </ul>
-                    </div>
-                  </section>
-
-                  <section>
-                    <h2 className="text-2xl font-semibold mb-4">6. Account Termination</h2>
+                    <h2 className="text-2xl font-bold text-blue-600 dark:text-blue-500 mb-3">4. Intellectual Property & Redistribution Ban</h2>
                     <p className="text-muted-foreground leading-relaxed">
-                      <strong>Violation of these rules may result in account suspension or permanent ban.</strong> 
-                      The platform reserves the right to terminate user accounts without prior notice for violations 
-                      of these terms, inappropriate behavior, or misuse of the platform.
+                      All notes and study materials shared here are intended for <strong>personal academic use only</strong>. 
+                      You are strictly prohibited from copying, scraping, downloading, or redistributing materials from College Study Hub 
+                      to publish them on other websites, apps, Telegram channels, public drives, or local groups without prior written permission from the platform administrators. 
+                      Any unauthorized redistribution of materials will result in an immediate device/IP ban and legal action for copyright infringement.
                     </p>
                   </section>
 
                   <section>
-                    <h2 className="text-2xl font-semibold mb-4">7. Intellectual Property</h2>
+                    <h2 className="text-2xl font-bold text-blue-600 dark:text-blue-500 mb-3">5. Misuse of Public Information & Scraping</h2>
                     <p className="text-muted-foreground leading-relaxed">
-                      Users retain ownership of their original content but grant College Study Hub a license to 
-                      display and distribute the content for educational purposes. The platform respects intellectual 
-                      property rights and will respond to valid copyright claims.
+                      Any attempt to scrape user data, profiles, notes, admin/contributor lists, or email addresses from this platform, 
+                      whether manually or using automated scripts (bots, crawlers, APIs), is strictly illegal. 
+                      Misusing open contact information displayed on the website for spam, commercial outreach, or harassment will lead to immediate legal action and permanent IP banning.
                     </p>
                   </section>
 
                   <section>
-                    <h2 className="text-2xl font-semibold mb-4">8. Privacy and Data Protection</h2>
+                    <h2 className="text-2xl font-bold text-blue-600 dark:text-blue-500 mb-3">6. Content Moderation & Account Suspension</h2>
                     <p className="text-muted-foreground leading-relaxed">
-                      User privacy is important to us. Please review our Privacy Policy to understand how we 
-                      collect, use, and protect your personal information. By using our platform, you consent 
-                      to our privacy practices.
+                      All user-contributed materials are subject to strict administrative moderation. Administrators reserve the right to 
+                      review, edit, reject, or delete any content, and suspend or permanently ban any account at their sole discretion, 
+                      without prior warning, if they find any violation of these terms or behavior detrimental to the student community.
                     </p>
                   </section>
 
                   <section>
-                    <h2 className="text-2xl font-semibold mb-4">9. Limitation of Liability</h2>
+                    <h2 className="text-2xl font-bold text-blue-600 dark:text-blue-500 mb-3">7. Limitation of Liability</h2>
                     <p className="text-muted-foreground leading-relaxed">
-                      College Study Hub provides the platform "as is" without warranties. We are not liable for 
-                      any damages arising from the use of our platform or the content shared by users. Users 
-                      participate at their own risk.
+                      College Study Hub provides its platform and contents on an "as-is" basis. We make no guarantees regarding the 100% accuracy, 
+                      validity, or completeness of user-uploaded notes. The platform is not liable for any academic or personal damages arising 
+                      from the use of resources hosted on this site.
                     </p>
                   </section>
 
                   <section>
-                    <h2 className="text-2xl font-semibold mb-4">10. Changes to Terms</h2>
+                    <h2 className="text-2xl font-bold text-blue-600 dark:text-blue-500 mb-3">8. Changes to Terms & Contact</h2>
                     <p className="text-muted-foreground leading-relaxed">
-                      We reserve the right to modify these terms at any time. Users will be notified of significant 
-                      changes, and continued use of the platform constitutes acceptance of the modified terms.
-                    </p>
-                  </section>
-
-                  <section>
-                    <h2 className="text-2xl font-semibold mb-4">11. Contact Information</h2>
-                    <p className="text-muted-foreground leading-relaxed">
-                      For questions about these Terms of Service, please contact us at:
+                      We reserve the right to modify these terms at any time. Continued usage of the platform after updates constitutes acceptance of the new terms.
+                      <br /><br />
+                      For inquiries, reporting violations, or disputes, contact us at:
                       <br />
-                      Email: collegestudy.support@gmail.com
+                      <strong>Email:</strong> collegestudy.support@gmail.com
                       <br />
-                      Phone: +91 8957221543
+                      <strong>Phone:</strong> +91 8957221543
                     </p>
                   </section>
                 </div>
