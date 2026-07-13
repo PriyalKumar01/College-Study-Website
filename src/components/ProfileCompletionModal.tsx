@@ -107,6 +107,11 @@ export function ProfileCompletionModal() {
     const [acceptedTerms, setAcceptedTerms] = useState(false);
     const [askForPassword, setAskForPassword] = useState(false);
 
+    // Reset check status when user changes (e.g. logging out and logging in as someone else)
+    useEffect(() => {
+        setHasChecked(false);
+    }, [user?.id]);
+
     useEffect(() => {
         if (user && !hasChecked) {
             checkProfile();
@@ -434,7 +439,8 @@ export function ProfileCompletionModal() {
     return (
         <Dialog open={isOpen} onOpenChange={(open) => { if (!open) return; setIsOpen(open); }}>
             <DialogContent
-                className="sm:max-w-[480px] [&>button]:hidden max-h-[90vh] flex flex-col p-0 gap-0 rounded-2xl overflow-hidden border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 shadow-2xl"
+                hideDefaultClose={true}
+                className="sm:max-w-[480px] max-h-[90vh] flex flex-col p-0 gap-0 rounded-2xl overflow-hidden border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 shadow-2xl"
                 onPointerDownOutside={(e) => e.preventDefault()}
                 onEscapeKeyDown={(e) => e.preventDefault()}
             >
