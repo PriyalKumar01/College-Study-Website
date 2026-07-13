@@ -9,6 +9,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Mail, Phone, User, BookOpen, ArrowLeft, Loader2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { StudyBackground } from '@/components/StudyBackground';
+import { validateEmail } from '@/utils/emailValidation';
 
 interface FormData {
   fullName: string;
@@ -156,6 +157,19 @@ const AuthOTP = () => {
 
     setIsLoading(true);
     try {
+      if (authMode === 'email') {
+        const validationResult = await validateEmail(formData.email);
+        if (!validationResult.isValid) {
+          toast({
+            title: "Invalid Email Provider",
+            description: "Temporary or disposable email accounts are not permitted on our platform to prevent abuse.",
+            variant: "destructive",
+          });
+          setIsLoading(false);
+          return;
+        }
+      }
+
       const contact = authMode === 'email' ? formData.email : `+91${formData.mobileNumber}`;
       
       // For signup, we need to create user with metadata
