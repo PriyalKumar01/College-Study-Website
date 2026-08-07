@@ -622,3 +622,5 @@ export function getYearForSemester(semester: string): string | undefined {
 // Paint Technology (PT) official HBTU course structure
 
 // Plastic Technology (PL) official HBTU course structure
+
+// Biotechnology (BT) official HBTU course structure
