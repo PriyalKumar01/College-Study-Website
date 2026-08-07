@@ -230,3 +230,5 @@ const SixthSemesterPLNotes = () => {
 };
 
 export default SixthSemesterPLNotes;
+
+// Plastic Technology 6th Semester Note Section
