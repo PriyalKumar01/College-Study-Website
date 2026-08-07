@@ -437,3 +437,5 @@ export default FourthSemesterPLNotes;
 
 
 // Plastic Technology 4th Semester Note Section
+
+// Verified against 4th sem PL syllabus
