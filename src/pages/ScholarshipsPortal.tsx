@@ -15,6 +15,36 @@ import EditScholarshipModal from '@/components/admin/EditScholarshipModal';
 const toSlug = (name: string) =>
   name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
 
+// Format YYYY-MM-DD → DD-MM-YYYY for display
+const formatDeadline = (raw: string): string => {
+  if (!raw) return 'N/A';
+  // YYYY-MM-DD format
+  if (/^\d{4}-\d{2}-\d{2}$/.test(raw)) {
+    const [y, m, d] = raw.split('-');
+    return `${d}-${m}-${y}`;
+  }
+  // Already looks like DD-MM-YYYY
+  if (/^\d{2}-\d{2}-\d{4}$/.test(raw)) return raw;
+  // Fallback: show as-is
+  return raw;
+};
+
+// Compute effective status from deadline date (overrides stored status)
+// Returns: 'open' | 'closing_soon' | 'expired' | 'upcoming'
+const computeEffectiveStatus = (deadline: string, storedStatus: string): string => {
+  if (!deadline) return storedStatus;
+  // Only process YYYY-MM-DD format
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(deadline)) return storedStatus;
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const deadlineDate = new Date(deadline);
+  if (isNaN(deadlineDate.getTime())) return storedStatus;
+  if (deadlineDate < today) return 'expired';
+  const diffDays = Math.ceil((deadlineDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+  if (diffDays <= 15) return 'closing_soon';
+  return 'open';
+};
+
 // Build the shareable WhatsApp link
 const getWhatsAppShareUrl = (sc: { name: string }) => {
   const slug = toSlug(sc.name);
@@ -79,8 +109,9 @@ const TYPE_OPTS: FilterOption[] = [
 
 const STATUS_OPTS: FilterOption[] = [
   { label: 'Open Now', value: 'open' },
+  { label: 'Closing Soon (≤15 days)', value: 'closing_soon' },
   { label: 'Opening Soon', value: 'upcoming' },
-  { label: 'Closed', value: 'closed' },
+  { label: 'Expired', value: 'expired' },
 ];
 
 const AMOUNT_OPTS: FilterOption[] = [
@@ -90,9 +121,11 @@ const AMOUNT_OPTS: FilterOption[] = [
 ];
 
 const STATUS_DISPLAY: Record<string, { label: string; color: string; bg: string; dot: boolean }> = {
-  open:     { label: 'Open',         color: '#10B981', bg: 'rgba(16,185,129,0.12)', dot: true },
-  upcoming: { label: 'Opening Soon', color: '#F59E0B', bg: 'rgba(245,158,11,0.12)', dot: false },
-  closed:   { label: 'Closed',       color: '#94A3B8', bg: 'rgba(148,163,184,0.10)', dot: false },
+  open:         { label: 'Open',         color: '#10B981', bg: 'rgba(16,185,129,0.12)', dot: true },
+  closing_soon: { label: 'Closing Soon', color: '#F59E0B', bg: 'rgba(245,158,11,0.15)',  dot: true },
+  upcoming:     { label: 'Opening Soon', color: '#F59E0B', bg: 'rgba(245,158,11,0.12)', dot: false },
+  closed:       { label: 'Closed',       color: '#94A3B8', bg: 'rgba(148,163,184,0.10)', dot: false },
+  expired:      { label: 'Expired',      color: '#94A3B8', bg: 'rgba(148,163,184,0.10)', dot: false },
 };
 
 interface Filters {
@@ -174,7 +207,8 @@ export default function ScholarshipsPortal() {
 
   // Filter logic
   const filtered = useMemo(() => {
-    return scholarships.filter(s => {
+    const result = scholarships.filter(s => {
+      const effStatus = computeEffectiveStatus(s.deadline, s.status);
       if (search.trim()) {
         const q = search.toLowerCase();
         if (!s.name.toLowerCase().includes(q) &&
@@ -194,7 +228,7 @@ export default function ScholarshipsPortal() {
         if (!match) return false;
       }
       if (filters.status.length > 0) {
-        if (!filters.status.includes(s.status)) return false;
+        if (!filters.status.includes(effStatus)) return false;
       }
       if (filters.amount.length > 0) {
         const inRange = filters.amount.some(a => {
@@ -206,6 +240,25 @@ export default function ScholarshipsPortal() {
         if (!inRange) return false;
       }
       return true;
+    });
+
+    // Sort: active (non-expired) first by nearest deadline, expired last
+    return result.sort((a, b) => {
+      const aExp = computeEffectiveStatus(a.deadline, a.status) === 'expired';
+      const bExp = computeEffectiveStatus(b.deadline, b.status) === 'expired';
+      if (aExp && !bExp) return 1;
+      if (!aExp && bExp) return -1;
+      // Both active: sort by nearest deadline first (YYYY-MM-DD sorts lexicographically)
+      if (!aExp && !bExp) {
+        if (a.deadline && b.deadline) return a.deadline.localeCompare(b.deadline);
+        if (a.deadline) return -1;
+        if (b.deadline) return 1;
+      }
+      // Both expired: most recently expired first
+      if (aExp && bExp) {
+        if (a.deadline && b.deadline) return b.deadline.localeCompare(a.deadline);
+      }
+      return b.amount_num - a.amount_num;
     });
   }, [filters, search, scholarships]);
 
@@ -240,11 +293,21 @@ export default function ScholarshipsPortal() {
     });
   };
 
-  // Sidebar
-  const closingSoon = useMemo(() =>
-    [...scholarships].filter(s => s.status === 'open').slice(0, 3),
-    [scholarships]
-  );
+  // Sidebar: closing soon = open scholarships with YYYY-MM-DD deadline within 30 days, sorted by nearest deadline
+  const closingSoon = useMemo(() => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const cutoff = new Date(today);
+    cutoff.setDate(cutoff.getDate() + 30);
+    return scholarships
+      .filter(s => {
+        const effStatus = computeEffectiveStatus(s.deadline, s.status);
+        return effStatus === 'closing_soon' || effStatus === 'open';
+      })
+      .filter(s => /^\d{4}-\d{2}-\d{2}$/.test(s.deadline) && new Date(s.deadline) <= cutoff)
+      .sort((a, b) => a.deadline.localeCompare(b.deadline))
+      .slice(0, 4);
+  }, [scholarships]);
   const highValue = useMemo(() =>
     [...scholarships].sort((a, b) => b.amount_num - a.amount_num).slice(0, 4),
     [scholarships]
@@ -296,6 +359,156 @@ export default function ScholarshipsPortal() {
             })}
           </div>
         )}
+      </div>
+    );
+  };
+
+  // ==================== CARD RENDERER ====================
+  const renderCard = (sc: Scholarship, st: typeof STATUS_DISPLAY['open'], isSaved: boolean) => {
+    const isExpired = st.label === 'Expired';
+    return (
+      <div
+        key={sc.id}
+        ref={highlightId === sc.id ? highlightRef : undefined}
+        className={`sc-card-hover bg-card border rounded-xl overflow-hidden transition-all ${
+          highlightId === sc.id
+            ? 'border-primary/60 shadow-[0_0_0_3px_hsl(var(--primary)/0.15)]'
+            : 'border-border'
+        } ${isExpired ? 'opacity-60' : ''}`}
+      >
+        {/* Scholarship banner image (if present) */}
+        {sc.image_url && (
+          <div className="w-full overflow-hidden max-h-[140px] sm:max-h-[220px] md:max-h-[260px]">
+            <img
+              src={sc.image_url}
+              alt={sc.name}
+              className="w-full object-cover h-[140px] sm:h-[220px] md:h-[260px]"
+              style={{ objectPosition: 'center' }}
+              onError={e => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }}
+            />
+          </div>
+        )}
+
+        <div className="sc-card-cols flex items-stretch p-4 sm:p-5">
+
+          {/* LEFT */}
+          <div className="flex-1 min-w-0 sm:pr-5" style={{ flexBasis: '45%' }}>
+            <div className="flex items-start justify-between mb-1 gap-2">
+              <h3 className="text-[15px] font-bold text-foreground tracking-tight leading-snug m-0">
+                {sc.name}
+              </h3>
+              <div className="flex items-center gap-1 flex-shrink-0">
+                {/* WhatsApp Share Button */}
+                <a
+                  href={getWhatsAppShareUrl(sc)}
+                  target="_blank"
+                  rel="noreferrer"
+                  title="Share on WhatsApp"
+                  className="p-1 rounded-md bg-transparent border-0 cursor-pointer text-muted-foreground hover:text-[#25D366] transition-colors inline-flex items-center justify-center"
+                >
+                  <svg width="15" height="15" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="16" cy="16" r="16" fill="#25D366"/>
+                    <path d="M22.7 9.3A9.5 9.5 0 0 0 7.1 20.6L6 26l5.6-1.1a9.5 9.5 0 0 0 4.5 1.1 9.5 9.5 0 0 0 6.6-16.7zm-6.6 14.6a7.9 7.9 0 0 1-4-1.1l-.3-.2-3.3.6.7-3.2-.2-.3a7.9 7.9 0 1 1 7.1 4.2zm4.3-5.9c-.2-.1-1.4-.7-1.6-.8-.2-.1-.4-.1-.5.1-.2.2-.6.8-.8 1-.1.2-.3.2-.5.1a6.5 6.5 0 0 1-1.9-1.2 7.2 7.2 0 0 1-1.3-1.7c-.1-.2 0-.4.1-.5l.4-.4.2-.4v-.4l-.8-1.9c-.2-.5-.4-.4-.5-.4h-.5c-.2 0-.4.1-.6.3a2.7 2.7 0 0 0-.8 2c0 1.2.9 2.4 1 2.5.1.2 1.7 2.6 4.1 3.6.6.2 1 .4 1.4.5.6.2 1.1.2 1.5.1.5-.1 1.4-.6 1.6-1.1.2-.5.2-1 .1-1.1-.1-.1-.3-.2-.5-.3z" fill="#fff"/>
+                  </svg>
+                </a>
+                {/* Edit button: for owner OR for the admin who submitted */}
+                {(isOwner || (isAdmin && user?.email && sc.submitted_by_email === user.email)) && (
+                  <button onClick={() => setEditingScholarship(sc)}
+                    title="Edit scholarship"
+                    className="p-1 rounded-md bg-transparent border-0 cursor-pointer text-primary hover:bg-primary/10 transition-colors"
+                  >
+                    <Pencil size={13} />
+                  </button>
+                )}
+                <button onClick={() => toggleSave(sc.id)}
+                  className={`p-0 bg-transparent border-0 cursor-pointer transition-colors ${
+                    isSaved ? 'text-primary' : 'text-muted-foreground'
+                  }`}
+                >
+                  {isSaved ? <BookmarkCheck size={16} /> : <Bookmark size={16} />}
+                </button>
+                {isOwner && (
+                  <button onClick={() => handleDelete(sc.id, sc.name)}
+                    title="Delete scholarship (Owner only)"
+                    className="p-1 rounded-md bg-transparent border-0 cursor-pointer text-red-500 hover:bg-red-500/10 transition-colors"
+                  >
+                    <Trash2 size={14} />
+                  </button>
+                )}
+              </div>
+            </div>
+            <div className="text-xs text-muted-foreground font-medium mb-2">
+              {sc.org}
+            </div>
+            {/* Expandable Description */}
+            <div>
+              <p className={`text-[13px] text-muted-foreground leading-relaxed m-0 ${
+                expandedDesc.has(sc.id) ? '' : 'line-clamp-2'
+              }`}>
+                {sc.description}
+              </p>
+              {sc.description && sc.description.length > 120 && (
+                <button
+                  onClick={() => toggleDesc(sc.id)}
+                  className="mt-1 flex items-center gap-0.5 text-[11px] font-semibold text-primary bg-transparent border-0 cursor-pointer p-0 hover:opacity-75 transition-opacity"
+                >
+                  {expandedDesc.has(sc.id) ? (
+                    <><ChevronUp size={12} /> Show less</>
+                  ) : (
+                    <><ChevronDown size={12} /> Read more</>
+                  )}
+                </button>
+              )}
+            </div>
+          </div>
+
+          {/* MIDDLE */}
+          <div className="sc-card-mid min-w-0 sm:border-l border-border sm:px-5" style={{ flexBasis: '28%' }}>
+            {sc.tags && sc.tags.length > 0 && (
+              <div className="flex flex-wrap gap-1 mb-2.5">
+                {sc.tags.slice(0, 4).map(tag => (
+                  <span key={tag} className="text-[11px] px-2 py-0.5 rounded font-semibold bg-muted text-muted-foreground border border-border">
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            )}
+            <div className="text-xs text-muted-foreground leading-relaxed">
+              <div><span className="text-foreground font-semibold">Income:</span> {sc.income}</div>
+              <div><span className="text-foreground font-semibold">Marks:</span> {sc.marks}</div>
+            </div>
+          </div>
+
+          {/* RIGHT */}
+          <div className="sc-card-right min-w-0 sm:border-l border-border sm:pl-5 flex flex-col justify-between" style={{ flexBasis: '22%' }}>
+            <div>
+              <div className="text-lg font-bold text-foreground mb-0.5">
+                {sc.amount}
+              </div>
+              <div className="text-xs text-muted-foreground mb-2.5">
+                Deadline: <span className="font-semibold text-foreground">{formatDeadline(sc.deadline)}</span>
+              </div>
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-semibold mb-3 border"
+                style={{ background: st.bg, color: st.color, borderColor: `${st.color}33` }}
+              >
+                {st.dot && (
+                  <span className="w-1.5 h-1.5 rounded-full inline-block" style={{ background: st.color, animation: 'pulse-open 1.8s infinite' }} />
+                )}
+                {st.label}
+              </span>
+            </div>
+            <a href={sc.apply_url} target="_blank" rel="noreferrer"
+              className={`sc-link-btn inline-flex items-center justify-center gap-1 px-3.5 py-2 rounded-lg text-xs font-semibold no-underline ${
+                isExpired
+                  ? 'bg-muted text-muted-foreground pointer-events-none opacity-60'
+                  : 'bg-primary text-primary-foreground'
+              }`}
+            >
+              {isExpired ? 'Expired' : 'View Details'}
+              {!isExpired && <ExternalLink size={11} />}
+            </a>
+          </div>
+        </div>
       </div>
     );
   };
@@ -369,7 +582,7 @@ export default function ScholarshipsPortal() {
               <div className="flex items-center gap-1.5 flex-shrink-0">
                 <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-muted/50 border border-border text-[11px] font-medium text-foreground">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                  {scholarships.length} Active
+                  {scholarships.filter(s => computeEffectiveStatus(s.deadline, s.status) !== 'expired').length} Active
                 </span>
                 <span className="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-muted/50 border border-border text-[11px] font-medium text-muted-foreground">
                   Verified
@@ -528,155 +741,38 @@ export default function ScholarshipsPortal() {
                 </div>
               ) : (
                 <div className="flex flex-col gap-2.5">
-                  {filtered.map(sc => {
-                    const st = STATUS_DISPLAY[sc.status] || STATUS_DISPLAY.open;
-                    const isSaved = saved.has(sc.id);
+                  {/* Expired section divider */}
+                  {(() => {
+                    const activeItems = filtered.filter(s => computeEffectiveStatus(s.deadline, s.status) !== 'expired');
+                    const expiredItems = filtered.filter(s => computeEffectiveStatus(s.deadline, s.status) === 'expired');
                     return (
-                      <div
-                        key={sc.id}
-                        ref={highlightId === sc.id ? highlightRef : undefined}
-                        className={`sc-card-hover bg-card border rounded-xl overflow-hidden transition-all ${
-                          highlightId === sc.id
-                            ? 'border-primary/60 shadow-[0_0_0_3px_hsl(var(--primary)/0.15)]'
-                            : 'border-border'
-                        }`}
-                      >
-                        {/* Scholarship banner image (if present) */}
-                        {sc.image_url && (
-                          <div className="w-full overflow-hidden max-h-[140px] sm:max-h-[220px] md:max-h-[260px]">
-                            <img
-                              src={sc.image_url}
-                              alt={sc.name}
-                              className="w-full object-cover h-[140px] sm:h-[220px] md:h-[260px]"
-                              style={{ objectPosition: 'center' }}
-                              onError={e => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }}
-                            />
-                          </div>
-                        )}
-
-                        <div className="sc-card-cols flex items-stretch p-4 sm:p-5">
-
-                          {/* LEFT */}
-                          <div className="flex-1 min-w-0 sm:pr-5" style={{ flexBasis: '45%' }}>
-                            <div className="flex items-start justify-between mb-1 gap-2">
-                              <h3 className="text-[15px] font-bold text-foreground tracking-tight leading-snug m-0">
-                                {sc.name}
-                              </h3>
-                              <div className="flex items-center gap-1 flex-shrink-0">
-                                {/* WhatsApp Share Button */}
-                                <a
-                                  href={getWhatsAppShareUrl(sc)}
-                                  target="_blank"
-                                  rel="noreferrer"
-                                  title="Share on WhatsApp"
-                                  className="p-1 rounded-md bg-transparent border-0 cursor-pointer text-muted-foreground hover:text-[#25D366] transition-colors inline-flex items-center justify-center"
-                                >
-                                  <svg width="15" height="15" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <circle cx="16" cy="16" r="16" fill="#25D366"/>
-                                    <path d="M22.7 9.3A9.5 9.5 0 0 0 7.1 20.6L6 26l5.6-1.1a9.5 9.5 0 0 0 4.5 1.1 9.5 9.5 0 0 0 6.6-16.7zm-6.6 14.6a7.9 7.9 0 0 1-4-1.1l-.3-.2-3.3.6.7-3.2-.2-.3a7.9 7.9 0 1 1 7.1 4.2zm4.3-5.9c-.2-.1-1.4-.7-1.6-.8-.2-.1-.4-.1-.5.1-.2.2-.6.8-.8 1-.1.2-.3.2-.5.1a6.5 6.5 0 0 1-1.9-1.2 7.2 7.2 0 0 1-1.3-1.7c-.1-.2 0-.4.1-.5l.4-.4.2-.4v-.4l-.8-1.9c-.2-.5-.4-.4-.5-.4h-.5c-.2 0-.4.1-.6.3a2.7 2.7 0 0 0-.8 2c0 1.2.9 2.4 1 2.5.1.2 1.7 2.6 4.1 3.6.6.2 1 .4 1.4.5.6.2 1.1.2 1.5.1.5-.1 1.4-.6 1.6-1.1.2-.5.2-1 .1-1.1-.1-.1-.3-.2-.5-.3z" fill="#fff"/>
-                                  </svg>
-                                </a>
-                                {/* Edit button: for owner OR for the admin who submitted */}
-                                {(isOwner || (isAdmin && user?.email && sc.submitted_by_email === user.email)) && (
-                                  <button onClick={() => setEditingScholarship(sc)}
-                                    title="Edit scholarship"
-                                    className="p-1 rounded-md bg-transparent border-0 cursor-pointer text-primary hover:bg-primary/10 transition-colors"
-                                  >
-                                    <Pencil size={13} />
-                                  </button>
-                                )}
-                                <button onClick={() => toggleSave(sc.id)}
-                                  className={`p-0 bg-transparent border-0 cursor-pointer transition-colors ${
-                                    isSaved ? 'text-primary' : 'text-muted-foreground'
-                                  }`}
-                                >
-                                  {isSaved ? <BookmarkCheck size={16} /> : <Bookmark size={16} />}
-                                </button>
-                                {isOwner && (
-                                  <button onClick={() => handleDelete(sc.id, sc.name)}
-                                    title="Delete scholarship (Owner only)"
-                                    className="p-1 rounded-md bg-transparent border-0 cursor-pointer text-red-500 hover:bg-red-500/10 transition-colors"
-                                  >
-                                    <Trash2 size={14} />
-                                  </button>
-                                )}
-                              </div>
-                            </div>
-                            <div className="text-xs text-muted-foreground font-medium mb-2">
-                              {sc.org}
-                            </div>
-                            {/* Expandable Description */}
-                            <div>
-                              <p className={`text-[13px] text-muted-foreground leading-relaxed m-0 ${
-                                expandedDesc.has(sc.id) ? '' : 'line-clamp-2'
-                              }`}>
-                                {sc.description}
-                              </p>
-                              {sc.description && sc.description.length > 120 && (
-                                <button
-                                  onClick={() => toggleDesc(sc.id)}
-                                  className="mt-1 flex items-center gap-0.5 text-[11px] font-semibold text-primary bg-transparent border-0 cursor-pointer p-0 hover:opacity-75 transition-opacity"
-                                >
-                                  {expandedDesc.has(sc.id) ? (
-                                    <><ChevronUp size={12} /> Show less</>
-                                  ) : (
-                                    <><ChevronDown size={12} /> Read more</>
-                                  )}
-                                </button>
-                              )}
-                            </div>
-                          </div>
-
-                          {/* MIDDLE */}
-                          <div className="sc-card-mid min-w-0 sm:border-l border-border sm:px-5" style={{ flexBasis: '28%' }}>
-                            {sc.tags && sc.tags.length > 0 && (
-                              <div className="flex flex-wrap gap-1 mb-2.5">
-                                {sc.tags.slice(0, 4).map(tag => (
-                                  <span key={tag} className="text-[11px] px-2 py-0.5 rounded font-semibold bg-muted text-muted-foreground border border-border">
-                                    {tag}
-                                  </span>
-                                ))}
-                              </div>
-                            )}
-                            <div className="text-xs text-muted-foreground leading-relaxed">
-                              <div><span className="text-foreground font-semibold">Income:</span> {sc.income}</div>
-                              <div><span className="text-foreground font-semibold">Marks:</span> {sc.marks}</div>
-                            </div>
-                          </div>
-
-                          {/* RIGHT */}
-                          <div className="sc-card-right min-w-0 sm:border-l border-border sm:pl-5 flex flex-col justify-between" style={{ flexBasis: '22%' }}>
-                            <div>
-                              <div className="text-lg font-bold text-foreground mb-0.5">
-                                {sc.amount}
-                              </div>
-                              <div className="text-xs text-muted-foreground mb-2.5">
-                                Deadline: <span className="font-semibold text-foreground">{sc.deadline}</span>
-                              </div>
-                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-semibold mb-3 border"
-                                style={{ background: st.bg, color: st.color, borderColor: `${st.color}33` }}
-                              >
-                                {st.dot && (
-                                  <span className="w-1.5 h-1.5 rounded-full inline-block" style={{ background: st.color, animation: 'pulse-open 1.8s infinite' }} />
-                                )}
-                                {st.label}
+                      <>
+                        {activeItems.map(sc => {
+                          const effStatus = computeEffectiveStatus(sc.deadline, sc.status);
+                          const st = STATUS_DISPLAY[effStatus] || STATUS_DISPLAY.open;
+                          const isSaved = saved.has(sc.id);
+                          return renderCard(sc, st, isSaved);
+                        })}
+                        {expiredItems.length > 0 && (
+                          <>
+                            <div className="flex items-center gap-3 mt-3 mb-1">
+                              <div className="flex-1 h-px bg-border" />
+                              <span className="text-xs font-semibold text-muted-foreground px-2 py-0.5 rounded-md bg-muted border border-border">
+                                ⏰ Expired Scholarships ({expiredItems.length})
                               </span>
+                              <div className="flex-1 h-px bg-border" />
                             </div>
-                            <a href={sc.apply_url} target="_blank" rel="noreferrer"
-                              className={`sc-link-btn inline-flex items-center justify-center gap-1 px-3.5 py-2 rounded-lg text-xs font-semibold no-underline ${
-                                sc.status === 'closed'
-                                  ? 'bg-muted text-muted-foreground pointer-events-none opacity-60'
-                                  : 'bg-primary text-primary-foreground'
-                              }`}
-                            >
-                              {sc.status === 'closed' ? 'Closed' : 'View Details'}
-                              {sc.status !== 'closed' && <ExternalLink size={11} />}
-                            </a>
-                          </div>
-                        </div>
-                      </div>
+                            {expiredItems.map(sc => {
+                              const effStatus = computeEffectiveStatus(sc.deadline, sc.status);
+                              const st = STATUS_DISPLAY[effStatus] || STATUS_DISPLAY.expired;
+                              const isSaved = saved.has(sc.id);
+                              return renderCard(sc, st, isSaved);
+                            })}
+                          </>
+                        )}
+                      </>
                     );
-                  })}
+                  })()}
                 </div>
               )}
             </div>
@@ -701,7 +797,7 @@ export default function ScholarshipsPortal() {
                         className="block mb-3 pb-3 border-b border-red-100 dark:border-red-900/20 no-underline last:border-0 last:pb-0 last:mb-0 hover:opacity-80 transition-opacity"
                       >
                         <div className="text-[12.5px] font-semibold text-foreground leading-tight mb-0.5">{sc.name}</div>
-                        <div className="text-[11px] text-red-500 font-medium">Deadline: {sc.deadline}</div>
+                        <div className="text-[11px] text-red-500 font-medium">Deadline: {formatDeadline(sc.deadline)}</div>
                       </a>
                     ))}
                   </div>
