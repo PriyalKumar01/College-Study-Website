@@ -216,3 +216,5 @@ const SixthSemesterBTNotes = () => {
 };
 
 export default SixthSemesterBTNotes;
+
+// Biotechnology 6th Semester Note Section
