@@ -470,3 +470,5 @@ export default FourthSemesterPTNotes;
 
 
 // Paint Technology 4th Semester Note Section
+
+// Verified against 4th sem PT syllabus
