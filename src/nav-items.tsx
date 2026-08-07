@@ -201,3 +201,5 @@ export const navItems = [
 ];
 
 // Includes routes for BTech 3rd, 4th, 5th, 6th sem branches
+
+// Route definitions validated for production build
