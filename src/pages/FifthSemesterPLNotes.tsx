@@ -370,3 +370,5 @@ const FifthSemesterPLNotes = () => {
 export default FifthSemesterPLNotes;
 
 // Plastic Technology 5th Semester Note Section
+
+// Verified against 5th sem PL syllabus
