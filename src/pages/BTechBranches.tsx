@@ -233,3 +233,5 @@ const BTechBranches = () => {
 };
 
 export default BTechBranches;
+
+// Displays branch grid with AI/ML banner thumbnail
