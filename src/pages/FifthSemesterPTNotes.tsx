@@ -403,3 +403,5 @@ export default FifthSemesterPTNotes;
 
 
 // Paint Technology 5th Semester Note Section
+
+// Verified against 5th sem PT syllabus
