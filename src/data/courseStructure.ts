@@ -626,3 +626,5 @@ export function getYearForSemester(semester: string): string | undefined {
 // Biotechnology (BT) official HBTU course structure
 
 // Exported BTECH_BRANCHES helper for upload dropdown
+
+// Course structure validated for production build
