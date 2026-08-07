@@ -371,7 +371,7 @@ const FourthSemesterMENotes = () => {
       <div className="bg-foreground dark:bg-card text-background dark:text-foreground pt-16 pb-12 px-4 sm:px-8">
         <div className="max-w-5xl mx-auto">
           <button
-            onClick={() => navigate('/btech-notes')}
+            onClick={() => navigate('/btech-notes/second-year/semester-4')}
             className="inline-flex items-center gap-2 text-xs font-semibold tracking-widest uppercase opacity-50 hover:opacity-100 transition-opacity mb-8"
           >
             <ArrowLeft className="h-3.5 w-3.5" /> Back to B.Tech Notes
