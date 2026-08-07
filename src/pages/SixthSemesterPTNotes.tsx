@@ -25,13 +25,14 @@ const SixthSemesterPTNotes = () => {
   };
 
   const staticSubjects = [
-    { id: 'nonwoven', name: 'Non-Woven Technology', icon: '🧶', color: 'bg-pink-500', notes: [{ title: 'Non-Woven Technology Notes', url: '#' }] },
-    { id: 'textile', name: 'Textile Chemical Processing', icon: '🎨', color: 'bg-blue-500', notes: [{ title: 'Textile Chemical Processing Notes', url: '#' }] },
-    { id: 'spinning', name: 'Spinning Technology', icon: '🌀', color: 'bg-yellow-500', notes: [{ title: 'Spinning Technology Notes', url: '#' }] },
-    { id: 'weaving', name: 'Weaving Technology', icon: '🪢', color: 'bg-green-500', notes: [{ title: 'Weaving Technology Notes', url: '#' }] },
-    { id: 'quality', name: 'Textile Quality Control', icon: '✅', color: 'bg-teal-500', notes: [{ title: 'Textile Quality Control Notes', url: '#' }] },
-    { id: 'pyqs', name: 'ALL MID & ESE PYQs', icon: '📚', color: 'bg-purple-500', notes: [{ title: "Mid Sem-1 PYQ'S (2025-26)", url: '#' }, { title: "Mid Sem-2 PYQ'S (2024-25)", url: '#' }, { title: "End Sem PYQ'S (2024-25)", url: '#' }] },
-    { id: 'assignments', name: 'Assignments - All Subjects', icon: '📝', color: 'bg-yellow-500', notes: [] },
+    { id: 'ipc', name: 'Instrumentation & Process Control', icon: '🎛️', color: 'bg-blue-500', notes: [] },
+    { id: 'surfacePrep', name: 'Technology of Surface Preparation, Treatments and Coating Applications', icon: '✨', color: 'bg-purple-500', notes: [] },
+    { id: 'characterization', name: 'Characterization, Analysis and Evaluation of Coatings', icon: '🔬', color: 'bg-indigo-500', notes: [] },
+    { id: 'inks', name: 'Technology of Printing Inks and Coatings', icon: '🖨️', color: 'bg-teal-500', notes: [] },
+    { id: 'coatingsLab', name: 'Characterization, Analysis and Evaluation of Coatings Lab', icon: '🥼', color: 'bg-emerald-500', notes: [] },
+    { id: 'basicPaint', name: 'Basic Paint Technology', icon: '🎨', color: 'bg-amber-500', notes: [] },
+    { id: 'openElective', name: 'Open Elective', icon: '📚', color: 'bg-gradient-to-br from-purple-500 to-pink-500', isSpecial: true, notes: [] },
+    { id: 'pyqs', name: 'ALL MID & ESE PYQs', icon: '❓', color: 'bg-red-500', notes: [] },
   ];
 
   const { data: communityNotes, refetch: refreshNotes } = useCommunityNotes('btech', 'PT-6th Semester');
