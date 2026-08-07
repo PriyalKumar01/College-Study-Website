@@ -355,3 +355,5 @@ export default EighthSemesterCSENotes;
 // Includes CSE, IT, and CSE-AIML notes integration
 
 // AI/ML badge styled with dark purple badge theme
+
+// Verified against 8th sem CSE syllabus
