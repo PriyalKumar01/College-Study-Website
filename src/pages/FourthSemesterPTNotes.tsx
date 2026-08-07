@@ -106,61 +106,54 @@ const FourthSemesterPTNotes = () => {
 
   const staticSubjects = [
     {
-      id: 'dsuc',
-      name: 'Data Structures Using C',
-      icon: '💻',
-      color: 'bg-blue-500',
-      notes: [ ]
-    },
-    {
-      id: 'itetiict',
-      name: 'Intro to Emerging Technologies in ICT',
-      icon: '🌐',
+      id: 'mat',
+      name: 'Modern Analytical Techniques',
+      icon: '🧪',
       color: 'bg-purple-500',
       notes: []
     },
     {
-      id: 'co',
-      name: 'Computer Organisation',
-      icon: '🖥️',
-      color: 'bg-green-500',
+      id: 'conm',
+      name: 'Computer Oriented Numerical Methods',
+      icon: '🌀',
+      color: 'bg-blue-500',
+      notes: [
+        { title: 'CONM Notes(unit 1-5)', url: 'https://drive.google.com/file/d/18lnFb5NV00LsRkdAqk1MyBHyinOf19n7/view?usp=drivesdk', recommended: true }
+      ]
+    },
+    {
+      id: 'resins',
+      name: 'Technology of Natural Resins, Alkyds and Polyesters',
+      icon: '🪵',
+      color: 'bg-amber-500',
       notes: []
     },
     {
-      id: 'python',
-      name: 'Python Programming',
-      icon: '🐍',
+      id: 'cet',
+      name: 'Chemical Engineering Thermodynamics',
+      icon: '🔥',
       color: 'bg-orange-500',
       notes: []
     },
     {
-      id: 'math2',
-      name: 'Engineering Mathematics-II',
-      icon: '📐',
-      color: 'bg-indigo-500',
-      notes: [
-        { title: 'Complete Notes (Unit 1 to 5)', url: 'https://drive.google.com/file/d/1EZQ7WMY4EoS9kewXgqRp-dbkLFcsVx-J/view?usp=drivesdk' },
-        { title: 'Unit 1 C.F & PI Notes', url: 'https://drive.google.com/file/d/1_OfjdkVBUxb6352LJcCSqv_nKrjz4uSU/view?usp=drive_link' },
-        { title: 'Unit 2 Notes', url: 'https://drive.google.com/file/d/1_OSlf-B7K9TFC1LgA6yZDUH2sQL-RTy0/view?usp=drive_link' },
-        { title: 'Unit 3 Notes', url: 'https://drive.google.com/file/d/1_PtU2rwcwDjGnrBwBpTtSeohDrbvxDBa/view?usp=drive_link' },
-        { title: 'Mid Sem 2 Last Minute Revision', url: 'https://drive.google.com/file/d/1oGU5M62XSyErVp3qP4CrEj1v0t5FQqej/view?usp=drive_link' },
-        { title: 'Best Maths Chapter 1 & 2 Notes', url: 'https://drive.google.com/file/d/1_JfBOvZp84amQj6Mo7-KtwrARm1kTHUr/view?usp=drive_link' },
-        { title: 'Formula Sheet Unit 1', url: 'https://drive.google.com/file/d/1T6PERNwiIdoA0Vm2EGyIVwp9TlrG7IrX/view?usp=drive_link' }
-      ]
+      id: 'hto',
+      name: 'Heat Transfer Operations',
+      icon: '🌡️',
+      color: 'bg-red-500',
+      notes: []
     },
     {
-      id: 'conm',
-      name: 'CONM Notes',
-      icon: '🌀',
-      color: 'bg-blue-500',
-      notes: [
-        { title: 'CONM Notes(unit 1-5)', url: 'https://drive.google.com/file/d/18lnFb5NV00LsRkdAqk1MyBHyinOf19n7/view?usp=drivesdk', recommended: true }]
+      id: 'pigments',
+      name: 'Technology of Inorganic Pigments and Extenders',
+      icon: '🎨',
+      color: 'bg-teal-500',
+      notes: []
     },
     {
-      id: 'assignments',
-      name: 'Assignments - All Subjects',
-      icon: '📝',
-      color: 'bg-yellow-500',
+      id: 'lab',
+      name: 'Pigments and Extenders Lab',
+      icon: '🥼',
+      color: 'bg-emerald-500',
       notes: []
     },
     {
@@ -347,34 +340,11 @@ const FourthSemesterPTNotes = () => {
         >
           <h3 className="text-base font-bold text-foreground mb-3">📚 Paint Tech 4th Semester — Important Instructions</h3>
           <div className="space-y-2 text-sm text-muted-foreground">
-            <p><strong className="text-foreground">✨ Hi CSE/IT Juniors!</strong> A few important things to keep in mind as you progress through 4th semester — read carefully, this will genuinely help you.</p>
-            <p>• <strong className="text-foreground">Career Focus:</strong> Start building command in at least one domain — <strong className="text-foreground">Web Dev, App Dev (frontend/backend/both), AI/ML, or Cybersecurity.</strong> Participate in hackathons and contribute to open-source. These make learning exciting and your profile strong.</p>
-            <p>• <strong className="text-foreground">DSA is Non-Negotiable:</strong> As a CSE student, strong DSA in C++/Java is a must for placements. Most companies that visit campus are heavily DSA-focused — start early, be consistent.</p>
-            <p>• <strong className="text-foreground">Maintain CGPA:</strong> Companies keep a cutoff of <strong className="text-foreground">7 or 7.5 CGPA</strong> — no excuses below that. Those with <strong className="text-foreground">8.5+ are in a very safe zone</strong> — aim for 8+ minimum and maintain it till at least 6th semester.</p>
-            <p>• <strong className="text-foreground">DSUC:</strong> Quantum PDF + my notes + Programming PDF available on College Study Website are more than enough. Practice programs: Stack, Dijkstra, Insertion Sort, Selection Sort, Linear & Binary Search.</p>
-            <p>• <strong className="text-foreground">Computer Organisation (CO):</strong> IT students — Amit Sir's classes + write well. CSE students — Gate Smashers or Knowledge Gate OneShot (or both) + PYQs.</p>
-            <p>• <strong className="text-foreground">ItETiICT:</strong> Notes + PYQs are enough. Focus on IoT, Sensors, and OSI Model — remember the OSI layers using the trick below! 👇</p>
-            <p>• <strong className="text-foreground">Python Programming (PP):</strong> Pooja Ma'am's notes + PYQs + Quantum PDF — must go through before exam. For practicals: go through all important Python programs from the special PDF & lab file on the website. Exam has 2 programming questions — insertion/selection sort, linear & binary search (most important), Tower of Hanoi, etc.</p>
-            <p>• <strong className="text-foreground">Digital Electronics (DE):</strong> Question Bank on website + Vaibhav Jain playlist (best) + PYQs.</p>
-            <p>• <strong className="text-foreground">Maths-II (M2):</strong> Make a short formula sheet yourself while watching YouTube lectures. Solve PYQs. That's it.</p>
-            <p>• <strong className="text-foreground">Quantum PDFs:</strong> Wherever available, always go through them — they are genuinely very helpful in general preparation.</p>
-            <p>• <strong className="text-foreground">PP Practical Tip 😄:</strong> Odd roll no. students sit near odd roll no. friends, even near even — because odd and even students get different questions. Plan accordingly!</p>
-
-            {/* OSI Model Trick Image */}
-            <div className="mt-4 mb-2">
-              <p className="font-semibold text-foreground mb-2">🌐 OSI Model Trick — Easy Way to Remember All 7 Layers in Sequence:</p>
-              <div className="rounded-lg overflow-hidden border border-border max-w-lg bg-card">
-                <img
-                  src="/osi-model-trick.png"
-                  alt="OSI Model Easy Memory Trick by Priyal Kumar"
-                  className="w-full object-contain bg-white dark:invert"
-                  onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
-                />
-              </div>
-              <p className="text-xs mt-1 text-muted-foreground italic">Trick by Priyal Kumar — Sequence: Application → Presentation → Session → Transport → Network → Data Link → Physical</p>
-            </div>
-
-            <p className="text-red-600 dark:text-red-400"><strong>⚠️ Important:</strong> Always maintain good presentation in exams — use 2 pens, underline important keywords, keep proper spacing after answers, and write sufficiently explained answers for better scoring. Cover every topic from the syllabus using playlists, notes, PYQs, YouTube, Google AI Mode, or any resource possible. Once every topic is understood properly, exams automatically become much easier.</p>
+            <p><strong className="text-foreground">✨ Hi Paint Tech Juniors!</strong> Key guidance for 4th semester Paint Technology:</p>
+            <p>• <strong className="text-foreground">Maintain CGPA:</strong> Keep your CGPA above <strong className="text-foreground">7.5+</strong> for core chemical and paint company cutoffs.</p>
+            <p>• <strong className="text-foreground">Resins & Pigments:</strong> Focus heavily on Technology of Natural Resins, Alkyds, Polyesters & Inorganic Pigments — core subjects for core placements.</p>
+            <p>• <strong className="text-foreground">Heat Transfer & CET:</strong> Solve numerical problems and standard formulas regularly.</p>
+            <p>• <strong className="text-foreground">Presentation in Exams:</strong> Draw neat diagrams, use proper key headings, and underline key terms.</p>
             <p>✨ Best Wishes — <strong className="text-foreground">Priyal Kumar</strong></p>
           </div>
         </motion.div>
