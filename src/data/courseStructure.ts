@@ -49,9 +49,10 @@ export const BTECH_YEARS = [
   { id: '4th', label: '4th Year', semesters: ['7th Semester', '8th Semester'] },
 ];
 
-// ── BTech Branches ───────────────────────────────────────────────
 export const BTECH_BRANCHES = [
-  { code: 'CSE', fullName: 'Computer Science & Information Technology' },
+  { code: 'CSE', fullName: 'Computer Science & Engineering' },
+  { code: 'IT', fullName: 'Information Technology' },
+  { code: 'CSE-AIML', fullName: 'Computer Science & Engineering (AI & ML)' },
   { code: 'ET', fullName: 'Electronics Technology' },
   { code: 'EE', fullName: 'Electrical Engineering' },
   { code: 'ME', fullName: 'Mechanical Engineering' },
@@ -59,9 +60,11 @@ export const BTECH_BRANCHES = [
   { code: 'CHE', fullName: 'Chemical Engineering' },
   { code: 'BE', fullName: 'Biochemical Engineering' },
   { code: 'LFT', fullName: 'Leather & Fashion Technology' },
-  { code: 'PT', fullName: 'Plastic Technology' },
+  { code: 'PT', fullName: 'Paint Technology' },
+  { code: 'PL', fullName: 'Plastic Technology' },
   { code: 'FT', fullName: 'Food Technology' },
   { code: 'OT', fullName: 'Oil Technology' },
+  { code: 'BT', fullName: 'Biotechnology' },
 ];
 
 // ── Special sections that appear as subject-level cards ──────────
@@ -312,24 +315,110 @@ export const SUBJECTS: Record<string, SubjectInfo[]> = {
     { name: 'Environmental Management', fullName: 'Environmental Management' },
   ],
 
+  // Paint Technology (PT)
   'PT-3rd Semester': [
-    { name: 'Polymer Science', fullName: 'Polymer Science' },
-    { name: 'Plastic Processing', fullName: 'Plastic Processing' },
-    { name: 'Rubber Technology', fullName: 'Rubber Technology' },
-    { name: 'Math-II', fullName: 'Engineering Mathematics-II' },
+    { name: 'Engineering Mathematics-II', fullName: 'Engineering Mathematics-II' },
+    { name: 'Fluid Mechanics and Mechanical Operations', fullName: 'Fluid Mechanics and Mechanical Operations' },
+    { name: 'Introduction to Surface Coatings and their Components', fullName: 'Introduction to Surface Coatings and their Components' },
+    { name: 'Technology of Organic, Functional and Effect Pigments', fullName: 'Technology of Organic, Functional and Effect Pigments' },
+    { name: 'Chemical Process Calculations', fullName: 'Chemical Process Calculations' },
+    { name: 'Economics and Management', fullName: 'Economics and Management' },
+    { name: 'Introduction to Surface Coatings and their Components Lab', fullName: 'Introduction to Surface Coatings and their Components Lab' },
   ],
   'PT-4th Semester': [
-    { name: 'Mould Design', fullName: 'Mould Design' },
-    { name: 'Plastic Testing', fullName: 'Plastic Testing' },
-    { name: 'Composite Materials', fullName: 'Composite Materials' },
-    { name: 'Math-III', fullName: 'Engineering Mathematics-III' },
-    { name: 'Economics & Management', fullName: 'Economics & Management' },
+    { name: 'Modern Analytical Techniques', fullName: 'Modern Analytical Techniques' },
+    { name: 'Computer Oriented Numerical Methods', fullName: 'Computer Oriented Numerical Methods' },
+    { name: 'Technology of Natural Resins, Alkyds and Polyesters', fullName: 'Technology of Natural Resins, Alkyds and Polyesters' },
+    { name: 'Chemical Engineering Thermodynamics', fullName: 'Chemical Engineering Thermodynamics' },
+    { name: 'Heat Transfer Operations', fullName: 'Heat Transfer Operations' },
+    { name: 'Technology of Inorganic Pigments and Extenders', fullName: 'Technology of Inorganic Pigments and Extenders' },
+    { name: 'Pigments and Extenders Lab', fullName: 'Pigments and Extenders Lab' },
   ],
   'PT-5th Semester': [
-    { name: 'Advanced Polymer Processing', fullName: 'Advanced Polymer Processing' },
-    { name: 'Packaging Technology', fullName: 'Packaging Technology' },
-    { name: 'Polymer Characterization', fullName: 'Polymer Characterization' },
-    { name: 'Environmental Science', fullName: 'Environmental Science' },
+    { name: 'Technology of Formulation and Manufacture of Coatings', fullName: 'Technology of Formulation and Manufacture of Coatings' },
+    { name: 'Technology of Synthetic Resins and Polymers', fullName: 'Technology of Synthetic Resins and Polymers' },
+    { name: 'Technology of Paint and Coating Additives', fullName: 'Technology of Paint and Coating Additives' },
+    { name: 'Mass Transfer Operations', fullName: 'Mass Transfer Operations' },
+    { name: 'Chemical Reaction Engineering', fullName: 'Chemical Reaction Engineering' },
+    { name: 'Technology of Synthetic Resins and Polymers Lab', fullName: 'Technology of Synthetic Resins and Polymers Lab' },
+    { name: 'Entrepreneurship', fullName: 'Entrepreneurship' },
+  ],
+  'PT-6th Semester': [
+    { name: 'Instrumentation & Process Control', fullName: 'Instrumentation & Process Control' },
+    { name: 'Technology of Surface Preparation, Treatments and Coating Applications', fullName: 'Technology of Surface Preparation, Treatments and Coating Applications' },
+    { name: 'Characterization, Analysis and Evaluation of Coatings', fullName: 'Characterization, Analysis and Evaluation of Coatings' },
+    { name: 'Technology of Printing Inks and Coatings', fullName: 'Technology of Printing Inks and Coatings' },
+    { name: 'Characterization, Analysis and Evaluation of Coatings Lab', fullName: 'Characterization, Analysis and Evaluation of Coatings Lab' },
+    { name: 'Basic Paint Technology', fullName: 'Basic Paint Technology' },
+  ],
+
+  // Plastic Technology (PL)
+  'PL-3rd Semester': [
+    { name: 'Engineering Mathematics-II', fullName: 'Engineering Mathematics-II' },
+    { name: 'Fluid Mechanics & Mechanical Operations', fullName: 'Fluid Mechanics & Mechanical Operations' },
+    { name: 'Introduction to Polymer Chemistry', fullName: 'Introduction to Polymer Chemistry' },
+    { name: 'Polymerization Engineering-I', fullName: 'Polymerization Engineering-I' },
+    { name: 'Chemical Process Calculations', fullName: 'Chemical Process Calculations' },
+    { name: 'Economics & Management', fullName: 'Economics & Management' },
+    { name: 'Polymer Chemistry LAB', fullName: 'Polymer Chemistry LAB' },
+  ],
+  'PL-4th Semester': [
+    { name: 'Modern Analytical Techniques', fullName: 'Modern Analytical Techniques' },
+    { name: 'Computer Oriented Numerical Methods', fullName: 'Computer Oriented Numerical Methods' },
+    { name: 'Processing of Polymers -I', fullName: 'Processing of Polymers -I' },
+    { name: 'Chemical Engineering Thermodynamics', fullName: 'Chemical Engineering Thermodynamics' },
+    { name: 'Heat Transfer Operation', fullName: 'Heat Transfer Operation' },
+    { name: 'Polymerization Engineering-II', fullName: 'Polymerization Engineering-II' },
+    { name: 'Polymerization Engineering Lab', fullName: 'Polymerization Engineering Lab' },
+  ],
+  'PL-5th Semester': [
+    { name: 'Processing of Polymers -II', fullName: 'Processing of Polymers -II' },
+    { name: 'Plastic Mould Design and Dies', fullName: 'Plastic Mould Design and Dies' },
+    { name: 'Polymer Rheology and Testing', fullName: 'Polymer Rheology and Testing' },
+    { name: 'Mass Transfer Operation', fullName: 'Mass Transfer Operation' },
+    { name: 'Chemical Reaction Engineering', fullName: 'Chemical Reaction Engineering' },
+    { name: 'Polymer Testing Lab', fullName: 'Polymer Testing Lab' },
+    { name: 'Entrepreneurship', fullName: 'Entrepreneurship' },
+  ],
+  'PL-6th Semester': [
+    { name: 'Instrumentation & Process Control', fullName: 'Instrumentation & Process Control' },
+    { name: 'Structure & Properties Relationship of Polymers', fullName: 'Structure & Properties Relationship of Polymers' },
+    { name: 'Rubber Technology', fullName: 'Rubber Technology' },
+    { name: 'Polymer Composite', fullName: 'Polymer Composite' },
+    { name: 'Polymer Characterization Lab', fullName: 'Polymer Characterization Lab' },
+    { name: 'Introduction to Polymer Science', fullName: 'Introduction to Polymer Science' },
+  ],
+
+  // BioTechnology (BT)
+  'BT-3rd Semester': [
+    { name: 'BioChemistry Notes', fullName: 'BioChemistry' },
+    { name: 'Immunology & Immunotechnology', fullName: 'Immunology & Immunotechnology' },
+    { name: 'IPR, Ethics & Patenting in Biotechnology', fullName: 'IPR, Ethics & Patenting in Biotechnology' },
+    { name: 'Micro Biology', fullName: 'Micro Biology' },
+    { name: 'Plant & Animal Biotechnology', fullName: 'Plant & Animal Biotechnology' },
+    { name: 'Analytical Techniques in Biotechnology', fullName: 'Analytical Techniques in Biotechnology' },
+  ],
+  'BT-4th Semester': [
+    { name: 'Micro Biology - LAB', fullName: 'Micro Biology - LAB' },
+    { name: 'Agriculture BioTechnology', fullName: 'Agriculture BioTechnology' },
+    { name: 'Bio-Informatics Notes', fullName: 'Bio-Informatics' },
+    { name: 'Bio-Process Engg.', fullName: 'Bio-Process Engg.' },
+    { name: 'Food Bio-Technology', fullName: 'Food Bio-Technology' },
+    { name: 'Intro. to BioNanoTechnology', fullName: 'Intro. to BioNanoTechnology' },
+    { name: 'Molecular Biology', fullName: 'Molecular Biology' },
+  ],
+  'BT-5th Semester': [
+    { name: 'Bioprocess Engineering', fullName: 'Bioprocess Engineering' },
+    { name: 'Bio-Instrumentation', fullName: 'Bio-Instrumentation' },
+    { name: 'Genetic Engineering', fullName: 'Genetic Engineering' },
+    { name: 'Enzyme Technology', fullName: 'Enzyme Technology' },
+    { name: 'Biomass Energy', fullName: 'Biomass Energy' },
+  ],
+  'BT-6th Semester': [
+    { name: 'Bioprocess Engineering', fullName: 'Bioprocess Engineering' },
+    { name: 'Genetic Engineering', fullName: 'Genetic Engineering' },
+    { name: 'Immunotechnology', fullName: 'Immunotechnology' },
+    { name: 'Bioinformatics', fullName: 'Bioinformatics' },
   ],
 
   'FT-3rd Semester': [
@@ -459,7 +548,13 @@ export function getSubjects(
   if (category === 'btech') {
     // First check branch-specific subjects
     const branchKey = `${branch}-${semester}`;
-    if (SUBJECTS[branchKey]) baseSubjects = SUBJECTS[branchKey];
+    if (SUBJECTS[branchKey]) {
+      baseSubjects = SUBJECTS[branchKey];
+    } else if (branch === 'IT' || branch === 'CSE-AIML') {
+      // Fallback for IT & CSE-AIML to CSE syllabus
+      const cseKey = `CSE-${semester}`;
+      if (SUBJECTS[cseKey]) baseSubjects = SUBJECTS[cseKey];
+    }
 
     // Fallback: 1st year is common
     if (baseSubjects.length === 0) {
@@ -487,6 +582,10 @@ export function getSubjectsOnly(
   if (category === 'btech') {
     const branchKey = `${branch}-${semester}`;
     if (SUBJECTS[branchKey]) return SUBJECTS[branchKey];
+    if (branch === 'IT' || branch === 'CSE-AIML') {
+      const cseKey = `CSE-${semester}`;
+      if (SUBJECTS[cseKey]) return SUBJECTS[cseKey];
+    }
     const allKey = `ALL-${semester}`;
     if (SUBJECTS[allKey]) return SUBJECTS[allKey];
     return [];
