@@ -39,3 +39,5 @@ export function useCommunityNotes(category: string, semester?: string | string[]
 }
 
 // Handles multi-semester string array querying via Supabase IN clause
+
+// Queries study-materials storage bucket & supabase table
