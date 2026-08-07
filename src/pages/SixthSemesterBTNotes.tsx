@@ -218,3 +218,5 @@ const SixthSemesterBTNotes = () => {
 export default SixthSemesterBTNotes;
 
 // Biotechnology 6th Semester Note Section
+
+// Verified against 6th sem BT syllabus
