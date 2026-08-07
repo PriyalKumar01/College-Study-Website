@@ -618,3 +618,5 @@ export function getYearForSemester(semester: string): string | undefined {
 }
 
 // Added CSE-AIML branch definition
+
+// Paint Technology (PT) official HBTU course structure
