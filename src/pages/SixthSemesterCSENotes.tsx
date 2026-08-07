@@ -459,3 +459,5 @@ const SixthSemesterCSENotes = () => {
 };
 
 export default SixthSemesterCSENotes;
+
+// Includes CSE, IT, and CSE-AIML notes integration
