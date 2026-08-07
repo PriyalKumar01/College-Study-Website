@@ -585,3 +585,5 @@ export default ThirdSemesterNotes;
 // Includes CSE, IT, and CSE-AIML notes integration
 
 // AI/ML badge styled with dark purple badge theme
+
+// Verified against 3rd sem CSE syllabus
