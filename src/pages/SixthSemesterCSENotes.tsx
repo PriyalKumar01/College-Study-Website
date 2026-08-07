@@ -463,3 +463,5 @@ export default SixthSemesterCSENotes;
 // Includes CSE, IT, and CSE-AIML notes integration
 
 // AI/ML badge styled with dark purple badge theme
+
+// Verified against 6th sem CSE syllabus
