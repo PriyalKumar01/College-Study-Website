@@ -255,7 +255,7 @@ const FifthSemesterCSENotes = () => {
     },
   ];
 
-  const { data: communityNotes, refetch: refreshNotes } = useCommunityNotes('btech', 'CSE-5th Semester');
+  const { data: communityNotes, refetch: refreshNotes } = useCommunityNotes('btech', ['CSE-5th Semester', 'IT-5th Semester', 'CSE-AIML-5th Semester']);
   
   interface Note {
     id?: string;
@@ -279,6 +279,7 @@ const FifthSemesterCSENotes = () => {
           title: cn.title,
           url: cn.file_url,
           isCommunity: true,
+          branchSemester: cn.semester,
           fileName: cn.file_name,
           uploadedBy: cn.uploaded_by,
           userName: cn.user_name
@@ -358,6 +359,9 @@ const FifthSemesterCSENotes = () => {
                       {note.isCommunity && (
                         <span className="text-[10px] font-bold tracking-wider uppercase bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400 px-2 py-0.5 rounded border border-blue-100 dark:border-blue-900/50">Community</span>
                       )}
+                      {(note as any).branchSemester?.startsWith('CSE-AIML') && (
+                        <span className="text-[10px] font-bold tracking-wider uppercase bg-purple-600 text-white px-2 py-0.5 rounded shadow-sm">AI/ML</span>
+                      )}
                       {note.recommended && (
                         <span className="text-[10px] font-bold tracking-wider uppercase bg-yellow-50 dark:bg-yellow-950/40 text-yellow-600 dark:text-yellow-500 px-2 py-0.5 rounded border border-yellow-200 dark:border-yellow-900/50">â­ Best</span>
                       )}
@@ -407,14 +411,14 @@ const FifthSemesterCSENotes = () => {
           >
             <ArrowLeft className="h-3.5 w-3.5" /> Back to Branches
           </button>
-          <p className="text-xs font-bold tracking-[0.2em] uppercase opacity-50 mb-3">Computer Science & Engineering Notes</p>
+          <p className="text-xs font-bold tracking-[0.2em] uppercase opacity-50 mb-3">Computer Science, IT & CSE (AI & ML) Notes</p>
           <h1 className="text-4xl md:text-5xl font-serif leading-tight mb-3">
             5th Semester<br />
-            <span className="opacity-60">Computer Science & IT Notes</span>
+            <span className="opacity-60">CSE, IT & CSE (AI & ML) Notes</span>
           </h1>
-          <p className="text-sm opacity-50 mb-8">B.Tech. Computer Science & IT — Comprehensive study materials and resources</p>
+          <p className="text-sm opacity-50 mb-8">B.Tech. CSE, IT & CSE (AI & ML) — Comprehensive study materials and resources</p>
           <div className="flex flex-wrap gap-2">
-            <span className="text-xs font-semibold tracking-wider uppercase border border-background/30 px-3 py-1.5 rounded">CSE Department</span>
+            <span className="text-xs font-semibold tracking-wider uppercase border border-background/30 px-3 py-1.5 rounded">CSE / IT / CSE-AIML</span>
             <span className="text-xs font-semibold tracking-wider uppercase border border-background/30 px-3 py-1.5 rounded">{staticSubjects.filter(s => s.id !== 'pyqs').length} Core Subjects</span>
             <span className="text-xs font-semibold tracking-wider uppercase border border-background/30 px-3 py-1.5 rounded">5th Semester</span>
           </div>
