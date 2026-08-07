@@ -165,3 +165,5 @@ const SixthSemesterPTNotes = () => {
 };
 
 export default SixthSemesterPTNotes;
+
+// Paint Technology 6th Semester Note Section
