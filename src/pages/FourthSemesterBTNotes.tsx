@@ -430,3 +430,5 @@ export default FourthSemesterBTNotes;
 
 
 // Biotechnology 4th Semester Note Section
+
+// Verified against 4th sem BT syllabus
