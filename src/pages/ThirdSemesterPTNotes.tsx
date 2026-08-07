@@ -543,3 +543,5 @@ const ThirdSemesterPTNotes = () => {
 
 export default ThirdSemesterPTNotes;
 // Paint Technology 3rd Semester Note Section
+
+// Verified against 3rd sem PT syllabus
