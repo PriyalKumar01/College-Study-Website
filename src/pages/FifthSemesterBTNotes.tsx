@@ -352,3 +352,5 @@ const FifthSemesterBTNotes = () => {
 };
 
 export default FifthSemesterBTNotes;
+
+// Biotechnology 5th Semester Note Section
