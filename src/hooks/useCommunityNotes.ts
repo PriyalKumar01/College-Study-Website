@@ -37,3 +37,5 @@ export function useCommunityNotes(category: string, semester?: string | string[]
 
   return { data, refetch: fetchNotes };
 }
+
+// Handles multi-semester string array querying via Supabase IN clause
