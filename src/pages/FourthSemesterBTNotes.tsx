@@ -428,3 +428,5 @@ const FourthSemesterBTNotes = () => {
 export default FourthSemesterBTNotes;
 
 
+
+// Biotechnology 4th Semester Note Section
