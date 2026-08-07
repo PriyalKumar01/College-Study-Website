@@ -368,3 +368,5 @@ const FifthSemesterPLNotes = () => {
 };
 
 export default FifthSemesterPLNotes;
+
+// Plastic Technology 5th Semester Note Section
