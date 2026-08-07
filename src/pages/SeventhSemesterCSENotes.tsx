@@ -135,7 +135,7 @@ const SeventhSemesterCSENotes = () => {
     url: '#'
   };
 
-  const { data: communityNotes, refetch: refreshNotes } = useCommunityNotes('btech', 'CSE-7th Semester');
+  const { data: communityNotes, refetch: refreshNotes } = useCommunityNotes('btech', ['CSE-7th Semester', 'IT-7th Semester', 'CSE-AIML-7th Semester']);
   const subjects = staticSubjects.map((sub) => ({
     ...sub,
     notes: [
@@ -233,14 +233,14 @@ const SeventhSemesterCSENotes = () => {
           <button onClick={() => navigate('/btech-notes/fourth-year/semester-7')} className="inline-flex items-center gap-2 text-xs font-semibold tracking-widest uppercase opacity-50 hover:opacity-100 transition-opacity mb-8">
             <ArrowLeft className="h-3.5 w-3.5" /> Back to Branches
           </button>
-          <p className="text-xs font-bold tracking-[0.2em] uppercase opacity-50 mb-3">Harcourt Butler Technical University, Kanpur</p>
+          <p className="text-xs font-bold tracking-[0.2em] uppercase opacity-50 mb-3">Computer Science, IT & CSE (AI & ML) Notes</p>
           <h1 className="text-4xl md:text-5xl font-bold leading-tight mb-3">
             7th Semester<br />
-            <span className="opacity-60">Computer Science & Engineering Notes</span>
+            <span className="opacity-60">CSE, IT & CSE (AI & ML) Notes</span>
           </h1>
-          <p className="text-sm opacity-50 mb-8">B.Tech. CSE / IT — Comprehensive study materials and resources</p>
+          <p className="text-sm opacity-50 mb-8">B.Tech. CSE, IT & CSE (AI & ML) — Comprehensive study materials and resources</p>
           <div className="flex flex-wrap gap-2">
-            <span className="text-xs font-semibold tracking-wider uppercase border border-background/30 px-3 py-1.5 rounded">CSE Department</span>
+            <span className="text-xs font-semibold tracking-wider uppercase border border-background/30 px-3 py-1.5 rounded">CSE / IT / CSE-AIML</span>
             <span className="text-xs font-semibold tracking-wider uppercase border border-background/30 px-3 py-1.5 rounded">{staticSubjects.filter(s => s.id !== 'pyqs' && s.id !== 'assignments').length} Subjects</span>
             <span className="text-xs font-semibold tracking-wider uppercase border border-background/30 px-3 py-1.5 rounded">7th Semester</span>
           </div>
