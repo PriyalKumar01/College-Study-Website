@@ -232,3 +232,5 @@ const SixthSemesterPLNotes = () => {
 export default SixthSemesterPLNotes;
 
 // Plastic Technology 6th Semester Note Section
+
+// Verified against 6th sem PL syllabus
