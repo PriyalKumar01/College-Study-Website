@@ -199,3 +199,5 @@ export const navItems = [
   { to: "/roadmaps/fresher-job-guide", page: <RoadmapGuide /> },
   { to: "*", page: <NotFound /> },
 ];
+
+// Includes routes for BTech 3rd, 4th, 5th, 6th sem branches
