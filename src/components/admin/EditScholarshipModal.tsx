@@ -62,12 +62,25 @@ export default function EditScholarshipModal({ scholarship, onClose, onSaved }: 
   const [amount, setAmount] = useState(scholarship.amount);
   const [amountNum, setAmountNum] = useState(String(scholarship.amount_num));
   const [applyUrl, setApplyUrl] = useState(scholarship.apply_url);
-  const [deadline, setDeadline] = useState(scholarship.deadline);
+  // Normalize deadline to YYYY-MM-DD for the date input
+  const normalizeDeadline = (raw: string): string => {
+    if (!raw) return '';
+    // Already YYYY-MM-DD
+    if (/^\d{4}-\d{2}-\d{2}$/.test(raw)) return raw;
+    // Try parsing free-text like "Nov 30, 2025" or "30-11-2025"
+    const parsed = new Date(raw);
+    if (!isNaN(parsed.getTime())) {
+      return parsed.toISOString().split('T')[0];
+    }
+    return '';
+  };
+
+  const [deadline, setDeadline] = useState(normalizeDeadline(scholarship.deadline));
   const [income, setIncome] = useState(scholarship.income);
   const [marks, setMarks] = useState(scholarship.marks);
   const [tags, setTags] = useState((scholarship.tags || []).join(', '));
   const [type, setType] = useState(scholarship.type);
-  const [schStatus, setSchStatus] = useState(scholarship.status);
+  // Status is auto-computed from deadline — no manual input in edit modal either
   const [selectedStreams, setSelectedStreams] = useState<string[]>(scholarship.streams || []);
   const [selectedWho, setSelectedWho] = useState<string[]>(scholarship.who || []);
   const [imageUrl, setImageUrl] = useState(scholarship.image_url || '');
@@ -101,6 +114,16 @@ export default function EditScholarshipModal({ scholarship, onClose, onSaved }: 
     }
   };
 
+  // Compute status from deadline date
+  const computeStatusFromDeadline = (dl: string): string => {
+    if (!dl) return 'open';
+    const d = new Date(dl);
+    if (isNaN(d.getTime())) return 'open';
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    return d < today ? 'closed' : 'open';
+  };
+
   const handleSave = async () => {
     setSaving(true);
     try {
@@ -119,7 +142,7 @@ export default function EditScholarshipModal({ scholarship, onClose, onSaved }: 
           marks: marks.trim(),
           tags: tagsArr,
           type,
-          status: schStatus,
+          status: computeStatusFromDeadline(deadline),
           streams: selectedStreams,
           who: selectedWho,
           image_url: imageUrl.trim() || null,
@@ -238,7 +261,15 @@ export default function EditScholarshipModal({ scholarship, onClose, onSaved }: 
             </div>
             <div>
               <label style={labelStyle}>Deadline *</label>
-              <input value={deadline} onChange={e => setDeadline(e.target.value)} style={inputStyle} />
+              <input
+                type="date"
+                value={deadline}
+                onChange={e => setDeadline(e.target.value)}
+                style={inputStyle}
+              />
+              <div style={{ fontSize: 11, color: 'hsl(var(--muted-foreground))', marginTop: 4 }}>
+                Status auto-updates from this date.
+              </div>
             </div>
           </div>
 
@@ -270,16 +301,14 @@ export default function EditScholarshipModal({ scholarship, onClose, onSaved }: 
                 </SelectContent>
               </Select>
             </div>
-            <div>
-              <label style={labelStyle}>Status</label>
-              <Select value={schStatus} onValueChange={setSchStatus}>
-                <SelectTrigger className="h-10"><SelectValue /></SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="open">Open Now</SelectItem>
-                  <SelectItem value="upcoming">Opening Soon</SelectItem>
-                  <SelectItem value="closed">Closed</SelectItem>
-                </SelectContent>
-              </Select>
+            <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end' }}>
+              <div style={{
+                padding: '8px 12px', borderRadius: 8, fontSize: 12,
+                background: 'hsl(var(--muted)/0.5)', border: '1px solid hsl(var(--border))',
+                color: 'hsl(var(--muted-foreground))', lineHeight: 1.4
+              }}>
+                📅 Status is <strong style={{ color: 'hsl(var(--foreground))' }}>auto-computed</strong> from the deadline date.
+              </div>
             </div>
           </div>
 
