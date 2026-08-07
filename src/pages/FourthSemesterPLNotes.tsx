@@ -435,3 +435,5 @@ const FourthSemesterPLNotes = () => {
 export default FourthSemesterPLNotes;
 
 
+
+// Plastic Technology 4th Semester Note Section
