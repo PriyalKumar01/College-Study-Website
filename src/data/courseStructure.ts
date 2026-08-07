@@ -624,3 +624,5 @@ export function getYearForSemester(semester: string): string | undefined {
 // Plastic Technology (PL) official HBTU course structure
 
 // Biotechnology (BT) official HBTU course structure
+
+// Exported BTECH_BRANCHES helper for upload dropdown
