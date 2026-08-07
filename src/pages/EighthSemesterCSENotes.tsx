@@ -352,3 +352,4 @@ const EighthSemesterCSENotes = () => {
 };
 
 export default EighthSemesterCSENotes;
+// Includes CSE, IT, and CSE-AIML notes integration
