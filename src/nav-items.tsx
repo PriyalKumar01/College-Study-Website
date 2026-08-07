@@ -87,6 +87,10 @@ import ThirdSemesterBTNotes from "./pages/ThirdSemesterBTNotes";
 import ThirdSemesterPLNotes from "./pages/ThirdSemesterPLNotes";
 import FourthSemesterBTNotes from "./pages/FourthSemesterBTNotes";
 import FourthSemesterPLNotes from "./pages/FourthSemesterPLNotes";
+import FifthSemesterBTNotes from "./pages/FifthSemesterBTNotes";
+import FifthSemesterPLNotes from "./pages/FifthSemesterPLNotes";
+import SixthSemesterBTNotes from "./pages/SixthSemesterBTNotes";
+import SixthSemesterPLNotes from "./pages/SixthSemesterPLNotes";
 import SeventhSemesterCSENotes from "./pages/SeventhSemesterCSENotes";
 import EighthSemesterCSENotes from "./pages/EighthSemesterCSENotes";
 import RoadmapGuide from "./pages/RoadmapGuide";
@@ -142,6 +146,8 @@ export const navItems = [
   { to: "/fifth-semester-be", page: <FifthSemesterBENotes /> },
   { to: "/fifth-semester-lft", page: <FifthSemesterLFTNotes /> },
   { to: "/fifth-semester-pt", page: <FifthSemesterPTNotes /> },
+  { to: "/fifth-semester-bt", page: <FifthSemesterBTNotes /> },
+  { to: "/fifth-semester-pl", page: <FifthSemesterPLNotes /> },
   { to: "/fifth-semester-ot", page: <FifthSemesterOTNotes /> },
   { to: "/fifth-semester-ft", page: <FifthSemesterFTNotes /> },
   { to: "/sixth-semester-cse", page: <SixthSemesterCSENotes /> },
@@ -154,6 +160,8 @@ export const navItems = [
   { to: "/sixth-semester-be", page: <SixthSemesterBENotes /> },
   { to: "/sixth-semester-lft", page: <SixthSemesterLFTNotes /> },
   { to: "/sixth-semester-pt", page: <SixthSemesterPTNotes /> },
+  { to: "/sixth-semester-bt", page: <SixthSemesterBTNotes /> },
+  { to: "/sixth-semester-pl", page: <SixthSemesterPLNotes /> },
   { to: "/sixth-semester-ot", page: <SixthSemesterOTNotes /> },
   { to: "/sixth-semester-ft", page: <SixthSemesterFTNotes /> },
   { to: "/opportunities", page: <Opportunities /> },
