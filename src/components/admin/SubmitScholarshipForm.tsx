@@ -44,12 +44,12 @@ export default function SubmitScholarshipForm({ onSuccess }: SubmitScholarshipFo
   const [amount, setAmount] = useState('');
   const [amountNum, setAmountNum] = useState('');
   const [applyUrl, setApplyUrl] = useState('');
-  const [deadline, setDeadline] = useState('');
+  const [deadline, setDeadline] = useState(''); // stored as YYYY-MM-DD
   const [income, setIncome] = useState('');
   const [marks, setMarks] = useState('');
   const [tags, setTags] = useState('');
   const [type, setType] = useState('government');
-  const [schStatus, setSchStatus] = useState('open');
+  // Status is auto-computed from deadline on the portal — no manual input needed
   const [selectedStreams, setSelectedStreams] = useState<string[]>([]);
   const [selectedWho, setSelectedWho] = useState<string[]>([]);
   const [imageUrl, setImageUrl] = useState('');
@@ -72,6 +72,16 @@ export default function SubmitScholarshipForm({ onSuccess }: SubmitScholarshipFo
     name.trim() && org.trim() && description.trim() && amount.trim() &&
     applyUrl.trim() && deadline.trim() && selectedStreams.length > 0 && selectedWho.length > 0;
 
+  // Determine initial status from deadline date
+  const computeInitialStatus = (dl: string): string => {
+    if (!dl) return 'open';
+    const d = new Date(dl);
+    if (isNaN(d.getTime())) return 'open';
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    return d < today ? 'closed' : 'open';
+  };
+
   const handleSubmit = async () => {
     if (!user || !isValid()) return;
     setSubmitting(true);
@@ -92,7 +102,7 @@ export default function SubmitScholarshipForm({ onSuccess }: SubmitScholarshipFo
           tags: tagsArr,
           type,
           level: 'central',
-          status: schStatus,
+          status: computeInitialStatus(deadline),
           streams: selectedStreams,
           who: selectedWho,
           image_url: imageUrl.trim() || null,
@@ -114,7 +124,7 @@ export default function SubmitScholarshipForm({ onSuccess }: SubmitScholarshipFo
   const reset = () => {
     setName(''); setOrg(''); setDescription(''); setAmount(''); setAmountNum('');
     setApplyUrl(''); setDeadline(''); setIncome(''); setMarks(''); setTags('');
-    setType('government'); setSchStatus('open'); setImageUrl('');
+    setType('government'); setImageUrl('');
     setSelectedStreams([]); setSelectedWho([]);
     setSubmitted(false);
   };
@@ -233,8 +243,16 @@ export default function SubmitScholarshipForm({ onSuccess }: SubmitScholarshipFo
           </div>
           <div>
             <label style={labelStyle}>Deadline *</label>
-            <input value={deadline} onChange={e => setDeadline(e.target.value)}
-              placeholder="e.g., Nov 30, 2025" style={inputStyle} />
+            <input
+              type="date"
+              value={deadline}
+              onChange={e => setDeadline(e.target.value)}
+              min={new Date().toISOString().split('T')[0]}
+              style={inputStyle}
+            />
+            <div style={{ fontSize: 11, color: 'hsl(var(--muted-foreground))', marginTop: 4 }}>
+              Status (Open / Expired) will be set automatically based on this date.
+            </div>
           </div>
         </div>
       </div>
@@ -261,16 +279,14 @@ export default function SubmitScholarshipForm({ onSuccess }: SubmitScholarshipFo
               </SelectContent>
             </Select>
           </div>
-          <div>
-            <label style={labelStyle}>Current Status</label>
-            <Select value={schStatus} onValueChange={setSchStatus}>
-              <SelectTrigger className="h-11"><SelectValue /></SelectTrigger>
-              <SelectContent>
-                <SelectItem value="open">Open Now</SelectItem>
-                <SelectItem value="upcoming">Opening Soon</SelectItem>
-                <SelectItem value="closed">Closed</SelectItem>
-              </SelectContent>
-            </Select>
+          <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end' }}>
+            <div style={{
+              padding: '10px 14px', borderRadius: 8, fontSize: 13,
+              background: 'hsl(var(--muted)/0.5)', border: '1px solid hsl(var(--border))',
+              color: 'hsl(var(--muted-foreground))', lineHeight: 1.4
+            }}>
+              📅 Status is <strong style={{ color: 'hsl(var(--foreground))' }}>auto-computed</strong> from the deadline date — no need to set it manually.
+            </div>
           </div>
         </div>
       </div>
