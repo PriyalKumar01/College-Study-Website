@@ -46,20 +46,60 @@ const FifthSemesterPTNotes = () => {
 
   const staticSubjects = [
     {
-      id: 'polymer',
-      name: 'Advanced Polymer Science',
-      icon: '🧪',
+      id: 'coatings',
+      name: 'Technology of Formulation and Manufacture of Coatings',
+      icon: '🎨',
       color: 'bg-purple-500',
       playlists: { detailed: [], oneshot: [] },
-      notes: [{ title: 'Polymer Science Notes', url: '#' }]
+      notes: []
     },
     {
-      id: 'xyz',
-      name: 'Subject XYZ',
-      icon: '📘',
+      id: 'syntheticResins',
+      name: 'Technology of Synthetic Resins and Polymers',
+      icon: '🧪',
+      color: 'bg-indigo-500',
+      playlists: { detailed: [], oneshot: [] },
+      notes: []
+    },
+    {
+      id: 'additives',
+      name: 'Technology of Paint and Coating Additives',
+      icon: '⚗️',
       color: 'bg-blue-500',
       playlists: { detailed: [], oneshot: [] },
-      notes: [{ title: 'XYZ Notes', url: '#' }]
+      notes: []
+    },
+    {
+      id: 'mto',
+      name: 'Mass Transfer Operations',
+      icon: '🌊',
+      color: 'bg-teal-500',
+      playlists: { detailed: [], oneshot: [] },
+      notes: []
+    },
+    {
+      id: 'cre',
+      name: 'Chemical Reaction Engineering',
+      icon: '🔥',
+      color: 'bg-orange-500',
+      playlists: { detailed: [], oneshot: [] },
+      notes: []
+    },
+    {
+      id: 'resinsLab',
+      name: 'Technology of Synthetic Resins and Polymers Lab',
+      icon: '🥼',
+      color: 'bg-emerald-500',
+      playlists: { detailed: [], oneshot: [] },
+      notes: []
+    },
+    {
+      id: 'entrepreneurship',
+      name: 'Entrepreneurship',
+      icon: '💼',
+      color: 'bg-amber-500',
+      playlists: { detailed: [], oneshot: [] },
+      notes: []
     },
     {
       id: 'openElective',
