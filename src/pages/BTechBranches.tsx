@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { motion } from "framer-motion";
-import cseItImg from "@/assets/cse-it-thumbnail-new.png";
+import cseItAimlImg from "@/assets/cse-it-aiml-thumbnail-new.png";
 import meImg from "@/assets/me-thumbnail-new.png";
 import ceImg from "@/assets/ce-thumbnail-new.png";
 import cheImg from "@/assets/che-thumbnail-new.png";
@@ -95,12 +95,14 @@ const BTechBranches = () => {
       'BT': { 
         'semester-3': '/third-semester-bt', 
         'semester-4': '/fourth-semester-bt',
-        'semester-5': '/fifth-semester-bt'
+        'semester-5': '/fifth-semester-bt',
+        'semester-6': '/sixth-semester-bt'
       },
       'PL': { 
         'semester-3': '/third-semester-pl', 
         'semester-4': '/fourth-semester-pl',
-        'semester-5': '/fifth-semester-pl'
+        'semester-5': '/fifth-semester-pl',
+        'semester-6': '/sixth-semester-pl'
       },
     };
     return routes[branchKey]?.[semester || ''] || '#';
@@ -109,7 +111,7 @@ const BTechBranches = () => {
   const isAvailable = (branchKey: string) => getRoute(branchKey) !== '#';
 
   const branches = [
-    { name: "CSE/IT", fullName: "Computer Science & Information Technology", description: "Software development, algorithms, and computing systems", thumbnail: cseItImg },
+    { name: "CSE/IT", fullName: "Computer Science, IT & CSE (AI & ML)", description: "Software development, algorithms, AI & Machine Learning, and computing systems", thumbnail: cseItAimlImg },
     { name: "CHE", fullName: "Chemical Engineering", description: "Chemical processes, reaction engineering, and material transformation", thumbnail: cheImg },
     { name: "ME", fullName: "Mechanical Engineering", description: "Machines, thermodynamics, fluid mechanics, and manufacturing", thumbnail: meImg },
     { name: "CE", fullName: "Civil Engineering", description: "Infrastructure, construction, and structural design", thumbnail: ceImg },
