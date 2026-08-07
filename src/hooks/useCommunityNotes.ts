@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 
-export function useCommunityNotes(category: string, semester?: string) {
+export function useCommunityNotes(category: string, semester?: string | string[]) {
   const [data, setData] = useState<any[]>([]);
 
   const fetchNotes = useCallback(async () => {
@@ -12,7 +12,11 @@ export function useCommunityNotes(category: string, semester?: string) {
         .eq('status', 'approved');
 
       if (semester) {
-        query = query.eq('semester', semester);
+        if (Array.isArray(semester)) {
+          query = query.in('semester', semester);
+        } else {
+          query = query.eq('semester', semester);
+        }
       } else {
         query = query.eq('semester', category);
       }
