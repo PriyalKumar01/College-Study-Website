@@ -245,14 +245,14 @@ const SixthSemesterCSENotes = () => {
     }
   ];
 
-  const { data: communityNotes, refetch: refreshNotes } = useCommunityNotes('btech', 'CSE-6th Semester');
+  const { data: communityNotes, refetch: refreshNotes } = useCommunityNotes('btech', ['CSE-6th Semester', 'IT-6th Semester', 'CSE-AIML-6th Semester']);
   const subjects = staticSubjects.map((sub) => ({
     ...sub,
     notes: [
       ...sub.notes,
       ...(communityNotes || [])
         .filter((cn) => cn.subject === sub.name || cn.subject === sub.id)
-        .map((cn) => ({ id: cn.id, title: cn.title, url: cn.file_url, isCommunity: true, fileName: cn.file_name, uploadedBy: cn.uploaded_by, userName: cn.user_name })),
+        .map((cn) => ({ id: cn.id, title: cn.title, url: cn.file_url, isCommunity: true, branchSemester: cn.semester, fileName: cn.file_name, uploadedBy: cn.uploaded_by, userName: cn.user_name })),
     ],
   }));
 
@@ -314,6 +314,9 @@ const SixthSemesterCSENotes = () => {
                       {(note as any).isCommunity && (
                         <span className="inline-block text-[10px] font-bold tracking-widest uppercase text-blue-500 dark:text-blue-400 mb-2 ml-2">Community</span>
                       )}
+                      {(note as any).branchSemester?.startsWith('CSE-AIML') && (
+                        <span className="inline-block text-[10px] font-bold tracking-widest uppercase bg-purple-600 text-white px-2 py-0.5 rounded shadow-sm mb-2 ml-2">AI/ML</span>
+                      )}
                       <p className="text-sm font-medium text-foreground leading-snug mt-1 mb-3">{note.title}</p>
                     </div>
                     <div className="flex gap-2 pt-2 border-t border-border">
@@ -348,14 +351,14 @@ const SixthSemesterCSENotes = () => {
           <button onClick={() => navigate('/btech-notes/third-year/semester-6')} className="inline-flex items-center gap-2 text-xs font-semibold tracking-widest uppercase opacity-50 hover:opacity-100 transition-opacity mb-8">
             <ArrowLeft className="h-3.5 w-3.5" /> Back to Branches
           </button>
-          <p className="text-xs font-bold tracking-[0.2em] uppercase opacity-50 mb-3">Harcourt Butler Technical University, Kanpur</p>
+          <p className="text-xs font-bold tracking-[0.2em] uppercase opacity-50 mb-3">Computer Science, IT & CSE (AI & ML) Notes</p>
           <h1 className="text-4xl md:text-5xl font-bold leading-tight mb-3">
             6th Semester<br />
-            <span className="opacity-60">Computer Science & Engineering Notes</span>
+            <span className="opacity-60">CSE, IT & CSE (AI & ML) Notes</span>
           </h1>
-          <p className="text-sm opacity-50 mb-8">B.Tech. CSE / IT — Comprehensive study materials and resources</p>
+          <p className="text-sm opacity-50 mb-8">B.Tech. CSE, IT & CSE (AI & ML) — Comprehensive study materials and resources</p>
           <div className="flex flex-wrap gap-2">
-            <span className="text-xs font-semibold tracking-wider uppercase border border-background/30 px-3 py-1.5 rounded">CSE Department</span>
+            <span className="text-xs font-semibold tracking-wider uppercase border border-background/30 px-3 py-1.5 rounded">CSE / IT / CSE-AIML</span>
             <span className="text-xs font-semibold tracking-wider uppercase border border-background/30 px-3 py-1.5 rounded">{staticSubjects.filter(s => s.id !== 'pyqs' && s.id !== 'assignments').length} Subjects</span>
             <span className="text-xs font-semibold tracking-wider uppercase border border-background/30 px-3 py-1.5 rounded">6th Semester</span>
           </div>
