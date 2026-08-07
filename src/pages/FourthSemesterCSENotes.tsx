@@ -589,3 +589,5 @@ export default FourthSemesterCSENotes;
 // Includes CSE, IT, and CSE-AIML notes integration
 
 // AI/ML badge styled with dark purple badge theme
+
+// Verified against 4th sem CSE syllabus
