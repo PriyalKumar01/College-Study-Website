@@ -423,201 +423,186 @@ const GateStudy = () => {
     );
   }
 
+  if (!isRegistered && showRegModal) {
+    return (
+      <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col selection:bg-purple-600 selection:text-white dark:selection:bg-purple-500 dark:selection:text-white transition-colors duration-200">
+        <Navbar />
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 w-full flex items-center justify-center">
+          <div className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 shadow-2xl rounded-2xl flex flex-col md:flex-row h-auto min-h-[460px]">
+            {/* Column 1: Disclaimer & Logo Left Sidebar Panel */}
+            <div className="w-full md:w-80 bg-slate-50 dark:bg-slate-900 p-6 flex flex-col justify-between border-b md:border-b-0 md:border-r border-slate-200 dark:border-slate-800 shrink-0">
+              <div className="w-full bg-gradient-to-b from-sky-100/70 via-sky-50/20 to-transparent dark:from-sky-950/40 dark:via-sky-950/5 dark:to-transparent flex items-center justify-start p-4 pb-6 -mx-6 -mt-6 rounded-tl-2xl">
+                <img
+                  src="/lovable-uploads/f3b6ce00-a0ff-4b44-bbdb-ab5640339741.png"
+                  alt="College Study Logo"
+                  className="h-16 w-auto object-contain"
+                />
+              </div>
+
+              <div className="flex-1 flex flex-col justify-center py-4">
+                <div className="space-y-1">
+                  <span className="block text-3xl font-serif font-black tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-indigo-600 dark:from-slate-100 dark:to-purple-400 leading-none">
+                    College Study
+                  </span>
+                  <span className="block text-[9px] font-extrabold text-slate-450 dark:text-slate-500 uppercase tracking-[0.2em] leading-none pt-2">
+                    Your Academic Success Partner
+                  </span>
+                  
+                  <div className="flex items-center gap-2 py-3 w-full">
+                    <div className="h-px bg-slate-200 dark:bg-slate-800 flex-1"></div>
+                    <span className="text-[10px] uppercase font-bold tracking-[0.25em] text-slate-455 dark:text-slate-550">presents</span>
+                    <div className="h-px bg-slate-200 dark:bg-slate-800 flex-1"></div>
+                  </div>
+
+                  <span className="block text-2xl font-black tracking-tight text-slate-850 dark:text-slate-100 leading-tight">
+                    GATE Study Section
+                  </span>
+                  <span className="block text-xs font-extrabold text-purple-600 dark:text-purple-450 uppercase tracking-[0.15em] leading-none pt-2">
+                    Your Gateway to Success
+                  </span>
+                </div>
+              </div>
+
+              <div className="border border-amber-500/30 bg-amber-50/50 dark:bg-amber-950/20 p-4 rounded-xl space-y-1.5">
+                <span className="text-[9px] font-extrabold text-amber-600 dark:text-amber-400 uppercase tracking-widest block">Important Disclaimer:</span>
+                <p className="text-[10px] leading-relaxed text-amber-800 dark:text-amber-300/80">
+                  Access to these premium resources is a privilege. If any submitted registration information is found to be false, inaccurate, or fraudulent, your access will be revoked immediately without notice.
+                </p>
+              </div>
+            </div>
+
+            {/* Right Main Pane: Form and Terms side-by-side grid */}
+            <div className="flex-1 p-6 flex flex-col justify-between">
+              <div className="space-y-4">
+                <div className="space-y-0.5">
+                  <h1 className="text-lg font-extrabold tracking-tight text-slate-900 dark:text-slate-100">
+                    Student Verification Onboarding
+                  </h1>
+                  <p className="text-[10.5px] text-slate-505 dark:text-slate-400">
+                    Please specify your academic details to request immediate access.
+                  </p>
+                </div>
+
+                <form onSubmit={handleRegSubmit} className="space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch">
+                    <div className="space-y-3.5">
+                      <div className="space-y-1">
+                        <Label htmlFor="college" className="text-xs font-semibold text-slate-700 dark:text-slate-300">Your College *</Label>
+                        <Select
+                          value={formData.college}
+                          onValueChange={(val) => handleInputChange('college', val)}
+                        >
+                          <SelectTrigger className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 h-9 text-xs focus:ring-blue-600">
+                            <SelectValue placeholder="Select College" />
+                          </SelectTrigger>
+                          <SelectContent className="bg-white dark:bg-slate-905 border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 text-xs max-h-56 overflow-y-auto">
+                            {COLLEGE_OPTIONS.map((col) => (
+                              <SelectItem key={col} value={col}>
+                                {col === 'Other' ? 'Other (Specify below)' : col}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      {formData.college === 'Other' && (
+                        <div className="space-y-1">
+                          <Label htmlFor="otherCollege" className="text-xs font-semibold text-slate-700 dark:text-slate-300">Specify College Name *</Label>
+                          <Input
+                            id="otherCollege"
+                            placeholder="Enter college name"
+                            value={formData.otherCollege}
+                            onChange={(e) => handleInputChange('otherCollege', e.target.value)}
+                            className="bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 h-9 text-xs focus-visible:ring-purple-600"
+                            required
+                          />
+                        </div>
+                      )}
+
+                      <div className="space-y-1">
+                        <Label htmlFor="preparingFor" className="text-xs font-semibold text-slate-700 dark:text-slate-300">Preparing for GATE (Branch) *</Label>
+                        <Select
+                          value={formData.preparingFor}
+                          onValueChange={(val) => handleInputChange('preparingFor', val)}
+                        >
+                          <SelectTrigger className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 h-9 text-xs focus:ring-blue-600">
+                            <SelectValue placeholder="Select Target Paper" />
+                          </SelectTrigger>
+                          <SelectContent className="bg-white dark:bg-slate-905 border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 text-xs">
+                            {BRANCH_OPTIONS.map((opt) => (
+                              <SelectItem key={opt.value} value={opt.value}>
+                                {opt.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      <div className="space-y-1">
+                        <Label htmlFor="year" className="text-xs font-semibold text-slate-700 dark:text-slate-300">Target Year *</Label>
+                        <Select
+                          value={formData.year}
+                          onValueChange={(val) => handleInputChange('year', val)}
+                        >
+                          <SelectTrigger className="bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 h-9 text-xs">
+                            <SelectValue placeholder="Select Exam Year" />
+                          </SelectTrigger>
+                          <SelectContent className="bg-white dark:bg-slate-905 border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 text-xs">
+                            {PREPARATION_YEARS.map((opt) => (
+                              <SelectItem key={opt.value} value={opt.value}>
+                                {opt.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+
+                    <div className="border border-slate-200 dark:border-slate-850 bg-slate-50 dark:bg-slate-950/80 rounded-xl p-4 text-[10px] leading-relaxed text-slate-500 dark:text-slate-400 space-y-2 shadow-inner">
+                      <p className="font-bold text-slate-900 dark:text-slate-305 text-xs">Terms & Conditions</p>
+                      <p>
+                        <strong>Curated Resources:</strong> Materials are curated from public internet and Telegram sources. Credit belongs strictly to respective owners.
+                      </p>
+                      <p>
+                        <strong>Ethical Use:</strong> Built for social welfare. You pledge not to sell, commercialize, or misuse any content.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="space-y-3 pt-1">
+                    <div className="flex items-start gap-2">
+                      <Checkbox
+                        id="terms"
+                        checked={tcAccepted}
+                        onCheckedChange={(checked) => setTcAccepted(checked === true)}
+                        className="border-slate-300 dark:border-slate-700 data-[state=checked]:bg-purple-600 data-[state=checked]:text-white mt-0.5 shrink-0"
+                      />
+                      <Label htmlFor="terms" className="text-[10px] sm:text-xs font-normal text-slate-500 dark:text-slate-400 select-none cursor-pointer leading-normal">
+                        I agree to the Terms & Conditions and understand the disclaimer.
+                      </Label>
+                    </div>
+
+                    <Button
+                      type="submit"
+                      className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-bold h-9 text-xs shadow-lg"
+                    >
+                      Accept & Enter
+                    </Button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col selection:bg-purple-600 selection:text-white dark:selection:bg-purple-500 dark:selection:text-white transition-colors duration-200">
       <Navbar />
 
-      {/* ── Registration Onboarding Dialog (Wide 3-column Layout, no vertical scrollbar on desktop) ── */}
-      <Dialog open={showRegModal} onOpenChange={(open) => {
-        if (!open) {
-          toast({
-            title: 'Action Denied',
-            description: 'You must complete the registration form to access the GATE section.',
-            variant: 'destructive',
-          });
-        }
-      }}>
-        <DialogContent className="max-w-5xl p-0 overflow-y-auto md:overflow-hidden bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 shadow-2xl rounded-2xl flex flex-col md:flex-row h-auto max-h-[95vh] md:max-h-[460px] md:h-[460px]">
-          
-          {/* Column 1: Disclaimer & Logo Left Sidebar Panel (Compact & Spaced) */}
-          <div className="w-full md:w-80 bg-slate-50 dark:bg-slate-900 p-6 flex flex-col justify-between border-b md:border-b-0 md:border-r border-slate-200 dark:border-slate-800 shrink-0">
-            {/* Top Logo with smooth sky blue gradient background (no borders, fades out) */}
-            <div className="w-full bg-gradient-to-b from-sky-100/70 via-sky-50/20 to-transparent dark:from-sky-950/40 dark:via-sky-950/5 dark:to-transparent flex items-center justify-start p-4 pb-6 -mx-6 -mt-6 rounded-tl-2xl">
-              <img
-                src="/lovable-uploads/f3b6ce00-a0ff-4b44-bbdb-ab5640339741.png"
-                alt="College Study Logo"
-                className="h-16 w-auto object-contain"
-              />
-            </div>
-
-            {/* Vertically centered, filled header text block */}
-            <div className="flex-1 flex flex-col justify-center py-4">
-              <div className="space-y-1">
-                <span className="block text-3xl font-serif font-black tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-indigo-600 dark:from-slate-100 dark:to-purple-400 leading-none">
-                  College Study
-                </span>
-                <span className="block text-[9px] font-extrabold text-slate-450 dark:text-slate-500 uppercase tracking-[0.2em] leading-none pt-2">
-                  Your Academic Success Partner
-                </span>
-                
-                {/* Styled Presents separator block */}
-                <div className="flex items-center gap-2 py-3 w-full">
-                  <div className="h-px bg-slate-200 dark:bg-slate-800 flex-1"></div>
-                  <span className="text-[10px] uppercase font-bold tracking-[0.25em] text-slate-455 dark:text-slate-550">presents</span>
-                  <div className="h-px bg-slate-200 dark:bg-slate-800 flex-1"></div>
-                </div>
-
-                <span className="block text-2xl font-black tracking-tight text-slate-850 dark:text-slate-100 leading-tight">
-                  GATE Study Section
-                </span>
-                <span className="block text-xs font-extrabold text-purple-600 dark:text-purple-450 uppercase tracking-[0.15em] leading-none pt-2">
-                  Your Gateway to Success
-                </span>
-              </div>
-            </div>
-
-            {/* Disclaimer Card at the bottom */}
-            <div className="border border-amber-500/30 bg-amber-50/50 dark:bg-amber-950/20 p-4 rounded-xl space-y-1.5">
-              <span className="text-[9px] font-extrabold text-amber-600 dark:text-amber-400 uppercase tracking-widest block">Important Disclaimer:</span>
-              <p className="text-[10px] leading-relaxed text-amber-800 dark:text-amber-300/80">
-                Access to these premium resources is a privilege. If any submitted registration information is found to be false, inaccurate, or fraudulent, your access will be revoked immediately without notice, and your account may be permanently suspended.
-              </p>
-            </div>
-          </div>
-
-          {/* Right Main Pane: Form and Terms side-by-side grid */}
-          <div className="flex-1 p-6 flex flex-col justify-between overflow-y-auto">
-            <div className="space-y-4">
-              <div className="space-y-0.5">
-                <h1 className="text-lg font-extrabold tracking-tight text-slate-900 dark:text-slate-100">
-                  Student Verification Onboarding
-                </h1>
-                <p className="text-[10.5px] text-slate-505 dark:text-slate-400">
-                  Please specify your academic details to request immediate access.
-                </p>
-              </div>
-
-              <form onSubmit={handleRegSubmit} className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch">
-                  
-                  {/* Left Column: Form inputs */}
-                  <div className="space-y-3.5">
-                    {/* College select */}
-                    <div className="space-y-1">
-                      <Label htmlFor="college" className="text-xs font-semibold text-slate-700 dark:text-slate-300">Your College *</Label>
-                      <Select
-                        value={formData.college}
-                        onValueChange={(val) => handleInputChange('college', val)}
-                      >
-                        <SelectTrigger className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 h-9 text-xs focus:ring-blue-600">
-                          <SelectValue placeholder="Select College" />
-                        </SelectTrigger>
-                        <SelectContent className="bg-white dark:bg-slate-905 border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 text-xs max-h-56 overflow-y-auto">
-                          {COLLEGE_OPTIONS.map((col) => (
-                            <SelectItem key={col} value={col}>
-                              {col === 'Other' ? 'Other (Specify below)' : col}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-
-                    {/* Conditional other college */}
-                    {formData.college === 'Other' && (
-                      <div className="space-y-1">
-                        <Label htmlFor="otherCollege" className="text-xs font-semibold text-slate-700 dark:text-slate-300">Specify College Name *</Label>
-                        <Input
-                          id="otherCollege"
-                          placeholder="Enter college name"
-                          value={formData.otherCollege}
-                          onChange={(e) => handleInputChange('otherCollege', e.target.value)}
-                          className="bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 h-9 text-xs focus-visible:ring-purple-600"
-                          required
-                        />
-                      </div>
-                    )}
-
-                    {/* Preparing for branch */}
-                    <div className="space-y-1">
-                      <Label htmlFor="preparingFor" className="text-xs font-semibold text-slate-700 dark:text-slate-300">Preparing for GATE (Branch) *</Label>
-                      <Select
-                        value={formData.preparingFor}
-                        onValueChange={(val) => handleInputChange('preparingFor', val)}
-                      >
-                        <SelectTrigger className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 h-9 text-xs focus:ring-blue-600">
-                          <SelectValue placeholder="Select Target Paper" />
-                        </SelectTrigger>
-                        <SelectContent className="bg-white dark:bg-slate-905 border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 text-xs">
-                          {BRANCH_OPTIONS.map((opt) => (
-                            <SelectItem key={opt.value} value={opt.value}>
-                              {opt.label}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-
-                    {/* Target year */}
-                    <div className="space-y-1">
-                      <Label htmlFor="year" className="text-xs font-semibold text-slate-700 dark:text-slate-300">Target Year *</Label>
-                      <Select
-                        value={formData.year}
-                        onValueChange={(val) => handleInputChange('year', val)}
-                      >
-                        <SelectTrigger className="bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 h-9 text-xs">
-                          <SelectValue placeholder="Select Exam Year" />
-                        </SelectTrigger>
-                        <SelectContent className="bg-white dark:bg-slate-905 border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 text-xs">
-                          {PREPARATION_YEARS.map((opt) => (
-                            <SelectItem key={opt.value} value={opt.value}>
-                              {opt.label}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  </div>
-
-                  {/* Right Column: Terms & Conditions (NO internal scrollbar class!) */}
-                  <div className="border border-slate-200 dark:border-slate-850 bg-slate-50 dark:bg-slate-950/80 rounded-xl p-4 text-[10px] leading-relaxed text-slate-500 dark:text-slate-400 space-y-2 shadow-inner">
-                    <p className="font-bold text-slate-900 dark:text-slate-305 text-xs">Terms & Conditions</p>
-                    <p>
-                      <strong>Curated Resources:</strong> Materials are curated from public internet and Telegram sources. We do not claim ownership; credit belongs strictly to the respective owners.
-                    </p>
-                    <p>
-                      <strong>Ethical Use:</strong> This non-profit portal is built for social welfare. You agree to use these resources strictly for personal learning. You pledge not to sell, commercialize, or misuse any content.
-                    </p>
-                  </div>
-                </div>
-
-                {/* Bottom Agreement Block */}
-                <div className="space-y-3 pt-1">
-                  <div className="flex items-start gap-2">
-                    <Checkbox
-                      id="terms"
-                      checked={tcAccepted}
-                      onCheckedChange={(checked) => setTcAccepted(checked === true)}
-                      className="border-slate-300 dark:border-slate-700 data-[state=checked]:bg-purple-600 data-[state=checked]:text-white mt-0.5 shrink-0"
-                    />
-                    <Label htmlFor="terms" className="text-[10px] sm:text-xs font-normal text-slate-500 dark:text-slate-400 select-none cursor-pointer leading-normal">
-                      I agree to the Terms & Conditions, commit to using these resources ethically for self-study, and understand the disclaimer.
-                    </Label>
-                  </div>
-
-                  <Button
-                    type="submit"
-                    className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-bold h-9 text-xs shadow-lg"
-                  >
-                    Accept & Enter
-                  </Button>
-                </div>
-              </form>
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
-
-      {/* Hero Banner (Compact spacing at top to maximize screen utilization) */}
+      {/* Hero Banner */}
       <div className="bg-slate-100 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 pt-4 pb-4 px-4 sm:px-8 transition-colors duration-200">
         <div className="max-w-5xl mx-auto flex items-start gap-3 flex-col relative w-full">
           <button
