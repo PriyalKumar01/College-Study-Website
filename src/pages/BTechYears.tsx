@@ -53,8 +53,8 @@ const BTechYears = () => {
       <Navbar />
 
       {/* Hero Banner Header — Responsive */}
-      <div className="bg-slate-900 text-white dark:bg-slate-950 dark:text-slate-100 pt-24 pb-14 px-4 sm:px-8 border-b border-slate-800 relative overflow-hidden">
-        <div className="max-w-6xl mx-auto relative z-10">
+      <div className="bg-foreground dark:bg-card text-background dark:text-foreground pt-16 pb-12 px-4 sm:px-8">
+        <div className="max-w-6xl mx-auto">
           {/* Back button */}
           <button
             onClick={() => navigate("/notes")}
