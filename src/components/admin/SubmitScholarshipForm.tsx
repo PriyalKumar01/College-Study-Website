@@ -38,6 +38,7 @@ export default function SubmitScholarshipForm({ onSuccess }: SubmitScholarshipFo
   const { user } = useAuth();
   const { toast } = useToast();
 
+  const [activeStep, setActiveStep] = useState(1);
   const [name, setName] = useState('');
   const [org, setOrg] = useState('');
   const [description, setDescription] = useState('');
@@ -49,7 +50,6 @@ export default function SubmitScholarshipForm({ onSuccess }: SubmitScholarshipFo
   const [marks, setMarks] = useState('');
   const [tags, setTags] = useState('');
   const [type, setType] = useState('government');
-  // Status is auto-computed from deadline on the portal — no manual input needed
   const [selectedStreams, setSelectedStreams] = useState<string[]>([]);
   const [selectedWho, setSelectedWho] = useState<string[]>([]);
   const [imageUrl, setImageUrl] = useState('');
@@ -68,9 +68,12 @@ export default function SubmitScholarshipForm({ onSuccess }: SubmitScholarshipFo
     );
   };
 
-  const isValid = () =>
-    name.trim() && org.trim() && description.trim() && amount.trim() &&
-    applyUrl.trim() && deadline.trim() && selectedStreams.length > 0 && selectedWho.length > 0;
+  const isStep1Valid = () => name.trim() && org.trim() && description.trim();
+  const isStep2Valid = () => amount.trim() && deadline.trim();
+  const isStep3Valid = () => applyUrl.trim();
+  const isStep4Valid = () => selectedStreams.length > 0 && selectedWho.length > 0;
+
+  const isValid = () => isStep1Valid() && isStep2Valid() && isStep3Valid() && isStep4Valid();
 
   // Determine initial status from deadline date
   const computeInitialStatus = (dl: string): string => {
@@ -126,265 +129,372 @@ export default function SubmitScholarshipForm({ onSuccess }: SubmitScholarshipFo
     setApplyUrl(''); setDeadline(''); setIncome(''); setMarks(''); setTags('');
     setType('government'); setImageUrl('');
     setSelectedStreams([]); setSelectedWho([]);
+    setActiveStep(1);
     setSubmitted(false);
   };
 
   if (submitted) {
     return (
-      <div style={{
-        textAlign: 'center', padding: '60px 24px',
-        background: 'hsl(var(--card))', borderRadius: 16,
-        border: '1px solid hsl(var(--border))'
-      }}>
-        <CheckCircle2 size={52} style={{ color: '#10B981', margin: '0 auto 16px' }} />
-        <div style={{ fontSize: 20, fontWeight: 700, color: 'hsl(var(--foreground))', marginBottom: 8 }}>
-          Scholarship Submitted!
-        </div>
-        <div style={{ fontSize: 14, color: 'hsl(var(--muted-foreground))', marginBottom: 24 }}>
-          The owner will review and approve it. Once approved, it will appear live on the Scholarships page.
-        </div>
-        <Button onClick={reset} variant="outline">Submit Another</Button>
+      <div className="text-center py-12 px-6 bg-card rounded-2xl border border-border shadow-xl space-y-4">
+        <CheckCircle2 size={56} className="text-emerald-500 mx-auto" />
+        <h3 className="text-2xl font-extrabold text-foreground">Scholarship Submitted Successfully!</h3>
+        <p className="text-sm text-muted-foreground max-w-md mx-auto">
+          The owner will review and approve it. Once approved, it will appear live on the Scholarships portal.
+        </p>
+        <Button onClick={reset} variant="outline" className="mt-4 font-bold">
+          Submit Another Scholarship
+        </Button>
       </div>
     );
   }
 
-  const inputStyle = {
-    width: '100%', padding: '10px 14px', borderRadius: 8, fontSize: 14,
-    background: 'hsl(var(--card))', color: 'hsl(var(--foreground))',
-    border: '1px solid hsl(var(--border))', outline: 'none', fontFamily: 'inherit',
-    boxSizing: 'border-box' as const
-  };
-
-  const labelStyle = {
-    fontSize: 13, fontWeight: 600, color: 'hsl(var(--foreground))',
-    display: 'block', marginBottom: 6
-  };
-
-  const sectionStyle = {
-    background: 'hsl(var(--card))', border: '1px solid hsl(var(--border))',
-    borderRadius: 12, padding: '20px 22px', marginBottom: 16
-  };
-
   return (
-    <div style={{ maxWidth: 720, margin: '0 auto' }}>
-      {/* Header */}
-      <div style={{
-        display: 'flex', alignItems: 'center', gap: 12, marginBottom: 24,
-        padding: '16px 20px', borderRadius: 12,
-        background: 'hsl(var(--primary)/0.08)', border: '1px solid hsl(var(--primary)/0.2)'
-      }}>
-        <GraduationCap size={22} style={{ color: 'hsl(var(--primary))', flexShrink: 0 }} />
-        <div>
-          <div style={{ fontSize: 15, fontWeight: 700, color: 'hsl(var(--foreground))' }}>
-            Add New Scholarship
+    <div className="border border-border bg-card shadow-xl rounded-2xl p-6 sm:p-8 space-y-6 max-w-4xl mx-auto">
+      {/* Form Envelope Header */}
+      <div className="border-b border-border pb-4 flex items-center justify-between flex-wrap gap-3">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary">
+            <GraduationCap className="h-5 w-5" />
           </div>
-          <div style={{ fontSize: 12.5, color: 'hsl(var(--muted-foreground))' }}>
-            Fill all required fields. Owner will review before publishing.
+          <div>
+            <h2 className="text-xl font-extrabold text-foreground">Add New Scholarship Form</h2>
+            <p className="text-xs text-muted-foreground mt-0.5">
+              Follow the steps below to submit scholarship details for owner review.
+            </p>
           </div>
         </div>
+        <Badge variant="outline" className="border-primary/40 text-primary font-bold text-[11px] px-3 py-1">
+          STEP-BY-STEP SCHOLARSHIP FORM
+        </Badge>
       </div>
 
-      {/* Basic Info */}
-      <div style={sectionStyle}>
-        <div style={{ fontSize: 13, fontWeight: 700, color: 'hsl(var(--primary))', marginBottom: 16, textTransform: 'uppercase', letterSpacing: '0.06em' }}>
-          Basic Information
-        </div>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
-          <div>
-            <label style={labelStyle}>Scholarship Name *</label>
-            <input value={name} onChange={e => setName(e.target.value)}
-              placeholder="e.g., Reliance Foundation UG Scholarship" style={inputStyle} />
-          </div>
-          <div>
-            <label style={labelStyle}>Organization / Provider *</label>
-            <input value={org} onChange={e => setOrg(e.target.value)}
-              placeholder="e.g., Reliance Foundation" style={inputStyle} />
-          </div>
-        </div>
-        <div style={{ marginTop: 14 }}>
-          <label style={labelStyle}>Description *</label>
-          <textarea value={description} onChange={e => setDescription(e.target.value)}
-            rows={3} placeholder="Brief description of the scholarship — who it's for, what it covers, special features..."
-            style={{ ...inputStyle, resize: 'vertical' }} />
-        </div>
-        {/* Optional Banner Image */}
-        <div style={{ marginTop: 14 }}>
-          <label style={{ ...labelStyle, display: 'flex', alignItems: 'center', gap: 6 }}>
-            <ImageIcon size={13} style={{ color: 'hsl(var(--primary))' }} />
-            Banner Image URL <span style={{ fontSize: 11, fontWeight: 400, color: 'hsl(var(--muted-foreground))' }}>(optional — paste a direct image URL)</span>
-          </label>
-          {imageUrl && (
-            <div style={{ marginBottom: 8, borderRadius: 8, overflow: 'hidden', height: 80 }}>
-              <img src={imageUrl} alt="Preview" style={{ width: '100%', height: 80, objectFit: 'cover' }}
-                onError={e => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }} />
+      {/* Step 1: Basic Information */}
+      <div className="space-y-3">
+        {activeStep > 1 && isStep1Valid() ? (
+          <div
+            onClick={() => setActiveStep(1)}
+            className="flex items-center justify-between p-3.5 rounded-xl border border-emerald-500/30 bg-emerald-500/10 cursor-pointer hover:bg-emerald-500/15 transition-all shadow-sm"
+          >
+            <div className="flex items-center gap-3">
+              <div className="w-6 h-6 rounded-full bg-emerald-600 text-white flex items-center justify-center text-xs font-bold">✓</div>
+              <div>
+                <p className="text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold uppercase tracking-wider">Step 1: Basic Info Completed</p>
+                <p className="text-sm font-bold text-foreground">{name} — <span className="text-muted-foreground font-normal">{org}</span></p>
+              </div>
             </div>
-          )}
-          <input value={imageUrl} onChange={e => setImageUrl(e.target.value)}
-            placeholder="https://example.com/scholarship-banner.jpg"
-            style={inputStyle} />
-        </div>
-      </div>
-
-      {/* Amount & Deadline */}
-      <div style={sectionStyle}>
-        <div style={{ fontSize: 13, fontWeight: 700, color: 'hsl(var(--primary))', marginBottom: 16, textTransform: 'uppercase', letterSpacing: '0.06em' }}>
-          Amount & Timeline
-        </div>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 14 }}>
-          <div>
-            <label style={labelStyle}>Amount Display *</label>
-            <input value={amount} onChange={e => setAmount(e.target.value)}
-              placeholder="e.g., Up to ₹2 Lakh" style={inputStyle} />
+            <span className="text-xs text-emerald-600 dark:text-emerald-400 font-semibold hover:underline">Change</span>
           </div>
-          <div>
-            <label style={labelStyle}>Amount (₹ number, for sorting)</label>
-            <input value={amountNum} onChange={e => setAmountNum(e.target.value)}
-              placeholder="e.g., 200000" type="number" style={inputStyle} />
-          </div>
-          <div>
-            <label style={labelStyle}>Deadline *</label>
-            <input
-              type="date"
-              value={deadline}
-              onChange={e => setDeadline(e.target.value)}
-              min={new Date().toISOString().split('T')[0]}
-              style={inputStyle}
-            />
-            <div style={{ fontSize: 11, color: 'hsl(var(--muted-foreground))', marginTop: 4 }}>
-              Status (Open / Expired) will be set automatically based on this date.
+        ) : (
+          <div className="border border-border/80 rounded-xl p-5 bg-muted/20 space-y-4">
+            <Label className="text-base font-bold flex items-center gap-2.5 text-foreground">
+              <span className="w-7 h-7 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-xs font-bold shadow-md">1</span>
+              Basic Information
+            </Label>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="space-y-1.5">
+                <Label className="text-xs font-semibold text-foreground">Scholarship Name *</Label>
+                <Input
+                  value={name}
+                  onChange={e => setName(e.target.value)}
+                  placeholder="e.g., Reliance Foundation UG Scholarship"
+                  className="bg-background border-border text-foreground"
+                />
+              </div>
+              <div className="space-y-1.5">
+                <Label className="text-xs font-semibold text-foreground">Organization / Provider *</Label>
+                <Input
+                  value={org}
+                  onChange={e => setOrg(e.target.value)}
+                  placeholder="e.g., Reliance Foundation"
+                  className="bg-background border-border text-foreground"
+                />
+              </div>
             </div>
-          </div>
-        </div>
-      </div>
+            <div className="space-y-1.5">
+              <Label className="text-xs font-semibold text-foreground">Description *</Label>
 
-      {/* Links & Classification */}
-      <div style={sectionStyle}>
-        <div style={{ fontSize: 13, fontWeight: 700, color: 'hsl(var(--primary))', marginBottom: 16, textTransform: 'uppercase', letterSpacing: '0.06em' }}>
-          Links & Classification
-        </div>
-        <div style={{ marginBottom: 14 }}>
-          <label style={labelStyle}>Apply URL *</label>
-          <input value={applyUrl} onChange={e => setApplyUrl(e.target.value)}
-            placeholder="https://scholarships.gov.in" style={inputStyle} />
-        </div>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
-          <div>
-            <label style={labelStyle}>Type</label>
-            <Select value={type} onValueChange={setType}>
-              <SelectTrigger className="h-11"><SelectValue /></SelectTrigger>
-              <SelectContent>
-                <SelectItem value="government">Government</SelectItem>
-                <SelectItem value="private">Private / Corporate</SelectItem>
-                <SelectItem value="central">Central Government</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end' }}>
-            <div style={{
-              padding: '10px 14px', borderRadius: 8, fontSize: 13,
-              background: 'hsl(var(--muted)/0.5)', border: '1px solid hsl(var(--border))',
-              color: 'hsl(var(--muted-foreground))', lineHeight: 1.4
-            }}>
-              📅 Status is <strong style={{ color: 'hsl(var(--foreground))' }}>auto-computed</strong> from the deadline date — no need to set it manually.
+              <Textarea
+                value={description}
+                onChange={e => setDescription(e.target.value)}
+                rows={3}
+                placeholder="Brief description of the scholarship — who it's for, what it covers..."
+                className="bg-background border-border text-foreground"
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label className="text-xs font-semibold text-foreground flex items-center gap-1.5">
+                <ImageIcon className="h-3.5 w-3.5 text-primary" />
+                Banner Image URL <span className="text-[11px] font-normal text-muted-foreground">(optional)</span>
+              </Label>
+              {imageUrl && (
+                <div className="mb-2 rounded-lg overflow-hidden h-20 border border-border">
+                  <img src={imageUrl} alt="Preview" className="w-full h-full object-cover" onError={e => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }} />
+                </div>
+              )}
+              <Input
+                value={imageUrl}
+                onChange={e => setImageUrl(e.target.value)}
+                placeholder="https://example.com/scholarship-banner.jpg"
+                className="bg-background border-border text-foreground"
+              />
+            </div>
+            <div className="pt-2 flex justify-end">
+              <Button
+                onClick={() => setActiveStep(2)}
+                disabled={!isStep1Valid()}
+                className="font-bold text-xs"
+              >
+                Next: Amount & Timeline →
+              </Button>
             </div>
           </div>
-        </div>
+        )}
       </div>
 
-      {/* Eligibility */}
-      <div style={sectionStyle}>
-        <div style={{ fontSize: 13, fontWeight: 700, color: 'hsl(var(--primary))', marginBottom: 16, textTransform: 'uppercase', letterSpacing: '0.06em' }}>
-          Eligibility
-        </div>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14, marginBottom: 14 }}>
-          <div>
-            <label style={labelStyle}>Income Limit</label>
-            <input value={income} onChange={e => setIncome(e.target.value)}
-              placeholder="e.g., Below ₹2.5 Lakh/year" style={inputStyle} />
-          </div>
-          <div>
-            <label style={labelStyle}>Marks Criteria</label>
-            <input value={marks} onChange={e => setMarks(e.target.value)}
-              placeholder="e.g., 60% in previous exam" style={inputStyle} />
-          </div>
-        </div>
-        <div style={{ marginBottom: 14 }}>
-          <label style={labelStyle}>Tags (comma-separated)</label>
-          <input value={tags} onChange={e => setTags(e.target.value)}
-            placeholder="e.g., Girls Only, Merit-based, Renewable" style={inputStyle} />
-        </div>
-
-        {/* Streams */}
-        <div style={{ marginBottom: 14 }}>
-          <label style={labelStyle}>Eligible Streams * (select all that apply)</label>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-            {STREAM_OPTIONS.map(opt => {
-              const checked = selectedStreams.includes(opt.value);
-              return (
-                <button key={opt.value} onClick={() => toggleStream(opt.value)} style={{
-                  padding: '6px 14px', borderRadius: 20, fontSize: 12.5, fontWeight: 500,
-                  background: checked ? 'hsl(var(--primary))' : 'hsl(var(--muted))',
-                  color: checked ? '#fff' : 'hsl(var(--muted-foreground))',
-                  border: checked ? '1px solid hsl(var(--primary))' : '1px solid hsl(var(--border))',
-                  cursor: 'pointer', fontFamily: 'inherit', transition: 'all 0.15s'
-                }}>
-                  {opt.label}
-                </button>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* Who */}
-        <div>
-          <label style={labelStyle}>Eligible Category * (select all that apply)</label>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-            {WHO_OPTIONS.map(opt => {
-              const checked = selectedWho.includes(opt.value);
-              return (
-                <button key={opt.value} onClick={() => toggleWho(opt.value)} style={{
-                  padding: '6px 14px', borderRadius: 20, fontSize: 12.5, fontWeight: 500,
-                  background: checked ? 'hsl(262 83% 52%)' : 'hsl(var(--muted))',
-                  color: checked ? '#fff' : 'hsl(var(--muted-foreground))',
-                  border: checked ? '1px solid hsl(262 83% 52%)' : '1px solid hsl(var(--border))',
-                  cursor: 'pointer', fontFamily: 'inherit', transition: 'all 0.15s'
-                }}>
-                  {opt.label}
-                </button>
-              );
-            })}
-          </div>
-        </div>
-      </div>
-
-      {/* Submit */}
-      <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12 }}>
-        <Button
-          onClick={handleSubmit}
-          disabled={!isValid() || submitting}
-          style={{
-            flex: 1, height: 48, fontSize: 15, fontWeight: 600,
-            background: isValid() ? 'hsl(var(--primary))' : 'hsl(var(--muted))',
-          }}
-        >
-          {submitting ? (
-            <><Loader2 size={18} style={{ marginRight: 8, animation: 'spin 1s linear infinite' }} />Submitting...</>
+      {/* Step 2: Amount & Timeline */}
+      {activeStep >= 2 && (
+        <div className="space-y-3">
+          {activeStep > 2 && isStep2Valid() ? (
+            <div
+              onClick={() => setActiveStep(2)}
+              className="flex items-center justify-between p-3.5 rounded-xl border border-emerald-500/30 bg-emerald-500/10 cursor-pointer hover:bg-emerald-500/15 transition-all shadow-sm"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-6 h-6 rounded-full bg-emerald-600 text-white flex items-center justify-center text-xs font-bold">✓</div>
+                <div>
+                  <p className="text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold uppercase tracking-wider">Step 2: Amount & Timeline Completed</p>
+                  <p className="text-sm font-bold text-foreground">{amount} | Deadline: {deadline}</p>
+                </div>
+              </div>
+              <span className="text-xs text-emerald-600 dark:text-emerald-400 font-semibold hover:underline">Change</span>
+            </div>
           ) : (
-            <><GraduationCap size={18} style={{ marginRight: 8 }} />Submit for Owner Approval</>
+            <div className="border border-border/80 rounded-xl p-5 bg-muted/20 space-y-4">
+              <Label className="text-base font-bold flex items-center gap-2.5 text-foreground">
+                <span className="w-7 h-7 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-xs font-bold shadow-md">2</span>
+                Amount & Timeline
+              </Label>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div className="space-y-1.5">
+                  <Label className="text-xs font-semibold text-foreground">Amount Display *</Label>
+                  <Input
+                    value={amount}
+                    onChange={e => setAmount(e.target.value)}
+                    placeholder="e.g., Up to ₹2 Lakh"
+                    className="bg-background border-border text-foreground"
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <Label className="text-xs font-semibold text-foreground">Amount (₹ number for sorting)</Label>
+                  <Input
+                    type="number"
+                    value={amountNum}
+                    onChange={e => setAmountNum(e.target.value)}
+                    placeholder="e.g., 200000"
+                    className="bg-background border-border text-foreground"
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <Label className="text-xs font-semibold text-foreground">Deadline *</Label>
+                  <Input
+                    type="date"
+                    value={deadline}
+                    onChange={e => setDeadline(e.target.value)}
+                    min={new Date().toISOString().split('T')[0]}
+                    className="bg-background border-border text-foreground"
+                  />
+                  <p className="text-[10px] text-muted-foreground">Status (Open/Expired) is auto-set from deadline.</p>
+                </div>
+              </div>
+              <div className="pt-2 flex justify-end">
+                <Button
+                  onClick={() => setActiveStep(3)}
+                  disabled={!isStep2Valid()}
+                  className="font-bold text-xs"
+                >
+                  Next: Links & Classification →
+                </Button>
+              </div>
+            </div>
           )}
-        </Button>
-      </div>
+        </div>
+      )}
 
-      <div style={{
-        display: 'flex', alignItems: 'flex-start', gap: 10,
-        marginTop: 12, padding: '10px 14px', borderRadius: 8,
-        background: 'hsl(var(--muted)/0.5)', border: '1px solid hsl(var(--border))'
-      }}>
-        <AlertTriangle size={14} style={{ color: '#F59E0B', flexShrink: 0, marginTop: 2 }} />
-        <span style={{ fontSize: 12, color: 'hsl(var(--muted-foreground))' }}>
-          Submitted scholarships go live only after owner approval. Make sure all links are working and information is accurate.
-        </span>
-      </div>
+      {/* Step 3: Links & Classification */}
+      {activeStep >= 3 && (
+        <div className="space-y-3">
+          {activeStep > 3 && isStep3Valid() ? (
+            <div
+              onClick={() => setActiveStep(3)}
+              className="flex items-center justify-between p-3.5 rounded-xl border border-emerald-500/30 bg-emerald-500/10 cursor-pointer hover:bg-emerald-500/15 transition-all shadow-sm"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-6 h-6 rounded-full bg-emerald-600 text-white flex items-center justify-center text-xs font-bold">✓</div>
+                <div>
+                  <p className="text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold uppercase tracking-wider">Step 3: Links & Classification Completed</p>
+                  <p className="text-sm font-bold text-foreground">{applyUrl} ({type})</p>
+                </div>
+              </div>
+              <span className="text-xs text-emerald-600 dark:text-emerald-400 font-semibold hover:underline">Change</span>
+            </div>
+          ) : (
+            <div className="border border-border/80 rounded-xl p-5 bg-muted/20 space-y-4">
+              <Label className="text-base font-bold flex items-center gap-2.5 text-foreground">
+                <span className="w-7 h-7 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-xs font-bold shadow-md">3</span>
+                Links & Classification
+              </Label>
+              <div className="space-y-4">
+                <div className="space-y-1.5">
+                  <Label className="text-xs font-semibold text-foreground">Apply URL *</Label>
+                  <Input
+                    value={applyUrl}
+                    onChange={e => setApplyUrl(e.target.value)}
+                    placeholder="https://scholarships.gov.in"
+                    className="bg-background border-border text-foreground"
+                  />
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-1.5">
+                    <Label className="text-xs font-semibold text-foreground">Scholarship Type</Label>
+                    <Select value={type} onValueChange={setType}>
+                      <SelectTrigger className="h-10 bg-background border-border text-foreground"><SelectValue /></SelectTrigger>
+                      <SelectContent className="bg-card border-border text-foreground">
+                        <SelectItem value="government">Government</SelectItem>
+                        <SelectItem value="private">Private / Corporate</SelectItem>
+                        <SelectItem value="central">Central Government</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="flex items-center p-3 rounded-lg border border-border bg-card text-xs text-muted-foreground">
+                    📅 Status is auto-computed from deadline date — no manual status needed.
+                  </div>
+                </div>
+              </div>
+              <div className="pt-2 flex justify-end">
+                <Button
+                  onClick={() => setActiveStep(4)}
+                  disabled={!isStep3Valid()}
+                  className="font-bold text-xs"
+                >
+                  Next: Eligibility & Categories →
+                </Button>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Step 4: Eligibility & Final Submit */}
+      {activeStep >= 4 && (
+        <div className="border border-border/80 rounded-xl p-5 sm:p-6 bg-muted/20 space-y-6 text-foreground">
+          <Label className="text-base font-bold flex items-center gap-2.5 text-foreground border-b border-border pb-4">
+            <span className="w-7 h-7 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-xs font-bold shadow-md">4</span>
+            Eligibility & Categories
+          </Label>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="space-y-1.5">
+              <Label className="text-xs font-semibold text-foreground">Income Limit (optional)</Label>
+              <Input
+                value={income}
+                onChange={e => setIncome(e.target.value)}
+                placeholder="e.g., Below ₹2.5 Lakh/year"
+                className="bg-background border-border text-foreground"
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label className="text-xs font-semibold text-foreground">Marks Criteria (optional)</Label>
+              <Input
+                value={marks}
+                onChange={e => setMarks(e.target.value)}
+                placeholder="e.g., 60% in previous exam"
+                className="bg-background border-border text-foreground"
+              />
+            </div>
+          </div>
+
+          <div className="space-y-1.5">
+            <Label className="text-xs font-semibold text-foreground">Tags (comma-separated)</Label>
+            <Input
+              value={tags}
+              onChange={e => setTags(e.target.value)}
+              placeholder="e.g., Girls Only, Merit-based, Renewable"
+              className="bg-background border-border text-foreground"
+            />
+          </div>
+
+          {/* Streams */}
+          <div className="space-y-2">
+            <Label className="text-xs font-semibold text-foreground">Eligible Streams * (select all that apply)</Label>
+            <div className="flex flex-wrap gap-2">
+              {STREAM_OPTIONS.map(opt => {
+                const checked = selectedStreams.includes(opt.value);
+                return (
+                  <button
+                    key={opt.value}
+                    type="button"
+                    onClick={() => toggleStream(opt.value)}
+                    className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all ${
+                      checked
+                        ? 'bg-primary text-primary-foreground font-bold shadow-sm'
+                        : 'bg-background border border-border text-muted-foreground hover:text-foreground'
+                    }`}
+                  >
+                    {opt.label}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Who */}
+          <div className="space-y-2">
+            <Label className="text-xs font-semibold text-foreground">Eligible Category * (select all that apply)</Label>
+            <div className="flex flex-wrap gap-2">
+              {WHO_OPTIONS.map(opt => {
+                const checked = selectedWho.includes(opt.value);
+                return (
+                  <button
+                    key={opt.value}
+                    type="button"
+                    onClick={() => toggleWho(opt.value)}
+                    className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all ${
+                      checked
+                        ? 'bg-purple-600 text-white font-bold shadow-sm'
+                        : 'bg-background border border-border text-muted-foreground hover:text-foreground'
+                    }`}
+                  >
+                    {opt.label}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Submit Button */}
+          <div className="pt-4 border-t border-border space-y-3">
+            <Button
+              onClick={handleSubmit}
+              disabled={!isValid() || submitting}
+              className="w-full h-12 text-base font-extrabold shadow-lg"
+            >
+              {submitting ? (
+                <>
+                  <Loader2 className="h-5 w-5 mr-2 animate-spin" /> Submitting...
+                </>
+              ) : (
+                <>
+                  <GraduationCap className="h-5 w-5 mr-2" /> Submit for Owner Approval
+                </>
+              )}
+            </Button>
+            <div className="flex items-start gap-2 p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 text-xs text-amber-700 dark:text-amber-400">
+              <AlertTriangle className="h-4 w-4 shrink-0 mt-0.5" />
+              <span>Submitted scholarships go live only after owner approval. Ensure all link URLs and information are valid.</span>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
