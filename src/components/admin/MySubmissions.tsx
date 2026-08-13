@@ -82,10 +82,20 @@ const MySubmissions = ({ refreshTrigger }: MySubmissionsProps) => {
   }
 
   return (
-    <div className="space-y-4">
-      <div className="flex justify-between items-center">
-        <h2 className="text-xl font-bold">My Submissions</h2>
-        <Badge variant="secondary">{materials.length} total</Badge>
+    <div className="border border-border bg-card shadow-xl rounded-2xl p-6 sm:p-8 space-y-6">
+      <div className="border-b border-border pb-4 flex justify-between items-center flex-wrap gap-2">
+        <div>
+          <h2 className="text-xl font-extrabold text-foreground flex items-center gap-2">
+            <FileText className="h-5 w-5 text-primary" />
+            My Submissions
+          </h2>
+          <p className="text-xs text-muted-foreground mt-0.5">
+            Track the approval status of study materials you have submitted.
+          </p>
+        </div>
+        <Badge variant="outline" className="border-primary/40 text-primary font-bold text-xs px-3 py-1">
+          {materials.length} Total Submissions
+        </Badge>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
