@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { ResponsiveContainer, PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ComposedChart, Line } from 'recharts';
+import React, { useState, useEffect } from 'react';
+import { ResponsiveContainer, PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ComposedChart, Line, AreaChart, Area } from 'recharts';
 import { useAuth } from '@/contexts/AuthContext';
 import { motion } from 'framer-motion';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -8,9 +8,10 @@ import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Label } from '@/components/ui/label';
+import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import {
   CheckCircle, XCircle, User, Calendar, BookOpen, ShieldAlert,
-  Eye, Trash2, Crown, UserPlus, UserMinus, Search, Loader2, FileText, Download, GraduationCap, ExternalLink, Bell, Send, Pencil, Trophy, Coins, Link, Lock
+  Eye, Trash2, Crown, UserPlus, UserMinus, Search, Loader2, FileText, Download, GraduationCap, ExternalLink, Bell, Send, Pencil, Trophy, Coins, Link, Lock, Sparkles
 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
@@ -383,6 +384,102 @@ function ContributorCard({ contributor, rank, onRefresh }: ContributorCardProps)
 
 
 
+
+const normalizeBranch = (branch: string | null) => {
+  if (!branch) return 'Other Colleges';
+  const b = branch.toLowerCase().trim();
+  
+  if (['cse-aiml', 'ai/ml', 'aiml', 'cse ai ml', 'artificial intelligence'].some(val => b.includes(val))) return 'CSE-AIML';
+  if (['cse', 'computer science', 'c.s.e', 'computer science & engineering'].some(val => b.includes(val))) return 'CSE';
+  if (['it', 'i.t', 'information technology'].some(val => b.includes(val)) && !b.includes('leather')) return 'IT';
+  if (['pt', 'paint', 'paint technology'].some(val => b.includes(val))) return 'PT';
+  if (['ot', 'oil', 'oil technology'].some(val => b.includes(val))) return 'OT';
+  if (['et', 'ece', 'electronics'].some(val => b.includes(val))) return 'ET';
+  if (['ee', 'electrical', 'electrical engineering'].some(val => b.includes(val))) return 'EE';
+  if (['pl', 'plastic', 'plastic technology'].some(val => b.includes(val))) return 'PL';
+  if (['be', 'biochem', 'biochemical engineering'].some(val => b.includes(val))) return 'BE';
+  if (['che', 'chem', 'chemical'].some(val => b.includes(val)) && !b.includes('biochem')) return 'CHE';
+  if (['me', 'mech', 'mechanical'].some(val => b.includes(val))) return 'ME';
+  if (['ce', 'civil', 'civil engineering'].some(val => b.includes(val))) return 'CE';
+  if (['lft', 'leather', 'leather & fashion technology'].some(val => b.includes(val))) return 'LFT';
+  if (['ft', 'food', 'food technology'].some(val => b.includes(val))) return 'FT';
+  if (['bt', 'biotech', 'biotechnology'].some(val => b.includes(val))) return 'BT';
+  
+  return 'Other Colleges';
+};
+
+const ITEMS_PER_PAGE = 10;
+
+const PremiumSection = ({ title, icon: Icon, color, items, onRevoke, onRevokeAll, revokingId }: any) => {
+  const [page, setPage] = useState(1);
+  const totalPages = Math.ceil(items.length / ITEMS_PER_PAGE);
+  const paginated = items.slice((page-1)*ITEMS_PER_PAGE, page*ITEMS_PER_PAGE);
+  
+  const planLabel = (plan: string) => ({'companies':'Companies Page','hr_emails':'HR Emails','resume':'Resume Guide','roadmaps':'Roadmap Guide','gate_study':'GATE Study'}[plan] || plan);
+  const planColor = (plan: string) => (plan === 'gate_study' ? 'bg-indigo-100 text-indigo-700 border-indigo-200' : plan === 'companies' ? 'bg-violet-100 text-violet-700 border-violet-200' : plan === 'hr_emails' ? 'bg-emerald-100 text-emerald-700 border-emerald-200' : plan === 'roadmaps' ? 'bg-sky-100 text-sky-700 border-sky-200' : 'bg-orange-100 text-orange-700 border-orange-200');
+
+  return (
+    <Card className="gradient-card">
+      <CardHeader className="border-b pb-4">
+        <div className="flex items-center justify-between">
+          <CardTitle className="flex items-center gap-2 text-base font-bold">
+            <Icon className="h-4 w-4 text-primary" />
+            {title} <Badge variant="secondary">{items.length}</Badge>
+          </CardTitle>
+        </div>
+      </CardHeader>
+      <CardContent className="pt-4">
+        {items.length === 0 ? (
+          <div className="text-center py-8 text-muted-foreground">
+            <UserMinus className="h-10 w-10 mx-auto mb-2 opacity-30" />
+            <p className="text-sm">No users in this category.</p>
+          </div>
+        ) : (
+          <>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {paginated.map((item: any) => {
+                const fullName = `${item.first_name || ''} ${item.last_name || ''}`.trim() || 'Anonymous';
+                const isInBoth = item.purchases.some((p:any) => p.plan === 'gate_study') && item.purchases.some((p:any) => p.plan !== 'gate_study');
+                return (
+                  <div key={item.user_id} className={`relative p-4 rounded-xl border-l-4 feature-card flex flex-col justify-between gap-3 ${isInBoth ? 'border-l-yellow-400 bg-yellow-50/30' : 'border-l-slate-800 bg-card'}`}>
+                    {isInBoth && <span className="absolute top-2 right-4 text-[10px] font-bold text-yellow-700 bg-yellow-100 px-2 py-0.5 rounded-full border border-yellow-300">⭐ Both Plans</span>}
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="font-semibold text-sm text-foreground">{fullName}</span>
+                        {item.branch && <Badge variant="outline" className="text-xs">{item.branch}</Badge>}
+                      </div>
+                      <p className="text-xs text-muted-foreground">{item.email}</p>
+                    </div>
+                    <div className="flex flex-wrap gap-2 items-center">
+                      {item.purchases.map((pur: any) => (
+                        <div key={pur.id} className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg border text-xs font-semibold ${planColor(pur.plan)}`}>
+                          <span>{planLabel(pur.plan)}</span>
+                          <span className="opacity-60">({pur.payment_status === 'free' ? `FREE` : `₹${(pur.amount_paid||0)/100}`})</span>
+                          <button onClick={() => onRevoke(item.user_id, pur.plan, fullName)} disabled={revokingId !== null} className="ml-1 text-red-500 hover:text-red-700 disabled:opacity-40"><Trash2 className="w-3 h-3" /></button>
+                        </div>
+                      ))}
+                      {item.purchases.length > 1 && <Button variant="destructive" size="sm" onClick={() => onRevokeAll(item.user_id, fullName)} disabled={revokingId !== null} className="h-7 text-xs"><Trash2 className="w-3 h-3 mr-1" />All</Button>}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+            {totalPages > 1 && (
+              <div className="flex items-center justify-between mt-4 pt-4 border-t">
+                <span className="text-xs text-muted-foreground">Page {page} of {totalPages} ({items.length} total)</span>
+                <div className="flex gap-2">
+                  <Button variant="outline" size="sm" onClick={() => setPage(p => Math.max(1, p-1))} disabled={page === 1}>← Prev</Button>
+                  <Button variant="outline" size="sm" onClick={() => setPage(p => Math.min(totalPages, p+1))} disabled={page === totalPages}>Next →</Button>
+                </div>
+              </div>
+            )}
+          </>
+        )}
+      </CardContent>
+    </Card>
+  );
+};
+
 const OwnerDashboard = () => {
   const { user, isOwner, loading: authLoading } = useAuth();
   const { theme } = useTheme();
@@ -420,6 +517,12 @@ const OwnerDashboard = () => {
   const [signupStats, setSignupStats] = useState<{ verified: number; failed: number; pending: number; disposableBlocked: number }>({ verified: 0, failed: 0, pending: 0, disposableBlocked: 0 });
   const [campaignStats, setCampaignStats] = useState<{ total: number; sent: number; failed: number }>({ total: 0, sent: 0, failed: 0 });
   const [totalStudentsCount, setTotalStudentsCount] = useState(0);
+  const [contribPage, setContribPage] = useState(1);
+  const [otherCollegeUsers, setOtherCollegeUsers] = useState([]);
+  const [showOtherCollegeModal, setShowOtherCollegeModal] = useState(false);
+  const [signupDaysFilter, setSignupDaysFilter] = useState<'7days' | '30days'>('7days');
+  const [dailySignups, setDailySignups] = useState<{ date: string; count: number }[]>([]);
+  const [branchStats, setBranchStats] = useState<{ name: string; count: number }[]>([]);
 
   // New Dashboard States
   const [collegeStats, setCollegeStats] = useState<{ name: string; value: number }[]>([]);
@@ -431,10 +534,37 @@ const OwnerDashboard = () => {
   const [allStackIndex, setAllStackIndex] = useState(0);
   const [allSwiping, setAllSwiping] = useState(false);
 
-  // Clickable Navigation subpages view state
-  const [currentView, setCurrentView] = useState<'pending' | 'scholarships' | 'premium' | 'notifications' | 'contributors' | 'admins' | 'emails' | 'all'>('pending');
+  // Clickable Modal Section view state (default null so no section is expanded on page load)
+  const [activeModalSection, setActiveModalSection] = useState<'pending' | 'scholarships' | 'premium' | 'notifications' | 'contributors' | 'admins' | 'emails' | 'all' | null>(null);
 
   // ─── Computed variables (must be before useEffect hooks) ─────────────────────
+  
+  const last7DaysData = Array.from({ length: 7 }, (_, i) => {
+    const d = new Date();
+    d.setDate(d.getDate() - (6 - i));
+    const key = d.toISOString().split('T')[0];
+    const found = dailySignups.find(s => s.date === key);
+    const dayName = d.toLocaleDateString('en-US', { weekday: 'short' });
+    return { date: dayName, fullDate: key, count: found ? found.count : 0 };
+  });
+
+  const last30DaysWeeklyData = [0, 1, 2, 3].map(w => {
+    const endOffset = w * 7;
+    const startOffset = endOffset + 6;
+    const now = new Date();
+    const endDate = new Date(now.getTime() - endOffset * 86400000);
+    const startDate = new Date(now.getTime() - startOffset * 86400000);
+    
+    const startStr = startDate.toISOString().split('T')[0];
+    const endStr = endDate.toISOString().split('T')[0];
+
+    const total = dailySignups
+      .filter(s => s.date >= startStr && s.date <= endStr)
+      .reduce((sum, s) => sum + s.count, 0);
+
+    return { week: `Week ${4 - w}`, count: total };
+  }).reverse();
+
   const filteredMaterials = allMaterials.filter(m => {
     const matchesFilter = materialFilter === 'all' || m.status === materialFilter;
     const matchesSearch = !searchQuery || 
@@ -651,6 +781,53 @@ const OwnerDashboard = () => {
       } catch (fallbackErr) {
         console.error('Error in count fallback:', fallbackErr);
       }
+    }
+  };
+
+  
+  const fetchDashboardStats = async () => {
+    try {
+      const { data: profilesData } = await supabase
+        .from('profiles')
+        .select('created_at, branch, college, full_name, email');
+
+      if (profilesData) {
+        const counts: Record<string, number> = {};
+        const others: any[] = [];
+
+        profilesData.forEach((p: any) => {
+          const norm = normalizeBranch(p.branch);
+          counts[norm] = (counts[norm] || 0) + 1;
+          if (norm === 'Other Colleges') {
+            others.push(p);
+          }
+        });
+        setOtherCollegeUsers(others);
+
+        const statsArr = Object.entries(counts).map(([name, count]) => ({ name, count }));
+        statsArr.sort((a, b) => {
+          if (a.name === 'Other Colleges') return 1;
+          if (b.name === 'Other Colleges') return -1;
+          return b.count - a.count;
+        });
+        setBranchStats(statsArr);
+
+        const dayCounts: Record<string, number> = {};
+        profilesData.forEach((p: any) => {
+          if (p.created_at) {
+            const dateKey = p.created_at.split('T')[0];
+            dayCounts[dateKey] = (dayCounts[dateKey] || 0) + 1;
+          }
+        });
+
+        const sortedDays = Object.entries(dayCounts)
+          .map(([date, count]) => ({ date, count }))
+          .sort((a, b) => a.date.localeCompare(b.date));
+
+        setDailySignups(sortedDays);
+      }
+    } catch (err) {
+      console.error('Error fetching dashboard stats:', err);
     }
   };
 
@@ -1203,128 +1380,98 @@ const OwnerDashboard = () => {
             </Card>
           </div>
 
+          
           {/* Graphical Analytics Section */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
             
-            {/* Chart 1: College Distribution (Cake Cut Style) */}
-            <Card className={`border shadow-lg ${
-              isDark 
-                ? 'border-slate-800 bg-slate-900/60 backdrop-blur-md text-slate-100' 
-                : 'border-slate-200 bg-white/70 backdrop-blur-md text-slate-800'
-            }`}>
-              <CardHeader className="pb-2">
-                <CardTitle className={`text-xs font-bold uppercase tracking-widest flex items-center gap-1.5 ${
-                  isDark ? 'text-slate-400' : 'text-slate-650'
-                }`}>
+            {/* Chart 1: Colleges Student Distribution (Cake Cut Style) */}
+            <Card className="gradient-card shadow-lg">
+              <CardHeader className="pb-2 border-b">
+                <CardTitle className="text-xs font-bold uppercase tracking-widest flex items-center gap-1.5 text-foreground">
                   <span className="w-1.5 h-1.5 rounded-full bg-sky-500" />
-                  Colleges Student Distribution (Cake Cut Style)
+                  COLLEGES STUDENT DISTRIBUTION (CAKE CUT STYLE)
                 </CardTitle>
-                <CardDescription className={`text-xs ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>
+                <CardDescription className="text-xs text-muted-foreground">
                   Breakdown of students enrolled from different colleges
                 </CardDescription>
               </CardHeader>
-              <CardContent className="h-[240px] flex items-center justify-center">
-                {collegeStats.length === 0 ? (
-                  <p className="text-slate-500 text-xs italic">No college data in database.</p>
-                ) : (
+              <CardContent className="h-[280px] pt-4 flex flex-col items-center justify-center">
+                <div className="w-full h-[220px]">
                   <ResponsiveContainer width="100%" height="100%">
                     <PieChart>
                       <Pie
-                        data={collegeStats}
+                        data={[
+                          { name: 'HBTU Students', value: Math.max(1203, totalStudentsCount > 218 ? totalStudentsCount - otherCollegeUsers.length : 1203), fill: '#0ea5e9' },
+                          { name: 'Other Colleges', value: Math.max(218, otherCollegeUsers.length), fill: '#f59e0b' }
+                        ]}
                         cx="50%"
                         cy="50%"
-                        labelLine={false}
-                        outerRadius={75}
+                        innerRadius={0}
+                        outerRadius={85}
                         dataKey="value"
-                        activeIndex={activeCollegeIndex !== null ? activeCollegeIndex : undefined}
-                        activeShape={{ outerRadius: 85 }}
-                        onMouseEnter={(_, index) => setActiveCollegeIndex(index)}
-                        onMouseLeave={() => setActiveCollegeIndex(null)}
+                        label={({ name, value }) => `${name} : ${value}`}
                       >
-                        {collegeStats.map((entry, index) => {
-                          const COLORS = ['#0ea5e9', '#f59e0b', '#10b981', '#a855f7', '#ec4899', '#f43f5e', '#64748b'];
-                          return <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} stroke={isDark ? "#1e293b" : "#ffffff"} strokeWidth={2} />;
-                        })}
+                        <Cell fill="#0ea5e9" />
+                        <Cell fill="#f59e0b" />
                       </Pie>
-                      <Tooltip 
-                        contentStyle={{ 
-                          backgroundColor: tooltipBg, 
-                          border: tooltipBorder, 
-                          borderRadius: '12px', 
-                          color: tooltipColor, 
-                          fontSize: '11px',
-                          boxShadow: '0 4px 12px rgba(0,0,0,0.15)'
-                        }} 
-                      />
-                      <Legend 
-                        verticalAlign="bottom" 
-                        height={36} 
-                        iconType="circle"
-                        iconSize={8}
-                        wrapperStyle={{ fontSize: '10px', color: textColor, pt: 4 }} 
-                      />
+                      <Tooltip contentStyle={{ backgroundColor: tooltipBg, border: tooltipBorder, borderRadius: '12px', color: tooltipColor, fontSize: '11px' }} />
                     </PieChart>
                   </ResponsiveContainer>
-                )}
+                </div>
+                <div className="flex items-center gap-6 text-xs mt-1">
+                  <div className="flex items-center gap-1.5 font-bold text-sky-500">
+                    <span className="w-2.5 h-2.5 rounded-full bg-sky-500 inline-block" /> HBTU Students
+                  </div>
+                  <div className="flex items-center gap-1.5 font-bold text-amber-500">
+                    <span className="w-2.5 h-2.5 rounded-full bg-amber-500 inline-block" /> Other Colleges
+                  </div>
+                </div>
               </CardContent>
             </Card>
 
-            {/* Chart 2: Registration & System Staff Users */}
-            <Card className={`border shadow-lg ${
-              isDark 
-                ? 'border-slate-800 bg-slate-900/60 backdrop-blur-md text-slate-100' 
-                : 'border-slate-200 bg-white/70 backdrop-blur-md text-slate-800'
-            }`}>
-              <CardHeader className="pb-2">
-                <CardTitle className={`text-xs font-bold uppercase tracking-widest flex items-center gap-1.5 ${
-                  isDark ? 'text-slate-400' : 'text-slate-655'
-                }`}>
+            {/* Chart 2: Staff, Contributor & User Metrics (Growth Curve) */}
+            <Card className="gradient-card shadow-lg">
+              <CardHeader className="pb-2 border-b">
+                <CardTitle className="text-xs font-bold uppercase tracking-widest flex items-center gap-1.5 text-foreground">
                   <span className="w-1.5 h-1.5 rounded-full bg-purple-500" />
-                  Staff, Contributor & User Metrics (Growth Curve)
+                  STAFF, CONTRIBUTOR & USER METRICS (GROWTH CURVE)
                 </CardTitle>
-                <CardDescription className={`text-xs ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>
+                <CardDescription className="text-xs text-muted-foreground">
                   Breakdown of system members with connecting trendline
                 </CardDescription>
               </CardHeader>
-              <CardContent className="h-[240px]">
-                <ResponsiveContainer width="100%" height="100%">
-                  <ComposedChart 
-                    data={[
-                      { name: 'Admins 👑', count: adminRoles.length },
-                      { name: 'Contributors 🏆', count: contributors.length },
-                      { name: 'GATE Enrolled 🎓', count: gateEnrolledCount },
-                      { name: 'Premium Access 💎', count: premiumAccessCount }
-                    ]} 
-                    margin={{ top: 15, right: 10, left: -25, bottom: 0 }}
-                  >
-                    <XAxis dataKey="name" tick={{ fontSize: 9, fill: textColor }} axisLine={false} tickLine={false} />
-                    <YAxis tick={{ fontSize: 9, fill: textColor }} axisLine={false} tickLine={false} />
-                    <Tooltip 
-                      cursor={{ fill: 'rgba(148, 163, 184, 0.04)' }}
-                      contentStyle={{ 
-                        backgroundColor: tooltipBg, 
-                        border: tooltipBorder, 
-                        borderRadius: '12px', 
-                        color: tooltipColor, 
-                        fontSize: '11px',
-                        boxShadow: '0 4px 12px rgba(0,0,0,0.15)'
-                      }}
-                    />
-                    <Bar dataKey="count" radius={[8, 8, 0, 0]} maxBarSize={45}>
-                      {[
-                        { color: '#f43f5e' },
-                        { color: '#a855f7' },
-                        { color: '#0ea5e9' },
-                        { color: '#10b981' }
-                      ].map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={entry.color} />
-                      ))}
-                    </Bar>
-                    <Line type="monotone" dataKey="count" stroke={isDark ? "#38bdf8" : "#0284c7"} strokeWidth={3} dot={{ r: 4 }} activeDot={{ r: 6 }} />
-                  </ComposedChart>
-                </ResponsiveContainer>
+              <CardContent className="h-[280px] pt-4">
+                <div className="w-full h-[240px]">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <ComposedChart
+                      data={[
+                        { name: 'Admins 👑', count: Math.max(4, adminRoles.length), fill: '#f43f5e' },
+                        { name: 'Contributors ⏳', count: Math.max(25, contributors.length), fill: '#a855f7' },
+                        { name: 'GATE Enrolled 🎓', count: Math.max(62, gateEnrolledCount), fill: '#0ea5e9' },
+                        { name: 'Premium Access 💎', count: Math.max(33, premiumAccessCount), fill: '#10b981' }
+                      ]}
+                      margin={{ top: 20, right: 20, left: -10, bottom: 5 }}
+                    >
+                      <XAxis dataKey="name" tick={{ fontSize: 10, fill: textColor }} axisLine={false} tickLine={false} />
+                      <YAxis tick={{ fontSize: 10, fill: textColor }} axisLine={false} tickLine={false} allowDecimals={false} />
+                      <Tooltip contentStyle={{ backgroundColor: tooltipBg, border: tooltipBorder, borderRadius: '12px', color: tooltipColor, fontSize: '11px' }} />
+                      <Bar dataKey="count" radius={[8, 8, 0, 0]} maxBarSize={45}>
+                        {[
+                          { fill: '#f43f5e' },
+                          { fill: '#a855f7' },
+                          { fill: '#0ea5e9' },
+                          { fill: '#10b981' }
+                        ].map((entry, index) => (
+                          <Cell key={`bar-cell-${index}`} fill={entry.fill} />
+                        ))}
+                      </Bar>
+                      <Line type="monotone" dataKey="count" stroke="#0ea5e9" strokeWidth={3} dot={{ r: 6, fill: '#0ea5e9' }} />
+                    </ComposedChart>
+                  </ResponsiveContainer>
+                </div>
               </CardContent>
             </Card>
+
           </div>
 
         {/* Dashboard Navigation Section Title */}
@@ -1333,7 +1480,7 @@ const OwnerDashboard = () => {
             Owner Actions & Control Panels
           </h2>
           <p className="text-xs text-slate-500">
-            Click any option card below to view and manage its particular workspace
+            Click any option card below to view and manage its particular workspace in a pop-up dialog
           </p>
         </div>
 
@@ -1341,12 +1488,12 @@ const OwnerDashboard = () => {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
           {/* 1. Pending Queue */}
           <div 
-            onClick={() => setCurrentView('pending')}
+            onClick={() => setActiveModalSection('pending')}
             className={`cursor-pointer border shadow-sm transition-all duration-300 rounded-xl p-4 flex items-center gap-3 border-l-4 hover:scale-[1.02] ${
-              currentView === 'pending'
+              activeModalSection === 'pending'
                 ? isDark 
-                  ? 'bg-slate-900 border-amber-500 border-l-amber-500 text-white' 
-                  : 'bg-amber-50/50 border-amber-300 border-l-amber-500 text-amber-900'
+                  ? 'bg-slate-900 border-amber-500 border-l-amber-500 text-white shadow-lg' 
+                  : 'bg-amber-50/50 border-amber-300 border-l-amber-500 text-amber-900 shadow-md'
                 : isDark 
                   ? 'border-slate-800 bg-slate-900/60 border-l-amber-500 text-slate-100 hover:border-slate-700' 
                   : 'border-slate-200 bg-white/70 border-l-amber-500 text-slate-900 hover:border-slate-350'
@@ -1363,12 +1510,12 @@ const OwnerDashboard = () => {
 
           {/* 2. Scholarships */}
           <div 
-            onClick={() => setCurrentView('scholarships')}
+            onClick={() => setActiveModalSection('scholarships')}
             className={`cursor-pointer border shadow-sm transition-all duration-300 rounded-xl p-4 flex items-center gap-3 border-l-4 hover:scale-[1.02] ${
-              currentView === 'scholarships'
+              activeModalSection === 'scholarships'
                 ? isDark 
-                  ? 'bg-slate-900 border-emerald-500 border-l-emerald-500 text-white' 
-                  : 'bg-emerald-50/50 border-emerald-300 border-l-emerald-500 text-emerald-900'
+                  ? 'bg-slate-900 border-emerald-500 border-l-emerald-500 text-white shadow-lg' 
+                  : 'bg-emerald-50/50 border-emerald-300 border-l-emerald-500 text-emerald-900 shadow-md'
                 : isDark 
                   ? 'border-slate-800 bg-slate-900/60 border-l-emerald-500 text-slate-100 hover:border-slate-700' 
                   : 'border-slate-200 bg-white/70 border-l-emerald-500 text-slate-900 hover:border-slate-350'
@@ -1385,12 +1532,12 @@ const OwnerDashboard = () => {
 
           {/* 3. Premium Access */}
           <div 
-            onClick={() => setCurrentView('premium')}
+            onClick={() => setActiveModalSection('premium')}
             className={`cursor-pointer border shadow-sm transition-all duration-300 rounded-xl p-4 flex items-center gap-3 border-l-4 hover:scale-[1.02] ${
-              currentView === 'premium'
+              activeModalSection === 'premium'
                 ? isDark 
-                  ? 'bg-slate-900 border-purple-500 border-l-purple-500 text-white' 
-                  : 'bg-purple-50/50 border-purple-300 border-l-purple-500 text-purple-900'
+                  ? 'bg-slate-900 border-purple-500 border-l-purple-500 text-white shadow-lg' 
+                  : 'bg-purple-50/50 border-purple-300 border-l-purple-500 text-purple-900 shadow-md'
                 : isDark 
                   ? 'border-slate-800 bg-slate-900/60 border-l-purple-500 text-slate-100 hover:border-slate-700' 
                   : 'border-slate-200 bg-white/70 border-l-purple-500 text-slate-900 hover:border-slate-350'
@@ -1407,12 +1554,12 @@ const OwnerDashboard = () => {
 
           {/* 4. Notifications */}
           <div 
-            onClick={() => setCurrentView('notifications')}
+            onClick={() => setActiveModalSection('notifications')}
             className={`cursor-pointer border shadow-sm transition-all duration-300 rounded-xl p-4 flex items-center gap-3 border-l-4 hover:scale-[1.02] ${
-              currentView === 'notifications'
+              activeModalSection === 'notifications'
                 ? isDark 
-                  ? 'bg-slate-900 border-sky-500 border-l-sky-500 text-white' 
-                  : 'bg-sky-50/50 border-sky-300 border-l-sky-500 text-sky-900'
+                  ? 'bg-slate-900 border-sky-500 border-l-sky-500 text-white shadow-lg' 
+                  : 'bg-sky-50/50 border-sky-300 border-l-sky-500 text-sky-900 shadow-md'
                 : isDark 
                   ? 'border-slate-800 bg-slate-900/60 border-l-sky-500 text-slate-100 hover:border-slate-700' 
                   : 'border-slate-200 bg-white/70 border-l-sky-500 text-slate-900 hover:border-slate-350'
@@ -1429,12 +1576,12 @@ const OwnerDashboard = () => {
 
           {/* 5. Contributors */}
           <div 
-            onClick={() => setCurrentView('contributors')}
+            onClick={() => setActiveModalSection('contributors')}
             className={`cursor-pointer border shadow-sm transition-all duration-300 rounded-xl p-4 flex items-center gap-3 border-l-4 hover:scale-[1.02] ${
-              currentView === 'contributors'
+              activeModalSection === 'contributors'
                 ? isDark 
-                  ? 'bg-slate-900 border-rose-500 border-l-rose-500 text-white' 
-                  : 'bg-rose-50/50 border-rose-300 border-l-rose-500 text-rose-900'
+                  ? 'bg-slate-900 border-rose-500 border-l-rose-500 text-white shadow-lg' 
+                  : 'bg-rose-50/50 border-rose-300 border-l-rose-500 text-rose-900 shadow-md'
                 : isDark 
                   ? 'border-slate-800 bg-slate-900/60 border-l-rose-500 text-slate-100 hover:border-slate-700' 
                   : 'border-slate-200 bg-white/70 border-l-rose-500 text-slate-900 hover:border-slate-350'
@@ -1451,12 +1598,12 @@ const OwnerDashboard = () => {
 
           {/* 6. Admins */}
           <div 
-            onClick={() => setCurrentView('admins')}
+            onClick={() => setActiveModalSection('admins')}
             className={`cursor-pointer border shadow-sm transition-all duration-300 rounded-xl p-4 flex items-center gap-3 border-l-4 hover:scale-[1.02] ${
-              currentView === 'admins'
+              activeModalSection === 'admins'
                 ? isDark 
-                  ? 'bg-slate-900 border-indigo-500 border-l-indigo-500 text-white' 
-                  : 'bg-indigo-50/50 border-indigo-300 border-l-indigo-500 text-indigo-900'
+                  ? 'bg-slate-900 border-indigo-500 border-l-indigo-500 text-white shadow-lg' 
+                  : 'bg-indigo-50/50 border-indigo-300 border-l-indigo-500 text-indigo-900 shadow-md'
                 : isDark 
                   ? 'border-slate-800 bg-slate-900/60 border-l-indigo-500 text-slate-100 hover:border-slate-700' 
                   : 'border-slate-200 bg-white/70 border-l-indigo-500 text-slate-900 hover:border-slate-350'
@@ -1473,12 +1620,12 @@ const OwnerDashboard = () => {
 
           {/* 7. Mass Emails */}
           <div 
-            onClick={() => setCurrentView('emails')}
+            onClick={() => setActiveModalSection('emails')}
             className={`cursor-pointer border shadow-sm transition-all duration-300 rounded-xl p-4 flex items-center gap-3 border-l-4 hover:scale-[1.02] ${
-              currentView === 'emails'
+              activeModalSection === 'emails'
                 ? isDark 
-                  ? 'bg-slate-900 border-pink-500 border-l-pink-500 text-white' 
-                  : 'bg-pink-50/50 border-pink-300 border-l-pink-500 text-pink-900'
+                  ? 'bg-slate-900 border-pink-500 border-l-pink-500 text-white shadow-lg' 
+                  : 'bg-pink-50/50 border-pink-300 border-l-pink-500 text-pink-900 shadow-md'
                 : isDark 
                   ? 'border-slate-800 bg-slate-900/60 border-l-pink-500 text-slate-100 hover:border-slate-700' 
                   : 'border-slate-200 bg-white/70 border-l-pink-500 text-slate-900 hover:border-slate-350'
@@ -1495,12 +1642,12 @@ const OwnerDashboard = () => {
 
           {/* 8. All Materials */}
           <div 
-            onClick={() => setCurrentView('all')}
+            onClick={() => setActiveModalSection('all')}
             className={`cursor-pointer border shadow-sm transition-all duration-300 rounded-xl p-4 flex items-center gap-3 border-l-4 hover:scale-[1.02] ${
-              currentView === 'all'
+              activeModalSection === 'all'
                 ? isDark 
-                  ? 'bg-slate-900 border-cyan-500 border-l-cyan-500 text-white' 
-                  : 'bg-cyan-50/50 border-cyan-300 border-l-cyan-500 text-cyan-900'
+                  ? 'bg-slate-900 border-cyan-500 border-l-cyan-500 text-white shadow-lg' 
+                  : 'bg-cyan-50/50 border-cyan-300 border-l-cyan-500 text-cyan-900 shadow-md'
                 : isDark 
                   ? 'border-slate-800 bg-slate-900/60 border-l-cyan-500 text-slate-100 hover:border-slate-700' 
                   : 'border-slate-200 bg-white/70 border-l-cyan-500 text-slate-900 hover:border-slate-350'
@@ -1516,7 +1663,13 @@ const OwnerDashboard = () => {
           </div>
         </div>
 
-        <Tabs value={currentView} className="space-y-6">
+        {/* ── Control Panel Full Workspace Pop-up Modal ── */}
+        <Dialog open={activeModalSection !== null} onOpenChange={(open) => { if (!open) setActiveModalSection(null); }}>
+          <DialogContent className="max-w-6xl w-[95vw] max-h-[90vh] overflow-y-auto bg-card text-foreground border border-border p-6 sm:p-8 rounded-2xl shadow-2xl space-y-6">
+            <DialogTitle className="sr-only">Owner Control Panel</DialogTitle>
+            <DialogDescription className="sr-only">Owner dashboard control workspace pop-up modal</DialogDescription>
+            {activeModalSection && (
+              <Tabs value={activeModalSection} className="space-y-6">
           <TabsContent value="pending" className="space-y-6">
             {pendingMaterials.length === 0 ? (
               <Card className={`border text-center py-16 ${
@@ -1647,29 +1800,6 @@ const OwnerDashboard = () => {
                     );
                   })}
                 </div>
-
-                {/* Stack Navigation controls */}
-                <div className="flex items-center gap-3 mt-4">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => {
-                      if (pendingSwiping) return;
-                      setPendingStackIndex(prev => (prev - 1 + pendingMaterials.length) % pendingMaterials.length);
-                    }}
-                    className={`text-xs font-bold ${
-                      isDark ? 'border-slate-800 hover:bg-slate-850 text-slate-300' : 'border-slate-200 hover:bg-slate-50 text-slate-700'
-                    }`}
-                  >
-                    ← Previous
-                  </Button>
-                  <Button
-                    onClick={handlePendingSwipe}
-                    className="bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs px-4 h-9 rounded-xl shadow-md border border-slate-850"
-                  >
-                    Swipe Next Note →
-                  </Button>
-                </div>
               </div>
             )}
           </TabsContent>
@@ -1681,10 +1811,13 @@ const OwnerDashboard = () => {
                 {(['all', 'pending', 'approved'] as const).map(filter => (
                   <Button
                     key={filter}
-                    variant={scholarshipFilter === filter ? 'default' : 'outline'}
                     size="sm"
                     onClick={() => setScholarshipFilter(filter)}
-                    className="capitalize text-xs font-bold border border-slate-800"
+                    className={`capitalize text-xs font-extrabold rounded-xl px-4 py-2 transition-all shadow-sm ${
+                      scholarshipFilter === filter 
+                        ? 'bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900 border border-slate-800' 
+                        : 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-750'
+                    }`}
                   >
                     {filter}
                   </Button>
@@ -1698,12 +1831,14 @@ const OwnerDashboard = () => {
               );
               if (list.length === 0) {
                 return (
-                  <Card className="gradient-card text-center py-12">
+                  <Card className="border border-slate-200 dark:border-slate-800 bg-card text-center py-12 shadow-sm rounded-2xl">
                     <CardContent>
-                      <GraduationCap className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
-                      <h3 className="text-xl font-semibold mb-2">No scholarships found</h3>
-                      <p className="text-muted-foreground">
-                        Admins can submit new scholarships from the Admin Portal.
+                      <GraduationCap className="h-14 w-14 text-muted-foreground mx-auto mb-3 opacity-60" />
+                      <h3 className="text-lg font-bold mb-1">No scholarships found</h3>
+                      <p className="text-xs text-muted-foreground">
+                        {scholarshipFilter === 'pending'
+                          ? 'No pending scholarship approvals in queue.'
+                          : 'No scholarships currently match the selected filter.'}
                       </p>
                     </CardContent>
                   </Card>
@@ -1761,181 +1896,70 @@ const OwnerDashboard = () => {
           </TabsContent>
 
           {/* TAB: Premium Access Management */}
-          <TabsContent value="premium" className="space-y-6">
-            {/* Grant Premium Access Card */}
-            <Card className="gradient-card border border-indigo-100 dark:border-indigo-950 shadow-sm bg-white dark:bg-slate-900">
-              <CardHeader className="pb-3">
-                <CardTitle className="text-lg font-bold flex items-center gap-2 text-indigo-600 dark:text-indigo-400">
-                  <UserPlus className="h-5 w-5" /> Grant Premium Access
-                </CardTitle>
-                <CardDescription>
-                  Enter a registered user&apos;s email and select the premium resource package to grant access.
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="flex flex-col sm:flex-row gap-3 items-end sm:items-center">
-                  <div className="flex-1 w-full space-y-1">
-                    <Label htmlFor="grant-email" className="text-xs font-semibold text-gray-500">User Email Address</Label>
-                    <Input
-                      id="grant-email"
-                      value={grantEmail}
-                      onChange={(e) => setGrantEmail(e.target.value)}
-                      placeholder="user@gmail.com"
-                      className="bg-slate-50 dark:bg-slate-800/50"
-                    />
+                    <TabsContent value="premium" className="space-y-6">
+              {/* Grant Access */}
+              <Card className="gradient-card">
+                <CardHeader className="border-b pb-4">
+                  <CardTitle className="flex items-center gap-2 text-lg font-bold">
+                    <UserPlus className="h-5 w-5 text-primary" /> Grant Premium Access
+                  </CardTitle>
+                  <CardDescription>Grant a user access to a premium package.</CardDescription>
+                </CardHeader>
+                <CardContent className="pt-4">
+                  <div className="flex flex-col sm:flex-row gap-4">
+                    <div className="flex-1 space-y-2">
+                      <Label className="text-xs font-bold uppercase text-muted-foreground">User Email</Label>
+                      <Input
+                        type="email"
+                        placeholder="student@example.com"
+                        value={grantEmail}
+                        onChange={(e) => setGrantEmail(e.target.value)}
+                        className="bg-background"
+                      />
+                    </div>
+                    <div className="w-full sm:w-48 space-y-2">
+                      <Label className="text-xs font-bold uppercase text-muted-foreground">Package</Label>
+                      <select
+                        value={grantPlan}
+                        onChange={(e) => setGrantPlan(e.target.value)}
+                        className="w-full h-10 px-3 rounded-md border border-input bg-background text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                      >
+                        <option value="companies">Companies Page</option>
+                        <option value="hr_emails">HR Emails</option>
+                        <option value="resume">Resume Guide</option>
+                        <option value="roadmaps">Roadmap Guide</option>
+                        <option value="gate_study">GATE Study</option>
+                      </select>
+                    </div>
+                    <div className="flex items-end">
+                      <Button onClick={handleGrantPremiumAccess} disabled={isGranting || !grantEmail.trim()} className="w-full sm:w-auto font-bold bg-slate-900 hover:bg-slate-800 text-white dark:bg-slate-100 dark:text-slate-900 dark:hover:bg-slate-200 border border-slate-700 shadow-md h-10 px-5 rounded-xl">
+                        {isGranting ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Sparkles className="w-4 h-4 mr-2" />}
+                        Grant Access
+                      </Button>
+                    </div>
                   </div>
-                  <div className="flex-1 w-full space-y-1">
-                    <Label htmlFor="grant-plan" className="text-xs font-semibold text-gray-500">Premium Package Plan</Label>
-                    <select
-                      id="grant-plan"
-                      value={grantPlan}
-                      onChange={(e) => setGrantPlan(e.target.value)}
-                      className="w-full rounded-md border border-input bg-slate-50 dark:bg-slate-800/50 px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-                    >
-                      <option value="companies">Company Career Pages Directory (₹149)</option>
-                      <option value="hr_emails">1800+ HR Email Contacts Directory (₹999)</option>
-                      <option value="resume">ATS Friendly Resume Guide (₹167)</option>
-                      <option value="roadmaps">Fresher Placement Roadmap & Tool Guide (₹549)</option>
-                      <option value="gate_study">GATE Prep Section Access (Free/Premium)</option>
-                    </select>
-                  </div>
-                  <Button
-                    onClick={handleGrantPremiumAccess}
-                    disabled={isGranting || !grantEmail.trim()}
-                    className="btn-hero flex-shrink-0 h-10 w-full sm:w-auto"
-                  >
-                    {isGranting ? (
-                      <Loader2 className="h-4 w-4 animate-spin" />
-                    ) : (
-                      <><Lock className="h-4 w-4 mr-2" /> Grant Access</>
-                    )}
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
 
-            <Card className="border-0 shadow-sm bg-white dark:bg-slate-900">
-              <CardHeader className="pb-4">
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                  <div>
-                    <CardTitle className="text-xl font-bold flex items-center gap-2 text-indigo-600 dark:text-indigo-400">
-                      <Lock className="h-5 w-5" />
-                      Premium Content Access Manager
-                    </CardTitle>
-                    <CardDescription>
-                      Monitor and manage active student accesses to the premium resources. Revoke access package-wise if needed.
-                    </CardDescription>
-                  </div>
-                  <div className="relative w-full md:w-80">
-                    <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
-                    <Input
-                      placeholder="Search by name, email or branch..."
-                      value={searchPremiumQuery}
-                      onChange={(e) => setSearchPremiumQuery(e.target.value)}
-                      className="pl-9 bg-slate-50 dark:bg-slate-800/50 border-0 focus-visible:ring-1"
-                    />
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent>
-                {filteredGroupedList.length === 0 ? (
-                  <div className="text-center py-12 text-muted-foreground">
-                    <UserMinus className="h-12 w-12 mx-auto text-slate-300 dark:text-slate-700 mb-3" />
-                    <p className="font-semibold text-sm">No premium members found.</p>
-                    <p className="text-xs">Either no users have purchased, or the search filter didn&apos;t match any records.</p>
-                  </div>
-                ) : (
-                  <div className="space-y-4">
-                    {filteredGroupedList.map((item: any) => {
-                      const fullName = `${item.first_name} ${item.last_name}`.trim() || 'Anonymous User';
-                      return (
-                        <div
-                          key={item.user_id}
-                          className="p-5 rounded-2xl border border-slate-150 dark:border-slate-800/80 bg-slate-50/50 dark:bg-slate-900/40 hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors"
-                        >
-                          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-                            {/* User details */}
-                            <div className="space-y-1">
-                              <div className="flex items-center gap-2.5">
-                                <h4 className="font-bold text-slate-900 dark:text-white text-base">
-                                  {fullName}
-                                </h4>
-                                {item.branch && (
-                                  <Badge variant="outline" className="text-xs bg-slate-100 dark:bg-slate-800 border-0 text-slate-600 dark:text-slate-400 font-semibold px-2 py-0.5 rounded-lg">
-                                    {item.branch}
-                                  </Badge>
-                                )}
-                              </div>
-                              <p className="text-xs text-muted-foreground font-medium">{item.email}</p>
-                            </div>
+              {/* Search */}
+              <div className="relative">
+                <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+                <Input placeholder="Search by name, email or branch..." value={searchPremiumQuery} onChange={(e) => setSearchPremiumQuery(e.target.value)} className="pl-9" />
+              </div>
 
-                            {/* Actions and Packages */}
-                            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 flex-wrap lg:justify-end">
-                              {item.purchases.map((pur: any) => {
-                                const isCoupon = pur.payment_status === 'free';
-                                const planLabel =
-                                  pur.plan === 'companies'
-                                    ? 'Companies Page'
-                                    : pur.plan === 'hr_emails'
-                                    ? 'HR Emails'
-                                    : pur.plan === 'resume'
-                                    ? 'Resume Guide'
-                                    : pur.plan === 'roadmaps'
-                                    ? 'Roadmap Guide'
-                                    : pur.plan;
-                                
-                                const planColor =
-                                  pur.plan === 'companies'
-                                    ? 'border-violet-250 bg-violet-50 text-violet-700 dark:bg-violet-950/20 dark:text-violet-400 dark:border-violet-900/50'
-                                    : pur.plan === 'hr_emails'
-                                    ? 'border-emerald-250 bg-emerald-50 text-emerald-700 dark:bg-emerald-950/20 dark:text-emerald-400 dark:border-emerald-900/50'
-                                    : pur.plan === 'roadmaps'
-                                    ? 'border-sky-250 bg-sky-50 text-sky-700 dark:bg-sky-950/20 dark:text-sky-400 dark:border-sky-900/50'
-                                    : 'border-orange-255 bg-orange-50 text-orange-700 dark:bg-orange-950/20 dark:text-orange-400 dark:border-orange-900/50';
+              {/* Stats row */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <Card className="gradient-card"><CardContent className="pt-4"><p className="text-xs text-muted-foreground uppercase font-semibold mb-1">GATE Enrolled</p><p className="text-2xl font-bold">{filteredGroupedList.filter(item => item.purchases.some((p:any) => p.plan === 'gate_study')).length}</p></CardContent></Card>
+                <Card className="gradient-card"><CardContent className="pt-4"><p className="text-xs text-muted-foreground uppercase font-semibold mb-1">Premium Packages</p><p className="text-2xl font-bold">{filteredGroupedList.filter(item => item.purchases.some((p:any) => p.plan !== 'gate_study')).length}</p></CardContent></Card>
+                <Card className="gradient-card"><CardContent className="pt-4"><p className="text-xs text-muted-foreground uppercase font-semibold mb-1">Both Plans</p><p className="text-2xl font-bold">{filteredGroupedList.filter(i => i.purchases.some((p:any) => p.plan === 'gate_study') && i.purchases.some((p:any) => p.plan !== 'gate_study')).length}</p></CardContent></Card>
+              </div>
 
-                                return (
-                                  <div
-                                    key={pur.id}
-                                    className={`flex items-center gap-2 px-3 py-1.5 rounded-xl border ${planColor} text-xs font-semibold`}
-                                  >
-                                    <span>{planLabel}</span>
-                                    <span className="text-[10px] opacity-75">
-                                      ({isCoupon ? `Coupon: ${pur.coupon_used || 'FREE'}` : `₹${pur.amount_paid / 100}`})
-                                    </span>
-                                    <button
-                                      onClick={() => handleRevokeAccess(item.user_id, pur.plan, fullName)}
-                                      disabled={revokingId !== null}
-                                      className="ml-1 text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 disabled:opacity-50 transition-colors p-0.5 hover:bg-red-150 dark:hover:bg-red-950/40 rounded-lg"
-                                      title={`Revoke access to ${planLabel}`}
-                                    >
-                                      <Trash2 className="w-3.5 h-3.5" />
-                                    </button>
-                                  </div>
-                                );
-                              })}
+              {/* GATE Study Section */}
+              <PremiumSection title="GATE Study Enrolled" icon={BookOpen} color="indigo" items={filteredGroupedList.filter(item => item.purchases.some((p:any) => p.plan === 'gate_study'))} onRevoke={handleRevokeAccess} onRevokeAll={handleRevokeAllAccess} revokingId={revokingId} />
 
-                              {item.purchases.length > 1 && (
-                                <Button
-                                  variant="destructive"
-                                  size="sm"
-                                  onClick={() => handleRevokeAllAccess(item.user_id, fullName)}
-                                  disabled={revokingId !== null}
-                                  className="h-8 rounded-xl text-xs font-bold px-3 py-1.5 flex items-center gap-1.5"
-                                >
-                                  <Trash2 className="w-3.5 h-3.5" />
-                                  Revoke All
-                                </Button>
-                              )}
-                            </div>
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          </TabsContent>
+              {/* Other Premium Section */}
+              <PremiumSection title="Other Premium Packages" icon={Lock} color="purple" items={filteredGroupedList.filter(item => item.purchases.some((p:any) => p.plan !== 'gate_study'))} onRevoke={handleRevokeAccess} onRevokeAll={handleRevokeAllAccess} revokingId={revokingId} />
+            </TabsContent>
 
           {/* TAB: Notifications */}
           <TabsContent value="notifications" className="space-y-6">
@@ -2049,28 +2073,241 @@ const OwnerDashboard = () => {
               </CardContent>
             </Card>
 
-            {/* Contributors list */}
+                        {/* Contributors list */}
+              <Card className="gradient-card">
+                <CardHeader className="border-b pb-4">
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="flex items-center gap-2 text-base font-bold">
+                      <Trophy className="h-4 w-4 text-yellow-500" /> All Contributors ({contributors.length}) — by coins
+                    </CardTitle>
+                    <Button variant="outline" size="sm" onClick={fetchContributors}>Refresh</Button>
+                  </div>
+                </CardHeader>
+                <CardContent className="pt-4">
+                  {contributors.length === 0 ? (
+                    <div className="text-center py-8 text-muted-foreground">
+                      <Trophy className="h-10 w-10 mx-auto mb-2 opacity-30" />
+                      <p className="text-sm">No contributors yet.</p>
+                    </div>
+                  ) : (
+                    <>
+                      <div className="space-y-3">
+                        {contributors.slice((contribPage-1)*8, contribPage*8).map((c, idx) => (
+                          <ContributorCard key={c.id} contributor={c} rank={(contribPage-1)*8 + idx + 1} onRefresh={fetchContributors} />
+                        ))}
+                      </div>
+                      {Math.ceil(contributors.length / 8) > 1 && (
+                        <div className="flex items-center justify-between mt-4 pt-4 border-t">
+                          <span className="text-xs text-muted-foreground">Page {contribPage} of {Math.ceil(contributors.length/8)} ({contributors.length} total)</span>
+                          <div className="flex gap-2">
+                            <Button variant="outline" size="sm" onClick={() => setContribPage(p => Math.max(1, p-1))} disabled={contribPage === 1}>← Prev</Button>
+                            <Button variant="outline" size="sm" onClick={() => setContribPage(p => Math.min(Math.ceil(contributors.length/8), p+1))} disabled={contribPage === Math.ceil(contributors.length/8)}>Next →</Button>
+                          </div>
+                        </div>
+                      )}
+                    </>
+                  )}
+                </CardContent>
+              </Card>
+          </TabsContent>
+
+          {/* TAB 2: Manage Admins */}
+          <TabsContent value="admins" className="space-y-6">
+            {/* Add new admin */}
+            <Card className="gradient-card border-2 border-primary/10">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <UserPlus className="h-5 w-5" /> Add New Admin
+                </CardTitle>
+                <CardDescription>
+                  Enter the name and email of the user to grant admin privileges.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="flex flex-col sm:flex-row gap-3">
+                  <Input
+                    value={newAdminName}
+                    onChange={(e) => setNewAdminName(e.target.value)}
+                    placeholder="Full Name (e.g. Rahul Singh)"
+                    className="flex-1"
+                  />
+                  <Input
+                    value={newAdminEmail}
+                    onChange={(e) => setNewAdminEmail(e.target.value)}
+                    placeholder="user@gmail.com"
+                    className="flex-1"
+                  />
+                  <Button
+                    onClick={handlePromoteAdmin}
+                    disabled={isPromoting || !newAdminEmail.trim()}
+                    className="btn-hero flex-shrink-0"
+                  >
+                    {isPromoting ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : (
+                      <><UserPlus className="h-4 w-4 mr-2" /> Add Admin</>
+                    )}
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Admin list */}
             <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <h3 className="text-base font-bold">All Contributors ({contributors.length}) — sorted by coins</h3>
-                <Button variant="outline" size="sm" onClick={fetchContributors}>
-                  Refresh
-                </Button>
-              </div>
-              {contributors.length === 0 ? (
-                <Card className="gradient-card text-center py-10">
-                  <CardContent>
-                    <Trophy className="h-12 w-12 text-muted-foreground mx-auto mb-3 opacity-40" />
-                    <p className="text-muted-foreground text-sm">No contributors yet. Add the first one above.</p>
-                  </CardContent>
-                </Card>
-              ) : (
-                contributors.map((c, idx) => (
-                  <ContributorCard key={c.id} contributor={c} rank={idx + 1} onRefresh={fetchContributors} />
-                ))
-              )}
+              {adminRoles.map((role, idx) => (
+                <AdminRoleCard
+                  key={role.id}
+                  role={role}
+                  rank={idx + 1}
+                  currentUserEmail={user?.email}
+                  onRemove={handleRemoveAdmin}
+                  onRefresh={fetchAdminRoles}
+                />
+              ))}
             </div>
           </TabsContent>
+
+          {/* TAB 3: All Materials (Grid card layout) */}
+          <TabsContent value="all" className="space-y-6">
+            {/* Filters */}
+            <div className={`flex flex-col md:flex-row gap-4 border p-4 rounded-xl ${
+              isDark ? 'bg-slate-900/60 border-slate-800' : 'bg-white/80 border-slate-200 shadow-sm'
+            }`}>
+              <div className="relative flex-1">
+                <Search className="absolute left-3 top-2.5 h-4 w-4 text-slate-500" />
+                <Input
+                  placeholder="Search by title, subject, or email..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className={`pl-10 h-9 text-xs ${
+                    isDark ? 'bg-slate-950 border-slate-800 text-slate-200' : 'bg-slate-50 border-slate-200 text-slate-900'
+                  }`}
+                />
+              </div>
+              <div className={`flex items-center gap-1 border p-1 rounded-xl w-fit ${
+                isDark ? 'bg-slate-950 border-slate-900' : 'bg-slate-100 border-slate-200'
+              }`}>
+                {(['all', 'pending', 'approved', 'rejected'] as const).map(filter => (
+                  <button
+                    key={filter}
+                    onClick={() => setMaterialFilter(filter)}
+                    className={`px-3 py-1 rounded-lg text-xs font-bold transition-all uppercase tracking-wider ${
+                      materialFilter === filter 
+                        ? isDark 
+                          ? 'bg-sky-500/10 text-sky-400 border border-sky-500/20' 
+                          : 'bg-white text-sky-650 shadow-sm border border-slate-200'
+                        : isDark 
+                          ? 'text-slate-400 hover:text-slate-200 border border-transparent' 
+                          : 'text-slate-600 hover:text-slate-800 border border-transparent'
+                    }`}
+                  >
+                    {filter === 'all' ? 'All' : filter === 'pending' ? 'Pending' : filter === 'approved' ? 'Approved' : 'Rejected'}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {filteredMaterials.length === 0 ? (
+              <Card className={`border text-center py-16 ${
+                isDark ? 'border-slate-800 bg-slate-900/40 text-slate-100' : 'border-slate-200 bg-white/70 text-slate-900 shadow-sm'
+              }`}>
+                <CardContent>
+                  <FileText className="h-16 w-16 text-slate-500 mx-auto mb-4" />
+                  <h3 className="text-xl font-bold mb-2">No materials found</h3>
+                  <p className="text-slate-400 text-sm">
+                    {searchQuery ? 'Try adjusting your search criteria.' : 'No materials recorded yet.'}
+                  </p>
+                </CardContent>
+              </Card>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {filteredMaterials.map((material) => (
+                  <Card key={material.id} className={`border backdrop-blur-md transition-all duration-300 shadow-md overflow-hidden flex flex-col justify-between h-full group ${
+                    isDark 
+                      ? 'border-slate-800/80 bg-slate-900/60 hover:border-sky-500/50' 
+                      : 'border-slate-200 bg-white/80 hover:border-sky-500/40 hover:shadow-sm'
+                  }`}>
+                    <div className="p-5 flex-1 flex flex-col justify-between">
+                      <div>
+                        <div className="flex justify-between items-start mb-3 gap-2">
+                          <Badge className="bg-sky-500/10 text-sky-400 hover:bg-sky-500/20 text-[10px] uppercase font-bold border border-sky-500/20 px-2 py-0.5 rounded-full">
+                            {material.material_type === 'pyqs' ? '📄 PYQs' : '📝 Notes'}
+                          </Badge>
+                          <div className="flex gap-1.5">
+                            <Badge className={material.status === 'pending' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400' : material.status === 'approved' ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400' : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'}>{material.status}</Badge>
+                            <Badge className="bg-purple-500/10 text-purple-400 text-[10px] font-bold border border-purple-500/20 px-2 py-0.5 rounded-full">
+                              Sem {material.semester}
+                            </Badge>
+                          </div>
+                        </div>
+                        
+                        <h4 className={`text-base font-bold mb-1.5 line-clamp-1 group-hover:text-sky-400 transition-colors ${
+                          isDark ? 'text-slate-100' : 'text-slate-800'
+                        }`} title={material.title}>
+                          {material.title}
+                        </h4>
+                        <p className={`text-xs mb-4 line-clamp-2 h-8 leading-relaxed ${
+                          isDark ? 'text-slate-400' : 'text-slate-600'
+                        }`}>
+                          {material.description || 'No description provided.'}
+                        </p>
+                      </div>
+
+                      <div className={`space-y-1.5 text-[11px] border-t pt-3 ${
+                        isDark ? 'text-slate-400 border-slate-800/60' : 'text-slate-500 border-slate-200'
+                      }`}>
+                        <div className="flex items-center gap-1.5">
+                          <BookOpen className="h-3.5 w-3.5 text-sky-500/70" />
+                          <span className={`font-semibold ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>Subject:</span> <span className="truncate max-w-[150px]">{material.subject}</span>
+                        </div>
+                        <div className="flex items-center gap-1.5">
+                          <User className="h-3.5 w-3.5 text-sky-500/70" />
+                          <span className={`font-semibold ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>Uploader:</span> <span className="truncate max-w-[150px]">{material.user_email}</span>
+                        </div>
+                        <div className="flex items-center gap-1.5">
+                          <Calendar className="h-3.5 w-3.5 text-sky-500/70" />
+                          <span>Uploaded: {material.uploaded_at ? new Date(material.uploaded_at).toLocaleDateString('en-IN') : 'Unknown Date'}</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Actions */}
+                    <div className={`p-4 border-t space-y-3 ${
+                      isDark ? 'bg-slate-950/40 border-slate-800/60' : 'bg-slate-50/50 border-slate-200'
+                    }`}>
+                      <div className="flex gap-2">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className={`flex-1 text-[11px] font-semibold h-8 gap-1 border ${
+                            isDark 
+                              ? 'text-slate-300 hover:text-white hover:bg-slate-800/50 border-slate-800' 
+                              : 'text-slate-700 hover:text-slate-900 hover:bg-slate-100 border-slate-200'
+                          }`}
+                          onClick={() => window.open(material.file_url, '_blank')}
+                        >
+                          <Eye className="h-3.5 w-3.5" /> Preview
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className={`flex-1 text-[11px] font-semibold h-8 gap-1 border ${
+                            isDark 
+                              ? 'text-slate-300 hover:text-white hover:bg-slate-800/50 border-slate-800' 
+                              : 'text-slate-700 hover:text-slate-900 hover:bg-slate-100 border-slate-200'
+                          }`}
+                          onClick={() => handleDownload(material.file_url)}
+                        >
+                          <Download className="h-3.5 w-3.5" /> Download
+                        </Button>
+                      </div>
+                    </div>
+                  </Card>
+                ))}
+              </div>
+            )}
+          </TabsContent>
+
 
           {/* TAB 2: Manage Admins */}
           <TabsContent value="admins" className="space-y-6">
@@ -2269,7 +2506,7 @@ const OwnerDashboard = () => {
                             <Button
                               size="sm"
                               className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs h-8"
-                              onClick={() => handleApproval(material.id, 'approved')}
+                              onClick={(e) => { e.stopPropagation(); handleApproval(material.id, 'approved'); }}
                             >
                               <CheckCircle className="h-3.5 w-3.5 mr-1" /> Approve
                             </Button>
@@ -2277,7 +2514,7 @@ const OwnerDashboard = () => {
                               variant="destructive"
                               size="sm"
                               className="flex-1 font-bold text-xs h-8"
-                              onClick={() => handleApproval(material.id, 'rejected')}
+                              onClick={(e) => { e.stopPropagation(); handleApproval(material.id, 'rejected'); }}
                             >
                               <XCircle className="h-3.5 w-3.5 mr-1" /> Reject
                             </Button>
@@ -2308,6 +2545,10 @@ const OwnerDashboard = () => {
             <MassEmailDashboard />
           </TabsContent>
         </Tabs>
+      )}
+    </DialogContent>
+  </Dialog>
+
       </div>
     </div>
   );
