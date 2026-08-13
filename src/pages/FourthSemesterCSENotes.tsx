@@ -365,9 +365,16 @@ const FourthSemesterCSENotes = () => {
                   transition={{ delay: index * 0.05, duration: 0.3 }}
                 >
                   <div className="group border border-border bg-card hover:border-foreground/30 rounded-xl p-4 transition-all duration-300 hover:shadow-md flex flex-col h-full relative">
+                    {note.recommended && (
+                      <div className="absolute top-3 right-3 z-10 pointer-events-none">
+                        <span className="inline-flex items-center gap-1 text-[10px] font-extrabold tracking-wider uppercase bg-amber-500 text-white dark:bg-amber-500/90 shadow-sm px-2.5 py-0.5 rounded-full">
+                          ⭐ Recommended
+                        </span>
+                      </div>
+                    )}
                     {note.isCommunity && isOwner && (
                       <button
-                        className="absolute top-3 right-3 text-red-500 hover:text-red-700 bg-red-50 dark:bg-red-950/20 p-1.5 rounded-lg transition-colors z-10"
+                        className={`absolute top-3 ${note.recommended ? 'left-3' : 'right-3'} text-red-500 hover:text-red-700 bg-red-50 dark:bg-red-950/20 p-1.5 rounded-lg transition-colors z-10`}
                         onClick={() => handleDeleteCommunityNote(note.id)}
                         title="Delete material"
                       >
@@ -384,9 +391,6 @@ const FourthSemesterCSENotes = () => {
                       )}
                       {(note as any).branchSemester?.startsWith('CSE-AIML') && (
                         <span className="text-[10px] font-bold tracking-wider uppercase bg-purple-600 text-white px-2 py-0.5 rounded shadow-sm">AI/ML</span>
-                      )}
-                      {note.recommended && (
-                        <span className="text-[10px] font-bold tracking-wider uppercase bg-yellow-50 dark:bg-yellow-950/40 text-yellow-600 dark:text-yellow-500 px-2 py-0.5 rounded border border-yellow-200 dark:border-yellow-900/50">â­ Best</span>
                       )}
                     </div>
                     <h3 className="font-semibold text-foreground text-sm leading-tight flex-1 mb-4">{note.title}</h3>
@@ -434,12 +438,14 @@ const FourthSemesterCSENotes = () => {
           >
             <ArrowLeft className="h-3.5 w-3.5" /> Back to Branches
           </button>
-          <p className="text-xs font-bold tracking-[0.2em] uppercase opacity-50 mb-3">Computer Science, IT & CSE (AI & ML) Notes</p>
-          <h1 className="text-4xl md:text-5xl font-serif leading-tight mb-3">
-            4th Semester<br />
-            <span className="opacity-60">CSE, IT & CSE (AI & ML) Notes</span>
+          <p className="text-xs font-bold tracking-[0.2em] uppercase opacity-50 mb-3">4th Semester — B.Tech Notes</p>
+          <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight mb-1">
+            CSE / IT
           </h1>
-          <p className="text-sm opacity-50 mb-8">B.Tech. CSE, IT & CSE (AI & ML) — Comprehensive study materials and resources</p>
+          <p className="text-xl font-bold opacity-80 mb-4">
+            (+ CSE- AI & ML)
+          </p>
+          <p className="text-sm opacity-60 mb-8 max-w-xl">Comprehensive study materials, notes, playlists, and PYQs for CSE, IT and CSE (AI & ML) 4th Semester.</p>
           <div className="flex flex-wrap gap-2">
             <span className="text-xs font-semibold tracking-wider uppercase border border-background/30 px-3 py-1.5 rounded">CSE / IT / CSE-AIML</span>
             <span className="text-xs font-semibold tracking-wider uppercase border border-background/30 px-3 py-1.5 rounded">{staticSubjects.filter(s => s.id !== 'pyqs' && s.id !== 'assignments').length} Core Subjects</span>
