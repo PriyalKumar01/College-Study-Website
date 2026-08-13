@@ -132,7 +132,9 @@ Check them out now to stay ahead in your academics and career!`);
   const [campaignProgressId, setCampaignProgressId] = useState<string | null>(null);
   const [sendLogs, setSendLogs] = useState<string[]>([]);
   const [sentCount, setSentCount] = useState(0);
+  const [campaignPage, setCampaignPage] = useState(1);
   const [failedCount, setFailedCount] = useState(0);
+  const [activeStep, setActiveStep] = useState<1 | 2 | 3 | 4>(1);
 
   const PRESETS = {
     none: { name: 'Select Preset (Empty)' },
@@ -564,16 +566,9 @@ Click below to check out the details, themes, and registration links.`,
     setSendLogs(prev => [...prev, `[Queue] Dispatched batch: ${startIndex + 1} to ${Math.min(startIndex + batchSize, queue.length)} of ${queue.length}...`]);
 
     try {
-      // Call Supabase Edge Function to send email batch
-      const { data: session } = await supabase.auth.getSession();
-      
-      const response = await fetch(`${(supabase as any).supabaseUrl}/functions/v1/send-campaign-emails`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${session.session?.access_token}`,
-        },
-        body: JSON.stringify({
+      // Call Supabase Edge Function to send email batch using standard SDK client
+      const { data: result, error: invokeError } = await supabase.functions.invoke('send-campaign-emails', {
+        body: {
           action: 'send',
           recipients: currentBatch,
           subject: emailSubject,
@@ -589,20 +584,15 @@ Click below to check out the details, themes, and registration links.`,
             { text: btn2Text, url: btn2Url },
             { text: btn3Text, url: btn3Url }
           ].filter(b => b.text.trim() !== '' && b.url.trim() !== '')
-        })
+        }
       });
 
-      const result = await response.json();
+      if (invokeError) {
+        throw new Error(invokeError.message || 'Edge Function execution error');
+      }
 
-      if (!response.ok) {
-        // If 429 daily rate limit hit (Brevo free tier: 300 emails/day)
-        if (response.status === 429) {
-          setSendLogs(prev => [...prev, `[WARNING] Daily sending limit hit (Brevo: 300 emails/day on free tier). Pausing queue.`]);
-          setIsPaused(true);
-          await supabase.from('email_campaigns').update({ status: 'paused' }).eq('id', campaignId);
-          return;
-        }
-        throw new Error(result.error || 'Edge Function execution error');
+      if (result && !result.success && result.error) {
+        throw new Error(result.error);
       }
 
       let localSent = 0;
@@ -736,22 +726,14 @@ Click below to check out the details, themes, and registration links.`,
       }
 
       // Call Edge Function sync endpoint
-      const { data: session } = await supabase.auth.getSession();
-      const response = await fetch(`${(supabase as any).supabaseUrl}/functions/v1/send-campaign-emails`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${session.session?.access_token}`,
-        },
-        body: JSON.stringify({
+      const { data: result, error: syncErr } = await supabase.functions.invoke('send-campaign-emails', {
+        body: {
           action: 'sync',
           emailIds: resendIds
-        })
+        }
       });
 
-      const result = await response.json();
-
-      if (!response.ok) throw new Error(result.error || 'Failed to sync statuses');
+      if (syncErr) throw new Error(syncErr.message || 'Failed to sync statuses');
 
       if (result.statuses && Array.isArray(result.statuses)) {
         // Update database with latest statuses
@@ -851,59 +833,96 @@ Click below to check out the details, themes, and registration links.`,
   }, [bodyText]);
 
   return (
-    <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
-      
-      {/* Col 1: Template Editor */}
-      <Card className="xl:col-span-3 border-0 shadow-md bg-white dark:bg-slate-900">
-        <CardHeader className="border-b border-slate-100 dark:border-slate-800 pb-4">
-          <div className="flex justify-between items-center flex-wrap gap-4">
-            <div>
-              <CardTitle className="text-xl font-bold flex items-center gap-2 text-sky-600 dark:text-sky-400">
-                <FileCode className="h-5 w-5" />
-                Email Template Composer
-              </CardTitle>
-              <CardDescription>Design dynamic, personalized marketing and verification emails</CardDescription>
-            </div>
-            
-            <div className="flex items-center gap-2">
-              <Select value={selectedTemplateId} onValueChange={(val) => {
-                if (val === 'new') {
-                  setSelectedTemplateId('new');
-                  setTemplateName('My Custom Template');
-                } else {
-                  const t = templates.find(item => item.id === val);
-                  if (t) loadTemplateData(t);
-                }
-              }}>
-                <SelectTrigger className="w-[200px] h-9">
-                  <SelectValue placeholder="Choose template" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="new">+ Create New Template</SelectItem>
-                  {templates.map(tpl => (
-                    <SelectItem key={tpl.id} value={tpl.id}>{tpl.name}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              
-              <Button onClick={handleSaveTemplate} size="sm" className="bg-sky-600 hover:bg-sky-700 text-white font-semibold gap-1.5 h-9">
-                <Save className="h-4 w-4" />
-                Save Template
-              </Button>
-            </div>
+    <div className="space-y-6">
+      {/* 4-Step Wizard Navigation Header */}
+      <div className="bg-card border border-border rounded-2xl p-4 shadow-sm">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-3">
+          <div className="flex items-center gap-2">
+            <Mail className="h-5 w-5 text-slate-800 dark:text-slate-200" />
+            <h2 className="text-base font-extrabold text-foreground tracking-tight">Mass Email Dispatch Studio</h2>
           </div>
-        </CardHeader>
-        
-        <CardContent className="pt-6 space-y-4">
-          {/* Presets and Preview Trigger */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 border-b border-slate-100 dark:border-slate-800 pb-4">
-            <div className="space-y-1.5 md:col-span-2">
-              <Label className="text-xs font-bold text-slate-500 flex items-center gap-1.5">
+
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 w-full md:w-auto">
+            {[
+              { num: 1, title: '1. Template', icon: FileCode },
+              { num: 2, title: '2. Audience', icon: Users },
+              { num: 3, title: '3. Preview', icon: Eye },
+              { num: 4, title: '4. Dispatch', icon: Send },
+            ].map(step => {
+              const IconComp = step.icon;
+              const isActive = activeStep === step.num;
+              const isPast = activeStep > step.num;
+              return (
+                <button
+                  key={step.num}
+                  onClick={() => setActiveStep(step.num as any)}
+                  className={`flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold transition-all ${
+                    isActive
+                      ? 'bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900 shadow-md border border-slate-800'
+                      : isPast
+                      ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20'
+                      : 'bg-muted text-muted-foreground hover:bg-accent border border-transparent'
+                  }`}
+                >
+                  <IconComp className="h-3.5 w-3.5" />
+                  <span>{step.title}</span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+
+      {/* STEP 1: Template Composer & Presets */}
+      {activeStep === 1 && (
+        <Card className="gradient-card border border-border shadow-md">
+          <CardHeader className="border-b pb-4">
+            <div className="flex justify-between items-center flex-wrap gap-4">
+              <div>
+                <CardTitle className="text-lg font-extrabold flex items-center gap-2 text-foreground">
+                  <FileCode className="h-5 w-5 text-slate-800 dark:text-slate-200" />
+                  Step 1: Email Template Composer
+                </CardTitle>
+                <CardDescription>Design dynamic, personalized marketing and verification emails</CardDescription>
+              </div>
+              
+              <div className="flex items-center gap-2">
+                <Select value={selectedTemplateId} onValueChange={(val) => {
+                  if (val === 'new') {
+                    setSelectedTemplateId('new');
+                    setTemplateName('My Custom Template');
+                  } else {
+                    const t = templates.find(item => item.id === val);
+                    if (t) loadTemplateData(t);
+                  }
+                }}>
+                  <SelectTrigger className="w-[180px] h-9 text-xs font-semibold">
+                    <SelectValue placeholder="Choose template" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="new">+ Create New Template</SelectItem>
+                    {templates.map(tpl => (
+                      <SelectItem key={tpl.id} value={tpl.id}>{tpl.name}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                
+                <Button onClick={handleSaveTemplate} size="sm" className="bg-slate-900 hover:bg-slate-800 text-white dark:bg-slate-100 dark:text-slate-900 dark:hover:bg-slate-200 font-bold gap-1.5 h-9 px-4 rounded-xl shadow-md border border-slate-700">
+                  <Save className="h-4 w-4" />
+                  Save Template
+                </Button>
+              </div>
+            </div>
+          </CardHeader>
+          
+          <CardContent className="pt-6 space-y-5">
+            <div className="space-y-1.5 border-b pb-4">
+              <Label className="text-xs font-extrabold text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
                 <Sparkles className="h-3.5 w-3.5 text-amber-500" />
                 Quick-Start Preset Templates
               </Label>
               <Select value={selectedPreset} onValueChange={handlePresetChange}>
-                <SelectTrigger className="h-9">
+                <SelectTrigger className="h-10 text-xs font-semibold">
                   <SelectValue placeholder="Choose a pre-configured template preset..." />
                 </SelectTrigger>
                 <SelectContent>
@@ -914,237 +933,165 @@ Click below to check out the details, themes, and registration links.`,
                 </SelectContent>
               </Select>
             </div>
-            
-            <div className="flex items-end justify-end md:col-span-1">
-              <Dialog open={showPreviewModal} onOpenChange={setShowPreviewModal}>
-                <DialogTrigger asChild>
-                  <Button variant="outline" className="w-full bg-slate-50 hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold border border-slate-200 dark:border-slate-750 h-9 gap-1.5">
-                    <Eye className="h-4 w-4 text-sky-600 dark:text-sky-400" />
-                    Preview Email Mockup
-                  </Button>
-                </DialogTrigger>
-                <DialogContent className="sm:max-w-[480px] max-h-[85vh] p-0 overflow-y-auto bg-slate-900 border border-slate-800 text-white rounded-2xl">
-                  <div className="bg-slate-950 p-4 border-b border-slate-800 text-xs text-slate-400">
-                    <div className="flex justify-between items-center mb-1">
-                      <span className="font-bold text-slate-300">College Study Email Preview</span>
-                      <span className="text-[10px] bg-slate-800 text-sky-400 px-2 py-0.5 rounded-full font-semibold">Mock Inbox</span>
-                    </div>
-                    <div><strong className="text-slate-500">From:</strong> College Study &lt;collegestudy.support@gmail.com&gt;</div>
-                    <div className="mt-1"><strong className="text-slate-500">Subject:</strong> {emailSubject}</div>
-                  </div>
-                  
-                  {/* Mock Email Container */}
-                  <div className="p-4 bg-[#f0f9ff] text-slate-950 overflow-y-auto max-h-[60vh]">
-                    <div className="bg-white border border-[#e0f2fe] rounded-2xl overflow-hidden shadow-sm max-w-[420px] mx-auto">
-                      
-                      {/* Logo Header */}
-                      <div className="p-4 text-center border-b border-[#f0f9ff]">
-                        {logoUrl && <img src={logoUrl} alt="Logo" className="h-8 mx-auto mb-1" />}
-                        <h3 className="m-0 text-sm font-bold text-[#0369a1] tracking-wide">College Study</h3>
-                        <span className="text-[8px] text-[#0284c7] font-semibold tracking-wider uppercase">Your Ultimate Academic Hub</span>
-                      </div>
 
-                      {/* Optional Header Banner */}
-                      {showHeaderImage && headerUrl && (
-                        <div className="px-4 pt-3">
-                          <img 
-                            src={headerUrl.startsWith('http') ? headerUrl : `https://college-study.netlify.app${headerUrl}`} 
-                            alt="Header Banner" 
-                            className="w-full h-auto rounded-xl border border-[#e0f2fe]" 
-                          />
-                        </div>
-                      )}
-
-                      {/* Body */}
-                      <div className="p-5 text-xs">
-                        <h4 className="m-0 mb-3 text-sm font-bold text-slate-900">
-                          {targetGroup === 'failed_verification' && customEmails.length === 0 ? 'Dear Student,' : 'Hi Priyal! 👋'}
-                        </h4>
-                        
-                        {/* Body Text */}
-                        <div dangerouslySetInnerHTML={{ __html: htmlPreviewBody }} className="leading-relaxed" />
-
-                        {/* Buttons */}
-                        <div className="my-4 text-center flex flex-wrap gap-2 justify-center">
-                          {btn1Text && btn1Url && <span className="bg-[#0284c7] text-white text-[10px] font-bold px-3 py-1.5 rounded-lg">{btn1Text}</span>}
-                          {btn2Text && btn2Url && <span className="bg-[#0284c7] text-white text-[10px] font-bold px-3 py-1.5 rounded-lg">{btn2Text}</span>}
-                          {btn3Text && btn3Url && <span className="bg-[#0284c7] text-white text-[10px] font-bold px-3 py-1.5 rounded-lg">{btn3Text}</span>}
-                        </div>
-                      </div>
-
-                      {/* Poster */}
-                      <div className="px-4 text-center">
-                        <div className="rounded-xl overflow-hidden border border-[#e0f2fe] bg-[#f8fafc]">
-                          <img src={bannerUrl || '/college_study_email_poster.png'} alt="Features Poster" className="w-full h-auto block" />
-                        </div>
-                      </div>
-
-                      {/* Footer */}
-                      <div className="p-4 bg-slate-50 border-t border-slate-100 text-center text-[9px] text-slate-400 leading-normal">
-                        <p className="font-bold text-slate-600 m-0 mb-0.5">Have questions or need help?</p>
-                        <p className="m-0 mb-2">Reach out at <span className="text-sky-600 font-semibold">collegestudy.support@gmail.com</span></p>
-                        <hr className="border-0 border-t border-slate-200 my-2" />
-                        <p className="font-semibold text-sky-600 m-0 mb-0.5">Made with ❤️ for College Students</p>
-                        <p className="m-0">© 2026 College Study. All rights reserved.</p>
-                      </div>
-
-                    </div>
-                  </div>
-                </DialogContent>
-              </Dialog>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-1.5">
-              <Label htmlFor="tpl-name" className="text-xs font-bold text-slate-500">Template Identifier</Label>
-              <Input id="tpl-name" value={templateName} onChange={e => setTemplateName(e.target.value)} placeholder="e.g. Verification Assistance Mail" />
-            </div>
-            <div className="space-y-1.5">
-              <Label htmlFor="tpl-subj" className="text-xs font-bold text-slate-500">Email Subject Line</Label>
-              <Input id="tpl-subj" value={emailSubject} onChange={e => setEmailSubject(e.target.value)} placeholder="e.g. Try using Continue with Google Option!" />
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-1.5">
-              <Label htmlFor="logo-url" className="text-xs font-bold text-slate-500">Logo Image Link</Label>
-              <Input id="logo-url" value={logoUrl} onChange={e => setLogoUrl(e.target.value)} placeholder="HTTPS Image Link" />
-            </div>
-            <div className="space-y-1.5">
-              <Label htmlFor="banner-url" className="text-xs font-bold text-slate-500">Clickable Poster Banner Link</Label>
-              <Input id="banner-url" value={bannerUrl} onChange={e => setBannerUrl(e.target.value)} placeholder="Relative path or full URL" />
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-1.5">
-              <Label htmlFor="from-address" className="text-xs font-bold text-slate-500">Sender Email (From Address)</Label>
-              <Input id="from-address" value={fromAddress} onChange={e => setFromAddress(e.target.value)} placeholder="College Study <collegestudy.support@gmail.com>" />
-              <p className="text-[10px] text-slate-400 mt-1">
-                Must match your verified sender email on Brevo (collegestudy.support@gmail.com is pre-verified).
-              </p>
-            </div>
-            <div className="flex items-center justify-between border border-slate-100 dark:border-slate-800 rounded-lg p-3 bg-slate-50/50 dark:bg-slate-900/50">
-              <div className="space-y-0.5">
-                <Label className="text-xs font-bold text-slate-700 dark:text-slate-350">Send via BCC (Recipient Privacy)</Label>
-                <p className="text-[10px] text-slate-400">Hides recipient email list from other users. (Highly Recommended)</p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-1.5">
+                <Label htmlFor="tpl-name" className="text-xs font-bold text-slate-600 dark:text-slate-400">Template Identifier</Label>
+                <Input id="tpl-name" value={templateName} onChange={e => setTemplateName(e.target.value)} placeholder="e.g. Verification Assistance Mail" />
               </div>
-              <Switch checked={sendAsBcc} onCheckedChange={setSendAsBcc} />
-            </div>
-          </div>
-
-          {/* Optional Header Banner Configuration */}
-          <div className="border border-slate-100 dark:border-slate-800 rounded-lg p-4 bg-slate-50/50 dark:bg-slate-900/50 space-y-4">
-            <div className="flex items-center justify-between">
-              <div className="space-y-0.5">
-                <Label className="text-xs font-bold text-slate-700 dark:text-slate-300">Include Header Image Banner</Label>
-                <p className="text-[10px] text-slate-400">Display an interesting hero graphic at the top of the email</p>
+              <div className="space-y-1.5">
+                <Label htmlFor="tpl-subj" className="text-xs font-bold text-slate-600 dark:text-slate-400">Email Subject Line</Label>
+                <Input id="tpl-subj" value={emailSubject} onChange={e => setEmailSubject(e.target.value)} placeholder="e.g. Try using Continue with Google Option!" />
               </div>
-              <Switch checked={showHeaderImage} onCheckedChange={setShowHeaderImage} />
             </div>
 
-            {showHeaderImage && (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 animate-in fade-in slide-in-from-top-2 duration-250">
-                <div className="space-y-1.5">
-                  <Label className="text-xs font-bold text-slate-500">Preset Header Options</Label>
-                  <Select 
-                    value={['/scholarship_banner.png', '/hackathon_banner.png', '/important_update_banner.png', '/deadline_banner.png', '/new_update_banner.png'].includes(headerUrl) ? headerUrl : 'custom'} 
-                    onValueChange={(val) => {
-                      if (val !== 'custom') {
-                        setHeaderUrl(val);
-                      } else {
-                        setHeaderUrl('');
-                      }
-                    }}
-                  >
-                    <SelectTrigger className="h-9">
-                      <SelectValue placeholder="Select Banner Option" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="/scholarship_banner.png">Scholarship Portal Banner</SelectItem>
-                      <SelectItem value="/hackathon_banner.png">Opportunities & Hackathons Banner</SelectItem>
-                      <SelectItem value="/important_update_banner.png">Important Update Banner</SelectItem>
-                      <SelectItem value="/deadline_banner.png">Deadline Reminder Banner</SelectItem>
-                      <SelectItem value="/new_update_banner.png">New Feature/Update Banner</SelectItem>
-                      <SelectItem value="custom">-- Custom Header Image URL --</SelectItem>
-                    </SelectContent>
-                  </Select>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-1.5">
+                <Label htmlFor="logo-url" className="text-xs font-bold text-slate-600 dark:text-slate-400">Logo Image Link</Label>
+                <Input id="logo-url" value={logoUrl} onChange={e => setLogoUrl(e.target.value)} placeholder="HTTPS Image Link" />
+              </div>
+              <div className="space-y-1.5">
+                <Label htmlFor="banner-url" className="text-xs font-bold text-slate-600 dark:text-slate-400">Clickable Poster Banner Link</Label>
+                <Input id="banner-url" value={bannerUrl} onChange={e => setBannerUrl(e.target.value)} placeholder="Relative path or full URL" />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-1.5">
+                <Label htmlFor="from-address" className="text-xs font-bold text-slate-600 dark:text-slate-400">Sender Email (From Address)</Label>
+                <Input id="from-address" value={fromAddress} onChange={e => setFromAddress(e.target.value)} placeholder="College Study <collegestudy.support@gmail.com>" />
+                <p className="text-[10px] text-slate-400 mt-1">
+                  Must match your verified sender email on Brevo (collegestudy.support@gmail.com is pre-verified).
+                </p>
+              </div>
+              <div className="flex items-center justify-between border border-border rounded-xl p-3 bg-muted/30">
+                <div className="space-y-0.5">
+                  <Label className="text-xs font-bold text-foreground">Send via BCC (Recipient Privacy)</Label>
+                  <p className="text-[10px] text-slate-400">Hides recipient email list from other users. (Highly Recommended)</p>
                 </div>
-                <div className="space-y-1.5">
-                  <Label className="text-xs font-bold text-slate-500">Header Image URL</Label>
-                  <Input 
-                    value={headerUrl} 
-                    onChange={e => setHeaderUrl(e.target.value)} 
-                    disabled={['/scholarship_banner.png', '/hackathon_banner.png', '/important_update_banner.png', '/deadline_banner.png', '/new_update_banner.png'].includes(headerUrl)} 
-                    placeholder="Enter custom image URL" 
-                  />
+                <Switch checked={sendAsBcc} onCheckedChange={setSendAsBcc} />
+              </div>
+            </div>
+
+            {/* Optional Header Banner */}
+            <div className="border border-border rounded-xl p-4 bg-muted/20 space-y-4">
+              <div className="flex items-center justify-between">
+                <div className="space-y-0.5">
+                  <Label className="text-xs font-bold text-foreground">Include Header Image Banner</Label>
+                  <p className="text-[10px] text-slate-400">Display a hero graphic banner at the top of the email</p>
+                </div>
+                <Switch checked={showHeaderImage} onCheckedChange={setShowHeaderImage} />
+              </div>
+
+              {showHeaderImage && (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+                  <div className="space-y-1.5">
+                    <Label className="text-xs font-bold text-slate-500">Preset Header Options</Label>
+                    <Select 
+                      value={['/scholarship_banner.png', '/hackathon_banner.png', '/important_update_banner.png', '/deadline_banner.png', '/new_update_banner.png'].includes(headerUrl) ? headerUrl : 'custom'} 
+                      onValueChange={(val) => {
+                        if (val !== 'custom') {
+                          setHeaderUrl(val);
+                        } else {
+                          setHeaderUrl('');
+                        }
+                      }}
+                    >
+                      <SelectTrigger className="h-9">
+                        <SelectValue placeholder="Select Banner Option" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="/scholarship_banner.png">Scholarship Portal Banner</SelectItem>
+                        <SelectItem value="/hackathon_banner.png">Opportunities & Hackathons Banner</SelectItem>
+                        <SelectItem value="/important_update_banner.png">Important Update Banner</SelectItem>
+                        <SelectItem value="/deadline_banner.png">Deadline Reminder Banner</SelectItem>
+                        <SelectItem value="/new_update_banner.png">New Feature/Update Banner</SelectItem>
+                        <SelectItem value="custom">-- Custom Header Image URL --</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label className="text-xs font-bold text-slate-500">Header Image URL</Label>
+                    <Input 
+                      value={headerUrl} 
+                      onChange={e => setHeaderUrl(e.target.value)} 
+                      disabled={['/scholarship_banner.png', '/hackathon_banner.png', '/important_update_banner.png', '/deadline_banner.png', '/new_update_banner.png'].includes(headerUrl)} 
+                      placeholder="Enter custom image URL" 
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <div className="space-y-1.5">
+              <div className="flex justify-between items-center">
+                <Label htmlFor="email-body" className="text-xs font-bold text-slate-600 dark:text-slate-400">Email Markdown Content</Label>
+                <span className="text-[10px] text-slate-400">Use **text** for bold, *text* for italics.</span>
+              </div>
+              <Textarea 
+                id="email-body" 
+                value={bodyText} 
+                onChange={e => setBodyText(e.target.value)} 
+                rows={5} 
+                className="resize-y text-xs font-mono"
+                placeholder="Type email body content here..." 
+              />
+            </div>
+
+            <div className="border border-border rounded-xl p-4 bg-muted/20 space-y-3">
+              <h4 className="text-xs font-bold text-foreground uppercase tracking-wider">Action Links (Buttons in Email)</h4>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="space-y-1">
+                  <Label className="text-[10px] text-slate-400">Button 1 Title</Label>
+                  <Input value={btn1Text} onChange={e => setBtn1Text(e.target.value)} className="h-8 text-xs" />
+                  <Label className="text-[10px] text-slate-400">Button 1 Link Path</Label>
+                  <Input value={btn1Url} onChange={e => setBtn1Url(e.target.value)} className="h-8 text-xs" />
+                </div>
+                <div className="space-y-1">
+                  <Label className="text-[10px] text-slate-400">Button 2 Title</Label>
+                  <Input value={btn2Text} onChange={e => setBtn2Text(e.target.value)} className="h-8 text-xs" />
+                  <Label className="text-[10px] text-slate-400">Button 2 Link Path</Label>
+                  <Input value={btn2Url} onChange={e => setBtn2Url(e.target.value)} className="h-8 text-xs" />
+                </div>
+                <div className="space-y-1">
+                  <Label className="text-[10px] text-slate-400">Button 3 Title</Label>
+                  <Input value={btn3Text} onChange={e => setBtn3Text(e.target.value)} className="h-8 text-xs" />
+                  <Label className="text-[10px] text-slate-400">Button 3 Link Path</Label>
+                  <Input value={btn3Url} onChange={e => setBtn3Url(e.target.value)} className="h-8 text-xs" />
                 </div>
               </div>
-            )}
-          </div>
-
-          <div className="space-y-1.5">
-            <div className="flex justify-between items-center">
-              <Label htmlFor="email-body" className="text-xs font-bold text-slate-500">Email Markdown Content</Label>
-              <span className="text-[10px] text-slate-400">Use **text** for bold, *text* for italics. Greeting is auto-personalized.</span>
             </div>
-            <Textarea 
-              id="email-body" 
-              value={bodyText} 
-              onChange={e => setBodyText(e.target.value)} 
-              rows={6} 
-              className="resize-y"
-              placeholder="Type email body content here..." 
-            />
-          </div>
 
-          <div className="border border-slate-100 dark:border-slate-800 rounded-lg p-4 bg-slate-50/50 dark:bg-slate-900/50 space-y-3">
-            <h4 className="text-xs font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wider">Action Links (Buttons in Email)</h4>
-            
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="space-y-1">
-                <Label className="text-[10px] text-slate-400">Button 1 Title</Label>
-                <Input value={btn1Text} onChange={e => setBtn1Text(e.target.value)} className="h-8 text-xs" />
-                <Label className="text-[10px] text-slate-400">Button 1 Link Path</Label>
-                <Input value={btn1Url} onChange={e => setBtn1Url(e.target.value)} className="h-8 text-xs" />
-              </div>
-              <div className="space-y-1">
-                <Label className="text-[10px] text-slate-400">Button 2 Title</Label>
-                <Input value={btn2Text} onChange={e => setBtn2Text(e.target.value)} className="h-8 text-xs" />
-                <Label className="text-[10px] text-slate-400">Button 2 Link Path</Label>
-                <Input value={btn2Url} onChange={e => setBtn2Url(e.target.value)} className="h-8 text-xs" />
-              </div>
-              <div className="space-y-1">
-                <Label className="text-[10px] text-slate-400">Button 3 Title</Label>
-                <Input value={btn3Text} onChange={e => setBtn3Text(e.target.value)} className="h-8 text-xs" />
-                <Label className="text-[10px] text-slate-400">Button 3 Link Path</Label>
-                <Input value={btn3Url} onChange={e => setBtn3Url(e.target.value)} className="h-8 text-xs" />
-              </div>
+            {/* Bottom Wizard Controls */}
+            <div className="flex justify-end pt-4 border-t border-border">
+              <Button
+                onClick={() => setActiveStep(2)}
+                className="bg-slate-900 hover:bg-slate-800 text-white dark:bg-slate-100 dark:text-slate-900 dark:hover:bg-slate-200 font-bold px-6 h-10 rounded-xl shadow-md border border-slate-700"
+              >
+                Next Step: Select Target Audience →
+              </Button>
             </div>
-          </div>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+      )}
 
-      {/* Row 2: Campaign targeting and Sending Queue */}
-      <Card className="xl:col-span-2 border-0 shadow-md bg-white dark:bg-slate-900">
-        <CardHeader className="border-b border-slate-100 dark:border-slate-800 pb-4">
-          <CardTitle className="text-lg font-bold flex items-center gap-2 text-slate-800 dark:text-slate-200">
-            <Users className="h-5 w-5 text-sky-500" />
-            Target Audience Selection & Batch Queue
-          </CardTitle>
-          <CardDescription>Filter recipients and manage delivery throttle to stay within Brevo limits (300/day free)</CardDescription>
-        </CardHeader>
-        
-        <CardContent className="pt-6 space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            
-            {/* Filter selection form */}
+      {/* STEP 2: Target Audience Selection */}
+      {activeStep === 2 && (
+        <Card className="gradient-card border border-border shadow-md">
+          <CardHeader className="border-b pb-4">
+            <CardTitle className="text-lg font-extrabold flex items-center gap-2 text-foreground">
+              <Users className="h-5 w-5 text-slate-800 dark:text-slate-200" />
+              Step 2: Target Audience Selection & Throttle Settings
+            </CardTitle>
+            <CardDescription>Filter recipient list and set throttle limits (Brevo free limit: 300/day)</CardDescription>
+          </CardHeader>
+          
+          <CardContent className="pt-6 space-y-6">
             <div className="space-y-4">
               <div className="space-y-1.5">
-                <Label className="text-xs font-bold text-slate-500">Recipients Target Group</Label>
+                <Label className="text-xs font-bold text-slate-600 dark:text-slate-400">Recipients Target Group</Label>
                 <Select value={targetGroup} onValueChange={(val: any) => setTargetGroup(val)}>
-                  <SelectTrigger>
+                  <SelectTrigger className="h-10 text-xs font-semibold">
                     <SelectValue placeholder="Choose targeting" />
                   </SelectTrigger>
                   <SelectContent>
@@ -1159,7 +1106,7 @@ Click below to check out the details, themes, and registration links.`,
 
               {targetGroup === 'custom' && (
                 <div className="space-y-1.5 animate-in fade-in slide-in-from-top-2 duration-200">
-                  <Label className="text-xs font-bold text-slate-500">Paste Emails</Label>
+                  <Label className="text-xs font-bold text-slate-600 dark:text-slate-400">Paste Emails</Label>
                   <Textarea 
                     value={customEmails} 
                     onChange={e => setCustomEmails(e.target.value)} 
@@ -1170,17 +1117,17 @@ Click below to check out the details, themes, and registration links.`,
               )}
 
               {targetGroup !== 'custom' && targetGroup !== 'failed_signups' && (
-                <div className="border border-slate-100 dark:border-slate-800 rounded-lg p-4 bg-slate-50/50 dark:bg-slate-900/50 space-y-4">
+                <div className="border border-border rounded-xl p-4 bg-muted/20 space-y-4">
                   <div className="flex items-center justify-between">
                     <div className="space-y-0.5">
-                      <Label className="text-xs font-bold text-slate-700 dark:text-slate-300">Prioritize Recently Active</Label>
-                      <p className="text-[10px] text-slate-400">Sort sending queue so users active this week/month receive first</p>
+                      <Label className="text-xs font-bold text-foreground">Prioritize Recently Active</Label>
+                      <p className="text-[10px] text-slate-400">Sort queue so users active this week/month receive first</p>
                     </div>
                     <Switch checked={prioritizeActive} onCheckedChange={setPrioritizeActive} />
                   </div>
                   
-                  <div className="space-y-1.5 pt-2 border-t border-slate-150 dark:border-slate-800">
-                    <Label className="text-xs font-bold text-slate-700 dark:text-slate-350">Inactive User Exclusion</Label>
+                  <div className="space-y-1.5 pt-3 border-t border-border">
+                    <Label className="text-xs font-bold text-foreground">Inactive User Exclusion</Label>
                     <Select 
                       value={inactiveExcludeDays.toString()} 
                       onValueChange={(val) => setInactiveExcludeDays(parseInt(val))}
@@ -1194,14 +1141,13 @@ Click below to check out the details, themes, and registration links.`,
                         <SelectItem value="60">Exclude if inactive &gt; 60 Days</SelectItem>
                       </SelectContent>
                     </Select>
-                    <p className="text-[10px] text-slate-400 mt-0.5">Filters out users who haven't logged in recently to stay within Brevo's 300 emails/day free limit.</p>
                   </div>
                 </div>
               )}
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1.5">
-                  <Label className="text-xs font-bold text-slate-500">Batch Size</Label>
+                  <Label className="text-xs font-bold text-slate-600 dark:text-slate-400">Batch Size</Label>
                   <Input 
                     type="number" 
                     value={batchSize} 
@@ -1210,7 +1156,7 @@ Click below to check out the details, themes, and registration links.`,
                   />
                 </div>
                 <div className="space-y-1.5">
-                  <Label className="text-xs font-bold text-slate-500">Batch Delay (seconds)</Label>
+                  <Label className="text-xs font-bold text-slate-600 dark:text-slate-400">Batch Delay (seconds)</Label>
                   <Input 
                     type="number" 
                     value={sendDelay} 
@@ -1220,20 +1166,184 @@ Click below to check out the details, themes, and registration links.`,
                 </div>
               </div>
 
+              {/* Target Summary Banner */}
+              <div className="p-4 rounded-xl bg-slate-900 text-slate-100 dark:bg-slate-100 dark:text-slate-900 flex justify-between items-center shadow-md">
+                <div>
+                  <span className="text-xs opacity-75 font-semibold block uppercase tracking-wider">Filtered Target Recipients</span>
+                  <span className="text-2xl font-black">{recipientsList.length} Users Selected</span>
+                </div>
+                <Users className="h-8 w-8 opacity-80" />
+              </div>
+            </div>
+
+            {/* Bottom Controls */}
+            <div className="flex justify-between pt-4 border-t border-border">
+              <Button
+                variant="outline"
+                onClick={() => setActiveStep(1)}
+                className="font-bold border-border h-10 px-5 rounded-xl"
+              >
+                ← Previous Step
+              </Button>
+              <Button
+                onClick={() => setActiveStep(3)}
+                className="bg-slate-900 hover:bg-slate-800 text-white dark:bg-slate-100 dark:text-slate-900 dark:hover:bg-slate-200 font-bold px-6 h-10 rounded-xl shadow-md border border-slate-700"
+              >
+                Next Step: Review Recipients & Email Preview →
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* STEP 3: Recipients Review & Live Email Preview */}
+      {activeStep === 3 && (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Left Column: Filtered Recipients List */}
+          <Card className="gradient-card border border-border shadow-md">
+            <CardHeader className="border-b pb-4">
+              <CardTitle className="text-md font-extrabold flex items-center gap-2 text-foreground">
+                <ListFilter className="h-4.5 w-4.5 text-slate-800 dark:text-slate-200" />
+                Filtered Recipients List ({recipientsList.length})
+              </CardTitle>
+              <CardDescription>Review all users that will receive this campaign</CardDescription>
+            </CardHeader>
+            
+            <CardContent className="p-0 max-h-[450px] overflow-y-auto">
+              <div className="divide-y divide-border">
+                {loadingUsers ? (
+                  <div className="flex justify-center items-center py-12 text-slate-400 text-xs">
+                    <Loader2 className="h-4 w-4 animate-spin mr-1.5" />
+                    Loading recipient database...
+                  </div>
+                ) : recipientsList.length === 0 ? (
+                  <div className="text-center py-12 text-slate-400 text-xs italic">
+                    No users match the filtered criteria.
+                  </div>
+                ) : (
+                  recipientsList.map((item, idx) => (
+                    <div key={idx} className="p-3 hover:bg-muted/40 flex justify-between items-center text-xs">
+                      <div>
+                        <div className="font-bold text-foreground">{item.name}</div>
+                        <div className="text-[10px] text-slate-400 mt-0.5">{item.email}</div>
+                      </div>
+                      <div className="text-right">
+                        {item.isGoogleAuthFail ? (
+                          <Badge className="bg-amber-500/10 text-amber-600 border border-amber-500/20 text-[9px]">Google Fail</Badge>
+                        ) : targetGroup === 'failed_verification' ? (
+                          <Badge className="bg-red-500/10 text-red-600 border border-red-500/20 text-[9px]">Unverified</Badge>
+                        ) : (
+                          <Badge className="bg-emerald-500/10 text-emerald-600 border border-emerald-500/20 text-[9px]">Verified</Badge>
+                        )}
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Right Column: Live Email HTML Mockup Preview */}
+          <Card className="gradient-card border border-border shadow-md">
+            <CardHeader className="border-b pb-4">
+              <CardTitle className="text-md font-extrabold flex items-center gap-2 text-foreground">
+                <Eye className="h-4.5 w-4.5 text-slate-800 dark:text-slate-200" />
+                Live Email Mockup Preview
+              </CardTitle>
+              <CardDescription>Exact visual rendering of the outgoing email</CardDescription>
+            </CardHeader>
+            
+            <CardContent className="p-4">
+              <div className="bg-[#f0f9ff] dark:bg-slate-950 p-3 rounded-xl border border-sky-100 dark:border-slate-800 text-slate-950 max-h-[420px] overflow-y-auto">
+                <div className="bg-white dark:bg-slate-900 border border-[#e0f2fe] dark:border-slate-800 rounded-xl overflow-hidden shadow-sm max-w-[400px] mx-auto text-slate-900 dark:text-slate-100">
+                  {/* Logo Header */}
+                  <div className="p-4 text-center border-b border-[#f0f9ff] dark:border-slate-800">
+                    {logoUrl && <img src={logoUrl} alt="Logo" className="h-7 mx-auto mb-1" />}
+                    <h3 className="m-0 text-sm font-bold text-slate-900 dark:text-slate-100 tracking-wide">College Study</h3>
+                  </div>
+
+                  {/* Header Banner */}
+                  {showHeaderImage && headerUrl && (
+                    <div className="px-4 pt-3">
+                      <img 
+                        src={headerUrl.startsWith('http') ? headerUrl : `https://college-study.netlify.app${headerUrl}`} 
+                        alt="Header Banner" 
+                        className="w-full h-auto rounded-lg border border-slate-200" 
+                      />
+                    </div>
+                  )}
+
+                  {/* Body */}
+                  <div className="p-4 text-xs space-y-3">
+                    <h4 className="m-0 font-bold text-slate-900 dark:text-slate-100">Hi Student! 👋</h4>
+                    <div dangerouslySetInnerHTML={{ __html: htmlPreviewBody }} className="leading-relaxed" />
+
+                    {/* Dark Professional Buttons inside Preview */}
+                    <div className="my-3 flex flex-wrap gap-2 justify-center">
+                      {btn1Text && <span className="bg-slate-900 text-white text-[10px] font-bold px-3 py-1.5 rounded-lg shadow-sm">{btn1Text}</span>}
+                      {btn2Text && <span className="bg-slate-900 text-white text-[10px] font-bold px-3 py-1.5 rounded-lg shadow-sm">{btn2Text}</span>}
+                      {btn3Text && <span className="bg-slate-900 text-white text-[10px] font-bold px-3 py-1.5 rounded-lg shadow-sm">{btn3Text}</span>}
+                    </div>
+                  </div>
+
+                  {/* Poster */}
+                  {bannerUrl && (
+                    <div className="px-4 pb-4">
+                      <img src={bannerUrl} alt="Poster" className="w-full h-auto rounded-lg border border-slate-200" />
+                    </div>
+                  )}
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Bottom Wizard Controls */}
+          <div className="lg:col-span-2 flex justify-between pt-4 border-t border-border">
+            <Button
+              variant="outline"
+              onClick={() => setActiveStep(2)}
+              className="font-bold border-border h-10 px-5 rounded-xl"
+            >
+              ← Previous Step
+            </Button>
+            <Button
+              onClick={() => setActiveStep(4)}
+              className="bg-slate-900 hover:bg-slate-800 text-white dark:bg-slate-100 dark:text-slate-900 dark:hover:bg-slate-200 font-bold px-6 h-10 rounded-xl shadow-md border border-slate-700"
+            >
+              Next Step: Launch Campaign & Logs →
+            </Button>
+          </div>
+        </div>
+      )}
+
+      {/* STEP 4: Campaign Launch, Queue & Delivery Logs */}
+      {activeStep === 4 && (
+        <div className="space-y-6">
+          <Card className="gradient-card border border-border shadow-md">
+            <CardHeader className="border-b pb-4">
+              <CardTitle className="text-lg font-extrabold flex items-center gap-2 text-foreground">
+                <Send className="h-5 w-5 text-slate-800 dark:text-slate-200" />
+                Step 4: Launch Campaign & Real-time Queue Output
+              </CardTitle>
+              <CardDescription>Initiate batch sending to {recipientsList.length} users with real-time logs</CardDescription>
+            </CardHeader>
+            
+            <CardContent className="pt-6 space-y-6">
+              {/* Launch / Pause Controls */}
               {!isSending ? (
                 <Button 
                   onClick={startCampaign} 
                   disabled={loadingUsers || recipientsList.length === 0} 
-                  className="w-full bg-sky-600 hover:bg-sky-700 text-white font-bold h-11"
+                  className="w-full bg-slate-900 hover:bg-slate-800 text-white dark:bg-slate-100 dark:text-slate-900 dark:hover:bg-slate-200 font-extrabold h-12 text-sm rounded-xl shadow-lg border border-slate-700"
                 >
-                  <Send className="h-4.5 w-4.5 mr-2" />
-                  Launch Email Campaign ({recipientsList.length} Emails)
+                  <Send className="h-5 w-5 mr-2" />
+                  Launch Email Campaign ({recipientsList.length} Target Emails)
                 </Button>
               ) : (
-                <div className="flex gap-2">
+                <div className="flex gap-3">
                   <Button 
                     onClick={handlePauseResume} 
-                    className="flex-1 bg-yellow-500 hover:bg-yellow-600 text-white font-bold h-11"
+                    className="flex-1 bg-amber-500 hover:bg-amber-600 text-white font-bold h-11 rounded-xl"
                   >
                     {isPaused ? <Play className="h-4.5 w-4.5 mr-2" /> : <Pause className="h-4.5 w-4.5 mr-2" />}
                     {isPaused ? 'Resume Queue' : 'Pause Queue'}
@@ -1245,249 +1355,162 @@ Click below to check out the details, themes, and registration links.`,
                       setSendLogs(prev => [...prev, `[Queue] Campaign sending aborted by user.`]);
                     }} 
                     variant="destructive" 
-                    className="h-11 font-bold"
+                    className="h-11 font-bold rounded-xl"
                   >
-                    Abort
+                    Abort Campaign
                   </Button>
                 </div>
               )}
-            </div>
 
-            {/* Queue progress and logs */}
-            <div className="border border-slate-100 dark:border-slate-800 rounded-lg p-4 bg-slate-50/30 dark:bg-slate-900/30 flex flex-col h-full min-h-[300px]">
-              <div className="flex justify-between items-center mb-3">
-                <h4 className="text-xs font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wider">Dispatched Queue Output</h4>
-                <div className="flex gap-2">
-                  <Badge variant="secondary" className="bg-sky-50 text-sky-600 text-[10px] font-bold">Sent: {sentCount}</Badge>
-                  <Badge variant="destructive" className="text-[10px] font-bold">Fail: {failedCount}</Badge>
-                </div>
-              </div>
-
-              {isSending && (
-                <div className="mb-4 space-y-2 animate-in fade-in duration-200">
-                  <div className="flex justify-between text-xs font-semibold text-slate-600 dark:text-slate-300">
-                    <span>Sending Queue Status: {queueIndex} / {sendQueue.length}</span>
-                    <span>{Math.round((queueIndex / sendQueue.length) * 100)}%</span>
+              {/* Progress & Live Terminal Logs */}
+              <div className="border border-border rounded-xl p-4 bg-slate-950 text-slate-100 flex flex-col min-h-[260px] shadow-inner">
+                <div className="flex justify-between items-center mb-3 border-b border-slate-800 pb-2">
+                  <h4 className="text-xs font-bold text-slate-300 uppercase tracking-wider">Dispatched Queue Output</h4>
+                  <div className="flex gap-2">
+                    <Badge variant="secondary" className="bg-emerald-500/20 text-emerald-400 text-[10px] font-bold border-0">Sent: {sentCount}</Badge>
+                    <Badge variant="destructive" className="text-[10px] font-bold">Fail: {failedCount}</Badge>
                   </div>
-                  <Progress value={(queueIndex / sendQueue.length) * 100} className="h-2 bg-slate-100" />
                 </div>
-              )}
 
-              {/* Logs display */}
-              <div className="flex-1 bg-slate-950 text-slate-200 font-mono text-[10px] rounded-lg p-3 overflow-y-auto max-h-[220px] space-y-1">
-                {sendLogs.length === 0 ? (
-                  <span className="text-slate-500 italic">No campaign sending. Hit launch button to initiate queue dispatch.</span>
-                ) : (
-                  sendLogs.map((log, i) => (
-                    <div key={i} className={
-                      log.includes('[ERROR]') ? 'text-red-400' :
-                      log.includes('[WARNING]') ? 'text-yellow-400' :
-                      log.includes('[Success]') ? 'text-green-400' :
-                      'text-slate-300'
-                    }>
-                      {log}
+                {isSending && (
+                  <div className="mb-4 space-y-2">
+                    <div className="flex justify-between text-xs font-semibold text-slate-300">
+                      <span>Sending Queue Status: {queueIndex} / {sendQueue.length}</span>
+                      <span>{Math.round((queueIndex / sendQueue.length) * 100)}%</span>
                     </div>
-                  ))
+                    <Progress value={(queueIndex / sendQueue.length) * 100} className="h-2 bg-slate-800" />
+                  </div>
                 )}
-              </div>
-            </div>
 
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Recipients list review */}
-      <Card className="border-0 shadow-md bg-white dark:bg-slate-900 flex flex-col">
-        <CardHeader className="border-b border-slate-100 dark:border-slate-800 pb-4">
-          <CardTitle className="text-md font-bold flex items-center gap-2 text-slate-700 dark:text-slate-300">
-            <ListFilter className="h-4 w-4 text-sky-500" />
-            Filtered Recipients List
-          </CardTitle>
-          <CardDescription>Showing {recipientsList.length} filtered target users</CardDescription>
-        </CardHeader>
-        
-        <CardContent className="p-0 flex-1 overflow-y-auto max-h-[380px]">
-          <div className="divide-y divide-slate-100 dark:divide-slate-800">
-            {loadingUsers ? (
-              <div className="flex justify-center items-center py-12 text-slate-400 text-xs">
-                <Loader2 className="h-4 w-4 animate-spin mr-1.5" />
-                Loading recipient database...
-              </div>
-            ) : recipientsList.length === 0 ? (
-              <div className="text-center py-12 text-slate-400 text-xs italic">
-                No users match the filtered criteria.
-              </div>
-            ) : (
-              recipientsList.map((item, idx) => (
-                <div key={idx} className="p-3 hover:bg-slate-50/50 dark:hover:bg-slate-800/40 flex justify-between items-center text-xs">
-                  <div>
-                    <div className="font-semibold text-slate-800 dark:text-slate-200">{item.name}</div>
-                    <div className="text-[10px] text-slate-400 mt-0.5">{item.email}</div>
-                  </div>
-                  <div className="text-right">
-                    {item.isGoogleAuthFail ? (
-                      <Badge className="bg-amber-100 text-amber-700 hover:bg-amber-100 text-[9px] scale-90 border-0">Google Fail</Badge>
-                    ) : targetGroup === 'failed_verification' ? (
-                      <Badge className="bg-red-50 text-red-600 hover:bg-red-50 text-[9px] scale-90 border-0">Unverified</Badge>
-                    ) : targetGroup === 'failed_signups' ? (
-                      <Badge className="bg-gray-100 text-gray-600 hover:bg-gray-100 text-[9px] scale-90 border-0">Signup Blocked</Badge>
-                    ) : (
-                      <Badge className="bg-green-50 text-green-600 hover:bg-green-50 text-[9px] scale-90 border-0">Verified</Badge>
-                    )}
-                    
-                    {item.lastLogin && (
-                      <div className="text-[8px] text-slate-400 mt-1">
-                        Active: {new Date(item.lastLogin).toLocaleDateString()}
+                <div className="flex-1 font-mono text-[11px] rounded-lg p-2 overflow-y-auto max-h-[200px] space-y-1">
+                  {sendLogs.length === 0 ? (
+                    <span className="text-slate-500 italic">No active campaign sending. Click Launch Email Campaign to start queue.</span>
+                  ) : (
+                    sendLogs.map((log, i) => (
+                      <div key={i} className={
+                        log.includes('[ERROR]') ? 'text-red-400' :
+                        log.includes('[WARNING]') ? 'text-yellow-400' :
+                        log.includes('[Success]') ? 'text-emerald-400' :
+                        'text-slate-300'
+                      }>
+                        {log}
                       </div>
-                    )}
-                  </div>
+                    ))
+                  )}
                 </div>
-              ))
-            )}
-          </div>
-        </CardContent>
-      </Card>
+              </div>
+            </CardContent>
+          </Card>
 
-      {/* Row 3: Campaigns History & delivery logs */}
-      <Card className="xl:col-span-3 border-0 shadow-md bg-white dark:bg-slate-900 mt-4">
-        <CardHeader className="border-b border-slate-100 dark:border-slate-800 pb-4">
-          <CardTitle className="text-lg font-bold flex items-center gap-2 text-slate-800 dark:text-slate-200">
-            <Clock className="h-5 w-5 text-sky-500" />
-            Campaign Dispatch & Delivery logs
-          </CardTitle>
-          <CardDescription>Track previous campaigns and trigger delivery metrics synchronization</CardDescription>
-        </CardHeader>
-        
-        <CardContent className="pt-6">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Previous Campaigns & Logs */}
+          <Card className="gradient-card border border-border shadow-md">
+            <CardHeader className="border-b pb-4">
+              <CardTitle className="text-lg font-extrabold flex items-center gap-2 text-foreground">
+                <Clock className="h-5 w-5 text-slate-800 dark:text-slate-200" />
+                Previous Campaign Dispatch History
+              </CardTitle>
+              <CardDescription>Track previous campaigns and trigger delivery metrics sync</CardDescription>
+            </CardHeader>
             
-            {/* Campaigns list */}
-            <div className="lg:col-span-1 border border-slate-100 dark:border-slate-800 rounded-lg overflow-hidden bg-slate-50/20 dark:bg-slate-900/20">
-              <div className="p-3 bg-slate-50 dark:bg-slate-800/40 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center text-xs font-bold text-slate-500">
-                <span>Select Campaign</span>
-                <Button onClick={fetchCampaigns} variant="ghost" size="icon" className="h-6 w-6">
-                  <RefreshCw className={`h-3 w-3 ${loadingCampaigns ? 'animate-spin' : ''}`} />
-                </Button>
-              </div>
-
-              <div className="divide-y divide-slate-100 dark:divide-slate-800 max-h-[300px] overflow-y-auto">
-                {campaigns.length === 0 ? (
-                  <div className="p-6 text-center text-slate-400 text-xs italic">
-                    No campaigns launched yet.
+            <CardContent className="pt-6">
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                {/* Campaigns List */}
+                <div className="lg:col-span-1 border border-border rounded-xl overflow-hidden">
+                  <div className="p-3 bg-muted/40 border-b flex justify-between items-center text-xs font-bold text-foreground">
+                    <span>Select Campaign</span>
+                    <Button onClick={fetchCampaigns} variant="ghost" size="icon" className="h-6 w-6">
+                      <RefreshCw className={`h-3 w-3 ${loadingCampaigns ? 'animate-spin' : ''}`} />
+                    </Button>
                   </div>
-                ) : (
-                  campaigns.map(camp => (
-                    <div 
-                      key={camp.id} 
-                      onClick={() => fetchCampaignLogs(camp.id)}
-                      className={`p-3.5 hover:bg-slate-100/50 dark:hover:bg-slate-800/40 cursor-pointer text-xs transition-colors group relative ${
-                        selectedCampaignId === camp.id ? 'bg-sky-50/50 dark:bg-sky-950/20 border-l-4 border-sky-500' : ''
-                      }`}
-                    >
-                      <div className="font-bold text-slate-700 dark:text-slate-200 flex justify-between items-start gap-1 pr-6">
-                        <span className="truncate">{camp.name}</span>
-                        <div className="flex items-center gap-1.5 shrink-0">
-                          {camp.status === 'completed' && <Badge className="bg-green-50 text-green-600 border-0 text-[8px] scale-90">Done</Badge>}
-                          {camp.status === 'sending' && <Badge className="bg-sky-50 text-sky-600 border-0 text-[8px] scale-90 animate-pulse">Sending</Badge>}
-                          {camp.status === 'paused' && <Badge className="bg-yellow-50 text-yellow-600 border-0 text-[8px] scale-90">Paused</Badge>}
+
+                  <div className="divide-y divide-border max-h-[280px] overflow-y-auto">
+                    {campaigns.length === 0 ? (
+                      <div className="p-6 text-center text-slate-400 text-xs italic">
+                        No campaigns launched yet.
+                      </div>
+                    ) : (
+                      campaigns.slice((campaignPage-1)*5, campaignPage*5).map(camp => (
+                        <div 
+                          key={camp.id} 
+                          onClick={() => fetchCampaignLogs(camp.id)}
+                          className={`p-3 border-l-4 hover:bg-muted transition-colors cursor-pointer text-xs group relative ${
+                            selectedCampaignId === camp.id ? 'bg-muted/60 border-l-slate-900 dark:border-l-slate-100' : 'border-l-transparent'
+                          }`}
+                        >
+                          <div className="font-bold text-foreground truncate pr-6">{camp.name}</div>
+                          <div className="text-[10px] text-slate-400 mt-1 flex justify-between items-center pr-6">
+                            <span>Total: {camp.total_count} (Sent: {camp.sent_count})</span>
+                            <span>{new Date(camp.created_at).toLocaleDateString()}</span>
+                          </div>
+                          <button
+                            onClick={(e) => handleDeleteCampaign(camp.id, e)}
+                            className="absolute right-2 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 p-1 text-slate-400 hover:text-red-500 rounded"
+                            title="Delete Campaign"
+                          >
+                            <Trash2 className="h-3.5 w-3.5" />
+                          </button>
                         </div>
-                      </div>
-                      
-                      <div className="text-[10px] text-slate-500 mt-1 flex justify-between items-center pr-6">
-                        <span>Total: {camp.total_count} (S: {camp.sent_count} | F: {camp.failed_count})</span>
-                        <span className="text-[9px]">{new Date(camp.created_at).toLocaleDateString()}</span>
-                      </div>
+                      ))
+                    )}
+                  </div>
+                </div>
 
-                      {/* Delete Campaign Button - Shown on Hover */}
-                      <button
-                        onClick={(e) => handleDeleteCampaign(camp.id, e)}
-                        className="absolute right-2 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 p-1 text-slate-400 hover:text-red-500 rounded transition-opacity duration-150"
-                        title="Delete Campaign"
+                {/* Logs Table */}
+                <div className="lg:col-span-2 border border-border rounded-xl overflow-hidden flex flex-col h-[280px]">
+                  <div className="p-3 bg-muted/40 border-b flex justify-between items-center text-xs font-bold text-foreground">
+                    <span>Logs & Delivery Stats</span>
+                    {selectedCampaignId && (
+                      <Button 
+                        onClick={() => syncCampaignStatus(selectedCampaignId)} 
+                        disabled={syncingStatus} 
+                        size="sm" 
+                        variant="outline" 
+                        className="h-7 text-[10px] border-border font-bold"
                       >
-                        <Trash2 className="h-4 w-4" />
-                      </button>
-                    </div>
-                  ))
-                )}
-              </div>
-            </div>
-
-            {/* Email delivery logs list */}
-            <div className="lg:col-span-2 border border-slate-100 dark:border-slate-800 rounded-lg overflow-hidden flex flex-col h-[350px]">
-              <div className="p-3 bg-slate-50 dark:bg-slate-800/40 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center text-xs font-bold text-slate-500">
-                <span>Email Logs & Delivery Stats</span>
-                
-                {selectedCampaignId && (
-                  <Button 
-                    onClick={() => syncCampaignStatus(selectedCampaignId)} 
-                    disabled={syncingStatus} 
-                    size="sm" 
-                    variant="outline" 
-                    className="h-7 text-[10px] border-sky-200 hover:bg-sky-50 hover:text-sky-600 text-sky-500 dark:border-sky-800 dark:hover:bg-sky-950/20"
-                  >
-                    {syncingStatus ? <Loader2 className="h-3 w-3 animate-spin mr-1" /> : <RefreshCw className="h-3 w-3 mr-1" />}
-                    Sync Delivery Status
-                  </Button>
-                )}
-              </div>
-
-              <div className="flex-1 overflow-y-auto divide-y divide-slate-100 dark:divide-slate-800">
-                {!selectedCampaignId ? (
-                  <div className="h-full flex flex-col justify-center items-center py-12 text-slate-400 text-xs italic">
-                    <Mail className="h-8 w-8 text-slate-300 mb-2" />
-                    Select a campaign on the left to inspect detailed delivery logs.
+                        {syncingStatus ? <Loader2 className="h-3 w-3 animate-spin mr-1" /> : <RefreshCw className="h-3 w-3 mr-1" />}
+                        Sync Delivery Status
+                      </Button>
+                    )}
                   </div>
-                ) : selectedCampaignLogs.length === 0 ? (
-                  <div className="h-full flex justify-center items-center py-12 text-slate-400 text-xs italic">
-                    No recipient logs available for this campaign.
-                  </div>
-                ) : (
-                  <table className="w-full text-left border-collapse text-xs">
-                    <thead>
-                      <tr className="bg-slate-50/50 dark:bg-slate-800/30 text-[10px] font-bold text-slate-400 border-b border-slate-100 dark:border-slate-800">
-                        <th className="p-3">Recipient</th>
-                        <th className="p-3">Email ID</th>
-                        <th className="p-3">Status</th>
-                        <th className="p-3">Sent Time</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-slate-100 dark:divide-slate-800 text-slate-600 dark:text-slate-300">
-                      {selectedCampaignLogs.map(log => (
-                        <tr key={log.id} className="hover:bg-slate-50/40 dark:hover:bg-slate-800/20">
-                          <td className="p-3">
-                            <div className="font-semibold text-slate-800 dark:text-slate-100">{log.recipient_name || 'Student'}</div>
+
+                  <div className="flex-1 overflow-y-auto divide-y divide-border p-2">
+                    {!selectedCampaignId ? (
+                      <div className="h-full flex flex-col justify-center items-center text-slate-400 text-xs italic">
+                        Select a campaign on the left to inspect detailed delivery logs.
+                      </div>
+                    ) : selectedCampaignLogs.length === 0 ? (
+                      <div className="h-full flex justify-center items-center text-slate-400 text-xs italic">
+                        No recipient logs available for this campaign.
+                      </div>
+                    ) : (
+                      selectedCampaignLogs.map(log => (
+                        <div key={log.id} className="p-2 flex justify-between items-center text-xs">
+                          <div>
+                            <div className="font-bold text-foreground">{log.recipient_name || 'Student'}</div>
                             <div className="text-[10px] text-slate-400">{log.recipient_email}</div>
-                          </td>
-                          <td className="p-3 font-mono text-[9px] text-slate-400 truncate max-w-[120px]">{log.resend_email_id || 'N/A'}</td>
-                          <td className="p-3">
-                            {log.status === 'sent' && <Badge className="bg-slate-100 text-slate-600 border-0 text-[8px]">Dispatched</Badge>}
-                            {log.status === 'delivered' && <Badge className="bg-green-50 text-green-600 border-0 text-[8px]">Delivered</Badge>}
-                            {log.status === 'opened' && <Badge className="bg-sky-50 text-sky-600 border-0 text-[8px] font-bold">Opened 👁</Badge>}
-                            {log.status === 'clicked' && <Badge className="bg-indigo-50 text-indigo-600 border-0 text-[8px] font-bold">Clicked 🔗</Badge>}
-                            {log.status === 'bounced' && <Badge className="bg-red-50 text-red-600 border-0 text-[8px]">Bounced ⚠️</Badge>}
-                            {log.status === 'failed' && <Badge variant="destructive" className="text-[8px]">Failed ❌</Badge>}
-                            
-                            {log.error_message && (
-                              <div className="text-[8px] text-red-400 mt-1 truncate max-w-[150px]" title={log.error_message}>
-                                {log.error_message}
-                              </div>
-                            )}
-                          </td>
-                          <td className="p-3 text-[10px] text-slate-400">
-                            {new Date(log.sent_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                )}
+                          </div>
+                          <Badge variant="outline" className="text-[10px] font-semibold">{log.status}</Badge>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                </div>
               </div>
-            </div>
+            </CardContent>
+          </Card>
 
+          {/* Bottom Wizard Controls */}
+          <div className="flex justify-start pt-4 border-t border-border">
+            <Button
+              variant="outline"
+              onClick={() => setActiveStep(3)}
+              className="font-bold border-border h-10 px-5 rounded-xl"
+            >
+              ← Previous Step: Review Recipients & Preview
+            </Button>
           </div>
-        </CardContent>
-      </Card>
-
+        </div>
+      )}
     </div>
   );
 }
