@@ -174,7 +174,7 @@ const FifthSemesterPTNotes = () => {
             <h1 className="text-3xl font-serif leading-tight mb-2">
               {subject.name} Notes
             </h1>
-            <p className="text-xs opacity-50 uppercase tracking-widest">Plastic Technology — 5th Semester</p>
+            <p className="text-xs opacity-50 uppercase tracking-widest">Paint Technology — 5th Semester</p>
           </div>
         </div>
 
@@ -212,7 +212,7 @@ const FifthSemesterPTNotes = () => {
                         <span className="text-[10px] font-bold tracking-wider uppercase bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400 px-2 py-0.5 rounded border border-blue-100 dark:border-blue-900/50">Community</span>
                       )}
                       {note.recommended && (
-                        <span className="text-[10px] font-bold tracking-wider uppercase bg-yellow-50 dark:bg-yellow-950/40 text-yellow-600 dark:text-yellow-500 px-2 py-0.5 rounded border border-yellow-200 dark:border-yellow-900/50">â­ Best</span>
+                        <span className="text-[10px] font-bold tracking-wider uppercase bg-yellow-50 dark:bg-yellow-950/40 text-yellow-600 dark:text-yellow-500 px-2 py-0.5 rounded border border-yellow-200 dark:border-yellow-900/50">★ Best</span>
                       )}
                     </div>
                     <h3 className="font-semibold text-foreground text-sm leading-tight flex-1 mb-4">{note.title}</h3>
@@ -260,12 +260,12 @@ const FifthSemesterPTNotes = () => {
           >
             <ArrowLeft className="h-3.5 w-3.5" /> Back to 5th Semester
           </button>
-          <p className="text-xs font-bold tracking-[0.2em] uppercase opacity-50 mb-3">Plastic Technology Notes</p>
+          <p className="text-xs font-bold tracking-[0.2em] uppercase opacity-50 mb-3">Paint Technology Notes</p>
           <h1 className="text-4xl md:text-5xl font-serif leading-tight mb-3">
             5th Semester<br />
-            <span className="opacity-60">Plastic Technology Notes</span>
+            <span className="opacity-60">Paint Technology Notes</span>
           </h1>
-          <p className="text-sm opacity-50 mb-8">B.Tech. Plastic Technology — Comprehensive study materials and resources</p>
+          <p className="text-sm opacity-50 mb-8">B.Tech. Paint Technology — Comprehensive study materials and resources</p>
           <div className="flex flex-wrap gap-2">
             <span className="text-xs font-semibold tracking-wider uppercase border border-background/30 px-3 py-1.5 rounded">PT Department</span>
             <span className="text-xs font-semibold tracking-wider uppercase border border-background/30 px-3 py-1.5 rounded">{staticSubjects.filter(s => !s.isSpecial && s.id !== 'pyqs').length} Core Subjects</span>
