@@ -30,6 +30,7 @@ const SixthSemesterCHENotes = () => {
     { id: 'process', name: 'Process Dynamics & Control', icon: '🎛️', color: 'bg-green-600', notes: [{ title: 'Process Dynamics Notes', url: '#' }] },
     { id: 'biochem', name: 'Biochemical Engineering', icon: '🧬', color: 'bg-purple-500', notes: [{ title: 'Biochemical Engineering Notes', url: '#' }] },
     { id: 'petro', name: 'Petroleum Refining', icon: '🛢️', color: 'bg-gray-600', notes: [{ title: 'Petroleum Refining Notes', url: '#' }] },
+    { id: 'open-elective', name: 'Open Elective (OE)', icon: '🌟', color: 'bg-indigo-600', isSpecial: true, notes: [] },
     { id: 'pyqs', name: 'ALL MID & ESE PYQs', icon: '📚', color: 'bg-purple-500', notes: [{ title: "Mid Sem-1 PYQ'S (2025-26)", url: '#' }, { title: "Mid Sem-2 PYQ'S (2024-25)", url: '#' }, { title: "End Sem PYQ'S (2024-25)", url: '#' }] },
     { id: 'assignments', name: 'Assignments - All Subjects', icon: '📝', color: 'bg-yellow-500', notes: [] },
   ];
@@ -137,20 +138,50 @@ const SixthSemesterCHENotes = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {subjects.map((subject, index) => (
             <motion.div key={subject.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.05, duration: 0.3 }}>
-              <div className="group flex flex-col h-full rounded-xl border border-border bg-card hover:border-primary/40 hover:shadow-lg transition-all duration-200 cursor-pointer overflow-hidden" onClick={() => setSelectedSubject(subject.id)}>
+              <div 
+                className={`group flex flex-col h-full rounded-xl border transition-all duration-200 cursor-pointer overflow-hidden ${
+                  (subject as any).isSpecial 
+                    ? 'border-2 border-primary/35 bg-gradient-to-br from-primary/5 to-purple-500/5 hover:border-primary hover:shadow-lg' 
+                    : 'border-border bg-card hover:border-primary/40 hover:shadow-lg'
+                }`}
+                onClick={() => {
+                  if ((subject as any).isSpecial) {
+                    navigate('/sixth-semester-open-electives?source=che');
+                  } else {
+                    setSelectedSubject(subject.id);
+                  }
+                }}
+              >
                 <div className="p-5 flex items-center gap-4">
                   <div className={`w-12 h-12 ${subject.color} rounded-xl flex items-center justify-center text-white text-2xl shadow-md flex-shrink-0`}>{subject.icon}</div>
                   <div className="flex-1 min-w-0">
                     <h3 className="font-semibold text-sm leading-tight truncate">{subject.name}</h3>
-                    <p className="text-xs text-muted-foreground mt-0.5">{subject.notes.length} file{subject.notes.length !== 1 ? 's' : ''}</p>
+                    <p className="text-xs text-muted-foreground mt-0.5">
+                      {(subject as any).isSpecial ? 'Electives Portal' : `${subject.notes.length} file${subject.notes.length !== 1 ? 's' : ''}`}
+                    </p>
                   </div>
-                  <button className="opacity-0 group-hover:opacity-100 transition-opacity text-green-600 hover:text-green-700 p-1" onClick={(e) => { e.stopPropagation(); handleWhatsAppShare(subject.name, subject.id); }} title="Share on WhatsApp">
-                    <Share2 className="h-4 w-4" />
-                  </button>
+                  {!(subject as any).isSpecial && (
+                    <button className="opacity-0 group-hover:opacity-100 transition-opacity text-green-600 hover:text-green-700 p-1" onClick={(e) => { e.stopPropagation(); handleWhatsAppShare(subject.name, subject.id); }} title="Share on WhatsApp">
+                      <Share2 className="h-4 w-4" />
+                    </button>
+                  )}
                 </div>
                 <div className="px-5 pb-5 flex flex-col gap-3 flex-1">
-                  <Button variant="outline" size="sm" className="w-full text-xs h-8 mt-auto" onClick={(e) => { e.stopPropagation(); setSelectedSubject(subject.id); }}>
-                    <FileText className="h-3.5 w-3.5 mr-1.5" />View Notes
+                  <Button 
+                    variant={(subject as any).isSpecial ? 'default' : 'outline'} 
+                    size="sm" 
+                    className="w-full text-xs h-8 mt-auto" 
+                    onClick={(e) => { 
+                      e.stopPropagation(); 
+                      if ((subject as any).isSpecial) {
+                        navigate('/sixth-semester-open-electives?source=che');
+                      } else {
+                        setSelectedSubject(subject.id);
+                      }
+                    }}
+                  >
+                    <FileText className="h-3.5 w-3.5 mr-1.5" />
+                    {(subject as any).isSpecial ? 'View Open Electives' : 'View Notes'}
                   </Button>
                 </div>
               </div>
