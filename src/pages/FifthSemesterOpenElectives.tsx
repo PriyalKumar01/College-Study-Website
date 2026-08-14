@@ -6,6 +6,7 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { PlaylistModal } from '@/components/PlaylistModal';
 import { smartDownload, viewInBrowser } from '@/lib/downloadUtils';
+import { useCommunityNotes } from '@/hooks/useCommunityNotes';
 
 const FifthSemesterOpenElectives = () => {
   const navigate = useNavigate();
@@ -16,6 +17,17 @@ const FifthSemesterOpenElectives = () => {
   const [selectedPlaylistType, setSelectedPlaylistType] = useState<'detailed' | 'oneshot'>('detailed');
   const [selectedSubjectForPlaylist, setSelectedSubjectForPlaylist] = useState<string>('');
   const [expandedSubjects, setExpandedSubjects] = useState<string[]>([]);
+
+  const { data: communityNotes } = useCommunityNotes('btech', [
+    'CSE-5th Semester',
+    'IT-5th Semester',
+    'CSE-AIML-5th Semester',
+    'ET-5th Semester',
+    'EE-5th Semester',
+    'ME-5th Semester',
+    'CE-5th Semester',
+    'ALL-5th Semester'
+  ]);
 
   const toggleSubjectExpansion = (subjectId: string) => {
     setExpandedSubjects(prev => 
@@ -196,50 +208,81 @@ const FifthSemesterOpenElectives = () => {
 
         {/* Detail Content */}
         <div className="max-w-5xl mx-auto px-4 sm:px-8 py-10 flex-1 w-full mb-12">
-          {subject.notes.length === 0 || (subject.notes.length === 1 && subject.notes[0].url === '#') ? (
-            <div className="text-center py-16 border border-dashed rounded-xl bg-card">
-              <p className="text-muted-foreground text-sm mb-1">No study materials uploaded yet for this subject.</p>
-              <p className="text-xs text-muted-foreground">Contributions from students are welcome!</p>
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-              {subject.notes.map((note, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, y: 12 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.05, duration: 0.3 }}
-                >
-                  <div className="group border border-border bg-card hover:border-foreground/30 rounded-xl p-4 transition-all duration-300 hover:shadow-md flex flex-col h-full relative">
-                    <div className="flex items-center gap-2 mb-3">
-                      <div className={`w-8 h-8 rounded-full ${subject.color} flex items-center justify-center text-white text-xs`}>
-                        <FileText className="h-4 w-4" />
+          {(() => {
+            const staticNotes = (subject.notes || []).filter(n => n.url && n.url !== '#');
+            const matchingCommunity = (communityNotes || []).filter((cn: any) => {
+              const sLower = (cn.subject || '').toLowerCase();
+              const subNameLower = subject.name.toLowerCase();
+              const subFullLower = subject.fullName.toLowerCase();
+              return sLower === subNameLower || sLower === subFullLower || sLower.includes(subNameLower) || (sLower.includes('open elective') && (cn.title || '').toLowerCase().includes(subNameLower));
+            }).map((cn: any) => ({
+              title: cn.title,
+              url: cn.file_url,
+              isCommunity: true,
+              uploadedBy: cn.user_name || 'Community Member'
+            }));
+
+            const allNotes = [...staticNotes, ...matchingCommunity];
+
+            if (allNotes.length === 0) {
+              return (
+                <div className="text-center py-16 border border-dashed rounded-xl bg-card">
+                  <p className="text-muted-foreground text-sm mb-1">No study materials uploaded yet for this subject.</p>
+                  <p className="text-xs text-muted-foreground">Contributions from students are welcome!</p>
+                </div>
+              );
+            }
+
+            return (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                {allNotes.map((note: any, index: number) => (
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: index * 0.05, duration: 0.3 }}
+                  >
+                    <div className="group border border-border bg-card hover:border-foreground/30 rounded-xl p-4 transition-all duration-300 hover:shadow-md flex flex-col h-full relative">
+                      <div className="flex items-center justify-between gap-2 mb-3">
+                        <div className="flex items-center gap-2">
+                          <div className={`w-8 h-8 rounded-full ${subject.color} flex items-center justify-center text-white text-xs`}>
+                            <FileText className="h-4 w-4" />
+                          </div>
+                          <span className="text-[10px] font-bold tracking-wider uppercase bg-muted text-muted-foreground px-2 py-0.5 rounded">PDF</span>
+                        </div>
+                        {note.isCommunity && (
+                          <span className="text-[10px] font-bold uppercase bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 px-2 py-0.5 rounded border border-emerald-500/20">
+                            Verified Upload
+                          </span>
+                        )}
                       </div>
-                      <span className="text-[10px] font-bold tracking-wider uppercase bg-muted text-muted-foreground px-2 py-0.5 rounded">PDF</span>
+                      <h3 className="font-semibold text-foreground text-sm leading-tight flex-1 mb-2">{note.title}</h3>
+                      {note.uploadedBy && (
+                        <p className="text-[11px] text-muted-foreground mb-3">By {note.uploadedBy}</p>
+                      )}
+                      <div className="flex gap-2 mt-auto">
+                        <button
+                          onClick={() => handleDownload(note.url, note.title)}
+                          className="flex-1 inline-flex items-center justify-center gap-1.5 text-xs font-bold tracking-wider uppercase py-2 px-3 rounded bg-foreground text-background hover:opacity-85 transition-opacity"
+                          disabled={note.url === '#'}
+                        >
+                          <Download className="h-3.5 w-3.5" /> Download
+                        </button>
+                        <button
+                          onClick={() => viewInBrowser(note.url)}
+                          className="inline-flex items-center justify-center p-2 rounded border border-foreground/20 hover:bg-muted transition-colors"
+                          disabled={note.url === '#'}
+                          title="View in Browser"
+                        >
+                          <ExternalLink className="h-3.5 w-3.5 text-foreground" />
+                        </button>
+                      </div>
                     </div>
-                    <h3 className="font-semibold text-foreground text-sm leading-tight flex-1 mb-4">{note.title}</h3>
-                    <div className="flex gap-2">
-                      <button
-                        onClick={() => handleDownload(note.url, note.title)}
-                        className="flex-1 inline-flex items-center justify-center gap-1.5 text-xs font-bold tracking-wider uppercase py-2 px-3 rounded bg-foreground text-background hover:opacity-85 transition-opacity"
-                        disabled={note.url === '#'}
-                      >
-                        <Download className="h-3.5 w-3.5" /> Download
-                      </button>
-                      <button
-                        onClick={() => viewInBrowser(note.url)}
-                        className="inline-flex items-center justify-center p-2 rounded border border-foreground/20 hover:bg-muted transition-colors"
-                        disabled={note.url === '#'}
-                        title="View in Browser"
-                      >
-                        <ExternalLink className="h-3.5 w-3.5 text-foreground" />
-                      </button>
-                    </div>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          )}
+                  </motion.div>
+                ))}
+              </div>
+            );
+          })()}
         </div>
         <Footer />
       </div>
