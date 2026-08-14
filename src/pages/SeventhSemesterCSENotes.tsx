@@ -107,6 +107,17 @@ const SeventhSemesterCSENotes = () => {
       notes: []
     },
     {
+      id: 'open_elective_2',
+      name: 'Open Elective-II',
+      icon: '🌟',
+      color: 'bg-emerald-600',
+      playlists: {
+        detailed: [],
+        oneshot: []
+      },
+      notes: []
+    },
+    {
       id: 'pyqs',
       name: 'ALL MID & ESE PYQs',
       icon: '📚',
@@ -141,7 +152,12 @@ const SeventhSemesterCSENotes = () => {
     notes: [
       ...sub.notes,
       ...(communityNotes || [])
-        .filter((cn) => cn.subject === sub.name || cn.subject === sub.id)
+        .filter((cn) => {
+          if (sub.name === 'Open Elective-II' || sub.id === 'open_elective_2') {
+            return cn.subject === 'Open Elective-II' || cn.subject === 'OE2' || cn.subject === 'Open Elective' || cn.subject?.toLowerCase().includes('open elective');
+          }
+          return cn.subject === sub.name || cn.subject === sub.id;
+        })
         .map((cn) => ({ id: cn.id, title: cn.title, url: cn.file_url, isCommunity: true, fileName: cn.file_name, uploadedBy: cn.uploaded_by, userName: cn.user_name })),
     ],
   }));
