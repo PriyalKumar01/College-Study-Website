@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { ResponsiveContainer, PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ComposedChart, Line, AreaChart, Area } from 'recharts';
 import { useAuth } from '@/contexts/AuthContext';
 import { motion } from 'framer-motion';
@@ -19,6 +19,7 @@ import Navbar from '@/components/Navbar';
 import { useTheme } from '@/providers/ThemeProvider';
 import { smartDownload } from '@/lib/downloadUtils';
 import MassEmailDashboard from '@/components/admin/MassEmailDashboard';
+import SubmitScholarshipForm from '@/components/admin/SubmitScholarshipForm';
 
 interface Material {
   id: string;
@@ -382,9 +383,6 @@ function ContributorCard({ contributor, rank, onRefresh }: ContributorCardProps)
   );
 }
 
-
-
-
 const normalizeBranch = (branch: string | null) => {
   if (!branch) return 'Other Colleges';
   const b = branch.toLowerCase().trim();
@@ -406,6 +404,18 @@ const normalizeBranch = (branch: string | null) => {
   if (['bt', 'biotech', 'biotechnology'].some(val => b.includes(val))) return 'BT';
   
   return 'Other Colleges';
+};
+
+const HBTU_PATTERNS = [
+  /\bhbtu\b/i,
+  /harcourt\s+butler/i,
+  /hbtu\s*kanpur/i,
+  /hbtuk\b/i,
+];
+
+const isHBTUCollege = (name?: string | null): boolean => {
+  if (!name) return false;
+  return HBTU_PATTERNS.some(re => re.test(name));
 };
 
 const ITEMS_PER_PAGE = 10;
@@ -497,6 +507,7 @@ const OwnerDashboard = () => {
   const [materialFilter, setMaterialFilter] = useState<'all' | 'pending' | 'approved' | 'rejected'>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [scholarshipFilter, setScholarshipFilter] = useState<'all' | 'pending' | 'approved'>('all');
+  const [showAddScholarshipModal, setShowAddScholarshipModal] = useState(false);
   const [notifTitle, setNotifTitle] = useState('');
   const [notifBody, setNotifBody] = useState('');
   const [sendingNotif, setSendingNotif] = useState(false);
@@ -789,7 +800,7 @@ const OwnerDashboard = () => {
     try {
       const { data: profilesData } = await supabase
         .from('profiles')
-        .select('created_at, branch, college, full_name, email');
+        .select('created_at, branch, college, full_name, first_name, last_name, email');
 
       if (profilesData) {
         const counts: Record<string, number> = {};
@@ -798,11 +809,13 @@ const OwnerDashboard = () => {
         profilesData.forEach((p: any) => {
           const norm = normalizeBranch(p.branch);
           counts[norm] = (counts[norm] || 0) + 1;
-          if (norm === 'Other Colleges') {
+          const colName = p.college ? p.college.trim() : '';
+          const isOther = (colName && !isHBTUCollege(colName)) || p.branch === 'Other Colleges' || norm === 'Other Colleges';
+          if (isOther) {
             others.push(p);
           }
         });
-        setOtherCollegeUsers(others);
+        setOtherCollegeUsers(others as any);
 
         const statsArr = Object.entries(counts).map(([name, count]) => ({ name, count }));
         statsArr.sort((a, b) => {
@@ -835,17 +848,37 @@ const OwnerDashboard = () => {
     try {
       const { data, error } = await supabase.rpc('get_college_stats');
       if (error) throw error;
-      const formatted = (data || []).map((item: any) => ({
-        name: item.college_name,
-        value: Number(item.student_count)
-      }));
-      setCollegeStats(formatted);
+      
+      let hbtu = 0;
+      let other = 0;
+      
+      if (data && Array.isArray(data)) {
+        data.forEach((item: any) => {
+          const colName = (item.college_name || '').trim();
+          const count = Number(item.student_count) || 0;
+          if (isHBTUCollege(colName) || colName.toLowerCase() === 'hbtu' || colName.toLowerCase().includes('harcourt') || colName.toLowerCase() === 'hbtu kanpur') {
+            hbtu += count;
+          } else {
+            other += count;
+          }
+        });
+      }
+
+      if (totalStudentsCount > 0 && hbtu + other < totalStudentsCount) {
+        if (hbtu === 0) hbtu = totalStudentsCount - other;
+      }
+
+      setCollegeStats([
+        { name: 'HBTU', value: hbtu },
+        { name: 'Other', value: other }
+      ]);
     } catch (err) {
       console.error('Error fetching college stats:', err);
-      // Fallback
+      const other = otherCollegeUsers.length || 0;
+      const hbtu = Math.max(0, totalStudentsCount - other);
       setCollegeStats([
-        { name: 'HBTU', value: 1200 },
-        { name: 'Other', value: 50 }
+        { name: 'HBTU', value: hbtu },
+        { name: 'Other', value: other }
       ]);
     }
   };
@@ -862,7 +895,8 @@ const OwnerDashboard = () => {
       fetchSignupStats(),
       fetchCampaignStats(),
       fetchTotalStudents(),
-      fetchCollegeStats()
+      fetchCollegeStats(),
+      fetchDashboardStats()
     ]);
     setLoading(false);
   };
@@ -1385,49 +1419,77 @@ const OwnerDashboard = () => {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
             
             {/* Chart 1: Colleges Student Distribution (Cake Cut Style) */}
-            <Card className="gradient-card shadow-lg">
-              <CardHeader className="pb-2 border-b">
-                <CardTitle className="text-xs font-bold uppercase tracking-widest flex items-center gap-1.5 text-foreground">
-                  <span className="w-1.5 h-1.5 rounded-full bg-sky-500" />
-                  COLLEGES STUDENT DISTRIBUTION (CAKE CUT STYLE)
-                </CardTitle>
-                <CardDescription className="text-xs text-muted-foreground">
-                  Breakdown of students enrolled from different colleges
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="h-[280px] pt-4 flex flex-col items-center justify-center">
-                <div className="w-full h-[220px]">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <PieChart>
-                      <Pie
-                        data={[
-                          { name: 'HBTU Students', value: Math.max(1203, totalStudentsCount > 218 ? totalStudentsCount - otherCollegeUsers.length : 1203), fill: '#0ea5e9' },
-                          { name: 'Other Colleges', value: Math.max(218, otherCollegeUsers.length), fill: '#f59e0b' }
-                        ]}
-                        cx="50%"
-                        cy="50%"
-                        innerRadius={0}
-                        outerRadius={85}
-                        dataKey="value"
-                        label={({ name, value }) => `${name} : ${value}`}
+            {(() => {
+              const hbtuItem = collegeStats.find(c => c.name === 'HBTU');
+              const otherItem = collegeStats.find(c => c.name === 'Other');
+              const otherCount = otherItem ? otherItem.value : otherCollegeUsers.length;
+              const hbtuCount = hbtuItem && hbtuItem.value > 0 ? hbtuItem.value : Math.max(0, totalStudentsCount - otherCount);
+              return (
+                <Card className="gradient-card shadow-lg">
+                  <CardHeader className="pb-2 border-b flex flex-row items-center justify-between flex-wrap gap-2">
+                    <div>
+                      <CardTitle className="text-xs font-bold uppercase tracking-widest flex items-center gap-1.5 text-foreground">
+                        <span className="w-1.5 h-1.5 rounded-full bg-sky-500" />
+                        COLLEGES STUDENT DISTRIBUTION (CAKE CUT STYLE)
+                      </CardTitle>
+                      <CardDescription className="text-xs text-muted-foreground">
+                        Breakdown of students enrolled from different colleges
+                      </CardDescription>
+                    </div>
+                    {otherCount > 0 && (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setShowOtherCollegeModal(true)}
+                        className="text-[11px] h-7 px-2.5 font-bold border-amber-300 text-amber-600 bg-amber-50 hover:bg-amber-100 dark:bg-amber-900/20 dark:text-amber-400"
                       >
-                        <Cell fill="#0ea5e9" />
-                        <Cell fill="#f59e0b" />
-                      </Pie>
-                      <Tooltip contentStyle={{ backgroundColor: tooltipBg, border: tooltipBorder, borderRadius: '12px', color: tooltipColor, fontSize: '11px' }} />
-                    </PieChart>
-                  </ResponsiveContainer>
-                </div>
-                <div className="flex items-center gap-6 text-xs mt-1">
-                  <div className="flex items-center gap-1.5 font-bold text-sky-500">
-                    <span className="w-2.5 h-2.5 rounded-full bg-sky-500 inline-block" /> HBTU Students
-                  </div>
-                  <div className="flex items-center gap-1.5 font-bold text-amber-500">
-                    <span className="w-2.5 h-2.5 rounded-full bg-amber-500 inline-block" /> Other Colleges
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+                        View List ({otherCount})
+                      </Button>
+                    )}
+                  </CardHeader>
+                  <CardContent className="h-[280px] pt-2 flex flex-col items-center justify-center">
+                    <div className="w-full h-[210px]">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <PieChart margin={{ top: 10, right: 10, bottom: 10, left: 10 }}>
+                          <Pie
+                            data={[
+                              { name: 'HBTU', value: hbtuCount, fill: '#0ea5e9' },
+                              { name: 'Other', value: otherCount, fill: '#f59e0b' }
+                            ]}
+                            cx="50%"
+                            cy="50%"
+                            innerRadius={0}
+                            outerRadius={70}
+                            dataKey="value"
+                            label={({ name, value }) => `${name}: ${value}`}
+                            onClick={(data) => {
+                              if (data && (data.name === 'Other' || data.name === 'Other Colleges')) {
+                                setShowOtherCollegeModal(true);
+                              }
+                            }}
+                          >
+                            <Cell fill="#0ea5e9" />
+                            <Cell fill="#f59e0b" className="cursor-pointer hover:opacity-80 transition-opacity" />
+                          </Pie>
+                          <Tooltip contentStyle={{ backgroundColor: tooltipBg, border: tooltipBorder, borderRadius: '12px', color: tooltipColor, fontSize: '11px' }} />
+                        </PieChart>
+                      </ResponsiveContainer>
+                    </div>
+                    <div className="flex items-center gap-6 text-xs mt-1">
+                      <div className="flex items-center gap-1.5 font-bold text-sky-500">
+                        <span className="w-2.5 h-2.5 rounded-full bg-sky-500 inline-block" /> HBTU Students ({hbtuCount})
+                      </div>
+                      <button
+                        onClick={() => setShowOtherCollegeModal(true)}
+                        className="flex items-center gap-1.5 font-bold text-amber-500 hover:underline cursor-pointer bg-transparent border-0 p-0"
+                      >
+                        <span className="w-2.5 h-2.5 rounded-full bg-amber-500 inline-block" /> Other Colleges ({otherCount}) 🔍
+                      </button>
+                    </div>
+                  </CardContent>
+                </Card>
+              );
+            })()}
 
             {/* Chart 2: Staff, Contributor & User Metrics (Growth Curve) */}
             <Card className="gradient-card shadow-lg">
@@ -1806,8 +1868,8 @@ const OwnerDashboard = () => {
 
           {/* TAB: Scholarships */}
           <TabsContent value="scholarships" className="space-y-6">
-            <div className="flex flex-col md:flex-row gap-4 mb-4">
-              <div className="flex gap-2">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-4">
+              <div className="flex gap-2 flex-wrap">
                 {(['all', 'pending', 'approved'] as const).map(filter => (
                   <Button
                     key={filter}
@@ -1823,6 +1885,12 @@ const OwnerDashboard = () => {
                   </Button>
                 ))}
               </div>
+              <Button
+                onClick={() => setShowAddScholarshipModal(true)}
+                className="bg-primary text-primary-foreground font-bold text-xs flex items-center gap-2 h-9 px-4 rounded-xl shadow-md"
+              >
+                <GraduationCap className="h-4 w-4" /> Add Scholarship
+              </Button>
             </div>
 
             {(() => {
@@ -2549,9 +2617,176 @@ const OwnerDashboard = () => {
     </DialogContent>
   </Dialog>
 
+  {/* Other Colleges Students Modal */}
+  <OtherCollegesModal
+    open={showOtherCollegeModal}
+    onClose={() => setShowOtherCollegeModal(false)}
+    students={otherCollegeUsers}
+  />
+
+  {/* Add Scholarship Modal */}
+  <Dialog open={showAddScholarshipModal} onOpenChange={setShowAddScholarshipModal}>
+    <DialogContent className="max-w-4xl w-[95vw] max-h-[90vh] overflow-y-auto bg-card text-foreground border border-border p-6 rounded-2xl">
+      <DialogTitle className="sr-only">Add New Scholarship</DialogTitle>
+      <DialogDescription className="sr-only">Form to submit or publish a new scholarship</DialogDescription>
+      <SubmitScholarshipForm 
+        onSuccess={() => {
+          fetchScholarships();
+          setShowAddScholarshipModal(false);
+        }} 
+        onClose={() => setShowAddScholarshipModal(false)}
+      />
+    </DialogContent>
+  </Dialog>
+
       </div>
     </div>
   );
 };
+
+interface OtherCollegeStudent {
+  full_name?: string;
+  first_name?: string;
+  last_name?: string;
+  email: string;
+  college?: string;
+  branch?: string;
+  created_at?: string;
+}
+
+function OtherCollegesModal({
+  open,
+  onClose,
+  students,
+}: {
+  open: boolean;
+  onClose: () => void;
+  students: OtherCollegeStudent[];
+}) {
+  const [search, setSearch] = useState('');
+  const [page, setPage] = useState(1);
+  const itemsPerPage = 10;
+
+  useEffect(() => {
+    setPage(1);
+  }, [search, open]);
+
+  const filtered = useMemo(() => {
+    if (!search.trim()) return students;
+    const q = search.toLowerCase();
+    return students.filter(s => {
+      const name = (s.full_name || `${s.first_name || ''} ${s.last_name || ''}`).toLowerCase();
+      const email = (s.email || '').toLowerCase();
+      const college = (s.college || s.branch || '').toLowerCase();
+      return name.includes(q) || email.includes(q) || college.includes(q);
+    });
+  }, [students, search]);
+
+  const totalPages = Math.ceil(filtered.length / itemsPerPage) || 1;
+  const paginated = useMemo(() => {
+    const start = (page - 1) * itemsPerPage;
+    return filtered.slice(start, start + itemsPerPage);
+  }, [filtered, page]);
+
+  return (
+    <Dialog open={open} onOpenChange={o => !o && onClose()}>
+      <DialogContent className="max-w-3xl w-[92vw] max-h-[85vh] overflow-hidden flex flex-col bg-card text-foreground border border-border p-6 rounded-2xl shadow-2xl">
+        <DialogTitle className="text-lg font-bold flex items-center justify-between gap-2 border-b pb-3">
+          <div className="flex items-center gap-2">
+            <span className="w-3 h-3 rounded-full bg-amber-500 inline-block" />
+            <span>Other College Students</span>
+            <Badge variant="outline" className="ml-2 border-amber-400 text-amber-600 bg-amber-50 dark:bg-amber-900/20 font-bold">
+              {students.length} Total
+            </Badge>
+          </div>
+        </DialogTitle>
+        <DialogDescription className="text-xs text-muted-foreground pt-1">
+          Complete list of registered students enrolled from non-HBTU colleges and universities.
+        </DialogDescription>
+
+        {/* Search Bar */}
+        <div className="relative my-3">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Input
+            placeholder="Search by student name, email, or college..."
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+            className="pl-9 bg-background text-foreground border-border text-xs sm:text-sm"
+          />
+          {search && (
+            <button onClick={() => setSearch('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground">
+              <X className="h-4 w-4" />
+            </button>
+          )}
+        </div>
+
+        {/* Students List */}
+        <div className="flex-1 overflow-y-auto pr-1 space-y-2.5 my-2">
+          {filtered.length === 0 ? (
+            <div className="text-center py-12 text-muted-foreground text-sm">
+              No students found matching "{search}".
+            </div>
+          ) : (
+            paginated.map((student, idx) => {
+              const fullName = student.full_name || `${student.first_name || ''} ${student.last_name || ''}`.trim() || 'Student';
+              const collegeName = student.college || (student.branch === 'Other Colleges' ? 'Other College' : student.branch) || 'Not specified';
+              const globalIndex = (page - 1) * itemsPerPage + idx + 1;
+              return (
+                <div
+                  key={student.email + idx}
+                  className="p-3.5 rounded-xl border border-border bg-muted/20 hover:bg-muted/40 transition-colors flex items-center justify-between gap-4 flex-wrap"
+                >
+                  <div className="flex items-center gap-3 min-w-0 flex-1">
+                    <div className="w-8 h-8 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 font-bold text-xs flex items-center justify-center shrink-0 border border-amber-500/20">
+                      {globalIndex}
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className="font-bold text-sm text-foreground truncate">{fullName}</span>
+                        <Badge variant="outline" className="text-[10px] border-border text-muted-foreground bg-background">
+                          {collegeName}
+                        </Badge>
+                      </div>
+                      <p className="text-xs text-muted-foreground truncate">{student.email}</p>
+                    </div>
+                  </div>
+                </div>
+              );
+            })
+          )}
+        </div>
+
+        {/* Footer Pagination */}
+        {totalPages > 1 && (
+          <div className="flex items-center justify-between border-t pt-3 mt-2 text-xs">
+            <span className="text-muted-foreground">
+              Page <strong className="text-foreground">{page}</strong> of {totalPages} ({filtered.length} students)
+            </span>
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setPage(p => Math.max(1, p - 1))}
+                disabled={page === 1}
+                className="h-8 text-xs font-semibold"
+              >
+                ← Prev
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+                disabled={page === totalPages}
+                className="h-8 text-xs font-semibold"
+              >
+                Next →
+              </Button>
+            </div>
+          </div>
+        )}
+      </DialogContent>
+    </Dialog>
+  );
+}
 
 export default OwnerDashboard;
