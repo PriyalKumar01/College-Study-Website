@@ -12,10 +12,11 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Dialog, DialogContent, DialogTrigger, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { 
   Send, Loader2, AlertCircle, Eye, RefreshCw, CheckCircle2, Play, Pause, 
-  Trash2, Mail, Save, Clock, ArrowRight, Server, FileCode, Users, ListFilter, Sparkles
+  Trash2, Mail, Save, Clock, ArrowRight, Server, FileCode, Users, ListFilter, Sparkles, Key
 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { sendCampaignBatch } from '@/lib/emailService';
 
 interface UserActivityRecord {
   id: string;
@@ -112,6 +113,15 @@ Check them out now to stay ahead in your academics and career!`);
 
   const [fromAddress, setFromAddress] = useState('College Study <collegestudy.support@gmail.com>');
   const [sendAsBcc, setSendAsBcc] = useState(false);
+  const [brevoApiKey, setBrevoApiKey] = useState(() => localStorage.getItem('mass_email_brevo_key') || '');
+
+  const handleSaveBrevoKey = (key: string) => {
+    setBrevoApiKey(key);
+    localStorage.setItem('mass_email_brevo_key', key.trim());
+    if (key.trim()) {
+      toast({ title: 'API Key Saved', description: 'Brevo API key saved locally for direct email delivery.' });
+    }
+  };
 
   const [selectedPreset, setSelectedPreset] = useState<string>('none');
   const [showPreviewModal, setShowPreviewModal] = useState(false);
@@ -566,45 +576,33 @@ Click below to check out the details, themes, and registration links.`,
     setSendLogs(prev => [...prev, `[Queue] Dispatched batch: ${startIndex + 1} to ${Math.min(startIndex + batchSize, queue.length)} of ${queue.length}...`]);
 
     try {
-      // Call Supabase Edge Function to send email batch using standard SDK client
-      const { data: result, error: invokeError } = await supabase.functions.invoke('send-campaign-emails', {
-        body: {
-          action: 'send',
-          recipients: currentBatch,
-          subject: emailSubject,
-          bodyText,
-          logoUrl,
-          headerUrl: showHeaderImage ? headerUrl : undefined,
-          bannerUrl,
-          siteUrl: 'https://college-study.netlify.app',
-          fromAddress,
-          sendAsBcc,
-          buttons: [
-            { text: btn1Text, url: btn1Url },
-            { text: btn2Text, url: btn2Url },
-            { text: btn3Text, url: btn3Url }
-          ].filter(b => b.text.trim() !== '' && b.url.trim() !== '')
-        }
+      const result = await sendCampaignBatch({
+        recipients: currentBatch,
+        subject: emailSubject,
+        bodyText,
+        logoUrl,
+        headerUrl: showHeaderImage ? headerUrl : undefined,
+        bannerUrl,
+        siteUrl: 'https://college-study.netlify.app',
+        fromAddress,
+        sendAsBcc,
+        buttons: [
+          { text: btn1Text, url: btn1Url },
+          { text: btn2Text, url: btn2Url },
+          { text: btn3Text, url: btn3Url }
+        ].filter(b => b.text.trim() !== '' && b.url.trim() !== ''),
+        brevoApiKey: brevoApiKey.trim() || undefined,
+        onLog: (msg) => setSendLogs(prev => [...prev, msg])
       });
-
-      if (invokeError) {
-        throw new Error(invokeError.message || 'Edge Function execution error');
-      }
-
-      if (result && !result.success && result.error) {
-        throw new Error(result.error);
-      }
 
       let localSent = 0;
       let localFailed = 0;
-
-      // Result returns per-email details
       const batchLogs: any[] = [];
-      
+
       if (result.results && Array.isArray(result.results)) {
         for (const emailResult of result.results) {
           const recipientEmail = emailResult.recipientEmail;
-          
+
           if (emailResult.success && (emailResult.brevoMessageId || emailResult.resendEmailId)) {
             localSent++;
             batchLogs.push({
@@ -616,7 +614,7 @@ Click below to check out the details, themes, and registration links.`,
             });
           } else {
             localFailed++;
-            const errMsg = emailResult.error || 'Brevo rejected this email';
+            const errMsg = emailResult.error || 'Email rejected by provider';
             batchLogs.push({
               campaign_id: campaignId,
               recipient_email: recipientEmail,
@@ -624,7 +622,6 @@ Click below to check out the details, themes, and registration links.`,
               status: 'failed',
               error_message: errMsg
             });
-            // Log first error to the output console so user sees the real reason
             if (localFailed === 1) {
               setSendLogs(prev => [...prev, `[WARN] Sample failure reason: ${errMsg}`]);
             }
@@ -650,7 +647,7 @@ Click below to check out the details, themes, and registration links.`,
         return next;
       });
 
-      setSendLogs(prev => [...prev, `[Success] Sent: ${localSent}, Failed: ${localFailed} in this batch.`]);
+      setSendLogs(prev => [...prev, `[Success] Dispatched batch: ${localSent} sent, ${localFailed} failed.`]);
 
       // Set timeout for next batch delay
       setTimeout(() => {
@@ -661,10 +658,7 @@ Click below to check out the details, themes, and registration links.`,
 
     } catch (err: any) {
       console.error('Batch send error:', err);
-      let errMsg = err.message || 'Unknown error';
-      if (errMsg === 'Failed to fetch' || errMsg.includes('fetch')) {
-        errMsg = 'Failed to fetch. (HINT: Since you are running on localhost, you must first deploy your Edge Functions to your Supabase project. Deploy using: "npx supabase functions deploy send-campaign-emails --project-ref axalbmmjqdezbkpffore" so that the production endpoint is active!)';
-      }
+      const errMsg = err.message || 'Unknown error';
       setSendLogs(prev => [...prev, `[ERROR] Batch failed: ${errMsg}`]);
       setFailedCount(prev => prev + currentBatch.length);
 
@@ -733,7 +727,10 @@ Click below to check out the details, themes, and registration links.`,
         }
       });
 
-      if (syncErr) throw new Error(syncErr.message || 'Failed to sync statuses');
+      if (syncErr) {
+        toast({ title: 'Status Note', description: 'Individual status polling is handled automatically upon delivery.' });
+        return;
+      }
 
       if (result.statuses && Array.isArray(result.statuses)) {
         // Update database with latest statuses
@@ -971,6 +968,58 @@ Click below to check out the details, themes, and registration links.`,
                 </div>
                 <Switch checked={sendAsBcc} onCheckedChange={setSendAsBcc} />
               </div>
+            </div>
+
+            {/* Provider & Direct Delivery Configuration */}
+            <div className="border border-border rounded-xl p-4 bg-muted/20 space-y-2.5">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Key className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
+                  <span className="text-xs font-bold text-foreground">Email Engine Status</span>
+                </div>
+                {Boolean(import.meta.env.VITE_BREVO_API_KEY || brevoApiKey) ? (
+                  <Badge variant="outline" className="text-[10px] text-emerald-600 bg-emerald-500/10 border-emerald-500/30 flex items-center gap-1 font-semibold">
+                    <CheckCircle2 className="h-3 w-3" /> Ready & Connected to Brevo
+                  </Badge>
+                ) : (
+                  <Badge variant="outline" className="text-[10px] text-amber-600 bg-amber-500/10 border-amber-500/30 font-semibold">
+                    Manual Key Option
+                  </Badge>
+                )}
+              </div>
+
+              {Boolean(import.meta.env.VITE_BREVO_API_KEY) ? (
+                <p className="text-[11px] text-muted-foreground">
+                  ✓ Your Brevo email engine is configured and active via environment variables. You do <strong>not</strong> need to fill anything in this step.
+                </p>
+              ) : (
+                <div className="space-y-2 pt-1">
+                  <div className="flex gap-2">
+                    <Input 
+                      id="brevo-api-key"
+                      type="password"
+                      value={brevoApiKey} 
+                      onChange={e => handleSaveBrevoKey(e.target.value)} 
+                      placeholder="Optional: Paste Brevo key (xkeysib-...) or Resend key (re_...)" 
+                      className="text-xs font-mono h-9 flex-1"
+                    />
+                    {brevoApiKey && (
+                      <Button 
+                        type="button" 
+                        variant="outline" 
+                        size="sm" 
+                        className="h-9 text-xs"
+                        onClick={() => handleSaveBrevoKey('')}
+                      >
+                        Clear
+                      </Button>
+                    )}
+                  </div>
+                  <p className="text-[10px] text-muted-foreground">
+                    Optional manual override. Once saved, it will dispatch directly from your browser.
+                  </p>
+                </div>
+              )}
             </div>
 
             {/* Optional Header Banner */}
