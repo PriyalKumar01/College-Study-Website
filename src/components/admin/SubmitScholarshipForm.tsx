@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Badge } from '@/components/ui/badge';
 import { Loader2, GraduationCap, CheckCircle2, AlertTriangle, ImageIcon } from 'lucide-react';
 
 const STREAM_OPTIONS = [
@@ -32,10 +33,11 @@ const WHO_OPTIONS = [
 
 interface SubmitScholarshipFormProps {
   onSuccess?: () => void;
+  onClose?: () => void;
 }
 
-export default function SubmitScholarshipForm({ onSuccess }: SubmitScholarshipFormProps) {
-  const { user } = useAuth();
+export default function SubmitScholarshipForm({ onSuccess, onClose }: SubmitScholarshipFormProps) {
+  const { user, isOwner } = useAuth();
   const { toast } = useToast();
 
   const [activeStep, setActiveStep] = useState(1);
@@ -86,10 +88,21 @@ export default function SubmitScholarshipForm({ onSuccess }: SubmitScholarshipFo
   };
 
   const handleSubmit = async () => {
-    if (!user || !isValid()) return;
+    if (!isValid()) {
+      toast({ title: 'Incomplete form', description: 'Please complete all required steps.', variant: 'destructive' });
+      return;
+    }
     setSubmitting(true);
     try {
+      let currentUser = user;
+      if (!currentUser) {
+        const { data: authData } = await supabase.auth.getUser();
+        currentUser = authData?.user ?? null;
+      }
+
       const tagsArr = tags.split(',').map(t => t.trim()).filter(Boolean);
+      const approvalStatus = isOwner ? 'approved' : 'pending';
+
       const { error } = await (supabase as any)
         .from('scholarships')
         .insert({
@@ -109,13 +122,16 @@ export default function SubmitScholarshipForm({ onSuccess }: SubmitScholarshipFo
           streams: selectedStreams,
           who: selectedWho,
           image_url: imageUrl.trim() || null,
-          approval_status: 'pending',
-          submitted_by: user.user_metadata?.first_name || user.email?.split('@')[0],
-          submitted_by_email: user.email,
+          approval_status: approvalStatus,
+          submitted_by: currentUser?.user_metadata?.first_name || currentUser?.email?.split('@')[0] || 'Admin',
+          submitted_by_email: currentUser?.email || 'admin@studyhub.com',
         });
       if (error) throw error;
       setSubmitted(true);
-      toast({ title: '✅ Scholarship Submitted!', description: 'Awaiting owner approval before going live.' });
+      toast({ 
+        title: isOwner ? '✅ Scholarship Published!' : '✅ Scholarship Submitted!', 
+        description: isOwner ? 'Scholarship is now live on the portal.' : 'Awaiting owner approval before going live.' 
+      });
       onSuccess?.();
     } catch (err: any) {
       toast({ title: 'Submission failed', description: err.message, variant: 'destructive' });

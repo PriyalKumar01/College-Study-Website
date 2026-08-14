@@ -8,8 +8,9 @@ import { Button } from '@/components/ui/button';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
-import { useToast } from '@/hooks/use-toast';
+import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import EditScholarshipModal from '@/components/admin/EditScholarshipModal';
+import SubmitScholarshipForm from '@/components/admin/SubmitScholarshipForm';
 
 // Helper: convert scholarship name → URL slug
 const toSlug = (name: string) =>
@@ -151,6 +152,7 @@ export default function ScholarshipsPortal() {
   const [saved, setSaved] = useState<Set<string>>(new Set());
   const [expandedDesc, setExpandedDesc] = useState<Set<string>>(new Set());
   const [editingScholarship, setEditingScholarship] = useState<Scholarship | null>(null);
+  const [showAddModal, setShowAddModal] = useState(false);
   const filterBarRef = useRef<HTMLDivElement>(null);
   const highlightRef = useRef<HTMLDivElement>(null);
 
@@ -579,7 +581,16 @@ export default function ScholarshipsPortal() {
                   Curated govt &amp; private · verified sources · apply directly
                 </span>
               </div>
-              <div className="flex items-center gap-1.5 flex-shrink-0">
+              <div className="flex items-center gap-2 flex-shrink-0 flex-wrap">
+                {(isAdmin || isOwner) && (
+                  <Button
+                    size="sm"
+                    onClick={() => setShowAddModal(true)}
+                    className="bg-primary text-primary-foreground text-xs font-bold h-8 px-3 rounded-lg flex items-center gap-1.5 shadow-sm"
+                  >
+                    <GraduationCap className="h-3.5 w-3.5" /> Add Scholarship
+                  </Button>
+                )}
                 <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-muted/50 border border-border text-[11px] font-medium text-foreground">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
                   {scholarships.filter(s => computeEffectiveStatus(s.deadline, s.status) !== 'expired').length} Active
@@ -865,6 +876,21 @@ export default function ScholarshipsPortal() {
           onSaved={fetchScholarships}
         />
       )}
+
+      {/* Add Scholarship Modal */}
+      <Dialog open={showAddModal} onOpenChange={setShowAddModal}>
+        <DialogContent className="max-w-4xl w-[95vw] max-h-[90vh] overflow-y-auto bg-card text-foreground border border-border p-6 rounded-2xl">
+          <DialogTitle className="sr-only">Add New Scholarship</DialogTitle>
+          <DialogDescription className="sr-only">Submit a new scholarship</DialogDescription>
+          <SubmitScholarshipForm
+            onSuccess={() => {
+              fetchScholarships();
+              setShowAddModal(false);
+            }}
+            onClose={() => setShowAddModal(false)}
+          />
+        </DialogContent>
+      </Dialog>
     </>
   );
 }
