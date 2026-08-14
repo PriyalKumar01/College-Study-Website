@@ -218,6 +218,39 @@ const UploadMaterialForm = ({ onUploadSuccess }: UploadMaterialFormProps) => {
     return null;
   };
 
+  const uploadFileWithRetry = async (filePath: string, uploadFile: File, maxRetries = 3) => {
+    let attempt = 0;
+    while (attempt < maxRetries) {
+      attempt++;
+      try {
+        const { data, error } = await supabase.storage
+          .from('study-materials')
+          .upload(filePath, uploadFile, {
+            cacheControl: '3600',
+            upsert: true,
+            contentType: uploadFile.type || 'application/pdf',
+          });
+
+        if (error) {
+          // If already exists, generate a new path and retry
+          if (error.message?.includes('already exists') || (error as any)?.statusCode === '409') {
+            const fileExt = (uploadFile.name.split('.').pop() || 'pdf').toLowerCase();
+            const newPath = filePath.replace(/\.[^/.]+$/, `-${Date.now()}.${fileExt}`);
+            return uploadFileWithRetry(newPath, uploadFile, maxRetries - 1);
+          }
+          throw error;
+        }
+        return { data, filePath };
+      } catch (err: any) {
+        console.warn(`[UploadMaterial] Attempt ${attempt} failed:`, err);
+        if (attempt >= maxRetries) throw err;
+        // Wait before retrying (exponential backoff)
+        await new Promise(r => setTimeout(r, 1000 * attempt));
+      }
+    }
+    throw new Error('Upload failed after multiple retries. Please check your internet connection.');
+  };
+
   const handleSubmit = async () => {
     const validationError = getValidationError();
     if (validationError) {
@@ -227,6 +260,12 @@ const UploadMaterialForm = ({ onUploadSuccess }: UploadMaterialFormProps) => {
     setUploading(true);
 
     try {
+      let currentUser = user;
+      if (!currentUser) {
+        const { data: authData } = await supabase.auth.getUser();
+        currentUser = authData?.user ?? null;
+      }
+
       const dbSemester = category === 'btech'
         ? (isFirstYear ? `ALL-${mappedSemester}` : `${branch}-${semester}`)
         : (semester || category);
@@ -240,19 +279,11 @@ const UploadMaterialForm = ({ onUploadSuccess }: UploadMaterialFormProps) => {
       const rand = Math.random().toString(36).slice(2, 10);
       const filePath = `${safeCat}/${safeBranch}/${safeSem}/${Date.now()}-${rand}.${fileExt}`;
 
-      const { error: uploadError } = await supabase.storage
-        .from('study-materials')
-        .upload(filePath, file!, {
-          cacheControl: '3600',
-          upsert: false,
-          contentType: file!.type || 'application/pdf',
-        });
-
-      if (uploadError) throw uploadError;
+      const { filePath: uploadedPath } = await uploadFileWithRetry(filePath, file!);
 
       const { data: urlData } = supabase.storage
         .from('study-materials')
-        .getPublicUrl(filePath);
+        .getPublicUrl(uploadedPath);
 
       const { error: insertError } = await supabase
         .from('notes')
@@ -265,14 +296,14 @@ const UploadMaterialForm = ({ onUploadSuccess }: UploadMaterialFormProps) => {
           description: description.trim() || null,
           file_url: urlData.publicUrl,
           file_name: file!.name,
-          uploaded_by: user!.id,
-          user_email: user!.email!,
-          user_name: user!.user_metadata?.first_name || user!.email?.split('@')[0] || 'Admin',
+          uploaded_by: currentUser?.id || 'admin',
+          user_email: currentUser?.email || 'admin@studyhub.com',
+          user_name: currentUser?.user_metadata?.first_name || currentUser?.email?.split('@')[0] || 'Admin',
           status: 'pending',
         });
 
       if (insertError) {
-        await supabase.storage.from('study-materials').remove([filePath]).catch(() => {});
+        await supabase.storage.from('study-materials').remove([uploadedPath]).catch(() => {});
         throw insertError;
       }
 
@@ -293,7 +324,11 @@ const UploadMaterialForm = ({ onUploadSuccess }: UploadMaterialFormProps) => {
       onUploadSuccess?.();
     } catch (error: any) {
       console.error('[UploadMaterial] Failed:', error);
-      toast({ title: 'Upload failed', description: error?.message || 'Failed to upload file', variant: 'destructive' });
+      let errMsg = error?.message || 'Failed to upload file';
+      if (errMsg === 'Failed to fetch' || errMsg.includes('fetch')) {
+        errMsg = 'Connection glitch or upload timed out. Please retry uploading your file.';
+      }
+      toast({ title: 'Upload failed', description: errMsg, variant: 'destructive' });
     } finally {
       setUploading(false);
     }
