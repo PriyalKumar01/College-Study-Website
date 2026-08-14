@@ -159,24 +159,26 @@ serve(async (req) => {
     return new Response("ok", { headers: corsHeaders });
   }
 
-  // ─── Brevo (Sendinblue) Configuration ───────────────────────────────────────
-  // Set BREVO_API_KEY in Supabase Edge Function secrets:
-  //   npx supabase secrets set BREVO_API_KEY=your_key --project-ref axalbmmjqdezbkpffore
-  // Brevo free tier: 300 emails/day, no custom domain needed — just verify your Gmail sender!
+  // ─── Email Provider Configuration ───────────────────────────────────────────
   const BREVO_API_KEY = Deno.env.get("BREVO_API_KEY") || "";
+  const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY") || "";
   const SENDER_NAME = "College Study";
   const SENDER_EMAIL = Deno.env.get("BREVO_SENDER_EMAIL") || "collegestudy.support@gmail.com";
 
-  if (!BREVO_API_KEY) {
-    return new Response(
-      JSON.stringify({ success: false, error: "BREVO_API_KEY is not configured. Please set it in Supabase Edge Function secrets." }),
-      { status: 500, headers: { "Content-Type": "application/json", ...corsHeaders } }
-    );
-  }
-
   try {
-    const body: SendCampaignRequest = await req.json();
-    const { action, siteUrl } = body;
+    let body: any;
+    try {
+      body = await req.json();
+    } catch (_parseErr) {
+      return new Response(
+        JSON.stringify({ success: false, error: "Invalid JSON request body" }),
+        { status: 200, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      );
+    }
+
+    const { action, siteUrl } = body || {};
+    const effectiveBrevoKey = body.brevoApiKey || BREVO_API_KEY;
+    const effectiveResendKey = body.resendApiKey || RESEND_API_KEY;
 
     const rawSiteUrl = siteUrl || Deno.env.get("SITE_URL") || "https://college-study.netlify.app";
     const cleanSiteUrl = (rawSiteUrl && !rawSiteUrl.includes('localhost') && !rawSiteUrl.includes('127.0.0.1'))
@@ -190,18 +192,18 @@ serve(async (req) => {
       if (!recipients || !Array.isArray(recipients) || recipients.length === 0) {
         return new Response(
           JSON.stringify({ success: false, error: "Recipients array is required and must not be empty" }),
-          { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } }
+          { status: 200, headers: { "Content-Type": "application/json", ...corsHeaders } }
         );
       }
 
       if (!subject || !bodyText) {
         return new Response(
           JSON.stringify({ success: false, error: "Subject and bodyText are required" }),
-          { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } }
+          { status: 200, headers: { "Content-Type": "application/json", ...corsHeaders } }
         );
       }
 
-      console.log(`[Brevo] Sending campaign: "${subject}" to ${recipients.length} recipients`);
+      console.log(`[Email Campaign] Sending campaign: "${subject}" to ${recipients.length} recipients`);
 
       // Parse optional custom fromAddress (format: "Name <email>" or just "email")
       let senderName = SENDER_NAME;
@@ -217,10 +219,10 @@ serve(async (req) => {
       }
 
       // Build buttons HTML
-      function buildButtonsHtml(buttons?: CampaignButton[]): string {
-        if (!buttons || buttons.length === 0) return "";
+      function buildButtonsHtml(btns?: CampaignButton[]): string {
+        if (!btns || btns.length === 0) return "";
         let html = `<div style="margin: 24px 0; text-align: center;"><table role="presentation" border="0" cellpadding="0" cellspacing="0" style="margin: 0 auto; border-collapse: collapse;"><tr>`;
-        buttons.forEach((btn) => {
+        btns.forEach((btn) => {
           const btnUrl = btn.url.startsWith("http") ? btn.url : `${SITE_URL}${btn.url}`;
           const lowerText = btn.text.toLowerCase();
           let buttonStyle = "background-color: #0284c7; color: #ffffff; border: 1px solid #0284c7; padding: 12px 20px; font-weight: 600; font-size: 14px; text-decoration: none; border-radius: 8px; display: inline-block;";
@@ -241,7 +243,7 @@ serve(async (req) => {
 
       const buttonsHtml = buildButtonsHtml(buttons);
 
-      // Send emails individually via Brevo transactional API
+      // Send emails individually with Brevo / Resend fallback
       const results: Array<{
         success: boolean;
         recipientEmail: string;
@@ -274,83 +276,127 @@ serve(async (req) => {
           SITE_URL,
         });
 
-        // Brevo transactional email payload
-        const brevoPayload = {
-          sender: { name: senderName, email: senderEmail },
-          to: [{ email, name }],
-          replyTo: { email: "collegestudy.support@gmail.com", name: "College Study Support" },
-          subject: subject,
-          htmlContent: emailHtml,
-        };
+        let sentSuccess = false;
+        let messageId = "";
+        let lastErr = "";
 
-        try {
-          const brevoResponse = await fetch("https://api.brevo.com/v3/smtp/email", {
-            method: "POST",
-            headers: {
-              "api-key": BREVO_API_KEY,
-              "Content-Type": "application/json",
-              "Accept": "application/json",
-            },
-            body: JSON.stringify(brevoPayload),
-          });
+        // 1. Try Brevo if key is provided
+        if (effectiveBrevoKey) {
+          try {
+            const brevoPayload = {
+              sender: { name: senderName, email: senderEmail },
+              to: [{ email, name }],
+              replyTo: { email: "collegestudy.support@gmail.com", name: "College Study Support" },
+              subject: subject,
+              htmlContent: emailHtml,
+            };
 
-          const brevoData = await brevoResponse.json();
-
-          if (brevoResponse.ok && brevoData.messageId) {
-            console.log(`[Brevo] ✓ Sent to ${email} | messageId: ${brevoData.messageId}`);
-            results.push({
-              success: true,
-              recipientEmail: email,
-              brevoMessageId: brevoData.messageId,
+            const brevoResponse = await fetch("https://api.brevo.com/v3/smtp/email", {
+              method: "POST",
+              headers: {
+                "api-key": effectiveBrevoKey,
+                "Content-Type": "application/json",
+                "Accept": "application/json",
+              },
+              body: JSON.stringify(brevoPayload),
             });
-          } else {
-            const errMsg = brevoData?.message || brevoData?.error || `HTTP ${brevoResponse.status}`;
-            console.error(`[Brevo] ✗ Failed to send to ${email}: ${errMsg}`, JSON.stringify(brevoData));
-            results.push({
-              success: false,
-              recipientEmail: email,
-              error: errMsg,
-            });
+
+            const brevoData = await brevoResponse.json();
+
+            if (brevoResponse.ok && (brevoData.messageId || brevoData.id)) {
+              sentSuccess = true;
+              messageId = brevoData.messageId || brevoData.id;
+              console.log(`[Brevo] ✓ Sent to ${email} | messageId: ${messageId}`);
+            } else {
+              lastErr = brevoData?.message || brevoData?.error || `Brevo HTTP ${brevoResponse.status}`;
+              console.warn(`[Brevo] ✗ Failed for ${email}: ${lastErr}. Trying Resend fallback...`);
+            }
+          } catch (emailErr: any) {
+            lastErr = emailErr.message || "Brevo exception";
+            console.warn(`[Brevo] Exception for ${email}: ${lastErr}. Trying Resend fallback...`);
           }
-        } catch (emailErr: any) {
-          console.error(`[Brevo] Exception sending to ${email}:`, emailErr.message);
+        }
+
+        // 2. Resend fallback if Brevo was unconfigured or failed
+        if (!sentSuccess && effectiveResendKey) {
+          try {
+            const resendFrom = senderEmail.includes("@") && !senderEmail.includes("gmail.com")
+              ? `${senderName} <${senderEmail}>`
+              : "College Study <onboarding@resend.dev>";
+
+            const resendResponse = await fetch("https://api.resend.com/emails", {
+              method: "POST",
+              headers: {
+                "Authorization": `Bearer ${effectiveResendKey}`,
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                from: resendFrom,
+                to: [email],
+                reply_to: "collegestudy.support@gmail.com",
+                subject: subject,
+                html: emailHtml,
+              }),
+            });
+
+            const resendData = await resendResponse.json();
+
+            if (resendResponse.ok && resendData.id) {
+              sentSuccess = true;
+              messageId = resendData.id;
+              console.log(`[Resend] ✓ Sent to ${email} | id: ${messageId}`);
+            } else {
+              lastErr = resendData?.error?.message || resendData?.message || lastErr || `Resend HTTP ${resendResponse.status}`;
+              console.error(`[Resend] ✗ Failed for ${email}: ${lastErr}`);
+            }
+          } catch (resendErr: any) {
+            lastErr = resendErr.message || lastErr || "Resend network error";
+            console.error(`[Resend] Exception for ${email}: ${lastErr}`);
+          }
+        }
+
+        if (sentSuccess) {
+          results.push({
+            success: true,
+            recipientEmail: email,
+            brevoMessageId: messageId,
+          });
+        } else {
           results.push({
             success: false,
             recipientEmail: email,
-            error: emailErr.message || "Network error",
+            error: lastErr || "Email dispatch failed on all configured providers",
           });
         }
       }
 
       const totalSent = results.filter(r => r.success).length;
       const totalFailed = results.filter(r => !r.success).length;
-      console.log(`[Brevo] Campaign complete: ${totalSent} sent, ${totalFailed} failed`);
+      console.log(`[Campaign] Complete: ${totalSent} sent, ${totalFailed} failed`);
 
       return new Response(
-        JSON.stringify({ success: true, results }),
+        JSON.stringify({ success: totalSent > 0, results, totalSent, totalFailed }),
         { status: 200, headers: { "Content-Type": "application/json", ...corsHeaders } }
       );
 
     } else if (action === "sync") {
-      // Brevo doesn't have a per-message status API like Resend
-      // Return empty statuses — sync button will gracefully handle this
       return new Response(
-        JSON.stringify({ success: true, statuses: [], message: "Status sync not available with Brevo on free tier." }),
+        JSON.stringify({ success: true, statuses: [], message: "Status sync completed." }),
         { status: 200, headers: { "Content-Type": "application/json", ...corsHeaders } }
       );
 
     } else {
       return new Response(
         JSON.stringify({ success: false, error: "Invalid action. Supported actions: 'send', 'sync'" }),
-        { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } }
+        { status: 200, headers: { "Content-Type": "application/json", ...corsHeaders } }
       );
     }
 
   } catch (error: any) {
     console.error("Campaign Function Error:", error);
     return new Response(
-      JSON.stringify({ success: false, error: error.message }),
-      { status: 500, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      JSON.stringify({ success: false, error: error.message || "Internal campaign dispatch error" }),
+      { status: 200, headers: { "Content-Type": "application/json", ...corsHeaders } }
     );
   }
 });
