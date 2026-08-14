@@ -124,6 +124,7 @@ export const SUBJECTS: Record<string, SubjectInfo[]> = {
     { name: 'Data Science', fullName: 'Data Science' },
     { name: 'Computer Network', fullName: 'Computer Networks' },
     { name: 'DAA', fullName: 'Design and Analysis of Algorithms' },
+    { name: 'Open Elective', fullName: 'Open Elective (OE)' },
   ],
   'CSE-6th Semester': [
     { name: 'Artificial Intelligence', fullName: 'Artificial Intelligence' },
@@ -159,6 +160,7 @@ export const SUBJECTS: Record<string, SubjectInfo[]> = {
     { name: 'DSP', fullName: 'Digital Signal Processing' },
     { name: 'Antenna & Wave Propagation', fullName: 'Antenna & Wave Propagation' },
     { name: 'Embedded System', fullName: 'Embedded System' },
+    { name: 'Open Elective', fullName: 'Open Elective (OE)' },
   ],
   'ET-6th Semester': [
     { name: 'Optical Communication', fullName: 'Optical Communication' },
@@ -192,6 +194,7 @@ export const SUBJECTS: Record<string, SubjectInfo[]> = {
     { name: 'Microprocessor', fullName: 'Microprocessor & Microcontroller' },
     { name: 'Signals & Systems', fullName: 'Signals & Systems' },
     { name: 'Switchgear & Protection', fullName: 'Switchgear & Protection' },
+    { name: 'Open Elective', fullName: 'Open Elective (OE)' },
   ],
 
   // ════════════════════════════════════════════════════════════════
@@ -218,6 +221,7 @@ export const SUBJECTS: Record<string, SubjectInfo[]> = {
     { name: 'Industrial Engineering', fullName: 'Industrial Engineering' },
     { name: 'CAD/CAM', fullName: 'Computer Aided Design & Manufacturing' },
     { name: 'Dynamics of Machinery', fullName: 'Dynamics of Machinery' },
+    { name: 'Open Elective', fullName: 'Open Elective (OE)' },
   ],
 
   // ════════════════════════════════════════════════════════════════
@@ -244,6 +248,7 @@ export const SUBJECTS: Record<string, SubjectInfo[]> = {
     { name: 'Environmental Engineering', fullName: 'Environmental Engineering' },
     { name: 'Estimation & Costing', fullName: 'Estimation & Costing' },
     { name: 'Steel Structures', fullName: 'Steel Structures' },
+    { name: 'Open Elective', fullName: 'Open Elective (OE)' },
   ],
 
   // ════════════════════════════════════════════════════════════════
@@ -271,6 +276,13 @@ export const SUBJECTS: Record<string, SubjectInfo[]> = {
     { name: 'Environmental Engineering', fullName: 'Environmental Engineering' },
     { name: 'Transport Phenomena', fullName: 'Transport Phenomena' },
   ],
+  'CHE-6th Semester': [
+    { name: 'Plant Design & Economics', fullName: 'Plant Design & Economics' },
+    { name: 'Process Equipment Design', fullName: 'Process Equipment Design' },
+    { name: 'Petroleum Refining', fullName: 'Petroleum Refining & Petrochemicals' },
+    { name: 'Safety & Hazard Management', fullName: 'Safety & Hazard Management' },
+    { name: 'Open Elective', fullName: 'Open Elective (OE)' },
+  ],
 
   // ════════════════════════════════════════════════════════════════
   // Other branches (BE, LFT, PT, FT, OT)
@@ -294,6 +306,12 @@ export const SUBJECTS: Record<string, SubjectInfo[]> = {
     { name: 'Hospital Engineering', fullName: 'Hospital Engineering' },
     { name: 'Rehabilitation Engineering', fullName: 'Rehabilitation Engineering' },
   ],
+  'BE-6th Semester': [
+    { name: 'Bioreactor Design', fullName: 'Bioreactor Design & Analysis' },
+    { name: 'Bioseparation Engineering', fullName: 'Bioseparation Engineering' },
+    { name: 'Bioprocess Plant Design', fullName: 'Bioprocess Plant Design' },
+    { name: 'Open Elective', fullName: 'Open Elective (OE)' },
+  ],
 
   'LFT-3rd Semester': [
     { name: 'Leather Chemistry', fullName: 'Leather Chemistry' },
@@ -313,6 +331,12 @@ export const SUBJECTS: Record<string, SubjectInfo[]> = {
     { name: 'Quality Control', fullName: 'Quality Control in Leather' },
     { name: 'Leather Goods', fullName: 'Leather Goods Manufacturing' },
     { name: 'Environmental Management', fullName: 'Environmental Management' },
+  ],
+  'LFT-6th Semester': [
+    { name: 'Advanced Leather Processing', fullName: 'Advanced Leather Processing' },
+    { name: 'Footwear Machinery & Automation', fullName: 'Footwear Machinery & Automation' },
+    { name: 'Leather Product Design & Styling', fullName: 'Leather Product Design & Styling' },
+    { name: 'Open Elective', fullName: 'Open Elective (OE)' },
   ],
 
   // Paint Technology (PT)
@@ -350,6 +374,7 @@ export const SUBJECTS: Record<string, SubjectInfo[]> = {
     { name: 'Technology of Printing Inks and Coatings', fullName: 'Technology of Printing Inks and Coatings' },
     { name: 'Characterization, Analysis and Evaluation of Coatings Lab', fullName: 'Characterization, Analysis and Evaluation of Coatings Lab' },
     { name: 'Basic Paint Technology', fullName: 'Basic Paint Technology' },
+    { name: 'Open Elective', fullName: 'Open Elective (OE)' },
   ],
 
   // Plastic Technology (PL)
@@ -387,6 +412,7 @@ export const SUBJECTS: Record<string, SubjectInfo[]> = {
     { name: 'Polymer Composite', fullName: 'Polymer Composite' },
     { name: 'Polymer Characterization Lab', fullName: 'Polymer Characterization Lab' },
     { name: 'Introduction to Polymer Science', fullName: 'Introduction to Polymer Science' },
+    { name: 'Open Elective', fullName: 'Open Elective (OE)' },
   ],
 
   // BioTechnology (BT)
@@ -419,6 +445,7 @@ export const SUBJECTS: Record<string, SubjectInfo[]> = {
     { name: 'Genetic Engineering', fullName: 'Genetic Engineering' },
     { name: 'Immunotechnology', fullName: 'Immunotechnology' },
     { name: 'Bioinformatics', fullName: 'Bioinformatics' },
+    { name: 'Open Elective', fullName: 'Open Elective (OE)' },
   ],
 
   'FT-3rd Semester': [
@@ -441,6 +468,12 @@ export const SUBJECTS: Record<string, SubjectInfo[]> = {
     { name: 'Quality Assurance', fullName: 'Food Quality Assurance' },
     { name: 'Nutrition', fullName: 'Human Nutrition' },
   ],
+  'FT-6th Semester': [
+    { name: 'Food Process Equipment Design', fullName: 'Food Process Equipment Design' },
+    { name: 'Bakery & Confectionery Technology', fullName: 'Bakery & Confectionery Technology' },
+    { name: 'Beverage Technology', fullName: 'Beverage Technology' },
+    { name: 'Open Elective', fullName: 'Open Elective (OE)' },
+  ],
 
   'OT-3rd Semester': [
     { name: 'Oil Chemistry', fullName: 'Oil Chemistry' },
@@ -461,6 +494,94 @@ export const SUBJECTS: Record<string, SubjectInfo[]> = {
     { name: 'Quality Control', fullName: 'Quality Control in Oil' },
     { name: 'Process Engineering', fullName: 'Process Engineering' },
     { name: 'Environmental Science', fullName: 'Environmental Science' },
+  ],
+  'OT-6th Semester': [
+    { name: 'Surfactant & Detergent Technology', fullName: 'Surfactant & Detergent Technology' },
+    { name: 'Oleochemicals & Bio-fuels', fullName: 'Oleochemicals & Bio-fuels' },
+    { name: 'Plant Layout & Energy Conservation', fullName: 'Plant Layout & Energy Conservation' },
+    { name: 'Open Elective', fullName: 'Open Elective (OE)' },
+  ],
+
+  // ════════════════════════════════════════════════════════════════
+  // 7th Semester (All 13 Branches with Open Elective-II / OE2)
+  // ════════════════════════════════════════════════════════════════
+  'CSE-7th Semester': [
+    { name: 'Cloud Computing', fullName: 'Cloud Computing' },
+    { name: 'Cryptography & Network Security', fullName: 'Cryptography & Network Security' },
+    { name: 'Machine Learning', fullName: 'Machine Learning' },
+    { name: 'Open Elective-II', fullName: 'Open Elective-II (OE2)' },
+  ],
+  'IT-7th Semester': [
+    { name: 'Cloud Computing', fullName: 'Cloud Computing' },
+    { name: 'Information Security', fullName: 'Information Security' },
+    { name: 'Machine Learning', fullName: 'Machine Learning' },
+    { name: 'Open Elective-II', fullName: 'Open Elective-II (OE2)' },
+  ],
+  'CSE-AIML-7th Semester': [
+    { name: 'Deep Learning', fullName: 'Deep Learning' },
+    { name: 'Natural Language Processing', fullName: 'Natural Language Processing' },
+    { name: 'Computer Vision', fullName: 'Computer Vision' },
+    { name: 'Open Elective-II', fullName: 'Open Elective-II (OE2)' },
+  ],
+  'ET-7th Semester': [
+    { name: 'Wireless Communication', fullName: 'Wireless Communication' },
+    { name: 'Embedded System Design', fullName: 'Embedded System Design' },
+    { name: 'Open Elective-II', fullName: 'Open Elective-II (OE2)' },
+  ],
+  'EE-7th Semester': [
+    { name: 'Electric Drives & Control', fullName: 'Electric Drives & Control' },
+    { name: 'Renewable Energy Systems', fullName: 'Renewable Energy Systems' },
+    { name: 'Open Elective-II', fullName: 'Open Elective-II (OE2)' },
+  ],
+  'ME-7th Semester': [
+    { name: 'Automobile Engineering', fullName: 'Automobile Engineering' },
+    { name: 'Power Plant Engineering', fullName: 'Power Plant Engineering' },
+    { name: 'Open Elective-II', fullName: 'Open Elective-II (OE2)' },
+  ],
+  'CE-7th Semester': [
+    { name: 'Bridge Engineering', fullName: 'Bridge Engineering' },
+    { name: 'Earthquake Engineering', fullName: 'Earthquake Engineering' },
+    { name: 'Open Elective-II', fullName: 'Open Elective-II (OE2)' },
+  ],
+  'CHE-7th Semester': [
+    { name: 'Petrochemical Engineering', fullName: 'Petrochemical Engineering' },
+    { name: 'Transport Phenomena-II', fullName: 'Transport Phenomena-II' },
+    { name: 'Open Elective-II', fullName: 'Open Elective-II (OE2)' },
+  ],
+  'BE-7th Semester': [
+    { name: 'Downstream Processing', fullName: 'Downstream Processing' },
+    { name: 'Biochemical Plant Design', fullName: 'Biochemical Plant Design' },
+    { name: 'Open Elective-II', fullName: 'Open Elective-II (OE2)' },
+  ],
+  'LFT-7th Semester': [
+    { name: 'Advanced Footwear Design', fullName: 'Advanced Footwear Design' },
+    { name: 'Leather Industry Waste Management', fullName: 'Leather Industry Waste Management' },
+    { name: 'Open Elective-II', fullName: 'Open Elective-II (OE2)' },
+  ],
+  'PT-7th Semester': [
+    { name: 'Specialty Coatings', fullName: 'Specialty & High Performance Coatings' },
+    { name: 'Corrosion Control', fullName: 'Corrosion Science & Engineering' },
+    { name: 'Open Elective-II', fullName: 'Open Elective-II (OE2)' },
+  ],
+  'PL-7th Semester': [
+    { name: 'Polymer Blends & Alloys', fullName: 'Polymer Blends & Alloys' },
+    { name: 'Advanced Polymer Processing', fullName: 'Advanced Polymer Processing' },
+    { name: 'Open Elective-II', fullName: 'Open Elective-II (OE2)' },
+  ],
+  'FT-7th Semester': [
+    { name: 'Food Biotechnology', fullName: 'Food Biotechnology' },
+    { name: 'Food Plant Layout & Design', fullName: 'Food Plant Layout & Design' },
+    { name: 'Open Elective-II', fullName: 'Open Elective-II (OE2)' },
+  ],
+  'OT-7th Semester': [
+    { name: 'Fat Modification Processes', fullName: 'Fat Modification Processes' },
+    { name: 'Quality Assurance in Oil Industry', fullName: 'Quality Assurance in Oil Industry' },
+    { name: 'Open Elective-II', fullName: 'Open Elective-II (OE2)' },
+  ],
+  'BT-7th Semester': [
+    { name: 'Stem Cell & Tissue Engineering', fullName: 'Stem Cell & Tissue Engineering' },
+    { name: 'Metabolic Engineering', fullName: 'Metabolic Engineering' },
+    { name: 'Open Elective-II', fullName: 'Open Elective-II (OE2)' },
   ],
 
   // ════════════════════════════════════════════════════════════════
