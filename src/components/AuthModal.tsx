@@ -15,6 +15,7 @@ import logoImg from '@/assets/college-study-hub-logo.png';
 import HCaptcha from '@hcaptcha/react-hcaptcha';
 import { BRANCH_OPTIONS, YEAR_OPTIONS } from './ProfileCompletionModal';
 import { validateEmail } from '@/utils/emailValidation';
+import { sendCampaignBatch } from '@/lib/emailService';
 
 // hCaptcha Site Key provided by user
 const HCAPTCHA_SITE_KEY = "8a4805ba-2f46-4c8a-980a-54b8d5240d88";
@@ -209,30 +210,22 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'signin' }: AuthModalProps) 
   const sendSilentAssistanceEmail = async (userEmail: string, name: string) => {
     try {
       console.log('Sending silent OTP rate-limit assistance email to:', userEmail);
-      await fetch(`${(supabase as any).supabaseUrl}/functions/v1/send-campaign-emails`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'apikey': (supabase as any).supabaseKey || '',
-        },
-        body: JSON.stringify({
-          action: 'send',
-          recipients: [{ email: userEmail.trim().toLowerCase(), name: name || 'Student' }],
-          subject: 'Sign-up assistance for College Study website! 🚀',
-          bodyText: `We noticed you encountered an authentication issue or verification rate-limit while trying to sign up on College Study.
+      await sendCampaignBatch({
+        recipients: [{ email: userEmail.trim().toLowerCase(), name: name || 'Student' }],
+        subject: 'Sign-up assistance for College Study website! 🚀',
+        bodyText: `We noticed you encountered an authentication issue or verification rate-limit while trying to sign up on College Study.
 
 To complete your registration in seconds with zero hassle, please use the **Continue with Google** or **Continue with GitHub** option. These options are instantaneous, secure, and do not require email OTP codes!
 
 Simply click one of the buttons below to log in or sign up immediately.`,
-          logoUrl: 'https://college-study.netlify.app/logo.png',
-          headerUrl: '/college_study_email_header.png',
-          bannerUrl: '/college_study_email_poster.png',
-          siteUrl: 'https://college-study.netlify.app',
-          buttons: [
-            { text: 'Login with Google 🌐', url: 'https://college-study.netlify.app/auth?provider=google' },
-            { text: 'Login with GitHub 💻', url: 'https://college-study.netlify.app/auth?provider=github' }
-          ]
-        })
+        logoUrl: 'https://college-study.netlify.app/logo.png',
+        headerUrl: '/college_study_email_header.png',
+        bannerUrl: '/college_study_email_poster.png',
+        siteUrl: 'https://college-study.netlify.app',
+        buttons: [
+          { text: 'Login with Google 🌐', url: 'https://college-study.netlify.app/auth?provider=google' },
+          { text: 'Login with GitHub 💻', url: 'https://college-study.netlify.app/auth?provider=github' }
+        ]
       });
     } catch (e) {
       console.error('Failed to send silent rate-limit email:', e);
