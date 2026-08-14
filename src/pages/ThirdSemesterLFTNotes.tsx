@@ -10,6 +10,7 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { PlaylistModal } from '@/components/PlaylistModal';
 import { smartDownload, viewInBrowser } from '@/lib/downloadUtils';
+import { matchesSubject } from '@/utils/subjectMatcher';
 
 const ThirdSemesterLFTNotes = () => {
   const navigate = useNavigate();
@@ -253,7 +254,7 @@ interface Note {
     notes: [
       ...sub.notes.map(n => ({ ...n, isCommunity: false } as Note)),
       ...(communityNotes || [])
-        .filter((cn) => cn.subject === sub.name || cn.subject === sub.id)
+        .filter((cn) => matchesSubject(cn.subject, sub.name, sub.id))
         .map((cn) => ({
           id: cn.id,
           title: cn.title,

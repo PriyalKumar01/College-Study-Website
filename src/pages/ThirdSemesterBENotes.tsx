@@ -10,6 +10,7 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { PlaylistModal } from '@/components/PlaylistModal';
 import { smartDownload } from '@/lib/downloadUtils';
+import { matchesSubject } from '@/utils/subjectMatcher';
 
 const ThirdSemesterBENotes = () => {
   const navigate = useNavigate();
@@ -203,7 +204,7 @@ const ThirdSemesterBENotes = () => {
     notes: [
       ...sub.notes,
       ...(communityNotes || [])
-        .filter((cn) => cn.subject === sub.name || cn.subject === sub.id)
+        .filter((cn) => matchesSubject(cn.subject, sub.name, sub.id))
         .map((cn) => ({
           id: cn.id,
           title: cn.title,
