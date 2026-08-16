@@ -299,8 +299,14 @@ Kuch technical issue aaya. Please:
     setShowSuggestions(true);
   };
 
-  const widgetWidth = isExpanded ? "w-[480px]" : "w-[360px]";
-  const widgetHeight = isExpanded ? "max-h-[620px]" : "max-h-[520px]";
+  // Chat widget positioning:
+  // Mobile: fills most of screen above bottom nav
+  // Desktop: anchored right/bottom, height capped so it never bleeds off top
+  const widgetWidthClass = isExpanded ? "sm:w-[480px]" : "sm:w-[380px]";
+  // On sm+: use min() so max-height never exceeds available space above the bottom anchor
+  const widgetHeightClass = isExpanded
+    ? "sm:max-h-[min(600px,calc(100vh-190px))]"
+    : "sm:max-h-[min(520px,calc(100vh-190px))]";
 
   return (
     <motion.div
@@ -308,12 +314,15 @@ Kuch technical issue aaya. Please:
       animate={{ opacity: 1, y: 0, scale: 1 }}
       exit={{ opacity: 0, y: 20, scale: 0.95 }}
       transition={{ type: "spring", stiffness: 300, damping: 25 }}
-      className={`fixed right-6 bottom-[185px] md:bottom-40 z-[162]
-        ${widgetWidth} ${widgetHeight}
-        max-sm:right-3 max-sm:left-3 max-sm:w-auto
-        flex flex-col rounded-2xl overflow-hidden
+      className={`fixed z-[162] flex flex-col rounded-2xl overflow-hidden
         shadow-[0_8px_40px_rgba(0,0,0,0.18)] dark:shadow-[0_8px_40px_rgba(0,0,0,0.4)]
-        border border-gray-200/80 dark:border-gray-700/80`}
+        border border-gray-200/80 dark:border-gray-700/80
+        ${widgetWidthClass}
+        left-3 right-3 bottom-[96px]
+        max-h-[calc(100dvh-160px)]
+        sm:left-auto sm:right-6 sm:bottom-[170px]
+        ${widgetHeightClass}
+      `}
     >
       {/* ── Header ───────────────────────────────────────────── */}
       <div className="bg-gradient-to-r from-blue-600 to-purple-600 px-4 py-3 flex items-center justify-between flex-shrink-0">

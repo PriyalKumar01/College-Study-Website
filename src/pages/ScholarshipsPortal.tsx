@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
+import { useToast } from '@/hooks/use-toast';
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import EditScholarshipModal from '@/components/admin/EditScholarshipModal';
 import SubmitScholarshipForm from '@/components/admin/SubmitScholarshipForm';

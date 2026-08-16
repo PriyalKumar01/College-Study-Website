@@ -18,7 +18,7 @@ const AIAssistantButton = ({ isOpen, onClick }: AIAssistantButtonProps) => {
   }, []);
 
   return (
-    <div className="fixed right-6 bottom-[104px] md:bottom-24 z-[161]">
+    <div className="fixed right-6 bottom-[84px] md:bottom-24 z-[161]">
       <div
         className="relative flex items-center cursor-pointer"
         onMouseEnter={() => setShowLabel(true)}
