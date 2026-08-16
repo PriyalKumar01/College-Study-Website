@@ -8,6 +8,7 @@ import { AuthProvider } from "./contexts/AuthContext";
 import CookieConsent from "./components/CookieConsent";
 import CustomCursor from "./components/CustomCursor";
 import WhatsAppButton from "./components/WhatsAppButton";
+import AIAssistant from "./components/ai-assistant/AIAssistant";
 import ScrollToTop from "./components/ScrollToTop";
 import Auth from "./pages/Auth";
 import Index from "./pages/Index";
@@ -67,6 +68,7 @@ const App = () => {
               </Routes>
               <CookieConsent />
               <WhatsAppButton />
+              <AIAssistant />
             </BrowserRouter>
             )}
           </TooltipProvider>

@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
+import ATSScorer from "@/components/ai-assistant/ATSScorer";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   FileText,
@@ -190,6 +191,9 @@ const ATSFriendlyResume = () => {
             </div>
           ) : (
             <>
+              {/* ── AI ATS Scorer (New Feature) ── */}
+              <ATSScorer userEmail={user?.email ?? undefined} />
+
               {/* Instructions Section */}
               <div className="grid md:grid-cols-2 gap-6 items-start">
 
