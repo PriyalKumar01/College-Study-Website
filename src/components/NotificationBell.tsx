@@ -15,7 +15,16 @@ interface Notification {
 
 export default function NotificationBell() {
   const { user, isOwner } = useAuth();
-  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [notifications, setNotifications] = useState<Notification[]>(() => {
+    try {
+      const cached = sessionStorage.getItem('cached_notifications');
+      const time = sessionStorage.getItem('cached_notifications_time');
+      if (cached && time && Date.now() - Number(time) < 5 * 60 * 1000) {
+        return JSON.parse(cached);
+      }
+    } catch {}
+    return [];
+  });
   const [readIds, setReadIds] = useState<Set<string>>(new Set());
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -30,13 +39,27 @@ export default function NotificationBell() {
   }, []);
 
   const fetchNotifications = async () => {
+    try {
+      const cached = sessionStorage.getItem('cached_notifications');
+      const time = sessionStorage.getItem('cached_notifications_time');
+      if (cached && time && Date.now() - Number(time) < 5 * 60 * 1000) {
+        return;
+      }
+    } catch {}
+
     const { data } = await (supabase as any)
       .from('notifications')
-      .select('*')
+      .select('id, title, body, sent_by, created_at, is_active')
       .eq('is_active', true)
       .order('created_at', { ascending: false })
       .limit(20);
-    if (data) setNotifications(data as Notification[]);
+    if (data) {
+      setNotifications(data as Notification[]);
+      try {
+        sessionStorage.setItem('cached_notifications', JSON.stringify(data));
+        sessionStorage.setItem('cached_notifications_time', String(Date.now()));
+      } catch {}
+    }
   };
 
   // Fetch notifications on mount

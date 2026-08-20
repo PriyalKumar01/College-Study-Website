@@ -52,55 +52,77 @@ const AppSidebar = ({ className }: AppSidebarProps) => {
   const location = useLocation();
 
   // Local state for profile avatar to override metadata if available
-  const [profileAvatar, setProfileAvatar] = useState<string | null>(null);
-  const [oppCount, setOppCount] = useState<number | null>(null);
+  const [profileAvatar, setProfileAvatar] = useState<string | null>(() => {
+    try {
+      return user?.id ? sessionStorage.getItem(`cached_avatar_${user.id}`) : null;
+    } catch {
+      return null;
+    }
+  });
+  const [oppCount, setOppCount] = useState<number | null>(() => {
+    try {
+      const cached = sessionStorage.getItem('cached_opp_count');
+      const time = sessionStorage.getItem('cached_opp_count_time');
+      if (cached && time && Date.now() - Number(time) < 15 * 60 * 1000) {
+        return Number(cached);
+      }
+    } catch {}
+    return null;
+  });
 
   const PREMIUM_PLANS = ['companies', 'hr_emails', 'resume', 'roadmaps'];
 
   useEffect(() => {
-    if (user?.id) {
+    if (user?.id && !profileAvatar) {
       const fetchProfileAvatar = async () => {
-        const { data } = await supabase
-          .from('profiles')
-          .select('avatar_url')
-          .eq('id', user.id)
-          .maybeSingle();
+        try {
+          const { data } = await supabase
+            .from('profiles')
+            .select('avatar_url')
+            .eq('id', user.id)
+            .maybeSingle();
 
-        if (data?.avatar_url) {
-          setProfileAvatar(data.avatar_url);
+          if (data?.avatar_url) {
+            setProfileAvatar(data.avatar_url);
+            try { sessionStorage.setItem(`cached_avatar_${user.id}`, data.avatar_url); } catch {}
+          }
+        } catch (e) {
+          console.error("Error fetching avatar:", e);
         }
       };
 
       fetchProfileAvatar();
     }
-  }, [user?.id]);
+  }, [user?.id, profileAvatar]);
 
   useEffect(() => {
     const fetchOppCount = async () => {
+      // Check cache first
+      try {
+        const cached = sessionStorage.getItem('cached_opp_count');
+        const time = sessionStorage.getItem('cached_opp_count_time');
+        if (cached && time && Date.now() - Number(time) < 15 * 60 * 1000) {
+          setOppCount(Number(cached));
+          return;
+        }
+      } catch {}
+
       try {
         const { count, error } = await supabase
           .from('opportunities')
           .select('*', { count: 'exact', head: true });
         if (!error && count !== null) {
           setOppCount(count);
+          try {
+            sessionStorage.setItem('cached_opp_count', String(count));
+            sessionStorage.setItem('cached_opp_count_time', String(Date.now()));
+          } catch {}
         }
       } catch (err) {
         console.error('Error fetching opportunities count for sidebar:', err);
       }
     };
     fetchOppCount();
-
-    // Set up real-time subscription to update count automatically
-    const channel = supabase
-      .channel('opportunities-count-changes')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'opportunities' }, () => {
-        fetchOppCount();
-      })
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
   }, []);
 
   const userEmail = user?.email || '';
