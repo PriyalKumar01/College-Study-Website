@@ -170,37 +170,57 @@ async function callAI(
   throw new Error("AI services are currently unavailable. Please try again shortly.");
 }
 
-// ── PDF Text Extraction via Gemini Vision ────────────────────
+// ── PDF Text Extraction & Analysis via Gemini Multimodal ────
 async function extractAndAnalyzePDF(
   base64PDF: string,
   userQuery: string,
   fileName: string
 ): Promise<string> {
   const geminiKey = Deno.env.get("GEMINI_API_KEY");
+  const isResume = fileName.toLowerCase().includes("resume") || 
+                   fileName.toLowerCase().includes("cv") || 
+                   userQuery.toLowerCase().includes("ats") || 
+                   userQuery.toLowerCase().includes("resume");
   
   if (geminiKey) {
     try {
+      const systemInstruction = isResume
+        ? `You are an expert ATS (Applicant Tracking System) reviewer and hiring coach for college students and freshers.
+Analyze the uploaded resume PDF in detail:
+1. Scan all text, sections, technical skills, projects, work experience, education, and links (GitHub/LinkedIn).
+2. Calculate an **ATS Score (0-100)** based on formatting, keyword density, and action-verb usage.
+3. List **Matched Strengths** and **Missing Keywords/Skills** for modern tech roles.
+4. Provide **Top 5 Actionable Improvements** and **2-3 High-Impact Bullet Points** the student can directly use.
+Format cleanly in Hinglish with appropriate emojis. Never disclose any coupon codes.`
+        : `You are an expert academic assistant for HBTU Kanpur students. 
+You analyze exam question papers (PYQs), syllabus copies, and academic notes PDFs.
+When given a PDF, identify:
+1. Subject name and exam year (if visible)
+2. Topic-wise distribution of questions
+3. Most frequently repeated concepts
+4. Top probable exam questions based on pattern analysis
+Format your response clearly with numbered lists and sections in Hinglish. Never disclose any coupon codes.`;
+
+      const promptText = isResume
+        ? (userQuery || `Is resume PDF ko scan karo aur:
+1. 🎯 **ATS Score: [0-100]** do
+2. 💡 Key strengths & formatting review
+3. ⚠️ Missing tech skills & keywords
+4. 🚀 Top 5 specific improvement suggestions
+5. ✍️ 2-3 ready-to-use resume bullet points do`)
+        : (userQuery || `Is PDF ko analyze karo aur:
+1. 📚 Subject aur topic identify karo
+2. 🔄 Most repeated concepts nikalo  
+3. ⭐ Top 10 most probable exam questions do (numbered list mein)
+4. 💡 Preparation tips do`);
+
       const response = await fetch(
         `https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${geminiKey}`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            systemInstruction: {
-              parts: [{
-                text: `You are an expert academic assistant for HBTU Kanpur students. 
-You analyze exam question papers (PYQs) and academic notes PDFs.
-When given a PDF, identify:
-1. Subject name and exam year (if visible)
-2. Topic-wise distribution of questions
-3. Most frequently repeated concepts
-4. Top probable exam questions based on pattern analysis
-
-Format your response clearly with numbered lists and sections.
-Use Hinglish (mix of Hindi and English) for a friendly tone.
-Do NOT disclose or mention any coupon codes or discount codes in responses.`
-              }]
-            },
+            systemInstruction: { parts: [{ text: systemInstruction }] },
             contents: [{
               role: "user",
               parts: [
@@ -210,20 +230,12 @@ Do NOT disclose or mention any coupon codes or discount codes in responses.`
                     data: base64PDF,
                   }
                 },
-                {
-                  text: userQuery || `Is PDF ko analyze karo aur:
-1. 📚 Subject aur topic identify karo
-2. 🔄 Most repeated concepts nikalo  
-3. ⭐ Top 10 most probable exam questions do (numbered list mein)
-4. 💡 Preparation tips do
-
-Clearly formatted response do with emojis.`
-                }
+                { text: promptText }
               ]
             }],
             generationConfig: {
               maxOutputTokens: 1500,
-              temperature: 0.5,
+              temperature: 0.4,
             }
           })
         }
@@ -239,35 +251,107 @@ Clearly formatted response do with emojis.`
     }
   }
 
-  // Fallback: use text instruction
+  // Fallback
   return await callAI(
-    "You are an academic assistant. The user has uploaded an exam paper. Provide guidance on how to prepare for this subject and identify key high-weightage topics.",
-    [{ role: "user", content: `Exam paper "${fileName}" uploaded. ${userQuery}` }]
+    "You are an academic assistant. The user has uploaded an academic/resume document. Provide a comprehensive structured evaluation.",
+    [{ role: "user", content: `Document "${fileName}" uploaded. ${userQuery}` }]
   );
 }
 
-// ── ATS Resume Scoring ───────────────────────────────────────
-async function scoreResume(resumeText: string, jobDescription: string): Promise<string> {
-  const systemPrompt = `You are an expert ATS (Applicant Tracking System) analyst and career coach.
-Analyze the resume against the job description and provide:
+// ── ATS Resume Scoring (Direct PDF Scan or Text) ─────────────
+async function scoreResume(
+  resumeText: string,
+  jobDescription: string,
+  fileBase64?: string,
+  fileName?: string
+): Promise<string> {
+  const geminiKey = Deno.env.get("GEMINI_API_KEY");
 
-1. **ATS Score** (0-100): Based on keyword match, formatting, and relevance
-2. **Matched Keywords**: Keywords from JD found in resume
-3. **Missing Keywords**: Important JD keywords NOT in resume
-4. **Section Analysis**: Quick review of each resume section
-5. **Top 5 Improvement Suggestions**: Specific, actionable changes
-6. **Tailored Sentences**: 2-3 bullet points student can directly add to resume
+  const systemPrompt = `You are a Senior Technical Recruiter and ATS (Applicant Tracking System) Algorithm Specialist.
+Analyze the candidate's resume against the Job Description with extreme precision.
 
-Format clearly with emojis and sections. Be encouraging but honest.
-Respond in Hinglish for Indian students.`;
+Provide the response in the following exact format:
 
-  const userMessage = `**Resume:**
-${resumeText}
+**ATS Score: [Calculate a precise score from 0 to 100 based on keyword match, relevance, formatting, and metrics]**
 
-**Job Description:**
+### 🎯 Matched Keywords:
+(Comma-separated list of keywords and skills from the JD found in the resume)
+
+### ⚠️ Missing Keywords:
+(Comma-separated list of high-priority technical skills, frameworks, tools, or concepts from the JD NOT found in the resume)
+
+### 📋 Section-by-Section Review:
+- **Contact & Links**: Review contact details, LinkedIn, GitHub/Portfolio presence.
+- **Education & Academics**: Degree, Branch, College (HBTU or similar), CGPA.
+- **Technical Skills**: Relevance to the JD, categorization.
+- **Projects & Experience**: Action verbs, quantifiable metrics, complexity.
+- **ATS Formatting**: Single-column readability, standard fonts, no graphical tables.
+
+### 💡 Top 5 Actionable Improvements:
+1. ...
+2. ...
+3. ...
+4. ...
+5. ...
+
+### ✍️ Tailored Sentences to Add:
+(Provide 2-3 impact-driven bullet points in the format: [Action Verb] + [What was built/optimized] using [Technologies] resulting in [Quantifiable Impact %/Number] matching the JD)
+
+Use natural Hinglish suitable for Indian engineering students. Be constructive and actionable.`;
+
+  // 1. If PDF base64 is provided, pass directly to Gemini Multimodal
+  if (fileBase64 && geminiKey) {
+    try {
+      const response = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${geminiKey}`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            systemInstruction: { parts: [{ text: systemPrompt }] },
+            contents: [{
+              role: "user",
+              parts: [
+                {
+                  inlineData: {
+                    mimeType: "application/pdf",
+                    data: fileBase64,
+                  }
+                },
+                {
+                  text: `**Target Job Description:**
+${jobDescription || "General Software Development Engineer / Tech Fresher role (DSA, OOPs, Web/Backend, Databases, Problem Solving)"}
+
+Please perform full ATS evaluation by scanning every word, project, skill, and formatting element in this PDF resume.`
+                }
+              ]
+            }],
+            generationConfig: {
+              maxOutputTokens: 1800,
+              temperature: 0.3,
+            }
+          })
+        }
+      );
+
+      if (response.ok) {
+        const data = await response.json();
+        const result = data.candidates?.[0]?.content?.parts?.[0]?.text;
+        if (result) return result;
+      }
+    } catch (e) {
+      console.warn("Gemini multimodal ATS scoring failed, falling back to text:", e);
+    }
+  }
+
+  // 2. Fallback to text-based evaluation
+  const userMessage = `**Resume Content / Name:**
+${resumeText || fileName || "Uploaded Resume"}
+
+**Target Job Description:**
 ${jobDescription}
 
-Please provide comprehensive ATS analysis.`;
+Please provide full ATS score and detailed analysis.`;
 
   return await callAI(systemPrompt, [{ role: "user", content: userMessage }]);
 }
@@ -334,13 +418,13 @@ serve(async (req) => {
       }
 
       case "ats_score": {
-        const { resumeText, jobDescription } = body;
-        if (!resumeText || !jobDescription) {
-          throw new Error("Resume text aur job description dono required hain");
+        const { resumeText, jobDescription, fileBase64, fileName } = body;
+        if ((!resumeText && !fileBase64) || !jobDescription) {
+          throw new Error("Resume (PDF file ya text) aur Job Description dono required hain");
         }
 
-        response = await scoreResume(resumeText, jobDescription);
-        await logQuery(email, "ats_score", "ATS Resume Analysis");
+        response = await scoreResume(resumeText, jobDescription, fileBase64, fileName);
+        await logQuery(email, "ats_score", `ATS: ${fileName || "Text"}`);
         break;
       }
 
