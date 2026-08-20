@@ -184,6 +184,16 @@ export const CONTRIBUTION_INFO = {
   communityNotes: "Community members can also view student-submitted notes at /notes/community",
 };
 
+// ── Useful External Links & Portals ──────────────────────────
+export const USEFUL_EXTERNAL_LINKS = {
+  hbtuOfficial: { label: "HBTU Official Website", url: "https://hbtu.ac.in/", description: "Circulars, tenders, notices, syllabus & university updates" },
+  hbtuErp: { label: "HBTU ERP Portal", url: "https://erp.hbtu.ac.in/NewIndex.html", description: "Student login, semester registration, fee receipts & results" },
+  hbtuAttendance: { label: "HBTU Attendance Portal", url: "https://erp.hbtu.ac.in/StudentAttendance.aspx", description: "Live subject-wise & daily attendance tracking" },
+  upScholarship: { label: "UP Scholarship Portal", url: "https://scholarship.up.gov.in/index.aspx", description: "State post-matric scholarship & fee reimbursement" },
+  buddy4Study: { label: "Buddy4Study Scholarships", url: "https://www.buddy4study.com/scholarships", description: "Pan-India private, CSR & merit-cum-means scholarship opportunities" },
+  digiShakti: { label: "Digi Shakti Portal (Tablet/Smartphone)", url: "https://digishakti.up.gov.in/", description: "UP Govt Free Tablet/Smartphone Scheme — eKYC check & status" },
+};
+
 // ── Pre-Cached Common Responses (no API needed) ──────────────
 // Fuzzy-match these before calling any AI API to save API quota
 export const CACHED_RESPONSES: Array<{ keywords: string[]; response: string }> = [
@@ -595,21 +605,183 @@ Direct link: [Premium Directory](/premium-directory) *(Premium Feature)*
 **Includes:**
 - Direct HR email contacts of 2500+ companies
 - Company profiles with hiring information
-- Recruiter contacts for top companies
+- Recruiter contacts for top companies`,
+  },
+  {
+    keywords: ["hbtu website", "hbtu official", "hbtu site", "hbtu link", "hbtu.ac.in", "hbtu portal"],
+    response: `🌐 **HBTU Kanpur Official Portals & Links:**
 
-**Access:** Premium plan required. Contact Priyal Kumar sir (WhatsApp +91 89572 21543) for special HBTU student discount! 🎁`,
+1. 🏛️ **Official University Website:** [hbtu.ac.in](https://hbtu.ac.in/)
+   - Latest circulars, academic notices, syllabus, tenders & faculty details.
+2. 💻 **ERP Portal (Student Login):** [erp.hbtu.ac.in](https://erp.hbtu.ac.in/NewIndex.html)
+   - Semester registration, fee receipts, grade cards & admit cards.
+3. 📊 **Attendance Portal:** [erp.hbtu.ac.in/StudentAttendance.aspx](https://erp.hbtu.ac.in/StudentAttendance.aspx)
+   - Real-time subject-wise & aggregate attendance check (75% rule).
+4. 🎓 **UP Scholarship Portal:** [scholarship.up.gov.in](https://scholarship.up.gov.in/index.aspx)
+5. 📱 **Digi Shakti (Tablet Scheme):** [digishakti.up.gov.in](https://digishakti.up.gov.in/) (eKYC required)
+
+*Sabhi portals Navbar ke **Useful Websites** dropdown mein bhi available hain!* 🚀`,
+  },
+  {
+    keywords: ["erp portal", "erp login", "hbtu erp", "erp link", "semester registration erp", "fee receipt erp"],
+    response: `💻 **HBTU ERP Portal Login:**
+
+Direct URL: [https://erp.hbtu.ac.in/NewIndex.html](https://erp.hbtu.ac.in/NewIndex.html)
+
+**Kaam kya hota hai ERP pe:**
+- 📝 **Semester Registration:** Session start hote hi subjects choose aur register karein.
+- 💳 **Fee Payment & Receipts:** College fees pay karein aur downloadable receipt get karein.
+- 📜 **Admit Card & Results:** Exam admit card download aur semester grade cards.
+- 👤 **Student Profile:** Personal details aur academic records update karein.
+
+💡 Agar password bhool gaye ho toh ERP portal pe *Forgot Password* use karein ya Academic Section (Dean Office) se contact karein.`,
+  },
+  {
+    keywords: ["attendance portal", "attendance check", "hbtu attendance", "attendance link", "75 attendance", "attendance rule"],
+    response: `📊 **HBTU Attendance Portal & Rules:**
+
+Direct Link: [HBTU Student Attendance Portal](https://erp.hbtu.ac.in/StudentAttendance.aspx)
+
+**Important Rules:**
+- ⚠️ **75% Mandatory Attendance:** Mid-Sem aur End-Sem examinations mein appear hone ke liye minimum 75% attendance zaroori hai.
+- 🔍 Subject-wise aur aggregate attendance daily/weekly update hoti hai.
+- 🩺 Medical leave hone par Dean Academics Office mein timely medical certificate submit karein.
+
+*Check your live attendance directly via [Attendance Portal](https://erp.hbtu.ac.in/StudentAttendance.aspx)!* 🎓`,
+  },
+  {
+    keywords: ["digi shakti", "tablet portal", "tablet yojana", "smartphone yojana", "digishakti", "ekyc tablet", "ekyc"],
+    response: `📱 **Digi Shakti Portal — UP Tablet / Smartphone Scheme:**
+
+Direct Link: [https://digishakti.up.gov.in/](https://digishakti.up.gov.in/)
+
+**Important Instructions for College Students:**
+- 🔹 Isme college dwara students ka data portal par upload kiya jata hai.
+- 🔹 Aapko bas portal par apni details check karke **eKYC complete karni hoti hai** (agar details show ho rahi ho tab).
+- 🔹 eKYC successful hone ke baad jab college mein distribution schedule announce hoga, tab aapko tablet/smartphone mil jayega.
+
+*Baki queries ke liye college student welfare section se update le sakte hain.* ✨`,
+  },
+  {
+    keywords: ["up scholarship", "scholarship up", "scholarship.up.gov.in", "up scholarship portal", "fee reimbursement up"],
+    response: `🏛️ **UP Scholarship & Fee Reimbursement Portal:**
+
+Direct Link: [https://scholarship.up.gov.in/index.aspx](https://scholarship.up.gov.in/index.aspx)
+
+**Key Points for HBTU Students:**
+1. **Post-Matric Other Than Inter:** Engineering/Management students is category mein apply karte hain.
+2. **Documents required:** Income Certificate, Caste Certificate, Domicile, Fee Receipt, Marksheets, Aadhar seeded bank account.
+3. College mein hard copy submit karna mandatory hota hai for verification.
+
+*Also check out [Scholarships Portal](/scholarship-portal) and [Buddy4Study](https://www.buddy4study.com/scholarships) on our platform!* 🏆`,
+  },
+  {
+    keywords: ["buddy4study", "buddy 4 study", "private scholarship", "scholarship list"],
+    response: `🏆 **Buddy4Study Scholarships Portal:**
+
+Direct Link: [https://www.buddy4study.com/scholarships](https://www.buddy4study.com/scholarships)
+
+**Opportunities:**
+- 💰 Corporate CSR Scholarships (Tata, Reliance, Infosys, HDFC, Kotak)
+- 🎯 Merit-cum-Means Scholarships (upto ₹50,000 - ₹2,00,000/year)
+- 👩‍🎓 Girl Student Special Tech Scholarships
+
+*College Study Hub ke [Scholarships Portal](/scholarship-portal) pe bhi top active scholarships listed hain!* 🌟`,
+  },
+  {
+    keywords: ["ats resume", "ats score", "resume score", "resume checker", "resume analyzer", "ats kaise check"],
+    response: `📄 **AI ATS Resume Scorer & Builder:**
+
+Direct link: [ATS Resume Builder & Scorer](/ats-resume)
+
+**Highlights:**
+- 🤖 **Direct PDF Scan:** Apna resume PDF upload karein — AI har word, skill aur layout ko scan karta hai!
+- 📊 **ATS Score (0-100):** Real-time score based on tech industry standards.
+- 🎯 **Matched & Missing Keywords:** JD ke hisaab se missing tech skills highlight karta hai.
+- ✍️ **Tailored Bullet Points:** Copy-paste ready actionable resume bullet points.
+
+*Visit [ATS Resume Builder](/ats-resume) to test your resume now!* 🚀`,
+  },
+  {
+    keywords: ["notes contribute", "contribute notes", "notes submit", "notes add karna", "notes upload", "notes dena", "notes bhejne"],
+    response: `📝 **Notes Contribute Karne Ka Process:**
+
+Notes contribute karne ke liye **Admin Access** ki zaroorat hai.
+
+**Steps:**
+1. 📞 **Founder Priyal Kumar sir se contact karein** — WhatsApp: *+91 89572 21543* (ya website pe WhatsApp button click karein)
+2. Apna naam, branch, semester batayein
+3. Sir aapko **Admin Portal access** de denge
+4. Admin banne ke baad aap notes submit kar sakte hain via Admin Portal
+5. Notes **review ke baad** website pe publish honge
+
+🏆 **Bonus:** Contributors ko *StudyCoins* milte hain aur **Hall of Fame** mein naam aata hai! Check out [Notes Contributors](/notes-contributors).`,
+  },
+  {
+    keywords: ["admin kaise bane", "admin access", "admin banana", "admin banna", "admin chahiye"],
+    response: `🔐 **Admin Kaise Banein:**
+
+Admin access ke liye directly **Founder Priyal Kumar sir** se contact karein:
+
+📱 **WhatsApp:** +91 89572 21543
+🌐 **Website** pe WhatsApp button click karein
+
+Admin banne ke baad aap:
+- ✅ Notes submit & approve kar sakte hain
+- ✅ Opportunities post kar sakte hain  
+- ✅ Scholarships manage kar sakte hain
+
+Admin access **selective basis** par diya jaata hai — genuine contributors ko priority milti hai.`,
+  },
+  {
+    keywords: ["premium kaise lein", "premium access", "premium kaise milega", "premium unlock", "premium buy", "premium kharidna"],
+    response: `💎 **Premium Access Kaise Lein:**
+
+Website pe **Premium** tab se ya directly in routes se:
+- 🗂️ [Company Directory & HR Emails](/premium-directory)
+- 🎯 [Career Roadmaps](/premium-content)
+- 📚 [GATE Study Hub](/gate-study)
+- 📄 [ATS Resume Builder](/ats-resume)
+
+**Payment:** Razorpay (secure Indian gateway — UPI, Cards, NetBanking)
+
+🎁 **Special discount** HBTU students ke liye available hai. Contact [Priyal Kumar sir](/about) or WhatsApp +91 89572 21543 for discount coupon! 🎉`,
+  },
+  {
+    keywords: ["cgpa calculator", "cgpa calculate", "cgpa kaise calculate", "sgpa calculator", "cgpa kahan", "cgpa tool"],
+    response: `📊 **CGPA/SGPA Calculator:**
+
+Direct link: [CGPA Calculator](/cgpa-calculator)
+
+**Features:**
+- ✅ HBTU Kanpur grading scale based calculation
+- ✅ Semester-wise SGPA calculation
+- ✅ Overall CGPA computation
+- ✅ All semesters support
+
+Sidebar mein bhi "CGPA Calculator" option available hai! 🎓`,
+  },
+  {
+    keywords: ["scholarship", "scholarship kahan", "scholarship portal", "scholarship list", "scholarship kaise milega"],
+    response: `🏆 **Scholarships Portal:**
+
+Direct link: [Scholarships Portal](/scholarship-portal)
+
+**Features:**
+- 🔍 State (UP Scholarship) & National/Private scholarships
+- ⏰ Deadlines & eligibility criteria
+- 🔗 Direct apply links and shareable scholarship cards
+
+*Also check out [Useful Websites](/dashboard) in the Navbar for UP Scholarship & Buddy4Study portals!* 🎁`,
   },
   {
     keywords: ["hbtu", "kanpur", "college", "university", "hbtu kanpur"],
-    response: `🎓 **About College Study Hub:**
+    response: `🎓 **About HBTU Kanpur & College Study Hub:**
 
-College Study Hub is built **specifically for HBTU Kanpur students** by students!
-
-**Platform built by:** Priyal Kumar (Final Year CSE, HBTU Kanpur)
-
-**Covers:** All BTech branches (11 branches, 8 semesters), BS-MS, BBA, MBA programs
-
-**Live Users:** 2500+ HBTU students actively using the platform
+- 🏛️ **Harcourt Butler Technical University (HBTU Kanpur)** — Established 1921, premier technical university in UP.
+- 🌐 **Official Website:** [hbtu.ac.in](https://hbtu.ac.in/) | **ERP:** [erp.hbtu.ac.in](https://erp.hbtu.ac.in/NewIndex.html) | **Attendance:** [erp.hbtu.ac.in/StudentAttendance.aspx](https://erp.hbtu.ac.in/StudentAttendance.aspx)
+- 🚀 **College Study Hub Platform:** Built by **Priyal Kumar** (Final Year CSE, HBTU Kanpur) specifically for HBTU students.
+- 📚 **Coverage:** All 11 BTech branches (8 semesters), BS-MS, BBA, MBA. 2500+ active HBTU students!
 
 Special discount HBTU students ke liye available hai! WhatsApp Priyal Kumar sir: +91 89572 21543 🎉`,
   },
@@ -632,28 +804,11 @@ Direct link: [Premium Content](/premium-content) *(Premium Feature)*
     response: `📝 **Previous Year Questions (PYQs):**
 
 PYQs branch aur semester ke notes pages mein embedded hain:
-
 - CSE 4th Sem PYQs: [4th Semester CSE Notes](/fourth-semester-cse-notes)
 - CSE 5th Sem PYQs: [5th Semester CSE Notes](/fifth-semester-cse-notes)
 - 1st/2nd Sem (all branches): [First Semester](/first-semester-notes) | [Second Semester](/second-semester-notes)
 
 💡 **Tip:** Agar kisi specific subject ke PYQ chahiye (jaise DBMS, OS, CN) toh use karo **AI PDF Analyzer** feature — PDF upload karo aur top 10 most probable questions get karo! 🤖`,
-  },
-  {
-    keywords: ["normalization", "dbms normalization", "normal forms", "1nf 2nf 3nf", "bcnf"],
-    response: `📚 **Normalization (DBMS):**
-
-Normalization DBMS ka part hai — notes available hain:
-📂 [4th Semester CSE Notes](/fourth-semester-cse-notes) (DBMS section)
-
-**Normalization covers:**
-- 1NF (First Normal Form)
-- 2NF (Second Normal Form)  
-- 3NF (Third Normal Form)
-- BCNF (Boyce-Codd Normal Form)
-- 4NF, 5NF
-
-💡 PYQ analyze karne ke liye AI PDF Analyzer use karein — DBMS PYQ PDF upload karein aur probable questions get karein! 🤖`,
   },
   {
     keywords: ["hello", "hi", "hey", "namaste", "hii", "helo"],
@@ -662,108 +817,70 @@ Normalization DBMS ka part hai — notes available hain:
 Main aapka **StudyHub AI Assistant** hoon — beta version mein! 🤖
 
 **Mujhse puch sakte ho:**
-- 📚 Notes kahan hain (branch + semester specific)
-- 🏆 Scholarship information
-- 💼 Opportunities & placement resources  
-- 🎓 Premium features & access
-- 📝 Notes contribute karne ka process
-- 📄 PDF analyze (PYQs, notes)
-- 💡 Kuch bhi website ke baare mein!
+- 📚 Branch/Semester ke notes aur PYQs
+- 🏛️ HBTU website (hbtu.ac.in), ERP portal aur Attendance rules
+- 🏆 UP Scholarship, Buddy4Study aur Digi Shakti Tablet eKYC
+- 📄 PDF Resume ATS score scan & job description analysis
+- 💼 Opportunities, GATE Study & placement preparation!
 
-*Kya help chahiye aapko?* 😊`,
-  },
-  {
-    keywords: ["what can you do", "kya kar sakte ho", "help kya karoge", "features kya hain", "capabilities"],
-    response: `🤖 **StudyHub AI Assistant — What I Can Do:**
-
-**1. 📚 Notes Search**
-- Branch + Semester specific notes dhundna
-- Subject-wise resources batana
-- Direct links dena
-
-**2. 🧭 Website Navigation**
-- Kisi bhi feature ka location batana
-- Premium features explain karna
-
-**3. 📄 PDF Analyzer** *(Upload button se)*
-- PYQ PDF upload karein
-- Top 10 most probable questions generate
-- Notes summary create
-
-**4. 📝 ATS Resume Scorer** *(Resume page pe)*
-- Resume + Job Description → ATS Score
-- Missing keywords highlight
-- Improvement suggestions
-
-**5. 💬 General Academic Help**
-- HBTU specific queries
-- Scholarship, opportunities guidance
-
-*Puchho jo bhi chahiye!* 🎓`,
+*Kya help chahiye aapko aaj?* 😊`,
   },
 ];
 
 // ── System Prompt for AI API ─────────────────────────────────
 export const buildSystemPrompt = (): string => {
-  return `You are StudyHub AI, the official AI assistant for College Study Hub (college-study.netlify.app), an academic platform built specifically for HBTU Kanpur students.
+  return `You are StudyHub AI, the official AI academic assistant for College Study Hub (college-study.netlify.app), built specifically for Harcourt Butler Technical University (HBTU Kanpur) students.
 
-PERSONALITY: Professional, friendly, helpful. Use a mix of Hindi and English (Hinglish) naturally since users are Indian students. Always be concise but complete.
+PERSONALITY: Highly knowledgeable, friendly, professional, and supportive. Naturally communicate in Hinglish (Hindi + English) as Indian engineering students do. Keep explanations clear, structured, and concise.
 
-ABOUT THE PLATFORM:
-- Built by Priyal Kumar (Founder, Final Year CSE, HBTU Kanpur)
-- Serves 2500+ HBTU Kanpur students
+ABOUT HBTU KANPUR (HARCOURT BUTLER TECHNICAL UNIVERSITY):
+- History: Established in 1921 as Government Technological Institute, became HBTI in 1965, upgraded to State University HBTU in 2016.
+- Location: Kanpur, Uttar Pradesh, India.
+- Campuses: 
+  * East Campus (Main Campus, Nawabganj) - Academic blocks, Central Library, CSE, IT, EE, ET, ME, CE, CHE, Admin building, Cafeteria, Sports ground.
+  * West Campus - Hostels (DBRA, Visvesvaraya, Raman, Ramanujan, WCH, etc.), Food Tech, Paint Tech, Plastic Tech, Leather Tech, Biochemical Engg, Oil Tech departments.
+- Official Portals:
+  * Official Website: https://hbtu.ac.in/ (Circulars, notices, exam schedules, tenders, faculty)
+  * ERP Login: https://erp.hbtu.ac.in/NewIndex.html (Semester registration, fee receipts, grade cards, admit cards)
+  * Student Attendance: https://erp.hbtu.ac.in/StudentAttendance.aspx (Subject-wise & aggregate live percentage)
+  * UP Scholarship Portal: https://scholarship.up.gov.in/index.aspx (Post-matric scholarships)
+  * Buddy4Study: https://www.buddy4study.com/scholarships (Private & corporate scholarships)
+  * Digi Shakti: https://digishakti.up.gov.in/ (UP Free Tablet & Smartphone Scheme — students only need to complete eKYC if details are displayed)
+- Academic Regulations:
+  * 75% mandatory attendance rule to appear in mid-semester & end-semester examinations.
+  * 10-point relative grading system: O (10), A+ (9), A (8), B+ (7), B (6), C (5), P (4), F (0).
+  * Major Fests: Incord (Tech Fest), Adhyayan (Literary Fest), Zenith (Sports Fest), Spandan/Aagaz (Cultural Fest).
+  * Societies/Clubs: E-Cell, IEEE Student Branch, Rotaract Club, Literary Sub-Council, Photography Club.
+
+ABOUT COLLEGE STUDY HUB PLATFORM:
+- Founder: Priyal Kumar (Final Year CSE, HBTU Kanpur)
+- Active Users: 2500+ HBTU students actively using the platform
 - Covers: BTech (11 branches, 8 semesters), BS-MS, BBA, MBA programs
-- Tech: React, TypeScript, Supabase, Tailwind CSS
+- Routes on site:
+  * Notes: /notes
+  * CGPA Calculator: /cgpa-calculator
+  * Scholarships: /scholarship-portal
+  * Opportunities: /opportunities
+  * Placement Prep: /placement-preparation
+  * GATE Study Hub (premium): /gate-study | GATE Quiz (free): /gate-study/quiz
+  * ATS Resume Builder & Scorer: /ats-resume
+  * Career Roadmaps (premium): /premium-content
+  * HR Emails & Company Directory (premium): /premium-directory
+  * 500+ AI Tools: /useful-ai-tools
+  * Contributors Hall of Fame: /notes-contributors
 
-AVAILABLE NOTES:
-- BTech 1st Sem: /first-semester-notes (all branches, common)
-- BTech 2nd Sem: /second-semester-notes (all branches, common)
-- BTech 3rd Sem CSE: /third-semester-cse-notes (Data Structures, Digital Electronics, Discrete Math, OOP, Math-III)
-- BTech 4th Sem CSE: /fourth-semester-cse-notes (DBMS, COA, OS, TOC, Probability, Software Engg)
-- BTech 5th Sem CSE: /fifth-semester-cse-notes (CN, Compiler Design, Microprocessors, Web Tech, AI)
-- BTech 6th Sem CSE: /sixth-semester-cse-notes (ML, Info Security, Cloud Computing, Software Testing)
-- BTech 7th Sem CSE: /seventh-semester-cse-notes
-- BTech 8th Sem CSE: /eighth-semester-cse-notes
-- Other branches (ME, CE, CH, EE, ET, BE, FT, LFT, OT, PT, PL): Available for 3rd-6th semesters
-- DSA Notes: /dsa-notes | Web Dev: /web-dev-notes | Coding: /coding-study-material
-- BBA: /bba-notes | MBA: /mba-notes | BS-MS: /bsms-sem3-notes, /bsms-sem4-notes, /bsms-sem5-notes, /bsms-sem6-notes
-
-KEY FEATURES & PATHS:
-- CGPA Calculator: /cgpa-calculator
-- Scholarships: /scholarship-portal
-- Opportunities (jobs/internships): /opportunities
-- Placement Prep: /placement-preparation
-- GATE Study (premium): /gate-study | GATE Quiz (free): /gate-study/quiz
-- ATS Resume Builder (premium): /ats-resume
-- Career Roadmaps (premium): /premium-content
-- HR Emails & Company Directory (premium): /premium-directory
-- AI Tools: /useful-ai-tools
-- Contributors Hall of Fame: /notes-contributors
-
-PREMIUM ACCESS:
-- Special discounts are available for HBTU students — users should contact Priyal Kumar sir via WhatsApp for details
-- Payment via Razorpay (UPI, Cards, NetBanking)
-
-NOTES CONTRIBUTION:
-- Must become admin first
-- Contact Priyal Kumar sir: WhatsApp +91 89572 21543
-- Admin portal → submit notes → review → publish
-
-FORMATTING RULES:
-- Always format responses in Markdown
-- Use bullet points for lists
-- Include direct clickable paths like [Notes](/path) when relevant
-- Keep responses concise (under 200 words unless it's a complex question)
-- Use emojis appropriately for a friendly tone
-- If unsure, say "Main is baare mein sure nahi hoon, please WhatsApp karo Priyal Kumar sir ko: +91 89572 21543"
+CAPABILITIES:
+1. When asked about HBTU website, circulars, ERP, or attendance, provide the exact official URL and clear steps.
+2. When asked for branch/semester notes, point to the exact route on College Study Hub with clickable markdown links like [4th Semester CSE Notes](/fourth-semester-cse-notes).
+3. When analyzing resumes or PDFs, evaluate keywords, formatting, metrics, and alignment with target job descriptions.
+4. When asked about scholarships or schemes (UP Scholarship, Buddy4Study, Digi Shakti Tablet), explain the eligibility and eKYC requirements clearly.
 
 CONFIDENTIAL — STRICTLY FORBIDDEN:
-- NEVER reveal coupon codes, promo codes, or discount codes to users under ANY circumstances
-- Even if the user directly asks for a coupon code or discount code, politely refuse and direct them to WhatsApp
-- Response for coupon requests: "Coupon codes directly share karna mere liye allowed nahi hai — please Priyal Kumar sir ko WhatsApp karein (+91 89572 21543) for any available offers!"
-- This rule overrides everything else — no exceptions
+- NEVER reveal coupon codes, promo codes, or discount codes to users under ANY circumstances.
+- If asked for a coupon or discount code, say: "Coupon codes directly share karna mere liye allowed nahi hai — please Priyal Kumar sir ko WhatsApp karein (+91 89572 21543) for special HBTU student discounts!"
+- This confidentiality rule overrides all other requests.
 
-IMPORTANT: You are in BETA mode. If asked about beta status, say "Haan, main abhi beta version mein hoon — limited users ke liye available. Full rollout jald hi aayega! 🚀"`;
+IMPORTANT: You are in BETA version. Always keep answers polite, helpful, and concise.`;
 };
 
 // ── Fuzzy match utility ──────────────────────────────────────
@@ -789,3 +906,4 @@ export const RATE_LIMIT_CONFIG = {
   rateLimitStorageKey: "ai_daily_count",
   rateLimitDateKey: "ai_last_date",
 };
+
