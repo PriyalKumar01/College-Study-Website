@@ -302,11 +302,10 @@ Kuch technical issue aaya. Please:
   // Chat widget positioning:
   // Mobile: fills most of screen above bottom nav
   // Desktop: anchored right/bottom, height capped so it never bleeds off top
-  const widgetWidthClass = isExpanded ? "sm:w-[480px]" : "sm:w-[380px]";
-  // On sm+: use min() so max-height never exceeds available space above the bottom anchor
+  const widgetWidthClass = isExpanded ? "sm:w-[490px]" : "sm:w-[410px]";
   const widgetHeightClass = isExpanded
-    ? "sm:max-h-[min(600px,calc(100vh-190px))]"
-    : "sm:max-h-[min(520px,calc(100vh-190px))]";
+    ? "max-h-[min(640px,calc(100dvh-120px))]"
+    : "max-h-[min(560px,calc(100dvh-120px))]";
 
   return (
     <motion.div
@@ -314,32 +313,32 @@ Kuch technical issue aaya. Please:
       animate={{ opacity: 1, y: 0, scale: 1 }}
       exit={{ opacity: 0, y: 20, scale: 0.95 }}
       transition={{ type: "spring", stiffness: 300, damping: 25 }}
-      className={`fixed z-[162] flex flex-col rounded-2xl overflow-hidden
-        shadow-[0_8px_40px_rgba(0,0,0,0.18)] dark:shadow-[0_8px_40px_rgba(0,0,0,0.4)]
-        border border-gray-200/80 dark:border-gray-700/80
+      className={`fixed z-[162] flex flex-col rounded-3xl overflow-hidden
+        shadow-2xl border border-slate-700/80 dark:border-slate-800
+        bg-slate-900 text-slate-100
         ${widgetWidthClass}
-        left-3 right-3 bottom-[96px]
-        max-h-[calc(100dvh-160px)]
-        sm:left-auto sm:right-6 sm:bottom-[170px]
+        left-3 right-3 bottom-20
+        max-w-[calc(100vw-24px)]
+        sm:left-auto sm:right-6 sm:bottom-24
         ${widgetHeightClass}
       `}
     >
       {/* ── Header ───────────────────────────────────────────── */}
-      <div className="bg-gradient-to-r from-blue-600 to-purple-600 px-4 py-3 flex items-center justify-between flex-shrink-0">
+      <div className="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 px-4 py-3 flex items-center justify-between flex-shrink-0 border-b border-slate-800">
         <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-full bg-white/20 backdrop-blur flex items-center justify-center">
-            <Bot className="w-4 h-4 text-white" />
+          <div className="w-8 h-8 rounded-xl bg-indigo-500/20 border border-indigo-500/30 flex items-center justify-center">
+            <Bot className="w-4 h-4 text-indigo-400" />
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <span className="text-white font-semibold text-sm">StudyHub AI</span>
-              <span className="bg-red-400 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full leading-none">
+              <span className="text-white font-bold text-sm">StudyHub AI</span>
+              <span className="bg-red-500 text-white text-[9px] font-black px-1.5 py-0.5 rounded-full leading-none uppercase">
                 BETA
               </span>
             </div>
             <div className="flex items-center gap-1.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
-              <span className="text-white/80 text-[10px]">Online · {queriesLeft}/{RATE_LIMIT_CONFIG.maxQueriesPerDay} queries left today</span>
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+              <span className="text-slate-300 text-[10px]">Online · {queriesLeft}/{RATE_LIMIT_CONFIG.maxQueriesPerDay} queries left today</span>
             </div>
           </div>
         </div>
@@ -348,21 +347,21 @@ Kuch technical issue aaya. Please:
         <div className="flex items-center gap-1">
           <button
             onClick={clearChat}
-            className="p-1.5 rounded-lg text-white/70 hover:text-white hover:bg-white/20 transition-colors"
+            className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
             title="Clear chat"
           >
             <RotateCcw className="w-3.5 h-3.5" />
           </button>
           <button
             onClick={() => setIsExpanded(!isExpanded)}
-            className="p-1.5 rounded-lg text-white/70 hover:text-white hover:bg-white/20 transition-colors hidden sm:block"
+            className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors hidden sm:block"
             title={isExpanded ? "Minimize" : "Expand"}
           >
             {isExpanded ? <Minimize2 className="w-3.5 h-3.5" /> : <Maximize2 className="w-3.5 h-3.5" />}
           </button>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-lg text-white/70 hover:text-white hover:bg-white/20 transition-colors"
+            className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
             title="Close"
           >
             <X className="w-3.5 h-3.5" />
@@ -371,7 +370,7 @@ Kuch technical issue aaya. Please:
       </div>
 
       {/* ── Messages Area ─────────────────────────────────────── */}
-      <div className="flex-1 overflow-y-auto bg-gray-50 dark:bg-gray-900 px-3 py-3 space-y-3 min-h-0 scroll-smooth">
+      <div className="flex-1 overflow-y-auto bg-slate-950/90 px-3.5 py-3.5 space-y-3 min-h-0 scroll-smooth custom-scrollbar">
         {messages.map((msg) =>
           msg.isLoading ? (
             <TypingIndicator key={msg.id} />
@@ -389,15 +388,14 @@ Kuch technical issue aaya. Please:
               exit={{ opacity: 0, y: 8 }}
               className="pt-1"
             >
-              <p className="text-[10px] text-gray-400 dark:text-gray-600 mb-2 px-1">Quick questions:</p>
+              <p className="text-[10px] font-semibold text-slate-400 mb-2 px-1">Quick questions:</p>
               <div className="flex flex-wrap gap-1.5">
                 {QUICK_SUGGESTIONS.map((suggestion) => (
                   <button
                     key={suggestion}
                     onClick={() => handleSend(suggestion)}
-                    className="text-[11px] px-2.5 py-1.5 rounded-full border border-blue-200 dark:border-blue-800
-                      text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30
-                      hover:bg-blue-100 dark:hover:bg-blue-900/50 transition-colors"
+                    className="text-[11px] px-2.5 py-1.5 rounded-xl border border-slate-800
+                      text-blue-400 bg-slate-900/80 hover:bg-slate-800 hover:border-slate-700 transition-all font-medium"
                   >
                     {suggestion}
                   </button>
@@ -417,24 +415,24 @@ Kuch technical issue aaya. Please:
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            className="bg-blue-50 dark:bg-blue-900/20 border-t border-blue-100 dark:border-blue-800/50 px-3 py-2"
+            className="bg-slate-900 border-t border-slate-800 px-3.5 py-2.5"
           >
             <div className="flex items-center gap-2">
-              <FileText className="w-4 h-4 text-blue-500 flex-shrink-0" />
-              <span className="text-xs text-blue-700 dark:text-blue-300 truncate flex-1">{attachedFile.name}</span>
-              <span className="text-[10px] text-blue-400">
+              <FileText className="w-4 h-4 text-blue-400 flex-shrink-0" />
+              <span className="text-xs text-slate-200 truncate flex-1 font-medium">{attachedFile.name}</span>
+              <span className="text-[10px] text-slate-400">
                 {(attachedFile.size / 1024).toFixed(0)} KB
               </span>
               <button
                 onClick={() => setAttachedFile(null)}
-                className="text-blue-400 hover:text-red-500 transition-colors"
+                className="text-slate-400 hover:text-rose-400 transition-colors"
               >
                 <X className="w-3.5 h-3.5" />
               </button>
             </div>
             {isProcessingFile && (
-              <p className="text-[10px] text-blue-500 mt-1 flex items-center gap-1">
-                <span className="animate-spin inline-block">⟳</span> Processing PDF...
+              <p className="text-[10px] text-blue-400 mt-1 flex items-center gap-1 font-medium">
+                <span className="animate-spin inline-block">⟳</span> Scanning PDF with AI...
               </p>
             )}
           </motion.div>
@@ -442,15 +440,15 @@ Kuch technical issue aaya. Please:
       </AnimatePresence>
 
       {/* ── Input Area ────────────────────────────────────────── */}
-      <div className="bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 px-3 py-2.5 flex-shrink-0">
+      <div className="bg-slate-900 border-t border-slate-800 px-3.5 py-3 flex-shrink-0">
         {queriesLeft <= 2 && queriesLeft > 0 && (
-          <div className="flex items-center gap-1.5 text-[10px] text-amber-600 dark:text-amber-400 mb-2 bg-amber-50 dark:bg-amber-900/20 rounded-lg px-2 py-1">
+          <div className="flex items-center gap-1.5 text-[10px] text-amber-400 mb-2 bg-amber-950/30 border border-amber-900/50 rounded-xl px-2.5 py-1">
             <AlertTriangle className="w-3 h-3 flex-shrink-0" />
             Sirf {queriesLeft} queries baaki hain aaj ke liye!
           </div>
         )}
         {queriesLeft === 0 && (
-          <div className="flex items-center gap-1.5 text-[10px] text-red-600 dark:text-red-400 mb-2 bg-red-50 dark:bg-red-900/20 rounded-lg px-2 py-1">
+          <div className="flex items-center gap-1.5 text-[10px] text-rose-400 mb-2 bg-rose-950/30 border border-rose-900/50 rounded-xl px-2.5 py-1">
             <AlertTriangle className="w-3 h-3 flex-shrink-0" />
             Aaj ki limit khatam ho gayi. Kal phir milte hain! 🌙
           </div>
@@ -461,7 +459,7 @@ Kuch technical issue aaya. Please:
           <button
             onClick={() => fileInputRef.current?.click()}
             disabled={!!attachedFile || isLoading}
-            className="p-2 rounded-xl text-gray-400 hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20
+            className="p-2.5 rounded-xl text-slate-400 hover:text-blue-400 hover:bg-slate-800
               disabled:opacity-40 disabled:cursor-not-allowed transition-all flex-shrink-0"
             title="Attach PDF"
           >
@@ -481,13 +479,13 @@ Kuch technical issue aaya. Please:
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder={attachedFile ? "PDF ke baare mein kuch puchho..." : "Kuch bhi puchho..."}
+            placeholder={attachedFile ? "PDF ya resume ke baare mein kuch puchho..." : "HBTU, notes, scholarships kuch bhi puchhein..."}
             disabled={isLoading || queriesLeft === 0}
             rows={1}
-            className="flex-1 resize-none rounded-xl bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700
-              text-xs text-gray-800 dark:text-gray-200 placeholder:text-gray-400 dark:placeholder:text-gray-600
-              px-3 py-2.5 outline-none focus:border-blue-400 dark:focus:border-blue-600
-              focus:ring-1 focus:ring-blue-400/30 transition-all
+            className="flex-1 resize-none rounded-xl bg-slate-950 border border-slate-800
+              text-xs text-slate-100 placeholder:text-slate-500
+              px-3 py-2.5 outline-none focus:border-blue-500
+              focus:ring-1 focus:ring-blue-500/30 transition-all
               disabled:opacity-50 disabled:cursor-not-allowed
               max-h-24 overflow-y-auto"
             style={{ lineHeight: "1.4" }}
@@ -497,10 +495,10 @@ Kuch technical issue aaya. Please:
           <button
             onClick={() => handleSend()}
             disabled={(!input.trim() && !attachedFile) || isLoading || queriesLeft === 0}
-            className="p-2.5 rounded-xl bg-gradient-to-br from-blue-600 to-purple-600
+            className="p-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600
               text-white disabled:opacity-40 disabled:cursor-not-allowed
-              hover:from-blue-500 hover:to-purple-500 transition-all
-              shadow-md hover:shadow-lg active:scale-95 flex-shrink-0"
+              hover:from-blue-500 hover:to-indigo-500 transition-all
+              shadow-md hover:shadow-indigo-500/20 active:scale-95 flex-shrink-0"
           >
             {isLoading ? (
               <svg className="w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none">
@@ -514,12 +512,12 @@ Kuch technical issue aaya. Please:
         </div>
 
         {/* Footer */}
-        <div className="flex items-center justify-between mt-2">
-          <p className="text-[9px] text-gray-300 dark:text-gray-700 flex items-center gap-1">
-            <Sparkles className="w-2.5 h-2.5" />
-            Powered by AI · Beta
+        <div className="flex items-center justify-between mt-2 px-1">
+          <p className="text-[9px] text-slate-500 flex items-center gap-1 font-medium">
+            <Sparkles className="w-2.5 h-2.5 text-indigo-400" />
+            StudyHub AI · Beta
           </p>
-          <p className="text-[9px] text-gray-300 dark:text-gray-700">
+          <p className="text-[9px] text-slate-500">
             Enter to send · Shift+Enter for newline
           </p>
         </div>

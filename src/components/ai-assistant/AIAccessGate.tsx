@@ -69,20 +69,20 @@ const AIAccessGate = ({ onAccessGranted }: AIAccessGateProps) => {
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.25 }}
-        className="w-full bg-gray-50 dark:bg-gray-800/60 rounded-xl p-3 mb-5 text-left"
+        className="w-full bg-slate-950/70 dark:bg-slate-950/80 border border-slate-800 rounded-2xl p-3 mb-5 text-left"
       >
-        <p className="text-[11px] font-semibold text-gray-600 dark:text-gray-300 mb-2 flex items-center gap-1.5">
-          <Sparkles className="w-3 h-3 text-blue-500" />
+        <p className="text-[11px] font-bold text-slate-300 mb-2 flex items-center gap-1.5">
+          <Sparkles className="w-3.5 h-3.5 text-indigo-400" />
           What you can do:
         </p>
         <ul className="space-y-1">
           {[
             "📚 Find notes by branch & semester",
-            "🔍 Search any resource on site",
-            "📄 Analyze PYQ PDFs",
-            "💡 Get guidance & navigation help",
+            "🔍 Solve HBTU website & academic doubts",
+            "📄 Scan PDF resumes & get ATS score",
+            "💡 Practice GATE questions & PYQ analysis",
           ].map((item) => (
-            <li key={item} className="text-[11px] text-gray-500 dark:text-gray-400">{item}</li>
+            <li key={item} className="text-[11px] text-slate-400">{item}</li>
           ))}
         </ul>
       </motion.div>
@@ -110,13 +110,12 @@ const AIAccessGate = ({ onAccessGranted }: AIAccessGateProps) => {
             placeholder="ACCESS#XXXX"
             maxLength={12}
             className="w-full px-4 py-3 text-center font-mono text-sm font-semibold tracking-widest
-              rounded-xl border-2 transition-all duration-200 outline-none
-              bg-white dark:bg-gray-800
-              text-gray-900 dark:text-white
-              placeholder:text-gray-300 dark:placeholder:text-gray-600
-              border-gray-200 dark:border-gray-700
-              focus:border-blue-500 dark:focus:border-blue-400
-              focus:ring-2 focus:ring-blue-500/20"
+              rounded-xl border transition-all duration-200 outline-none
+              bg-slate-950 text-white
+              placeholder:text-slate-600
+              border-slate-800
+              focus:border-indigo-500
+              focus:ring-2 focus:ring-indigo-500/20"
           />
         </motion.div>
 
@@ -125,7 +124,7 @@ const AIAccessGate = ({ onAccessGranted }: AIAccessGateProps) => {
           <motion.p
             initial={{ opacity: 0, y: -4 }}
             animate={{ opacity: 1, y: 0 }}
-            className="flex items-center gap-1.5 text-[11px] text-red-500 dark:text-red-400 mb-3 justify-center"
+            className="flex items-center gap-1.5 text-[11px] text-rose-400 mb-3 justify-center"
           >
             <AlertCircle className="w-3 h-3 flex-shrink-0" />
             {error}
@@ -135,11 +134,11 @@ const AIAccessGate = ({ onAccessGranted }: AIAccessGateProps) => {
         <button
           type="submit"
           disabled={!code.trim() || isChecking}
-          className="w-full py-3 rounded-xl font-semibold text-sm text-white
-            bg-gradient-to-r from-blue-600 to-purple-600
-            hover:from-blue-500 hover:to-purple-500
+          className="w-full py-3 rounded-xl font-bold text-sm text-white
+            bg-gradient-to-r from-blue-600 to-indigo-600
+            hover:from-blue-500 hover:to-indigo-500
             disabled:opacity-50 disabled:cursor-not-allowed
-            transition-all duration-200 shadow-md hover:shadow-lg
+            transition-all duration-200 shadow-md hover:shadow-indigo-500/20
             active:scale-[0.98]"
         >
           {isChecking ? (
@@ -156,9 +155,9 @@ const AIAccessGate = ({ onAccessGranted }: AIAccessGateProps) => {
         </button>
       </motion.form>
 
-      <p className="text-[10px] text-gray-400 dark:text-gray-600 mt-4 leading-relaxed">
+      <p className="text-[10px] text-slate-500 mt-4 leading-relaxed">
         Don&apos;t have a code? Contact{" "}
-        <span className="text-blue-500 font-medium">Priyal Kumar sir</span> for beta access.
+        <span className="text-blue-400 font-medium">Priyal Kumar sir</span> for beta access.
       </p>
     </div>
   );

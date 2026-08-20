@@ -88,10 +88,10 @@ const AIAssistantButton = ({ isOpen, onClick }: AIAssistantButtonProps) => {
             )}
           </AnimatePresence>
 
-          {/* AI Badge */}
-          <span className="absolute -top-1.5 -right-1.5 bg-emerald-500 text-white text-[9px] font-bold
-            px-1.5 py-0.5 rounded-full leading-none tracking-wide shadow-md border border-white dark:border-gray-900">
-            AI
+          {/* Beta Badge */}
+          <span className="absolute -top-1.5 -right-1.5 bg-red-500 text-white text-[9px] font-black
+            px-1.5 py-0.5 rounded-full leading-none tracking-wide shadow-md border border-white dark:border-slate-900">
+            BETA
           </span>
 
           {/* Pulse Ring */}
