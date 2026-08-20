@@ -163,19 +163,6 @@ const AppSidebar = ({ className }: AppSidebarProps) => {
     { icon: <Lock className="h-4 w-4" />, label: `Premium Content (${PREMIUM_PLANS.length})`, href: '/premium-content' },
     { icon: <Award className="h-4 w-4" />, label: 'Scholarships', href: '/scholarship-portal' },
     { icon: <Briefcase className="h-4 w-4" />, label: `Opportunities${oppCount !== null ? ` (${oppCount})` : ''}`, href: '/opportunities' },
-    {
-      icon: <Globe className="h-4 w-4" />,
-      label: 'Useful Websites',
-      href: '#useful-websites',
-      children: [
-        { icon: <GraduationCap className="h-4 w-4" />, label: 'HBTU Official', href: 'https://hbtu.ac.in/' },
-        { icon: <Shield className="h-4 w-4" />, label: 'HBTU ERP', href: 'https://erp.hbtu.ac.in/NewIndex.html' },
-        { icon: <Award className="h-4 w-4" />, label: 'Attendance Portal', href: 'https://erp.hbtu.ac.in/StudentAttendance.aspx' },
-        { icon: <Award className="h-4 w-4" />, label: 'UP Scholarship', href: 'https://scholarship.up.gov.in/index.aspx' },
-        { icon: <Briefcase className="h-4 w-4" />, label: 'Buddy4Study', href: 'https://www.buddy4study.com/scholarships' },
-        { icon: <Laptop className="h-4 w-4" />, label: 'Digi Shakti (Tablet)', href: 'https://digishakti.up.gov.in/' },
-      ]
-    },
     { icon: <Brain className="h-4 w-4" />, label: '500+ AI Tools', href: '/useful-ai-tools' },
     { icon: <Users className="h-4 w-4" />, label: 'Contributor List', href: '/notes-contributors' },
     { icon: <Info className="h-4 w-4" />, label: 'About', href: '/about' },
@@ -261,16 +248,6 @@ const AppSidebar = ({ className }: AppSidebarProps) => {
         iconContainer: 'bg-gradient-to-br from-orange-400 to-red-600 text-white',
         text: 'text-orange-400 font-semibold',
         badge: { text: 'HIRING', className: 'bg-orange-500/10 text-orange-400 border border-orange-500/20' }
-      };
-    }
-    if (normalizedLabel === 'useful websites') {
-      return {
-        container: expandedGroups.includes('useful websites')
-          ? 'bg-blue-500/15 border border-blue-500/40 text-blue-400 shadow-[0_0_12px_rgba(59,130,246,0.15)] font-semibold'
-          : 'bg-blue-500/5 hover:bg-blue-500/10 border border-blue-500/20 hover:border-blue-500/40 text-blue-400/90 hover:text-blue-400',
-        iconContainer: 'bg-gradient-to-br from-blue-500 to-indigo-600 text-white',
-        text: 'text-blue-400 font-semibold',
-        badge: { text: '6 PORTALS', className: 'bg-blue-500/10 text-blue-400 border border-blue-500/20' }
       };
     }
     if (normalizedLabel.includes('ai tools')) {

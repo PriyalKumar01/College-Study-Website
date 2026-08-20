@@ -3,7 +3,7 @@ import {
   Menu, Moon, Sun, User, LogOut, Home, 
   LayoutDashboard, BookOpen, Calculator, FileText, 
   Users, Award, Briefcase, Brain, Info,
-  Shield, Crown, Lock, Trophy
+  Shield, Crown, Lock, Trophy, ChevronDown, Globe, ExternalLink
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useTheme } from '@/providers/ThemeProvider';
@@ -21,7 +21,8 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 import { UsefulWebsitesDropdown, USEFUL_WEBSITES } from './UsefulWebsitesDropdown';
-import { ChevronDown, Globe, ExternalLink } from 'lucide-react';
+import NotesDropdown, { NOTE_CATEGORIES } from './NotesDropdown';
+import InstallPWAButton from './InstallPWAButton';
 
 interface NavbarProps {
   onOpenAuth?: (mode: 'signin' | 'signup') => void;
@@ -33,20 +34,14 @@ const Navbar = ({ onOpenAuth }: NavbarProps) => {
   const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
   const [mobileWebsitesOpen, setMobileWebsitesOpen] = useState(false);
+  const [mobileNotesOpen, setMobileNotesOpen] = useState(false);
 
   const isActive = (path: string) => location.pathname === path;
-
-  // Desktop Navbar Items
-  const navItems = [
-    { href: '/', label: 'Home' },
-    { href: '/dashboard', label: 'Dashboard' },
-    { href: '/notes', label: 'Notes' },
-    { href: '/about', label: 'About' },
-  ];
 
   // Mobile AppSidebar Items shown when logged in
   const authenticatedMobileItems = [
     { href: '/', label: 'Home', icon: Home },
+    { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { href: '/notes', label: 'Notes', icon: BookOpen },
     { href: '/gate-study', label: 'Gate Study', icon: Trophy },
     { href: '/cgpa-calculator', label: 'CGPA Calculator', icon: Calculator },
@@ -60,53 +55,86 @@ const Navbar = ({ onOpenAuth }: NavbarProps) => {
 
   const defaultMobileItems = [
     { href: '/', label: 'Home', icon: Home },
+    { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+    { href: '/notes', label: 'Notes', icon: BookOpen },
     { href: '/about', label: 'About', icon: Info },
   ];
 
   const mobileNavItems = user ? authenticatedMobileItems : defaultMobileItems;
-
   const firstName = user?.user_metadata?.first_name || 'User';
 
   return (
     <nav className="bg-white/80 dark:bg-slate-950/80 backdrop-blur-md supports-[backdrop-filter]:bg-white/60 dark:supports-[backdrop-filter]:bg-slate-950/60 border-b border-gray-200 dark:border-slate-800 shadow-sm dark:shadow-none sticky top-0 z-50 w-full transition-all duration-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          <Link to="/" className="flex items-center space-x-2 mr-8">
+          <Link to="/" className="flex items-center space-x-2 mr-6 shrink-0">
             <img
               src="/lovable-uploads/f3b6ce00-a0ff-4b44-bbdb-ab5640339741.png"
               alt="College Study Hub"
-              className="h-8 md:h-10 w-auto block" // Ensure block to be visible
+              className="h-8 md:h-10 w-auto block"
             />
           </Link>
 
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center space-x-6 flex-1 justify-start">
-            {navItems.map((item) => (
-              <Link
-                key={item.href}
-                to={item.href}
-                className={`text-sm font-medium transition-colors relative group py-1 ${isActive(item.href)
-                  ? 'text-primary'
-                  : 'text-foreground/80 hover:text-foreground'
-                  }`}
-                onClick={(e) => {
-                  if (!user && item.href !== '/' && item.href !== '/about') {
-                    e.preventDefault();
-                    if (onOpenAuth) onOpenAuth('signin');
-                  }
-                }}
-              >
-                {item.label}
-                <span className={`absolute bottom-0 left-0 w-full h-0.5 bg-primary transform transition-transform duration-300 origin-left ${isActive(item.href) ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100'
-                  }`} />
-              </Link>
-            ))}
+            {/* 1. Home */}
+            <Link
+              to="/"
+              className={`text-sm font-medium transition-colors relative group py-1 ${
+                isActive('/') ? 'text-primary font-semibold' : 'text-foreground/80 hover:text-foreground'
+              }`}
+            >
+              Home
+              <span className={`absolute bottom-0 left-0 w-full h-0.5 bg-primary transform transition-transform duration-300 origin-left ${
+                isActive('/') ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100'
+              }`} />
+            </Link>
 
-            {/* Useful Websites Dropdown on Desktop */}
+            {/* 2. Dashboard */}
+            <Link
+              to="/dashboard"
+              className={`text-sm font-medium transition-colors relative group py-1 ${
+                isActive('/dashboard') ? 'text-primary font-semibold' : 'text-foreground/80 hover:text-foreground'
+              }`}
+              onClick={(e) => {
+                if (!user) {
+                  e.preventDefault();
+                  if (onOpenAuth) onOpenAuth('signin');
+                }
+              }}
+            >
+              Dashboard
+              <span className={`absolute bottom-0 left-0 w-full h-0.5 bg-primary transform transition-transform duration-300 origin-left ${
+                isActive('/dashboard') ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100'
+              }`} />
+            </Link>
+
+            {/* 3. Notes Dropdown (Hover to open) */}
+            <NotesDropdown />
+
+            {/* 4. Useful Websites Dropdown (Hover to open) */}
             <UsefulWebsitesDropdown />
+
+            {/* 5. About (Rightmost in nav links) */}
+            <Link
+              to="/about"
+              className={`text-sm font-medium transition-colors relative group py-1 ${
+                isActive('/about') ? 'text-primary font-semibold' : 'text-foreground/80 hover:text-foreground'
+              }`}
+            >
+              About
+              <span className={`absolute bottom-0 left-0 w-full h-0.5 bg-primary transform transition-transform duration-300 origin-left ${
+                isActive('/about') ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100'
+              }`} />
+            </Link>
           </div>
 
           <div className="flex items-center gap-3">
+            {/* Install PWA Button on Desktop */}
+            <div className="hidden sm:block">
+              <InstallPWAButton />
+            </div>
+
             {/* Notification Bell - visible only when logged in */}
             {user && <NotificationBell />}
 
@@ -135,10 +163,7 @@ const Navbar = ({ onOpenAuth }: NavbarProps) => {
                     {onOpenAuth ? <span>Get Started</span> : <Link to="/auth">Get Started</Link>}
                   </Button>
                 </>
-              ) : (
-                // Profile is hidden on desktop because it's available in the Sidebar
-                null
-              )}
+              ) : null}
             </div>
 
             {/* Mobile Menu (Sheet) */}
@@ -157,14 +182,18 @@ const Navbar = ({ onOpenAuth }: NavbarProps) => {
                         alt="Logo"
                         className="h-6 w-auto"
                       />
-                      {/* Removed 'Menu' text as per request */}
                     </SheetTitle>
                   </SheetHeader>
 
-                  <div className="flex flex-col gap-6 mt-8">
+                  <div className="flex flex-col gap-5 mt-6">
+                    {/* Install PWA Button on Mobile Drawer */}
+                    <div>
+                      <InstallPWAButton isMobile={true} />
+                    </div>
+
                     {/* User Info Mobile - Clickable to Profile */}
                     {user && (
-                      <Link to="/profile" onClick={() => setIsOpen(false)}> {/* Add Link wrapper */}
+                      <Link to="/profile" onClick={() => setIsOpen(false)}>
                         <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg hover:bg-muted transition-colors cursor-pointer">
                           <Avatar className="h-10 w-10">
                             <AvatarImage src={user.user_metadata?.avatar_url} />
@@ -178,12 +207,12 @@ const Navbar = ({ onOpenAuth }: NavbarProps) => {
                       </Link>
                     )}
 
-                    <div className="flex flex-col space-y-1 max-h-[60vh] overflow-y-auto pb-4 custom-scrollbar">
+                    <div className="flex flex-col space-y-1 max-h-[55vh] overflow-y-auto pb-4 custom-scrollbar">
                       {mobileNavItems.map((item) => (
                         <Link
                           key={item.href}
                           to={item.href}
-                          onClick={() => setIsOpen(false)} // Ensure setOpen is used
+                          onClick={() => setIsOpen(false)}
                           className={`flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-xl transition-all ${isActive(item.href)
                             ? 'bg-blue-600/10 text-blue-600 dark:text-blue-400'
                             : 'hover:bg-slate-100 dark:hover:bg-slate-800/50 text-slate-700 dark:text-slate-300'
@@ -212,59 +241,36 @@ const Navbar = ({ onOpenAuth }: NavbarProps) => {
                         </button>
 
                         {mobileWebsitesOpen && (
-                          <div className="mt-2 space-y-1.5 pl-2 pr-1">
-                            {USEFUL_WEBSITES.map((site, sIdx) => {
-                              const SiteIcon = site.icon;
-                              return (
-                                <a
-                                  key={sIdx}
-                                  href={site.url}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  onClick={() => setIsOpen(false)}
-                                  className="flex items-start gap-2.5 p-2 rounded-xl bg-slate-50 dark:bg-slate-900/70 border border-slate-200/70 dark:border-slate-800 hover:border-blue-300 dark:hover:border-blue-700 transition-all"
-                                >
-                                  <div className="p-1.5 rounded-lg bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 shrink-0 mt-0.5">
-                                    <SiteIcon className="h-3.5 w-3.5" />
-                                  </div>
-                                  <div className="flex-1 min-w-0">
-                                    <div className="flex items-center justify-between gap-1">
-                                      <p className="text-xs font-semibold text-slate-900 dark:text-slate-100 truncate">
-                                        {site.name}
-                                      </p>
-                                      {site.badge && (
-                                        <span className={`text-[8px] font-bold px-1 py-0.2 rounded border shrink-0 ${site.badgeColor}`}>
-                                          {site.badge}
-                                        </span>
-                                      )}
-                                    </div>
-                                    <p className="text-[10px] text-muted-foreground line-clamp-1">
-                                      {site.description}
-                                    </p>
-                                  </div>
-                                  <ExternalLink className="h-3 w-3 text-slate-400 shrink-0 mt-1" />
-                                </a>
-                              );
-                            })}
+                          <div className="mt-2 space-y-1 pl-2 pr-1">
+                            {USEFUL_WEBSITES.map((site, sIdx) => (
+                              <a
+                                key={sIdx}
+                                href={site.url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                onClick={() => setIsOpen(false)}
+                                className="flex items-center justify-between p-2 rounded-lg bg-slate-50 dark:bg-slate-900/70 border border-slate-200/70 dark:border-slate-800 hover:border-blue-300 dark:hover:border-blue-700 transition-all"
+                              >
+                                <span className="text-xs font-semibold text-slate-800 dark:text-slate-200">{site.name}</span>
+                                <ExternalLink className="h-3 w-3 text-slate-400 shrink-0 ml-2" />
+                              </a>
+                            ))}
                           </div>
                         )}
                       </div>
                     </div>
 
-                    <div className="mt-auto border-t pt-6 space-y-4">
+                    <div className="mt-auto border-t pt-4 space-y-3">
                       <Button variant="ghost" size="sm" onClick={toggleTheme} className="w-full justify-start gap-2">
                         {theme === 'dark' ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
                         {theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
                       </Button>
 
                       {user ? (
-                        <>
-                          {/* Removed 'My Profile' button as requested since top section is clickable */}
-                          <Button variant="ghost" className="w-full justify-start gap-2 text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/10" onClick={() => signOut()}>
-                            <LogOut className="h-4 w-4" />
-                            Sign Out
-                          </Button>
-                        </>
+                        <Button variant="ghost" className="w-full justify-start gap-2 text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/10" onClick={() => signOut()}>
+                          <LogOut className="h-4 w-4" />
+                          Sign Out
+                        </Button>
                       ) : (
                         <div className="grid grid-cols-2 gap-3">
                           <Button variant="outline" onClick={() => onOpenAuth ? onOpenAuth('signin') : null} asChild={!onOpenAuth}>
