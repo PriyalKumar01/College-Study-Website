@@ -145,8 +145,26 @@ export default function ScholarshipsPortal() {
   const highlightId = searchParams.get('highlight');
   const { isOwner, isAdmin, user } = useAuth();
   const { toast } = useToast();
-  const [scholarships, setScholarships] = useState<Scholarship[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [scholarships, setScholarships] = useState<Scholarship[]>(() => {
+    try {
+      const cached = sessionStorage.getItem('cached_scholarships');
+      const time = sessionStorage.getItem('cached_scholarships_time');
+      if (cached && time && Date.now() - Number(time) < 5 * 60 * 1000) {
+        return JSON.parse(cached);
+      }
+    } catch {}
+    return [];
+  });
+  const [loading, setLoading] = useState(() => {
+    try {
+      const cached = sessionStorage.getItem('cached_scholarships');
+      const time = sessionStorage.getItem('cached_scholarships_time');
+      if (cached && time && Date.now() - Number(time) < 5 * 60 * 1000) {
+        return false;
+      }
+    } catch {}
+    return true;
+  });
   const [filters, setFilters] = useState<Filters>({ streams: [], who: [], type: [], status: [], amount: [] });
   const [search, setSearch] = useState('');
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
@@ -158,7 +176,16 @@ export default function ScholarshipsPortal() {
   const highlightRef = useRef<HTMLDivElement>(null);
 
   // Load scholarships from Supabase
-  const fetchScholarships = async () => {
+  const fetchScholarships = async (forceRefresh = false) => {
+    try {
+      const cached = sessionStorage.getItem('cached_scholarships');
+      const time = sessionStorage.getItem('cached_scholarships_time');
+      if (!forceRefresh && cached && time && Date.now() - Number(time) < 5 * 60 * 1000) {
+        setLoading(false);
+        return;
+      }
+    } catch {}
+
     setLoading(true);
     const { data, error } = await (supabase as any)
       .from('scholarships')
@@ -168,6 +195,10 @@ export default function ScholarshipsPortal() {
 
     if (!error && data) {
       setScholarships(data as Scholarship[]);
+      try {
+        sessionStorage.setItem('cached_scholarships', JSON.stringify(data));
+        sessionStorage.setItem('cached_scholarships_time', String(Date.now()));
+      } catch {}
     }
     setLoading(false);
   };

@@ -422,8 +422,26 @@ const Opportunities = () => {
   const [filterLoc, setFilterLoc] = useState('all');
 
   // Opportunities data
-  const [opportunities, setOpportunities] = useState<Opportunity[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [opportunities, setOpportunities] = useState<Opportunity[]>(() => {
+    try {
+      const cached = sessionStorage.getItem('cached_opportunities');
+      const time = sessionStorage.getItem('cached_opportunities_time');
+      if (cached && time && Date.now() - Number(time) < 5 * 60 * 1000) {
+        return JSON.parse(cached);
+      }
+    } catch {}
+    return [];
+  });
+  const [loading, setLoading] = useState(() => {
+    try {
+      const cached = sessionStorage.getItem('cached_opportunities');
+      const time = sessionStorage.getItem('cached_opportunities_time');
+      if (cached && time && Date.now() - Number(time) < 5 * 60 * 1000) {
+        return false;
+      }
+    } catch {}
+    return true;
+  });
   const [modalOpen, setModalOpen] = useState(false);
   const [editing, setEditing] = useState<Opportunity | null>(null);
 
@@ -487,10 +505,25 @@ const Opportunities = () => {
     }
   }, [user, checkPurchases]);
 
-  const fetchOpportunities = async () => {
+  const fetchOpportunities = async (forceRefresh = false) => {
+    try {
+      const cached = sessionStorage.getItem('cached_opportunities');
+      const time = sessionStorage.getItem('cached_opportunities_time');
+      if (!forceRefresh && cached && time && Date.now() - Number(time) < 5 * 60 * 1000) {
+        setLoading(false);
+        return;
+      }
+    } catch {}
+
     setLoading(true);
     const { data, error } = await (supabase as any).from('opportunities').select('*').order('created_at', { ascending: false });
-    if (!error && data) setOpportunities(data as Opportunity[]);
+    if (!error && data) {
+      setOpportunities(data as Opportunity[]);
+      try {
+        sessionStorage.setItem('cached_opportunities', JSON.stringify(data));
+        sessionStorage.setItem('cached_opportunities_time', String(Date.now()));
+      } catch {}
+    }
     setLoading(false);
   };
 
