@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Sparkles } from "lucide-react";
+import { Bot } from "lucide-react";
 
 interface AIAssistantButtonProps {
   isOpen: boolean;
@@ -18,7 +18,7 @@ const AIAssistantButton = ({ isOpen, onClick }: AIAssistantButtonProps) => {
   }, []);
 
   return (
-    <div className="fixed right-6 bottom-[84px] md:bottom-24 z-[161]">
+    <div className="fixed right-6 bottom-[152px] md:bottom-24 z-[161]">
       <div
         className="relative flex items-center cursor-pointer"
         onMouseEnter={() => setShowLabel(true)}
@@ -47,15 +47,14 @@ const AIAssistantButton = ({ isOpen, onClick }: AIAssistantButtonProps) => {
           )}
         </AnimatePresence>
 
-        {/* Main Button */}
+        {/* Main Button — solid professional indigo */}
         <motion.button
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.95 }}
           animate={isOpen ? { rotate: 360 } : { rotate: 0 }}
           transition={{ duration: 0.3 }}
           className="relative w-14 h-14 rounded-full shadow-lg flex items-center justify-center
-            bg-gradient-to-br from-blue-600 to-purple-600
-            hover:from-blue-500 hover:to-purple-500
+            bg-indigo-600 hover:bg-indigo-500
             transition-all duration-300"
           aria-label="Open AI Assistant"
         >
@@ -78,26 +77,26 @@ const AIAssistantButton = ({ isOpen, onClick }: AIAssistantButtonProps) => {
               </motion.svg>
             ) : (
               <motion.div
-                key="sparkle"
+                key="bot"
                 initial={{ opacity: 0, scale: 0.5 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.5 }}
                 transition={{ duration: 0.2 }}
               >
-                <Sparkles className="w-6 h-6 text-white" />
+                <Bot className="w-7 h-7 text-white" />
               </motion.div>
             )}
           </AnimatePresence>
 
-          {/* Beta Badge */}
-          <span className="absolute -top-1.5 -right-1.5 bg-red-500 text-white text-[9px] font-bold
+          {/* AI Badge */}
+          <span className="absolute -top-1.5 -right-1.5 bg-emerald-500 text-white text-[9px] font-bold
             px-1.5 py-0.5 rounded-full leading-none tracking-wide shadow-md border border-white dark:border-gray-900">
-            BETA
+            AI
           </span>
 
           {/* Pulse Ring */}
           {pulseVisible && !isOpen && (
-            <span className="absolute inset-0 rounded-full bg-blue-500 opacity-30 animate-ping" />
+            <span className="absolute inset-0 rounded-full bg-indigo-400 opacity-30 animate-ping" />
           )}
         </motion.button>
       </div>

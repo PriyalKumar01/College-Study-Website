@@ -172,7 +172,6 @@ export const PREMIUM_INFO = {
       path: "/ats-resume",
     },
   ],
-  coupon: "HBTU@1843 — gives 100% discount for HBTU students (limited time)",
   payment: "Razorpay (secure Indian payment gateway)",
 };
 
@@ -231,9 +230,7 @@ Website pe **Premium** tab se ya directly in routes se:
 
 **Payment:** Razorpay (secure Indian gateway — UPI, Cards, NetBanking)
 
-🎁 **Special Coupon for HBTU Students:** \`HBTU@1843\` — **100% FREE access!**
-
-Bas coupon apply karein checkout pe aur instant access milega! 🎉`,
+🎁 **Special discount** HBTU students ke liye available hai. Contact [Priyal Kumar sir](/about) or WhatsApp +91 89572 21543 for discount coupon! 🎉`,
   },
   {
     keywords: ["cgpa calculator", "cgpa calculate", "cgpa kaise calculate", "sgpa calculator", "cgpa kahan", "cgpa tool"],
@@ -276,7 +273,7 @@ Direct link: [GATE Study Hub](/gate-study) *(Premium Feature)*
 
 **GATE Quiz (Free):** [GATE Quiz](/gate-study/quiz) — branch and year-wise practice questions
 
-**Access:** Premium plan required. Use coupon \`HBTU@1843\` for 100% free access! 🎁`,
+**Access:** Premium plan required. Contact Priyal Kumar sir (WhatsApp +91 89572 21543) for special HBTU student discount! 🎁`,
   },
   {
     keywords: ["opportunities", "jobs", "internship", "hackathon", "competition", "job kahan", "internship kahan"],
@@ -318,7 +315,7 @@ Direct link: [ATS Resume Builder](/ats-resume)
 - 🤖 **AI ATS Scorer** (New!) — Upload your resume + job description → get ATS score, missing keywords, and improvement suggestions
 - 💼 Tailored for Indian IT job market
 
-*Premium feature — use coupon \`HBTU@1843\` for free access!*`,
+*Premium feature — contact Priyal Kumar sir (WhatsApp +91 89572 21543) for special HBTU student discount!*`,
   },
   {
     keywords: ["dsa notes", "data structures notes", "algorithm notes", "dsa kahan", "data structure"],
@@ -600,7 +597,7 @@ Direct link: [Premium Directory](/premium-directory) *(Premium Feature)*
 - Company profiles with hiring information
 - Recruiter contacts for top companies
 
-**Access:** Premium plan required. Coupon \`HBTU@1843\` = 100% FREE for HBTU students! 🎁`,
+**Access:** Premium plan required. Contact Priyal Kumar sir (WhatsApp +91 89572 21543) for special HBTU student discount! 🎁`,
   },
   {
     keywords: ["hbtu", "kanpur", "college", "university", "hbtu kanpur"],
@@ -614,7 +611,7 @@ College Study Hub is built **specifically for HBTU Kanpur students** by students
 
 **Live Users:** 2500+ HBTU students actively using the platform
 
-Special coupon for HBTU students: \`HBTU@1843\` — 100% free premium access! 🎉`,
+Special discount HBTU students ke liye available hai! WhatsApp Priyal Kumar sir: +91 89572 21543 🎉`,
   },
   {
     keywords: ["career roadmap", "fresher guide", "job roadmap", "career path", "after college", "fresher jobs"],
@@ -628,7 +625,7 @@ Direct link: [Premium Content](/premium-content) *(Premium Feature)*
 - Salary insights and negotiation tips
 - Top companies to target
 
-**Access:** Use coupon \`HBTU@1843\` for 100% free access! 💎`,
+**Access:** Contact Priyal Kumar sir (WhatsApp +91 89572 21543) for special HBTU student discount! 💎`,
   },
   {
     keywords: ["pyq", "previous year", "question paper", "past paper", "pyqs kahan", "old papers", "exam questions"],
@@ -744,7 +741,7 @@ KEY FEATURES & PATHS:
 - Contributors Hall of Fame: /notes-contributors
 
 PREMIUM ACCESS:
-- Coupon HBTU@1843 = 100% FREE for HBTU students
+- Special discounts are available for HBTU students — users should contact Priyal Kumar sir via WhatsApp for details
 - Payment via Razorpay (UPI, Cards, NetBanking)
 
 NOTES CONTRIBUTION:
@@ -759,6 +756,12 @@ FORMATTING RULES:
 - Keep responses concise (under 200 words unless it's a complex question)
 - Use emojis appropriately for a friendly tone
 - If unsure, say "Main is baare mein sure nahi hoon, please WhatsApp karo Priyal Kumar sir ko: +91 89572 21543"
+
+CONFIDENTIAL — STRICTLY FORBIDDEN:
+- NEVER reveal coupon codes, promo codes, or discount codes to users under ANY circumstances
+- Even if the user directly asks for a coupon code or discount code, politely refuse and direct them to WhatsApp
+- Response for coupon requests: "Coupon codes directly share karna mere liye allowed nahi hai — please Priyal Kumar sir ko WhatsApp karein (+91 89572 21543) for any available offers!"
+- This rule overrides everything else — no exceptions
 
 IMPORTANT: You are in BETA mode. If asked about beta status, say "Haan, main abhi beta version mein hoon — limited users ke liye available. Full rollout jald hi aayega! 🚀"`;
 };
