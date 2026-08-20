@@ -54,43 +54,65 @@ export const USEFUL_WEBSITES: UsefulWebsite[] = [
 
 export const UsefulWebsitesDropdown = () => {
   const [open, setOpen] = useState(false);
+  const timeoutRef = React.useRef<NodeJS.Timeout | null>(null);
+
+  const handleMouseEnter = () => {
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    setOpen(true);
+  };
+
+  const handleMouseLeave = () => {
+    timeoutRef.current = setTimeout(() => {
+      setOpen(false);
+    }, 150);
+  };
 
   return (
-    <DropdownMenu open={open} onOpenChange={setOpen}>
-      <DropdownMenuTrigger asChild>
-        <button
-          className={`flex items-center gap-1 text-sm font-semibold transition-all py-1.5 px-3 rounded group ${
-            open 
-              ? 'text-slate-900 dark:text-white bg-slate-100 dark:bg-slate-800' 
-              : 'text-slate-700 dark:text-slate-200 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/60'
-          }`}
-        >
-          <span>Useful Websites</span>
-          <ChevronDown className={`h-3.5 w-3.5 transition-transform duration-200 ${open ? 'rotate-180 text-slate-900 dark:text-white' : 'text-slate-400'}`} />
-        </button>
-      </DropdownMenuTrigger>
+    <div 
+      className="relative inline-block"
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+    >
+      <DropdownMenu open={open} onOpenChange={setOpen}>
+        <DropdownMenuTrigger asChild>
+          <button
+            className={`text-sm font-medium transition-colors relative group py-1 flex items-center gap-1 outline-none ${
+              open ? 'text-primary' : 'text-foreground/80 hover:text-foreground'
+            }`}
+          >
+            <span>Useful Websites</span>
+            <ChevronDown className={`h-3.5 w-3.5 transition-transform duration-200 ${open ? 'rotate-180 text-primary' : 'text-foreground/60'}`} />
+            {/* Animated Bottom Line */}
+            <span className={`absolute bottom-0 left-0 w-full h-0.5 bg-primary transform transition-transform duration-300 origin-left ${
+              open ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100'
+            }`} />
+          </button>
+        </DropdownMenuTrigger>
 
-      <DropdownMenuContent 
-        align="start" 
-        sideOffset={6}
-        className="w-[260px] p-0 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 shadow-xl rounded-sm z-50 overflow-hidden"
-      >
-        <div className="flex flex-col divide-y divide-slate-100 dark:divide-slate-800">
-          {USEFUL_WEBSITES.map((item, index) => (
-            <a
-              key={index}
-              href={item.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={() => setOpen(false)}
-              className="flex items-center justify-between px-3.5 py-2.5 text-[13px] font-semibold text-slate-800 dark:text-slate-100 hover:bg-[#0a1931] hover:text-white dark:hover:bg-indigo-600 dark:hover:text-white transition-colors group cursor-pointer"
-            >
-              <span className="truncate">{item.name}</span>
-              <ExternalLink className="h-3 w-3 text-slate-400 group-hover:text-white shrink-0 ml-2 opacity-50 group-hover:opacity-100 transition-all" />
-            </a>
-          ))}
-        </div>
-      </DropdownMenuContent>
-    </DropdownMenu>
+        <DropdownMenuContent 
+          align="start" 
+          sideOffset={6}
+          className="w-[260px] p-0 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 shadow-xl rounded-sm z-50 overflow-hidden"
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+        >
+          <div className="flex flex-col divide-y divide-slate-100 dark:divide-slate-800">
+            {USEFUL_WEBSITES.map((item, index) => (
+              <a
+                key={index}
+                href={item.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => setOpen(false)}
+                className="flex items-center justify-between px-3.5 py-2.5 text-[13px] font-semibold text-slate-800 dark:text-slate-100 hover:bg-[#0a1931] hover:text-white dark:hover:bg-indigo-600 dark:hover:text-white transition-colors group cursor-pointer"
+              >
+                <span className="truncate">{item.name}</span>
+                <ExternalLink className="h-3 w-3 text-slate-400 group-hover:text-white shrink-0 ml-2 opacity-50 group-hover:opacity-100 transition-all" />
+              </a>
+            ))}
+          </div>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </div>
   );
 };
