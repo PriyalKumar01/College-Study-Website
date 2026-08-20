@@ -73,9 +73,6 @@ export default function Profile() {
 
     setIsLoading(true);
     try {
-      // First try to get from profiles table
-      // If profile exists in database, use it
-      // If profile exists in database, use it
       const { data: profileData, error } = await supabase
         .from('profiles')
         .select('first_name, last_name, email, mobile_number, college, branch, year, avatar_url, created_at')
@@ -86,18 +83,20 @@ export default function Profile() {
         console.error('Error fetching profile:', error);
       }
 
+      const googleAvatar = user.user_metadata?.picture?.trim() || user.user_metadata?.avatar_url?.trim() || '';
+      const dbAvatar = profileData?.avatar_url?.trim() || '';
+      const initialAvatar = dbAvatar || googleAvatar || '';
+
       if (profileData) {
-        console.log('Profile data fetched:', profileData);
         const fetchedProfile: ProfileData = {
           first_name: profileData.first_name || user.user_metadata?.first_name || '',
           last_name: profileData.last_name || user.user_metadata?.last_name || '',
           email: profileData.email || user.email || '',
           mobile_number: profileData.mobile_number || user.user_metadata?.mobile_number || '',
-          college: profileData.college || '',
-          branch: profileData.branch || '',
+          college: profileData.college || user.user_metadata?.college || '',
+          branch: profileData.branch || user.user_metadata?.branch || '',
           year: profileData.year || user.user_metadata?.year || '',
-          // IMPORTANT: Trust DB value strictly for avatar. 
-          avatar_url: profileData.avatar_url || user.user_metadata?.avatar_url || '',
+          avatar_url: initialAvatar,
           created_at: profileData.created_at || '',
         };
         setProfile(fetchedProfile);
@@ -112,7 +111,7 @@ export default function Profile() {
           college: user.user_metadata?.college || '',
           branch: user.user_metadata?.branch || '',
           year: user.user_metadata?.year || '',
-          avatar_url: '',
+          avatar_url: initialAvatar,
           created_at: user.created_at || '',
         };
         setProfile(metaProfile);
@@ -216,24 +215,27 @@ export default function Profile() {
     let uploadFailed = false;
 
     try {
-      // Default to existing confirmed avatar URL, not the potentially optimistic one
-      let finalAvatarUrl = profile.avatar_url;
+      // Default to existing confirmed avatar URL, or fallback to Google avatar
+      let finalAvatarUrl = profile.avatar_url?.trim() || '';
 
       if (avatarFile) {
         // Attempt upload
         const publicUrl = await uploadAvatar(avatarFile);
         if (publicUrl) {
           finalAvatarUrl = publicUrl;
+          try { sessionStorage.setItem(`cached_avatar_${user.id}`, publicUrl); } catch {}
         } else {
           uploadFailed = true;
-          // If upload failed, we keep the OLD avatar_url (finalAvatarUrl = profile.avatar_url)
-          // instead of setting it to null or the optimistic one
         }
       }
 
-      const finalCollege = collegeType === 'hbtu' ? 'HBTU Kanpur' : customCollege;
-      const finalBranch = editedProfile.branch === 'Other' ? otherBranch : editedProfile.branch;
-      const finalYear = editedProfile.year === 'Other' ? otherYear : editedProfile.year;
+      if (!finalAvatarUrl) {
+        finalAvatarUrl = user.user_metadata?.picture?.trim() || user.user_metadata?.avatar_url?.trim() || '';
+      }
+
+      const finalCollege = collegeType === 'hbtu' ? 'HBTU Kanpur' : (collegeType === 'non-hbtu' ? customCollege.trim() : (editedProfile.college || 'HBTU Kanpur'));
+      const finalBranch = editedProfile.branch === 'Other' ? otherBranch.trim() : editedProfile.branch;
+      const finalYear = editedProfile.year === 'Other' ? otherYear.trim() : editedProfile.year;
 
       const profileUpdates = {
         first_name: editedProfile.first_name,
@@ -243,16 +245,16 @@ export default function Profile() {
         college: finalCollege,
         branch: finalBranch,
         year: finalYear,
-        avatar_url: finalAvatarUrl,
+        avatar_url: finalAvatarUrl || null,
       };
 
       // Robust Upsert: Handles both Insert and Update in one go using our custom RPC
       const { error } = await supabase.rpc('upsert_my_profile', {
         p_first_name: editedProfile.first_name,
         p_last_name: editedProfile.last_name,
-        p_college: editedProfile.college,
-        p_branch: editedProfile.branch,
-        p_year: editedProfile.year,
+        p_college: finalCollege,
+        p_branch: finalBranch,
+        p_year: finalYear,
         p_email: user.email || '',
         p_mobile_number: profileUpdates.mobile_number,
         p_avatar_url: profileUpdates.avatar_url
@@ -260,33 +262,40 @@ export default function Profile() {
 
       if (error) throw error;
 
-      // 5. Update auth metadata (optional, but good for sync)
+      // Update auth metadata
+      const fullName = `${editedProfile.first_name} ${editedProfile.last_name}`.trim();
       const { error: userUpdateError } = await supabase.auth.updateUser({
         data: {
           first_name: editedProfile.first_name,
           last_name: editedProfile.last_name,
-          college: editedProfile.college,
-          branch: editedProfile.branch,
-          year: editedProfile.year,
+          name: fullName,
+          full_name: fullName,
+          college: finalCollege,
+          branch: finalBranch,
+          year: finalYear,
           mobile_number: editedProfile.mobile_number,
-          avatar_url: finalAvatarUrl
+          avatar_url: finalAvatarUrl,
+          profile_completed: true
         }
       });
 
-      if (userUpdateError) throw userUpdateError;
-
-      // 6. Refresh Global Auth Context (Reverted)
-      // await refreshProfile();
+      if (userUpdateError) console.warn("User metadata update warning:", userUpdateError);
 
       // Force session refresh to allow Sidebar to see new metadata immediately
       await supabase.auth.refreshSession();
 
       setProfile({
         ...editedProfile,
+        college: finalCollege,
+        branch: finalBranch,
+        year: finalYear,
         avatar_url: finalAvatarUrl
       });
       setEditedProfile({
         ...editedProfile,
+        college: finalCollege,
+        branch: finalBranch,
+        year: finalYear,
         avatar_url: finalAvatarUrl
       });
       setAvatarFile(null);

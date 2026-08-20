@@ -20,11 +20,12 @@ const ProfileDropdown = () => {
 
   if (!user) return null;
 
-  const avatarUrl = user.user_metadata?.avatar_url;
+  const cachedAvatar = user.id ? (() => { try { return sessionStorage.getItem(`cached_avatar_${user.id}`); } catch { return null; } })() : null;
+  const avatarUrl = cachedAvatar?.trim() || user.user_metadata?.avatar_url?.trim() || user.user_metadata?.picture?.trim() || '';
   const avatarEmoji = user.user_metadata?.avatar || '👤';
   const firstName = user.user_metadata?.first_name || '';
   const lastName = user.user_metadata?.last_name || '';
-  const fullName = `${firstName} ${lastName} `.trim() || 'User';
+  const fullName = `${firstName} ${lastName}`.trim() || user.user_metadata?.name || user.user_metadata?.full_name || 'User';
 
   const email = user.email || '';
   const college = user.user_metadata?.college || 'Not specified';

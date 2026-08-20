@@ -132,8 +132,8 @@ const AppSidebar = ({ className }: AppSidebarProps) => {
 
   const firstName = userMetadata.first_name || userEmail.split('@')[0];
   const lastName = userMetadata.last_name || '';
-  // Prioritize locally fetched profile avatar (DB) over auth metadata (Google)
-  const avatarUrl = profileAvatar || userMetadata.avatar_url;
+  // Prioritize locally fetched profile avatar (DB) over auth metadata (Google picture fallback)
+  const avatarUrl = profileAvatar?.trim() || userMetadata.avatar_url?.trim() || userMetadata.picture?.trim() || '';
 
   const getInitials = () => {
     if (firstName && lastName) {

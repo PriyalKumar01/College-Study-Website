@@ -471,14 +471,33 @@ Simply click one of the buttons below to log in or sign up immediately.`,
 
     setIsLoading(true);
     try {
-      // STEP 3: Update User with Password and Profile Data
+      const fullName = `${firstName} ${lastName}`.trim();
+
+      // Save to public profiles table via RPC
+      const { error: rpcError } = await supabase.rpc('upsert_my_profile', {
+        p_first_name: firstName,
+        p_last_name: lastName,
+        p_college: resolvedCollege,
+        p_branch: finalBranch,
+        p_year: finalYear,
+        p_email: email.trim().toLowerCase(),
+        p_mobile_number: contactNo?.trim() ? contactNo.trim() : null
+      });
+
+      if (rpcError) console.warn("upsert_my_profile warning:", rpcError);
+
+      // STEP 3: Update User with Password and Profile Data in Auth Metadata
       const { error } = await supabase.auth.updateUser({
         password: password,
         data: {
           first_name: firstName,
           last_name: lastName,
+          name: fullName,
+          full_name: fullName,
           mobile_number: contactNo || null,
-          college: resolvedCollege, branch: finalBranch, year: finalYear,
+          college: resolvedCollege,
+          branch: finalBranch,
+          year: finalYear,
           profile_completed: true // MARK PROFILE AS COMPLETE
         }
       });

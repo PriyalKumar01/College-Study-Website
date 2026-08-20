@@ -261,8 +261,21 @@ export function ProfileCompletionModal() {
 
             if (error) throw error;
 
+            const effectiveFirstName = firstName || user?.user_metadata?.first_name || '';
+            const effectiveLastName = lastName || user?.user_metadata?.last_name || '';
+            const fullName = `${effectiveFirstName} ${effectiveLastName}`.trim() || user?.user_metadata?.name || user?.user_metadata?.full_name || '';
+
             await supabase.auth.updateUser({
-                data: { year: finalYear, college: resolvedCollege, branch: finalBranch, profile_completed: true },
+                data: {
+                    first_name: effectiveFirstName,
+                    last_name: effectiveLastName,
+                    name: fullName,
+                    full_name: fullName,
+                    year: finalYear,
+                    college: resolvedCollege,
+                    branch: finalBranch,
+                    profile_completed: true
+                },
             });
 
             setHasChecked(true); // Mark as checked after successful update
@@ -323,8 +336,18 @@ export function ProfileCompletionModal() {
 
             if (rpcError) throw rpcError;
 
+            const fullName = `${firstName} ${lastName}`.trim();
             const authUpdates: any = {
-                data: { first_name: firstName, last_name: lastName, college: resolvedCollege, branch: finalBranch, year: finalYear, profile_completed: true },
+                data: {
+                    first_name: firstName,
+                    last_name: lastName,
+                    name: fullName,
+                    full_name: fullName,
+                    college: resolvedCollege,
+                    branch: finalBranch,
+                    year: finalYear,
+                    profile_completed: true
+                },
             };
             if (password) authUpdates.password = password;
 
