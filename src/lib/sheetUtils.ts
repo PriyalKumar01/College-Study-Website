@@ -22,7 +22,7 @@ const FALLBACK_STORIES: StudentStory[] = [
         timestamp: new Date().toISOString(),
         email: "demo@example.com",
         name: "Ajeet Kumar",
-        branchBatch: "CSE '29, HBTU",
+        branchBatch: "CSE '30, HBTU",
         sgpa: "9.2",
         cgpa: "9.0",
         photoUrl: "https://plus.unsplash.com/premium_photo-1671656349322-41de944d259b?w=500&auto=format&fit=crop&q=60",
@@ -35,7 +35,7 @@ const FALLBACK_STORIES: StudentStory[] = [
         timestamp: new Date().toISOString(),
         email: "demo@example.com",
         name: "Riya Sharma",
-        branchBatch: "ECE '28, HBTU",
+        branchBatch: "ECE '29, HBTU",
         sgpa: "9.6",
         cgpa: "9.5",
         photoUrl: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=500&auto=format&fit=crop&q=60",
@@ -61,7 +61,7 @@ const FALLBACK_STORIES: StudentStory[] = [
         timestamp: new Date().toISOString(),
         email: "demo3@example.com",
         name: "Ananya Gupta",
-        branchBatch: "CHE '28, HBTU",
+        branchBatch: "CHE '29, HBTU",
         sgpa: "9.4",
         cgpa: "9.1",
         photoUrl: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=500&auto=format&fit=crop&q=60",
@@ -74,7 +74,7 @@ const FALLBACK_STORIES: StudentStory[] = [
         timestamp: new Date().toISOString(),
         email: "demo4@example.com",
         name: "Aryan Patel",
-        branchBatch: "IT '29, HBTU",
+        branchBatch: "IT '30, HBTU",
         sgpa: "9.0",
         cgpa: "8.5",
         photoUrl: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=500&auto=format&fit=crop&q=60",
@@ -105,13 +105,32 @@ const getGoogleDriveImage = (url: string) => {
     return url;
 };
 
-// Helper to calculate batch
-const calculateBatch = (yearText: string) => {
+// Helper to calculate batch dynamically based on current academic year.
+// Academic year starts on Aug 1 each year.
+// 1st year joins in current academic year → graduates in (admissionYear + 4).
+// E.g. Aug 2026: admissionYear=2026, 1st→'30, 2nd→'29, 3rd→'28, 4th→'27
+const calculateBatch = (yearText: string): string => {
+    const now = new Date();
+    // If month >= August (month index 7), academic year started this calendar year
+    const admissionYear = now.getMonth() >= 7 ? now.getFullYear() : now.getFullYear() - 1;
+
     const text = yearText.toLowerCase();
-    if (text.includes('1') || text.includes('first')) return "'29";
-    if (text.includes('2') || text.includes('second')) return "'28";
-    if (text.includes('3') || text.includes('third')) return "'27";
-    if (text.includes('4') || text.includes('fourth')) return "'26";
+    if (text.includes('1') || text.includes('first')) {
+        const grad = admissionYear + 4;
+        return `'${String(grad).slice(-2)}`;
+    }
+    if (text.includes('2') || text.includes('second')) {
+        const grad = admissionYear + 3;
+        return `'${String(grad).slice(-2)}`;
+    }
+    if (text.includes('3') || text.includes('third')) {
+        const grad = admissionYear + 2;
+        return `'${String(grad).slice(-2)}`;
+    }
+    if (text.includes('4') || text.includes('fourth')) {
+        const grad = admissionYear + 1;
+        return `'${String(grad).slice(-2)}`;
+    }
     return "";
 };
 
