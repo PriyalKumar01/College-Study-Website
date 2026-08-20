@@ -5,6 +5,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { navItems } from "./nav-items";
 import { ThemeProvider } from "./providers/ThemeProvider";
 import { AuthProvider } from "./contexts/AuthContext";
+import { SidebarProvider } from "./contexts/SidebarContext";
 import CookieConsent from "./components/CookieConsent";
 import CustomCursor from "./components/CustomCursor";
 import WhatsAppButton from "./components/WhatsAppButton";
@@ -35,43 +36,55 @@ const App = () => {
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
         <AuthProvider>
-          <TooltipProvider>
-            <Toaster />
-            {showMaintenance ? (
-              <Maintenance />
-            ) : (
-              <BrowserRouter>
-                <ScrollToTop />
-                <CustomCursor />
-                <Routes>
-                {/* Auth Route - stand alone or inside layout? Usually stand alone to avoid distractions */}
-                <Route path="/auth" element={<Auth />} />
-                <Route path="/terms" element={<TermsOfService />} />
-                <Route path="/privacy" element={<PrivacyPolicy />} />
-                {/* Public deep-link for shared scholarship URLs */}
-                <Route path="/scholarship/:slug" element={<ScholarshipDeepLink />} />
-                <Route path="/opportunity/:id" element={<OpportunityDeepLink />} />
+          <SidebarProvider>
+            <TooltipProvider>
+              <Toaster />
+              {showMaintenance ? (
+                <Maintenance />
+              ) : (
+                <BrowserRouter>
+                  <ScrollToTop />
+                  <CustomCursor />
+                  <Routes>
+                    {/* Auth Route - stand alone or inside layout? Usually stand alone to avoid distractions */}
+                    <Route path="/auth" element={<Auth />} />
+                    <Route path="/terms" element={<TermsOfService />} />
+                    <Route path="/privacy" element={<PrivacyPolicy />} />
+                    {/* Public deep-link for shared scholarship URLs */}
+                    <Route path="/scholarship/:slug" element={<ScholarshipDeepLink />} />
+                    <Route path="/opportunity/:id" element={<OpportunityDeepLink />} />
 
-                {/* Main Layout routes */}
-                <Route element={<AppLayout />}>
-                  {/* Public Routes accessible within Layout */}
-                  <Route path="/" element={<Index />} />
-                  <Route path="/about" element={<About />} /> {/* Modified element to use About component */}
+                    {/* Main Layout routes */}
+                    <Route element={<AppLayout />}>
+                      {/* Public Routes accessible within Layout */}
+                      <Route path="/" element={<Index />} />
+                      <Route path="/about" element={<About />} /> {/* Modified element to use About component */}
 
-                  {/* Protected Routes */}
-                  <Route element={<ProtectedRoute />}>
-                    {navItems.map(({ to, page }) => (
-                      <Route key={to} path={to} element={page} />
-                    ))}
-                  </Route>
-                </Route>
-              </Routes>
-              <CookieConsent />
-              <WhatsAppButton />
-              <AIAssistant />
-            </BrowserRouter>
-            )}
-          </TooltipProvider>
+                      {/* All dynamic generated routes from nav-items */}
+                      {navItems.map(({ to, page: Component, isProtected, adminOnly, ownerOnly }) => (
+                        <Route
+                          key={to}
+                          path={to}
+                          element={
+                            isProtected ? (
+                              <ProtectedRoute adminOnly={adminOnly} ownerOnly={ownerOnly}>
+                                <Component />
+                              </ProtectedRoute>
+                            ) : (
+                              <Component />
+                            )
+                          }
+                        />
+                      ))}
+                    </Route>
+                  </Routes>
+                  <WhatsAppButton />
+                  <AIAssistant />
+                  <CookieConsent />
+                </BrowserRouter>
+              )}
+            </TooltipProvider>
+          </SidebarProvider>
         </AuthProvider>
       </ThemeProvider>
     </QueryClientProvider>
