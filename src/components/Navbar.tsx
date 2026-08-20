@@ -191,7 +191,7 @@ const Navbar = ({ onOpenAuth }: NavbarProps) => {
               <InstallPWAButton variant="mobile-header" />
 
               {/* 2. Mobile Useful Websites Dropdown Trigger */}
-              <UsefulWebsitesDropdown />
+              <UsefulWebsitesDropdown isMobileIcon={true} />
 
               {/* 3. Notification Bell (if user logged in) */}
               {user && <NotificationBell />}

@@ -58,22 +58,14 @@ const App = () => {
                     <Route element={<AppLayout />}>
                       {/* Public Routes accessible within Layout */}
                       <Route path="/" element={<Index />} />
-                      <Route path="/about" element={<About />} /> {/* Modified element to use About component */}
+                      <Route path="/about" element={<About />} />
 
                       {/* All dynamic generated routes from nav-items */}
-                      {navItems.map(({ to, page: Component, isProtected, adminOnly, ownerOnly }) => (
+                      {navItems.map(({ to, page }) => (
                         <Route
                           key={to}
                           path={to}
-                          element={
-                            isProtected ? (
-                              <ProtectedRoute adminOnly={adminOnly} ownerOnly={ownerOnly}>
-                                <Component />
-                              </ProtectedRoute>
-                            ) : (
-                              <Component />
-                            )
-                          }
+                          element={page}
                         />
                       ))}
                     </Route>
