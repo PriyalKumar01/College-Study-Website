@@ -12,7 +12,7 @@ export default defineConfig(({ mode }) => ({
   plugins: [
     react(),
     VitePWA({
-      selfDestroying: true,
+      selfDestroying: false,
       registerType: 'autoUpdate',
       strategies: 'generateSW',
       injectRegister: 'auto',
