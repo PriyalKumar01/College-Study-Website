@@ -33,16 +33,15 @@ const AIAccessGate = ({ onAccessGranted }: AIAccessGateProps) => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center h-full px-5 py-6 text-center">
+    <div className="flex flex-col items-center justify-center px-5 py-5 text-center bg-white dark:bg-slate-900">
       {/* Lock Icon */}
       <motion.div
         initial={{ scale: 0, rotate: -20 }}
         animate={{ scale: 1, rotate: 0 }}
         transition={{ type: "spring", stiffness: 200, damping: 15 }}
-        className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-100 to-purple-100 
-          dark:from-blue-900/40 dark:to-purple-900/40 flex items-center justify-center mb-4 shadow-md"
+        className="w-12 h-12 rounded-xl bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200 dark:border-indigo-800/80 flex items-center justify-center mb-3 shadow-sm text-indigo-600 dark:text-indigo-400"
       >
-        <Lock className="w-8 h-8 text-blue-600 dark:text-blue-400" />
+        <Lock className="w-6 h-6" />
       </motion.div>
 
       {/* Title */}
@@ -50,18 +49,18 @@ const AIAccessGate = ({ onAccessGranted }: AIAccessGateProps) => {
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.15 }}
-        className="text-base font-bold text-gray-900 dark:text-white mb-1"
+        className="text-base font-bold text-slate-900 dark:text-white mb-0.5"
       >
-        AI Assistant — Beta Access
+        College Study Assistant
       </motion.h3>
 
       <motion.p
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
-        className="text-xs text-gray-500 dark:text-gray-400 mb-5 leading-relaxed"
+        className="text-xs text-slate-500 dark:text-slate-400 mb-4 leading-relaxed"
       >
-        This is a beta feature. Enter your access code to continue.
+        Enter your beta access code to unlock AI assistance.
       </motion.p>
 
       {/* Features preview */}
@@ -69,20 +68,20 @@ const AIAccessGate = ({ onAccessGranted }: AIAccessGateProps) => {
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.25 }}
-        className="w-full bg-slate-950/70 dark:bg-slate-950/80 border border-slate-800 rounded-2xl p-3 mb-5 text-left"
+        className="w-full bg-slate-50 dark:bg-slate-950/70 border border-slate-200 dark:border-slate-800 rounded-xl p-3 mb-4 text-left"
       >
-        <p className="text-[11px] font-bold text-slate-300 mb-2 flex items-center gap-1.5">
-          <Sparkles className="w-3.5 h-3.5 text-indigo-400" />
-          What you can do:
+        <p className="text-xs font-bold text-slate-800 dark:text-slate-200 mb-2 flex items-center gap-1.5">
+          <Sparkles className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" />
+          Key Capabilities:
         </p>
-        <ul className="space-y-1">
+        <ul className="space-y-1.5">
           {[
-            "📚 Find notes by branch & semester",
-            "🔍 Solve HBTU website & academic doubts",
-            "📄 Scan PDF resumes & get ATS score",
-            "💡 Practice GATE questions & PYQ analysis",
+            "📚 Branch & semester notes finder",
+            "🏛️ HBTU website & academic doubts",
+            "📄 PDF resume scanner & ATS score",
+            "💡 GATE practice & PYQ analysis",
           ].map((item) => (
-            <li key={item} className="text-[11px] text-slate-400">{item}</li>
+            <li key={item} className="text-xs text-slate-600 dark:text-slate-300 font-medium">{item}</li>
           ))}
         </ul>
       </motion.div>
@@ -109,12 +108,13 @@ const AIAccessGate = ({ onAccessGranted }: AIAccessGateProps) => {
             }}
             placeholder="ACCESS#XXXX"
             maxLength={12}
-            className="w-full px-4 py-3 text-center font-mono text-sm font-semibold tracking-widest
+            className="w-full px-4 py-2.5 text-center font-mono text-sm font-bold tracking-widest
               rounded-xl border transition-all duration-200 outline-none
-              bg-slate-950 text-white
-              placeholder:text-slate-600
-              border-slate-800
-              focus:border-indigo-500
+              bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white
+              placeholder:text-slate-400 dark:placeholder:text-slate-600
+              border-slate-300 dark:border-slate-700
+              focus:bg-white dark:focus:bg-slate-950
+              focus:border-indigo-600 dark:focus:border-indigo-500
               focus:ring-2 focus:ring-indigo-500/20"
           />
         </motion.div>
@@ -124,9 +124,9 @@ const AIAccessGate = ({ onAccessGranted }: AIAccessGateProps) => {
           <motion.p
             initial={{ opacity: 0, y: -4 }}
             animate={{ opacity: 1, y: 0 }}
-            className="flex items-center gap-1.5 text-[11px] text-rose-400 mb-3 justify-center"
+            className="flex items-center gap-1.5 text-xs text-rose-500 mb-3 justify-center font-medium"
           >
-            <AlertCircle className="w-3 h-3 flex-shrink-0" />
+            <AlertCircle className="w-3.5 h-3.5 flex-shrink-0" />
             {error}
           </motion.p>
         )}
@@ -134,9 +134,8 @@ const AIAccessGate = ({ onAccessGranted }: AIAccessGateProps) => {
         <button
           type="submit"
           disabled={!code.trim() || isChecking}
-          className="w-full py-3 rounded-xl font-bold text-sm text-white
-            bg-gradient-to-r from-blue-600 to-indigo-600
-            hover:from-blue-500 hover:to-indigo-500
+          className="w-full py-2.5 rounded-xl font-bold text-xs text-white
+            bg-indigo-600 hover:bg-indigo-700
             disabled:opacity-50 disabled:cursor-not-allowed
             transition-all duration-200 shadow-md hover:shadow-indigo-500/20
             active:scale-[0.98]"
@@ -147,7 +146,7 @@ const AIAccessGate = ({ onAccessGranted }: AIAccessGateProps) => {
                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
               </svg>
-              Verifying...
+              Verifying Code...
             </span>
           ) : (
             "🔓 Unlock Assistant"
@@ -155,9 +154,9 @@ const AIAccessGate = ({ onAccessGranted }: AIAccessGateProps) => {
         </button>
       </motion.form>
 
-      <p className="text-[10px] text-slate-500 mt-4 leading-relaxed">
+      <p className="text-xs text-slate-500 dark:text-slate-400 mt-3.5 leading-relaxed">
         Don&apos;t have a code? Contact{" "}
-        <span className="text-blue-400 font-medium">Priyal Kumar sir</span> for beta access.
+        <span className="text-indigo-600 dark:text-indigo-400 font-semibold">Priyal Kumar sir</span> for beta access.
       </p>
     </div>
   );

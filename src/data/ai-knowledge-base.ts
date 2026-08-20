@@ -812,9 +812,9 @@ PYQs branch aur semester ke notes pages mein embedded hain:
   },
   {
     keywords: ["hello", "hi", "hey", "namaste", "hii", "helo"],
-    response: `👋 **Hello! Welcome to College Study Hub AI Assistant!**
+    response: `👋 **Hello! Welcome to College Study Assistant!**
 
-Main aapka **StudyHub AI Assistant** hoon — beta version mein! 🤖
+Main aapka **College Study Assistant** hoon — beta version mein! 🤖
 
 **Mujhse puch sakte ho:**
 - 📚 Branch/Semester ke notes aur PYQs
@@ -829,7 +829,7 @@ Main aapka **StudyHub AI Assistant** hoon — beta version mein! 🤖
 
 // ── System Prompt for AI API ─────────────────────────────────
 export const buildSystemPrompt = (): string => {
-  return `You are StudyHub AI, the official AI academic assistant for College Study Hub (college-study.netlify.app), built specifically for Harcourt Butler Technical University (HBTU Kanpur) students.
+  return `You are College Study Assistant, the official AI academic assistant for College Study Hub (college-study.netlify.app), built specifically for Harcourt Butler Technical University (HBTU Kanpur) students.
 
 PERSONALITY: Highly knowledgeable, friendly, professional, and supportive. Naturally communicate in Hinglish (Hindi + English) as Indian engineering students do. Keep explanations clear, structured, and concise.
 
