@@ -226,7 +226,7 @@ const UploadMaterialForm = ({ onUploadSuccess }: UploadMaterialFormProps) => {
         const { data, error } = await supabase.storage
           .from('study-materials')
           .upload(filePath, uploadFile, {
-            cacheControl: '3600',
+            cacheControl: '31536000',
             upsert: true,
             contentType: uploadFile.type || 'application/pdf',
           });

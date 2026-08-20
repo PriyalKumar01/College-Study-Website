@@ -11,7 +11,7 @@ const WhatsAppButton = () => {
   };
 
   return (
-    <div className="fixed right-6 bottom-[152px] md:bottom-6 z-[160]">
+    <div className="fixed right-6 bottom-[84px] md:bottom-6 z-[160]">
       <div 
         className="relative flex items-center cursor-pointer group"
         onMouseEnter={() => setIsHovered(true)}
