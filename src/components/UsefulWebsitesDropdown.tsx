@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ChevronDown, ExternalLink } from 'lucide-react';
+import { ChevronDown, ExternalLink, Globe } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
