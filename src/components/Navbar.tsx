@@ -62,7 +62,7 @@ const Navbar = ({ onOpenAuth }: NavbarProps) => {
   const firstName = user?.user_metadata?.first_name || 'User';
 
   return (
-    <nav className="bg-white/80 dark:bg-slate-950/80 backdrop-blur-md supports-[backdrop-filter]:bg-white/60 dark:supports-[backdrop-filter]:bg-slate-950/60 border-b border-gray-200 dark:border-slate-800 shadow-sm dark:shadow-none sticky top-0 z-50 w-full transition-all duration-300">
+    <nav className="bg-white/80 dark:bg-slate-950/80 backdrop-blur-md supports-[backdrop-filter]:bg-white/60 dark:supports-[backdrop-filter]:bg-slate-950/60 border-b border-gray-200 dark:border-slate-800 shadow-sm dark:shadow-none sticky top-0 inset-x-0 z-40 w-full shrink-0 transition-all duration-300">
       <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           
@@ -229,8 +229,8 @@ const Navbar = ({ onOpenAuth }: NavbarProps) => {
                     {user && (
                       <Link to="/profile" onClick={() => setIsOpen(false)}>
                         <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-xl hover:bg-muted transition-colors cursor-pointer">
-                          <Avatar className="h-10 w-10">
-                            <AvatarImage src={user.user_metadata?.avatar_url} />
+                          <Avatar className="h-10 w-10 border border-indigo-200 dark:border-indigo-800">
+                            <AvatarImage src={user.user_metadata?.avatar_url || user.user_metadata?.picture} />
                             <AvatarFallback>{user.user_metadata?.first_name?.[0] || 'U'}</AvatarFallback>
                           </Avatar>
                           <div className="overflow-hidden">
@@ -242,7 +242,8 @@ const Navbar = ({ onOpenAuth }: NavbarProps) => {
                     )}
 
                     <div className="flex flex-col space-y-1 max-h-[50vh] overflow-y-auto pb-4 custom-scrollbar">
-                      {mobileNavItems.map((item) => (
+                      {/* Nav items before Useful Websites (Home to Contributor List) */}
+                      {mobileNavItems.filter(item => item.href !== '/about' && item.href !== '/admin-portal' && item.href !== '/owner-dashboard').map((item) => (
                         <Link
                           key={item.href}
                           to={item.href}
@@ -259,11 +260,11 @@ const Navbar = ({ onOpenAuth }: NavbarProps) => {
                         </Link>
                       ))}
 
-                      {/* Useful Websites Mobile Collapsible Section */}
-                      <div className="pt-2 border-t border-slate-100 dark:border-slate-800">
+                      {/* Useful Websites Mobile Collapsible Section (Right ABOVE About) */}
+                      <div className="pt-1.5 pb-1">
                         <button
                           onClick={() => setMobileWebsitesOpen(!mobileWebsitesOpen)}
-                          className="w-full flex items-center justify-between px-3.5 py-2.5 text-sm font-semibold rounded-xl text-indigo-600 dark:text-indigo-400 bg-indigo-50/50 dark:bg-indigo-950/30 hover:bg-indigo-100/60 dark:hover:bg-indigo-900/40 transition-all"
+                          className="w-full flex items-center justify-between px-3.5 py-2.5 text-sm font-semibold rounded-xl text-indigo-600 dark:text-indigo-400 bg-indigo-50/70 dark:bg-indigo-950/40 hover:bg-indigo-100/70 dark:hover:bg-indigo-900/50 transition-all border border-indigo-100 dark:border-indigo-900/50"
                         >
                           <div className="flex items-center gap-3">
                             <div className="p-1.5 rounded-lg bg-indigo-600/20 text-indigo-600 dark:text-indigo-400">
@@ -292,11 +293,55 @@ const Navbar = ({ onOpenAuth }: NavbarProps) => {
                           </div>
                         )}
                       </div>
+
+                      {/* About Link (Right AFTER Useful Websites) */}
+                      <Link
+                        to="/about"
+                        onClick={() => setIsOpen(false)}
+                        className={`flex items-center gap-3 px-3.5 py-2.5 text-sm font-medium rounded-xl transition-all ${isActive('/about')
+                          ? 'bg-indigo-600/10 text-indigo-600 dark:text-indigo-400 font-bold'
+                          : 'hover:bg-slate-100 dark:hover:bg-slate-800/50 text-slate-700 dark:text-slate-300'
+                          }`}
+                      >
+                        <div className={`p-1.5 rounded-lg flex-shrink-0 ${isActive('/about') ? 'bg-indigo-600/20 text-indigo-600' : 'bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400'}`}>
+                          <Info className="h-4 w-4" />
+                        </div>
+                        About
+                      </Link>
+
+                      {/* Admin / Owner items */}
+                      {mobileNavItems.filter(item => item.href === '/admin-portal' || item.href === '/owner-dashboard').map((item) => (
+                        <Link
+                          key={item.href}
+                          to={item.href}
+                          onClick={() => setIsOpen(false)}
+                          className={`flex items-center gap-3 px-3.5 py-2.5 text-sm font-medium rounded-xl transition-all ${isActive(item.href)
+                            ? 'bg-indigo-600/10 text-indigo-600 dark:text-indigo-400 font-bold'
+                            : 'hover:bg-slate-100 dark:hover:bg-slate-800/50 text-slate-700 dark:text-slate-300'
+                            }`}
+                        >
+                          <div className={`p-1.5 rounded-lg flex-shrink-0 ${isActive(item.href) ? 'bg-indigo-600/20 text-indigo-600' : 'bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400'}`}>
+                            <item.icon className="h-4 w-4" />
+                          </div>
+                          {item.label}
+                        </Link>
+                      ))}
                     </div>
 
-                    <div className="mt-auto border-t pt-4 space-y-3">
+                    {/* Drawer Bottom Footer: Theme Mode Button + Sign Out / Login */}
+                    <div className="mt-auto border-t border-slate-100 dark:border-slate-800 pt-3 space-y-2">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={toggleTheme}
+                        className="w-full justify-start gap-2.5 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
+                      >
+                        {theme === 'dark' ? <Sun className="h-4 w-4 text-amber-500" /> : <Moon className="h-4 w-4 text-indigo-500" />}
+                        <span className="font-medium text-sm">{theme === 'dark' ? 'Light Mode' : 'Dark Mode'}</span>
+                      </Button>
+
                       {user ? (
-                        <Button variant="ghost" className="w-full justify-start gap-2 text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/10" onClick={() => signOut()}>
+                        <Button variant="ghost" className="w-full justify-start gap-2.5 text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/10" onClick={() => signOut()}>
                           <LogOut className="h-4 w-4" />
                           Sign Out
                         </Button>
