@@ -20,6 +20,9 @@ import {
 } from "@/components/ui/sheet";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
+import { UsefulWebsitesDropdown, USEFUL_WEBSITES } from './UsefulWebsitesDropdown';
+import { ChevronDown, Globe, ExternalLink } from 'lucide-react';
+
 interface NavbarProps {
   onOpenAuth?: (mode: 'signin' | 'signup') => void;
 }
@@ -29,6 +32,7 @@ const Navbar = ({ onOpenAuth }: NavbarProps) => {
   const { user, signOut, isAdmin, isOwner } = useAuth();
   const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
+  const [mobileWebsitesOpen, setMobileWebsitesOpen] = useState(false);
 
   const isActive = (path: string) => location.pathname === path;
 
@@ -97,6 +101,9 @@ const Navbar = ({ onOpenAuth }: NavbarProps) => {
                   }`} />
               </Link>
             ))}
+
+            {/* Useful Websites Dropdown on Desktop */}
+            <UsefulWebsitesDropdown />
           </div>
 
           <div className="flex items-center gap-3">
@@ -188,6 +195,60 @@ const Navbar = ({ onOpenAuth }: NavbarProps) => {
                           {item.label}
                         </Link>
                       ))}
+
+                      {/* Useful Websites Mobile Collapsible Section */}
+                      <div className="pt-2 border-t border-slate-100 dark:border-slate-800">
+                        <button
+                          onClick={() => setMobileWebsitesOpen(!mobileWebsitesOpen)}
+                          className="w-full flex items-center justify-between px-4 py-2.5 text-sm font-semibold rounded-xl text-blue-600 dark:text-blue-400 bg-blue-50/50 dark:bg-blue-950/30 hover:bg-blue-100/60 dark:hover:bg-blue-900/40 transition-all"
+                        >
+                          <div className="flex items-center gap-3">
+                            <div className="p-1.5 rounded-lg bg-blue-600/20 text-blue-600 dark:text-blue-400">
+                              <Globe className="h-4 w-4" />
+                            </div>
+                            <span>Useful Websites (6)</span>
+                          </div>
+                          <ChevronDown className={`h-4 w-4 transition-transform duration-200 ${mobileWebsitesOpen ? 'rotate-180' : ''}`} />
+                        </button>
+
+                        {mobileWebsitesOpen && (
+                          <div className="mt-2 space-y-1.5 pl-2 pr-1">
+                            {USEFUL_WEBSITES.map((site, sIdx) => {
+                              const SiteIcon = site.icon;
+                              return (
+                                <a
+                                  key={sIdx}
+                                  href={site.url}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  onClick={() => setIsOpen(false)}
+                                  className="flex items-start gap-2.5 p-2 rounded-xl bg-slate-50 dark:bg-slate-900/70 border border-slate-200/70 dark:border-slate-800 hover:border-blue-300 dark:hover:border-blue-700 transition-all"
+                                >
+                                  <div className="p-1.5 rounded-lg bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 shrink-0 mt-0.5">
+                                    <SiteIcon className="h-3.5 w-3.5" />
+                                  </div>
+                                  <div className="flex-1 min-w-0">
+                                    <div className="flex items-center justify-between gap-1">
+                                      <p className="text-xs font-semibold text-slate-900 dark:text-slate-100 truncate">
+                                        {site.name}
+                                      </p>
+                                      {site.badge && (
+                                        <span className={`text-[8px] font-bold px-1 py-0.2 rounded border shrink-0 ${site.badgeColor}`}>
+                                          {site.badge}
+                                        </span>
+                                      )}
+                                    </div>
+                                    <p className="text-[10px] text-muted-foreground line-clamp-1">
+                                      {site.description}
+                                    </p>
+                                  </div>
+                                  <ExternalLink className="h-3 w-3 text-slate-400 shrink-0 mt-1" />
+                                </a>
+                              );
+                            })}
+                          </div>
+                        )}
+                      </div>
                     </div>
 
                     <div className="mt-auto border-t pt-6 space-y-4">

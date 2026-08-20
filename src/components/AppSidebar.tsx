@@ -29,7 +29,9 @@ import {
   Shield,
   Crown,
   Lock,
-  Trophy
+  Trophy,
+  Globe,
+  ExternalLink
 } from 'lucide-react';
 
 interface AppSidebarProps {
@@ -161,6 +163,19 @@ const AppSidebar = ({ className }: AppSidebarProps) => {
     { icon: <Lock className="h-4 w-4" />, label: `Premium Content (${PREMIUM_PLANS.length})`, href: '/premium-content' },
     { icon: <Award className="h-4 w-4" />, label: 'Scholarships', href: '/scholarship-portal' },
     { icon: <Briefcase className="h-4 w-4" />, label: `Opportunities${oppCount !== null ? ` (${oppCount})` : ''}`, href: '/opportunities' },
+    {
+      icon: <Globe className="h-4 w-4" />,
+      label: 'Useful Websites',
+      href: '#useful-websites',
+      children: [
+        { icon: <GraduationCap className="h-4 w-4" />, label: 'HBTU Official', href: 'https://hbtu.ac.in/' },
+        { icon: <Shield className="h-4 w-4" />, label: 'HBTU ERP', href: 'https://erp.hbtu.ac.in/NewIndex.html' },
+        { icon: <Award className="h-4 w-4" />, label: 'Attendance Portal', href: 'https://erp.hbtu.ac.in/StudentAttendance.aspx' },
+        { icon: <Award className="h-4 w-4" />, label: 'UP Scholarship', href: 'https://scholarship.up.gov.in/index.aspx' },
+        { icon: <Briefcase className="h-4 w-4" />, label: 'Buddy4Study', href: 'https://www.buddy4study.com/scholarships' },
+        { icon: <Laptop className="h-4 w-4" />, label: 'Digi Shakti (Tablet)', href: 'https://digishakti.up.gov.in/' },
+      ]
+    },
     { icon: <Brain className="h-4 w-4" />, label: '500+ AI Tools', href: '/useful-ai-tools' },
     { icon: <Users className="h-4 w-4" />, label: 'Contributor List', href: '/notes-contributors' },
     { icon: <Info className="h-4 w-4" />, label: 'About', href: '/about' },
@@ -246,6 +261,16 @@ const AppSidebar = ({ className }: AppSidebarProps) => {
         iconContainer: 'bg-gradient-to-br from-orange-400 to-red-600 text-white',
         text: 'text-orange-400 font-semibold',
         badge: { text: 'HIRING', className: 'bg-orange-500/10 text-orange-400 border border-orange-500/20' }
+      };
+    }
+    if (normalizedLabel === 'useful websites') {
+      return {
+        container: expandedGroups.includes('useful websites')
+          ? 'bg-blue-500/15 border border-blue-500/40 text-blue-400 shadow-[0_0_12px_rgba(59,130,246,0.15)] font-semibold'
+          : 'bg-blue-500/5 hover:bg-blue-500/10 border border-blue-500/20 hover:border-blue-500/40 text-blue-400/90 hover:text-blue-400',
+        iconContainer: 'bg-gradient-to-br from-blue-500 to-indigo-600 text-white',
+        text: 'text-blue-400 font-semibold',
+        badge: { text: '6 PORTALS', className: 'bg-blue-500/10 text-blue-400 border border-blue-500/20' }
       };
     }
     if (normalizedLabel.includes('ai tools')) {
@@ -452,22 +477,34 @@ const AppSidebar = ({ className }: AppSidebarProps) => {
                         exit={{ opacity: 0, height: 0 }}
                         className="ml-4 mt-1 space-y-1 border-l-2 border-slate-800 pl-3"
                       >
-                        {item.children.map((child) => (
-                          <button
-                            key={child.label}
-                            onClick={() => navigate(child.href)}
-                            className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-all ${isActive(child.href)
-                              ? 'text-blue-400 bg-blue-500/10 font-semibold'
-                              : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
-                              }`}
-                          >
-                            {/* Smaller 3D Icon for Sub-items */}
-                            <div className={`p-1 rounded-md ${isActive(child.href) ? 'bg-blue-500/20' : 'bg-slate-800'}`}>
-                              {child.icon}
-                            </div>
-                            <span>{child.label}</span>
-                          </button>
-                        ))}
+                        {item.children.map((child) => {
+                          const isExt = child.href.startsWith('http');
+                          return (
+                            <button
+                              key={child.label}
+                              onClick={() => {
+                                if (isExt) {
+                                  window.open(child.href, '_blank', 'noopener,noreferrer');
+                                } else {
+                                  navigate(child.href);
+                                }
+                              }}
+                              className={`w-full flex items-center justify-between gap-2 px-3 py-2 rounded-lg text-sm transition-all ${isActive(child.href)
+                                ? 'text-blue-400 bg-blue-500/10 font-semibold'
+                                : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
+                                }`}
+                            >
+                              <div className="flex items-center gap-3 min-w-0">
+                                {/* Smaller 3D Icon for Sub-items */}
+                                <div className={`p-1 rounded-md shrink-0 ${isActive(child.href) ? 'bg-blue-500/20' : 'bg-slate-800'}`}>
+                                  {child.icon}
+                                </div>
+                                <span className="truncate">{child.label}</span>
+                              </div>
+                              {isExt && <ExternalLink className="h-3 w-3 text-slate-500 shrink-0 opacity-70" />}
+                            </button>
+                          );
+                        })}
                       </motion.div>
                     )}
                   </AnimatePresence>
