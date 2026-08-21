@@ -122,18 +122,21 @@ export function ProfileCompletionModal() {
         if (!user) return;
 
         try {
-            const { data, error } = await supabase
-                .from("profiles")
-                .select("first_name, last_name, college, branch, year")
-                .eq("user_id", user.id)
-                .maybeSingle();
+            // Safely fetch profile data from profiles table
+            let data: any = null;
+            try {
+                const { data: pData, error: pError } = await supabase
+                    .from("profiles")
+                    .select("first_name, last_name, college, branch, year")
+                    .or(`id.eq.${user.id},user_id.eq.${user.id}`)
+                    .maybeSingle();
 
-            if (error) {
-                console.warn("Error checking profile:", error);
-                return;
+                if (!pError && pData) {
+                    data = pData;
+                }
+            } catch (pErr) {
+                console.warn("Could not query profiles table:", pErr);
             }
-
-            const isMetaComplete = user.user_metadata?.profile_completed === true;
 
             const existingYear: string = data?.year || user.user_metadata?.year || "";
             const yearNeedsUpdate = !isValidYearOption(existingYear);
@@ -145,10 +148,15 @@ export function ProfileCompletionModal() {
             const existingBranch: string = data?.branch || user.user_metadata?.branch || "";
             const branchNeedsUpdate = !existingBranch || (!BRANCH_OPTIONS.includes(existingBranch === "Other" ? "Other" : existingBranch) && !existingBranch);
 
-            if (isMetaComplete && data && data.first_name && data.college && (yearNeedsUpdate || collegeNeedsUpdate || branchNeedsUpdate)) {
+            const isMetaComplete = user.user_metadata?.profile_completed === true &&
+                Boolean(existingCollege) &&
+                Boolean(existingBranch) &&
+                Boolean(existingYear);
+
+            if (isMetaComplete && (yearNeedsUpdate || collegeNeedsUpdate || branchNeedsUpdate)) {
                 setIsUpdateMode(true);
-                setFirstName(data.first_name || user.user_metadata?.first_name || "");
-                setLastName(data.last_name || user.user_metadata?.last_name || "");
+                setFirstName(data?.first_name || user.user_metadata?.first_name || "");
+                setLastName(data?.last_name || user.user_metadata?.last_name || "");
                 
                 // Handle existing branch
                 if (existingBranch && BRANCH_OPTIONS.includes(existingBranch)) {
@@ -171,7 +179,7 @@ export function ProfileCompletionModal() {
                 return;
             }
 
-            if (!isMetaComplete || !data || !data.first_name || !data.college) {
+            if (!isMetaComplete || !existingCollege || !existingBranch || !existingYear) {
                 setIsUpdateMode(false);
                 // Only ask for password if user signed up via email (not OAuth like Google)
                 const isOAuthUser = user.app_metadata?.provider === "google" ||
@@ -201,15 +209,17 @@ export function ProfileCompletionModal() {
                     }
                 }
                 setIsOpen(true);
-                // DO NOT set hasChecked=true here — profile is still incomplete.
-                // hasChecked will be set true only after successful submit.
                 return;
             }
 
-            // Profile is complete — no modal needed
+            // Profile is completely filled
             setHasChecked(true);
         } catch (err) {
             console.error("Profile check failed:", err);
+            // Fallback: If anything failed, show modal if essential metadata is missing
+            if (!user.user_metadata?.college || !user.user_metadata?.branch || !user.user_metadata?.year) {
+                setIsOpen(true);
+            }
         }
     };
 
@@ -250,22 +260,12 @@ export function ProfileCompletionModal() {
 
         setIsLoading(true);
         try {
-            const { error } = await supabase.rpc("upsert_my_profile", {
-                p_first_name: firstName || undefined,
-                p_last_name: lastName || undefined,
-                p_college: resolvedCollege,
-                p_branch: finalBranch,
-                p_year: finalYear,
-                p_email: user!.email
-            });
-
-            if (error) throw error;
-
             const effectiveFirstName = firstName || user?.user_metadata?.first_name || '';
             const effectiveLastName = lastName || user?.user_metadata?.last_name || '';
             const fullName = `${effectiveFirstName} ${effectiveLastName}`.trim() || user?.user_metadata?.name || user?.user_metadata?.full_name || '';
 
-            await supabase.auth.updateUser({
+            // 1. Update Supabase Auth User Metadata
+            const { error: userError } = await supabase.auth.updateUser({
                 data: {
                     first_name: effectiveFirstName,
                     last_name: effectiveLastName,
@@ -277,8 +277,41 @@ export function ProfileCompletionModal() {
                     profile_completed: true
                 },
             });
+            if (userError) console.warn("updateUser metadata warning:", userError);
 
-            setHasChecked(true); // Mark as checked after successful update
+            // 2. Direct upsert into public.profiles table
+            try {
+                await supabase.from("profiles").upsert({
+                    id: user!.id,
+                    user_id: user!.id,
+                    first_name: effectiveFirstName,
+                    last_name: effectiveLastName,
+                    email: user!.email || '',
+                    college: resolvedCollege,
+                    branch: finalBranch,
+                    year: finalYear,
+                    updated_at: new Date().toISOString()
+                }, { onConflict: 'id' });
+            } catch (upErr) {
+                console.warn("Direct profiles upsert warning:", upErr);
+            }
+
+            // 3. Call RPC helper if available
+            try {
+                await supabase.rpc("upsert_my_profile", {
+                    p_first_name: effectiveFirstName || undefined,
+                    p_last_name: effectiveLastName || undefined,
+                    p_college: resolvedCollege,
+                    p_branch: finalBranch,
+                    p_year: finalYear,
+                    p_email: user!.email
+                });
+            } catch (rpcErr) {
+                console.warn("RPC upsert warning:", rpcErr);
+            }
+
+            await supabase.auth.refreshSession();
+            setHasChecked(true);
             toast({ title: "Profile Updated ✓", description: "Your profile has been saved!" });
             setIsOpen(false);
             window.location.reload();
@@ -325,18 +358,9 @@ export function ProfileCompletionModal() {
 
         setIsLoading(true);
         try {
-            const { error: rpcError } = await supabase.rpc("upsert_my_profile", {
-                p_first_name: firstName,
-                p_last_name: lastName,
-                p_college: resolvedCollege,
-                p_branch: finalBranch,
-                p_year: finalYear,
-                p_email: user!.email
-            });
-
-            if (rpcError) throw rpcError;
-
             const fullName = `${firstName} ${lastName}`.trim();
+
+            // 1. Update Supabase Auth User Metadata (Crucial for auth.users raw_user_meta_data)
             const authUpdates: any = {
                 data: {
                     first_name: firstName,
@@ -352,9 +376,41 @@ export function ProfileCompletionModal() {
             if (password) authUpdates.password = password;
 
             const { error: userError } = await supabase.auth.updateUser(authUpdates);
-            if (userError) throw userError;
+            if (userError) console.warn("updateUser metadata warning:", userError);
 
-            setHasChecked(true); // Mark as checked only after successful save
+            // 2. Direct upsert into public.profiles table
+            try {
+                await supabase.from("profiles").upsert({
+                    id: user!.id,
+                    user_id: user!.id,
+                    first_name: firstName,
+                    last_name: lastName,
+                    email: user!.email || '',
+                    college: resolvedCollege,
+                    branch: finalBranch,
+                    year: finalYear,
+                    updated_at: new Date().toISOString()
+                }, { onConflict: 'id' });
+            } catch (upErr) {
+                console.warn("Direct profiles upsert warning:", upErr);
+            }
+
+            // 3. Call RPC helper if available
+            try {
+                await supabase.rpc("upsert_my_profile", {
+                    p_first_name: firstName,
+                    p_last_name: lastName,
+                    p_college: resolvedCollege,
+                    p_branch: finalBranch,
+                    p_year: finalYear,
+                    p_email: user!.email
+                });
+            } catch (rpcErr) {
+                console.warn("RPC upsert warning:", rpcErr);
+            }
+
+            await supabase.auth.refreshSession();
+            setHasChecked(true);
             toast({ title: "Profile Saved ✓", description: "Welcome aboard! You're all set." });
             setIsOpen(false);
             window.location.reload();
