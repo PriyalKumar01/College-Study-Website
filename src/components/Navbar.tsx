@@ -182,7 +182,9 @@ const Navbar = ({ onOpenAuth }: NavbarProps) => {
                     {onOpenAuth ? <span>Get Started</span> : <Link to="/auth">Get Started</Link>}
                   </button>
                 </div>
-              ) : null}
+              ) : (
+                <ProfileDropdown />
+              )}
             </div>
 
             {/* ── Mobile Top Header Actions ── */}
