@@ -5,10 +5,15 @@ import AIAccessGate from "./AIAccessGate";
 import AIChatWidget from "./AIChatWidget";
 import { RATE_LIMIT_CONFIG } from "@/data/ai-knowledge-base";
 import { motion } from "framer-motion";
+import { useAuth } from "@/contexts/AuthContext";
 
 const AIAssistant = () => {
+  const { user } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const [hasAccess, setHasAccess] = useState(false);
+
+  // If user is not logged in, do not render AI Assistant at all
+  if (!user) return null;
 
   // Check localStorage for existing access
   useEffect(() => {

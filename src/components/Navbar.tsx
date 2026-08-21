@@ -103,30 +103,29 @@ const Navbar = ({ onOpenAuth }: NavbarProps) => {
               }`} />
             </Link>
 
-            {/* 2. Dashboard */}
-            <Link
-              to="/dashboard"
-              className={`text-sm font-medium transition-colors relative group py-1 ${
-                isActive('/dashboard') ? 'text-primary font-semibold' : 'text-foreground/80 hover:text-foreground'
-              }`}
-              onClick={(e) => {
-                if (!user) {
-                  e.preventDefault();
-                  if (onOpenAuth) onOpenAuth('signin');
-                }
-              }}
-            >
-              Dashboard
-              <span className={`absolute bottom-0 left-0 w-full h-0.5 bg-primary transform transition-transform duration-300 origin-left ${
-                isActive('/dashboard') ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100'
-              }`} />
-            </Link>
+            {/* Authenticated Links: Dashboard, Notes Dropdown, Useful Websites Dropdown */}
+            {user && (
+              <>
+                {/* 2. Dashboard */}
+                <Link
+                  to="/dashboard"
+                  className={`text-sm font-medium transition-colors relative group py-1 ${
+                    isActive('/dashboard') ? 'text-primary font-semibold' : 'text-foreground/80 hover:text-foreground'
+                  }`}
+                >
+                  Dashboard
+                  <span className={`absolute bottom-0 left-0 w-full h-0.5 bg-primary transform transition-transform duration-300 origin-left ${
+                    isActive('/dashboard') ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100'
+                  }`} />
+                </Link>
 
-            {/* 3. Notes Dropdown (Hover to open) */}
-            <NotesDropdown />
+                {/* 3. Notes Dropdown (Hover to open) */}
+                <NotesDropdown />
 
-            {/* 4. Useful Websites Dropdown (Hover to open) */}
-            <UsefulWebsitesDropdown />
+                {/* 4. Useful Websites Dropdown (Hover to open) */}
+                <UsefulWebsitesDropdown />
+              </>
+            )}
 
             {/* 5. About (Rightmost in nav links) */}
             <Link
@@ -158,30 +157,31 @@ const Navbar = ({ onOpenAuth }: NavbarProps) => {
             )}
 
             {/* Desktop Theme Toggle & Auth */}
-            <div className="hidden md:flex items-center gap-3">
-              <Button variant="ghost" size="icon" onClick={toggleTheme} className="h-9 w-9">
-                {theme === 'dark' ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
-              </Button>
+            <div className="hidden md:flex items-center gap-2.5">
+              <button
+                onClick={toggleTheme}
+                className="h-9 w-9 rounded-xl flex items-center justify-center text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 border border-transparent hover:border-slate-200 dark:hover:border-slate-700 transition-all duration-200"
+                aria-label="Toggle theme"
+                title={theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+              >
+                {theme === 'dark' ? <Sun className="h-4 w-4 text-amber-500" /> : <Moon className="h-4 w-4 text-slate-700 dark:text-slate-300" />}
+              </button>
+
               {!user ? (
-                <>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="h-9 px-4 font-medium"
+                <div className="flex items-center gap-2">
+                  <button
                     onClick={() => onOpenAuth ? onOpenAuth('signin') : null}
-                    asChild={!onOpenAuth}
+                    className="h-9 px-4 text-xs font-semibold rounded-xl border border-slate-300 dark:border-slate-700 bg-white/80 dark:bg-slate-900/80 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-800 dark:text-slate-100 shadow-sm transition-all duration-200 active:scale-95 flex items-center justify-center cursor-pointer"
                   >
                     {onOpenAuth ? <span>Login</span> : <Link to="/auth">Login</Link>}
-                  </Button>
-                  <Button
-                    size="sm"
-                    className="h-9 px-4 bg-primary text-primary-foreground hover:bg-primary/90 font-medium"
+                  </button>
+                  <button
                     onClick={() => onOpenAuth ? onOpenAuth('signup') : null}
-                    asChild={!onOpenAuth}
+                    className="h-9 px-4 text-xs font-semibold rounded-xl bg-[#0a1931] hover:bg-slate-800 text-white dark:bg-indigo-600 dark:hover:bg-indigo-500 shadow-sm hover:shadow transition-all duration-200 active:scale-95 flex items-center justify-center cursor-pointer"
                   >
                     {onOpenAuth ? <span>Get Started</span> : <Link to="/auth">Get Started</Link>}
-                  </Button>
-                </>
+                  </button>
+                </div>
               ) : null}
             </div>
 
@@ -190,16 +190,20 @@ const Navbar = ({ onOpenAuth }: NavbarProps) => {
               {/* 1. Mobile Download App Pill */}
               <InstallPWAButton variant="mobile-header" />
 
-              {/* 2. Mobile Useful Websites Dropdown Trigger */}
-              <UsefulWebsitesDropdown isMobileIcon={true} />
+              {/* 2. Mobile Useful Websites Dropdown Trigger (Only if logged in) */}
+              {user && <UsefulWebsitesDropdown isMobileIcon={true} />}
 
               {/* 3. Notification Bell (if user logged in) */}
               {user && <NotificationBell />}
 
               {/* 4. Mobile Theme Toggle */}
-              <Button variant="ghost" size="icon" onClick={toggleTheme} className="h-8 w-8 p-1">
-                {theme === 'dark' ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
-              </Button>
+              <button
+                onClick={toggleTheme}
+                className="h-8 w-8 rounded-lg flex items-center justify-center text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-all duration-200"
+                aria-label="Toggle theme"
+              >
+                {theme === 'dark' ? <Sun className="h-4 w-4 text-amber-500" /> : <Moon className="h-4 w-4 text-slate-700 dark:text-slate-300" />}
+              </button>
 
               {/* 5. Mobile Drawer Trigger */}
               <Sheet open={isOpen} onOpenChange={setIsOpen}>
@@ -260,39 +264,41 @@ const Navbar = ({ onOpenAuth }: NavbarProps) => {
                         </Link>
                       ))}
 
-                      {/* Useful Websites Mobile Collapsible Section (Right ABOVE About) */}
-                      <div className="pt-1.5 pb-1">
-                        <button
-                          onClick={() => setMobileWebsitesOpen(!mobileWebsitesOpen)}
-                          className="w-full flex items-center justify-between px-3.5 py-2.5 text-sm font-semibold rounded-xl text-indigo-600 dark:text-indigo-400 bg-indigo-50/70 dark:bg-indigo-950/40 hover:bg-indigo-100/70 dark:hover:bg-indigo-900/50 transition-all border border-indigo-100 dark:border-indigo-900/50"
-                        >
-                          <div className="flex items-center gap-3">
-                            <div className="p-1.5 rounded-lg bg-indigo-600/20 text-indigo-600 dark:text-indigo-400">
-                              <Globe className="h-4 w-4" />
+                      {/* Useful Websites Mobile Collapsible Section (Only if user logged in, right ABOVE About) */}
+                      {user && (
+                        <div className="pt-1.5 pb-1">
+                          <button
+                            onClick={() => setMobileWebsitesOpen(!mobileWebsitesOpen)}
+                            className="w-full flex items-center justify-between px-3.5 py-2.5 text-sm font-semibold rounded-xl text-indigo-600 dark:text-indigo-400 bg-indigo-50/70 dark:bg-indigo-950/40 hover:bg-indigo-100/70 dark:hover:bg-indigo-900/50 transition-all border border-indigo-100 dark:border-indigo-900/50"
+                          >
+                            <div className="flex items-center gap-3">
+                              <div className="p-1.5 rounded-lg bg-indigo-600/20 text-indigo-600 dark:text-indigo-400">
+                                <Globe className="h-4 w-4" />
+                              </div>
+                              <span>Useful Websites (6)</span>
                             </div>
-                            <span>Useful Websites (6)</span>
-                          </div>
-                          <ChevronDown className={`h-4 w-4 transition-transform duration-200 ${mobileWebsitesOpen ? 'rotate-180' : ''}`} />
-                        </button>
+                            <ChevronDown className={`h-4 w-4 transition-transform duration-200 ${mobileWebsitesOpen ? 'rotate-180' : ''}`} />
+                          </button>
 
-                        {mobileWebsitesOpen && (
-                          <div className="mt-2 space-y-1 pl-2 pr-1">
-                            {USEFUL_WEBSITES.map((site, sIdx) => (
-                              <a
-                                key={sIdx}
-                                href={site.url}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                onClick={() => setIsOpen(false)}
-                                className="flex items-center justify-between p-2 rounded-lg bg-slate-50 dark:bg-slate-900/70 border border-slate-200/70 dark:border-slate-800 hover:border-indigo-300 dark:hover:border-indigo-700 transition-all text-xs font-semibold text-slate-800 dark:text-slate-200"
-                              >
-                                <span>{site.name}</span>
-                                <ExternalLink className="h-3 w-3 text-slate-400 shrink-0 ml-2" />
-                              </a>
-                            ))}
-                          </div>
-                        )}
-                      </div>
+                          {mobileWebsitesOpen && (
+                            <div className="mt-2 space-y-1 pl-2 pr-1">
+                              {USEFUL_WEBSITES.map((site, sIdx) => (
+                                <a
+                                  key={sIdx}
+                                  href={site.url}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  onClick={() => setIsOpen(false)}
+                                  className="flex items-center justify-between p-2 rounded-lg bg-slate-50 dark:bg-slate-900/70 border border-slate-200/70 dark:border-slate-800 hover:border-indigo-300 dark:hover:border-indigo-700 transition-all text-xs font-semibold text-slate-800 dark:text-slate-200"
+                                >
+                                  <span>{site.name}</span>
+                                  <ExternalLink className="h-3 w-3 text-slate-400 shrink-0 ml-2" />
+                                </a>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      )}
 
                       {/* About Link (Right AFTER Useful Websites) */}
                       <Link
@@ -336,7 +342,7 @@ const Navbar = ({ onOpenAuth }: NavbarProps) => {
                         onClick={toggleTheme}
                         className="w-full justify-start gap-2.5 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
                       >
-                        {theme === 'dark' ? <Sun className="h-4 w-4 text-amber-500" /> : <Moon className="h-4 w-4 text-indigo-500" />}
+                        {theme === 'dark' ? <Sun className="h-4 w-4 text-amber-500" /> : <Moon className="h-4 w-4 text-slate-600 dark:text-slate-300" />}
                         <span className="font-medium text-sm">{theme === 'dark' ? 'Light Mode' : 'Dark Mode'}</span>
                       </Button>
 
@@ -347,12 +353,18 @@ const Navbar = ({ onOpenAuth }: NavbarProps) => {
                         </Button>
                       ) : (
                         <div className="grid grid-cols-2 gap-3">
-                          <Button variant="outline" onClick={() => onOpenAuth ? onOpenAuth('signin') : null} asChild={!onOpenAuth}>
+                          <button
+                            onClick={() => { setIsOpen(false); if (onOpenAuth) onOpenAuth('signin'); }}
+                            className="py-2 px-3 text-xs font-semibold rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 text-center transition-all"
+                          >
                             {onOpenAuth ? <span>Login</span> : <Link to="/auth">Login</Link>}
-                          </Button>
-                          <Button onClick={() => onOpenAuth ? onOpenAuth('signup') : null} asChild={!onOpenAuth}>
+                          </button>
+                          <button
+                            onClick={() => { setIsOpen(false); if (onOpenAuth) onOpenAuth('signup'); }}
+                            className="py-2 px-3 text-xs font-semibold rounded-xl bg-[#0a1931] hover:bg-slate-800 text-white dark:bg-indigo-600 dark:hover:bg-indigo-500 text-center shadow-sm transition-all"
+                          >
                             {onOpenAuth ? <span>Join</span> : <Link to="/auth">Join</Link>}
-                          </Button>
+                          </button>
                         </div>
                       )}
                     </div>

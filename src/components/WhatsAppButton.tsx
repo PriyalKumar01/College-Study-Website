@@ -1,6 +1,8 @@
 import { useState } from 'react';
+import { useAuth } from '@/contexts/AuthContext';
 
 const WhatsAppButton = () => {
+  const { user } = useAuth();
   const [isHovered, setIsHovered] = useState(false);
 
   const handleWhatsAppClick = () => {
@@ -11,7 +13,7 @@ const WhatsAppButton = () => {
   };
 
   return (
-    <div className="fixed right-6 bottom-[84px] md:bottom-6 z-[160]">
+    <div className={`fixed right-6 ${user ? 'bottom-[84px] md:bottom-6' : 'bottom-6'} z-[160]`}>
       <div 
         className="relative flex items-center cursor-pointer group"
         onMouseEnter={() => setIsHovered(true)}

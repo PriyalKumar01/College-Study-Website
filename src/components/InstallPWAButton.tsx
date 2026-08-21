@@ -68,13 +68,13 @@ export const InstallPWAButton = ({ variant = 'desktop-navbar' }: InstallPWAButto
       <>
         <button
           onClick={handleInstallClick}
-          className="flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold
-            bg-indigo-50 dark:bg-indigo-950/70 text-indigo-600 dark:text-indigo-400
-            hover:bg-indigo-600 hover:text-white transition-all shadow-sm active:scale-95"
+          className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-semibold
+            bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200
+            hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-200/80 dark:border-slate-700/80 transition-all shadow-sm active:scale-95"
           title="Download App"
           aria-label="Download App"
         >
-          <Download className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400 shrink-0" />
+          <Download className="w-3.5 h-3.5 text-slate-600 dark:text-slate-300 shrink-0" />
           <span>App</span>
         </button>
 
@@ -181,18 +181,18 @@ export const InstallPWAButton = ({ variant = 'desktop-navbar' }: InstallPWAButto
     );
   }
 
-  // Desktop Navbar Variant (Executive borderless design)
+  // Desktop Navbar Variant (Executive clean design)
   return (
     <>
       <button
         onClick={handleInstallClick}
-        className="flex items-center gap-1.5 font-bold rounded-full px-3.5 py-1.5 text-xs
-          bg-[#0a1931] hover:bg-slate-800 text-white dark:bg-indigo-600 dark:hover:bg-indigo-500
-          shadow-md hover:shadow-indigo-500/20 active:scale-95 transition-all group"
+        className="flex items-center gap-1.5 font-semibold rounded-xl px-3.5 py-2 text-xs
+          bg-slate-100 hover:bg-slate-200 text-slate-800 dark:bg-slate-800 dark:hover:bg-slate-700 dark:text-slate-200
+          border border-slate-200/80 dark:border-slate-700/80 shadow-sm transition-all duration-200 active:scale-95 group cursor-pointer"
         title="Download / Install College Study App"
         aria-label="Download App"
       >
-        <Download className="w-3.5 h-3.5 text-indigo-400 dark:text-white group-hover:translate-y-0.5 transition-transform" />
+        <Download className="w-3.5 h-3.5 text-slate-600 dark:text-slate-300 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 group-hover:translate-y-0.5 transition-all" />
         <span className="tracking-wide">Download App</span>
       </button>
 

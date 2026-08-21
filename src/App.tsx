@@ -59,15 +59,21 @@ const App = () => {
                       {/* Public Routes accessible within Layout */}
                       <Route path="/" element={<Index />} />
                       <Route path="/about" element={<About />} />
+                      <Route path="/terms-of-service" element={<TermsOfService />} />
+                      <Route path="/privacy-policy" element={<PrivacyPolicy />} />
 
-                      {/* All dynamic generated routes from nav-items */}
-                      {navItems.map(({ to, page }) => (
-                        <Route
-                          key={to}
-                          path={to}
-                          element={page}
-                        />
-                      ))}
+                      {/* Protected Routes (Require Login / Signup) */}
+                      <Route element={<ProtectedRoute />}>
+                        {navItems
+                          .filter(({ to }) => !['/', '/about', '/terms-of-service', '/privacy-policy'].includes(to))
+                          .map(({ to, page }) => (
+                            <Route
+                              key={to}
+                              path={to}
+                              element={page}
+                            />
+                          ))}
+                      </Route>
                     </Route>
                   </Routes>
                   <WhatsAppButton />
