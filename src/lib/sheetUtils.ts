@@ -105,32 +105,35 @@ const getGoogleDriveImage = (url: string) => {
     return url;
 };
 
-// Helper to calculate batch dynamically based on current academic year.
-// Academic year starts on Aug 1 each year.
-// 1st year joins in current academic year → graduates in (admissionYear + 4).
-// E.g. Aug 2026: admissionYear=2026, 1st→'30, 2nd→'29, 3rd→'28, 4th→'27
-const calculateBatch = (yearText: string): string => {
-    const now = new Date();
-    // If month >= August (month index 7), academic year started this calendar year
-    const admissionYear = now.getMonth() >= 7 ? now.getFullYear() : now.getFullYear() - 1;
+// Helper to extract batch suffix directly from passing year input (e.g., 2029 -> "'29", 2028 -> "'28")
+const getBatchFromPassingYear = (yearInput: string, branchText?: string): string => {
+    if (!yearInput) return "";
 
-    const text = yearText.toLowerCase();
-    if (text.includes('1') || text.includes('first')) {
-        const grad = admissionYear + 4;
-        return `'${String(grad).slice(-2)}`;
+    // If branch already includes batch (e.g. "ME '29" or "CSE '28"), do not append again
+    if (branchText && (/'\d{2}/.test(branchText) || /\b20\d{2}\b/.test(branchText))) {
+        return "";
     }
-    if (text.includes('2') || text.includes('second')) {
-        const grad = admissionYear + 3;
-        return `'${String(grad).slice(-2)}`;
+
+    const trimmed = yearInput.trim();
+
+    // 1. Matches "'29", "'28", etc.
+    const singleQuoteMatch = trimmed.match(/'(\d{2})/);
+    if (singleQuoteMatch) {
+        return `'${singleQuoteMatch[1]}`;
     }
-    if (text.includes('3') || text.includes('third')) {
-        const grad = admissionYear + 2;
-        return `'${String(grad).slice(-2)}`;
+
+    // 2. Matches 4-digit passing year like "2029", "2028", "2030", "2027"
+    const fourDigitMatch = trimmed.match(/\b(20\d{2})\b/);
+    if (fourDigitMatch) {
+        return `'${fourDigitMatch[1].slice(-2)}`;
     }
-    if (text.includes('4') || text.includes('fourth')) {
-        const grad = admissionYear + 1;
-        return `'${String(grad).slice(-2)}`;
+
+    // 3. Matches 2-digit numbers like "29", "28", "30"
+    const twoDigitMatch = trimmed.match(/\b(\d{2})\b/);
+    if (twoDigitMatch) {
+        return `'${twoDigitMatch[1]}`;
     }
+
     return "";
 };
 
@@ -156,14 +159,12 @@ export const useStudentStories = () => {
                 const parsedStories: StudentStory[] = rows
                     .slice(1) // Remove header
                     .map((row): StudentStory | null => {
-                        if (row.length < 5) return null;
-
                         const name = row[2]?.replace(/^"|"$/g, '').trim();
 
-                        // Branch & Year Logic
+                        // Branch & Passing Year Logic (e.g. Branch: "ME", Passing Year: "2029" -> "ME '29")
                         const branch = row[5]?.replace(/^"|"$/g, '').trim() || 'Student';
                         const yearRaw = row[4]?.replace(/^"|"$/g, '').trim() || '';
-                        const batchSuffix = calculateBatch(yearRaw);
+                        const batchSuffix = getBatchFromPassingYear(yearRaw, branch);
 
                         const branchBatch = batchSuffix ? `${branch} ${batchSuffix}` : `${branch}`;
 
