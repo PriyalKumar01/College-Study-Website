@@ -248,19 +248,40 @@ export default function Profile() {
         avatar_url: finalAvatarUrl || null,
       };
 
-      // Robust Upsert: Handles both Insert and Update in one go using our custom RPC
-      const { error } = await supabase.rpc('upsert_my_profile', {
-        p_first_name: editedProfile.first_name,
-        p_last_name: editedProfile.last_name,
-        p_college: finalCollege,
-        p_branch: finalBranch,
-        p_year: finalYear,
-        p_email: user.email || '',
-        p_mobile_number: profileUpdates.mobile_number,
-        p_avatar_url: profileUpdates.avatar_url
-      });
+      // Direct upsert into public.profiles table
+      try {
+        await supabase.from('profiles').upsert({
+          id: user.id,
+          user_id: user.id,
+          first_name: editedProfile.first_name,
+          last_name: editedProfile.last_name,
+          email: user.email || '',
+          mobile_number: profileUpdates.mobile_number,
+          college: finalCollege,
+          branch: finalBranch,
+          year: finalYear,
+          avatar_url: profileUpdates.avatar_url,
+          updated_at: new Date().toISOString()
+        }, { onConflict: 'id' });
+      } catch (upErr) {
+        console.warn("Direct profiles upsert warning in Profile.tsx:", upErr);
+      }
 
-      if (error) throw error;
+      // Robust Upsert: Handles both Insert and Update in one go using our custom RPC
+      try {
+        await supabase.rpc('upsert_my_profile', {
+          p_first_name: editedProfile.first_name,
+          p_last_name: editedProfile.last_name,
+          p_college: finalCollege,
+          p_branch: finalBranch,
+          p_year: finalYear,
+          p_email: user.email || '',
+          p_mobile_number: profileUpdates.mobile_number,
+          p_avatar_url: profileUpdates.avatar_url
+        });
+      } catch (rpcErr) {
+        console.warn("RPC upsert warning in Profile.tsx:", rpcErr);
+      }
 
       // Update auth metadata
       const fullName = `${editedProfile.first_name} ${editedProfile.last_name}`.trim();
