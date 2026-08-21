@@ -473,18 +473,42 @@ Simply click one of the buttons below to log in or sign up immediately.`,
     try {
       const fullName = `${firstName} ${lastName}`.trim();
 
-      // Save to public profiles table via RPC
-      const { error: rpcError } = await supabase.rpc('upsert_my_profile', {
-        p_first_name: firstName,
-        p_last_name: lastName,
-        p_college: resolvedCollege,
-        p_branch: finalBranch,
-        p_year: finalYear,
-        p_email: email.trim().toLowerCase(),
-        p_mobile_number: contactNo?.trim() ? contactNo.trim() : null
-      });
+      // Direct upsert into public.profiles table
+      const { data: authUserData } = await supabase.auth.getUser();
+      const currentUserId = authUserData?.user?.id;
+      if (currentUserId) {
+        try {
+          await supabase.from('profiles').upsert({
+            id: currentUserId,
+            user_id: currentUserId,
+            first_name: firstName,
+            last_name: lastName,
+            email: email.trim().toLowerCase(),
+            mobile_number: contactNo?.trim() ? contactNo.trim() : null,
+            college: resolvedCollege,
+            branch: finalBranch,
+            year: finalYear,
+            updated_at: new Date().toISOString()
+          }, { onConflict: 'id' });
+        } catch (upErr) {
+          console.warn("Direct profiles upsert warning in AuthModal:", upErr);
+        }
+      }
 
-      if (rpcError) console.warn("upsert_my_profile warning:", rpcError);
+      // Save to public profiles table via RPC
+      try {
+        await supabase.rpc('upsert_my_profile', {
+          p_first_name: firstName,
+          p_last_name: lastName,
+          p_college: resolvedCollege,
+          p_branch: finalBranch,
+          p_year: finalYear,
+          p_email: email.trim().toLowerCase(),
+          p_mobile_number: contactNo?.trim() ? contactNo.trim() : null
+        });
+      } catch (rpcErr) {
+        console.warn("RPC upsert warning in AuthModal:", rpcErr);
+      }
 
       // STEP 3: Update User with Password and Profile Data in Auth Metadata
       const { error } = await supabase.auth.updateUser({
@@ -503,6 +527,8 @@ Simply click one of the buttons below to log in or sign up immediately.`,
       });
 
       if (error) throw error;
+
+      await supabase.auth.refreshSession();
 
       sessionStorage.setItem('hasSignedUp', 'true');
       toast({
