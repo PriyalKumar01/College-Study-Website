@@ -12,9 +12,6 @@ const AIAssistant = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [hasAccess, setHasAccess] = useState(false);
 
-  // If user is not logged in, do not render AI Assistant at all
-  if (!user) return null;
-
   // Check localStorage for existing access
   useEffect(() => {
     const granted = localStorage.getItem(RATE_LIMIT_CONFIG.localStorageKey);
@@ -24,6 +21,9 @@ const AIAssistant = () => {
   const handleAccessGranted = () => {
     setHasAccess(true);
   };
+
+  // If user is not logged in, do not render AI Assistant at all
+  if (!user) return null;
 
   return (
     <>
