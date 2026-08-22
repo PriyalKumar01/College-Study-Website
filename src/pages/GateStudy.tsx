@@ -11,6 +11,7 @@ import { Input } from '@/components/ui/input';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
+import { getCachedData, setCachedData } from '@/lib/cacheUtils';
 import {
   Select,
   SelectContent,
@@ -217,11 +218,23 @@ const GateStudy = () => {
 
 
   // Check access in Supabase
-  const checkGateAccess = async () => {
+  const checkGateAccess = async (force = false) => {
     if (!user) {
       setCheckingAccess(false);
       return;
     }
+
+    if (!force) {
+      const cachedAccess = getCachedData<{ registered: boolean; branch?: string }>(`gate_access_${user.id}`, 15 * 60 * 1000);
+      if (cachedAccess) {
+        setIsRegistered(cachedAccess.registered);
+        setShowRegModal(!cachedAccess.registered);
+        if (cachedAccess.branch) setSelectedBranch(cachedAccess.branch);
+        setCheckingAccess(false);
+        return;
+      }
+    }
+
     setCheckingAccess(true);
     try {
       // Check if gate_study access exists in premium_purchases table
@@ -247,9 +260,11 @@ const GateStudy = () => {
         if (profile?.branch) {
           setSelectedBranch(profile.branch);
         }
+        setCachedData(`gate_access_${user.id}`, { registered: true, branch: profile?.branch });
       } else {
         setIsRegistered(false);
         setShowRegModal(true);
+        setCachedData(`gate_access_${user.id}`, { registered: false });
       }
     } catch (e) {
       console.error('Error checking GATE access:', e);
@@ -362,6 +377,7 @@ const GateStudy = () => {
       setIsRegistered(true);
       setShowRegModal(false);
       setSelectedBranch(formData.preparingFor);
+      setCachedData(`gate_access_${user.id}`, { registered: true, branch: formData.preparingFor });
 
       toast({
         title: 'Registration Successful!',
