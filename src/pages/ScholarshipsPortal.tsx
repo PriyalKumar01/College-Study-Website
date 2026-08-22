@@ -12,6 +12,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import EditScholarshipModal from '@/components/admin/EditScholarshipModal';
 import SubmitScholarshipForm from '@/components/admin/SubmitScholarshipForm';
+import { getCachedData, setCachedData, DEFAULT_CACHE_TTL_MS } from '@/lib/cacheUtils';
 
 // Helper: convert scholarship name → URL slug
 const toSlug = (name: string) =>
@@ -146,24 +147,10 @@ export default function ScholarshipsPortal() {
   const { isOwner, isAdmin, user } = useAuth();
   const { toast } = useToast();
   const [scholarships, setScholarships] = useState<Scholarship[]>(() => {
-    try {
-      const cached = sessionStorage.getItem('cached_scholarships');
-      const time = sessionStorage.getItem('cached_scholarships_time');
-      if (cached && time && Date.now() - Number(time) < 5 * 60 * 1000) {
-        return JSON.parse(cached);
-      }
-    } catch {}
-    return [];
+    return getCachedData<Scholarship[]>('scholarships', DEFAULT_CACHE_TTL_MS) || [];
   });
   const [loading, setLoading] = useState(() => {
-    try {
-      const cached = sessionStorage.getItem('cached_scholarships');
-      const time = sessionStorage.getItem('cached_scholarships_time');
-      if (cached && time && Date.now() - Number(time) < 5 * 60 * 1000) {
-        return false;
-      }
-    } catch {}
-    return true;
+    return !getCachedData<Scholarship[]>('scholarships', DEFAULT_CACHE_TTL_MS);
   });
   const [filters, setFilters] = useState<Filters>({ streams: [], who: [], type: [], status: [], amount: [] });
   const [search, setSearch] = useState('');
@@ -177,28 +164,26 @@ export default function ScholarshipsPortal() {
 
   // Load scholarships from Supabase
   const fetchScholarships = async (forceRefresh = false) => {
-    try {
-      const cached = sessionStorage.getItem('cached_scholarships');
-      const time = sessionStorage.getItem('cached_scholarships_time');
-      if (!forceRefresh && cached && time && Date.now() - Number(time) < 5 * 60 * 1000) {
+    if (!forceRefresh) {
+      const cached = getCachedData<Scholarship[]>('scholarships', DEFAULT_CACHE_TTL_MS);
+      if (cached) {
+        setScholarships(cached);
         setLoading(false);
         return;
       }
-    } catch {}
+    }
 
     setLoading(true);
     const { data, error } = await (supabase as any)
       .from('scholarships')
-      .select('*')
+      .select('id, name, org, amount, amount_num, status, streams, who, type, level, description, income, marks, deadline, apply_url, tags, image_url, submitted_by_email')
       .eq('approval_status', 'approved')
-      .order('amount_num', { ascending: false });
+      .order('amount_num', { ascending: false })
+      .limit(100);
 
     if (!error && data) {
       setScholarships(data as Scholarship[]);
-      try {
-        sessionStorage.setItem('cached_scholarships', JSON.stringify(data));
-        sessionStorage.setItem('cached_scholarships_time', String(Date.now()));
-      } catch {}
+      setCachedData('scholarships', data);
     }
     setLoading(false);
   };
@@ -235,7 +220,11 @@ export default function ScholarshipsPortal() {
       toast({ title: 'Delete failed', description: error.message, variant: 'destructive' });
     } else {
       toast({ title: 'Deleted', description: `"${name}" has been removed.` });
-      setScholarships(prev => prev.filter(s => s.id !== id));
+      setScholarships(prev => {
+        const updated = prev.filter(s => s.id !== id);
+        setCachedData('scholarships', updated);
+        return updated;
+      });
     }
   };
 
