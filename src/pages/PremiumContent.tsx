@@ -10,6 +10,7 @@ import {
 import Navbar from '@/components/Navbar';
 import { PremiumModal } from '@/components/PremiumModal';
 import Footer from '@/components/Footer';
+import { getCachedData, setCachedData } from '@/lib/cacheUtils';
 
 // --- Platforms Data ---
 const JOB_PLATFORMS = [
@@ -88,8 +89,16 @@ export default function PremiumContent() {
   const [premiumModal, setPremiumModal] = useState<{ open: boolean; plan: 'companies' | 'hr_emails' | 'resume' | 'roadmaps' }>({ open: false, plan: 'companies' });
   const [expandedCategories, setExpandedCategories] = useState<string[]>([]);
 
-  const checkPurchases = useCallback(async () => {
+  const checkPurchases = useCallback(async (force = false) => {
     if (!user) return;
+    if (!force) {
+      const cached = getCachedData<string[]>(`purchases_${user.id}`, 15 * 60 * 1000);
+      if (cached) {
+        setUnlockedPlans(cached);
+        return;
+      }
+    }
+
     const { data } = await (supabase as any)
       .from('premium_purchases')
       .select('plan')
@@ -97,6 +106,7 @@ export default function PremiumContent() {
       .in('payment_status', ['completed', 'free']);
     
     const plans = data ? data.map((p: any) => p.plan) : [];
+    setCachedData(`purchases_${user.id}`, plans);
     setUnlockedPlans(plans);
   }, [user]);
 
