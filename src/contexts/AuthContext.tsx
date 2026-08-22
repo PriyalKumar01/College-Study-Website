@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
+import { getCachedData, setCachedData, removeCachedData, DEFAULT_CACHE_TTL_MS } from '@/lib/cacheUtils';
 
 type UserRole = 'member' | 'admin' | 'owner';
 
@@ -35,11 +36,20 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [loading, setLoading] = useState(true);
   const [userRole, setUserRole] = useState<UserRole>('member');
 
-  const fetchUserRole = async (email: string | undefined) => {
+  const fetchUserRole = async (email: string | undefined, force = false) => {
     if (!email) {
       setUserRole('member');
       return;
     }
+
+    if (!force) {
+      const cachedRole = getCachedData<UserRole>(`role_${email}`, DEFAULT_CACHE_TTL_MS);
+      if (cachedRole) {
+        setUserRole(cachedRole);
+        return;
+      }
+    }
+
     try {
       const { data, error } = await supabase
         .from('admin_roles')
@@ -52,20 +62,22 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         setUserRole('member');
         return;
       }
+
+      let role: UserRole = 'member';
       if (data?.role === 'owner') {
-        setUserRole('owner');
+        role = 'owner';
       } else if (data?.role === 'admin') {
-        setUserRole('admin');
-      } else {
-        setUserRole('member');
+        role = 'admin';
       }
+      setUserRole(role);
+      setCachedData(`role_${email}`, role);
     } catch {
       setUserRole('member');
     }
   };
 
   const refreshRole = async () => {
-    await fetchUserRole(user?.email ?? undefined);
+    await fetchUserRole(user?.email ?? undefined, true);
   };
 
   useEffect(() => {
@@ -102,6 +114,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const signOut = async () => {
     setLoading(true);
+    if (user?.email) {
+      removeCachedData(`role_${user.email}`);
+    }
     await supabase.auth.signOut();
     setUser(null);
     setSession(null);
