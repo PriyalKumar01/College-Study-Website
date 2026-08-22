@@ -11,6 +11,7 @@ import {
 import Navbar from '@/components/Navbar';
 import { LockedSection, PremiumPlan } from '@/components/LockedSection';
 import { PremiumModal } from '@/components/PremiumModal';
+import { getCachedData, setCachedData, DEFAULT_CACHE_TTL_MS } from '@/lib/cacheUtils';
 import STATIC_COMPANIES_FULL from '@/data/static_companies.json';
 import STATIC_HR_FULL from '@/data/static_hr.json';
 
@@ -267,8 +268,17 @@ export default function PremiumDirectory() {
   const [hasCompaniesAccess, setHasCompaniesAccess] = useState(false);
   const [hasHRAccess, setHasHRAccess] = useState(false);
 
-  const checkPurchases = useCallback(async () => {
+  const checkPurchases = useCallback(async (force = false) => {
     if (!user) return;
+    if (!force) {
+      const cachedPurchases = getCachedData<string[]>(`purchases_${user.id}`, 15 * 60 * 1000);
+      if (cachedPurchases) {
+        setHasCompaniesAccess(isOwner || cachedPurchases.includes('companies'));
+        setHasHRAccess(isOwner || cachedPurchases.includes('hr_emails'));
+        return;
+      }
+    }
+
     const { data } = await (supabase as any)
       .from('premium_purchases')
       .select('plan')
@@ -276,54 +286,58 @@ export default function PremiumDirectory() {
       .in('payment_status', ['completed', 'free']);
     
     const unlockedPlans = data ? data.map((p: any) => p.plan) : [];
-    setHasCompaniesAccess(unlockedPlans.includes('companies'));
-    setHasHRAccess(unlockedPlans.includes('hr_emails'));
+    setCachedData(`purchases_${user.id}`, unlockedPlans);
+    setHasCompaniesAccess(isOwner || unlockedPlans.includes('companies'));
+    setHasHRAccess(isOwner || unlockedPlans.includes('hr_emails'));
   }, [user, isOwner]);
 
-  const fetchCompanies = async () => {
-    const { data } = await (supabase as any).from('company_directory').select('*').order('no', { ascending: true });
-    if (data && data.length > 0) {
-      setCompanies(data as CompanyEntry[]);
-    } else {
+  const fetchCompanies = async (forceRefresh = false) => {
+    if (!forceRefresh) {
+      const cached = getCachedData<CompanyEntry[]>('premium_companies', DEFAULT_CACHE_TTL_MS);
+      if (cached) {
+        setCompanies(cached);
+        return;
+      }
+    }
+
+    try {
+      const { data } = await (supabase as any)
+        .from('company_directory')
+        .select('id, no, name, type, sector, url, mode, branches, note')
+        .order('no', { ascending: true })
+        .limit(500);
+
+      if (data && data.length > 0) {
+        setCompanies(data as CompanyEntry[]);
+        setCachedData('premium_companies', data);
+      } else {
+        setCompanies(STATIC_COMPANIES_FULL as CompanyEntry[]);
+      }
+    } catch {
       setCompanies(STATIC_COMPANIES_FULL as CompanyEntry[]);
     }
   };
 
-  const fetchHR = async () => {
+  const fetchHR = async (forceRefresh = false) => {
+    if (!forceRefresh) {
+      const cached = getCachedData<HRContact[]>('premium_hr_contacts', DEFAULT_CACHE_TTL_MS);
+      if (cached) {
+        setHrContacts(cached);
+        return;
+      }
+    }
+
     setLoading(true);
     try {
-      let allData: HRContact[] = [];
-      let from = 0;
-      let to = 999;
-      let keepFetching = true;
-
-      while (keepFetching) {
-        const { data, error } = await (supabase as any)
-          .from('hr_contacts')
-          .select('*')
-          .order('company', { ascending: true })
-          .range(from, to);
-        
-        if (error) {
-          console.error("Error fetching HR batch:", error);
-          break;
-        }
-
-        if (data && data.length > 0) {
-          allData = [...allData, ...data];
-          if (data.length < 1000) {
-            keepFetching = false;
-          } else {
-            from += 1000;
-            to += 1000;
-          }
-        } else {
-          keepFetching = false;
-        }
-      }
-
-      if (allData.length > 0) {
-        setHrContacts(allData);
+      const { data, error } = await (supabase as any)
+        .from('hr_contacts')
+        .select('id, company, hr_email, type, name, designation')
+        .order('company', { ascending: true })
+        .limit(1000);
+      
+      if (!error && data && data.length > 0) {
+        setHrContacts(data as HRContact[]);
+        setCachedData('premium_hr_contacts', data);
       } else {
         setHrContacts(STATIC_HR_FULL as HRContact[]);
       }
@@ -374,7 +388,7 @@ export default function PremiumDirectory() {
       toast({ title: 'Error', description: error.message, variant: 'destructive' });
       return;
     }
-    fetchCompanies();
+    fetchCompanies(true);
     toast({ title: 'Deleted' });
   };
 
@@ -385,7 +399,7 @@ export default function PremiumDirectory() {
       toast({ title: 'Error', description: error.message, variant: 'destructive' });
       return;
     }
-    fetchHR();
+    fetchHR(true);
     toast({ title: 'Deleted' });
   };
 
