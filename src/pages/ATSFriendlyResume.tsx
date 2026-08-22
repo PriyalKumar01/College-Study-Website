@@ -23,6 +23,7 @@ import Navbar from "@/components/Navbar";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { LockedSection } from "@/components/LockedSection";
+import { getCachedData, setCachedData } from "@/lib/cacheUtils";
 import { PremiumModal } from "@/components/PremiumModal";
 
 const ATSFriendlyResume = () => {
@@ -34,8 +35,16 @@ const ATSFriendlyResume = () => {
   const [showAllDonts, setShowAllDonts] = useState(false);
   const [isDesktop, setIsDesktop] = useState(typeof window !== "undefined" ? window.innerWidth >= 768 : true);
 
-  const checkPurchase = useCallback(async () => {
+  const checkPurchase = useCallback(async (force = false) => {
     if (!user) return;
+    if (!force) {
+      const cached = getCachedData<string[]>(`purchases_${user.id}`, 15 * 60 * 1000);
+      if (cached) {
+        setHasAccess(isOwner || cached.includes('resume'));
+        return;
+      }
+    }
+
     const { data } = await (supabase as any)
       .from('premium_purchases')
       .select('plan')
@@ -43,7 +52,8 @@ const ATSFriendlyResume = () => {
       .in('payment_status', ['completed', 'free']);
     
     const unlockedPlans = data ? data.map((p: any) => p.plan) : [];
-    setHasAccess(unlockedPlans.includes('resume'));
+    setCachedData(`purchases_${user.id}`, unlockedPlans);
+    setHasAccess(isOwner || unlockedPlans.includes('resume'));
   }, [user, isOwner]);
 
   useEffect(() => {
