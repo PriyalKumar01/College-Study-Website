@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { getCachedData, setCachedData, DEFAULT_CACHE_TTL_MS } from '@/lib/cacheUtils';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@/contexts/AuthContext';
@@ -99,26 +100,19 @@ const AppSidebar = ({ className }: AppSidebarProps) => {
 
   useEffect(() => {
     const fetchOppCount = async () => {
-      // Check cache first
-      try {
-        const cached = sessionStorage.getItem('cached_opp_count');
-        const time = sessionStorage.getItem('cached_opp_count_time');
-        if (cached && time && Date.now() - Number(time) < 15 * 60 * 1000) {
-          setOppCount(Number(cached));
-          return;
-        }
-      } catch {}
+      const cached = getCachedData<number>('sidebar_opp_count', DEFAULT_CACHE_TTL_MS);
+      if (cached !== null) {
+        setOppCount(cached);
+        return;
+      }
 
       try {
         const { count, error } = await supabase
           .from('opportunities')
-          .select('*', { count: 'exact', head: true });
+          .select('id', { count: 'exact', head: true });
         if (!error && count !== null) {
           setOppCount(count);
-          try {
-            sessionStorage.setItem('cached_opp_count', String(count));
-            sessionStorage.setItem('cached_opp_count_time', String(Date.now()));
-          } catch {}
+          setCachedData('sidebar_opp_count', count);
         }
       } catch (err) {
         console.error('Error fetching opportunities count for sidebar:', err);
