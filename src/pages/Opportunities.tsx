@@ -14,6 +14,7 @@ import {
 import Navbar from '@/components/Navbar';
 import { PremiumModal } from '@/components/PremiumModal';
 import { PremiumPlan } from '@/components/LockedSection';
+import { getCachedData, setCachedData, DEFAULT_CACHE_TTL_MS } from '@/lib/cacheUtils';
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 interface Opportunity {
@@ -423,24 +424,10 @@ const Opportunities = () => {
 
   // Opportunities data
   const [opportunities, setOpportunities] = useState<Opportunity[]>(() => {
-    try {
-      const cached = sessionStorage.getItem('cached_opportunities');
-      const time = sessionStorage.getItem('cached_opportunities_time');
-      if (cached && time && Date.now() - Number(time) < 5 * 60 * 1000) {
-        return JSON.parse(cached);
-      }
-    } catch {}
-    return [];
+    return getCachedData<Opportunity[]>('opportunities', DEFAULT_CACHE_TTL_MS) || [];
   });
   const [loading, setLoading] = useState(() => {
-    try {
-      const cached = sessionStorage.getItem('cached_opportunities');
-      const time = sessionStorage.getItem('cached_opportunities_time');
-      if (cached && time && Date.now() - Number(time) < 5 * 60 * 1000) {
-        return false;
-      }
-    } catch {}
-    return true;
+    return !getCachedData<Opportunity[]>('opportunities', DEFAULT_CACHE_TTL_MS);
   });
   const [modalOpen, setModalOpen] = useState(false);
   const [editing, setEditing] = useState<Opportunity | null>(null);
@@ -463,13 +450,29 @@ const Opportunities = () => {
   const [hasCompaniesAccess, setHasCompaniesAccess] = useState(false);
   const [hasHRAccess, setHasHRAccess] = useState(false);
 
-  // Check purchases on mount
-  const checkPurchases = useCallback(async () => {
+  // Check purchases on mount (cached per session)
+  const checkPurchases = useCallback(async (force = false) => {
     if (!user) return;
-    const { data } = await (supabase as any).from('premium_purchases').select('plan').eq('user_id', user.id).in('payment_status', ['completed', 'free']);
+    if (!force) {
+      const cachedPurchases = getCachedData<string[]>(`purchases_${user.id}`, 15 * 60 * 1000);
+      if (cachedPurchases) {
+        setHasCompaniesAccess(isOwner || cachedPurchases.includes('companies'));
+        setHasHRAccess(isOwner || cachedPurchases.includes('hr_emails'));
+        return;
+      }
+    }
+
+    const { data } = await (supabase as any)
+      .from('premium_purchases')
+      .select('plan')
+      .eq('user_id', user.id)
+      .in('payment_status', ['completed', 'free']);
+
     if (data) {
-      setHasCompaniesAccess(isOwner || data.some((p: any) => p.plan === 'companies'));
-      setHasHRAccess(isOwner || data.some((p: any) => p.plan === 'hr_emails'));
+      const plans = data.map((p: any) => p.plan);
+      setCachedData(`purchases_${user.id}`, plans);
+      setHasCompaniesAccess(isOwner || plans.includes('companies'));
+      setHasHRAccess(isOwner || plans.includes('hr_emails'));
     }
     if (isOwner) { setHasCompaniesAccess(true); setHasHRAccess(true); }
   }, [user, isOwner]);
@@ -495,7 +498,7 @@ const Opportunities = () => {
           if (!error) {
             toast({ title: '🎉 Access Unlocked!', description: `Your access to ${unlockPlan === 'companies' ? 'Company Career Pages' : 'HR Emails'} has been unlocked.` });
             window.history.replaceState({}, document.title, window.location.pathname);
-            checkPurchases();
+            checkPurchases(true);
           }
         } catch (e) {
           console.error(e);
@@ -506,23 +509,25 @@ const Opportunities = () => {
   }, [user, checkPurchases]);
 
   const fetchOpportunities = async (forceRefresh = false) => {
-    try {
-      const cached = sessionStorage.getItem('cached_opportunities');
-      const time = sessionStorage.getItem('cached_opportunities_time');
-      if (!forceRefresh && cached && time && Date.now() - Number(time) < 5 * 60 * 1000) {
+    if (!forceRefresh) {
+      const cached = getCachedData<Opportunity[]>('opportunities', DEFAULT_CACHE_TTL_MS);
+      if (cached) {
+        setOpportunities(cached);
         setLoading(false);
         return;
       }
-    } catch {}
+    }
 
     setLoading(true);
-    const { data, error } = await (supabase as any).from('opportunities').select('*').order('created_at', { ascending: false });
+    const { data, error } = await (supabase as any)
+      .from('opportunities')
+      .select('id, title, company, type, location, deadline, description, apply_url, created_by, user_name, created_at, image_url, duration, eligibility, category')
+      .order('created_at', { ascending: false })
+      .limit(100);
+
     if (!error && data) {
       setOpportunities(data as Opportunity[]);
-      try {
-        sessionStorage.setItem('cached_opportunities', JSON.stringify(data));
-        sessionStorage.setItem('cached_opportunities_time', String(Date.now()));
-      } catch {}
+      setCachedData('opportunities', data);
     }
     setLoading(false);
   };
@@ -577,7 +582,7 @@ const Opportunities = () => {
     const { error } = await (supabase as any).from('opportunities').delete().eq('id', id);
     if (error) { toast({ title: 'Error', description: error.message, variant: 'destructive' }); return; }
     toast({ title: 'Deleted', description: 'Opportunity removed.' });
-    fetchOpportunities();
+    fetchOpportunities(true);
   };
 
   const activeTabCfg = TABS.find(t => t.id === activeTab)!;
