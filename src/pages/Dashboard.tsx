@@ -8,6 +8,7 @@ import { FileText, Briefcase, BookOpen, PlusCircle, Calculator, Bot, Trophy, Spa
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { supabase } from '@/integrations/supabase/client';
+import { getCachedData, setCachedData, DEFAULT_CACHE_TTL_MS } from '@/lib/cacheUtils';
 
 const StatCounter = ({ value, trigger }: { value: string; trigger: boolean }) => {
   const [displayValue, setDisplayValue] = useState("0");
@@ -82,31 +83,49 @@ const StatCounter = ({ value, trigger }: { value: string; trigger: boolean }) =>
 
 const Dashboard = () => {
   const { user } = useAuth();
-  const [userCount, setUserCount] = useState<number | string>('-');
-  const [notesCount, setNotesCount] = useState<number | string>('1478+');
+  const [userCount, setUserCount] = useState<number | string>(() => {
+    return getCachedData<string>('dash_user_count', DEFAULT_CACHE_TTL_MS) || '-';
+  });
+  const [notesCount, setNotesCount] = useState<number | string>(() => {
+    return getCachedData<string>('dash_notes_count', DEFAULT_CACHE_TTL_MS) || '1478+';
+  });
 
   useEffect(() => {
     const fetchCounts = async () => {
+      const cachedNotes = getCachedData<string>('dash_notes_count', DEFAULT_CACHE_TTL_MS);
+      const cachedUsers = getCachedData<string>('dash_user_count', DEFAULT_CACHE_TTL_MS);
+      if (cachedNotes && cachedUsers) {
+        setNotesCount(cachedNotes);
+        setUserCount(cachedUsers);
+        return;
+      }
+
       // Fetch Notes Count
       const { count: nNotes } = await supabase
         .from('notes')
-        .select('*', { count: 'exact', head: true })
+        .select('id', { count: 'exact', head: true })
         .eq('approved', true);
       if (nNotes !== null && nNotes > 0) {
-        setNotesCount(nNotes + '+');
+        const val = nNotes + '+';
+        setNotesCount(val);
+        setCachedData('dash_notes_count', val);
       }
 
       // Try fetching Users count via RPC or profiles table
       // @ts-ignore - 'get_user_count' missing from generated database types
       const { data: countData, error } = await supabase.rpc('get_user_count');
       if (!error && countData !== null) {
-        setUserCount(countData + '+');
+        const val = countData + '+';
+        setUserCount(val);
+        setCachedData('dash_user_count', val);
       } else {
         const { count: pCount, error: pError } = await supabase
           .from('profiles')
-          .select('*', { count: 'exact', head: true });
+          .select('id', { count: 'exact', head: true });
         if (!pError && pCount !== null) {
-          setUserCount(pCount + '+');
+          const val = pCount + '+';
+          setUserCount(val);
+          setCachedData('dash_user_count', val);
         } else {
           setUserCount('4,500+'); // Fallback estimate if table/rpc missing
         }
