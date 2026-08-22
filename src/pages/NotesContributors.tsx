@@ -7,6 +7,7 @@ import Navbar from "@/components/Navbar";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { getCachedData, setCachedData, DEFAULT_CACHE_TTL_MS } from "@/lib/cacheUtils";
 
 // ── Interfaces ──────────────────────────────────────────────────────────────
 interface Contributor {
@@ -197,20 +198,37 @@ function AdminCard({ admin, index }: { admin: AdminRecord; index: number }) {
 const NotesContributors = () => {
   const navigate = useNavigate();
   const [tab, setTab] = useState<"contributors" | "admins">("contributors");
-  const [admins, setAdmins] = useState<AdminRecord[]>([]);
-  const [contributors, setContributors] = useState<Contributor[]>([]);
+  const [admins, setAdmins] = useState<AdminRecord[]>(() => {
+    return getCachedData<AdminRecord[]>('contributors_admins', DEFAULT_CACHE_TTL_MS) || [];
+  });
+  const [contributors, setContributors] = useState<Contributor[]>(() => {
+    return getCachedData<Contributor[]>('contributors_list', DEFAULT_CACHE_TTL_MS) || [];
+  });
   const [loadingAdmins, setLoadingAdmins] = useState(false);
-  const [loadingContributors, setLoadingContributors] = useState(true);
+  const [loadingContributors, setLoadingContributors] = useState(() => {
+    return !getCachedData<Contributor[]>('contributors_list', DEFAULT_CACHE_TTL_MS);
+  });
 
   // Fetch contributors on mount
   useEffect(() => {
+    const cached = getCachedData<Contributor[]>('contributors_list', DEFAULT_CACHE_TTL_MS);
+    if (cached) {
+      setContributors(cached);
+      setLoadingContributors(false);
+      return;
+    }
+
     (async () => {
       setLoadingContributors(true);
       const { data } = await (supabase as any)
         .from("contributors")
-        .select("*")
-        .order("coins", { ascending: false });
-      if (data) setContributors(data as Contributor[]);
+        .select("id, name, branch, batch, coins, linkedin_url, image_url")
+        .order("coins", { ascending: false })
+        .limit(50);
+      if (data) {
+        setContributors(data as Contributor[]);
+        setCachedData('contributors_list', data);
+      }
       setLoadingContributors(false);
     })();
   }, []);
@@ -218,13 +236,23 @@ const NotesContributors = () => {
   // Fetch admins when tab switches
   useEffect(() => {
     if (tab === "admins") {
+      const cached = getCachedData<AdminRecord[]>('contributors_admins', DEFAULT_CACHE_TTL_MS);
+      if (cached) {
+        setAdmins(cached);
+        return;
+      }
+
       setLoadingAdmins(true);
       (supabase as any)
         .from("admin_roles")
-        .select("*")
+        .select("id, user_name, user_email, role, department, photo_url, linkedin_url, from_date")
         .order("from_date", { ascending: true, nullsFirst: false })
+        .limit(20)
         .then(({ data }: any) => {
-          if (data) setAdmins(data as AdminRecord[]);
+          if (data) {
+            setAdmins(data as AdminRecord[]);
+            setCachedData('contributors_admins', data);
+          }
           setLoadingAdmins(false);
         });
     }
