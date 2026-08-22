@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils";
 import { useStudentStories } from '@/lib/sheetUtils';
 import { StudentCard } from './StudentCard';
 import { supabase } from '@/integrations/supabase/client';
+import { getCachedData, setCachedData, DEFAULT_CACHE_TTL_MS } from '@/lib/cacheUtils';
 
 // Using the form URL found in codebase or previous context
 const GOOGLE_FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSf3BLvOyTH5oIkldD7tsCzmOhTp1zI-9CNDWGjMTgbnXu55FA/viewform";
@@ -64,13 +65,19 @@ const StudentSuccessStories = () => {
 
         const initLiveCount = async () => {
             let dbCount = 1890; // Default fallback
-            try {
-                const { data, error } = await supabase.rpc('get_total_students_count');
-                if (!error && data) {
-                    dbCount = Number(data);
+            const cachedCount = getCachedData<number>('total_students_count', DEFAULT_CACHE_TTL_MS);
+            if (cachedCount) {
+                dbCount = cachedCount;
+            } else {
+                try {
+                    const { data, error } = await supabase.rpc('get_total_students_count');
+                    if (!error && data) {
+                        dbCount = Number(data);
+                        setCachedData('total_students_count', dbCount);
+                    }
+                } catch (err) {
+                    console.error("Error fetching live student count:", err);
                 }
-            } catch (err) {
-                console.error("Error fetching live student count:", err);
             }
 
             if (!isMounted) return;
