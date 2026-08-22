@@ -22,24 +22,22 @@ export const useDownloadTracking = () => {
     }
 
     try {
-      // Get user profile for additional info
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('first_name, last_name')
-        .eq('user_id', user.id)
-        .single();
+      const metaFirst = user.user_metadata?.first_name || '';
+      const metaLast = user.user_metadata?.last_name || '';
+      const metaFull = user.user_metadata?.full_name || '';
+      const userName = (metaFirst || metaLast) ? `${metaFirst} ${metaLast}`.trim() : (metaFull || user.email?.split('@')[0] || '');
 
       const { error } = await supabase
         .from('note_downloads')
         .insert({
           user_id: user.id,
           user_email: user.email || '',
-          user_name: profile ? `${profile.first_name} ${profile.last_name}`.trim() : '',
+          user_name: userName,
           note_title: noteTitle,
           note_url: noteUrl,
           semester,
           subject,
-          ip_address: 'unknown', // Browser doesn't provide access to IP
+          ip_address: 'unknown',
           user_agent: navigator.userAgent,
         });
 
