@@ -474,8 +474,22 @@ const FirstYearNotes = () => {
       icon: '💬',
       color: 'bg-purple-600',
       description: 'Grammar, technical writing, professional presentation, reading comprehension, and literature.',
-      playlists: { detailed: [], oneshot: [] },
-      notes: []
+      playlists: {
+        detailed: [
+          { title: 'Professional Communication Complete', url: 'https://youtube.com/playlist?list=PL49mRA0Y_C8u7yPX99x1TCuyV4aWulD1X&si=lCMEpcKJ7uXmkBKp', recommended: true }
+        ],
+        oneshot: []
+      },
+      notes: [
+        { title: 'One Word Substitution Important PDF', url: 'https://drive.google.com/file/d/1k9DQuSHvbBc_-iB8RPC4g1MZJgHmFBOO/view?usp=drive_link', recommended: true },
+        { title: 'PC Handwritten Notes', url: 'https://drive.google.com/file/d/1STrVBwHdz4WLytQ-KxO4SebJwX0jh6jM/view?usp=drive_link', recommended: true },
+        { title: 'PC Old Notes', url: 'https://drive.google.com/file/d/1iFWlH6L2YJHnH0IxLsZYH-duRJ5wl8u0/view?usp=drive_link' },
+        { title: 'Renunciation Story PDF', url: 'https://drive.google.com/file/d/1hn_7lGRiVyuCuQbo1IPnVROIj8DYfZ7p/view?usp=drive_link' },
+        { title: 'The Barber\'s Trade Union Story PDF', url: 'https://drive.google.com/file/d/1i2ph1pYGL7KXNcOxNu6WjrhL5Sl5LTi1/view?usp=drive_link' },
+        { title: 'The Eyes Are Not Here Story PDF', url: 'https://drive.google.com/file/d/1i9sA1LbAtppEyEjA9YUUmr4rrZXA9h7K/view?usp=drive_link' },
+        { title: 'The Lament Story PDF', url: 'https://drive.google.com/file/d/1hvnLA7_Nb9rfRHHvz6eaeGRsPxcE7_cz/view?usp=drive_link' },
+        { title: 'Unit 5 Essay Writing PDF', url: 'https://drive.google.com/file/d/1hiZrrMy7d88ZGJcK1hXENVlCuEmaaBZe/view?usp=drive_link' }
+      ]
     },
 
     // ── TECHNOLOGY BRANCH INTRODUCTORY COURSES ────────────────────────
