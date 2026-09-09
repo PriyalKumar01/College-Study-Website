@@ -621,7 +621,21 @@ const FirstYearNotes = () => {
         { title: 'Physics 4th Assignment', url: 'https://drive.google.com/file/d/1jxMnbGqis4JDtNSqdcfEqb8dFNFIZFow/view?usp=drive_link' },
         { title: 'Physics 5th Assignment', url: 'https://drive.google.com/file/d/1jtpSRohBmacgFKmAGJUQ6oX9n6xQqHk1/view?usp=drive_link' }
       ]
-    },
+    },,
+    {
+      id: 'pyqs',
+      name: 'Previous Year Questions (PYQs)',
+      fullName: '1st Year Complete PYQs (Sequenced Chronologically by Year)',
+      category: 'pyq_assign',
+      icon: '❓',
+      color: 'bg-red-600',
+      badge: 'High Value',
+      description: 'Year-wise organized exam question papers (2025-26, 2024-25, 2023-24, 2022-23) for Mid Sem 1, Mid Sem 2, and End Sem.',
+      playlists: { detailed: [], oneshot: [] },
+      notes: [
+        { title: '[2025-26] Mid Sem-1 PYQs (Odd Semester)', url: 'https://drive.google.com/file/d/1UHEYh3ykfe1QtYE_VfOF09nLwfWkjx5Z/view?usp=drivesdk', recommended: true }
+      ]
+    }
   ];
 
   // Combined community notes matching any 1st year tags
