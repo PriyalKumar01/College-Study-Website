@@ -124,8 +124,26 @@ const FirstYearNotes = () => {
       badge: 'New Syllabus (2026)',
       description: 'Modern Python programming fundamentals, syntax, control flows, functions, and modules.',
       syllabusUrl: 'https://hbtu.ac.in/naac/CS/B.Tech.%201st%20Year%20Course%20C-06222026063347.pdf',
-      playlists: { detailed: [], oneshot: [] },
-      notes: []
+      playlists: {
+        detailed: [
+          { title: 'Python Programming Complete (CSE Curriculum)', url: 'https://youtube.com/playlist?list=PLvu-LC7buiaVdESLhxGj0BDQMjSLIEiSL&si=_GpcglKz_pZ78pt_', recommended: true },
+          { title: 'Python for Beginners (Full Course) - CodeWithHarry', url: 'https://youtube.com/playlist?list=PLu0W_9lII9agwh1XjRt242xIpHhPT2llg' },
+        ],
+        oneshot: [
+          { title: 'Python Programming One Shot (Curated)', url: 'https://youtube.com/playlist?list=PL49mRA0Y_C8vu2RWHdPsuRNRAcd89-eaz&si=dTvCvGhRbf7esBPJ', recommended: true },
+          { title: 'Python One Shot Complete Course (YouTube)', url: 'https://youtu.be/7wnove7K-ZQ' },
+        ]
+      },
+      notes: [
+        { title: 'Python Syllabus & Course Outline', url: 'https://hbtu.ac.in/naac/CS/B.Tech.%201st%20Year%20Course%20C-06222026063347.pdf', recommended: true },
+        { title: 'Python Full Handwritten Notes: Priyal Kumar (CSE"27)', url: 'https://drive.google.com/file/d/1_VF2ORzst49Yu5BtYdhSkTbw16Wge2rE/view?usp=drive_link', recommended: true },
+        { title: 'PP Best Revision Notes (CSE Standard)', url: 'https://drive.google.com/file/d/1ovVLnKwYM1vsYSeAk0UNEqcF-lU7otVH/view?usp=drive_link', recommended: true },
+        { title: 'Important PP Practice Programs', url: 'https://drive.google.com/file/d/13viyP84UNb_1UfGWPUnqOapXUSq2jcMz/view?usp=drive_link', recommended: true },
+        { title: 'PP Comprehensive Lecture Notes', url: 'https://drive.google.com/file/d/14MsO70g821_IZrtXEp8bezOKnte8Enak/view?usp=drive_link', recommended: true },
+        { title: 'PP Complete Lab Practical File', url: 'https://drive.google.com/file/d/1-Vb1JsaRf3VnonTH80EtYzg2W53n5HV5/view?usp=drive_link' },
+        { title: 'PP Sessional Assignment 1 Set', url: 'https://drive.google.com/file/d/1-dydD1SBZZ7Grggn3whZwA4Fbfo-xupA/view?usp=drive_link' },
+        { title: 'Python Comprehensive Handout & Cheatsheet', url: 'https://drive.google.com/file/d/1ZiIw217rbI2IKt6HO_3WePIQ5caos3Od/view?usp=drivesdk' },
+      ]
     },
 
     // ── CORE SCIENCES & MATHS ──────────────────────────────────────────
