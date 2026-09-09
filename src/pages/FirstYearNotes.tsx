@@ -351,6 +351,19 @@ const FirstYearNotes = () => {
         { title: 'Complete Mechanical Engineering Handwritten Notes', url: 'https://drive.google.com/file/d/1WDJbOvvQ68rFrs0kAQnzXNOACmEAe7-2/view?usp=drive_link', recommended: true },
         { title: 'Engineering Mechanics Book - RK Bansal', url: 'https://drive.google.com/file/d/1SDkvZJ1JciXW_yXjwVBZhI7mUVRpwpMp/view?usp=drive_link', recommended: true }
       ]
+    },,
+
+    {
+      id: 'electronics',
+      code: 'DET201',
+      name: 'Basic Electronics Engineering (BET / IET)',
+      fullName: 'Basic Electronics Engineering / Introduction to Electronics Tech',
+      category: 'engineering',
+      icon: '📻',
+      color: 'bg-amber-600',
+      description: 'Semiconductor diodes, transistors, amplifiers, operational amplifiers, and digital logic gates.',
+      playlists: { detailed: [], oneshot: [] },
+      notes: []
     },
   ];
 
