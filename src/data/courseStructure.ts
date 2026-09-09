@@ -92,6 +92,7 @@ export const BTECH_FIRST_YEAR_SUBJECTS: SubjectInfo[] = [
   { name: 'Environmental Studies', fullName: 'Environmental Studies & Ecology' },
   { name: 'Web Designing Workshop', fullName: 'Web Designing Workshop (HTML, CSS, JS)' },
   { name: 'Workshop & Manufacturing Practice', fullName: 'Workshop Practice & Digital Fabrication' },
+  { name: 'Engineering Graphics & Design', fullName: 'Engineering Graphics & Computer Aided Drawing (CAD)' },
 ];
 
 // Key format: "{branch}-{semester}" e.g. "CSE-1st Semester"
