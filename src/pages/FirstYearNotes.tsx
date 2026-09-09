@@ -591,7 +591,10 @@ const FirstYearNotes = () => {
       color: 'bg-slate-600',
       badge: '0 Files • Notes Wanted',
       description: 'Foundational mathematics for students in Biotechnology, Food Tech, and chemical technology streams. Notes coming soon — contribute your lecture notes!',
-      playlists: { detailed: [], oneshot: [] },
+      playlists: {
+        detailed: [],
+        oneshot: []
+      },
       notes: []
     },
 
