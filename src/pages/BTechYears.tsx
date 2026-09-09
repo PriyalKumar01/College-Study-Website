@@ -11,7 +11,7 @@ const years = [
     available: true,
     route: "/btech-notes/first-year",
     image: "/btech_year1.png",
-    semesters: ["1st Semester", "2nd Semester"],
+    semesters: ["New Syllabus", "All Subjects"],
   },
   {
     name: "2nd Year",
