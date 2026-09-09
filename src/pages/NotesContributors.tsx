@@ -99,7 +99,7 @@ function AdminCard({ admin, index }: { admin: AdminRecord; index: number }) {
         <div style={{
           width: 38, height: 38, borderRadius: 10, flexShrink: 0,
           display: "flex", alignItems: "center", justifyContent: "center",
-          background: hov ? "rgba(255,255,255,0.12)" : isOwner ? "#fef3c7" : "#ede9fe",
+          background: hov ? "#e0f2fe" : isOwner ? "#fef3c7" : "#ede9fe",
           fontSize: isOwner ? 18 : 13, fontWeight: 800,
           color: hov ? "#c7d2fe" : isOwner ? "#d97706" : "#6d28d9",
           transition: "background 0.22s, color 0.22s",
