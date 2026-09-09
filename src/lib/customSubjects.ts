@@ -9,5 +9,11 @@ export function getCustomSubjectsForContext(
   semester?: string,
   branch?: string
 ): SubjectInfo[] {
-  return [];
+  try {
+    const raw = localStorage.getItem(CUSTOM_SUBJECTS_STORAGE_KEY);
+    if (!raw) return [];
+    const parsed: Record<string, SubjectInfo[]> = JSON.parse(raw);
+    const key = `${category}_${branch || 'ALL'}_${semester || 'ALL'}`;
+    return [];
+  } catch(e) { return []; }
 }
