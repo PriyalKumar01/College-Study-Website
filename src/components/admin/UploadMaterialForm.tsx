@@ -155,6 +155,32 @@ const UploadMaterialForm = ({ onUploadSuccess }: UploadMaterialFormProps) => {
     }
   };
 
+  const handleSaveNewSubject = () => {
+    if (!isOwner) return;
+    const trimmed = newSubjectName.trim();
+    if (!trimmed) {
+      toast({ title: "Name required", description: "Please enter a subject name.", variant: "destructive" });
+      return;
+    }
+    saveCustomSubject(
+      category,
+      semester,
+      isFirstYear ? undefined : branch,
+      {
+        name: trimmed,
+        fullName: newSubjectFullName.trim() || trimmed
+      }
+    );
+    setSubject(trimmed);
+    setIsAddingSubject(false);
+    setNewSubjectName('');
+    setNewSubjectFullName('');
+    setCustomRefresh(c => c + 1);
+    toast({ title: "Subject Added! 🎓", description: `"${trimmed}" is now available in this semester.` });
+    setActiveStep(7);
+    scrollToRef(detailsRef);
+  };
+
   const handleBranchChange = (val: string) => {
     setBranch(val);
     setSubject('');
