@@ -79,6 +79,7 @@ const FirstYearNotes = () => {
 
   const staticSubjects: Subject[] = [
 
+    // ── COMPUTING & TECH ───────────────────────────────────────────────
   ];
 
   // Combined community notes matching any 1st year tags
