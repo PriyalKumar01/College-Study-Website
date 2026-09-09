@@ -77,6 +77,9 @@ const SPECIAL_SECTIONS: SubjectInfo[] = [
 ];
 
 // ── Subject lists per branch per semester ─────────────────────────
+// Key format: "{branch}-{semester}" e.g. "CSE-1st Semester"
+// Special sections (PYQs, Assignments) are appended automatically
+
 export const BTECH_FIRST_YEAR_SUBJECTS: SubjectInfo[] = [
   { name: 'Programming for Problem Solving (PPS)', fullName: 'Programming for Problem Solving (C Language & Problem Solving)' },
   { name: 'Python Programming', fullName: 'Python Programming (Core Language, Data Structures & Scripting)' },
@@ -108,29 +111,14 @@ export const BTECH_FIRST_YEAR_SUBJECTS: SubjectInfo[] = [
   { name: 'Workshop', fullName: 'Workshop Practice' },
 ];
 
-// Key format: "{branch}-{semester}" e.g. "CSE-1st Semester"
-// Special sections (PYQs, Assignments) are appended automatically
-
 export const SUBJECTS: Record<string, SubjectInfo[]> = {
   // ════════════════════════════════════════════════════════════════
-  // 1st Year — Common for all branches
+  // 1st Year — Common for all branches (Updated Revised Curriculum)
   // ════════════════════════════════════════════════════════════════
-  'ALL-1st Semester': [
-    { name: 'Chemistry', fullName: 'Engineering Chemistry' },
-    { name: 'Civil Engineering', fullName: 'Civil Engineering' },
-    { name: 'ICS', fullName: 'Introduction to Computer Science' },
-    { name: 'ICT', fullName: 'Intro to Communication Technology' },
-    { name: 'IET', fullName: 'Intro to Emerging Technology' },
-    { name: 'Workshop', fullName: 'Workshop Practice' },
-  ],
-  'ALL-2nd Semester': [
-    { name: 'Electrical Engineering', fullName: 'Electrical Engineering' },
-    { name: 'Engineering Mechanics', fullName: 'Engineering Mechanics' },
-    { name: 'Engineering Mathematics', fullName: 'Engineering Mathematics' },
-    { name: 'Professional Communication', fullName: 'Professional Communication' },
-    { name: 'Engineering Physics', fullName: 'Engineering Physics' },
-    { name: 'Engineering Graphics', fullName: 'Engineering Graphics' },
-  ],
+  'ALL-1st Semester': BTECH_FIRST_YEAR_SUBJECTS,
+  'ALL-2nd Semester': BTECH_FIRST_YEAR_SUBJECTS,
+  'ALL-First Year (All Subjects)': BTECH_FIRST_YEAR_SUBJECTS,
+  'ALL-1st Year': BTECH_FIRST_YEAR_SUBJECTS,
 
   // ════════════════════════════════════════════════════════════════
   // CSE/IT Branch
@@ -713,7 +701,15 @@ export function getSubjects(
     // Fallback: 1st year is common
     if (baseSubjects.length === 0) {
       const allKey = `ALL-${semester}`;
-      if (SUBJECTS[allKey]) baseSubjects = SUBJECTS[allKey];
+      if (SUBJECTS[allKey]) {
+        baseSubjects = SUBJECTS[allKey];
+      } else if (
+        semester.includes('1st') ||
+        semester.includes('2nd') ||
+        semester.toLowerCase().includes('first')
+      ) {
+        baseSubjects = BTECH_FIRST_YEAR_SUBJECTS;
+      }
     }
   } else {
     // MBA/BBA
@@ -721,10 +717,31 @@ export function getSubjects(
     if (SUBJECTS[key]) baseSubjects = SUBJECTS[key];
   }
 
-  if (baseSubjects.length === 0) return [];
+  // Fetch custom subjects added dynamically by Owner
+  const custom = typeof window !== 'undefined' ? getCustomSubjectsForContext(category, semester, branch) : [];
+  const combined = [...baseSubjects, ...custom];
+
+  if (combined.length === 0) return [];
+
+  // Apply renamed subjects map
+  const renamedMap = typeof window !== 'undefined' ? getRenamedSubjectsMap() : {};
+  const mapped = combined.map(sub => {
+    if (renamedMap[sub.name]) {
+      return { ...sub, name: renamedMap[sub.name], fullName: renamedMap[sub.name] };
+    }
+    return sub;
+  });
+
+  // Deduplicate by name
+  const uniqueMap = new Map<string, SubjectInfo>();
+  mapped.forEach(s => uniqueMap.set(s.name, s));
 
   // Append PYQs and Assignments as subject-level options
-  return [...baseSubjects, ...SPECIAL_SECTIONS];
+  SPECIAL_SECTIONS.forEach(sp => {
+    if (!uniqueMap.has(sp.name)) uniqueMap.set(sp.name, sp);
+  });
+
+  return Array.from(uniqueMap.values());
 }
 
 /** Get subjects WITHOUT special sections (for display purposes) */

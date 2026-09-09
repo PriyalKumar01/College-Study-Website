@@ -64,11 +64,10 @@ function AdminCard({ admin, index }: { admin: AdminRecord; index: number }) {
   const fmt = (d: string | null) =>
     d ? new Date(d).toLocaleDateString("en-IN", { month: "short", year: "numeric" }) : null;
 
-  // card bg: white → dark purple on hover
   // card bg: card background → very light professional sky blue tint on hover
   const cardBg   = hov ? "rgba(56, 189, 248, 0.12)" : "hsl(var(--card))";
   const textMain  = hov ? "#0284c7" : "hsl(var(--foreground))";
-  const textSub   = hov ? "rgba(255,255,255,0.55)" : "var(--muted-foreground)";
+  const textSub   = hov ? "#0369a1" : "hsl(var(--muted-foreground))";
 
   return (
     <motion.div
@@ -87,7 +86,8 @@ function AdminCard({ admin, index }: { admin: AdminRecord; index: number }) {
           display: "flex",
           alignItems: "center",
           gap: 14,
-          transition: "background 0.22s ease, box-shadow 0.22s ease",
+          transition: "all 0.22s ease",
+          border: hov ? "1.5px solid rgba(56, 189, 248, 0.5)" : "1.5px solid transparent",
           boxShadow: hov
             ? "0 8px 24px rgba(14, 165, 233, 0.14)"
             : "0 1px 4px rgba(0,0,0,0.07)",
@@ -143,8 +143,8 @@ function AdminCard({ admin, index }: { admin: AdminRecord; index: number }) {
                 padding: "2px 9px", borderRadius: 20, fontSize: 11, fontWeight: 700,
                 display: "inline-flex", alignItems: "center", gap: 5,
                 background: hov ? "rgba(134,239,172,0.15)" : "#f0fdf4",
-                color: hov ? "#86efac" : "#16a34a",
-                border: `1.5px solid ${hov ? "rgba(134,239,172,0.3)" : "#bbf7d0"}`,
+                color: hov ? "#15803d" : "#16a34a",
+                border: `1.5px solid ${hov ? "rgba(134,239,172,0.4)" : "#bbf7d0"}`,
                 transition: "all 0.22s",
               }}>
                 <span style={{ width: 5, height: 5, borderRadius: "50%", background: hov ? "#16a34a" : "#22c55e" }} />
@@ -154,9 +154,9 @@ function AdminCard({ admin, index }: { admin: AdminRecord; index: number }) {
             {!isOwner && !isActive && (
               <span style={{
                 padding: "2px 9px", borderRadius: 20, fontSize: 11, fontWeight: 600,
-                background: hov ? "rgba(255,255,255,0.08)" : "#f8fafc",
-                color: hov ? "rgba(255,255,255,0.5)" : "#64748b",
-                border: `1.5px solid ${hov ? "rgba(255,255,255,0.15)" : "#e2e8f0"}`,
+                background: hov ? "#f1f5f9" : "#f8fafc",
+                color: hov ? "#475569" : "#64748b",
+                border: `1.5px solid ${hov ? "#cbd5e1" : "#e2e8f0"}`,
                 transition: "all 0.22s",
               }}>
                 Former
