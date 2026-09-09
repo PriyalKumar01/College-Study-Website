@@ -146,7 +146,20 @@ const FirstYearNotes = () => {
       ]
     },
 
-    // ── CORE SCIENCES & MATHS ──────────────────────────────────────────
+    // ── CORE SCIENCES & MATHS ──────────────────────────────────────────,
+
+    {
+      id: 'math',
+      code: 'DMA101',
+      name: 'Mathematics-I',
+      fullName: 'Engineering Mathematics-I',
+      category: 'core',
+      icon: '📐',
+      color: 'bg-green-600',
+      description: 'Differential calculus, multiple integrals, vector calculus, and matrices.',
+      playlists: { detailed: [], oneshot: [] },
+      notes: []
+    },
   ];
 
   // Combined community notes matching any 1st year tags
