@@ -598,7 +598,19 @@ const FirstYearNotes = () => {
       notes: []
     },
 
-    // ── ASSIGNMENTS & PYQs ─────────────────────────────────────────────
+    // ── ASSIGNMENTS & PYQs ─────────────────────────────────────────────,
+
+    {
+      id: 'assignments',
+      name: 'Assignments - All Subjects',
+      fullName: '1st Year Sessional & Homework Assignment Sets',
+      category: 'pyq_assign',
+      icon: '📝',
+      color: 'bg-orange-600',
+      description: 'Question sheets and homework problem sets for Electrical, Maths, Mechanics, Physics, and Python.',
+      playlists: { detailed: [], oneshot: [] },
+      notes: []
+    },
   ];
 
   // Combined community notes matching any 1st year tags
