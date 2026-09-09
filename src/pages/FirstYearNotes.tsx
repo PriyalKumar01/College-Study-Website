@@ -283,6 +283,19 @@ const FirstYearNotes = () => {
         { title: 'Unit 5 Handwritten Notes', url: 'https://drive.google.com/file/d/1_yiMvCtTgCTvnCIVnc_UrxnsGu5OeUnO/view?usp=drive_link' },
         { title: 'Transformer Notes', url: 'https://drive.google.com/file/d/1W_bGwn702donDpAde0Qznxcdkl-2GtRY/view?usp=drive_link' }
       ]
+    },,
+
+    {
+      id: 'graphics',
+      code: 'DCE101',
+      name: 'Engineering Graphics & Design',
+      fullName: 'Engineering Graphics & Design (Projections, Sections, CAD Basics)',
+      category: 'engineering',
+      icon: '📐',
+      color: 'bg-teal-600',
+      description: 'Orthographic projections, isometric views, solids, sections, and engineering dimensioning.',
+      playlists: { detailed: [], oneshot: [] },
+      notes: []
     },
   ];
 
