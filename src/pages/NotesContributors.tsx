@@ -67,7 +67,7 @@ function AdminCard({ admin, index }: { admin: AdminRecord; index: number }) {
   // card bg: white → dark purple on hover
   // card bg: card background → very light professional sky blue tint on hover
   const cardBg   = hov ? "rgba(56, 189, 248, 0.12)" : "hsl(var(--card))";
-  const textMain  = hov ? "#ffffff" : "var(--foreground)";
+  const textMain  = hov ? "#0284c7" : "hsl(var(--foreground))";
   const textSub   = hov ? "rgba(255,255,255,0.55)" : "var(--muted-foreground)";
 
   return (
