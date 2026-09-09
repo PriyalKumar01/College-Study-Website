@@ -5,9 +5,21 @@ import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import {
-  Download, ArrowLeft, FileText, Play, ChevronDown, ChevronRight,
-  Trash2, ExternalLink, Search, BookOpen, Sparkles, Info,
-  GraduationCap, MessageCircle, Share2
+  Download,
+  ArrowLeft,
+  FileText,
+  Play,
+  ChevronDown,
+  ChevronRight,
+  Trash2,
+  ExternalLink,
+  Search,
+  BookOpen,
+  Sparkles,
+  Info,
+  GraduationCap,
+  MessageCircle,
+  Share2
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
@@ -77,10 +89,9 @@ const FirstYearNotes = () => {
   // Fetch community notes for all 1st year semester tags so no uploads are missed
   const { data: communityNotes, refetch: refreshNotes } = useCommunityNotes('btech', FIRST_YEAR_SEMESTER_TAGS);
 
+
   const staticSubjects: Subject[] = [
-
-    // ── COMPUTING & TECH ───────────────────────────────────────────────,
-
+    // ── COMPUTING & TECH ───────────────────────────────────────────────
     {
       id: 'pps',
       code: 'DCS101',
@@ -111,8 +122,7 @@ const FirstYearNotes = () => {
         { title: 'ICS UNIX / Linux Basics Notes', url: 'https://drive.google.com/file/d/1tPZekj8Nhbt3m3N_wJY0YFDXUq1ALrtj/view?usp=drivesdk' },
         { title: 'Full Programming Notes: Ananya (CSE"28)', url: 'https://drive.google.com/file/d/18OszxRCXnRxCzMOk6lmOPO0oCx_9zvP1/view?usp=drivesdk' },
       ]
-    },,
-
+    },
     {
       id: 'python',
       code: 'DCS201',
@@ -146,8 +156,7 @@ const FirstYearNotes = () => {
       ]
     },
 
-    // ── CORE SCIENCES & MATHS ──────────────────────────────────────────,
-
+    // ── CORE SCIENCES & MATHS ──────────────────────────────────────────
     {
       id: 'math',
       code: 'DMA101',
@@ -176,8 +185,7 @@ const FirstYearNotes = () => {
         { title: 'Engineering Math Book - BS Grewal', url: 'https://drive.google.com/file/d/1_ofPrUVZXyrwggNv8WeJTX1DeoHMqldX/view?usp=drive_link', recommended: true },
         { title: 'LPP Graphical Method Notes', url: 'https://drive.google.com/file/d/1_sOUHSZ4dfLHW8cKLd_n0UQoC427cSBi/view?usp=drive_link' }
       ]
-    },,
-
+    },
     {
       id: 'physics',
       code: 'DPH101',
@@ -212,8 +220,7 @@ const FirstYearNotes = () => {
         { title: 'Semiconductor - Unit 4 Notes', url: 'https://drive.google.com/file/d/1kKqBU2pqeqZOFCdimRFOjnxkj9WP2L6F/view?usp=drive_link' },
         { title: 'Statistical Mechanics Notes', url: 'https://drive.google.com/file/d/1S1ehd1Ri0K_HHNpPur7Z8xbHLVMxo80k/view?usp=drive_link' }
       ]
-    },,
-
+    },
     {
       id: 'chemistry',
       code: 'DCY201',
@@ -248,8 +255,7 @@ const FirstYearNotes = () => {
       ]
     },
 
-    // ── ENGINEERING SCIENCES ───────────────────────────────────────────,
-
+    // ── ENGINEERING SCIENCES ───────────────────────────────────────────
     {
       id: 'electrical',
       code: 'DEE101',
@@ -283,8 +289,7 @@ const FirstYearNotes = () => {
         { title: 'Unit 5 Handwritten Notes', url: 'https://drive.google.com/file/d/1_yiMvCtTgCTvnCIVnc_UrxnsGu5OeUnO/view?usp=drive_link' },
         { title: 'Transformer Notes', url: 'https://drive.google.com/file/d/1W_bGwn702donDpAde0Qznxcdkl-2GtRY/view?usp=drive_link' }
       ]
-    },,
-
+    },
     {
       id: 'graphics',
       code: 'DCE101',
@@ -318,8 +323,7 @@ const FirstYearNotes = () => {
         { title: 'Rules of Dimensions', url: 'https://drive.google.com/file/d/1a5toVeLKoFgUkEesqJJ0qnvCgeC1svAt/view?usp=drive_link' },
         { title: 'Section of Solid Notes', url: 'https://drive.google.com/file/d/1a-MdUdcohktnqRpG9AdFtDuSwfXvYNPS/view?usp=drive_link' }
       ]
-    },,
-
+    },
     {
       id: 'mechanics',
       code: 'DME101/201',
@@ -351,8 +355,7 @@ const FirstYearNotes = () => {
         { title: 'Complete Mechanical Engineering Handwritten Notes', url: 'https://drive.google.com/file/d/1WDJbOvvQ68rFrs0kAQnzXNOACmEAe7-2/view?usp=drive_link', recommended: true },
         { title: 'Engineering Mechanics Book - RK Bansal', url: 'https://drive.google.com/file/d/1SDkvZJ1JciXW_yXjwVBZhI7mUVRpwpMp/view?usp=drive_link', recommended: true }
       ]
-    },,
-
+    },
     {
       id: 'electronics',
       code: 'DET201',
@@ -376,8 +379,7 @@ const FirstYearNotes = () => {
       notes: [
         { title: 'IET Handwritten Notes', url: 'https://drive.google.com/file/d/1Ps9wD-x7CZLNy-bY8HmeqDy7Uytp6flq/view?usp=drive_link', recommended: true }
       ]
-    },,
-
+    },
     {
       id: 'civil',
       code: 'DCE201',
@@ -408,8 +410,7 @@ const FirstYearNotes = () => {
         { title: 'Unit 1 Notes', url: 'https://drive.google.com/file/d/1XxSq3_HJB3DnNUwjepBME6UjB9F1xNWj/view?usp=drive_link' },
         { title: 'Unit 3 Notes', url: 'https://drive.google.com/file/d/1YV3-xqPi-uERYjZ4XfXH6lYTqjmJr_qm/view?usp=drive_link' }
       ]
-    },,
-
+    },
     {
       id: 'workshop',
       code: 'DME202',
@@ -441,8 +442,7 @@ const FirstYearNotes = () => {
       ]
     },
 
-    // ── HUMANITIES, ETHICS & COMMUNICATION ─────────────────────────────,
-
+    // ── HUMANITIES, ETHICS & COMMUNICATION ─────────────────────────────
     {
       id: 'uhv',
       code: 'DHS101',
@@ -463,8 +463,7 @@ const FirstYearNotes = () => {
         { title: 'UHV Foundation & Harmony Course Guide', url: 'https://drive.google.com/file/d/1STrVBwHdz4WLytQ-KxO4SebJwX0jh6jM/view?usp=drive_link', recommended: true },
         { title: 'Human Conduct & Professional Ethics Handout', url: 'https://drive.google.com/file/d/1k9DQuSHvbBc_-iB8RPC4g1MZJgHmFBOO/view?usp=drive_link' }
       ]
-    },,
-
+    },
     {
       id: 'pc',
       code: 'DHS102 / DHS203',
@@ -492,8 +491,7 @@ const FirstYearNotes = () => {
       ]
     },
 
-    // ── TECHNOLOGY BRANCH INTRODUCTORY COURSES ────────────────────────,
-
+    // ── TECHNOLOGY BRANCH INTRODUCTORY COURSES ────────────────────────
     {
       id: 'food_tech',
       code: 'IFT101',
@@ -514,8 +512,7 @@ const FirstYearNotes = () => {
         { title: 'Food Technology (ICT Core Notes)', url: 'https://drive.google.com/file/d/1Wd9BbM9BYNAtNehllNTXo_7PxVDfX5P8/view?usp=drivesdk', recommended: true },
         { title: 'General Chemical Tech Notes: Priyal Kumar', url: 'https://drive.google.com/file/d/1PzevLkCwsQBQh_bZDwZnPgdWA6Qqv_5m/view?usp=drivesdk' }
       ]
-    },,
-
+    },
     {
       id: 'paint_tech',
       code: 'IPT101',
@@ -536,8 +533,7 @@ const FirstYearNotes = () => {
         { title: 'Paint Technology (ICT Core Notes)', url: 'https://drive.google.com/file/d/1Q4LDUfRyXzSwN9PCrQ8zN7D9sc-xeAt4/view?usp=drivesdk', recommended: true },
         { title: 'General Chemical Tech Notes: Priyal Kumar', url: 'https://drive.google.com/file/d/1PzevLkCwsQBQh_bZDwZnPgdWA6Qqv_5m/view?usp=drivesdk' }
       ]
-    },,
-
+    },
     {
       id: 'leather_tech',
       code: 'ILT101',
@@ -558,8 +554,7 @@ const FirstYearNotes = () => {
         { title: 'Leather Technology (ICT Core Notes)', url: 'https://drive.google.com/file/d/1Fv9uAi3qeM8vxngFbG1tmMo6J20vF3qy/view?usp=drivesdk', recommended: true },
         { title: 'General Chemical Tech Notes: Priyal Kumar', url: 'https://drive.google.com/file/d/1PzevLkCwsQBQh_bZDwZnPgdWA6Qqv_5m/view?usp=drivesdk' }
       ]
-    },,
-
+    },
     {
       id: 'plastic_polymer_tech',
       code: 'IPL101',
@@ -579,7 +574,6 @@ const FirstYearNotes = () => {
         { title: 'General Chemical Tech Notes: Priyal Kumar', url: 'https://drive.google.com/file/d/1PzevLkCwsQBQh_bZDwZnPgdWA6Qqv_5m/view?usp=drivesdk' }
       ]
     },
-,
 
     {
       id: 'elementary_math',
@@ -598,8 +592,7 @@ const FirstYearNotes = () => {
       notes: []
     },
 
-    // ── ASSIGNMENTS & PYQs ─────────────────────────────────────────────,
-
+    // ── ASSIGNMENTS & PYQs ─────────────────────────────────────────────
     {
       id: 'assignments',
       name: 'Assignments - All Subjects',
@@ -621,7 +614,7 @@ const FirstYearNotes = () => {
         { title: 'Physics 4th Assignment', url: 'https://drive.google.com/file/d/1jxMnbGqis4JDtNSqdcfEqb8dFNFIZFow/view?usp=drive_link' },
         { title: 'Physics 5th Assignment', url: 'https://drive.google.com/file/d/1jtpSRohBmacgFKmAGJUQ6oX9n6xQqHk1/view?usp=drive_link' }
       ]
-    },,
+    },
     {
       id: 'pyqs',
       name: 'Previous Year Questions (PYQs)',
@@ -633,6 +626,7 @@ const FirstYearNotes = () => {
       description: 'Year-wise organized exam question papers (2025-26, 2024-25, 2023-24, 2022-23) for Mid Sem 1, Mid Sem 2, and End Sem.',
       playlists: { detailed: [], oneshot: [] },
       notes: [
+        // ── 2025-26 ACADEMIC SESSION (LATEST) ──
         { title: '[2025-26] Mid Sem-1 PYQs (Odd Semester)', url: 'https://drive.google.com/file/d/1UHEYh3ykfe1QtYE_VfOF09nLwfWkjx5Z/view?usp=drivesdk', recommended: true },
         { title: '[2025-26] Mid Sem-2 PYQs (Odd Semester)', url: 'https://drive.google.com/file/d/1VzarRmsgnrELjL9fsGKFy31Ba1G9nZZi/view?usp=drivesdk', recommended: true },
         { title: '[2025-26] End Sem PYQs (Odd Semester)', url: 'https://drive.google.com/file/d/1RvGVTwQiqsc2AcodFj8g7P76_Dy75B_8/view?usp=drivesdk', recommended: true },
@@ -640,6 +634,8 @@ const FirstYearNotes = () => {
         { title: '[2025-26] Mid Sem-2 PYQs (Even Semester / 2nd Sem)', url: 'https://drive.google.com/file/d/1wty3ubMfR4Vyt6ClzFfi0gKi-jNH0EmY/view?usp=drivesdk' },
         { title: '[2025-26] End Sem PYQs (Even Semester / 2nd Sem)', url: 'https://drive.google.com/file/d/1S41rOchlw2VV0JUqd-NA2-lJSv9MvaJM/view?usp=drivesdk' },
         { title: '[2025-26] Mid Sem-1 Alternate Branch PYQs (2nd Sem)', url: 'https://drive.google.com/file/d/135yNwTL1_MdXO9IgaRWO3f8CHTq33bDY/view' },
+
+        // ── 2024-25 ACADEMIC SESSION ──
         { title: '[2024-25] Complete All PYQs Bundle (1st & 2nd Sem)', url: 'https://drive.google.com/file/d/1Fc0AwAU84kbiYuOYfDScpiYCx9vfbV_I/view?usp=drive_link', recommended: true },
         { title: '[2024-25] Mid Sem-1 PYQs (1st Semester)', url: 'https://drive.google.com/file/d/1SFx9P6EEyEu5fCwHrL6hMjnugNkodV2t/view?usp=drive_link' },
         { title: '[2024-25] Mid Sem-2 PYQs (1st Semester)', url: 'https://drive.google.com/file/d/1oBW8TZphAGA3jPf5PaiXzhr3CDkRX8cb/view?usp=drive_link' },
@@ -647,11 +643,15 @@ const FirstYearNotes = () => {
         { title: '[2024-25] Mid Sem-1 PYQs (2nd Semester)', url: 'https://drive.google.com/file/d/1SHThDw8j2ar0oJ7huAKSTTBWAqLqgT86/view?usp=drive_link' },
         { title: '[2024-25] Mid Sem-2 PYQs (2nd Semester)', url: 'https://drive.google.com/file/d/1FmF7U7v0GnqSYhEY5V05Sh2nbq5_Io2V/view?usp=drive_link' },
         { title: '[2024-25] End Sem PYQs (2nd Semester)', url: 'https://drive.google.com/file/d/1FoxxXrQZyJYqIWNxgqoix-whiELRM9ap/view?usp=drive_link' },
+
+        // ── 2023-24 ACADEMIC SESSION ──
         { title: '[2023-24] Complete All PYQs Bundle', url: 'https://drive.google.com/file/d/1_mrm9SbSkJmqiWuRDT9pwkLAEjKv6e_n/view?usp=drive_link', recommended: true },
         { title: '[2023-24] Mid Sem-1 PYQs (2nd Semester)', url: 'https://drive.google.com/file/d/1SzIrS0HedxD7rXrfdeleOMO9YXI-O4Cg/view?usp=drive_link' },
+
+        // ── 2022-23 ACADEMIC SESSION & ARCHIVES ──
         { title: '[2022-23] End Sem PYQs (Even Semester)', url: 'https://drive.google.com/file/d/1TUqMumNd8NU2KLY7oSapwyZKDxUwBwEe/view?usp=drive_link' },
         { title: '[2022-23] All Electrical Engg Subject PYQs', url: 'https://drive.google.com/file/d/1T_SDeOBPNk2_PuR-MSNvyZO083YAawZT/view?usp=drive_link' },
-        { title: '[2022-24] Engineering Graphics ESE PYQs Collection', url: 'https://drive.google.com/file/d/1XAQWVkHIBL98_6DQ_g5gLdJtPItnr6Fr/view?usp=drive_link' }
+        { title: '[2022-24] Engineering Graphics ESE PYQs Collection', url: 'https://drive.google.com/file/d/1XAQWVkHIBL98_6DQ_g5gLdJtPItnr6Fr/view?usp=drive_link' },
       ]
     }
   ];
