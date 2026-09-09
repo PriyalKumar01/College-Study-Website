@@ -650,7 +650,8 @@ const FirstYearNotes = () => {
         { title: '[2023-24] Complete All PYQs Bundle', url: 'https://drive.google.com/file/d/1_mrm9SbSkJmqiWuRDT9pwkLAEjKv6e_n/view?usp=drive_link', recommended: true },
         { title: '[2023-24] Mid Sem-1 PYQs (2nd Semester)', url: 'https://drive.google.com/file/d/1SzIrS0HedxD7rXrfdeleOMO9YXI-O4Cg/view?usp=drive_link' },
         { title: '[2022-23] End Sem PYQs (Even Semester)', url: 'https://drive.google.com/file/d/1TUqMumNd8NU2KLY7oSapwyZKDxUwBwEe/view?usp=drive_link' },
-        { title: '[2022-23] All Electrical Engg Subject PYQs', url: 'https://drive.google.com/file/d/1T_SDeOBPNk2_PuR-MSNvyZO083YAawZT/view?usp=drive_link' }
+        { title: '[2022-23] All Electrical Engg Subject PYQs', url: 'https://drive.google.com/file/d/1T_SDeOBPNk2_PuR-MSNvyZO083YAawZT/view?usp=drive_link' },
+        { title: '[2022-24] Engineering Graphics ESE PYQs Collection', url: 'https://drive.google.com/file/d/1XAQWVkHIBL98_6DQ_g5gLdJtPItnr6Fr/view?usp=drive_link' }
       ]
     }
   ];
