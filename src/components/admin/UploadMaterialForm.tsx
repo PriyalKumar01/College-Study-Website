@@ -1,7 +1,6 @@
 import { useState, useRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
-import { saveCustomSubject, saveRenamedSubject } from '@/lib/customSubjects';
 import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -19,6 +18,7 @@ import {
   CATEGORIES, BTECH_YEARS, BTECH_BRANCHES,
   getSubjects, getSemesters
 } from '@/data/courseStructure';
+import { saveCustomSubject, saveRenamedSubject } from '@/lib/customSubjects';
 
 const ICON_MAP: Record<string, React.ReactNode> = {
   GraduationCap: <GraduationCap className="h-5 w-5" />,
@@ -34,7 +34,7 @@ interface UploadMaterialFormProps {
 }
 
 const UploadMaterialForm = ({ onUploadSuccess }: UploadMaterialFormProps) => {
-  const { user } = useAuth();
+  const { user, isOwner } = useAuth();
   const { toast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -60,12 +60,6 @@ const UploadMaterialForm = ({ onUploadSuccess }: UploadMaterialFormProps) => {
   const [year, setYear] = useState('');
   const [semester, setSemester] = useState('');
   const [subject, setSubject] = useState('');
-  const [customRefresh, setCustomRefresh] = useState(0);
-  const [isAddingSubject, setIsAddingSubject] = useState(false);
-  const [newSubjectName, setNewSubjectName] = useState('');
-  const [newSubjectFullName, setNewSubjectFullName] = useState('');
-  const [isRenamingSubject, setIsRenamingSubject] = useState(false);
-  const [renameValue, setRenameValue] = useState('');
   const [materialType, setMaterialType] = useState<'notes' | 'pyqs' | 'assignments'>('notes');
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -107,16 +101,26 @@ const UploadMaterialForm = ({ onUploadSuccess }: UploadMaterialFormProps) => {
   const effectiveTitle = isPyqMode ? autoPyqTitle : title;
 
   // For 1st year: map the actual semester to the correct subject list
-  const isFirstYear = category === 'btech' && (year === '1st' || semester?.includes('1st') || semester?.includes('2nd'));
+  const isFirstYear = category === 'btech' && year === '1st';
   const mappedSemester = isFirstYear && branchType === 'technology' && semester
     ? (semester === '1st Semester' ? '2nd Semester' : '1st Semester')
     : semester;
 
+  const [customRefresh, setCustomRefresh] = useState(0);
+
+  // Owner custom subject management states
+  const [isAddingSubject, setIsAddingSubject] = useState(false);
+  const [newSubjectName, setNewSubjectName] = useState('');
+  const [newSubjectFullName, setNewSubjectFullName] = useState('');
+
+  const [isRenamingSubject, setIsRenamingSubject] = useState(false);
+  const [renameValue, setRenameValue] = useState('');
+
   // Derived data
   const selectedCategory = CATEGORIES.find(c => c.id === category);
   const availableSemesters = category ? getSemesters(category, year) : [];
-  const availableSubjects = category && (isFirstYear ? (branchType && semester) : semester)
-    ? getSubjects(category, isFirstYear ? mappedSemester : semester, isFirstYear ? undefined : branch)
+  const availableSubjects = category && semester
+    ? getSubjects(category, isFirstYear ? (mappedSemester || semester) : semester, isFirstYear ? undefined : branch)
     : [];
 
   const handleCategoryChange = (val: string) => {
@@ -131,11 +135,11 @@ const UploadMaterialForm = ({ onUploadSuccess }: UploadMaterialFormProps) => {
 
   const handleYearChange = (val: string) => {
     setYear(val);
-    setBranchType('');
+    setBranchType(val === '1st' ? 'all' : '');
     setSemester('');
     setSubject('');
     setBranch('');
-    setActiveStep(val === '1st' ? 3 : 4);
+    setActiveStep(4);
   };
 
   const handleBranchTypeChange = (val: 'engineering' | 'technology') => {
@@ -153,6 +157,17 @@ const UploadMaterialForm = ({ onUploadSuccess }: UploadMaterialFormProps) => {
     } else {
       setActiveStep(6);
     }
+  };
+
+  const handleBranchChange = (val: string) => {
+    setBranch(val);
+    setSubject('');
+    setActiveStep(6);
+  };
+
+  const handleSubjectChange = (val: string) => {
+    setSubject(val);
+    setActiveStep(7);
   };
 
   const handleSaveNewSubject = () => {
@@ -200,17 +215,6 @@ const UploadMaterialForm = ({ onUploadSuccess }: UploadMaterialFormProps) => {
     toast({ title: "Subject Renamed! ✏️", description: `Renamed "${old}" to "${trimmed}".` });
   };
 
-  const handleBranchChange = (val: string) => {
-    setBranch(val);
-    setSubject('');
-    setActiveStep(6);
-  };
-
-  const handleSubjectChange = (val: string) => {
-    setSubject(val);
-    setActiveStep(7);
-  };
-
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selected = e.target.files?.[0];
     if (selected) {
@@ -254,7 +258,6 @@ const UploadMaterialForm = ({ onUploadSuccess }: UploadMaterialFormProps) => {
     if (!user) return 'You are not logged in. Please re-login and try again.';
     if (!category) return 'Please select a category.';
     if (selectedCategory?.hasYears && !year) return 'Please select a year.';
-    if (isFirstYear && !branchType) return 'Please select a branch type (Engineering or Technology).';
     if (selectedCategory?.hasSemesters && !semester) return 'Please select a semester.';
     if (selectedCategory?.hasBranches && !isFirstYear && !branch) return 'Please select a branch.';
     if (availableSubjects.length > 0 && !subject) return 'Please select a subject.';
@@ -319,7 +322,9 @@ const UploadMaterialForm = ({ onUploadSuccess }: UploadMaterialFormProps) => {
       }
 
       const dbSemester = category === 'btech'
-        ? (isFirstYear ? `ALL-${mappedSemester}` : `${branch}-${semester}`)
+        ? (isFirstYear
+            ? (semester.includes('2nd') ? 'ALL-2nd Semester' : 'ALL-1st Semester')
+            : `${branch}-${semester}`)
         : (semester || category);
 
       const finalTitle = effectiveTitle.trim();
@@ -521,7 +526,7 @@ const UploadMaterialForm = ({ onUploadSuccess }: UploadMaterialFormProps) => {
         </div>
       )}
 
-      {/* Step 3 (1st year): Branch Type - Engineering or Technology */}
+      {/* Step 3 (1st year): Branch Type - Optional Unified or Specific Cycle */}
       {isFirstYear && (
         <div className="space-y-3" ref={branchRef}>
           {branchType && activeStep !== 3 ? (
@@ -532,8 +537,10 @@ const UploadMaterialForm = ({ onUploadSuccess }: UploadMaterialFormProps) => {
               <div className="flex items-center gap-3">
                 <div className="w-6 h-6 rounded-full bg-emerald-600 text-white flex items-center justify-center text-xs font-bold">✓</div>
                 <div>
-                  <p className="text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold uppercase tracking-wider">Step 3: Branch Type Selected</p>
-                  <p className="text-sm font-bold text-foreground">{branchType === 'engineering' ? 'Engineering Branch' : 'Technology Branch'}</p>
+                  <p className="text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold uppercase tracking-wider">Step 3: Branch Cycle Selected</p>
+                  <p className="text-sm font-bold text-foreground">
+                    {branchType === 'all' ? 'All Branches (Unified 2026 Scheme)' : branchType === 'engineering' ? 'Engineering Cycle' : 'Technology Cycle'}
+                  </p>
                 </div>
               </div>
               <span className="text-xs text-emerald-600 dark:text-emerald-400 font-semibold hover:underline">Change</span>
@@ -542,9 +549,22 @@ const UploadMaterialForm = ({ onUploadSuccess }: UploadMaterialFormProps) => {
             <div className="border border-border/80 rounded-xl p-5 bg-muted/20 space-y-4">
               <Label className="text-base font-bold flex items-center gap-2.5 text-foreground">
                 <span className="w-7 h-7 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-xs font-bold shadow-md">3</span>
-                Select Branch Type
+                Select 1st Year Branch Cycle
               </Label>
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <Card
+                  className={`cursor-pointer transition-all duration-200 text-center border-border bg-card ${
+                    branchType === 'all' || branchType === ''
+                      ? 'ring-2 ring-primary bg-primary/10 border-primary'
+                      : 'hover:border-primary/40 hover:bg-muted/50'
+                  }`}
+                  onClick={() => handleBranchTypeChange('all' as any)}
+                >
+                  <CardContent className="p-3.5">
+                    <div className="text-sm font-bold text-primary">All Branches (Unified) ⭐</div>
+                    <div className="text-[11px] text-muted-foreground mt-0.5">Recommended (All Revised Subjects)</div>
+                  </CardContent>
+                </Card>
                 <Card
                   className={`cursor-pointer transition-all duration-200 text-center border-border bg-card ${
                     branchType === 'engineering'
@@ -553,9 +573,9 @@ const UploadMaterialForm = ({ onUploadSuccess }: UploadMaterialFormProps) => {
                   }`}
                   onClick={() => handleBranchTypeChange('engineering')}
                 >
-                  <CardContent className="p-4">
-                    <div className="text-base font-bold text-primary">Engineering</div>
-                    <div className="text-xs text-muted-foreground mt-1">CSE/IT, ME, CE, ET, EE</div>
+                  <CardContent className="p-3.5">
+                    <div className="text-sm font-bold text-primary">Engineering Cycle</div>
+                    <div className="text-[11px] text-muted-foreground mt-0.5">CSE, IT, ME, CE, ET, EE</div>
                   </CardContent>
                 </Card>
                 <Card
@@ -566,9 +586,9 @@ const UploadMaterialForm = ({ onUploadSuccess }: UploadMaterialFormProps) => {
                   }`}
                   onClick={() => handleBranchTypeChange('technology')}
                 >
-                  <CardContent className="p-4">
-                    <div className="text-base font-bold text-primary">Technology</div>
-                    <div className="text-xs text-muted-foreground mt-1">CHE, PT (Paint), PL (Plastic), FT, OT, LFT, BE</div>
+                  <CardContent className="p-3.5">
+                    <div className="text-sm font-bold text-primary">Technology Cycle</div>
+                    <div className="text-[11px] text-muted-foreground mt-0.5">CHE, PT, PL, FT, OT, LFT, BE</div>
                   </CardContent>
                 </Card>
               </div>
@@ -578,7 +598,7 @@ const UploadMaterialForm = ({ onUploadSuccess }: UploadMaterialFormProps) => {
       )}
 
       {/* Step 3/4: Semester */}
-      {((category === 'btech' && year && (isFirstYear ? branchType : true)) || (selectedCategory?.hasSemesters && category !== 'btech')) && (
+      {((category === 'btech' && year) || (selectedCategory?.hasSemesters && category !== 'btech')) && (
         <div className="space-y-3" ref={semesterRef}>
           {semester && activeStep !== 4 ? (
             <div
@@ -602,7 +622,7 @@ const UploadMaterialForm = ({ onUploadSuccess }: UploadMaterialFormProps) => {
                 </span>
                 Select Semester
               </Label>
-              <div className="grid grid-cols-2 gap-3">
+              <div className={`grid ${availableSemesters.length >= 3 ? 'grid-cols-1 sm:grid-cols-3' : 'grid-cols-2'} gap-3`}>
                 {availableSemesters.map(sem => (
                   <Card
                     key={sem}
@@ -666,33 +686,210 @@ const UploadMaterialForm = ({ onUploadSuccess }: UploadMaterialFormProps) => {
       )}
 
       {/* Step 5/6: Subject */}
-      {semester && availableSubjects.length > 0 && (
+      {semester && (availableSubjects.length > 0 || isOwner) && (
         <div className="space-y-3" ref={subjectRef}>
           {subject && activeStep !== 6 ? (
-            <div
-              onClick={() => setActiveStep(6)}
-              className="flex items-center justify-between p-3.5 rounded-xl border border-emerald-500/30 bg-emerald-500/10 cursor-pointer hover:bg-emerald-500/15 transition-all shadow-sm"
-            >
-              <div className="flex items-center gap-3">
+            <div className="flex items-center justify-between p-3.5 rounded-xl border border-emerald-500/30 bg-emerald-500/10 shadow-sm">
+              <div
+                onClick={() => setActiveStep(6)}
+                className="flex items-center gap-3 cursor-pointer hover:opacity-85 transition-all flex-1"
+              >
                 <div className="w-6 h-6 rounded-full bg-emerald-600 text-white flex items-center justify-center text-xs font-bold">✓</div>
                 <div>
                   <p className="text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold uppercase tracking-wider">Subject Selected</p>
                   <p className="text-sm font-bold text-foreground">{subject}</p>
                 </div>
               </div>
-              <span className="text-xs text-emerald-600 dark:text-emerald-400 font-semibold hover:underline">Change</span>
+              <div className="flex items-center gap-2">
+                {isOwner && (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setRenameValue(subject);
+                      setIsRenamingSubject(true);
+                      setIsAddingSubject(false);
+                      setActiveStep(6);
+                    }}
+                    className="text-xs h-7 px-2.5 border-amber-500/40 text-amber-600 dark:text-amber-400 hover:bg-amber-500/10"
+                  >
+                    <Pencil className="h-3 w-3 mr-1" />
+                    Rename
+                  </Button>
+                )}
+                <span
+                  onClick={() => setActiveStep(6)}
+                  className="text-xs text-emerald-600 dark:text-emerald-400 font-semibold hover:underline cursor-pointer ml-1"
+                >
+                  Change
+                </span>
+              </div>
             </div>
           ) : (
             <div className="border border-border/80 rounded-xl p-5 bg-muted/20 space-y-4">
-              <Label className="text-base font-bold flex items-center gap-2.5 text-foreground">
-                <span className="w-7 h-7 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-xs font-bold shadow-md">
-                  {category === 'btech' ? '5' : '3'}
-                </span>
-                Select Subject
-              </Label>
+              <div className="flex items-center justify-between flex-wrap gap-2">
+                <Label className="text-base font-bold flex items-center gap-2.5 text-foreground">
+                  <span className="w-7 h-7 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-xs font-bold shadow-md">
+                    {category === 'btech' ? '5' : '3'}
+                  </span>
+                  Select Subject
+                </Label>
+                {isOwner && (
+                  <div className="flex items-center gap-2">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        setIsAddingSubject(!isAddingSubject);
+                        setIsRenamingSubject(false);
+                      }}
+                      className="text-xs h-8 px-2.5 bg-primary/10 hover:bg-primary/20 border-primary/40 text-primary font-semibold flex items-center gap-1.5 shadow-sm"
+                    >
+                      {isAddingSubject ? (
+                        <>
+                          <X className="h-3.5 w-3.5 mr-1" />
+                          Cancel
+                        </>
+                      ) : (
+                        <>
+                          <Plus className="h-3.5 w-3.5 mr-1" />
+                          Add Subject (Owner)
+                        </>
+                      )}
+                    </Button>
+                    {subject && (
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={() => {
+                          setRenameValue(subject);
+                          setIsRenamingSubject(!isRenamingSubject);
+                          setIsAddingSubject(false);
+                        }}
+                        className="text-xs h-8 px-2.5 border-amber-500/40 text-amber-600 dark:text-amber-400 hover:bg-amber-500/15 font-semibold flex items-center gap-1.5 shadow-sm"
+                      >
+                        <Pencil className="h-3.5 w-3.5 mr-1" />
+                        Rename
+                      </Button>
+                    )}
+                  </div>
+                )}
+              </div>
+
+              {/* Owner: Add Subject Form */}
+              {isOwner && isAddingSubject && (
+                <div className="p-4 rounded-xl border border-primary/30 bg-primary/5 space-y-3.5 animate-in fade-in duration-200">
+                  <div className="flex items-center justify-between">
+                    <p className="text-xs font-bold text-primary flex items-center gap-1.5">
+                      <Sparkles className="h-3.5 w-3.5" /> Add New Subject
+                      <span className="text-muted-foreground font-normal">
+                        ({category?.toUpperCase()} {branch ? `• ${branch}` : ''} • {semester})
+                      </span>
+                    </p>
+                    <Badge variant="outline" className="text-[10px] border-primary/30 text-primary">
+                      Owner Only
+                    </Badge>
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                      <label className="text-[11px] font-semibold text-foreground/80 block mb-1">
+                        Subject Code / Name <span className="text-red-500">*</span>
+                      </label>
+                      <Input
+                        placeholder="e.g. DCS102 or AI Ethics"
+                        value={newSubjectName}
+                        onChange={(e) => setNewSubjectName(e.target.value)}
+                        className="h-9 text-xs bg-background"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-[11px] font-semibold text-foreground/80 block mb-1">
+                        Full Descriptive Name (Optional)
+                      </label>
+                      <Input
+                        placeholder="e.g. Artificial Intelligence & Ethics"
+                        value={newSubjectFullName}
+                        onChange={(e) => setNewSubjectFullName(e.target.value)}
+                        className="h-9 text-xs bg-background"
+                      />
+                    </div>
+                  </div>
+                  <div className="flex justify-end gap-2 pt-1">
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setIsAddingSubject(false)}
+                      className="h-8 text-xs"
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      type="button"
+                      size="sm"
+                      onClick={handleSaveNewSubject}
+                      className="h-8 text-xs bg-primary hover:bg-primary/90 text-primary-foreground font-semibold px-4"
+                    >
+                      Save & Select Subject
+                    </Button>
+                  </div>
+                </div>
+              )}
+
+              {/* Owner: Rename Subject Form */}
+              {isOwner && isRenamingSubject && subject && (
+                <div className="p-4 rounded-xl border border-amber-500/30 bg-amber-500/5 space-y-3 animate-in fade-in duration-200">
+                  <div className="flex items-center justify-between">
+                    <p className="text-xs font-bold text-amber-600 dark:text-amber-400 flex items-center gap-1.5">
+                      <Pencil className="h-3.5 w-3.5" /> Rename Subject: <span className="font-extrabold underline">{subject}</span>
+                    </p>
+                    <Badge variant="outline" className="text-[10px] border-amber-500/40 text-amber-600 dark:text-amber-400">
+                      Owner Only
+                    </Badge>
+                  </div>
+                  <div>
+                    <label className="text-[11px] font-semibold text-foreground/80 block mb-1">
+                      Updated Subject Name <span className="text-red-500">*</span>
+                    </label>
+                    <Input
+                      placeholder="Enter new subject name"
+                      value={renameValue}
+                      onChange={(e) => setRenameValue(e.target.value)}
+                      className="h-9 text-xs bg-background"
+                    />
+                  </div>
+                  <p className="text-[10px] text-muted-foreground">
+                    ⚡ This updates the subject label and synchronizes existing notes in the database.
+                  </p>
+                  <div className="flex justify-end gap-2 pt-1">
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setIsRenamingSubject(false)}
+                      className="h-8 text-xs"
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      type="button"
+                      size="sm"
+                      onClick={handleSaveRenameSubject}
+                      className="h-8 text-xs bg-amber-600 hover:bg-amber-700 text-white font-semibold px-4"
+                    >
+                      Save Rename
+                    </Button>
+                  </div>
+                </div>
+              )}
+
               <Select value={subject} onValueChange={handleSubjectChange}>
                 <SelectTrigger className="h-12 bg-background border-border text-foreground">
-                  <SelectValue placeholder="Choose subject" />
+                  <SelectValue placeholder={availableSubjects.length > 0 ? "Choose subject" : "No subjects yet — click + Add Subject"} />
                 </SelectTrigger>
                 <SelectContent className="bg-card border-border text-foreground max-h-64">
                   {availableSubjects.map(s => (
