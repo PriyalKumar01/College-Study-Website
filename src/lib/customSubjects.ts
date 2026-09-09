@@ -81,4 +81,14 @@ export async function saveRenamedSubject(
       localStorage.setItem(CUSTOM_SUBJECTS_STORAGE_KEY, JSON.stringify(customParsed));
     }
 
+    // Sync with Supabase notes table if online
+    try {
+      await (supabase as any)
+        .from('notes')
+        .update({ subject: trimmedNew })
+        .eq('subject', trimmedOld);
+    } catch (dbErr) {
+      console.warn('Could not update subject name in notes table:', dbErr);
+    }
+  } catch (e) {
 }
