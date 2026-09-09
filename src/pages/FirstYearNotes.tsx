@@ -79,7 +79,22 @@ const FirstYearNotes = () => {
 
   const staticSubjects: Subject[] = [
 
-    // ── COMPUTING & TECH ───────────────────────────────────────────────
+    // ── COMPUTING & TECH ───────────────────────────────────────────────,
+
+    {
+      id: 'pps',
+      code: 'DCS101',
+      name: 'Programming for Problem Solving (PPS)',
+      fullName: 'Programming for Problem Solving (C Language & Problem Solving)',
+      category: 'computing',
+      icon: '💻',
+      color: 'bg-blue-600',
+      badge: 'New Syllabus (2026)',
+      description: 'Foundations of algorithms, flowcharts, and C programming for first-year engineers.',
+      syllabusUrl: 'https://hbtu.ac.in/naac/CS/B.Tech.%201st%20Year%20Course%20C-06222026063347.pdf',
+      playlists: { detailed: [], oneshot: [] },
+      notes: []
+    },
   ];
 
   // Combined community notes matching any 1st year tags
