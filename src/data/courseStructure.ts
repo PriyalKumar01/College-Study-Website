@@ -45,7 +45,7 @@ export const CATEGORIES: CategoryInfo[] = [
 
 // ── BTech Year → Semester mapping ────────────────────────────────
 export const BTECH_YEARS = [
-  { id: '1st', label: '1st Year', semesters: ['1st Semester', '2nd Semester'] },
+  { id: '1st', label: '1st Year', semesters: ['1st Semester', '2nd Semester', 'First Year (All Subjects)'] },
   { id: '2nd', label: '2nd Year', semesters: ['3rd Semester', '4th Semester'] },
   { id: '3rd', label: '3rd Year', semesters: ['5th Semester', '6th Semester'] },
   { id: '4th', label: '4th Year', semesters: ['7th Semester', '8th Semester'] },
