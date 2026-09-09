@@ -633,7 +633,8 @@ const FirstYearNotes = () => {
       description: 'Year-wise organized exam question papers (2025-26, 2024-25, 2023-24, 2022-23) for Mid Sem 1, Mid Sem 2, and End Sem.',
       playlists: { detailed: [], oneshot: [] },
       notes: [
-        { title: '[2025-26] Mid Sem-1 PYQs (Odd Semester)', url: 'https://drive.google.com/file/d/1UHEYh3ykfe1QtYE_VfOF09nLwfWkjx5Z/view?usp=drivesdk', recommended: true }
+        { title: '[2025-26] Mid Sem-1 PYQs (Odd Semester)', url: 'https://drive.google.com/file/d/1UHEYh3ykfe1QtYE_VfOF09nLwfWkjx5Z/view?usp=drivesdk', recommended: true },
+        { title: '[2025-26] Mid Sem-2 PYQs (Odd Semester)', url: 'https://drive.google.com/file/d/1VzarRmsgnrELjL9fsGKFy31Ba1G9nZZi/view?usp=drivesdk', recommended: true }
       ]
     }
   ];
