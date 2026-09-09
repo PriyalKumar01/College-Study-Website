@@ -643,7 +643,8 @@ const FirstYearNotes = () => {
         { title: '[2024-25] Complete All PYQs Bundle (1st & 2nd Sem)', url: 'https://drive.google.com/file/d/1Fc0AwAU84kbiYuOYfDScpiYCx9vfbV_I/view?usp=drive_link', recommended: true },
         { title: '[2024-25] Mid Sem-1 PYQs (1st Semester)', url: 'https://drive.google.com/file/d/1SFx9P6EEyEu5fCwHrL6hMjnugNkodV2t/view?usp=drive_link' },
         { title: '[2024-25] Mid Sem-2 PYQs (1st Semester)', url: 'https://drive.google.com/file/d/1oBW8TZphAGA3jPf5PaiXzhr3CDkRX8cb/view?usp=drive_link' },
-        { title: '[2024-25] End Sem PYQs (1st Semester)', url: 'https://drive.google.com/file/d/1FefFp2xjatHyPb205qKyORxsdQKeqVDP/view?usp=drive_link' }
+        { title: '[2024-25] End Sem PYQs (1st Semester)', url: 'https://drive.google.com/file/d/1FefFp2xjatHyPb205qKyORxsdQKeqVDP/view?usp=drive_link' },
+        { title: '[2024-25] Mid Sem-1 PYQs (2nd Semester)', url: 'https://drive.google.com/file/d/1SHThDw8j2ar0oJ7huAKSTTBWAqLqgT86/view?usp=drive_link' }
       ]
     }
   ];
