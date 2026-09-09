@@ -248,7 +248,20 @@ const FirstYearNotes = () => {
       ]
     },
 
-    // ── ENGINEERING SCIENCES ───────────────────────────────────────────
+    // ── ENGINEERING SCIENCES ───────────────────────────────────────────,
+
+    {
+      id: 'electrical',
+      code: 'DEE101',
+      name: 'Basic Electrical Engineering (BEE)',
+      fullName: 'Basic Electrical Engineering (Circuits, Machines, Transformers)',
+      category: 'engineering',
+      icon: '⚡',
+      color: 'bg-amber-500',
+      description: 'DC circuits, AC circuits, magnetic circuits, single-phase transformers, and electrical machines.',
+      playlists: { detailed: [], oneshot: [] },
+      notes: []
+    },
   ];
 
   // Combined community notes matching any 1st year tags
