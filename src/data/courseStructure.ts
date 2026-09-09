@@ -1,6 +1,8 @@
 // Centralized course structure mapping for the admin upload form
 // Maps exactly to the existing website pages and structure
 
+import { getCustomSubjectsForContext, getRenamedSubjectsMap } from '@/lib/customSubjects';
+
 export interface SubjectInfo {
   name: string;
   fullName: string;
