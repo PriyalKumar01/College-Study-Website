@@ -329,8 +329,28 @@ const FirstYearNotes = () => {
       icon: '⚙️',
       color: 'bg-blue-600',
       description: 'Coplanar force systems, friction, centroid, moment of inertia, beams, and trusses.',
-      playlists: { detailed: [], oneshot: [] },
-      notes: []
+      playlists: {
+        detailed: [
+          { title: 'Friction (Best)', url: 'https://youtube.com/playlist?list=PLDN15nk5uLiAcwK1Fz4n7KVF7yUlBlqaC&si=vDV-TMhH1k2QKl4N', recommended: true },
+          { title: 'Equilibrium (Best)', url: 'https://youtube.com/playlist?list=PLDN15nk5uLiAAqXRqpIPTEgf_KcblFrPx&si=FHwwoufHVAl6jxIv', recommended: true },
+          { title: 'Beam (Best)', url: 'https://youtube.com/playlist?list=PLDN15nk5uLiCAnu7Rjta7vvNhoJZv_gAt&si=FDtaMcLkqDY-mDgk', recommended: true },
+          { title: 'Truss (Best)', url: 'https://youtube.com/playlist?list=PLDN15nk5uLiBwwGZKmNzKJIRh4E0G9cfx&si=gdrUdACUxxxP9fdQ', recommended: true },
+          { title: 'Centroid and Center of Gravity (Best)', url: 'https://youtube.com/playlist?list=PLDN15nk5uLiBVYBMlotEZiS6ivj147brP&si=qMEyTHCEvwRosEaS', recommended: true },
+          { title: 'Lami\'s Theorem (Best)', url: 'https://youtube.com/playlist?list=PLDN15nk5uLiDEfVIPV-IsxlZGh55cxL2J&si=lDjE-PrMTbELnfU2', recommended: true },
+          { title: 'Moment & Couple (Best)', url: 'https://youtube.com/playlist?list=PLDN15nk5uLiB8ys9x_dWnPLqhuI3T2nTG&si=SQKM4cbUDlaW129h', recommended: true },
+          { title: 'Impact and Impulse', url: 'https://youtube.com/playlist?list=PLDN15nk5uLiCT6GSB-7AZvsTqVstHyPGD&si=PzWE8m3K_zSZ7cSh' },
+          { title: 'Moment of Inertia (Best)', url: 'https://youtube.com/playlist?list=PLDN15nk5uLiCfqJSWygjzY_EjSJeoEJ2x&si=rbv12__4tamLxC1Q', recommended: true },
+          { title: 'Product of Inertia', url: 'https://youtube.com/playlist?list=PLDN15nk5uLiD23ld8GO7BHJ1nT_NWmkCP&si=kP-aDJXhR2dLh_4Y' },
+          { title: '2D Force System (Best)', url: 'https://youtube.com/playlist?list=PLDN15nk5uLiB4wJ9KwN9LzBCawifVEKc4&si=RU2-a5UxL8AG86fV', recommended: true }
+        ],
+        oneshot: []
+      },
+      notes: [
+        { title: 'Unit 1 Notes', url: 'https://docs.google.com/document/d/1SbrdyYktEpHGJ271gbl-bbbB9EvmlLI2/edit?usp=drive_link&ouid=114822883182552949712&rtpof=true&sd=true' },
+        { title: 'Unit 2 & 3 Combined Handwritten Notes', url: 'https://drive.google.com/file/d/1_XgDXt6FY0NBUktGfQDxXWFOdSY8LEOU/view?usp=drive_link', recommended: true },
+        { title: 'Complete Mechanical Engineering Handwritten Notes', url: 'https://drive.google.com/file/d/1WDJbOvvQ68rFrs0kAQnzXNOACmEAe7-2/view?usp=drive_link', recommended: true },
+        { title: 'Engineering Mechanics Book - RK Bansal', url: 'https://drive.google.com/file/d/1SDkvZJ1JciXW_yXjwVBZhI7mUVRpwpMp/view?usp=drive_link', recommended: true }
+      ]
     },
   ];
 
