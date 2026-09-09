@@ -463,7 +463,22 @@ const FirstYearNotes = () => {
         { title: 'UHV Foundation & Harmony Course Guide', url: 'https://drive.google.com/file/d/1STrVBwHdz4WLytQ-KxO4SebJwX0jh6jM/view?usp=drive_link', recommended: true },
         { title: 'Human Conduct & Professional Ethics Handout', url: 'https://drive.google.com/file/d/1k9DQuSHvbBc_-iB8RPC4g1MZJgHmFBOO/view?usp=drive_link' }
       ]
+    },,
+
+    {
+      id: 'pc',
+      code: 'DHS102 / DHS203',
+      name: 'English for Technical Writing / Communication Skills',
+      fullName: 'English for Technical Writing & Communication Skills (PC)',
+      category: 'core',
+      icon: '💬',
+      color: 'bg-purple-600',
+      description: 'Grammar, technical writing, professional presentation, reading comprehension, and literature.',
+      playlists: { detailed: [], oneshot: [] },
+      notes: []
     },
+
+    // ── TECHNOLOGY BRANCH INTRODUCTORY COURSES ────────────────────────
   ];
 
   // Combined community notes matching any 1st year tags
