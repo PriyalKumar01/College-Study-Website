@@ -536,6 +536,20 @@ const FirstYearNotes = () => {
         { title: 'Paint Technology (ICT Core Notes)', url: 'https://drive.google.com/file/d/1Q4LDUfRyXzSwN9PCrQ8zN7D9sc-xeAt4/view?usp=drivesdk', recommended: true },
         { title: 'General Chemical Tech Notes: Priyal Kumar', url: 'https://drive.google.com/file/d/1PzevLkCwsQBQh_bZDwZnPgdWA6Qqv_5m/view?usp=drivesdk' }
       ]
+    },,
+
+    {
+      id: 'leather_tech',
+      code: 'ILT101',
+      name: 'Introduction to Leather Technology (ILT)',
+      fullName: 'Introduction to Leather & Footwear Technology',
+      category: 'tech',
+      icon: '👞',
+      color: 'bg-yellow-700',
+      badge: 'Tech Branch',
+      description: 'Introductory course for Leather & Footwear Technology (LFT/LT) first-year students.',
+      playlists: { detailed: [], oneshot: [] },
+      notes: []
     },
   ];
 
