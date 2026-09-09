@@ -408,7 +408,22 @@ const FirstYearNotes = () => {
         { title: 'Unit 1 Notes', url: 'https://drive.google.com/file/d/1XxSq3_HJB3DnNUwjepBME6UjB9F1xNWj/view?usp=drive_link' },
         { title: 'Unit 3 Notes', url: 'https://drive.google.com/file/d/1YV3-xqPi-uERYjZ4XfXH6lYTqjmJr_qm/view?usp=drive_link' }
       ]
+    },,
+
+    {
+      id: 'workshop',
+      code: 'DME202',
+      name: 'Digital Fabrication & Workshop Practices',
+      fullName: 'Digital Fabrication / Workshop / Manufacturing Practices',
+      category: 'engineering',
+      icon: '🔨',
+      color: 'bg-rose-600',
+      description: 'Hands-on practicals in carpentry, fitting, foundry, blacksmithy, and modern digital fabrication.',
+      playlists: { detailed: [], oneshot: [] },
+      notes: []
     },
+
+    // ── HUMANITIES, ETHICS & COMMUNICATION ─────────────────────────────
   ];
 
   // Combined community notes matching any 1st year tags
