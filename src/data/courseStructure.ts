@@ -97,6 +97,7 @@ export const BTECH_FIRST_YEAR_SUBJECTS: SubjectInfo[] = [
   { name: 'Intro to Food Technology', fullName: 'Introduction to Food Technology & Processing' },
   { name: 'Intro to Plastic & Polymer Technology', fullName: 'Introduction to Plastic, Polymer & Rubber Technology' },
   { name: 'Intro to Paint & Coating Technology', fullName: 'Introduction to Paint, Varnish & Coating Technology' },
+  { name: 'Intro to Oil & Surfactant Technology', fullName: 'Introduction to Oil, Fat & Oleochemical Technology' },
 ];
 
 // Key format: "{branch}-{semester}" e.g. "CSE-1st Semester"
