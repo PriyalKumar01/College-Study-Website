@@ -419,8 +419,26 @@ const FirstYearNotes = () => {
       icon: '🔨',
       color: 'bg-rose-600',
       description: 'Hands-on practicals in carpentry, fitting, foundry, blacksmithy, and modern digital fabrication.',
-      playlists: { detailed: [], oneshot: [] },
-      notes: []
+      playlists: {
+        detailed: [],
+        oneshot: [],
+        workshop: [
+          { title: 'Foundry Workshop Demo', url: 'https://youtu.be/RIwEspSqY1s?si=CdRIS_VaiH1HOG7w', recommended: true },
+          { title: 'Machine Workshop Demo', url: 'https://youtu.be/as-H6RX3lr8?si=yEUw-Z9jjijM_AsY', recommended: true },
+          { title: 'Fitting Workshop Demo', url: 'https://youtu.be/g3f9m24cx0s?si=ZQEF31XxTZolfvwX' },
+          { title: 'Carpentry Workshop Demo', url: 'https://youtu.be/xCKK4l_q8vU?si=UxuRYis-lBCkcs0k' }
+        ]
+      },
+      notes: [
+        { title: 'Workshop File Part 1', url: 'https://drive.google.com/file/d/1W2cNn_GykLkrO3gvDBvRhRgw5IwkzYy8/view?usp=drive_link' },
+        { title: 'Workshop File Part 2', url: 'https://drive.google.com/file/d/1W3OE6MjtYXe5Ln3_jaztoEvUf9FoIzKE/view?usp=drive_link' },
+        { title: 'Complete Workshop File: Ananya (CSE"28)', url: 'https://drive.google.com/file/d/1-xXwVfGrvvfLpanOo8YsnCHeVyKSS2Dd/view?usp=drivesdk', recommended: true },
+        { title: 'Workshop Material Science Notes', url: 'https://drive.google.com/file/d/1W8lcNGdqsP5sI3h5ey3ORYBTdDJijFF7/view?usp=drive_link' },
+        { title: 'Material Science Additional PDF 1', url: 'https://drive.google.com/file/d/1_YgthLZ625NzKcnUYJIzx8lvuvtpsCZ_/view?usp=drive_link' },
+        { title: 'Material Science Additional PDF 2', url: 'https://drive.google.com/file/d/1_a9SNbiP_M2yN4ZCwbC9xHBoOcBhYGI_/view?usp=drive_link' },
+        { title: 'Blacksmithy Workshop Book', url: 'https://drive.google.com/file/d/1h6bKd9giFf2P9A0rIKbJvJ2vn4qOqzQk/view?usp=drivesdk' },
+        { title: 'Complete Workshop Notes: Ananya (CSE"28)', url: 'https://drive.google.com/file/d/1YBdb4IWdChFR0kNt6vCa7CjP8Xr-Mg8N/view?usp=drivesdk', recommended: true }
+      ]
     },
 
     // ── HUMANITIES, ETHICS & COMMUNICATION ─────────────────────────────
