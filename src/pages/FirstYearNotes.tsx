@@ -376,6 +376,19 @@ const FirstYearNotes = () => {
       notes: [
         { title: 'IET Handwritten Notes', url: 'https://drive.google.com/file/d/1Ps9wD-x7CZLNy-bY8HmeqDy7Uytp6flq/view?usp=drive_link', recommended: true }
       ]
+    },,
+
+    {
+      id: 'civil',
+      code: 'DCE201',
+      name: 'Environmental Science & Engineering (EES / Civil)',
+      fullName: 'Environmental Science & Engineering / Civil Engineering Fundamentals',
+      category: 'engineering',
+      icon: '🌱',
+      color: 'bg-emerald-600',
+      description: 'Building materials, surveying, environmental ecology, pollution control, and sustainable technology.',
+      playlists: { detailed: [], oneshot: [] },
+      notes: []
     },
   ];
 
