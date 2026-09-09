@@ -101,6 +101,7 @@ export const BTECH_FIRST_YEAR_SUBJECTS: SubjectInfo[] = [
   { name: 'Intro to Chemical Engineering', fullName: 'Introduction to Chemical Engineering & Processes' },
   { name: 'Intro to Biochemical Engineering', fullName: 'Introduction to Biochemical Engineering & Industrial Biotech' },
   { name: 'Intro to Leather & Footwear Technology', fullName: 'Introduction to Leather, Footwear & Tanning Technology' },
+  { name: 'Civil Engineering', fullName: 'Civil Engineering' },
 ];
 
 // Key format: "{branch}-{semester}" e.g. "CSE-1st Semester"
