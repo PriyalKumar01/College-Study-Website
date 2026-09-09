@@ -223,8 +223,29 @@ const FirstYearNotes = () => {
       icon: '🧪',
       color: 'bg-emerald-600',
       description: 'Chemical bonding, reaction mechanisms, coordination compounds, and industrial polymers.',
-      playlists: { detailed: [], oneshot: [] },
-      notes: []
+      playlists: {
+        detailed: [
+          { title: 'Engineering Chemistry Complete', url: 'https://youtube.com/playlist?list=PLT3bOBUU3L9jB7qJkp5qn35021QUBC8xP&si=kE_79WdmozBtD5ZS', recommended: true },
+          { title: 'Chemistry Concepts Part 1', url: 'https://youtube.com/playlist?list=PL-vEH_IPWrhBKXPlljxAHMCkdw7Lb_Qbn&si=4SmEbrEMClBJIb7M' },
+          { title: 'Advanced Chemistry Topics', url: 'https://youtube.com/playlist?list=PLg2LVpcRrOF5BVVKG_DdYRPEaMx6C9XsW&si=wOvmSVvGHocZWco2' }
+        ],
+        oneshot: [
+          { title: 'Chemistry One Shot', url: 'https://youtube.com/playlist?list=PL-vEH_IPWrhBKXPlljxAHMCkdw7Lb_Qbn&si=J_GtKZCpwqQCeZ42', recommended: true }
+        ]
+      },
+      notes: [
+        { title: 'Unit-2 Notes', url: 'https://drive.google.com/file/d/1Kr7Cs7O-VHKYnHu5W2TjOWX-ZVNGdHVF/view?usp=drivesdk' },
+        { title: 'Unit-3 Notes', url: 'https://drive.google.com/file/d/138hWk93eecUFZSuV5QeH8_JngRdaVwg1/view?usp=drivesdk' },
+        { title: 'Unit-4 Reaction Mechanism Notes', url: 'https://drive.google.com/file/d/1qK9pGG8Vof78o-1v5aV48duAyoyHx0CF/view?usp=drivesdk' },
+        { title: 'Unit-5 Notes', url: 'https://drive.google.com/file/d/1SKb7fg3lcyhT5lp0OWSvqmFtJYOEBei2/view?usp=drivesdk' },
+        { title: 'Lab Related Theory', url: 'https://drive.google.com/file/d/1pDN8Id0uViXtk5GeV6DRP52NnOB_zGfn/view?usp=drivesdk' },
+        { title: 'Coordination & Compound', url: 'https://drive.google.com/file/d/1RZ_mEFT7IjEgSSJl4_Rt71ZhT7EEdWNX/view?usp=sharing' },
+        { title: 'Chemistry Practical File', url: 'https://drive.google.com/file/d/1ovxq8fHzhGVIYnYwS3L3hYRnqpjCYTqa/view?usp=drive_link', recommended: true },
+        { title: 'Engg. Chemistry Lecture Notes: Priyal Kumar (CSE"27)', url: 'https://drive.google.com/file/d/1W5Sj-qYeWSaegcB2WUcKXymRQtOigM1f/view?usp=drive_link', recommended: true },
+        { title: 'Nomenclature Notes', url: 'https://drive.google.com/file/d/1ROFkIOZ_PbPQYf1LcW49EPg-F78Zqjwz/view?usp=drive_link' },
+        { title: 'Polymer Notes', url: 'https://drive.google.com/file/d/1RSder5E5rNZ3Nkn5ToQkt_8E8WJiDG_B/view?usp=drive_link' },
+        { title: 'Full Chemistry Notes: Ananya (CSE"28)', url: 'https://drive.google.com/file/d/1SU4yAUpxOcw_YPEvnnakgLJAqMlTcLBi/view?usp=drivesdk', recommended: true }
+      ]
     },
 
     // ── ENGINEERING SCIENCES ───────────────────────────────────────────
