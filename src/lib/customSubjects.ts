@@ -44,3 +44,12 @@ export function saveCustomSubject(
     console.error('Failed to save custom subject', e);
   }
 }
+
+export function getRenamedSubjectsMap(): Record<string, string> {
+  try {
+    const raw = localStorage.getItem(RENAMED_SUBJECTS_STORAGE_KEY);
+    return raw ? JSON.parse(raw) : {};
+  } catch (e) {
+    return {};
+  }
+}
