@@ -89,7 +89,7 @@ function AdminCard({ admin, index }: { admin: AdminRecord; index: number }) {
           gap: 14,
           transition: "background 0.22s ease, box-shadow 0.22s ease",
           boxShadow: hov
-            ? "0 8px 30px rgba(30,27,75,0.25)"
+            ? "0 8px 24px rgba(14, 165, 233, 0.14)"
             : "0 1px 4px rgba(0,0,0,0.07)",
           cursor: "default",
           width: "100%",
