@@ -56,9 +56,9 @@ function avatarGradient(seed: string) {
 
 // ── Admin Card ────────────────────────────────────────────────────────────────
 function AdminCard({ admin, index }: { admin: AdminRecord; index: number }) {
-  const isOwner = admin.role === "owner";
+  const isOwner = admin.role === "owner" || admin.role === "super_admin";
   const isActive = !admin.to_date;
-  const displayName = admin.user_name || admin.user_email.split("@")[0];
+  const displayName = admin.user_name || (admin.user_email === "priyalkumar06@gmail.com" ? "Priyal Kumar" : admin.user_email.split("@")[0]);
   const [hov, setHov] = useState(false);
 
   const fmt = (d: string | null) =>
@@ -194,12 +194,25 @@ function AdminCard({ admin, index }: { admin: AdminRecord; index: number }) {
   );
 }
 
+// ── Default fallback admins (ensures admin team always shows) ───────────────
+const DEFAULT_ADMINS: AdminRecord[] = [
+  {
+    id: "admin-priyal",
+    user_name: "Priyal Kumar",
+    user_email: "priyalkumar06@gmail.com",
+    role: "owner",
+    from_date: "2024-01-01",
+    to_date: null,
+  }
+];
+
 // ── Main Page ─────────────────────────────────────────────────────────────────
 const NotesContributors = () => {
   const navigate = useNavigate();
   const [tab, setTab] = useState<"contributors" | "admins">("contributors");
   const [admins, setAdmins] = useState<AdminRecord[]>(() => {
-    return getCachedData<AdminRecord[]>('contributors_admins', DEFAULT_CACHE_TTL_MS) || [];
+    const cached = getCachedData<AdminRecord[]>('contributors_admins', DEFAULT_CACHE_TTL_MS);
+    return cached && cached.length > 0 ? cached : DEFAULT_ADMINS;
   });
   const [contributors, setContributors] = useState<Contributor[]>(() => {
     return getCachedData<Contributor[]>('contributors_list', DEFAULT_CACHE_TTL_MS) || [];
@@ -212,7 +225,7 @@ const NotesContributors = () => {
   // Fetch contributors on mount
   useEffect(() => {
     const cached = getCachedData<Contributor[]>('contributors_list', DEFAULT_CACHE_TTL_MS);
-    if (cached) {
+    if (cached && cached.length > 0) {
       setContributors(cached);
       setLoadingContributors(false);
       return;
@@ -237,7 +250,7 @@ const NotesContributors = () => {
   useEffect(() => {
     if (tab === "admins") {
       const cached = getCachedData<AdminRecord[]>('contributors_admins', DEFAULT_CACHE_TTL_MS);
-      if (cached) {
+      if (cached && cached.length > 0) {
         setAdmins(cached);
         return;
       }
@@ -245,14 +258,20 @@ const NotesContributors = () => {
       setLoadingAdmins(true);
       (supabase as any)
         .from("admin_roles")
-        .select("id, user_name, user_email, role, department, photo_url, linkedin_url, from_date")
+        .select("id, user_name, user_email, role, from_date, to_date, created_at")
         .order("from_date", { ascending: true, nullsFirst: false })
         .limit(20)
-        .then(({ data }: any) => {
-          if (data) {
+        .then(({ data, error }: any) => {
+          if (!error && data && data.length > 0) {
             setAdmins(data as AdminRecord[]);
             setCachedData('contributors_admins', data);
+          } else {
+            setAdmins(prev => (prev && prev.length > 0 ? prev : DEFAULT_ADMINS));
           }
+          setLoadingAdmins(false);
+        })
+        .catch(() => {
+          setAdmins(prev => (prev && prev.length > 0 ? prev : DEFAULT_ADMINS));
           setLoadingAdmins(false);
         });
     }
