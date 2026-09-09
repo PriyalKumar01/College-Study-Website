@@ -176,6 +176,19 @@ const FirstYearNotes = () => {
         { title: 'Engineering Math Book - BS Grewal', url: 'https://drive.google.com/file/d/1_ofPrUVZXyrwggNv8WeJTX1DeoHMqldX/view?usp=drive_link', recommended: true },
         { title: 'LPP Graphical Method Notes', url: 'https://drive.google.com/file/d/1_sOUHSZ4dfLHW8cKLd_n0UQoC427cSBi/view?usp=drive_link' }
       ]
+    },,
+
+    {
+      id: 'physics',
+      code: 'DPH101',
+      name: 'Engineering Physics',
+      fullName: 'Physics (Optics, Quantum, Electromagnetics & Semiconductors)',
+      category: 'core',
+      icon: '🔬',
+      color: 'bg-indigo-600',
+      description: 'Wave optics, laser, quantum mechanics, electromagnetic theory, and semiconductor physics.',
+      playlists: { detailed: [], oneshot: [] },
+      notes: []
     },
   ];
 
