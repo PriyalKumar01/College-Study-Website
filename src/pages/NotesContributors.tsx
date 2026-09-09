@@ -147,7 +147,7 @@ function AdminCard({ admin, index }: { admin: AdminRecord; index: number }) {
                 border: `1.5px solid ${hov ? "rgba(134,239,172,0.3)" : "#bbf7d0"}`,
                 transition: "all 0.22s",
               }}>
-                <span style={{ width: 5, height: 5, borderRadius: "50%", background: hov ? "#86efac" : "#22c55e" }} />
+                <span style={{ width: 5, height: 5, borderRadius: "50%", background: hov ? "#16a34a" : "#22c55e" }} />
                 Active
               </span>
             )}
