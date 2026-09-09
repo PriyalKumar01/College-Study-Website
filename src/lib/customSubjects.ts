@@ -91,4 +91,6 @@ export async function saveRenamedSubject(
       console.warn('Could not update subject name in notes table:', dbErr);
     }
   } catch (e) {
+    console.error('Failed to save renamed subject', e);
+  }
 }
