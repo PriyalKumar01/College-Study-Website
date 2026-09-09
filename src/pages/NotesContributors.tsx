@@ -131,7 +131,7 @@ function AdminCard({ admin, index }: { admin: AdminRecord; index: number }) {
               padding: "2px 10px", borderRadius: 20, fontSize: 11, fontWeight: 700,
               background: hov ? "#e0f2fe" : isOwner ? "#fef3c7" : "#ede9fe",
               color: hov ? "#0369a1" : isOwner ? "#b45309" : "#5b21b6",
-              border: `1.5px solid ${hov ? "rgba(199,210,254,0.3)" : isOwner ? "#fcd34d" : "#c4b5fd"}`,
+              border: `1.5px solid ${hov ? "rgba(56, 189, 248, 0.4)" : isOwner ? "#fcd34d" : "#c4b5fd"}`,
               transition: "all 0.22s",
             }}>
               {isOwner ? "👑 Owner" : "⚔️ Admin"}
