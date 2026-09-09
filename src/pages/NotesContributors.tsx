@@ -101,7 +101,7 @@ function AdminCard({ admin, index }: { admin: AdminRecord; index: number }) {
           display: "flex", alignItems: "center", justifyContent: "center",
           background: hov ? "#e0f2fe" : isOwner ? "#fef3c7" : "#ede9fe",
           fontSize: isOwner ? 18 : 13, fontWeight: 800,
-          color: hov ? "#c7d2fe" : isOwner ? "#d97706" : "#6d28d9",
+          color: hov ? "#0284c7" : isOwner ? "#d97706" : "#6d28d9",
           transition: "background 0.22s, color 0.22s",
         }}>
           {isOwner ? "👑" : index + 1}
