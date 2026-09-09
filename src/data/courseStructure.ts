@@ -87,6 +87,7 @@ export const BTECH_FIRST_YEAR_SUBJECTS: SubjectInfo[] = [
   { name: 'Engineering Chemistry', fullName: 'Engineering Chemistry' },
   { name: 'Basic Electrical Engineering (BEE)', fullName: 'Basic Electrical Engineering' },
   { name: 'Basic Electronics Engineering', fullName: 'Basic Electronics Engineering' },
+  { name: 'Engineering Mechanics', fullName: 'Engineering Mechanics' },
 ];
 
 // Key format: "{branch}-{semester}" e.g. "CSE-1st Semester"
