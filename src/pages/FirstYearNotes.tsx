@@ -514,6 +514,20 @@ const FirstYearNotes = () => {
         { title: 'Food Technology (ICT Core Notes)', url: 'https://drive.google.com/file/d/1Wd9BbM9BYNAtNehllNTXo_7PxVDfX5P8/view?usp=drivesdk', recommended: true },
         { title: 'General Chemical Tech Notes: Priyal Kumar', url: 'https://drive.google.com/file/d/1PzevLkCwsQBQh_bZDwZnPgdWA6Qqv_5m/view?usp=drivesdk' }
       ]
+    },,
+
+    {
+      id: 'paint_tech',
+      code: 'IPT101',
+      name: 'Introduction to Paint Technology (IPT)',
+      fullName: 'Introduction to Paint & Surface Coating Technology',
+      category: 'tech',
+      icon: '🎨',
+      color: 'bg-pink-600',
+      badge: 'Tech Branch',
+      description: 'Introductory course for Paint Technology (PT) first-year students.',
+      playlists: { detailed: [], oneshot: [] },
+      notes: []
     },
   ];
 
