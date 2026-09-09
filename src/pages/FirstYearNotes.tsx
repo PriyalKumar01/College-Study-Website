@@ -92,8 +92,25 @@ const FirstYearNotes = () => {
       badge: 'New Syllabus (2026)',
       description: 'Foundations of algorithms, flowcharts, and C programming for first-year engineers.',
       syllabusUrl: 'https://hbtu.ac.in/naac/CS/B.Tech.%201st%20Year%20Course%20C-06222026063347.pdf',
-      playlists: { detailed: [], oneshot: [] },
-      notes: []
+      playlists: {
+        detailed: [
+          { title: 'Programming for Problem Solving (C Language) - Gate Smashers', url: 'https://youtube.com/playlist?list=PLxCzCOWd7aiGmiGl_ndKXJ430Sc8rq4uO', recommended: true },
+          { title: 'C Programming for Beginners - Neso Academy', url: 'https://youtube.com/playlist?list=PLBlnK6fEyqRhX6r2uhhlubuF5QextdCSM', recommended: true },
+        ],
+        oneshot: [
+          { title: 'C Programming Complete One Shot (10 Hours)', url: 'https://youtu.be/irqbmMNs2Bo', recommended: true },
+        ]
+      },
+      notes: [
+        { title: 'PPS Syllabus & Course Outline', url: 'https://hbtu.ac.in/naac/CS/B.Tech.%201st%20Year%20Course%20C-06222026063347.pdf', recommended: true },
+        { title: 'Full C Programming & Problem Solving: Priyal Kumar (CSE"27)', url: 'https://drive.google.com/file/d/1Q5neO5-oIEwcVtmqzLNzHm5GQXzrixGx/view?usp=drivesdk', recommended: true },
+        { title: 'PPS Unit-1 & 2 Notes (Algorithms & Basics)', url: 'https://drive.google.com/file/d/1BabE6apr738EHwcFiBT30ncC8sa-y7TB/view?usp=drivesdk' },
+        { title: 'PPS Unit 3 Notes (Control Structures & Loops)', url: 'https://drive.google.com/file/d/1ALdaWqRVSTwAlrGKVQbjdqePsj3_PIlW/view?usp=drivesdk' },
+        { title: 'PPS Unit 4 Notes (Arrays, Strings & Functions)', url: 'https://drive.google.com/file/d/1ZFGP8oM3ew0N6XkGsYu3XlJdrkgq35gL/view?usp=drivesdk' },
+        { title: 'PPS Unit 5 Notes (Pointers, Structures & Files)', url: 'https://drive.google.com/file/d/1NkhoqObE7MulcpapaBgKARCs63b_Vxci/view?usp=drivesdk' },
+        { title: 'ICS UNIX / Linux Basics Notes', url: 'https://drive.google.com/file/d/1tPZekj8Nhbt3m3N_wJY0YFDXUq1ALrtj/view?usp=drivesdk' },
+        { title: 'Full Programming Notes: Ananya (CSE"28)', url: 'https://drive.google.com/file/d/18OszxRCXnRxCzMOk6lmOPO0oCx_9zvP1/view?usp=drivesdk' },
+      ]
     },
   ];
 
