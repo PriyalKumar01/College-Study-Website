@@ -1,147 +1,624 @@
-import { useNavigate } from "react-router-dom";
-import { ArrowLeft, BookOpen, Share2 } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
-import { motion } from "framer-motion";
-import firstSemImg from "@/assets/sem1-thumbnail-new.png";
-import secondSemImg from "@/assets/sem2-thumbnail-new.png";
+import { useState, useMemo } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useCommunityNotes } from '@/hooks/useCommunityNotes';
+import { useAuth } from '@/contexts/AuthContext';
+import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
+import {
+  Download, ArrowLeft, FileText, Play, ChevronDown, ChevronRight,
+  Trash2, ExternalLink, Search, BookOpen, Sparkles, Info,
+  GraduationCap, MessageCircle, Share2
+} from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import Navbar from '@/components/Navbar';
+import Footer from '@/components/Footer';
+import { PlaylistModal } from '@/components/PlaylistModal';
+import { smartDownload, viewInBrowser } from '@/lib/downloadUtils';
+
+interface NoteItem {
+  id?: string;
+  title: string;
+  url: string;
+  recommended?: boolean;
+  isCommunity?: boolean;
+  fileName?: string;
+  uploadedBy?: string;
+  userName?: string;
+  yearSession?: string;
+}
+
+interface PlaylistEntry {
+  title: string;
+  url: string;
+  recommended?: boolean;
+}
+
+interface Subject {
+  id: string;
+  code?: string;
+  name: string;
+  fullName?: string;
+  category: 'core' | 'computing' | 'engineering' | 'tech' | 'pyq_assign';
+  icon: string;
+  color: string;
+  badge?: string;
+  description?: string;
+  syllabusUrl?: string;
+  playlists: {
+    detailed?: PlaylistEntry[];
+    oneshot?: PlaylistEntry[];
+    workshop?: PlaylistEntry[];
+  };
+  notes: NoteItem[];
+}
+
+const FIRST_YEAR_SEMESTER_TAGS = [
+  'ALL-1st Semester',
+  'ALL-2nd Semester',
+  'ALL-1st Year',
+  'ALL-First Year (All Subjects)',
+  '1st Year',
+  'btech-first-year'
+];
 
 const FirstYearNotes = () => {
   const navigate = useNavigate();
+  const { user, isOwner } = useAuth();
+  const { toast } = useToast();
 
-  const handleWhatsAppShare = (semName: string, route: string) => {
-    const shareUrl = `${window.location.origin}${route}`;
-    const message = `Check out ${semName} B.Tech Notes on College Study Hub: ${shareUrl}`;
-    window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, '_blank');
-  };
+  const [selectedSubject, setSelectedSubject] = useState<string | null>(null);
+  const [showPlaylistModal, setShowPlaylistModal] = useState(false);
+  const [selectedPlaylistType, setSelectedPlaylistType] = useState<'detailed' | 'oneshot' | 'workshop'>('detailed');
+  const [selectedSubjectForPlaylist, setSelectedSubjectForPlaylist] = useState<string>('');
+  const [expandedSubjects, setExpandedSubjects] = useState<string[]>([]);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [activeCategory, setActiveCategory] = useState<string>('all');
 
-  const semesters = [
-    {
-      name: "1st Semester",
-      description: "Foundation courses and basic engineering principles",
-      available: true,
-      route: "/first-semester",
-      thumbnail: firstSemImg,
-      subjects: ["Mathematics-I", "Physics", "Chemistry", "Engineering Drawing", "BEE"],
-      enggLabel: "Engg. Branch - 1st Sem",
-      techLabel: "Technology Branch - 2nd Sem",
-    },
-    {
-      name: "2nd Semester",
-      description: "Continuation of foundation courses with practical focus",
-      available: true,
-      route: "/second-semester",
-      thumbnail: secondSemImg,
-      subjects: ["Mathematics-II", "Physics", "Chemistry", "Programming", "Engineering Mechanics"],
-      enggLabel: "Engg. Branch - 2nd Sem",
-      techLabel: "Technology Branch - 1st Sem",
-    },
+  // Fetch community notes for all 1st year semester tags so no uploads are missed
+  const { data: communityNotes, refetch: refreshNotes } = useCommunityNotes('btech', FIRST_YEAR_SEMESTER_TAGS);
+
+  const staticSubjects: Subject[] = [
+
   ];
 
-  const handleSemesterClick = (semester: typeof semesters[0]) => {
-    if (semester.available) {
-      navigate(semester.route);
+  // Combined community notes matching any 1st year tags
+  const allCommunityNotes = useMemo(() => {
+    return communityNotes || [];
+  }, [communityNotes]);
+
+  // Combine static and community notes
+  const subjects: Subject[] = useMemo(() => {
+    return staticSubjects.map(sub => {
+      const matchedCommunityNotes = allCommunityNotes
+        .filter(cn => {
+          const s = (cn.subject || '').toLowerCase();
+          const target = sub.name.toLowerCase();
+          const subId = sub.id.toLowerCase();
+          return s === target || s.includes(subId) || target.includes(s);
+        })
+        .map(cn => ({
+          id: cn.id,
+          title: cn.title,
+          url: cn.file_url,
+          isCommunity: true,
+          fileName: cn.file_name,
+          uploadedBy: cn.uploaded_by,
+          userName: cn.user_name
+        }));
+
+      return {
+        ...sub,
+        notes: [...sub.notes, ...matchedCommunityNotes]
+      };
+    });
+  }, [allCommunityNotes]);
+
+  const filteredSubjects = useMemo(() => {
+    return subjects.filter(sub => {
+      let matchesCat = true;
+      if (activeCategory === 'computing') {
+        matchesCat = sub.category === 'computing';
+      } else if (activeCategory === 'pyq_assign') {
+        matchesCat = sub.category === 'pyq_assign';
+      }
+
+      const q = searchQuery.trim().toLowerCase();
+      if (!q) return matchesCat;
+      const matchesSearch =
+        sub.name.toLowerCase().includes(q) ||
+        (sub.fullName && sub.fullName.toLowerCase().includes(q)) ||
+        (sub.code && sub.code.toLowerCase().includes(q)) ||
+        sub.notes.some(n => n.title.toLowerCase().includes(q));
+      return matchesCat && matchesSearch;
+    });
+  }, [subjects, activeCategory, searchQuery]);
+
+  const toggleSubjectExpansion = (subjectId: string) => {
+    setExpandedSubjects(prev =>
+      prev.includes(subjectId) ? prev.filter(id => id !== subjectId) : [...prev, subjectId]
+    );
+  };
+
+  const handlePlaylistClick = (subjectId: string, type: 'detailed' | 'oneshot' | 'workshop') => {
+    const sub = subjects.find(s => s.id === subjectId);
+    if (sub?.playlists?.[type] && sub.playlists[type]!.length > 0) {
+      setSelectedSubjectForPlaylist(subjectId);
+      setSelectedPlaylistType(type);
+      setShowPlaylistModal(true);
     }
   };
 
+  const getSubjectPlaylists = (subjectId: string) => {
+    const sub = subjects.find(s => s.id === subjectId);
+    return sub?.playlists || { detailed: [], oneshot: [], workshop: [] };
+  };
+
+  const handleDeleteCommunityNote = async (id: string, fileName?: string) => {
+    if (!user || !isOwner) return;
+    if (!window.confirm('Delete this user-uploaded material?')) return;
+    try {
+      if (fileName) {
+        const { error: storageError } = await supabase.storage.from('study-materials').remove([fileName]);
+        if (storageError) console.error('Storage deletion error:', storageError);
+      }
+      const { error: dbError } = await supabase.from('notes').delete().eq('id', id);
+      if (dbError) throw dbError;
+      toast({ title: "Deleted securely", description: "Material removed successfully." });
+      refreshNotes();
+    } catch (error: any) {
+      toast({ title: "Deletion failed", description: error.message, variant: 'destructive' });
+    }
+  };
+
+  const handleDownload = (url: string, title: string) => smartDownload(url, title);
+
+  // Exact 3 tabs as requested: All Subjects, Computing & Python, PYQs & Assignments
+  const categories = [
+    { id: 'all', label: 'All Subjects' },
+    { id: 'computing', label: 'Computing & Python' },
+    { id: 'pyq_assign', label: 'PYQs & Assignments' },
+  ];
+
+  // ── INDIVIDUAL SUBJECT DETAIL VIEW ──────────────────────────────────────────
+  if (selectedSubject) {
+    const subject = subjects.find(s => s.id === selectedSubject);
+    if (!subject) return null;
+
+    return (
+      <div className="min-h-screen bg-background text-foreground flex flex-col font-sans">
+        <Navbar />
+
+        {/* Subject Header */}
+        <div className="bg-slate-900 text-white pt-10 pb-8 px-4 sm:px-8 border-b border-slate-800">
+          <div className="max-w-5xl mx-auto">
+            <button
+              onClick={() => setSelectedSubject(null)}
+              className="inline-flex items-center gap-2 text-xs font-semibold tracking-wider uppercase text-slate-400 hover:text-white transition-colors mb-4"
+            >
+              <ArrowLeft className="h-3.5 w-3.5" /> Back to 1st Year Subjects
+            </button>
+            <div className="flex items-center gap-3 mb-2 flex-wrap">
+              <span className="text-3xl">{subject.icon}</span>
+              <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight text-white">
+                {subject.name}
+              </h1>
+              {subject.code && (
+                <span className="text-xs font-mono font-bold uppercase bg-slate-800 text-slate-300 px-2.5 py-1 rounded-md border border-slate-700">
+                  {subject.code}
+                </span>
+              )}
+              {subject.badge && (
+                <span className="text-xs font-bold uppercase bg-amber-500/20 text-amber-300 border border-amber-500/40 px-2.5 py-0.5 rounded-full">
+                  {subject.badge}
+                </span>
+              )}
+            </div>
+            <p className="text-xs text-slate-400 uppercase tracking-wider">
+              B.Tech 1st Year • {subject.fullName || subject.name}
+            </p>
+          </div>
+        </div>
+
+        {/* Subject Content */}
+        <div className="max-w-5xl mx-auto px-4 sm:px-8 py-8 flex-1 w-full mb-16">
+          {/* If 0 files: Display clean contribution prompt card */}
+          {subject.notes.length === 0 ? (
+            <div className="text-center py-14 px-6 border-2 border-dashed border-border rounded-2xl bg-card">
+              <FileText className="h-12 w-12 text-muted-foreground mx-auto mb-3 opacity-40" />
+              <h3 className="text-foreground font-bold text-lg mb-1">Study materials coming soon for this subject!</h3>
+              <p className="text-xs text-muted-foreground max-w-lg mx-auto mb-6 leading-relaxed">
+                This course is part of the updated curriculum. If you are attending lectures for {subject.name}, take neat handwritten notes and share your softcopy with us at the end of the semester!
+              </p>
+              <button
+                onClick={() => window.open(
+                  "https://wa.me/918957221543?text=" + encodeURIComponent("Hello Priyal Sir (CSE'27 HBTU), I have notes / classroom material for 1st Year " + subject.name + " and would like to contribute."),
+                  "_blank"
+                )}
+                className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider px-5 py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-slate-100 dark:text-slate-900 dark:hover:bg-slate-200 shadow-md transition-all active:scale-95"
+              >
+                <MessageCircle className="h-4 w-4 text-emerald-400 dark:text-emerald-600" />
+                Message Priyal Sir (CSE'27 HBTU) to Contribute
+              </button>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {subject.notes.map((note, index) => (
+                <motion.div
+                  key={note.id || index}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.02, duration: 0.25 }}
+                >
+                  <div className="group border border-border bg-card hover:border-sky-300/80 hover:bg-sky-50/40 dark:hover:border-sky-800/80 dark:hover:bg-sky-950/20 rounded-xl p-4 transition-all duration-200 hover:shadow-md hover:shadow-sky-500/5 flex flex-col h-full relative">
+                    {note.recommended && (
+                      <div className="absolute top-3 right-3 z-10 pointer-events-none">
+                        <span className="inline-flex items-center gap-1 text-[10px] font-extrabold tracking-wider uppercase bg-amber-500 text-white px-2 py-0.5 rounded-full shadow-sm">
+                          ⭐ Recommended
+                        </span>
+                      </div>
+                    )}
+                    {note.isCommunity && isOwner && (
+                      <button
+                        className={`absolute top-3 ${note.recommended ? 'left-3' : 'right-3'} text-red-500 hover:text-red-700 bg-red-50 dark:bg-red-950/20 p-1.5 rounded-lg transition-colors z-10`}
+                        onClick={() => handleDeleteCommunityNote(note.id!, note.fileName)}
+                        title="Delete material"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </button>
+                    )}
+                    <div className="flex items-center gap-2 mb-3">
+                      <div className={`w-8 h-8 rounded-lg ${subject.color} flex items-center justify-center text-white text-xs shadow-sm`}>
+                        <FileText className="h-4 w-4" />
+                      </div>
+                      <span className="text-[10px] font-bold tracking-wider uppercase bg-muted text-muted-foreground px-2 py-0.5 rounded">PDF</span>
+                      {note.isCommunity && (
+                        <span className="text-[10px] font-bold tracking-wider uppercase bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400 px-2 py-0.5 rounded border border-blue-100 dark:border-blue-900/50">Community</span>
+                      )}
+                    </div>
+                    <h3 className="font-semibold text-foreground text-sm leading-snug flex-1 mb-3">{note.title}</h3>
+                    {note.userName && (
+                      <p className="text-[10px] text-muted-foreground mb-3">Uploaded by: {note.userName}</p>
+                    )}
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => handleDownload(note.url, note.title)}
+                        className="flex-1 inline-flex items-center justify-center gap-1.5 text-xs font-bold tracking-wider uppercase py-2 px-3 rounded-lg bg-foreground text-background hover:opacity-85 transition-opacity"
+                        disabled={note.url === '#'}
+                      >
+                        <Download className="h-3.5 w-3.5" /> Download
+                      </button>
+                      <button
+                        onClick={() => viewInBrowser(note.url)}
+                        className="inline-flex items-center justify-center p-2 rounded-lg border border-border hover:bg-muted transition-colors"
+                        disabled={note.url === '#'}
+                        title="View in Browser"
+                      >
+                        <ExternalLink className="h-3.5 w-3.5 text-foreground" />
+                      </button>
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          )}
+        </div>
+        <Footer />
+      </div>
+    );
+  }
+
+  // ── MAIN UNIFIED 1ST YEAR VIEW ──────────────────────────────────────────────
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="min-h-screen bg-background text-foreground flex flex-col font-sans">
       <Navbar />
-      
-      {/* Page Header */}
-      <div className="bg-foreground dark:bg-card text-background dark:text-foreground pt-14 pb-10 px-4 sm:px-8">
-        <div className="max-w-5xl mx-auto">
+
+      {/* ══════════ CLEAN HERO HEADER (NO CLIPPING, NO OVERFLOW) ══════════ */}
+      <div className="bg-slate-900 text-white pt-10 pb-8 px-4 sm:px-8 border-b border-slate-800">
+        <div className="max-w-6xl mx-auto">
           <button
             onClick={() => navigate("/btech-notes")}
-            className="inline-flex items-center gap-2 text-xs font-semibold tracking-widest uppercase opacity-50 hover:opacity-100 transition-opacity mb-8"
+            className="inline-flex items-center gap-2 text-xs font-semibold tracking-wider uppercase text-slate-400 hover:text-white transition-colors mb-4"
           >
             <ArrowLeft className="h-3.5 w-3.5" /> Back to Years
           </button>
-          <p className="text-xs font-bold tracking-[0.2em] uppercase opacity-50 mb-3">B.Tech 1st Year</p>
-          <h1 className="text-4xl md:text-5xl font-serif leading-tight mb-3">
-            1st Year Notes
+          <div className="flex items-center gap-2 mb-2 flex-wrap">
+            <span className="text-xs font-bold tracking-wider uppercase text-slate-400">B.Tech • First Year</span>
+            <span className="text-[10px] font-extrabold uppercase bg-amber-500/20 text-amber-300 border border-amber-500/40 px-2.5 py-0.5 rounded-full">
+              New Revised Scheme (2026)
+            </span>
+          </div>
+          <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight mb-2">
+            1st Year Notes & Resources
           </h1>
-          <p className="text-sm opacity-50 mb-8 max-w-xl">Foundation courses covering basic engineering principles for all branches.</p>
-        </div>
-      </div>
+          <p className="text-xs md:text-sm text-slate-300 max-w-2xl leading-relaxed mb-4">
+            Unified foundation portal for Engineering & Technology cycles. Includes core sciences, PPS, Python, engineering fundamentals, tech branches, and previous year papers.
+          </p>
 
-      <div className="max-w-5xl mx-auto px-4 sm:px-8 py-10 flex-1 w-full mb-12">
-        <p className="text-xs font-bold tracking-[0.15em] uppercase text-muted-foreground mb-6">Select Semester</p>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {semesters.map((semester, index) => (
-            <motion.div
-              key={semester.name}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.1, duration: 0.5 }}
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="text-xs font-semibold tracking-wider uppercase bg-slate-800 text-slate-300 border border-slate-700 px-3 py-1.5 rounded-lg">
+              📚 {subjects.length} Subjects & Modules
+            </span>
+            <a
+              href="https://drive.google.com/file/d/14W4ah2ZTGgUeYKefVthmq7MZBJCLkiuJ/view?usp=drivesdk"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 text-xs font-bold tracking-wider uppercase bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-1.5 rounded-lg transition-colors shadow-sm"
             >
-              <div
-                className={`group border border-border bg-card rounded-xl overflow-hidden flex flex-col transition-all duration-300 h-full relative hover:border-foreground/30 hover:shadow-lg`}
-                onClick={() => handleSemesterClick(semester)}
-                style={{ cursor: 'pointer' }}
-              >
-                {/* Share button */}
-                <button
-                  className="absolute top-3 right-3 z-10 w-8 h-8 bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm rounded-full flex items-center justify-center text-green-600 hover:scale-110 transition-all shadow-sm"
-                  onClick={(e) => { e.stopPropagation(); handleWhatsAppShare(semester.name, semester.route); }}
-                  title="Share on WhatsApp"
-                >
-                  <Share2 className="h-4 w-4" />
-                </button>
-
-                {/* Thumbnail */}
-                <div className="relative w-full h-48 overflow-hidden bg-muted">
-                  <img
-                    src={semester.thumbnail}
-                    alt={semester.name}
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-103"
-                  />
-                </div>
-
-                {/* Card body */}
-                <div className="p-5 flex flex-col flex-1 gap-4">
-                  <div>
-                    <div className="flex items-center gap-1.5 flex-wrap mb-2">
-                      <span className="text-[10px] font-bold tracking-wider uppercase bg-primary/10 text-primary px-2.5 py-0.5 rounded-full">
-                        {semester.enggLabel}
-                      </span>
-                      <span className="text-[10px] font-bold tracking-wider uppercase bg-orange-100 dark:bg-orange-950/40 text-orange-600 dark:text-orange-400 px-2.5 py-0.5 rounded-full">
-                        {semester.techLabel}
-                      </span>
-                    </div>
-                    <h3 className="text-xl font-bold text-foreground leading-snug group-hover:text-primary transition-colors mb-2">
-                      {semester.name}
-                    </h3>
-                    <p className="text-sm text-muted-foreground leading-relaxed">
-                      {semester.description}
-                    </p>
-                  </div>
-
-                  <div className="flex flex-wrap gap-1.5 mt-auto">
-                    {semester.subjects.map((subject) => (
-                      <Badge key={subject} variant="outline" className="text-[10px] py-0 px-2 font-medium">
-                        {subject}
-                      </Badge>
-                    ))}
-                  </div>
-
-                  <div className="pt-2">
-                    <button
-                      className="w-full text-xs font-bold tracking-wider uppercase py-2.5 px-4 rounded-lg bg-foreground text-background hover:opacity-80 transition-opacity flex items-center justify-center gap-2"
-                      onClick={(e) => { e.stopPropagation(); handleSemesterClick(semester); }}
-                    >
-                      <BookOpen className="h-3.5 w-3.5" />
-                      View Notes
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-          ))}
+              <ExternalLink className="h-3.5 w-3.5" /> 1st Year Syllabus PDF
+            </a>
+          </div>
         </div>
       </div>
+
+      <div className="max-w-6xl mx-auto px-4 sm:px-8 py-6 flex-1 w-full space-y-6">
+
+        {/* ══════════ OFFICIAL STUDENT INSTRUCTION & STUDY GUIDE BANNER ══════════ */}
+        <div className="rounded-2xl border border-slate-800 bg-slate-900 text-slate-100 p-5 md:p-6 shadow-md relative overflow-hidden">
+          <div className="space-y-3">
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-lg bg-slate-800 text-indigo-400 flex items-center justify-center flex-shrink-0 border border-slate-700 shadow-sm">
+                <Info className="h-4 w-4" />
+              </div>
+              <h3 className="font-bold text-white text-base md:text-lg tracking-tight">
+                Important Guidance for 1st Year Students
+              </h3>
+            </div>
+
+            <p className="text-xs md:text-sm text-slate-300 leading-relaxed">
+              <strong>Combined Semester View:</strong> Both 1st and 2nd-semester subjects are unified here so students from all branches (Engineering & Technology cycles) can access their respective subjects in one place.
+            </p>
+
+            {/* Structured Subject Guide Points — Full Width Space Utilization */}
+            <div className="text-xs text-slate-300/90 leading-relaxed space-y-2 pt-2 border-t border-slate-800">
+              <div className="flex items-start gap-2">
+                <span className="text-indigo-400 font-bold">💻</span>
+                <p>
+                  <strong>Programming (PPS DCS101 & Python DCS201):</strong> Practice coding on an IDE. Focus on loops, arrays, pointers & file handling in C; lists, dictionaries, OOP & functions in Python. Check out the authentic <strong>CSE-curated Python handwritten notes</strong> added below.
+                </p>
+              </div>
+              <div className="flex items-start gap-2">
+                <span className="text-indigo-400 font-bold">📐</span>
+                <p>
+                  <strong>Graphics (DCE101) & Mechanics (DME101/201):</strong> Practice manual drawing sheets with standard instruments for projections and isometric views. In Mechanics, draw clear Free-Body Diagrams (FBDs) and solve numericals on equilibrium, friction, centroids, and trusses.
+                </p>
+              </div>
+              <div className="flex items-start gap-2">
+                <span className="text-indigo-400 font-bold">🔬</span>
+                <p>
+                  <strong>Core Sciences & Electrical (Maths, Physics, Chemistry, BEE):</strong> Master key derivations, formula sheets, and tutorial questions. Use the recommended detailed and one-shot playlists for rapid conceptual revision.
+                </p>
+              </div>
+              <div className="flex items-start gap-2">
+                <span className="text-indigo-400 font-bold">📖</span>
+                <p>
+                  <strong>For Newly Introduced Courses (without online notes yet):</strong> Attend professor lectures attentively and maintain clean handwritten notes directly from class. Don't rely solely on last-minute shortcuts.
+                </p>
+              </div>
+              <div className="flex items-start gap-2">
+                <span className="text-emerald-400 font-bold">🤝</span>
+                <p>
+                  <strong>Contribute & Become a Verified Contributor:</strong> At the end of the semester, scan your handwritten notes or files and message Priyal Sir. You will be awarded <strong>Admin / Contributor privileges</strong> to upload directly and get featured on the Contributors Leaderboard!
+                </p>
+              </div>
+            </div>
+
+            {/* Compact Green Professional Button at bottom (like Dashboard) */}
+            <div className="pt-3 border-t border-slate-800/80 flex items-center justify-between flex-wrap gap-3">
+              <p className="text-[11px] text-slate-400">
+                Want to contribute softcopies or need guidance for any subject? Contact directly:
+              </p>
+              <button
+                onClick={() => window.open(
+                  "https://wa.me/918957221543?text=" + encodeURIComponent("Hello Priyal Sir (CSE'27 HBTU), I am a 1st Year student and would like to contribute notes / need guidance for the new syllabus."),
+                  "_blank"
+                )}
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider bg-emerald-600 hover:bg-emerald-500 text-white shadow-md shadow-emerald-950/30 transition-all hover:scale-105 active:scale-95 border-none"
+              >
+                <MessageCircle className="h-3.5 w-3.5 fill-white" />
+                <span>Message Priyal Sir (CSE'27 HBTU)</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* ══════════ SEARCH & EXACT 3 FILTER TABS (NO HORIZONTAL OVERFLOW) ══════════ */}
+        <div className="space-y-3">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
+            {/* Search Input */}
+            <div className="relative w-full sm:max-w-md">
+              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={e => setSearchQuery(e.target.value)}
+                placeholder="Search subjects, codes (e.g. DCS101), topics..."
+                className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-border bg-card text-foreground text-xs placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 transition-all"
+              />
+            </div>
+
+            {/* Subject count indicator */}
+            <div className="text-xs text-muted-foreground font-semibold flex items-center gap-2 self-start sm:self-auto">
+              <span>Showing {filteredSubjects.length} of {subjects.length} subjects</span>
+            </div>
+          </div>
+
+          {/* EXACT 3 FILTER PILLS AS SPECIFIED BY USER */}
+          <div className="flex items-center gap-2 flex-wrap">
+            {categories.map(tab => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveCategory(tab.id as 'all' | 'computing' | 'pyq_assign')}
+                className={`px-4 py-2 rounded-xl text-xs font-bold tracking-wider uppercase transition-all ${
+                  activeCategory === tab.id
+                    ? 'bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900 shadow-sm'
+                    : 'bg-muted text-muted-foreground hover:text-foreground hover:bg-muted/80 border border-border'
+                }`}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* ══════════ SUBJECTS GRID ══════════ */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {filteredSubjects.map((subject, index) => {
+            const playlists = getSubjectPlaylists(subject.id);
+            const hasDetailed = playlists.detailed && playlists.detailed.length > 0;
+            const hasOneshot = playlists.oneshot && playlists.oneshot.length > 0;
+            const hasWorkshop = playlists.workshop && playlists.workshop.length > 0;
+            const hasAnyPlaylist = hasDetailed || hasOneshot || hasWorkshop;
+
+            return (
+              <motion.div
+                key={subject.id}
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.02, duration: 0.25 }}
+              >
+                <div className="group border border-border bg-card hover:border-sky-300/80 hover:bg-sky-50/40 dark:hover:border-sky-800/80 dark:hover:bg-sky-950/20 rounded-xl p-4 sm:p-5 transition-all duration-200 hover:shadow-md hover:shadow-sky-500/5 h-full flex flex-col justify-between">
+                  <div>
+                    {/* Top Row: Icon + Badges + File Count */}
+                    <div className="flex items-start justify-between gap-2 mb-3">
+                      <span className="text-2xl p-2 rounded-lg bg-muted/60">{subject.icon}</span>
+                      <div className="flex items-center gap-1.5 flex-wrap justify-end">
+                        {subject.code && (
+                          <span className="text-[10px] font-mono font-bold bg-muted px-2 py-0.5 rounded text-muted-foreground">
+                            {subject.code}
+                          </span>
+                        )}
+                        {subject.badge && (
+                          <span className="text-[10px] font-extrabold uppercase bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/30 px-2 py-0.5 rounded-full">
+                            {subject.badge}
+                          </span>
+                        )}
+                        {/* File count indicator: Shows 0 files gracefully if empty */}
+                        <span className={`text-[10px] font-extrabold px-2 py-0.5 rounded-full ${
+                          subject.notes.length > 0 
+                            ? "bg-emerald-600 text-white" 
+                            : "bg-muted text-muted-foreground border border-border"
+                        }`}>
+                          {subject.notes.length} files
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Title & Description */}
+                    <h3 className="font-bold text-foreground text-base leading-snug mb-1.5 group-hover:text-primary transition-colors">
+                      {subject.name}
+                    </h3>
+                    {subject.description && (
+                      <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed mb-3">
+                        {subject.description}
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Playlists Accordion & View Action */}
+                  <div>
+                    {hasAnyPlaylist && (
+                      <div className="mt-2 pt-3 border-t border-border">
+                        <button
+                          className="flex items-center justify-between w-full text-xs font-semibold text-muted-foreground hover:text-foreground transition-colors"
+                          onClick={() => toggleSubjectExpansion(subject.id)}
+                        >
+                          <span className="flex items-center gap-1.5">
+                            <Play className="h-3 w-3 text-indigo-500" /> Curated Playlists
+                          </span>
+                          {expandedSubjects.includes(subject.id) ? (
+                            <ChevronDown className="h-3.5 w-3.5" />
+                          ) : (
+                            <ChevronRight className="h-3.5 w-3.5" />
+                          )}
+                        </button>
+
+                        {expandedSubjects.includes(subject.id) && (
+                          <div className="mt-2 space-y-1">
+                            {hasDetailed && (
+                              <button
+                                className="w-full text-left text-xs py-1.5 px-2 rounded-lg hover:bg-muted transition-colors text-muted-foreground hover:text-foreground flex items-center justify-between"
+                                onClick={() => handlePlaylistClick(subject.id, 'detailed')}
+                              >
+                                <span>📚 Detailed Topics</span>
+                                <span className="text-[10px] font-mono font-bold bg-muted px-1.5 py-0.5 rounded">
+                                  {playlists.detailed!.length}
+                                </span>
+                              </button>
+                            )}
+                            {hasOneshot && (
+                              <button
+                                className="w-full text-left text-xs py-1.5 px-2 rounded-lg hover:bg-muted transition-colors text-muted-foreground hover:text-foreground flex items-center justify-between"
+                                onClick={() => handlePlaylistClick(subject.id, 'oneshot')}
+                              >
+                                <span>⚡ One Shot</span>
+                                <span className="text-[10px] font-mono font-bold bg-muted px-1.5 py-0.5 rounded">
+                                  {playlists.oneshot!.length}
+                                </span>
+                              </button>
+                            )}
+                            {hasWorkshop && (
+                              <button
+                                className="w-full text-left text-xs py-1.5 px-2 rounded-lg hover:bg-muted transition-colors text-muted-foreground hover:text-foreground flex items-center justify-between"
+                                onClick={() => handlePlaylistClick(subject.id, 'workshop')}
+                              >
+                                <span>🔨 Workshop Practicals</span>
+                                <span className="text-[10px] font-mono font-bold bg-muted px-1.5 py-0.5 rounded">
+                                  {playlists.workshop!.length}
+                                </span>
+                              </button>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    )}
+
+                    {/* View Notes Action Button */}
+                    <div className="mt-4">
+                      <button
+                        onClick={() => setSelectedSubject(subject.id)}
+                        className="w-full text-xs font-bold tracking-wider uppercase py-2.5 px-4 rounded-xl border border-border hover:bg-foreground hover:text-background transition-all duration-200 flex items-center justify-center gap-1.5"
+                      >
+                        <BookOpen className="h-3.5 w-3.5" />
+                        {subject.notes.length === 0 ? "View Subject / Contribute" : "View Notes & PDFs"}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            );
+          })}
+        </div>
+
+        {/* ══════════ CONTRIBUTION CALLOUT CARD (AMPLE BOTTOM SPACING) ══════════ */}
+        <div className="rounded-2xl border border-slate-800 bg-slate-900 text-slate-100 p-6 text-center space-y-3 pb-8 mb-8">
+          <GraduationCap className="h-9 w-9 text-indigo-400 mx-auto opacity-80" />
+          <h3 className="font-bold text-white text-lg">Have Class Notes or Slides for 1st Year?</h3>
+          <p className="text-xs text-slate-300 max-w-xl mx-auto leading-relaxed">
+            CollegeStudy Hub is maintained by students, for students. If you take neat notes from your professors or have tutorial solutions, message Priyal Sir (CSE'27 HBTU) on WhatsApp to get contributor credentials!
+          </p>
+          <button
+            onClick={() => window.open(
+              "https://wa.me/918957221543?text=" + encodeURIComponent("Hello Priyal Sir (CSE'27 HBTU), I want to share my 1st Year lecture notes to help other students on CollegeStudy Hub."),
+              "_blank"
+            )}
+            className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider bg-emerald-600 hover:bg-emerald-500 text-white px-5 py-2.5 rounded-xl shadow-md transition-all active:scale-95"
+          >
+            <MessageCircle className="h-4 w-4 fill-white" /> Start Contributing on WhatsApp
+          </button>
+        </div>
+
+      </div>
+
       <Footer />
+
+      {/* Playlists Modal */}
+      <PlaylistModal
+        isOpen={showPlaylistModal}
+        onClose={() => setShowPlaylistModal(false)}
+        playlists={getSubjectPlaylists(selectedSubjectForPlaylist)[selectedPlaylistType] || []}
+        type={selectedPlaylistType}
+        title={subjects.find(s => s.id === selectedSubjectForPlaylist)?.name || ''}
+      />
     </div>
   );
 };
