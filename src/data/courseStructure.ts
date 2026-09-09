@@ -94,6 +94,7 @@ export const BTECH_FIRST_YEAR_SUBJECTS: SubjectInfo[] = [
   { name: 'Workshop & Manufacturing Practice', fullName: 'Workshop Practice & Digital Fabrication' },
   { name: 'Engineering Graphics & Design', fullName: 'Engineering Graphics & Computer Aided Drawing (CAD)' },
   { name: 'Data Science & AI Applications', fullName: 'Introduction to Data Science & Artificial Intelligence' },
+  { name: 'Intro to Food Technology', fullName: 'Introduction to Food Technology & Processing' },
 ];
 
 // Key format: "{branch}-{semester}" e.g. "CSE-1st Semester"
