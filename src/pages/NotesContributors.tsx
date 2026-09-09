@@ -129,7 +129,7 @@ function AdminCard({ admin, index }: { admin: AdminRecord; index: number }) {
             {/* Role badge */}
             <span style={{
               padding: "2px 10px", borderRadius: 20, fontSize: 11, fontWeight: 700,
-              background: hov ? "rgba(255,255,255,0.13)" : isOwner ? "#fef3c7" : "#ede9fe",
+              background: hov ? "#e0f2fe" : isOwner ? "#fef3c7" : "#ede9fe",
               color: hov ? "#c7d2fe" : isOwner ? "#b45309" : "#5b21b6",
               border: `1.5px solid ${hov ? "rgba(199,210,254,0.3)" : isOwner ? "#fcd34d" : "#c4b5fd"}`,
               transition: "all 0.22s",
