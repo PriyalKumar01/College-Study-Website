@@ -526,8 +526,16 @@ const FirstYearNotes = () => {
       color: 'bg-pink-600',
       badge: 'Tech Branch',
       description: 'Introductory course for Paint Technology (PT) first-year students.',
-      playlists: { detailed: [], oneshot: [] },
-      notes: []
+      playlists: {
+        detailed: [],
+        oneshot: [
+          { title: 'ICT Introduction Video 2', url: 'https://youtu.be/Pg_9kXV1lXg?si=Z-jfUI57nI_c8_2w' }
+        ]
+      },
+      notes: [
+        { title: 'Paint Technology (ICT Core Notes)', url: 'https://drive.google.com/file/d/1Q4LDUfRyXzSwN9PCrQ8zN7D9sc-xeAt4/view?usp=drivesdk', recommended: true },
+        { title: 'General Chemical Tech Notes: Priyal Kumar', url: 'https://drive.google.com/file/d/1PzevLkCwsQBQh_bZDwZnPgdWA6Qqv_5m/view?usp=drivesdk' }
+      ]
     },
   ];
 
