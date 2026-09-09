@@ -147,10 +147,11 @@ const FifthSemesterCSENotes = () => {
         { title: 'Full DS Notes from Data Modeling Onwards', url: 'https://drive.google.com/file/d/1MavBmoF6Ayn2OX6-JEtjXSj-8B0lQa7V/view?usp=drivesdk' },
         { title: 'DS -last Min. Revision Notes', url: 'https://drive.google.com/file/d/1Wm4dpAN2nI39nNSIK-7jx3H8htZaqssM/view?usp=drivesdk' },
         { title: 'DS -Complete Notes', url: 'https://drive.google.com/file/d/1ZiIw217rbI2IKt6HO_3WePIQ5caos3Od/view?usp=drivesdk' },
+        { title: 'DS Complete Notes & Q&A', url: 'https://youngresearcher.in/ds_qa/', recommended: true },
         { title: 'Numpy Cheat Sheet', url: 'https://drive.google.com/file/d/1lN2L0jdfTdFLuOCcaxDtja3JLly0t1rm/view?usp=drivesdk' },
         { title: 'Pandas Cheat Sheet', url: 'https://drive.google.com/file/d/1_hLM3xGLJ4VHFrMVjtPw2kjHZsX0zOk0/view?usp=drivesdk' },
-        { title: 'DS Practical File- Priyal(CSE)', url: 'https://drive.google.com/file/d/19RsKe9Aw3FT1_m35r9kOhqSKsA5tF1jg/view?usp=drivesdk' },
-        { title: 'DS -Practical Exam PYQs(2025-26)', url: 'https://drive.google.com/file/d/1V7Un3Ye1MEQvx_LEY-3QHvYKJyUEUfuZ/view?usp=drivesdk' },
+        { title: 'DS Practical File- Priyal(CSE)', url: 'https://drive.google.com/file/d/19RsKe9Aw3FT1_m35r9kOhqSKsA5tF1jg/view?usp=drivesdk', recommended: true },
+        { title: 'DS -Practical Exam PYQs(2025-26)', url: 'https://drive.google.com/file/d/1V7Un3Ye1MEQvx_LEY-3QHvYKJyUEUfuZ/view?usp=drivesdk', recommended: true },
       ]
     },
     {
