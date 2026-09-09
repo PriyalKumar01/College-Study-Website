@@ -212,7 +212,22 @@ const FirstYearNotes = () => {
         { title: 'Semiconductor - Unit 4 Notes', url: 'https://drive.google.com/file/d/1kKqBU2pqeqZOFCdimRFOjnxkj9WP2L6F/view?usp=drive_link' },
         { title: 'Statistical Mechanics Notes', url: 'https://drive.google.com/file/d/1S1ehd1Ri0K_HHNpPur7Z8xbHLVMxo80k/view?usp=drive_link' }
       ]
+    },,
+
+    {
+      id: 'chemistry',
+      code: 'DCY201',
+      name: 'Engineering Chemistry',
+      fullName: 'Chemistry (Organic, Polymers, Electrochemistry & Spectroscopic Techniques)',
+      category: 'core',
+      icon: '🧪',
+      color: 'bg-emerald-600',
+      description: 'Chemical bonding, reaction mechanisms, coordination compounds, and industrial polymers.',
+      playlists: { detailed: [], oneshot: [] },
+      notes: []
     },
+
+    // ── ENGINEERING SCIENCES ───────────────────────────────────────────
   ];
 
   // Combined community notes matching any 1st year tags
