@@ -62,6 +62,10 @@ const UploadMaterialForm = ({ onUploadSuccess }: UploadMaterialFormProps) => {
   const [subject, setSubject] = useState('');
   const [customRefresh, setCustomRefresh] = useState(0);
   const [isAddingSubject, setIsAddingSubject] = useState(false);
+  const [newSubjectName, setNewSubjectName] = useState('');
+  const [newSubjectFullName, setNewSubjectFullName] = useState('');
+  const [isRenamingSubject, setIsRenamingSubject] = useState(false);
+  const [renameValue, setRenameValue] = useState('');
   const [materialType, setMaterialType] = useState<'notes' | 'pyqs' | 'assignments'>('notes');
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
