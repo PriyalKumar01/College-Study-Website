@@ -13,7 +13,7 @@ import { Badge } from '@/components/ui/badge';
 import {
   Upload, FileText, CheckCircle2, Loader2, X, AlertTriangle,
   GraduationCap, BookOpen, Briefcase, Database, Code, Globe,
-  Sparkles, ChevronRight
+  Sparkles, ChevronRight, Plus, Pencil
 } from 'lucide-react';
 import {
   CATEGORIES, BTECH_YEARS, BTECH_BRANCHES,
