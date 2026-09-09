@@ -63,4 +63,11 @@ export async function saveRenamedSubject(
     const trimmedNew = newName.trim();
     if (!trimmedOld || !trimmedNew || trimmedOld === trimmedNew) return;
 
+    // Save to localStorage
+    const raw = localStorage.getItem(RENAMED_SUBJECTS_STORAGE_KEY);
+    const map: Record<string, string> = raw ? JSON.parse(raw) : {};
+    map[trimmedOld] = trimmedNew;
+    localStorage.setItem(RENAMED_SUBJECTS_STORAGE_KEY, JSON.stringify(map));
+
+    // Also update any custom subjects with this name
 }
