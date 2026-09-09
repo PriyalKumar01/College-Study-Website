@@ -65,7 +65,8 @@ function AdminCard({ admin, index }: { admin: AdminRecord; index: number }) {
     d ? new Date(d).toLocaleDateString("en-IN", { month: "short", year: "numeric" }) : null;
 
   // card bg: white → dark purple on hover
-  const cardBg   = hov ? SIDEBAR_PURPLE : "#ffffff";
+  // card bg: card background → very light professional sky blue tint on hover
+  const cardBg   = hov ? "rgba(56, 189, 248, 0.12)" : "hsl(var(--card))";
   const textMain  = hov ? "#ffffff" : "var(--foreground)";
   const textSub   = hov ? "rgba(255,255,255,0.55)" : "var(--muted-foreground)";
 
