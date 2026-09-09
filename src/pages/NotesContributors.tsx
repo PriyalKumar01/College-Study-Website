@@ -487,7 +487,7 @@ const NotesContributors = () => {
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: 0.3 + idx * 0.05, duration: 0.4 }}
                       >
-                        <Card className="border-0 shadow-sm hover:shadow-lg transition-all duration-300 bg-white dark:bg-slate-800 hover:scale-[1.02] hover:bg-gradient-to-r hover:from-yellow-50 hover:to-white dark:hover:from-yellow-900/10 dark:hover:to-slate-800 border-l-4 border-l-transparent hover:border-l-yellow-400">
+                        <Card className="border border-border/70 shadow-sm hover:shadow-md transition-all duration-200 bg-white dark:bg-card hover:scale-[1.01] hover:border-sky-300/80 hover:bg-sky-50/40 dark:hover:border-sky-800/80 dark:hover:bg-sky-950/20 border-l-4 border-l-transparent hover:border-l-sky-500 hover:shadow-sky-500/5">
                           <div className="p-4 sm:p-5 flex items-center justify-between">
                             <div className="flex items-center gap-4 md:gap-6">
                               <div className="flex items-center justify-center w-10 h-10 md:w-12 md:h-12 rounded-full font-bold text-lg shadow-sm bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 flex-shrink-0">
