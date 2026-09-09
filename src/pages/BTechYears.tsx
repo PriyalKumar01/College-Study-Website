@@ -7,7 +7,7 @@ import { motion } from "framer-motion";
 const years = [
   {
     name: "1st Year",
-    description: "Foundation courses covering basic engineering principles, physics, chemistry, and mathematics",
+    description: "Curated foundation courses, programming, core sciences, and engineering subjects for 1st year students",
     available: true,
     route: "/btech-notes/first-year",
     image: "/btech_year1.png",
