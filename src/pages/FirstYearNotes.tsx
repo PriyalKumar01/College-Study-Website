@@ -157,8 +157,25 @@ const FirstYearNotes = () => {
       icon: '📐',
       color: 'bg-green-600',
       description: 'Differential calculus, multiple integrals, vector calculus, and matrices.',
-      playlists: { detailed: [], oneshot: [] },
-      notes: []
+      playlists: {
+        detailed: [
+          { title: 'Unit: 1 Successive Differentiation (Playlist 1)', url: 'https://youtube.com/playlist?list=PLNKD1qB9pptuRMEOXm3qVok9RST30R_e5&si=JtcKkBubUPUSd7bN', recommended: true },
+          { title: 'Unit: 1 Successive Differentiation (Playlist 2)', url: 'https://youtube.com/playlist?list=PLU6SqdYcYsfLLAU6Hxi0C_TnrZeqgbJMJ&si=9-MPIw5HXtpIaoKM' },
+          { title: 'Unit: 1 Improper Integral', url: 'https://youtube.com/playlist?list=PLU6SqdYcYsfL-2NhraOYEYevl9LTqDaCU&si=zcyygF0jIbqnjPBq' },
+          { title: 'Engineering Mathematics-I Unit 2', url: 'https://youtube.com/playlist?list=PLT3bOBUU3L9hsRRQi1X_4kn6Lw6K_-9cq&si=XXROQe9OYuMetPj7' },
+          { title: 'Engineering Mathematics-I Unit 3', url: 'https://youtube.com/playlist?list=PLT3bOBUU3L9hvSQJ1XqJIcxZPyo5sNwj_&si=eEz87z83Y37Gege9' },
+          { title: 'Engg Math-I Unit 4 (Playlist 1)', url: 'https://youtube.com/playlist?list=PLU6SqdYcYsfI7Ebw_j-Vy8YKHdbHKP9am&si=kb0fRKlpH6cfcoTE' },
+          { title: 'Engg Math-I Unit 4 (Playlist 2)', url: 'https://youtube.com/playlist?list=PLT3bOBUU3L9jPn19ja8WFf6VRlPspl4eQ&si=6geutTvZ9jmxtliq', recommended: true },
+          { title: 'Engg Math-I Unit 5 (Playlist 1)', url: 'https://youtube.com/playlist?list=PLIgDtce9BR0dZv1aZwVTmuWXc_vJPbB3q&si=U6Mwcg0_ZkXfilGh' },
+          { title: 'Engg Math-I Unit 5 (Playlist 2)', url: 'https://youtube.com/playlist?list=PLU6SqdYcYsfLewoQPYjgg7SMBLjSV704v&si=7O6fCxdOL9LIHAid', recommended: true }
+        ],
+        oneshot: []
+      },
+      notes: [
+        { title: 'Engineering Math Handwritten Notes', url: 'https://drive.google.com/file/d/1TZ8L0xmAQju60MFrkJ6ixvhJXEPcuNnh/view?usp=drive_link', recommended: true },
+        { title: 'Engineering Math Book - BS Grewal', url: 'https://drive.google.com/file/d/1_ofPrUVZXyrwggNv8WeJTX1DeoHMqldX/view?usp=drive_link', recommended: true },
+        { title: 'LPP Graphical Method Notes', url: 'https://drive.google.com/file/d/1_sOUHSZ4dfLHW8cKLd_n0UQoC427cSBi/view?usp=drive_link' }
+      ]
     },
   ];
 
