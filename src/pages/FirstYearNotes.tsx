@@ -570,8 +570,14 @@ const FirstYearNotes = () => {
       color: 'bg-cyan-600',
       badge: 'Tech Branch',
       description: 'Introductory course for Plastic Technology (PL) & Chemical branches.',
-      playlists: { detailed: [], oneshot: [] },
-      notes: []
+      playlists: {
+        detailed: [],
+        oneshot: []
+      },
+      notes: [
+        { title: 'Polymer Science & Technology Notes', url: 'https://drive.google.com/file/d/1RSder5E5rNZ3Nkn5ToQkt_8E8WJiDG_B/view?usp=drive_link', recommended: true },
+        { title: 'General Chemical Tech Notes: Priyal Kumar', url: 'https://drive.google.com/file/d/1PzevLkCwsQBQh_bZDwZnPgdWA6Qqv_5m/view?usp=drivesdk' }
+      ]
     },
 
   ];
