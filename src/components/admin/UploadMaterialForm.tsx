@@ -181,6 +181,25 @@ const UploadMaterialForm = ({ onUploadSuccess }: UploadMaterialFormProps) => {
     scrollToRef(detailsRef);
   };
 
+  const handleSaveRenameSubject = async () => {
+    if (!isOwner) return;
+    const trimmed = renameValue.trim();
+    if (!trimmed) {
+      toast({ title: "Name required", description: "Please enter a new name.", variant: "destructive" });
+      return;
+    }
+    if (trimmed === subject) {
+      setIsRenamingSubject(false);
+      return;
+    }
+    const old = subject;
+    await saveRenamedSubject(old, trimmed);
+    setSubject(trimmed);
+    setIsRenamingSubject(false);
+    setCustomRefresh(c => c + 1);
+    toast({ title: "Subject Renamed! ✏️", description: `Renamed "${old}" to "${trimmed}".` });
+  };
+
   const handleBranchChange = (val: string) => {
     setBranch(val);
     setSubject('');
