@@ -579,7 +579,23 @@ const FirstYearNotes = () => {
         { title: 'General Chemical Tech Notes: Priyal Kumar', url: 'https://drive.google.com/file/d/1PzevLkCwsQBQh_bZDwZnPgdWA6Qqv_5m/view?usp=drivesdk' }
       ]
     },
+,
 
+    {
+      id: 'elementary_math',
+      code: 'DMA102',
+      name: 'Elementary Mathematics (for Bio & Tech Branches)',
+      fullName: 'Elementary Mathematics (Foundations for Technology & Biological Sciences)',
+      category: 'core',
+      icon: '📊',
+      color: 'bg-slate-600',
+      badge: '0 Files • Notes Wanted',
+      description: 'Foundational mathematics for students in Biotechnology, Food Tech, and chemical technology streams. Notes coming soon — contribute your lecture notes!',
+      playlists: { detailed: [], oneshot: [] },
+      notes: []
+    },
+
+    // ── ASSIGNMENTS & PYQs ─────────────────────────────────────────────
   ];
 
   // Combined community notes matching any 1st year tags
