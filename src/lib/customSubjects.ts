@@ -14,6 +14,13 @@ export function getCustomSubjectsForContext(
     if (!raw) return [];
     const parsed: Record<string, SubjectInfo[]> = JSON.parse(raw);
     const key = `${category}_${branch || 'ALL'}_${semester || 'ALL'}`;
+    const specific = parsed[key] || [];
+    const general = parsed[`${category}_ALL_ALL`] || [];
+    const map = new Map<string, SubjectInfo>();
+    [...general, ...specific].forEach(s => map.set(s.name, s));
+    return Array.from(map.values());
+  } catch (e) {
+    console.error('Failed to load custom subjects', e);
     return [];
-  } catch(e) { return []; }
+  }
 }
