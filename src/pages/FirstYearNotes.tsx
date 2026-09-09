@@ -558,7 +558,22 @@ const FirstYearNotes = () => {
         { title: 'Leather Technology (ICT Core Notes)', url: 'https://drive.google.com/file/d/1Fv9uAi3qeM8vxngFbG1tmMo6J20vF3qy/view?usp=drivesdk', recommended: true },
         { title: 'General Chemical Tech Notes: Priyal Kumar', url: 'https://drive.google.com/file/d/1PzevLkCwsQBQh_bZDwZnPgdWA6Qqv_5m/view?usp=drivesdk' }
       ]
+    },,
+
+    {
+      id: 'plastic_polymer_tech',
+      code: 'IPL101',
+      name: 'Introduction to Plastic & Polymer Tech',
+      fullName: 'Introduction to Plastic Technology & Polymer Science',
+      category: 'tech',
+      icon: '🧪',
+      color: 'bg-cyan-600',
+      badge: 'Tech Branch',
+      description: 'Introductory course for Plastic Technology (PL) & Chemical branches.',
+      playlists: { detailed: [], oneshot: [] },
+      notes: []
     },
+
   ];
 
   // Combined community notes matching any 1st year tags
