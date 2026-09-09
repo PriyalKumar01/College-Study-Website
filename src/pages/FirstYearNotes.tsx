@@ -504,8 +504,16 @@ const FirstYearNotes = () => {
       color: 'bg-amber-600',
       badge: 'Tech Branch',
       description: 'Introductory course for Food Technology (FT) first-year students.',
-      playlists: { detailed: [], oneshot: [] },
-      notes: []
+      playlists: {
+        detailed: [],
+        oneshot: [
+          { title: 'ICT Introduction Video 1', url: 'https://youtu.be/6ptZr9VRxPs?si=IRMWuVFfR4-Yj6rM' }
+        ]
+      },
+      notes: [
+        { title: 'Food Technology (ICT Core Notes)', url: 'https://drive.google.com/file/d/1Wd9BbM9BYNAtNehllNTXo_7PxVDfX5P8/view?usp=drivesdk', recommended: true },
+        { title: 'General Chemical Tech Notes: Priyal Kumar', url: 'https://drive.google.com/file/d/1PzevLkCwsQBQh_bZDwZnPgdWA6Qqv_5m/view?usp=drivesdk' }
+      ]
     },
   ];
 
