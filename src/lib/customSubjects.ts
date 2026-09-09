@@ -70,4 +70,15 @@ export async function saveRenamedSubject(
     localStorage.setItem(RENAMED_SUBJECTS_STORAGE_KEY, JSON.stringify(map));
 
     // Also update any custom subjects with this name
+    const customRaw = localStorage.getItem(CUSTOM_SUBJECTS_STORAGE_KEY);
+    if (customRaw) {
+      const customParsed: Record<string, SubjectInfo[]> = JSON.parse(customRaw);
+      Object.keys(customParsed).forEach(k => {
+        customParsed[k] = customParsed[k].map(sub =>
+          sub.name === trimmedOld ? { ...sub, name: trimmedNew } : sub
+        );
+      });
+      localStorage.setItem(CUSTOM_SUBJECTS_STORAGE_KEY, JSON.stringify(customParsed));
+    }
+
 }
