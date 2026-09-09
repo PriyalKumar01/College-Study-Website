@@ -635,7 +635,8 @@ const FirstYearNotes = () => {
       notes: [
         { title: '[2025-26] Mid Sem-1 PYQs (Odd Semester)', url: 'https://drive.google.com/file/d/1UHEYh3ykfe1QtYE_VfOF09nLwfWkjx5Z/view?usp=drivesdk', recommended: true },
         { title: '[2025-26] Mid Sem-2 PYQs (Odd Semester)', url: 'https://drive.google.com/file/d/1VzarRmsgnrELjL9fsGKFy31Ba1G9nZZi/view?usp=drivesdk', recommended: true },
-        { title: '[2025-26] End Sem PYQs (Odd Semester)', url: 'https://drive.google.com/file/d/1RvGVTwQiqsc2AcodFj8g7P76_Dy75B_8/view?usp=drivesdk', recommended: true }
+        { title: '[2025-26] End Sem PYQs (Odd Semester)', url: 'https://drive.google.com/file/d/1RvGVTwQiqsc2AcodFj8g7P76_Dy75B_8/view?usp=drivesdk', recommended: true },
+        { title: '[2025-26] Mid Sem-1 PYQs (Even Semester / 2nd Sem)', url: 'https://drive.google.com/file/d/18k4F_9KcyfRkEt-rjsDIMA2wN4BvZj_1/view', recommended: true }
       ]
     }
   ];
