@@ -452,7 +452,7 @@ const NotesContributors = () => {
                       {contributors[2] && (
                         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
                           className="order-3 w-full md:w-1/3 max-w-[280px]">
-                          <Card className="border-0 shadow-lg bg-gradient-to-b from-orange-50 to-orange-100 dark:from-slate-800 dark:to-slate-900 border-t-4 border-orange-500 hover:scale-105 transition-transform duration-300">
+                          <Card className="border-0 shadow-lg bg-gradient-to-b from-orange-50 to-orange-100 dark:from-slate-800 dark:to-slate-900 border-t-4 border-orange-500 hover:scale-105 transition-all duration-300 hover:shadow-sky-500/15">
                             <div className="p-4 flex flex-col items-center text-center">
                               <div className="relative mb-3">
                                 <div className="w-24 h-24 rounded-full border-4 border-orange-500 bg-white dark:bg-slate-800 flex items-center justify-center text-2xl font-bold text-orange-600 shadow-md overflow-hidden">
