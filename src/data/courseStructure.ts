@@ -83,6 +83,7 @@ export const BTECH_FIRST_YEAR_SUBJECTS: SubjectInfo[] = [
   { name: 'Mathematics-I', fullName: 'Engineering Mathematics-I' },
   { name: 'Mathematics-II', fullName: 'Engineering Mathematics-II' },
   { name: 'Elementary Mathematics', fullName: 'Elementary Mathematics (DMA102)' },
+  { name: 'Engineering Physics', fullName: 'Engineering Physics' },
 ];
 
 // Key format: "{branch}-{semester}" e.g. "CSE-1st Semester"
