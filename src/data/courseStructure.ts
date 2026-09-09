@@ -96,6 +96,7 @@ export const BTECH_FIRST_YEAR_SUBJECTS: SubjectInfo[] = [
   { name: 'Data Science & AI Applications', fullName: 'Introduction to Data Science & Artificial Intelligence' },
   { name: 'Intro to Food Technology', fullName: 'Introduction to Food Technology & Processing' },
   { name: 'Intro to Plastic & Polymer Technology', fullName: 'Introduction to Plastic, Polymer & Rubber Technology' },
+  { name: 'Intro to Paint & Coating Technology', fullName: 'Introduction to Paint, Varnish & Coating Technology' },
 ];
 
 // Key format: "{branch}-{semester}" e.g. "CSE-1st Semester"
