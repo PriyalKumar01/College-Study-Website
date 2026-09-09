@@ -441,7 +441,21 @@ const FirstYearNotes = () => {
       ]
     },
 
-    // ── HUMANITIES, ETHICS & COMMUNICATION ─────────────────────────────
+    // ── HUMANITIES, ETHICS & COMMUNICATION ─────────────────────────────,
+
+    {
+      id: 'uhv',
+      code: 'DHS101',
+      name: 'Universal Human Values (UHV)',
+      fullName: 'Universal Human Values (Understanding Harmony & Human Conduct)',
+      category: 'core',
+      icon: '🕊️',
+      color: 'bg-violet-600',
+      badge: 'New Syllabus (2026)',
+      description: 'Value education, harmony in self, family, society, nature, and professional ethics.',
+      playlists: { detailed: [], oneshot: [] },
+      notes: []
+    },
   ];
 
   // Combined community notes matching any 1st year tags
