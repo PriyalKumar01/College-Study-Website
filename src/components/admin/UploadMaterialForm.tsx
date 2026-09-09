@@ -107,7 +107,7 @@ const UploadMaterialForm = ({ onUploadSuccess }: UploadMaterialFormProps) => {
   const effectiveTitle = isPyqMode ? autoPyqTitle : title;
 
   // For 1st year: map the actual semester to the correct subject list
-  const isFirstYear = category === 'btech' && year === '1st';
+  const isFirstYear = category === 'btech' && (year === '1st' || semester?.includes('1st') || semester?.includes('2nd'));
   const mappedSemester = isFirstYear && branchType === 'technology' && semester
     ? (semester === '1st Semester' ? '2nd Semester' : '1st Semester')
     : semester;
