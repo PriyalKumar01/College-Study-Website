@@ -492,7 +492,21 @@ const FirstYearNotes = () => {
       ]
     },
 
-    // ── TECHNOLOGY BRANCH INTRODUCTORY COURSES ────────────────────────
+    // ── TECHNOLOGY BRANCH INTRODUCTORY COURSES ────────────────────────,
+
+    {
+      id: 'food_tech',
+      code: 'IFT101',
+      name: 'Introduction to Food Technology (IFT)',
+      fullName: 'Introduction to Food Technology / Food Preservation Basics',
+      category: 'tech',
+      icon: '🥫',
+      color: 'bg-amber-600',
+      badge: 'Tech Branch',
+      description: 'Introductory course for Food Technology (FT) first-year students.',
+      playlists: { detailed: [], oneshot: [] },
+      notes: []
+    },
   ];
 
   // Combined community notes matching any 1st year tags
