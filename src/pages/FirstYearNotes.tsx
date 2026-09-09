@@ -318,6 +318,19 @@ const FirstYearNotes = () => {
         { title: 'Rules of Dimensions', url: 'https://drive.google.com/file/d/1a5toVeLKoFgUkEesqJJ0qnvCgeC1svAt/view?usp=drive_link' },
         { title: 'Section of Solid Notes', url: 'https://drive.google.com/file/d/1a-MdUdcohktnqRpG9AdFtDuSwfXvYNPS/view?usp=drive_link' }
       ]
+    },,
+
+    {
+      id: 'mechanics',
+      code: 'DME101/201',
+      name: 'Basic Engineering Mechanics (BEM)',
+      fullName: 'Basic Engineering Mechanics (Statics, Dynamics & Friction)',
+      category: 'engineering',
+      icon: '⚙️',
+      color: 'bg-blue-600',
+      description: 'Coplanar force systems, friction, centroid, moment of inertia, beams, and trusses.',
+      playlists: { detailed: [], oneshot: [] },
+      notes: []
     },
   ];
 
