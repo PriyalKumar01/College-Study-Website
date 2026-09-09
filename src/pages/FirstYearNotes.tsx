@@ -548,8 +548,16 @@ const FirstYearNotes = () => {
       color: 'bg-yellow-700',
       badge: 'Tech Branch',
       description: 'Introductory course for Leather & Footwear Technology (LFT/LT) first-year students.',
-      playlists: { detailed: [], oneshot: [] },
-      notes: []
+      playlists: {
+        detailed: [],
+        oneshot: [
+          { title: 'ICT Introduction Video 3', url: 'https://youtu.be/mbdl-Fh5ALg?si=1JQlwxU9UroBsgL8' }
+        ]
+      },
+      notes: [
+        { title: 'Leather Technology (ICT Core Notes)', url: 'https://drive.google.com/file/d/1Fv9uAi3qeM8vxngFbG1tmMo6J20vF3qy/view?usp=drivesdk', recommended: true },
+        { title: 'General Chemical Tech Notes: Priyal Kumar', url: 'https://drive.google.com/file/d/1PzevLkCwsQBQh_bZDwZnPgdWA6Qqv_5m/view?usp=drivesdk' }
+      ]
     },
   ];
 
