@@ -31,4 +31,16 @@ export function saveCustomSubject(
   branch: string | undefined,
   subject: SubjectInfo
 ): void {
+  try {
+    const raw = localStorage.getItem(CUSTOM_SUBJECTS_STORAGE_KEY);
+    const parsed: Record<string, SubjectInfo[]> = raw ? JSON.parse(raw) : {};
+    const key = `${category}_${branch || 'ALL'}_${semester || 'ALL'}`;
+    if (!parsed[key]) parsed[key] = [];
+    if (!parsed[key].some(s => s.name.toLowerCase() === subject.name.toLowerCase())) {
+      parsed[key].push(subject);
+      localStorage.setItem(CUSTOM_SUBJECTS_STORAGE_KEY, JSON.stringify(parsed));
+    }
+  } catch (e) {
+    console.error('Failed to save custom subject', e);
+  }
 }
