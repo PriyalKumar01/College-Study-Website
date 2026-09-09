@@ -24,3 +24,11 @@ export function getCustomSubjectsForContext(
     return [];
   }
 }
+
+export function saveCustomSubject(
+  category: string,
+  semester: string | undefined,
+  branch: string | undefined,
+  subject: SubjectInfo
+): void {
+}
