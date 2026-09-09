@@ -647,7 +647,8 @@ const FirstYearNotes = () => {
         { title: '[2024-25] Mid Sem-1 PYQs (2nd Semester)', url: 'https://drive.google.com/file/d/1SHThDw8j2ar0oJ7huAKSTTBWAqLqgT86/view?usp=drive_link' },
         { title: '[2024-25] Mid Sem-2 PYQs (2nd Semester)', url: 'https://drive.google.com/file/d/1FmF7U7v0GnqSYhEY5V05Sh2nbq5_Io2V/view?usp=drive_link' },
         { title: '[2024-25] End Sem PYQs (2nd Semester)', url: 'https://drive.google.com/file/d/1FoxxXrQZyJYqIWNxgqoix-whiELRM9ap/view?usp=drive_link' },
-        { title: '[2023-24] Complete All PYQs Bundle', url: 'https://drive.google.com/file/d/1_mrm9SbSkJmqiWuRDT9pwkLAEjKv6e_n/view?usp=drive_link', recommended: true }
+        { title: '[2023-24] Complete All PYQs Bundle', url: 'https://drive.google.com/file/d/1_mrm9SbSkJmqiWuRDT9pwkLAEjKv6e_n/view?usp=drive_link', recommended: true },
+        { title: '[2023-24] Mid Sem-1 PYQs (2nd Semester)', url: 'https://drive.google.com/file/d/1SzIrS0HedxD7rXrfdeleOMO9YXI-O4Cg/view?usp=drive_link' }
       ]
     }
   ];
