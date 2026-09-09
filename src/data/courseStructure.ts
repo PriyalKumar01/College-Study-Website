@@ -80,6 +80,7 @@ const SPECIAL_SECTIONS: SubjectInfo[] = [
 export const BTECH_FIRST_YEAR_SUBJECTS: SubjectInfo[] = [
   { name: 'Programming for Problem Solving (PPS)', fullName: 'Programming for Problem Solving (C Language & Problem Solving)' },
   { name: 'Python Programming', fullName: 'Python Programming (Core Language, Data Structures & Scripting)' },
+  { name: 'Mathematics-I', fullName: 'Engineering Mathematics-I' },
 ];
 
 // Key format: "{branch}-{semester}" e.g. "CSE-1st Semester"
