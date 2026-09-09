@@ -53,3 +53,14 @@ export function getRenamedSubjectsMap(): Record<string, string> {
     return {};
   }
 }
+
+export async function saveRenamedSubject(
+  oldName: string,
+  newName: string
+): Promise<void> {
+  try {
+    const trimmedOld = oldName.trim();
+    const trimmedNew = newName.trim();
+    if (!trimmedOld || !trimmedNew || trimmedOld === trimmedNew) return;
+
+}
