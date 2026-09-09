@@ -453,8 +453,16 @@ const FirstYearNotes = () => {
       color: 'bg-violet-600',
       badge: 'New Syllabus (2026)',
       description: 'Value education, harmony in self, family, society, nature, and professional ethics.',
-      playlists: { detailed: [], oneshot: [] },
-      notes: []
+      playlists: {
+        detailed: [
+          { title: 'Universal Human Values (UHV) Complete Lectures', url: 'https://youtube.com/playlist?list=PL49mRA0Y_C8uQ6B-qZtYm-b3e3rO8g76Y', recommended: true }
+        ],
+        oneshot: []
+      },
+      notes: [
+        { title: 'UHV Foundation & Harmony Course Guide', url: 'https://drive.google.com/file/d/1STrVBwHdz4WLytQ-KxO4SebJwX0jh6jM/view?usp=drive_link', recommended: true },
+        { title: 'Human Conduct & Professional Ethics Handout', url: 'https://drive.google.com/file/d/1k9DQuSHvbBc_-iB8RPC4g1MZJgHmFBOO/view?usp=drive_link' }
+      ]
     },
   ];
 
