@@ -82,6 +82,7 @@ export const BTECH_FIRST_YEAR_SUBJECTS: SubjectInfo[] = [
   { name: 'Python Programming', fullName: 'Python Programming (Core Language, Data Structures & Scripting)' },
   { name: 'Mathematics-I', fullName: 'Engineering Mathematics-I' },
   { name: 'Mathematics-II', fullName: 'Engineering Mathematics-II' },
+  { name: 'Elementary Mathematics', fullName: 'Elementary Mathematics (DMA102)' },
 ];
 
 // Key format: "{branch}-{semester}" e.g. "CSE-1st Semester"
