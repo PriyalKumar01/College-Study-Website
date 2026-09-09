@@ -111,7 +111,24 @@ const FirstYearNotes = () => {
         { title: 'ICS UNIX / Linux Basics Notes', url: 'https://drive.google.com/file/d/1tPZekj8Nhbt3m3N_wJY0YFDXUq1ALrtj/view?usp=drivesdk' },
         { title: 'Full Programming Notes: Ananya (CSE"28)', url: 'https://drive.google.com/file/d/18OszxRCXnRxCzMOk6lmOPO0oCx_9zvP1/view?usp=drivesdk' },
       ]
+    },,
+
+    {
+      id: 'python',
+      code: 'DCS201',
+      name: 'Python Programming',
+      fullName: 'Python Programming (Core Language, Data Structures & Scripting)',
+      category: 'computing',
+      icon: '🐍',
+      color: 'bg-emerald-600',
+      badge: 'New Syllabus (2026)',
+      description: 'Modern Python programming fundamentals, syntax, control flows, functions, and modules.',
+      syllabusUrl: 'https://hbtu.ac.in/naac/CS/B.Tech.%201st%20Year%20Course%20C-06222026063347.pdf',
+      playlists: { detailed: [], oneshot: [] },
+      notes: []
     },
+
+    // ── CORE SCIENCES & MATHS ──────────────────────────────────────────
   ];
 
   // Combined community notes matching any 1st year tags
