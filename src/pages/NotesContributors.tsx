@@ -423,7 +423,7 @@ const NotesContributors = () => {
                       {/* Rank 1 */}
                       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
                         className="order-1 md:order-2 w-full md:w-1/3 max-w-[320px] -mt-8 md:-mt-12 z-20">
-                        <Card className="border-0 shadow-xl bg-gradient-to-b from-yellow-50 to-yellow-200 dark:from-amber-900/40 dark:to-amber-900/10 border-t-8 border-yellow-500 hover:scale-110 transition-transform duration-300">
+                        <Card className="border-0 shadow-xl bg-gradient-to-b from-yellow-50 to-yellow-200 dark:from-amber-900/40 dark:to-amber-900/10 border-t-8 border-yellow-500 hover:scale-110 transition-all duration-300 hover:shadow-sky-500/15">
                           <div className="p-6 flex flex-col items-center text-center relative overflow-hidden">
                             <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-transparent via-yellow-400 to-transparent opacity-50" />
                             <div className="relative mb-5">
