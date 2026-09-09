@@ -90,6 +90,7 @@ export const BTECH_FIRST_YEAR_SUBJECTS: SubjectInfo[] = [
   { name: 'Engineering Mechanics', fullName: 'Engineering Mechanics' },
   { name: 'Professional Communication', fullName: 'Professional Communication (English & Technical)' },
   { name: 'Environmental Studies', fullName: 'Environmental Studies & Ecology' },
+  { name: 'Web Designing Workshop', fullName: 'Web Designing Workshop (HTML, CSS, JS)' },
 ];
 
 // Key format: "{branch}-{semester}" e.g. "CSE-1st Semester"
