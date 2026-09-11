@@ -211,13 +211,12 @@ export const SUBJECTS: Record<string, SubjectInfo[]> = {
     { name: 'Electrical Engg. Materials', fullName: 'Electrical Engg. Materials' },
     { name: 'Electronic Circuit Analysis (ECA)', fullName: 'Electronic Circuit Analysis (ECA)' },
   ],
-  'EE-5th Semester': [
-    { name: 'Power Electronics', fullName: 'Power Electronics' },
-    { name: 'Power System-II', fullName: 'Power System-II' },
-    { name: 'Microprocessor', fullName: 'Microprocessor & Microcontroller' },
-    { name: 'Signals & Systems', fullName: 'Signals & Systems' },
-    { name: 'Switchgear & Protection', fullName: 'Switchgear & Protection' },
-    { name: 'Open Elective', fullName: 'Open Elective (OE)' },
+    'EE-5th Semester': [
+    { name: 'Electrical Machine design (EMD)', fullName: 'Electrical Machine design (EMD)' },
+    { name: 'Power Systems-I', fullName: 'Power Systems-I' },
+    { name: 'Control Systems', fullName: 'Control Systems' },
+    { name: 'Micro-Processors', fullName: 'Micro-Processors' },
+    { name: 'Utilization of Electrical Energy & Traction', fullName: 'Utilization of Electrical Energy & Traction' },
   ],
 
   // ════════════════════════════════════════════════════════════════
