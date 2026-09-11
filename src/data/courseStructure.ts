@@ -195,7 +195,7 @@ export const SUBJECTS: Record<string, SubjectInfo[]> = {
   // EE Branch — Synchronized with university departmental syllabus
   // ════════════════════════════════════════════════════════════════
   'EE-3rd Semester': [
-    { name: 'Network Theory', fullName: 'Network Theory' },
+    { name: 'Solid State Devices & Circuit (SSDC)', fullName: 'Solid State Devices & Circuit (SSDC)' },
     { name: 'Electrical Machines-I', fullName: 'Electrical Machines-I' },
     { name: 'Electromagnetic Theory', fullName: 'Electromagnetic Theory' },
     { name: 'Digital Electronics', fullName: 'Digital Electronics' },
