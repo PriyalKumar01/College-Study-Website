@@ -129,10 +129,10 @@ export const SUBJECTS: Record<string, SubjectInfo[]> = {
     { name: 'Computer Organisation', fullName: 'Computer Organisation' },
     { name: 'Python Programming', fullName: 'Python Programming' },
     { name: 'Engineering Mathematics-II', fullName: 'Engineering Mathematics-II' },
-    { name: 'Basic System Analysis', fullName: 'Basic System Analysis (BSA)' },
+    { name: 'Digital Electronics', fullName: 'Digital Electronics' },
   ],
   'CSE-4th Semester': [
-    { name: 'Economics & Management (E & M)', fullName: 'Economics & Management (E & M)' },
+    { name: 'Economics & Management', fullName: 'Economics & Management' },
     { name: 'Engineering Mathematics-III', fullName: 'Engineering Mathematics-III' },
     { name: 'Operating System', fullName: 'Operating Systems' },
     { name: 'Software Engineering', fullName: 'Software Engineering' },
@@ -165,15 +165,14 @@ export const SUBJECTS: Record<string, SubjectInfo[]> = {
     { name: 'EMMI', fullName: 'Electrical Machines & Measurements Instrumentation' },
     { name: 'HDL', fullName: 'Hardware Description Language' },
     { name: 'SSD', fullName: 'Solid State Devices' },
-    { name: 'Electrical Machines & Measurements Instrumentation (EMMI)', fullName: 'Electrical Machines & Measurements Instrumentation (EMMI)' },
-    { name: 'Engineering Mathematics-II', fullName: 'Engineering Mathematics-II' },
+    { name: 'Math-II', fullName: 'Engineering Mathematics-II' },
   ],
   'ET-4th Semester': [
     { name: 'Microprocessor', fullName: 'Microprocessor & Microcontroller' },
     { name: 'Signals & Systems', fullName: 'Signals & Systems' },
     { name: 'Communication System', fullName: 'Communication System' },
-    { name: 'Electrical Engg. Materials', fullName: 'Electrical Engg. Materials' },
-    { name: 'Engineering Mathematics-III', fullName: 'Engineering Mathematics-III' },
+    { name: 'Control System', fullName: 'Control System' },
+    { name: 'Math-III', fullName: 'Engineering Mathematics-III' },
     { name: 'Economics & Management', fullName: 'Economics & Management' },
   ],
   'ET-5th Semester': [
@@ -193,9 +192,9 @@ export const SUBJECTS: Record<string, SubjectInfo[]> = {
   ],
 
   // ════════════════════════════════════════════════════════════════
-  // EE Branch — Synchronized with university departmental syllabus
+  // EE Branch
   // ════════════════════════════════════════════════════════════════
-    'EE-3rd Semester': [
+  'EE-3rd Semester': [
     { name: 'Solid State Devices & Circuit (SSDC)', fullName: 'Solid State Devices & Circuit (SSDC)' },
     { name: 'Electrical Machines-I', fullName: 'Electrical Machines-I' },
     { name: 'Basic System Analysis', fullName: 'Basic System Analysis (BSA)' },
@@ -203,7 +202,7 @@ export const SUBJECTS: Record<string, SubjectInfo[]> = {
     { name: 'Engineering Mathematics-II', fullName: 'Engineering Mathematics-II' },
     { name: 'Electromagnetic Field Theory', fullName: 'Electromagnetic Field Theory' },
   ],
-    'EE-4th Semester': [
+  'EE-4th Semester': [
     { name: 'Engineering Mathematics-III', fullName: 'Engineering Mathematics-III' },
     { name: 'Economics & Management (E & M)', fullName: 'Economics & Management (E & M)' },
     { name: 'Digital Electronics (DE)', fullName: 'Digital Electronics (DE)' },
@@ -211,12 +210,20 @@ export const SUBJECTS: Record<string, SubjectInfo[]> = {
     { name: 'Electrical Engg. Materials', fullName: 'Electrical Engg. Materials' },
     { name: 'Electronic Circuit Analysis (ECA)', fullName: 'Electronic Circuit Analysis (ECA)' },
   ],
-    'EE-5th Semester': [
+  'EE-5th Semester': [
     { name: 'Electrical Machine design (EMD)', fullName: 'Electrical Machine design (EMD)' },
     { name: 'Power Systems-I', fullName: 'Power Systems-I' },
     { name: 'Control Systems', fullName: 'Control Systems' },
     { name: 'Micro-Processors', fullName: 'Micro-Processors' },
     { name: 'Utilization of Electrical Energy & Traction', fullName: 'Utilization of Electrical Energy & Traction' },
+  ],
+  'EE-6th Semester': [
+    { name: 'Power Electronics', fullName: 'Power Electronics' },
+    { name: 'Control Systems', fullName: 'Control Systems' },
+    { name: 'Electrical Machines-II', fullName: 'Electrical Machines-II' },
+    { name: 'Power System Analysis', fullName: 'Power System Analysis' },
+    { name: 'Digital Signal Processing', fullName: 'Digital Signal Processing' },
+    { name: 'ALL MID & ESE PYQs', fullName: 'ALL MID & ESE PYQs' },
   ],
 
   // ════════════════════════════════════════════════════════════════
