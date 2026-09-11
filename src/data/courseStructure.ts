@@ -192,7 +192,7 @@ export const SUBJECTS: Record<string, SubjectInfo[]> = {
   ],
 
   // ════════════════════════════════════════════════════════════════
-  // EE Branch
+  // EE Branch — Synchronized with university departmental syllabus
   // ════════════════════════════════════════════════════════════════
   'EE-3rd Semester': [
     { name: 'Network Theory', fullName: 'Network Theory' },
