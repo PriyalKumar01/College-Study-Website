@@ -129,7 +129,7 @@ export const SUBJECTS: Record<string, SubjectInfo[]> = {
     { name: 'Computer Organisation', fullName: 'Computer Organisation' },
     { name: 'Python Programming', fullName: 'Python Programming' },
     { name: 'Engineering Mathematics-II', fullName: 'Engineering Mathematics-II' },
-    { name: 'Digital Electronics', fullName: 'Digital Electronics' },
+    { name: 'Basic System Analysis', fullName: 'Basic System Analysis (BSA)' },
   ],
   'CSE-4th Semester': [
     { name: 'Economics & Management', fullName: 'Economics & Management' },
