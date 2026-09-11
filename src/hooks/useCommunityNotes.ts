@@ -1,9 +1,17 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { getCachedData, setCachedData, DEFAULT_CACHE_TTL_MS } from '@/lib/cacheUtils';
 
 export function useCommunityNotes(category: string, semester?: string | string[]) {
   const cacheKey = `notes_${category}_${Array.isArray(semester) ? semester.join('_') : (semester || 'all')}`;
+
+  const isMountedRef = useRef(true);
+  useEffect(() => {
+    isMountedRef.current = true;
+    return () => {
+      isMountedRef.current = false;
+    };
+  }, []);
 
   const [data, setData] = useState<any[]>(() => {
     return getCachedData<any[]>(cacheKey, DEFAULT_CACHE_TTL_MS) || [];
