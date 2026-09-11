@@ -29,7 +29,7 @@ export function useCommunityNotes(category: string, semester?: string | string[]
     try {
       let query = supabase
         .from('notes')
-        .select('id, title, subject, semester, material_type, file_url, file_name, uploaded_at, user_name, uploaded_by, description, year')
+        .select('id, title, subject, semester, material_type, file_url, file_name, uploaded_at, user_name, uploaded_by, description, year, status, approved')
         .eq('status', 'approved');
 
       if (semester) {
