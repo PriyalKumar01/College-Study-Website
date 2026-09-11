@@ -41,6 +41,10 @@ export function matchesSubject(
   const rawSubName = (subName || '').trim();
   const rawSubId = (subId || '').trim();
 
+  // Check known acronym map
+  if (ACRONYM_MAP[cleanCn] && cleanName.includes(ACRONYM_MAP[cleanCn])) return true;
+  if (ACRONYM_MAP[cleanName] && cleanCn.includes(ACRONYM_MAP[cleanName])) return true;
+
   // 1. Direct match (case-insensitive)
   if (
     rawCn.toLowerCase() === rawSubName.toLowerCase() ||
