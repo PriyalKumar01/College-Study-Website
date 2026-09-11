@@ -165,7 +165,8 @@ export const SUBJECTS: Record<string, SubjectInfo[]> = {
     { name: 'EMMI', fullName: 'Electrical Machines & Measurements Instrumentation' },
     { name: 'HDL', fullName: 'Hardware Description Language' },
     { name: 'SSD', fullName: 'Solid State Devices' },
-    { name: 'Math-II', fullName: 'Engineering Mathematics-II' },
+    { name: 'Electrical Machines & Measurements Instrumentation (EMMI)', fullName: 'Electrical Machines & Measurements Instrumentation (EMMI)' },
+    { name: 'Engineering Mathematics-II', fullName: 'Engineering Mathematics-II' },
   ],
   'ET-4th Semester': [
     { name: 'Microprocessor', fullName: 'Microprocessor & Microcontroller' },
