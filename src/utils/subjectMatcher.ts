@@ -21,6 +21,15 @@ function getAcronym(str: string): string {
   return words.map(w => w[0]).join('');
 }
 
+// Known abbreviation map for electrical & electronics branches
+const ACRONYM_MAP: Record<string, string> = {
+  'bsa': 'basic system analysis',
+  'ssdc': 'solid state devices and circuit',
+  'emmi': 'electrical machines and measurements instrumentation',
+  'eem': 'electrical engg materials',
+  'eca': 'electronic circuit analysis',
+};
+
 export function matchesSubject(
   cnSubject: string | null | undefined,
   subName: string | null | undefined,
