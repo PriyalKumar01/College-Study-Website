@@ -132,7 +132,7 @@ export const SUBJECTS: Record<string, SubjectInfo[]> = {
     { name: 'Basic System Analysis', fullName: 'Basic System Analysis (BSA)' },
   ],
   'CSE-4th Semester': [
-    { name: 'Economics & Management', fullName: 'Economics & Management' },
+    { name: 'Economics & Management (E & M)', fullName: 'Economics & Management (E & M)' },
     { name: 'Engineering Mathematics-III', fullName: 'Engineering Mathematics-III' },
     { name: 'Operating System', fullName: 'Operating Systems' },
     { name: 'Software Engineering', fullName: 'Software Engineering' },
