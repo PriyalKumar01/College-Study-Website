@@ -203,13 +203,13 @@ export const SUBJECTS: Record<string, SubjectInfo[]> = {
     { name: 'Engineering Mathematics-II', fullName: 'Engineering Mathematics-II' },
     { name: 'Electromagnetic Field Theory', fullName: 'Electromagnetic Field Theory' },
   ],
-  'EE-4th Semester': [
-    { name: 'Electrical Machines-II', fullName: 'Electrical Machines-II' },
+    'EE-4th Semester': [
+    { name: 'Engineering Mathematics-III', fullName: 'Engineering Mathematics-III' },
+    { name: 'Economics & Management (E & M)', fullName: 'Economics & Management (E & M)' },
     { name: 'Digital Electronics (DE)', fullName: 'Digital Electronics (DE)' },
-    { name: 'Control System', fullName: 'Control System' },
+    { name: 'Electrical Machine-II', fullName: 'Electrical Machine-II' },
+    { name: 'Electrical Engg. Materials', fullName: 'Electrical Engg. Materials' },
     { name: 'Electronic Circuit Analysis (ECA)', fullName: 'Electronic Circuit Analysis (ECA)' },
-    { name: 'Math-III', fullName: 'Engineering Mathematics-III' },
-    { name: 'Economics & Management', fullName: 'Economics & Management' },
   ],
   'EE-5th Semester': [
     { name: 'Power Electronics', fullName: 'Power Electronics' },
