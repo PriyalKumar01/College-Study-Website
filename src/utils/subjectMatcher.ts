@@ -3,6 +3,7 @@
  * Handles abbreviations, slight differences in naming, and acronyms (e.g. ITPC, FMMO, CPC, E&M, DBMS, OS).
  */
 
+// Normalizes subject string for robust fuzzy & acronym comparison
 function cleanStr(str: string): string {
   return (str || '')
     .toLowerCase()
