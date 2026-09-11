@@ -173,7 +173,7 @@ export const SUBJECTS: Record<string, SubjectInfo[]> = {
     { name: 'Signals & Systems', fullName: 'Signals & Systems' },
     { name: 'Communication System', fullName: 'Communication System' },
     { name: 'Control System', fullName: 'Control System' },
-    { name: 'Math-III', fullName: 'Engineering Mathematics-III' },
+    { name: 'Engineering Mathematics-III', fullName: 'Engineering Mathematics-III' },
     { name: 'Economics & Management', fullName: 'Economics & Management' },
   ],
   'ET-5th Semester': [
