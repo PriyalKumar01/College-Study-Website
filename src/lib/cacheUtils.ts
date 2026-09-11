@@ -10,7 +10,7 @@ interface CacheEntry<T> {
 
 const memoryStore = new Map<string, CacheEntry<any>>();
 
-export const DEFAULT_CACHE_TTL_MS = 30 * 60 * 1000; // 30 minutes
+export const DEFAULT_CACHE_TTL_MS = 30 * 1000; // 30 seconds for real-time responsiveness
 
 export function getCachedData<T>(key: string, ttlMs = DEFAULT_CACHE_TTL_MS): T | null {
   const now = Date.now();
