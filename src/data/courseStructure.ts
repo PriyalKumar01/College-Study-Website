@@ -197,7 +197,7 @@ export const SUBJECTS: Record<string, SubjectInfo[]> = {
   'EE-3rd Semester': [
     { name: 'Solid State Devices & Circuit (SSDC)', fullName: 'Solid State Devices & Circuit (SSDC)' },
     { name: 'Electrical Machines-I', fullName: 'Electrical Machines-I' },
-    { name: 'Electromagnetic Theory', fullName: 'Electromagnetic Theory' },
+    { name: 'Electromagnetic Field Theory', fullName: 'Electromagnetic Field Theory' },
     { name: 'Digital Electronics', fullName: 'Digital Electronics' },
     { name: 'Math-II', fullName: 'Engineering Mathematics-II' },
   ],
