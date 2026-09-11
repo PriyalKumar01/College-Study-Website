@@ -195,12 +195,13 @@ export const SUBJECTS: Record<string, SubjectInfo[]> = {
   // ════════════════════════════════════════════════════════════════
   // EE Branch — Synchronized with university departmental syllabus
   // ════════════════════════════════════════════════════════════════
-  'EE-3rd Semester': [
+    'EE-3rd Semester': [
     { name: 'Solid State Devices & Circuit (SSDC)', fullName: 'Solid State Devices & Circuit (SSDC)' },
     { name: 'Electrical Machines-I', fullName: 'Electrical Machines-I' },
+    { name: 'Basic System Analysis', fullName: 'Basic System Analysis (BSA)' },
+    { name: 'Electrical Machines & Measurements Instrumentation (EMMI)', fullName: 'Electrical Machines & Measurements Instrumentation (EMMI)' },
+    { name: 'Engineering Mathematics-II', fullName: 'Engineering Mathematics-II' },
     { name: 'Electromagnetic Field Theory', fullName: 'Electromagnetic Field Theory' },
-    { name: 'Digital Electronics', fullName: 'Digital Electronics' },
-    { name: 'Math-II', fullName: 'Engineering Mathematics-II' },
   ],
   'EE-4th Semester': [
     { name: 'Electrical Machines-II', fullName: 'Electrical Machines-II' },
