@@ -273,7 +273,7 @@ const FourthSemesterEENotes = () => {
   const subjects: any[] = allSubjectsList.map(sub => ({
     ...sub,
     notes: [
-      ...sub.notes,
+      ...(sub.notes || []),
       ...(communityNotes || [])
         .filter(cn => cn.material_type !== 'subject_placeholder' && matchesSubject(cn.subject, sub.name, sub.id))
         .map(cn => ({
@@ -467,7 +467,18 @@ const FourthSemesterEENotes = () => {
 
         {/* Subjects Grid */}
         <div>
-          <p className="text-xs font-bold tracking-[0.15em] uppercase text-muted-foreground mb-5">Study Resources</p>
+          <div className="flex items-center justify-between mb-5 flex-wrap gap-3">
+            <p className="text-xs font-bold tracking-[0.15em] uppercase text-muted-foreground">Study Resources</p>
+            {isOwner && (
+              <Button
+                size="sm"
+                onClick={() => setShowAddSubjectModal(true)}
+                className="h-8 text-xs bg-primary hover:bg-primary/90 text-primary-foreground font-semibold flex items-center gap-1.5 shadow-sm"
+              >
+                <Plus className="h-3.5 w-3.5" /> Add Subject (Owner)
+              </Button>
+            )}
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {subjects.map((subject, index) => (
               <motion.div
@@ -479,9 +490,23 @@ const FourthSemesterEENotes = () => {
                 <div className="group border border-border bg-card hover:border-foreground/30 rounded-xl p-5 transition-all duration-300 hover:shadow-lg h-full flex flex-col relative">
                   <div className="flex items-start justify-between mb-4">
                     <span className="text-2xl">{subject.icon}</span>
-                    <span className="text-xs font-bold text-white bg-green-500 px-2 py-0.5 rounded-full">
-                      {subject.notes.length} files
-                    </span>
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-xs font-bold text-white bg-green-500 px-2 py-0.5 rounded-full">
+                        {subject.notes.length} files
+                      </span>
+                      {(subject as any).isCustom && isOwner && (
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDeleteCustomSubject(subject.name);
+                          }}
+                          className="text-muted-foreground hover:text-red-500 p-1 rounded hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors"
+                          title="Delete custom subject"
+                        >
+                          <Trash2 className="h-3.5 w-3.5" />
+                        </button>
+                      )}
+                    </div>
                   </div>
                   <h3 className="font-semibold text-foreground text-sm leading-snug mb-1 flex-1">{subject.name}</h3>
 
@@ -548,6 +573,54 @@ const FourthSemesterEENotes = () => {
         playlists={selectedSubjectForPlaylist ? getSubjectPlaylists(selectedSubjectForPlaylist)[selectedPlaylistType] : []}
         type={selectedPlaylistType}
       />
+
+      {/* Add Subject Modal for Owner */}
+      <Dialog open={showAddSubjectModal} onOpenChange={setShowAddSubjectModal}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-lg">
+              <Sparkles className="h-5 w-5 text-primary" /> Add Subject to 4th Sem EE
+            </DialogTitle>
+            <DialogDescription>
+              Create a new subject card instantly. It will appear with 0 files immediately and admins can upload notes for it.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-2">
+            <div>
+              <label className="text-xs font-semibold text-foreground block mb-1.5">
+                Subject Name / Code <span className="text-red-500">*</span>
+              </label>
+              <Input
+                placeholder="e.g. Electrical Engg. Materials"
+                value={newSubName}
+                onChange={(e) => setNewSubName(e.target.value)}
+                className="text-sm"
+                autoFocus
+              />
+            </div>
+            <div>
+              <label className="text-xs font-semibold text-foreground block mb-1.5">
+                Full Descriptive Name (Optional)
+              </label>
+              <Input
+                placeholder="e.g. Electrical Engineering Materials (EEM)"
+                value={newSubFullName}
+                onChange={(e) => setNewSubFullName(e.target.value)}
+                className="text-sm"
+              />
+            </div>
+          </div>
+          <div className="flex justify-end gap-2 pt-2">
+            <Button variant="ghost" size="sm" onClick={() => setShowAddSubjectModal(false)} disabled={isAddingSub}>
+              Cancel
+            </Button>
+            <Button size="sm" onClick={handleCreateSubject} disabled={isAddingSub || !newSubName.trim()} className="gap-1.5">
+              {isAddingSub ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Plus className="h-3.5 w-3.5" />}
+              Create Subject
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
