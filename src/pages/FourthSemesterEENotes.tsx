@@ -267,7 +267,10 @@ const FourthSemesterEENotes = () => {
     url: 'https://drive.google.com/file/d/1S8SRzy10r8ggFpxCW2fMbV6bbGW7skzq/view?usp=drivesdk'
   };
 
-  const subjects: any[] = staticSubjects.map(sub => ({
+  const dynamicCustomSubjects = extractDynamicSubjects(communityNotes, staticSubjects);
+  const allSubjectsList = [...staticSubjects, ...dynamicCustomSubjects];
+
+  const subjects: any[] = allSubjectsList.map(sub => ({
     ...sub,
     notes: [
       ...sub.notes,
