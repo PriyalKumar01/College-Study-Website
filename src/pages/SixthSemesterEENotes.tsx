@@ -45,7 +45,7 @@ const SixthSemesterEENotes = () => {
     notes: [
       ...sub.notes,
       ...(communityNotes || [])
-        .filter((cn) => cn.subject === sub.name || cn.subject === sub.id)
+        .filter((cn) => cn.material_type !== 'subject_placeholder' && matchesSubject(cn.subject, sub.name, sub.id))
         .map((cn) => ({ id: cn.id, title: cn.title, url: cn.file_url, isCommunity: true, fileName: cn.file_name, uploadedBy: cn.uploaded_by, userName: cn.user_name })),
     ],
   }));
