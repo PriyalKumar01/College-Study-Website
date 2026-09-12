@@ -357,7 +357,10 @@ const UploadMaterialForm = ({ onUploadSuccess }: UploadMaterialFormProps) => {
           uploaded_by: currentUser?.id || 'admin',
           user_email: currentUser?.email || 'admin@studyhub.com',
           user_name: currentUser?.user_metadata?.first_name || currentUser?.email?.split('@')[0] || 'Admin',
-          status: 'pending',
+          status: isOwner ? 'approved' : 'pending',
+          approved: isOwner ? true : false,
+          approved_at: isOwner ? new Date().toISOString() : null,
+          approved_by: isOwner ? currentUser?.id : null,
         });
 
       if (insertError) {
