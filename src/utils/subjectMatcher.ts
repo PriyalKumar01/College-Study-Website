@@ -28,6 +28,9 @@ const ACRONYM_MAP: Record<string, string> = {
   'emmi': 'electrical machines and measurements instrumentation',
   'eem': 'electrical engg materials',
   'eca': 'electronic circuit analysis',
+  'emd': 'electrical machine design',
+  'uet': 'utilization of electrical energy and traction',
+  'cs': 'control systems',
 };
 
 export function matchesSubject(
