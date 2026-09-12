@@ -1161,6 +1161,11 @@ const OwnerDashboard = () => {
 
       if (error) throw error;
 
+      clearCachePrefix('notes');
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new Event('studyhub_notes_updated'));
+      }
+
       toast({
         title: newStatus === 'approved' ? 'Material approved ✅' : 'Material rejected ❌',
         description: newStatus === 'approved'
@@ -1180,6 +1185,10 @@ const OwnerDashboard = () => {
     try {
       const { error } = await supabase.from('notes').delete().eq('id', noteId);
       if (error) throw error;
+      clearCachePrefix('notes');
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new Event('studyhub_notes_updated'));
+      }
       toast({ title: 'Deleted', description: 'Material removed successfully.' });
       fetchAllMaterials();
       fetchPendingMaterials();
