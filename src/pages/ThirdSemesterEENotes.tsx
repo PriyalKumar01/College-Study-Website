@@ -63,6 +63,13 @@ const ThirdSemesterEENotes = () => {
     }
   };
 
+  const handleDeleteCustomSubject = async (subName: string) => {
+    if (!window.confirm(`Are you sure you want to delete the custom subject "${subName}"?`)) return;
+    await deleteCustomSubject(subName, 'EE-3rd Semester');
+    toast({ title: 'Subject deleted', description: `Subject "${subName}" removed.` });
+    refreshNotes();
+  };
+
   const handleDeleteCommunityNote = async (id: string) => {
     if (!window.confirm('Delete this user-uploaded material?')) return;
     try {
