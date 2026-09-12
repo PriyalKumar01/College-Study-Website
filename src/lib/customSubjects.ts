@@ -74,6 +74,43 @@ export function extractDynamicSubjects(
   return Array.from(customMap.values());
 }
 
+export async function deleteCustomSubject(
+  subjectName: string,
+  semester?: string
+): Promise<boolean> {
+  try {
+    const raw = localStorage.getItem(CUSTOM_SUBJECTS_STORAGE_KEY);
+    if (raw) {
+      const parsed: Record<string, SubjectInfo[]> = JSON.parse(raw);
+      Object.keys(parsed).forEach(k => {
+        parsed[k] = parsed[k].filter(s => s.name.toLowerCase() !== subjectName.toLowerCase());
+      });
+      localStorage.setItem(CUSTOM_SUBJECTS_STORAGE_KEY, JSON.stringify(parsed));
+    }
+
+    let query = supabase
+      .from('notes')
+      .delete()
+      .eq('subject', subjectName)
+      .eq('material_type', 'subject_placeholder');
+
+    if (semester) {
+      query = query.eq('semester', semester);
+    }
+
+    await query;
+
+    clearCachePrefix('notes');
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new Event('studyhub_notes_updated'));
+    }
+    return true;
+  } catch (err) {
+    console.error('Failed to delete custom subject', err);
+    return false;
+  }
+}
+
 export function getRenamedSubjectsMap(): Record<string, string> {
   try {
     const raw = localStorage.getItem(RENAMED_SUBJECTS_STORAGE_KEY);
