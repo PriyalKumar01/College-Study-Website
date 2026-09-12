@@ -1,5 +1,7 @@
 import { SubjectInfo } from '@/data/courseStructure';
 import { supabase } from '@/integrations/supabase/client';
+import { clearCachePrefix } from '@/lib/cacheUtils';
+import { matchesSubject } from '@/utils/subjectMatcher';
 
 const CUSTOM_SUBJECTS_STORAGE_KEY = 'studyhub_custom_subjects_v1';
 const RENAMED_SUBJECTS_STORAGE_KEY = 'studyhub_renamed_subjects_v1';
