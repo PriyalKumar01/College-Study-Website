@@ -27,13 +27,15 @@ export function getCustomSubjectsForContext(
   }
 }
 
-export function saveCustomSubject(
+export async function saveCustomSubject(
   category: string,
   semester: string | undefined,
   branch: string | undefined,
-  subject: SubjectInfo
-): void {
+  subject: SubjectInfo,
+  user?: any
+): Promise<void> {
   try {
+    // 1. Save to local storage for immediate offline / quick access
     const raw = localStorage.getItem(CUSTOM_SUBJECTS_STORAGE_KEY);
     const parsed: Record<string, SubjectInfo[]> = raw ? JSON.parse(raw) : {};
     const key = `${category}_${branch || 'ALL'}_${semester || 'ALL'}`;
@@ -41,6 +43,42 @@ export function saveCustomSubject(
     if (!parsed[key].some(s => s.name.toLowerCase() === subject.name.toLowerCase())) {
       parsed[key].push(subject);
       localStorage.setItem(CUSTOM_SUBJECTS_STORAGE_KEY, JSON.stringify(parsed));
+    }
+
+    // 2. Persist to Supabase notes table as an approved placeholder
+    // This makes the subject visible to all devices, admins, and students immediately!
+    let currentUser = user;
+    if (!currentUser) {
+      const { data: authData } = await supabase.auth.getUser();
+      currentUser = authData?.user ?? null;
+    }
+
+    const dbSemester = category === 'btech'
+      ? (branch && semester ? `${branch}-${semester}` : (semester || category))
+      : (semester || category);
+
+    if (currentUser) {
+      await supabase.from('notes').insert({
+        title: `[SUBJECT] ${subject.name}`,
+        subject: subject.name,
+        semester: dbSemester,
+        material_type: 'subject_placeholder',
+        file_url: '#',
+        file_name: 'subject.meta',
+        description: subject.fullName || subject.name,
+        status: 'approved',
+        approved: true,
+        approved_at: new Date().toISOString(),
+        uploaded_by: currentUser.id,
+        user_email: currentUser.email || 'admin@studyhub.com',
+        user_name: currentUser.user_metadata?.first_name || currentUser.email?.split('@')[0] || 'Owner',
+      });
+    }
+
+    // 3. Invalidate cache and broadcast update
+    clearCachePrefix('notes');
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new Event('studyhub_notes_updated'));
     }
   } catch (e) {
     console.error('Failed to save custom subject', e);
@@ -153,6 +191,10 @@ export async function saveRenamedSubject(
         .from('notes')
         .update({ subject: trimmedNew })
         .eq('subject', trimmedOld);
+      clearCachePrefix('notes');
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new Event('studyhub_notes_updated'));
+      }
     } catch (dbErr) {
       console.warn('Could not update subject name in notes table:', dbErr);
     }
