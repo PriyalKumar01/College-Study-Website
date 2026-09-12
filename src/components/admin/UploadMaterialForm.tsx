@@ -171,7 +171,7 @@ const UploadMaterialForm = ({ onUploadSuccess }: UploadMaterialFormProps) => {
     setActiveStep(7);
   };
 
-  const handleSaveNewSubject = () => {
+  const handleSaveNewSubject = async () => {
     if (!isOwner) return;
     const trimmed = newSubjectName.trim();
     if (!trimmed) {
