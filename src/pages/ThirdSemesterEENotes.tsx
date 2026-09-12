@@ -221,7 +221,7 @@ const ThirdSemesterEENotes = () => {
     notes: [
       ...sub.notes,
       ...(communityNotes || [])
-        .filter((cn) => matchesSubject(cn.subject, sub.name, sub.id))
+        .filter((cn) => cn.material_type !== 'subject_placeholder' && matchesSubject(cn.subject, sub.name, sub.id))
         .map((cn) => ({
           id: cn.id,
           title: cn.title,
