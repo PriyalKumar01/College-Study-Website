@@ -178,23 +178,25 @@ const UploadMaterialForm = ({ onUploadSuccess }: UploadMaterialFormProps) => {
       toast({ title: "Name required", description: "Please enter a subject name.", variant: "destructive" });
       return;
     }
-    saveCustomSubject(
+    await saveCustomSubject(
       category,
       semester,
       isFirstYear ? undefined : branch,
       {
         name: trimmed,
         fullName: newSubjectFullName.trim() || trimmed
-      }
+      },
+      user
     );
     setSubject(trimmed);
     setIsAddingSubject(false);
     setNewSubjectName('');
     setNewSubjectFullName('');
     setCustomRefresh(c => c + 1);
-    toast({ title: "Subject Added! 🎓", description: `"${trimmed}" is now available in this semester.` });
-    setActiveStep(7);
-    scrollToRef(detailsRef);
+    toast({
+      title: "Subject Created! 🎓",
+      description: `"${trimmed}" is now live on the website! You or admins can now share notes under it.`
+    });
   };
 
   const handleSaveRenameSubject = async () => {
@@ -368,9 +370,16 @@ const UploadMaterialForm = ({ onUploadSuccess }: UploadMaterialFormProps) => {
         throw insertError;
       }
 
+      clearCachePrefix('notes');
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new Event('studyhub_notes_updated'));
+      }
+
       toast({
         title: '✅ Uploaded Successfully!',
-        description: 'Your material has been submitted for approval. It will appear on the website once the owner approves it.',
+        description: isOwner
+          ? 'Your material is approved and live on the website immediately.'
+          : 'Your material has been submitted for approval. It will appear on the website once the owner approves it.',
       });
 
       // Reset form
