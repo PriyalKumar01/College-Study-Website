@@ -85,6 +85,7 @@ export async function saveCustomSubject(
   }
 }
 
+// Extracts dynamic custom subjects created by owner or uploaded through community
 export function extractDynamicSubjects(
   communityNotes: any[] | undefined,
   staticSubjects: any[]
