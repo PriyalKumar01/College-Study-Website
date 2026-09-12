@@ -10,6 +10,8 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { smartDownload } from '@/lib/downloadUtils';
+import { matchesSubject } from '@/utils/subjectMatcher';
+import { extractDynamicSubjects } from '@/lib/customSubjects';
 
 const SixthSemesterEENotes = () => {
   const navigate = useNavigate();
