@@ -29,6 +29,40 @@ const ThirdSemesterEENotes = () => {
   const [expandedSubjects, setExpandedSubjects] = useState<string[]>([]);
   const [selectedSubject, setSelectedSubject] = useState<string | null>(null);
 
+  const [showAddSubjectModal, setShowAddSubjectModal] = useState(false);
+  const [newSubName, setNewSubName] = useState('');
+  const [newSubFullName, setNewSubFullName] = useState('');
+  const [isAddingSub, setIsAddingSub] = useState(false);
+
+  const handleCreateSubject = async () => {
+    if (!newSubName.trim()) {
+      toast({ title: 'Name required', description: 'Please enter a subject name.', variant: 'destructive' });
+      return;
+    }
+    setIsAddingSub(true);
+    try {
+      await saveCustomSubject(
+        'btech',
+        '3rd Semester',
+        'EE',
+        {
+          name: newSubName.trim(),
+          fullName: newSubFullName.trim() || newSubName.trim()
+        },
+        user
+      );
+      toast({ title: 'Subject Created! 🎓', description: `"${newSubName.trim()}" is now live with 0 files. Admins can upload notes for it!` });
+      setNewSubName('');
+      setNewSubFullName('');
+      setShowAddSubjectModal(false);
+      refreshNotes();
+    } catch (err: any) {
+      toast({ title: 'Error', description: err.message, variant: 'destructive' });
+    } finally {
+      setIsAddingSub(false);
+    }
+  };
+
   const handleDeleteCommunityNote = async (id: string) => {
     if (!window.confirm('Delete this user-uploaded material?')) return;
     try {
