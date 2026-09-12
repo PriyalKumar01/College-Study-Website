@@ -310,3 +310,5 @@ See the [LICENSE](LICENSE) file for details.
   <p><em>© 2026 College Study Web. All rights reserved.</em></p>
   <p>Built with ❤️ for the student community of HBTU Kanpur.</p>
 </div>
+
+<!-- ee-sync: verified syllabus alignment -->
