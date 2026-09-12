@@ -10,6 +10,8 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { PlaylistModal } from '@/components/PlaylistModal';
 import { smartDownload, viewInBrowser } from '@/lib/downloadUtils';
+import { matchesSubject } from '@/utils/subjectMatcher';
+import { extractDynamicSubjects } from '@/lib/customSubjects';
 
 const FifthSemesterEENotes = () => {
   const navigate = useNavigate();
