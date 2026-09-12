@@ -46,6 +46,47 @@ const FourthSemesterEENotes = () => {
   const [selectedSubjectForPlaylist, setSelectedSubjectForPlaylist] = useState<string>('');
   const [expandedSubjects, setExpandedSubjects] = useState<string[]>([]);
 
+  const [showAddSubjectModal, setShowAddSubjectModal] = useState(false);
+  const [newSubName, setNewSubName] = useState('');
+  const [newSubFullName, setNewSubFullName] = useState('');
+  const [isAddingSub, setIsAddingSub] = useState(false);
+
+  const handleCreateSubject = async () => {
+    if (!newSubName.trim()) {
+      toast({ title: 'Name required', description: 'Please enter a subject name.', variant: 'destructive' });
+      return;
+    }
+    setIsAddingSub(true);
+    try {
+      await saveCustomSubject(
+        'btech',
+        '4th Semester',
+        'EE',
+        {
+          name: newSubName.trim(),
+          fullName: newSubFullName.trim() || newSubName.trim()
+        },
+        user
+      );
+      toast({ title: 'Subject Created! 🎓', description: `"${newSubName.trim()}" is now live with 0 files. Admins can upload notes for it!` });
+      setNewSubName('');
+      setNewSubFullName('');
+      setShowAddSubjectModal(false);
+      refreshNotes();
+    } catch (err: any) {
+      toast({ title: 'Error', description: err.message, variant: 'destructive' });
+    } finally {
+      setIsAddingSub(false);
+    }
+  };
+
+  const handleDeleteCustomSubject = async (subName: string) => {
+    if (!window.confirm(`Are you sure you want to delete the custom subject "${subName}"?`)) return;
+    await deleteCustomSubject(subName, 'EE-4th Semester');
+    toast({ title: 'Subject deleted', description: `Subject "${subName}" removed.` });
+    refreshNotes();
+  };
+
   const subjectPlaylists = {
     math3: {
       detailed: [
