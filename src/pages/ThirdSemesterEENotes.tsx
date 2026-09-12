@@ -213,7 +213,10 @@ const ThirdSemesterEENotes = () => {
     }
   ];
 
-  const subjects = staticSubjects.map((sub) => ({
+  const dynamicCustomSubjects = extractDynamicSubjects(communityNotes, staticSubjects);
+  const allSubjectsList = [...staticSubjects, ...dynamicCustomSubjects];
+
+  const subjects = allSubjectsList.map((sub) => ({
     ...sub,
     notes: [
       ...sub.notes,
