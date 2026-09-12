@@ -34,7 +34,8 @@ const getGradient = (str: string, index: number) => {
   return gradients[index % gradients.length];
 };
 
-export const PlaylistModal = ({ isOpen, onClose, title, playlists, type }: PlaylistModalProps) => {
+export // Renders playlist modal dialog with responsive tabs for detailed and one-shot videos
+const PlaylistModal = ({ isOpen, onClose, title, playlists, type }: PlaylistModalProps) => {
   const getYouTubeId = (url: string) => {
     const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/playlist\?list=)([a-zA-Z0-9_-]+)/);
     return match ? match[1] : null;
