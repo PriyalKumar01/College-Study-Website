@@ -272,7 +272,7 @@ const FourthSemesterEENotes = () => {
     notes: [
       ...sub.notes,
       ...(communityNotes || [])
-        .filter(cn => cn.subject === sub.name || cn.subject === sub.id)
+        .filter(cn => matchesSubject(cn.subject, sub.name, sub.id))
         .map(cn => ({
           id: cn.id,
           title: cn.title,
