@@ -98,7 +98,10 @@ const FifthSemesterEENotes = () => {
   ];
 
   const { data: communityNotes, refetch: refreshNotes } = useCommunityNotes('btech', 'EE-5th Semester');
-  const subjects = staticSubjects.map((sub) => ({
+  const dynamicCustomSubjects = extractDynamicSubjects(communityNotes, staticSubjects);
+  const allSubjectsList = [...staticSubjects, ...dynamicCustomSubjects];
+
+  const subjects = allSubjectsList.map((sub) => ({
     ...sub,
     notes: [
       ...sub.notes,
