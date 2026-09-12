@@ -47,6 +47,33 @@ export function saveCustomSubject(
   }
 }
 
+export function extractDynamicSubjects(
+  communityNotes: any[] | undefined,
+  staticSubjects: any[]
+): any[] {
+  if (!communityNotes || communityNotes.length === 0) return [];
+
+  const customMap = new Map<string, any>();
+
+  communityNotes.forEach(cn => {
+    if (!cn.subject) return;
+    const isAlreadyStatic = staticSubjects.some(sub => matchesSubject(cn.subject, sub.name, sub.id));
+    if (!isAlreadyStatic && !customMap.has(cn.subject.toLowerCase())) {
+      customMap.set(cn.subject.toLowerCase(), {
+        id: cn.subject.toLowerCase().replace(/[^a-z0-9]/g, '-'),
+        name: cn.subject,
+        fullName: cn.description && !cn.description.startsWith('[') ? cn.description : cn.subject,
+        icon: '📚',
+        color: 'bg-indigo-600',
+        notes: [],
+        isCustom: true
+      });
+    }
+  });
+
+  return Array.from(customMap.values());
+}
+
 export function getRenamedSubjectsMap(): Record<string, string> {
   try {
     const raw = localStorage.getItem(RENAMED_SUBJECTS_STORAGE_KEY);
