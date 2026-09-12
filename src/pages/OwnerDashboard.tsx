@@ -20,6 +20,7 @@ import { useTheme } from '@/providers/ThemeProvider';
 import { smartDownload } from '@/lib/downloadUtils';
 import MassEmailDashboard from '@/components/admin/MassEmailDashboard';
 import SubmitScholarshipForm from '@/components/admin/SubmitScholarshipForm';
+import { clearCachePrefix } from '@/lib/cacheUtils';
 
 interface Material {
   id: string;
