@@ -19,6 +19,7 @@ import {
   getSubjects, getSemesters
 } from '@/data/courseStructure';
 import { saveCustomSubject, saveRenamedSubject } from '@/lib/customSubjects';
+import { clearCachePrefix } from '@/lib/cacheUtils';
 
 const ICON_MAP: Record<string, React.ReactNode> = {
   GraduationCap: <GraduationCap className="h-5 w-5" />,
