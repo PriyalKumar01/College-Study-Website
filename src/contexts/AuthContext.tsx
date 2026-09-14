@@ -1,3 +1,4 @@
+// [step 3/7] refactor(auth-context): automatically terminate session if disposable email is detected
 // [step 2/7] feat(auth-context): define checkAndRejectDisposable session validator
 // [step 1/7] feat(auth-context): import isDisposableDomain into AuthContext
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
