@@ -1,3 +1,4 @@
+// [step 2/7] feat(auth-context): define checkAndRejectDisposable session validator
 // [step 1/7] feat(auth-context): import isDisposableDomain into AuthContext
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { User, Session } from '@supabase/supabase-js';
