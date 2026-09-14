@@ -1,3 +1,4 @@
+// [step 5/11] refactor(auth): sanitize and trim email string before validation in handleSignUp
 // [step 4/11] refactor(auth): display descriptive toast when disposable email is detected during signup
 // [step 3/11] feat(auth): add client-side disposable regex check in isValidEmail
 // [step 2/11] refactor(auth): extend BLOCKED_DOMAINS in AuthModal with atomicmail variants
