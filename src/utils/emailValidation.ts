@@ -1,3 +1,4 @@
+// [step 1/15] docs(security): document disposable email detection strategy and attack vectors
 /**
  * Utility for verifying email addresses and detecting disposable/temporary/fake emails.
  */
