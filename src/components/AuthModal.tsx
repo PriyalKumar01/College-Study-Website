@@ -1,3 +1,4 @@
+// [step 2/11] refactor(auth): extend BLOCKED_DOMAINS in AuthModal with atomicmail variants
 // [step 1/11] feat(auth): import isDisposableDomain helper into AuthModal
 import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
