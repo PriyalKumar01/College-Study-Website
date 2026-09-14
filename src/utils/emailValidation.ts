@@ -1,3 +1,4 @@
+// [step 9/15] feat(email-validation): add atomicmail.io to static blacklist array
 // [step 8/15] refactor(email-validation): strip subdomains when evaluating root domain patterns
 // [step 7/15] refactor(email-validation): normalize domains to lowercase before pattern matching
 // [step 6/15] docs(email-validation): add JSDoc annotations and usage examples to isDisposableDomain
