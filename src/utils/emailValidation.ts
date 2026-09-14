@@ -1,3 +1,4 @@
+// [step 5/15] feat(email-validation): implement isDisposableDomain helper function
 // [step 4/15] refactor(email-validation): add tempmail and burner patterns to regex matcher
 // [step 3/15] refactor(email-validation): add atomicmail domain pattern to pattern matcher
 // [step 2/15] feat(email-validation): declare DISPOSABLE_PATTERNS regex collection
