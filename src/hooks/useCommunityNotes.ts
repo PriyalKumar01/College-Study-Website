@@ -18,11 +18,12 @@ export function useCommunityNotes(category: string, semester?: string | string[]
   }, []);
 
   const fetchNotes = useCallback(async (forceRefresh = false) => {
-    // Stale-While-Revalidate: serve cached data immediately for instant load
+    // Check cache first: if fresh data is in cache, return immediately to eliminate egress
     if (!forceRefresh) {
       const cached = getCachedData<any[]>(cacheKey, DEFAULT_CACHE_TTL_MS);
-      if (cached && cached.length > 0) {
+      if (cached !== null) {
         setData(cached);
+        return;
       }
     }
 
@@ -58,32 +59,16 @@ export function useCommunityNotes(category: string, semester?: string | string[]
   useEffect(() => {
     fetchNotes();
 
-    // 1. Listen for local events (e.g. approval, upload, subject creation)
+    // Listen for local events (e.g. approval, upload, subject creation)
     const handleLocalUpdate = () => {
       fetchNotes(true);
     };
     window.addEventListener('studyhub_notes_updated', handleLocalUpdate);
 
-    // 2. Supabase Realtime channel for live sync across all tabs/users
-    const semKey = Array.isArray(semester) ? semester.join('_') : (semester || category);
-    const channelName = `notes_live_${semKey.replace(/[^a-zA-Z0-9]/g, '_')}`;
-
-    const channel = supabase
-      .channel(channelName)
-      .on(
-        'postgres_changes',
-        { event: '*', schema: 'public', table: 'notes' },
-        () => {
-          fetchNotes(true);
-        }
-      )
-      .subscribe();
-
     return () => {
       window.removeEventListener('studyhub_notes_updated', handleLocalUpdate);
-      supabase.removeChannel(channel);
     };
-  }, [fetchNotes, category, semester]);
+  }, [fetchNotes]);
 
   return { data, refetch: () => fetchNotes(true) };
 }
