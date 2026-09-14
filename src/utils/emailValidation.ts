@@ -1,3 +1,4 @@
+// [step 7/15] refactor(email-validation): normalize domains to lowercase before pattern matching
 // [step 6/15] docs(email-validation): add JSDoc annotations and usage examples to isDisposableDomain
 // [step 5/15] feat(email-validation): implement isDisposableDomain helper function
 // [step 4/15] refactor(email-validation): add tempmail and burner patterns to regex matcher
