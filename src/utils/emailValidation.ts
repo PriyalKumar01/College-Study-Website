@@ -1,3 +1,4 @@
+// [step 14/15] docs(email-validation): document local fallback strategy for debounce/kickbox timeouts
 // [step 13/15] refactor(email-validation): short-circuit third-party API calls for known disposable domains
 // [step 12/15] refactor(email-validation): integrate local pattern check directly in validateEmail
 // [step 11/15] refactor(email-validation): sort and deduplicate disposable domain blacklist
