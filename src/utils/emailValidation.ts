@@ -1,3 +1,4 @@
+// [step 12/15] refactor(email-validation): integrate local pattern check directly in validateEmail
 // [step 11/15] refactor(email-validation): sort and deduplicate disposable domain blacklist
 // [step 10/15] feat(email-validation): add atomicmail.com and atomicmail.org to blacklist
 // [step 9/15] feat(email-validation): add atomicmail.io to static blacklist array
