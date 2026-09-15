@@ -1,3 +1,4 @@
+// [step 36/40] style(owner-dashboard): polish card header typography in Premium tab
 // [step 35/40] refactor(owner-dashboard): sanitize student email display in request row
 // [step 34/40] style(owner-dashboard): adjust badge font size and padding tokens
 // [step 33/40] refactor(owner-dashboard): ensure graceful error handling on network disconnects
