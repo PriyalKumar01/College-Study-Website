@@ -1,3 +1,4 @@
+// [step 13/25] feat(disclaimer): add bullet points detailing permitted and prohibited actions
 // [step 12/25] style(disclaimer): add cautionary callout box for legal consequences
 // [step 11/25] feat(disclaimer): add explicit clause prohibiting commercial sale or redistribution
 // [step 10/25] style(disclaimer): emphasize personal study use with bold highlights
