@@ -1,5 +1,3 @@
-// [step 2/3] refactor(app): mount StudyDisclaimerModal inside main Router tree
-// [step 1/3] feat(app): import StudyDisclaimerModal in App.tsx
 import { Suspense, lazy } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -10,6 +8,7 @@ import { ThemeProvider } from "./providers/ThemeProvider";
 import { AuthProvider } from "./contexts/AuthContext";
 import { SidebarProvider } from "./contexts/SidebarContext";
 import CookieConsent from "./components/CookieConsent";
+import StudyDisclaimerModal from "./components/StudyDisclaimerModal";
 import CustomCursor from "./components/CustomCursor";
 import WhatsAppButton from "./components/WhatsAppButton";
 import AIAssistant from "./components/ai-assistant/AIAssistant";
@@ -96,6 +95,7 @@ const App = () => {
                   <WhatsAppButton />
                   <AIAssistant />
                   <CookieConsent />
+                  <StudyDisclaimerModal />
                 </BrowserRouter>
               )}
             </TooltipProvider>
