@@ -1,3 +1,4 @@
+// [step 3/40] feat(owner-dashboard): declare pendingGateRequests state in OwnerDashboard
 // [step 2/40] feat(owner-dashboard): import Clock icon from lucide-react
 // [step 1/40] docs(owner-dashboard): plan pending gate requests management interface
 import React, { useState, useEffect, useMemo } from 'react';
