@@ -1,3 +1,4 @@
+// [step 23/40] style(owner-dashboard): add Decline button with outline styling and confirmation
 // [step 22/40] style(owner-dashboard): add Approve button with checkmark icon and spinner
 // [step 21/40] style(owner-dashboard): render request timestamp with Indian locale formatting
 // [step 20/40] style(owner-dashboard): render student details, branch, and college tags
