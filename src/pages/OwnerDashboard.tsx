@@ -1,3 +1,4 @@
+// [step 25/40] refactor(owner-dashboard): refresh enrolled list immediately following approval
 // [step 24/40] refactor(owner-dashboard): filter out pending records from GATE Study Enrolled list
 // [step 23/40] style(owner-dashboard): add Decline button with outline styling and confirmation
 // [step 22/40] style(owner-dashboard): add Approve button with checkmark icon and spinner
