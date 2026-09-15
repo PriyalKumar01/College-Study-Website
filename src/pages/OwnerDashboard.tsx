@@ -1,3 +1,4 @@
+// [step 27/40] refactor(owner-dashboard): disable action buttons during ongoing approval
 // [step 26/40] style(owner-dashboard): optimize pending card spacing and flex wrapping
 // [step 25/40] refactor(owner-dashboard): refresh enrolled list immediately following approval
 // [step 24/40] refactor(owner-dashboard): filter out pending records from GATE Study Enrolled list
