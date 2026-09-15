@@ -1,3 +1,4 @@
+// [step 2/35] feat(gate-study): define GateAccessStatus union type ('approved' | 'pending' | 'none')
 // [step 1/35] docs(gate-study): specify gated access architecture and verification workflow
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
