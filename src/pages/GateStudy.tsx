@@ -1,3 +1,4 @@
+// [step 17/35] style(gate-study): add 'Back to Resources' navigation button on pending card
 // [step 16/35] feat(gate-study): add manual 'Refresh Status' button to check approval
 // [step 15/35] feat(gate-study): display submitted student details in pending confirmation view
 // [step 14/35] style(gate-study): add Clock icon and amber theme accents to pending screen
