@@ -1,3 +1,4 @@
+// [step 13/40] style(owner-dashboard): show success toast notification on gate approval
 // [step 12/40] refactor(owner-dashboard): invalidate user gate_access cache key upon approval
 // [step 11/40] refactor(owner-dashboard): update purchase payment_status to 'free' upon approval
 // [step 10/40] feat(owner-dashboard): implement handleApproveGateRequest handler
