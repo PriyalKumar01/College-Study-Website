@@ -1,3 +1,4 @@
+// [step 9/40] refactor(owner-dashboard): invoke fetchPendingGateRequests in dashboard fetchAll
 // [step 8/40] refactor(owner-dashboard): join profile names, branch, year, and college to requests
 // [step 7/40] refactor(owner-dashboard): fetch student profiles corresponding to pending requests
 // [step 6/40] refactor(owner-dashboard): query premium_purchases with plan gate_study and status pending
