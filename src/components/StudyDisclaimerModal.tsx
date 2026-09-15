@@ -1,3 +1,4 @@
+// [step 18/25] docs(disclaimer): add JSDoc commentary to StudyDisclaimerModal
 // [step 17/25] style(disclaimer): adjust modal responsive sizing for mobile viewports
 // [step 16/25] accessibility(disclaimer): add aria-describedby and role attributes to modal
 // [step 15/25] refactor(disclaimer): prevent dialog dismissal on outside click or escape key
