@@ -1,3 +1,4 @@
+// [step 3/25] style(disclaimer): import Dialog primitives and icons in StudyDisclaimerModal
 // [step 2/25] feat(disclaimer): scaffold StudyDisclaimerModal component
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
