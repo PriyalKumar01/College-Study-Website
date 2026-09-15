@@ -1,3 +1,4 @@
+// [step 2/12] style(profile-modal): apply dark:bg-slate-900 dark:border-slate-800 to update branch content
 // [step 1/12] refactor(profile-modal): inspect update-mode branch SelectContent styling
 import { useState, useEffect, useRef } from "react";
 import { useAuth } from "@/contexts/AuthContext";
