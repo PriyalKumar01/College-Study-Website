@@ -1,37 +1,3 @@
-// [step 34/35] style(gate-study): add smooth transition animation between status views
-// [step 33/35] docs(gate-study): annotate gate access check cache lifecycles
-// [step 32/35] style(gate-study): refine typography of student detail summary
-// [step 31/35] refactor(gate-study): ensure idempotent submission behavior
-// [step 30/35] style(gate-study): ensure accessible heading hierarchy in pending state
-// [step 29/35] refactor(gate-study): optimize gate access query with selective column projections
-// [step 28/35] style(gate-study): polish status badge colors for dark mode readability
-// [step 27/35] style(gate-study): add contact support prompt in pending review card
-// [step 26/35] refactor(gate-study): validate required student fields before pending insert
-// [step 25/35] docs(gate-study): add comments clarifying owner approval requirements
-// [step 24/35] style(gate-study): adjust loading spinner state during status refresh
-// [step 23/35] refactor(gate-study): improve error handling when registration insert fails
-// [step 22/35] style(gate-study): format timestamp of registration submission
-// [step 21/35] style(gate-study): add subtle badge highlighting verification in progress
-// [step 20/35] refactor(gate-study): clear cached status before re-checking approval
-// [step 19/35] style(gate-study): enhance pending card responsiveness on mobile devices
-// [step 18/35] docs(gate-study): document pending verification flow and status transitions
-// [step 17/35] style(gate-study): add 'Back to Resources' navigation button on pending card
-// [step 16/35] feat(gate-study): add manual 'Refresh Status' button to check approval
-// [step 15/35] feat(gate-study): display submitted student details in pending confirmation view
-// [step 14/35] style(gate-study): add Clock icon and amber theme accents to pending screen
-// [step 13/35] style(gate-study): design pending verification status card
-// [step 12/35] refactor(gate-study): transition view to pending state immediately on form submit
-// [step 11/35] refactor(gate-study): attach student profile metadata to registration submission
-// [step 10/35] feat(gate-study): update handleRegSubmit to insert pending purchase record
-// [step 9/35] refactor(gate-study): set accessStatus to 'approved' when purchase status is free or completed
-// [step 8/35] refactor(gate-study): set accessStatus to 'pending' when purchase status is pending
-// [step 7/35] refactor(gate-study): grant immediate bypass access for owner and admin roles
-// [step 6/35] refactor(gate-study): update checkGateAccess to query pending payment_status
-// [step 5/35] refactor(gate-study): import Clock and CheckCircle2 icons for status UI
-// [step 4/35] feat(gate-study): add submittedDetails state for preserving student context
-// [step 3/35] feat(gate-study): add accessStatus state to GateStudy component
-// [step 2/35] feat(gate-study): define GateAccessStatus union type ('approved' | 'pending' | 'none')
-// [step 1/35] docs(gate-study): specify gated access architecture and verification workflow
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -67,7 +33,9 @@ import {
   ChevronDown,
   BookOpen,
   Compass,
-  Search
+  Search,
+  Clock,
+  CheckCircle2
 } from 'lucide-react';
 import { GATE_QUIZ_DATA } from '@/data/gateQuizzesData';
 import { GATE_NOTES_DATA, COMMON_GATE_NOTES } from '@/data/gateNotesData';
@@ -154,12 +122,14 @@ const PREPARATION_YEARS = Array.from({ length: 24 }, (_, i) => {
 const GateStudy = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { user } = useAuth();
+  const { user, isOwner, isAdmin } = useAuth();
 
   // Registration modal states
   const [showRegModal, setShowRegModal] = useState(false);
   const [checkingAccess, setCheckingAccess] = useState(true);
   const [isRegistered, setIsRegistered] = useState<boolean | null>(null);
+  const [accessStatus, setAccessStatus] = useState<'approved' | 'pending' | 'none'>('none');
+  const [submittedDetails, setSubmittedDetails] = useState<{ branch?: string; college?: string; year?: string; submittedAt?: string } | null>(null);
 
   const [formData, setFormData] = useState({
     college: '',
@@ -258,11 +228,21 @@ const GateStudy = () => {
       return;
     }
 
+    // Owner and Admin automatically have full access
+    if (isOwner || isAdmin) {
+      setIsRegistered(true);
+      setAccessStatus('approved');
+      setShowRegModal(false);
+      setCheckingAccess(false);
+      return;
+    }
+
     if (!force) {
-      const cachedAccess = getCachedData<{ registered: boolean; branch?: string }>(`gate_access_${user.id}`, 15 * 60 * 1000);
+      const cachedAccess = getCachedData<{ status: 'approved' | 'pending' | 'none'; branch?: string }>(`gate_access_${user.id}`, 5 * 60 * 1000);
       if (cachedAccess) {
-        setIsRegistered(cachedAccess.registered);
-        setShowRegModal(!cachedAccess.registered);
+        setAccessStatus(cachedAccess.status);
+        setIsRegistered(cachedAccess.status === 'approved');
+        setShowRegModal(cachedAccess.status === 'none');
         if (cachedAccess.branch) setSelectedBranch(cachedAccess.branch);
         setCheckingAccess(false);
         return;
@@ -274,31 +254,56 @@ const GateStudy = () => {
       // Check if gate_study access exists in premium_purchases table
       const { data, error } = await supabase
         .from('premium_purchases')
-        .select('id')
+        .select('*')
         .eq('user_id', user.id)
         .eq('plan', 'gate_study')
-        .in('payment_status', ['completed', 'free'])
+        .order('purchased_at', { ascending: false })
         .maybeSingle();
 
       if (error) throw error;
 
       if (data) {
-        setIsRegistered(true);
-        setShowRegModal(false);
-        // Fetch target branch from profiles to set active tab
-        const { data: profile } = await supabase
-          .from('profiles')
-          .select('branch')
-          .eq('id', user.id)
-          .maybeSingle();
-        if (profile?.branch) {
-          setSelectedBranch(profile.branch);
+        if (data.payment_status === 'completed' || data.payment_status === 'free' || data.payment_status === 'approved') {
+          setIsRegistered(true);
+          setAccessStatus('approved');
+          setShowRegModal(false);
+          // Fetch target branch from profiles to set active tab
+          const { data: profile } = await supabase
+            .from('profiles')
+            .select('branch, college, year')
+            .eq('id', user.id)
+            .maybeSingle();
+          if (profile?.branch) {
+            setSelectedBranch(profile.branch);
+          }
+          setCachedData(`gate_access_${user.id}`, { status: 'approved', branch: profile?.branch });
+        } else if (data.payment_status === 'pending' || data.payment_status === 'pending_approval') {
+          setIsRegistered(false);
+          setAccessStatus('pending');
+          setShowRegModal(false);
+          const { data: profile } = await supabase
+            .from('profiles')
+            .select('branch, college, year')
+            .eq('id', user.id)
+            .maybeSingle();
+          setSubmittedDetails({
+            branch: profile?.branch,
+            college: profile?.college,
+            year: profile?.year,
+            submittedAt: data.purchased_at
+          });
+          setCachedData(`gate_access_${user.id}`, { status: 'pending' });
+        } else {
+          setIsRegistered(false);
+          setAccessStatus('none');
+          setShowRegModal(true);
+          setCachedData(`gate_access_${user.id}`, { status: 'none' });
         }
-        setCachedData(`gate_access_${user.id}`, { registered: true, branch: profile?.branch });
       } else {
         setIsRegistered(false);
+        setAccessStatus('none');
         setShowRegModal(true);
-        setCachedData(`gate_access_${user.id}`, { registered: false });
+        setCachedData(`gate_access_${user.id}`, { status: 'none' });
       }
     } catch (e) {
       console.error('Error checking GATE access:', e);
@@ -393,7 +398,7 @@ const GateStudy = () => {
 
       if (profileError) throw profileError;
 
-      // 2. Insert access record in premium_purchases table for 'gate_study' plan
+      // 2. Insert access record in premium_purchases table for 'gate_study' plan (pending owner verification)
       const { error: purchaseError } = await supabase
         .from('premium_purchases')
         .insert({
@@ -402,20 +407,27 @@ const GateStudy = () => {
           plan: 'gate_study',
           amount_paid: 0,
           original_amount: 0,
-          payment_status: 'free',
-          razorpay_payment_id: 'gate_onboarding',
+          payment_status: 'pending',
+          razorpay_payment_id: 'gate_pending_approval',
         });
 
       if (purchaseError) throw purchaseError;
 
-      setIsRegistered(true);
+      setIsRegistered(false);
+      setAccessStatus('pending');
       setShowRegModal(false);
       setSelectedBranch(formData.preparingFor);
-      setCachedData(`gate_access_${user.id}`, { registered: true, branch: formData.preparingFor });
+      setSubmittedDetails({
+        branch: formData.preparingFor,
+        college: targetCollege,
+        year: formData.year,
+        submittedAt: new Date().toISOString(),
+      });
+      setCachedData(`gate_access_${user.id}`, { status: 'pending', branch: formData.preparingFor });
 
       toast({
-        title: 'Registration Successful!',
-        description: `Welcome to the GATE Prep Portal. Accessing notes for ${formData.preparingFor}.`,
+        title: 'Registration Submitted! ⏳',
+        description: `Your registration for ${formData.preparingFor} has been submitted and is pending verification by the owner dashboard.`,
       });
     } catch (err: any) {
       toast({
@@ -469,6 +481,64 @@ const GateStudy = () => {
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-500" />
           <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">Verifying student credentials...</p>
         </div>
+      </div>
+    );
+  }
+
+  if (accessStatus === 'pending') {
+    return (
+      <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col transition-colors duration-200">
+        <Navbar />
+        <div className="max-w-2xl mx-auto px-4 py-16 flex-1 w-full flex items-center justify-center">
+          <div className="w-full bg-white dark:bg-slate-900 border-2 border-amber-500/30 dark:border-amber-500/25 rounded-2xl shadow-xl p-6 sm:p-8 text-center space-y-6">
+            <div className="w-16 h-16 mx-auto rounded-2xl bg-amber-500/10 dark:bg-amber-400/15 border border-amber-500/30 flex items-center justify-center text-amber-600 dark:text-amber-400 shadow-sm">
+              <Clock className="w-8 h-8 animate-pulse" />
+            </div>
+
+            <div className="space-y-2">
+              <span className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/60 px-3 py-1 rounded-full border border-amber-200 dark:border-amber-900/50">
+                <span className="w-2 h-2 rounded-full bg-amber-500 animate-ping" />
+                Pending for Approval
+              </span>
+              <h1 className="text-2xl font-extrabold text-slate-900 dark:text-white">
+                Application Under Verification
+              </h1>
+              <p className="text-sm text-slate-600 dark:text-slate-300 max-w-md mx-auto leading-relaxed">
+                Your GATE Study registration details have been submitted and are currently waiting for verification by the Owner / Admin.
+              </p>
+            </div>
+
+            {submittedDetails && (
+              <div className="bg-slate-50 dark:bg-slate-800/60 rounded-xl p-4 border border-slate-200 dark:border-slate-800 text-left text-xs space-y-2 max-w-md mx-auto">
+                <p className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider">Submitted Details:</p>
+                {submittedDetails.college && <div className="flex justify-between"><span className="text-muted-foreground">College:</span><strong className="text-foreground">{submittedDetails.college}</strong></div>}
+                {submittedDetails.branch && <div className="flex justify-between"><span className="text-muted-foreground">Target Branch:</span><strong className="text-foreground">{submittedDetails.branch}</strong></div>}
+                {submittedDetails.year && <div className="flex justify-between"><span className="text-muted-foreground">Target Year:</span><strong className="text-foreground">{submittedDetails.year}</strong></div>}
+              </div>
+            )}
+
+            <div className="border border-blue-200 dark:border-blue-900/40 bg-blue-50/60 dark:bg-blue-950/20 p-3.5 rounded-xl text-xs text-blue-800 dark:text-blue-300 max-w-md mx-auto leading-relaxed">
+              💡 <strong>Why approval is required?</strong> To protect curated GATE materials and ensure that only verified students receive access. Once the owner approves your application from the dashboard, you will automatically unlock full access to all notes, mock tests, and practice papers!
+            </div>
+
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
+              <Button
+                variant="outline"
+                onClick={() => checkGateAccess(true)}
+                className="w-full sm:w-auto text-xs font-semibold h-10 px-5 rounded-xl"
+              >
+                🔄 Refresh Status
+              </Button>
+              <Button
+                onClick={() => navigate('/notes')}
+                className="w-full sm:w-auto bg-slate-900 hover:bg-slate-800 dark:bg-slate-100 dark:text-slate-900 dark:hover:bg-slate-200 text-white text-xs font-bold h-10 px-5 rounded-xl"
+              >
+                ← Back to Notes
+              </Button>
+            </div>
+          </div>
+        </div>
+        <Footer />
       </div>
     );
   }
