@@ -1,3 +1,4 @@
+// [step 9/35] refactor(gate-study): set accessStatus to 'approved' when purchase status is free or completed
 // [step 8/35] refactor(gate-study): set accessStatus to 'pending' when purchase status is pending
 // [step 7/35] refactor(gate-study): grant immediate bypass access for owner and admin roles
 // [step 6/35] refactor(gate-study): update checkGateAccess to query pending payment_status
