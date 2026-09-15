@@ -1,3 +1,4 @@
+// [step 2/40] feat(owner-dashboard): import Clock icon from lucide-react
 // [step 1/40] docs(owner-dashboard): plan pending gate requests management interface
 import React, { useState, useEffect, useMemo } from 'react';
 import { ResponsiveContainer, PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ComposedChart, Line, AreaChart, Area } from 'recharts';
