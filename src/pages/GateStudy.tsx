@@ -1,3 +1,4 @@
+// [step 20/35] refactor(gate-study): clear cached status before re-checking approval
 // [step 19/35] style(gate-study): enhance pending card responsiveness on mobile devices
 // [step 18/35] docs(gate-study): document pending verification flow and status transitions
 // [step 17/35] style(gate-study): add 'Back to Resources' navigation button on pending card
