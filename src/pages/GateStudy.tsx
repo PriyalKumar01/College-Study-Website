@@ -1,3 +1,4 @@
+// [step 8/35] refactor(gate-study): set accessStatus to 'pending' when purchase status is pending
 // [step 7/35] refactor(gate-study): grant immediate bypass access for owner and admin roles
 // [step 6/35] refactor(gate-study): update checkGateAccess to query pending payment_status
 // [step 5/35] refactor(gate-study): import Clock and CheckCircle2 icons for status UI
