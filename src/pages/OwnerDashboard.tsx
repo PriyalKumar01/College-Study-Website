@@ -1,3 +1,4 @@
+// [step 38/40] style(owner-dashboard): add hover transitions to request card items
 // [step 37/40] docs(owner-dashboard): add JSDoc commentary to approval handlers
 // [step 36/40] style(owner-dashboard): polish card header typography in Premium tab
 // [step 35/40] refactor(owner-dashboard): sanitize student email display in request row
