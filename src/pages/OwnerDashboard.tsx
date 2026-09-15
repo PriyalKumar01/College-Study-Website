@@ -1,3 +1,4 @@
+// [step 15/40] refactor(owner-dashboard): add confirmation prompt before declining request
 // [step 14/40] feat(owner-dashboard): implement handleRejectGateRequest handler
 // [step 13/40] style(owner-dashboard): show success toast notification on gate approval
 // [step 12/40] refactor(owner-dashboard): invalidate user gate_access cache key upon approval
