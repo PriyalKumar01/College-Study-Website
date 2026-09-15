@@ -1,3 +1,4 @@
+// [step 7/12] refactor(profile-modal): inspect full completion mode branch SelectContent styling
 // [step 6/12] style(profile-modal): update year SelectItem hover and highlight classes
 // [step 5/12] style(profile-modal): apply dark:bg-slate-900 dark:border-slate-800 to update year content
 // [step 4/12] refactor(profile-modal): inspect update-mode year SelectContent styling
