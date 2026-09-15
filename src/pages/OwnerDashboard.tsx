@@ -1,3 +1,4 @@
+// [step 20/40] style(owner-dashboard): render student details, branch, and college tags
 // [step 19/40] style(owner-dashboard): render empty state banner when no requests are pending
 // [step 18/40] style(owner-dashboard): add amber badge with 'Requires Approval' label
 // [step 17/40] style(owner-dashboard): design 'Pending GATE Access Requests' card in Premium tab
