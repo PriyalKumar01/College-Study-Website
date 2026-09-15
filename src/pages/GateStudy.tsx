@@ -1,3 +1,4 @@
+// [step 23/35] refactor(gate-study): improve error handling when registration insert fails
 // [step 22/35] style(gate-study): format timestamp of registration submission
 // [step 21/35] style(gate-study): add subtle badge highlighting verification in progress
 // [step 20/35] refactor(gate-study): clear cached status before re-checking approval
