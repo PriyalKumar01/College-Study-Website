@@ -1,3 +1,4 @@
+// [step 5/40] feat(owner-dashboard): implement fetchPendingGateRequests query
 // [step 4/40] feat(owner-dashboard): declare isApprovingGate processing state
 // [step 3/40] feat(owner-dashboard): declare pendingGateRequests state in OwnerDashboard
 // [step 2/40] feat(owner-dashboard): import Clock icon from lucide-react
