@@ -1,3 +1,4 @@
+// [step 33/35] docs(gate-study): annotate gate access check cache lifecycles
 // [step 32/35] style(gate-study): refine typography of student detail summary
 // [step 31/35] refactor(gate-study): ensure idempotent submission behavior
 // [step 30/35] style(gate-study): ensure accessible heading hierarchy in pending state
