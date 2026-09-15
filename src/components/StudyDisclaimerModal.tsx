@@ -1,3 +1,4 @@
+// [step 15/25] refactor(disclaimer): prevent dialog dismissal on outside click or escape key
 // [step 14/25] style(disclaimer): design primary action button 'I Understand & Agree'
 // [step 13/25] feat(disclaimer): add bullet points detailing permitted and prohibited actions
 // [step 12/25] style(disclaimer): add cautionary callout box for legal consequences
