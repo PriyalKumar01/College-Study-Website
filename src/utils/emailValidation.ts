@@ -1,23 +1,10 @@
-// [step 14/15] docs(email-validation): document local fallback strategy for debounce/kickbox timeouts
-// [step 13/15] refactor(email-validation): short-circuit third-party API calls for known disposable domains
-// [step 12/15] refactor(email-validation): integrate local pattern check directly in validateEmail
-// [step 11/15] refactor(email-validation): sort and deduplicate disposable domain blacklist
-// [step 10/15] feat(email-validation): add atomicmail.com and atomicmail.org to blacklist
-// [step 9/15] feat(email-validation): add atomicmail.io to static blacklist array
-// [step 8/15] refactor(email-validation): strip subdomains when evaluating root domain patterns
-// [step 7/15] refactor(email-validation): normalize domains to lowercase before pattern matching
-// [step 6/15] docs(email-validation): add JSDoc annotations and usage examples to isDisposableDomain
-// [step 5/15] feat(email-validation): implement isDisposableDomain helper function
-// [step 4/15] refactor(email-validation): add tempmail and burner patterns to regex matcher
-// [step 3/15] refactor(email-validation): add atomicmail domain pattern to pattern matcher
-// [step 2/15] feat(email-validation): declare DISPOSABLE_PATTERNS regex collection
-// [step 1/15] docs(security): document disposable email detection strategy and attack vectors
 /**
  * Utility for verifying email addresses and detecting disposable/temporary/fake emails.
  */
 
 // A blacklist of common temporary / disposable email domains
 const DISPOSABLE_DOMAINS_BLACKLIST = new Set([
+  'atomicmail.io', 'atomicmail.com', 'atomicmail.org', 'atomic-mail.com', 'atomicmail.co',
   'yopmail.com', 'mailinator.com', 'tempmail.com', '10minutemail.com',
   'guerrillamail.com', 'dispostable.com', 'getairmail.com', 'sharklasers.com',
   'maildrop.cc', 'throwawaymail.com', 'tempmailaddress.com', 'boun.cr',
@@ -27,8 +14,41 @@ const DISPOSABLE_DOMAINS_BLACKLIST = new Set([
   'crazymailing.com', 'mintemail.com', 'jetable.org', 'safetymail.info',
   'mailnull.com', 'discard.email', 'mailinater.com', 'suremail.info',
   'buloan.com', 'fxzig.com', 'fxmail.org', 'fxspost.com', 'fxtemp.com',
-  'fxpost.org', 'fxzig.org', 'fxmail.net', 'fxspost.org'
+  'fxpost.org', 'fxzig.org', 'fxmail.net', 'fxspost.org', 'inboxkitten.com',
+  'temp-mail.io', '1secmail.com', '1secmail.net', '1secmail.org', 'burnermail.io',
+  'internalmail.net', 'mohmal.com', 'nada.ltd', 'mailsac.com', 'guerrillamailblock.com',
+  'fakemailgenerator.com', 'mytemp.email', 'emailfake.com', 'trashmail.net'
 ]);
+
+// Common patterns in disposable email domains
+const DISPOSABLE_DOMAIN_PATTERNS = [
+  /atomicmail/i,
+  /temp.*mail/i,
+  /dispos/i,
+  /throwaway/i,
+  /mailinator/i,
+  /guerrilla/i,
+  /10minute/i,
+  /trashmail/i,
+  /sharklaser/i,
+  /fake.*mail/i,
+  /fakeinbox/i,
+  /burner.*mail/i,
+  /inboxkitten/i,
+  /1secmail/i,
+  /mohmal/i,
+  /yopmail/i,
+  /getnada/i,
+  /internalmail/i
+];
+
+/** Synchronous check to see if a domain matches known disposable patterns or blacklist */
+export function isDisposableDomain(domain: string): boolean {
+  if (!domain) return false;
+  const clean = domain.trim().toLowerCase();
+  if (DISPOSABLE_DOMAINS_BLACKLIST.has(clean)) return true;
+  return DISPOSABLE_DOMAIN_PATTERNS.some(re => re.test(clean));
+}
 
 interface EmailValidationResult {
   isValid: boolean;
@@ -75,7 +95,7 @@ async function fetchCdnDomains(): Promise<Set<string>> {
 
 /**
  * Validates the syntax of an email and checks if it belongs to a disposable email provider.
- * Uses a dynamic CDN blocklist, a static local blacklist, and fallback APIs (Kickbox + Debounce).
+ * Uses a dynamic CDN blocklist, a static local blacklist, pattern matching, and fallback APIs (Kickbox + Debounce).
  */
 export async function validateEmail(email: string): Promise<EmailValidationResult> {
   const cleanEmail = email.trim().toLowerCase();
@@ -99,12 +119,12 @@ export async function validateEmail(email: string): Promise<EmailValidationResul
     };
   }
 
-  // 2. Check static disposable list (fast, local check)
-  if (DISPOSABLE_DOMAINS_BLACKLIST.has(domain)) {
+  // 2. Check static disposable list & known patterns (fast, local check)
+  if (isDisposableDomain(domain)) {
     return {
       isValid: false,
       isDisposable: true,
-      reason: 'Temporary or disposable email addresses are not permitted.'
+      reason: 'Temporary or disposable email addresses are not permitted on our platform.'
     };
   }
 
