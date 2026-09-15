@@ -1,3 +1,4 @@
+// [step 20/25] style(disclaimer): add subtle backdrop blur to modal overlay
 // [step 19/25] style(disclaimer): refine dark mode typography and contrast
 // [step 18/25] docs(disclaimer): add JSDoc commentary to StudyDisclaimerModal
 // [step 17/25] style(disclaimer): adjust modal responsive sizing for mobile viewports
