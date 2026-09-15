@@ -1,3 +1,4 @@
+// [step 30/35] style(gate-study): ensure accessible heading hierarchy in pending state
 // [step 29/35] refactor(gate-study): optimize gate access query with selective column projections
 // [step 28/35] style(gate-study): polish status badge colors for dark mode readability
 // [step 27/35] style(gate-study): add contact support prompt in pending review card
