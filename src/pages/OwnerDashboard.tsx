@@ -1,3 +1,4 @@
+// [step 12/40] refactor(owner-dashboard): invalidate user gate_access cache key upon approval
 // [step 11/40] refactor(owner-dashboard): update purchase payment_status to 'free' upon approval
 // [step 10/40] feat(owner-dashboard): implement handleApproveGateRequest handler
 // [step 9/40] refactor(owner-dashboard): invoke fetchPendingGateRequests in dashboard fetchAll
