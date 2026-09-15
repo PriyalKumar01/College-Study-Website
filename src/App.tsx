@@ -1,3 +1,4 @@
+// [step 2/3] refactor(app): mount StudyDisclaimerModal inside main Router tree
 // [step 1/3] feat(app): import StudyDisclaimerModal in App.tsx
 import { Suspense, lazy } from "react";
 import { Toaster } from "@/components/ui/toaster";
