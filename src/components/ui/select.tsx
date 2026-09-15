@@ -1,3 +1,4 @@
+// [step 1/8] docs(theme): assess dark mode contrast issues in Radix select dropdowns
 import * as React from "react"
 import * as SelectPrimitive from "@radix-ui/react-select"
 import { Check, ChevronDown, ChevronUp } from "lucide-react"
