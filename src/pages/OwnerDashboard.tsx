@@ -1,3 +1,4 @@
+// [step 31/40] docs(owner-dashboard): document pending requests approval workflow
 // [step 30/40] style(owner-dashboard): refine request count badge styling
 // [step 29/40] refactor(owner-dashboard): handle edge cases with missing profile names
 // [step 28/40] style(owner-dashboard): add subtle border highlight to pending request cards
