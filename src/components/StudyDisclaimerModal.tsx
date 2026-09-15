@@ -1,3 +1,4 @@
+// [step 10/25] style(disclaimer): emphasize personal study use with bold highlights
 // [step 9/25] feat(disclaimer): add legal warning text regarding content ownership
 // [step 8/25] style(disclaimer): add warning border and subtle amber gradient to header
 // [step 7/25] style(disclaimer): construct dialog header with ShieldAlert icon and alert badge
