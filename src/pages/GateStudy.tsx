@@ -1,3 +1,4 @@
+// [step 13/35] style(gate-study): design pending verification status card
 // [step 12/35] refactor(gate-study): transition view to pending state immediately on form submit
 // [step 11/35] refactor(gate-study): attach student profile metadata to registration submission
 // [step 10/35] feat(gate-study): update handleRegSubmit to insert pending purchase record
