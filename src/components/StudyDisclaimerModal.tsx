@@ -1,3 +1,4 @@
+// [step 24/25] style(disclaimer): polish button hover transitions and active states
 // [step 23/25] style(disclaimer): add shadow and border-radius tokens to disclaimer card
 // [step 22/25] style(disclaimer): add CheckCircle icon to acceptance button
 // [step 21/25] refactor(disclaimer): optimize localStorage read on initial page render
