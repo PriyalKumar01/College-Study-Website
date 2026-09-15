@@ -1,3 +1,4 @@
+// [step 7/25] style(disclaimer): construct dialog header with ShieldAlert icon and alert badge
 // [step 6/25] feat(disclaimer): add handleAccept handler with localStorage setItem
 // [step 5/25] refactor(disclaimer): check csh_study_disclaimer_accepted on component mount
 // [step 4/25] feat(disclaimer): add isOpen state and localStorage persistence key
