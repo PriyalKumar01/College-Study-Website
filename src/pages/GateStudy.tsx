@@ -1,3 +1,4 @@
+// [step 27/35] style(gate-study): add contact support prompt in pending review card
 // [step 26/35] refactor(gate-study): validate required student fields before pending insert
 // [step 25/35] docs(gate-study): add comments clarifying owner approval requirements
 // [step 24/35] style(gate-study): adjust loading spinner state during status refresh
