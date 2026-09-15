@@ -1,3 +1,4 @@
+// [step 3/8] style(select-ui): set text-slate-900 dark:text-slate-100 on SelectContent
 // [step 2/8] style(select-ui): add explicit dark background and border to SelectContent
 // [step 1/8] docs(theme): assess dark mode contrast issues in Radix select dropdowns
 import * as React from "react"
