@@ -1,3 +1,4 @@
+// [step 17/40] style(owner-dashboard): design 'Pending GATE Access Requests' card in Premium tab
 // [step 16/40] refactor(owner-dashboard): delete pending purchase record and clear cache on decline
 // [step 15/40] refactor(owner-dashboard): add confirmation prompt before declining request
 // [step 14/40] feat(owner-dashboard): implement handleRejectGateRequest handler
