@@ -1,3 +1,4 @@
+// [step 34/40] style(owner-dashboard): adjust badge font size and padding tokens
 // [step 33/40] refactor(owner-dashboard): ensure graceful error handling on network disconnects
 // [step 32/40] style(owner-dashboard): ensure responsive button layout on smaller viewports
 // [step 31/40] docs(owner-dashboard): document pending requests approval workflow
