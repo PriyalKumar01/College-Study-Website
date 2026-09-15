@@ -1,3 +1,4 @@
+// [step 6/40] refactor(owner-dashboard): query premium_purchases with plan gate_study and status pending
 // [step 5/40] feat(owner-dashboard): implement fetchPendingGateRequests query
 // [step 4/40] feat(owner-dashboard): declare isApprovingGate processing state
 // [step 3/40] feat(owner-dashboard): declare pendingGateRequests state in OwnerDashboard
