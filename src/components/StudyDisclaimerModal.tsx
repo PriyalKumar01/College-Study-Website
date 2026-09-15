@@ -1,3 +1,4 @@
+// [step 9/25] feat(disclaimer): add legal warning text regarding content ownership
 // [step 8/25] style(disclaimer): add warning border and subtle amber gradient to header
 // [step 7/25] style(disclaimer): construct dialog header with ShieldAlert icon and alert badge
 // [step 6/25] feat(disclaimer): add handleAccept handler with localStorage setItem
