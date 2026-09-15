@@ -1,3 +1,4 @@
+// [step 22/25] style(disclaimer): add CheckCircle icon to acceptance button
 // [step 21/25] refactor(disclaimer): optimize localStorage read on initial page render
 // [step 20/25] style(disclaimer): add subtle backdrop blur to modal overlay
 // [step 19/25] style(disclaimer): refine dark mode typography and contrast
