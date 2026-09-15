@@ -1,42 +1,3 @@
-// [step 39/40] refactor(owner-dashboard): verify cache prefix invalidation targets correct user id
-// [step 38/40] style(owner-dashboard): add hover transitions to request card items
-// [step 37/40] docs(owner-dashboard): add JSDoc commentary to approval handlers
-// [step 36/40] style(owner-dashboard): polish card header typography in Premium tab
-// [step 35/40] refactor(owner-dashboard): sanitize student email display in request row
-// [step 34/40] style(owner-dashboard): adjust badge font size and padding tokens
-// [step 33/40] refactor(owner-dashboard): ensure graceful error handling on network disconnects
-// [step 32/40] style(owner-dashboard): ensure responsive button layout on smaller viewports
-// [step 31/40] docs(owner-dashboard): document pending requests approval workflow
-// [step 30/40] style(owner-dashboard): refine request count badge styling
-// [step 29/40] refactor(owner-dashboard): handle edge cases with missing profile names
-// [step 28/40] style(owner-dashboard): add subtle border highlight to pending request cards
-// [step 27/40] refactor(owner-dashboard): disable action buttons during ongoing approval
-// [step 26/40] style(owner-dashboard): optimize pending card spacing and flex wrapping
-// [step 25/40] refactor(owner-dashboard): refresh enrolled list immediately following approval
-// [step 24/40] refactor(owner-dashboard): filter out pending records from GATE Study Enrolled list
-// [step 23/40] style(owner-dashboard): add Decline button with outline styling and confirmation
-// [step 22/40] style(owner-dashboard): add Approve button with checkmark icon and spinner
-// [step 21/40] style(owner-dashboard): render request timestamp with Indian locale formatting
-// [step 20/40] style(owner-dashboard): render student details, branch, and college tags
-// [step 19/40] style(owner-dashboard): render empty state banner when no requests are pending
-// [step 18/40] style(owner-dashboard): add amber badge with 'Requires Approval' label
-// [step 17/40] style(owner-dashboard): design 'Pending GATE Access Requests' card in Premium tab
-// [step 16/40] refactor(owner-dashboard): delete pending purchase record and clear cache on decline
-// [step 15/40] refactor(owner-dashboard): add confirmation prompt before declining request
-// [step 14/40] feat(owner-dashboard): implement handleRejectGateRequest handler
-// [step 13/40] style(owner-dashboard): show success toast notification on gate approval
-// [step 12/40] refactor(owner-dashboard): invalidate user gate_access cache key upon approval
-// [step 11/40] refactor(owner-dashboard): update purchase payment_status to 'free' upon approval
-// [step 10/40] feat(owner-dashboard): implement handleApproveGateRequest handler
-// [step 9/40] refactor(owner-dashboard): invoke fetchPendingGateRequests in dashboard fetchAll
-// [step 8/40] refactor(owner-dashboard): join profile names, branch, year, and college to requests
-// [step 7/40] refactor(owner-dashboard): fetch student profiles corresponding to pending requests
-// [step 6/40] refactor(owner-dashboard): query premium_purchases with plan gate_study and status pending
-// [step 5/40] feat(owner-dashboard): implement fetchPendingGateRequests query
-// [step 4/40] feat(owner-dashboard): declare isApprovingGate processing state
-// [step 3/40] feat(owner-dashboard): declare pendingGateRequests state in OwnerDashboard
-// [step 2/40] feat(owner-dashboard): import Clock icon from lucide-react
-// [step 1/40] docs(owner-dashboard): plan pending gate requests management interface
 import React, { useState, useEffect, useMemo } from 'react';
 import { ResponsiveContainer, PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ComposedChart, Line, AreaChart, Area } from 'recharts';
 import { useAuth } from '@/contexts/AuthContext';
@@ -50,7 +11,7 @@ import { Label } from '@/components/ui/label';
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import {
   CheckCircle, XCircle, User, Calendar, BookOpen, ShieldAlert,
-  Eye, Trash2, Crown, UserPlus, UserMinus, Search, Loader2, FileText, Download, GraduationCap, ExternalLink, Bell, Send, Pencil, Trophy, Coins, Link, Lock, Sparkles
+  Eye, Trash2, Crown, UserPlus, UserMinus, Search, Loader2, FileText, Download, GraduationCap, ExternalLink, Bell, Send, Pencil, Trophy, Coins, Link, Lock, Sparkles, Clock
 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
@@ -557,6 +518,8 @@ const OwnerDashboard = () => {
   const [isAddingContrib, setIsAddingContrib] = useState(false);
 
   const [premiumPurchases, setPremiumPurchases] = useState<any[]>([]);
+  const [pendingGateRequests, setPendingGateRequests] = useState<any[]>([]);
+  const [isApprovingGate, setIsApprovingGate] = useState<string | null>(null);
   const [searchPremiumQuery, setSearchPremiumQuery] = useState('');
   const [revokingId, setRevokingId] = useState<string | null>(null);
 
@@ -932,6 +895,7 @@ const OwnerDashboard = () => {
       fetchScholarships(),
       fetchContributors(),
       fetchPremiumPurchases(),
+      fetchPendingGateRequests(),
       fetchSignupStats(),
       fetchCampaignStats(),
       fetchTotalStudents(),
@@ -939,6 +903,107 @@ const OwnerDashboard = () => {
       fetchDashboardStats()
     ]);
     setLoading(false);
+  };
+
+  const fetchPendingGateRequests = async () => {
+    try {
+      const { data, error } = await (supabase as any)
+        .from('premium_purchases')
+        .select('*')
+        .eq('plan', 'gate_study')
+        .eq('payment_status', 'pending')
+        .order('purchased_at', { ascending: false });
+
+      if (error) throw error;
+      if (!data || data.length === 0) {
+        setPendingGateRequests([]);
+        return;
+      }
+
+      const userIds = Array.from(new Set(data.map((p: any) => p.user_id)));
+      const { data: profiles } = await supabase
+        .from('profiles')
+        .select('user_id, first_name, last_name, branch, college, year, email')
+        .in('user_id', userIds);
+
+      const profileMap = new Map((profiles || []).map((p: any) => [p.user_id, p]));
+
+      const joined = data.map((p: any) => {
+        const prof = profileMap.get(p.user_id);
+        return {
+          ...p,
+          first_name: prof?.first_name || '',
+          last_name: prof?.last_name || '',
+          branch: prof?.branch || '',
+          college: prof?.college || '',
+          year: prof?.year || '',
+          email: prof?.email || p.user_email,
+        };
+      });
+
+      setPendingGateRequests(joined);
+    } catch (err) {
+      console.error('Error in fetchPendingGateRequests:', err);
+    }
+  };
+
+  const handleApproveGateRequest = async (requestId: string, userId: string, userName: string) => {
+    setIsApprovingGate(requestId);
+    try {
+      const { error } = await (supabase as any)
+        .from('premium_purchases')
+        .update({ payment_status: 'free' })
+        .eq('id', requestId);
+
+      if (error) throw error;
+
+      clearCachePrefix(`gate_access_${userId}`);
+
+      toast({
+        title: 'GATE Access Approved! ✅',
+        description: `Approved access for ${userName}.`
+      });
+
+      await Promise.all([fetchPendingGateRequests(), fetchPremiumPurchases()]);
+    } catch (err: any) {
+      toast({
+        title: 'Approval Failed',
+        description: err.message,
+        variant: 'destructive'
+      });
+    } finally {
+      setIsApprovingGate(null);
+    }
+  };
+
+  const handleRejectGateRequest = async (requestId: string, userId: string, userName: string) => {
+    if (!window.confirm(`Are you sure you want to decline the GATE access request for ${userName}?`)) return;
+    setIsApprovingGate(requestId);
+    try {
+      const { error } = await (supabase as any)
+        .from('premium_purchases')
+        .delete()
+        .eq('id', requestId);
+
+      if (error) throw error;
+
+      clearCachePrefix(`gate_access_${userId}`);
+
+      toast({
+        title: 'Request Declined',
+        description: `GATE request for ${userName} has been removed.`
+      });
+
+      await fetchPendingGateRequests();
+    } catch (err: any) {
+      toast({
+        title: 'Action Failed',
+        description: err.message,
+        variant: 'destructive'
+      });
+    } finally {
+      setIsApprovingGate(null);
+    }
   };
 
   const fetchPremiumPurchases = async () => {
@@ -2070,6 +2135,93 @@ const OwnerDashboard = () => {
                 <Card className="gradient-card"><CardContent className="pt-4"><p className="text-xs text-muted-foreground uppercase font-semibold mb-1">Premium Packages</p><p className="text-2xl font-bold">{filteredGroupedList.filter(item => item.purchases.some((p:any) => p.plan !== 'gate_study')).length}</p></CardContent></Card>
                 <Card className="gradient-card"><CardContent className="pt-4"><p className="text-xs text-muted-foreground uppercase font-semibold mb-1">Both Plans</p><p className="text-2xl font-bold">{filteredGroupedList.filter(i => i.purchases.some((p:any) => p.plan === 'gate_study') && i.purchases.some((p:any) => p.plan !== 'gate_study')).length}</p></CardContent></Card>
               </div>
+
+              {/* Pending GATE Access Requests */}
+              <Card className="border-2 border-amber-500/30 bg-amber-500/5">
+                <CardHeader className="pb-3">
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="text-base sm:text-lg flex items-center gap-2 text-amber-700 dark:text-amber-400">
+                      <Clock className="h-5 w-5 text-amber-500" />
+                      Pending GATE Access Requests ({pendingGateRequests.length})
+                    </CardTitle>
+                    <Badge variant="outline" className="border-amber-500/40 text-amber-600 dark:text-amber-400 bg-amber-500/10">
+                      Requires Approval
+                    </Badge>
+                  </div>
+                  <CardDescription>
+                    Students who registered for GATE Study section and are waiting for verification.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  {pendingGateRequests.length === 0 ? (
+                    <p className="text-sm text-muted-foreground py-3 text-center">
+                      No pending approval requests right now. All requests are cleared! 🎉
+                    </p>
+                  ) : (
+                    <div className="space-y-3">
+                      {pendingGateRequests.map((req: any) => {
+                        const fullName = [req.first_name, req.last_name].filter(Boolean).join(' ') || 'Student';
+                        const isProcessing = isApprovingGate === req.id;
+                        return (
+                          <div
+                            key={req.id}
+                            className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 rounded-lg border border-amber-500/20 bg-background/80 hover:bg-background transition-colors"
+                          >
+                            <div className="space-y-1">
+                              <div className="flex items-center gap-2 flex-wrap">
+                                <span className="font-semibold text-sm">{fullName}</span>
+                                <Badge variant="secondary" className="text-xs">
+                                  {req.branch || 'N/A'} {req.year ? `• Year ${req.year}` : ''}
+                                </Badge>
+                                {req.college && (
+                                  <span className="text-xs text-muted-foreground">({req.college})</span>
+                                )}
+                              </div>
+                              <p className="text-xs text-muted-foreground">{req.email}</p>
+                              <p className="text-[11px] text-muted-foreground/80 flex items-center gap-1">
+                                <Calendar className="h-3 w-3" />
+                                Requested: {new Date(req.purchased_at).toLocaleString('en-IN', {
+                                  day: 'numeric',
+                                  month: 'short',
+                                  year: 'numeric',
+                                  hour: '2-digit',
+                                  minute: '2-digit'
+                                })}
+                              </p>
+                            </div>
+                            <div className="flex items-center gap-2 shrink-0">
+                              <Button
+                                size="sm"
+                                variant="default"
+                                className="bg-emerald-600 hover:bg-emerald-700 text-white gap-1.5 h-8 text-xs"
+                                disabled={isProcessing}
+                                onClick={() => handleApproveGateRequest(req.id, req.user_id, fullName)}
+                              >
+                                {isProcessing ? (
+                                  <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                                ) : (
+                                  <CheckCircle className="h-3.5 w-3.5" />
+                                )}
+                                Approve
+                              </Button>
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                className="border-red-500/30 text-red-600 hover:bg-red-500/10 dark:hover:bg-red-950/30 gap-1.5 h-8 text-xs"
+                                disabled={isProcessing}
+                                onClick={() => handleRejectGateRequest(req.id, req.user_id, fullName)}
+                              >
+                                <XCircle className="h-3.5 w-3.5" />
+                                Decline
+                              </Button>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
 
               {/* GATE Study Section */}
               <PremiumSection title="GATE Study Enrolled" icon={BookOpen} color="indigo" items={filteredGroupedList.filter(item => item.purchases.some((p:any) => p.plan === 'gate_study'))} onRevoke={handleRevokeAccess} onRevokeAll={handleRevokeAllAccess} revokingId={revokingId} />
