@@ -1,13 +1,9 @@
-// [step 6/7] style(auth-context): provide user-facing alert when session is terminated for policy violation
-// [step 5/7] refactor(auth-context): hook checkAndRejectDisposable into onAuthStateChange listener
-// [step 4/7] refactor(auth-context): invoke checkAndRejectDisposable on initial session load
-// [step 3/7] refactor(auth-context): automatically terminate session if disposable email is detected
-// [step 2/7] feat(auth-context): define checkAndRejectDisposable session validator
-// [step 1/7] feat(auth-context): import isDisposableDomain into AuthContext
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { getCachedData, setCachedData, removeCachedData, DEFAULT_CACHE_TTL_MS } from '@/lib/cacheUtils';
+
+import { isDisposableDomain } from '@/utils/emailValidation';
 
 type UserRole = 'member' | 'admin' | 'owner';
 
@@ -41,6 +37,22 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
   const [userRole, setUserRole] = useState<UserRole>('member');
+
+  const checkAndRejectDisposable = async (email?: string): Promise<boolean> => {
+    if (!email) return false;
+    const domain = email.split('@')[1];
+    if (domain && isDisposableDomain(domain)) {
+      console.warn('Disposable email session detected and terminated:', email);
+      await supabase.auth.signOut();
+      setUser(null);
+      setSession(null);
+      setUserRole('member');
+      setLoading(false);
+      alert(`Security Notice: Accounts using temporary or disposable email providers (${domain}) are strictly prohibited on College Study Hub. You have been logged out. Please sign up or log in using a valid personal or university email address.`);
+      return true;
+    }
+    return false;
+  };
 
   const fetchUserRole = async (email: string | undefined, force = false) => {
     if (!email) {
@@ -90,6 +102,11 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     // Set up auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (_event, session) => {
+        if (session?.user?.email) {
+          const isBlocked = await checkAndRejectDisposable(session.user.email);
+          if (isBlocked) return;
+        }
+
         setSession(session);
         setUser(session?.user ?? null);
         if (session?.user?.email) {
@@ -105,6 +122,11 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     // Get initial session
     const getInitialSession = async () => {
       const { data: { session } } = await supabase.auth.getSession();
+      if (session?.user?.email) {
+        const isBlocked = await checkAndRejectDisposable(session.user.email);
+        if (isBlocked) return;
+      }
+
       setSession(session);
       setUser(session?.user ?? null);
       if (session?.user?.email) {
