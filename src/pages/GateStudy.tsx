@@ -1,3 +1,4 @@
+// [step 6/35] refactor(gate-study): update checkGateAccess to query pending payment_status
 // [step 5/35] refactor(gate-study): import Clock and CheckCircle2 icons for status UI
 // [step 4/35] feat(gate-study): add submittedDetails state for preserving student context
 // [step 3/35] feat(gate-study): add accessStatus state to GateStudy component
