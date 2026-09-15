@@ -1,3 +1,4 @@
+// [step 25/35] docs(gate-study): add comments clarifying owner approval requirements
 // [step 24/35] style(gate-study): adjust loading spinner state during status refresh
 // [step 23/35] refactor(gate-study): improve error handling when registration insert fails
 // [step 22/35] style(gate-study): format timestamp of registration submission
