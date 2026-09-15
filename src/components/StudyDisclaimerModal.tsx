@@ -1,3 +1,4 @@
+// [step 16/25] accessibility(disclaimer): add aria-describedby and role attributes to modal
 // [step 15/25] refactor(disclaimer): prevent dialog dismissal on outside click or escape key
 // [step 14/25] style(disclaimer): design primary action button 'I Understand & Agree'
 // [step 13/25] feat(disclaimer): add bullet points detailing permitted and prohibited actions
