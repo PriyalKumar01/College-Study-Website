@@ -1,3 +1,4 @@
+// [step 6/7] style(auth-context): provide user-facing alert when session is terminated for policy violation
 // [step 5/7] refactor(auth-context): hook checkAndRejectDisposable into onAuthStateChange listener
 // [step 4/7] refactor(auth-context): invoke checkAndRejectDisposable on initial session load
 // [step 3/7] refactor(auth-context): automatically terminate session if disposable email is detected
