@@ -1,3 +1,4 @@
+// [step 6/8] style(select-ui): ensure data-[highlighted]:text-white on active SelectItem
 // [step 5/8] style(select-ui): add data-[highlighted]:bg-sky-600 to SelectItem for clear hover state
 // [step 4/8] style(select-ui): set text-slate-900 dark:text-slate-100 on base SelectItem
 // [step 3/8] style(select-ui): set text-slate-900 dark:text-slate-100 on SelectContent
