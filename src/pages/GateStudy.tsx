@@ -1,3 +1,4 @@
+// [step 11/35] refactor(gate-study): attach student profile metadata to registration submission
 // [step 10/35] feat(gate-study): update handleRegSubmit to insert pending purchase record
 // [step 9/35] refactor(gate-study): set accessStatus to 'approved' when purchase status is free or completed
 // [step 8/35] refactor(gate-study): set accessStatus to 'pending' when purchase status is pending
