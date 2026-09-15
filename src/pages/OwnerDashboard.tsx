@@ -1,3 +1,4 @@
+// [step 32/40] style(owner-dashboard): ensure responsive button layout on smaller viewports
 // [step 31/40] docs(owner-dashboard): document pending requests approval workflow
 // [step 30/40] style(owner-dashboard): refine request count badge styling
 // [step 29/40] refactor(owner-dashboard): handle edge cases with missing profile names
