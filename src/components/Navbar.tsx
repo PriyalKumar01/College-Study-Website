@@ -1,5 +1,3 @@
-// [step 2/3] refactor(navbar): render ExamNoticeBanner at top of sticky navbar
-// [step 1/3] feat(navbar): import ExamNoticeBanner in Navbar.tsx
 import { useState } from 'react';
 import { 
   Menu, Moon, Sun, User, LogOut, Home, 
@@ -27,6 +25,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { UsefulWebsitesDropdown, USEFUL_WEBSITES } from './UsefulWebsitesDropdown';
 import NotesDropdown, { NOTE_CATEGORIES } from './NotesDropdown';
 import InstallPWAButton from './InstallPWAButton';
+import ExamNoticeBanner from './ExamNoticeBanner';
 
 interface NavbarProps {
   onOpenAuth?: (mode: 'signin' | 'signup') => void;
@@ -65,6 +64,7 @@ const Navbar = ({ onOpenAuth }: NavbarProps) => {
 
   return (
     <nav className="bg-white/80 dark:bg-slate-950/80 backdrop-blur-md supports-[backdrop-filter]:bg-white/60 dark:supports-[backdrop-filter]:bg-slate-950/60 border-b border-gray-200 dark:border-slate-800 shadow-sm dark:shadow-none sticky top-0 inset-x-0 z-40 w-full shrink-0 transition-all duration-300">
+      <ExamNoticeBanner />
       <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           
