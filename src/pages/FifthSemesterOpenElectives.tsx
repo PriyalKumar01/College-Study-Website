@@ -1,3 +1,4 @@
+// [step 7/11] feat(open-electives-5th): attach Unit 3 PDF Notes with recommended flag
 // [step 6/11] feat(open-electives-5th): attach Unit 3 Handwritten Notes link to Cybersecurity
 // [step 5/11] feat(open-electives-5th): attach Unit 2 Part 2 Notes link to Cybersecurity
 // [step 4/11] feat(open-electives-5th): attach Unit 2 Part 1 Notes link to Cybersecurity
