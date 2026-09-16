@@ -1,3 +1,4 @@
+// [step 2/3] fix(cse-notes): correct CdSfe typo to CdSfDe in TOAFL Unit 1 Part 4 link
 // [step 1/3] docs(cse-notes): audit 5th semester CSE study material links
 import { useState } from 'react';
 import { motion } from 'framer-motion';
