@@ -1,3 +1,4 @@
+// [step 1/3] docs(cse-notes): audit 5th semester CSE study material links
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useAuth } from '@/contexts/AuthContext';
