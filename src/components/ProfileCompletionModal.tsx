@@ -1,14 +1,3 @@
-// [step 11/12] style(profile-modal): apply high-contrast dark classes to full mode year select
-// [step 10/12] refactor(profile-modal): inspect full completion mode year SelectContent styling
-// [step 9/12] style(profile-modal): apply high-contrast dark classes to full mode branch items
-// [step 8/12] style(profile-modal): apply high-contrast dark classes to full mode branch select
-// [step 7/12] refactor(profile-modal): inspect full completion mode branch SelectContent styling
-// [step 6/12] style(profile-modal): update year SelectItem hover and highlight classes
-// [step 5/12] style(profile-modal): apply dark:bg-slate-900 dark:border-slate-800 to update year content
-// [step 4/12] refactor(profile-modal): inspect update-mode year SelectContent styling
-// [step 3/12] style(profile-modal): update branch SelectItem hover and highlight classes
-// [step 2/12] style(profile-modal): apply dark:bg-slate-900 dark:border-slate-800 to update branch content
-// [step 1/12] refactor(profile-modal): inspect update-mode branch SelectContent styling
 import { useState, useEffect, useRef } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -582,9 +571,9 @@ export function ProfileCompletionModal() {
                                     <SelectTrigger id="branch-update" className="w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 h-10 text-sm focus:ring-2 focus:ring-sky-500">
                                         <SelectValue placeholder="Select your branch" />
                                     </SelectTrigger>
-                                    <SelectContent className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-900 dark:text-gray-100 max-h-60">
+                                    <SelectContent className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 max-h-60">
                                         {BRANCH_OPTIONS.map((o) => (
-                                            <SelectItem key={o} value={o} className="text-sm hover:bg-gray-100 dark:hover:bg-gray-700 focus:bg-gray-100 dark:focus:bg-gray-700">{o}</SelectItem>
+                                            <SelectItem key={o} value={o} className="text-slate-900 dark:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800 focus:bg-sky-600 focus:text-white dark:focus:bg-sky-600 dark:focus:text-white data-[highlighted]:bg-sky-600 data-[highlighted]:text-white text-sm cursor-pointer">{o}</SelectItem>
                                         ))}
                                     </SelectContent>
                                 </Select>
@@ -600,9 +589,9 @@ export function ProfileCompletionModal() {
                                     <SelectTrigger id="year-update" className="w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 h-10 text-sm focus:ring-2 focus:ring-sky-500">
                                         <SelectValue placeholder="Select your batch year" />
                                     </SelectTrigger>
-                                    <SelectContent className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-900 dark:text-gray-100 max-h-60">
+                                    <SelectContent className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 max-h-60">
                                         {YEAR_OPTIONS.map((o) => (
-                                            <SelectItem key={o.value} value={o.value} className="text-sm hover:bg-gray-100 dark:hover:bg-gray-700 focus:bg-gray-100 dark:focus:bg-gray-700">{o.label}</SelectItem>
+                                            <SelectItem key={o.value} value={o.value} className="text-slate-900 dark:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800 focus:bg-sky-600 focus:text-white dark:focus:bg-sky-600 dark:focus:text-white data-[highlighted]:bg-sky-600 data-[highlighted]:text-white text-sm cursor-pointer">{o.label}</SelectItem>
                                         ))}
                                     </SelectContent>
                                 </Select>
@@ -699,9 +688,9 @@ export function ProfileCompletionModal() {
                                     <SelectTrigger id="branch" className="w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 h-10 text-sm focus:ring-2 focus:ring-sky-500">
                                         <SelectValue placeholder="Select your branch" />
                                     </SelectTrigger>
-                                    <SelectContent className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-900 dark:text-gray-100 max-h-60">
+                                    <SelectContent className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 max-h-60">
                                         {BRANCH_OPTIONS.map((o) => (
-                                            <SelectItem key={o} value={o} className="text-sm hover:bg-gray-100 dark:hover:bg-gray-700 focus:bg-gray-100 dark:focus:bg-gray-700">{o}</SelectItem>
+                                            <SelectItem key={o} value={o} className="text-slate-900 dark:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800 focus:bg-sky-600 focus:text-white dark:focus:bg-sky-600 dark:focus:text-white data-[highlighted]:bg-sky-600 data-[highlighted]:text-white text-sm cursor-pointer">{o}</SelectItem>
                                         ))}
                                     </SelectContent>
                                 </Select>
@@ -723,9 +712,9 @@ export function ProfileCompletionModal() {
                                     <SelectTrigger id="year" className="w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 h-10 text-sm focus:ring-2 focus:ring-sky-500">
                                         <SelectValue placeholder="Select your batch year" />
                                     </SelectTrigger>
-                                    <SelectContent className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-900 dark:text-gray-100 max-h-60">
+                                    <SelectContent className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 max-h-60">
                                         {YEAR_OPTIONS.map((o) => (
-                                            <SelectItem key={o.value} value={o.value} className="text-sm hover:bg-gray-100 dark:hover:bg-gray-700 focus:bg-gray-100 dark:focus:bg-gray-700">{o.label}</SelectItem>
+                                            <SelectItem key={o.value} value={o.value} className="text-slate-900 dark:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800 focus:bg-sky-600 focus:text-white dark:focus:bg-sky-600 dark:focus:text-white data-[highlighted]:bg-sky-600 data-[highlighted]:text-white text-sm cursor-pointer">{o.label}</SelectItem>
                                         ))}
                                     </SelectContent>
                                 </Select>
