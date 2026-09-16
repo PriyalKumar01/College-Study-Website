@@ -1,3 +1,4 @@
+// [step 1/11] docs(electives): plan addition of Cybersecurity subject to open electives
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Download, ArrowLeft, FileText, Play, ChevronDown, ChevronRight, ExternalLink } from 'lucide-react';
