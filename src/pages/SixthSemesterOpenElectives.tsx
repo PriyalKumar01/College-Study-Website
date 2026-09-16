@@ -1,5 +1,3 @@
-// [step 2/3] feat(open-electives-6th): attach all 7 units to 6th semester Cybersecurity
-// [step 1/3] feat(open-electives-6th): add Cybersecurity to 6th semester subjects list
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Download, ArrowLeft, FileText, Play, ChevronDown, ChevronRight, ExternalLink } from 'lucide-react';
@@ -140,6 +138,23 @@ const SixthSemesterOpenElectives = () => {
       notes: [
         { title: 'HVPE Complete Notes & Question Bank', url: 'https://drive.google.com/file/d/1hvpe_complete_notes/view?usp=drivesdk' }
       ]
+    },
+    {
+      id: 'cybersecurity',
+      name: 'Cybersecurity',
+      fullName: 'Cybersecurity (Open Elective)',
+      icon: '🛡️',
+      color: 'bg-emerald-600',
+      playlists: { detailed: [{ title: 'Playlist Coming Soon', url: '#' }], oneshot: [] },
+      notes: [
+        { title: 'Unit-1 Notes', url: 'https://drive.google.com/file/d/1oNWzpXuUmjELKiVOSAHcvXsTADyUn11G/view?usp=drivesdk' },
+        { title: 'Unit-2 (Part-1) Notes', url: 'https://drive.google.com/file/d/1YJ6W2GfwFpMDDjQjsQqg8V3E29XasmJ8/view?usp=drivesdk' },
+        { title: 'Unit-2 (Part-2) Notes', url: 'https://drive.google.com/file/d/124HwTG1gYSfceL18BUJouWk3vTdlTlcM/view?usp=drivesdk' },
+        { title: 'Unit-3 Handwritten Notes', url: 'https://drive.google.com/file/d/1c7yvLj4dYqITIYyJHUTx8Frz_yafJdrp/view?usp=drivesdk' },
+        { title: 'Unit-3 PDF Notes', url: 'https://drive.google.com/file/d/1O1hjaLsf9lzZTFJdXLSYNKWk9jiVYB1z/view?usp=drivesdk', recommended: true },
+        { title: 'Unit-4 Handwritten Notes', url: 'https://drive.google.com/file/d/1Ce1_Tya22YvBdM37x-XZCpHBtBQF5ZnM/view?usp=drivesdk' },
+        { title: 'Unit-4 PDF Notes', url: 'https://drive.google.com/file/d/1gL1q_J5VEc9FGocwOTRHLOxMicagHXTx/view?usp=drivesdk', recommended: true },
+      ]
     }
   ];
 
@@ -212,6 +227,11 @@ const SixthSemesterOpenElectives = () => {
                           </div>
                           <span className="text-[10px] font-bold tracking-wider uppercase bg-muted text-muted-foreground px-2 py-0.5 rounded">PDF</span>
                         </div>
+                        {(note as any).recommended && (
+                          <span className="text-[10px] font-bold uppercase bg-amber-500/15 text-amber-600 dark:text-amber-400 px-2 py-0.5 rounded border border-amber-500/30">
+                            ⭐ Recommended
+                          </span>
+                        )}
                         {note.isCommunity && (
                           <span className="text-[10px] font-bold uppercase bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 px-2 py-0.5 rounded border border-emerald-500/20">
                             Verified Upload
