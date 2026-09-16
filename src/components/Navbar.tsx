@@ -1,3 +1,4 @@
+// [step 1/3] feat(navbar): import ExamNoticeBanner in Navbar.tsx
 import { useState } from 'react';
 import { 
   Menu, Moon, Sun, User, LogOut, Home, 
