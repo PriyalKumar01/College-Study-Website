@@ -1,3 +1,4 @@
+// [step 16/17] docs(exam-banner): add JSDoc comments to ExamNoticeBanner component
 // [step 15/17] style(exam-banner): ensure mobile responsive layout and legible typography
 // [step 14/17] accessibility(exam-banner): add aria-label and semantic aside container tag
 // [step 13/17] style(exam-banner): design dismiss button with hover effects and focus outline
