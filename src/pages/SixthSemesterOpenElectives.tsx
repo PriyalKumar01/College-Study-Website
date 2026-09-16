@@ -1,3 +1,4 @@
+// [step 2/3] feat(open-electives-6th): attach all 7 units to 6th semester Cybersecurity
 // [step 1/3] feat(open-electives-6th): add Cybersecurity to 6th semester subjects list
 import { useState } from 'react';
 import { motion } from 'framer-motion';
