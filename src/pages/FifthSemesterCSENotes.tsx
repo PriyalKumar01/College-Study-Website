@@ -1,5 +1,3 @@
-// [step 2/3] fix(cse-notes): correct CdSfe typo to CdSfDe in TOAFL Unit 1 Part 4 link
-// [step 1/3] docs(cse-notes): audit 5th semester CSE study material links
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useAuth } from '@/contexts/AuthContext';
@@ -68,7 +66,7 @@ const FifthSemesterCSENotes = () => {
         { title: 'Unit-1 (Part-1) Intro', url: 'https://drive.google.com/uc?export=download&id=1kjeyYAnyvZ27BRNS-809YVqRA_S3l6lS' },
         { title: 'Unit-1 (Part-2) Finite Automata', url: 'https://drive.google.com/uc?export=download&id=1leNJq-PeybsShSZzAi1q4AxXfvQx0dbs' },
         { title: 'Unit-1 (Part-3) Finite Automata', url: 'https://drive.google.com/uc?export=download&id=1s5xIbwm8SW0nWwUe5yCKkTpgKXe1N12P' },
-        { title: 'Unit-1 (Part-4) FSA', url: 'https://drive.google.com/uc?export=download&id=12iicJxCdSfeDMkMlVYW7jiT_GGdriSKT' },
+        { title: 'Unit-1 (Part-4) FSA', url: 'https://drive.google.com/uc?export=download&id=12iicJxCdSfDeMkMlVYW7jiT_GGdriSKT' },
         { title: 'Unit-1 (Part-5) Minimization of DFA', url: 'https://drive.google.com/uc?export=download&id=1RCEWYXj2CbuFSwbImho21oE5BC_LEVTl' },
         { title: 'Unit-1 (Part-6) Numericals', url: 'https://drive.google.com/uc?export=download&id=1dvmHtwB8xgHW4XHcRIDbFOU4HtiEWZ_3' },
         { title: 'Unit-2 (Part-1) Formal Language', url: 'https://drive.google.com/uc?export=download&id=12ibIAp1ADgGHx-aXO_f0-gG94bFLXBuU' },
@@ -545,7 +543,7 @@ const FifthSemesterCSENotes = () => {
               >
                 <div className="flex items-start justify-between mb-4">
                   <span className="text-2xl">📚</span>
-                  <span className="text-xs font-bold text-white bg-yellow-500 px-2 py-0.5 rounded-full">7 Subjects</span>
+                  <span className="text-xs font-bold text-white bg-yellow-500 px-2 py-0.5 rounded-full">8 Subjects</span>
                 </div>
                 <h3 className="font-semibold text-foreground text-sm leading-snug mb-1 flex-1">Open Electives</h3>
                 <p className="text-xs text-muted-foreground mb-4">Business Ethics, Environment & Ecology, Soft Skills, and more...</p>
