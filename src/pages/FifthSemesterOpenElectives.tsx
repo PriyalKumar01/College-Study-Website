@@ -1,3 +1,4 @@
+// [step 2/11] feat(open-electives-5th): add Cybersecurity to 5th semester subjects list
 // [step 1/11] docs(electives): plan addition of Cybersecurity subject to open electives
 import { useState } from 'react';
 import { motion } from 'framer-motion';
