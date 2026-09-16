@@ -1,3 +1,4 @@
+// [step 2/3] refactor(navbar): render ExamNoticeBanner at top of sticky navbar
 // [step 1/3] feat(navbar): import ExamNoticeBanner in Navbar.tsx
 import { useState } from 'react';
 import { 
