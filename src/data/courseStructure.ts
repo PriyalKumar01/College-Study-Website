@@ -1,4 +1,3 @@
-// [step 1/2] feat(course-structure): add Cybersecurity to CSE-5th Semester subject list
 // Centralized course structure mapping for the admin upload form
 // Maps exactly to the existing website pages and structure
 
@@ -147,6 +146,7 @@ export const SUBJECTS: Record<string, SubjectInfo[]> = {
     { name: 'Computer Network', fullName: 'Computer Networks' },
     { name: 'DAA', fullName: 'Design and Analysis of Algorithms' },
     { name: 'Open Elective', fullName: 'Open Elective (OE)' },
+    { name: 'Cybersecurity', fullName: 'Cybersecurity (Open Elective)' },
   ],
   'CSE-6th Semester': [
     { name: 'Artificial Intelligence', fullName: 'Artificial Intelligence' },
@@ -155,6 +155,7 @@ export const SUBJECTS: Record<string, SubjectInfo[]> = {
     { name: 'Entrepreneurship', fullName: 'Entrepreneurship' },
     { name: 'Object Oriented System Design', fullName: 'Object Oriented System Design' },
     { name: 'Computer Graphics', fullName: 'Computer Graphics' },
+    { name: 'Cybersecurity', fullName: 'Cybersecurity (Open Elective)' },
   ],
 
   // ════════════════════════════════════════════════════════════════
