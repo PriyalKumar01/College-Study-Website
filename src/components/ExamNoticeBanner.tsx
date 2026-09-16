@@ -1,3 +1,4 @@
+// [step 12/17] feat(exam-banner): add download reminder callout with DownloadCloud icon
 // [step 11/17] feat(exam-banner): clarify normal operation before Sept 21 and after Sept 30
 // [step 10/17] feat(exam-banner): format notice copy highlighting Sept 21 - Sept 29 dates
 // [step 9/17] style(exam-banner): style alert badge with pulsing AlertTriangle icon
