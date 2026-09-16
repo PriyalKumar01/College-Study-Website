@@ -1,3 +1,4 @@
+// [step 10/11] style(auth-modal): set dark:bg-slate-900 dark:border-slate-800 on branch SelectContent
 // [step 9/11] refactor(auth-modal): locate branch SelectContent in signup completion step
 // [step 8/11] docs(auth): annotate handleSignIn security checks and error handling
 // [step 7/11] refactor(auth): show warning alert for disposable email signin attempts
