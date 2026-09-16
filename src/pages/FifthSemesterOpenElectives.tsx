@@ -1,3 +1,4 @@
+// [step 10/11] style(open-electives-5th): implement Recommended badge for recommended notes
 // [step 9/11] feat(open-electives-5th): attach Unit 4 PDF Notes with recommended flag
 // [step 8/11] feat(open-electives-5th): attach Unit 4 Handwritten Notes link to Cybersecurity
 // [step 7/11] feat(open-electives-5th): attach Unit 3 PDF Notes with recommended flag
