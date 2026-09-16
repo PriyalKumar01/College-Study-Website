@@ -1,3 +1,4 @@
+// [step 10/17] feat(exam-banner): format notice copy highlighting Sept 21 - Sept 29 dates
 // [step 9/17] style(exam-banner): style alert badge with pulsing AlertTriangle icon
 // [step 8/17] style(exam-banner): add subtle bottom border with amber-500/30 opacity
 // [step 7/17] style(exam-banner): design amber gradient banner background for light and dark modes
