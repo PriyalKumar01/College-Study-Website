@@ -384,7 +384,7 @@ const FifthSemesterMENotes = () => {
                 <div className="flex items-start justify-between mb-4">
                   <span className="text-2xl">📚</span>
                   <span className="text-[10px] font-bold tracking-wider uppercase bg-yellow-500 text-white px-2 py-0.5 rounded">
-                    7 Subjects
+                    8 Subjects
                   </span>
                 </div>
                 <h3 className="font-semibold text-foreground text-sm leading-snug mb-2">Open Electives</h3>
