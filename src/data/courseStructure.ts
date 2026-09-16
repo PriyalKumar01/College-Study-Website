@@ -1,3 +1,4 @@
+// [step 1/2] feat(course-structure): add Cybersecurity to CSE-5th Semester subject list
 // Centralized course structure mapping for the admin upload form
 // Maps exactly to the existing website pages and structure
 
