@@ -1,3 +1,4 @@
+// [step 1/3] feat(open-electives-6th): add Cybersecurity to 6th semester subjects list
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Download, ArrowLeft, FileText, Play, ChevronDown, ChevronRight, ExternalLink } from 'lucide-react';
