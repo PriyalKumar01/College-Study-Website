@@ -1,3 +1,4 @@
+// [step 7/17] style(exam-banner): design amber gradient banner background for light and dark modes
 // [step 6/17] feat(exam-banner): implement handleDismiss with sessionStorage persistence
 // [step 5/17] refactor(exam-banner): check csh_exam_notice_dismissed in sessionStorage
 // [step 4/17] feat(exam-banner): declare isVisible state in ExamNoticeBanner
