@@ -1,3 +1,4 @@
+// [step 5/11] feat(open-electives-5th): attach Unit 2 Part 2 Notes link to Cybersecurity
 // [step 4/11] feat(open-electives-5th): attach Unit 2 Part 1 Notes link to Cybersecurity
 // [step 3/11] feat(open-electives-5th): attach Unit 1 Notes link to Cybersecurity
 // [step 2/11] feat(open-electives-5th): add Cybersecurity to 5th semester subjects list
