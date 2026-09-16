@@ -1,13 +1,3 @@
-// [step 10/11] style(auth-modal): set dark:bg-slate-900 dark:border-slate-800 on branch SelectContent
-// [step 9/11] refactor(auth-modal): locate branch SelectContent in signup completion step
-// [step 8/11] docs(auth): annotate handleSignIn security checks and error handling
-// [step 7/11] refactor(auth): show warning alert for disposable email signin attempts
-// [step 6/11] feat(auth): add disposable email guard in handleSignIn before Supabase authentication
-// [step 5/11] refactor(auth): sanitize and trim email string before validation in handleSignUp
-// [step 4/11] refactor(auth): display descriptive toast when disposable email is detected during signup
-// [step 3/11] feat(auth): add client-side disposable regex check in isValidEmail
-// [step 2/11] refactor(auth): extend BLOCKED_DOMAINS in AuthModal with atomicmail variants
-// [step 1/11] feat(auth): import isDisposableDomain helper into AuthModal
 import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -24,16 +14,18 @@ import { Loader2, Eye, EyeOff, CheckCircle2, Mail, ArrowLeft, X, AlertCircle, Al
 import logoImg from '@/assets/college-study-hub-logo.png';
 import HCaptcha from '@hcaptcha/react-hcaptcha';
 import { BRANCH_OPTIONS, YEAR_OPTIONS } from './ProfileCompletionModal';
-import { validateEmail } from '@/utils/emailValidation';
+import { validateEmail, isDisposableDomain } from '@/utils/emailValidation';
 import { sendCampaignBatch } from '@/lib/emailService';
 
 // hCaptcha Site Key provided by user
 const HCAPTCHA_SITE_KEY = "8a4805ba-2f46-4c8a-980a-54b8d5240d88";
 
 const BLOCKED_DOMAINS = [
+  'atomicmail.io', 'atomicmail.com', 'atomicmail.org', 'atomic-mail.com',
   'tempmail.com', 'throwawaymail.com', '10minutemail.com', 'guerrillamail.com', 'mailinator.com',
   'yopmail.com', 'getnada.com', 'temp-mail.org', 'fake-email.com', 'dispostable.com',
-  'sharklasers.com', 'gmial.com', 'gmal.com', 'test.com', 'example.com', 'testmail.com'
+  'sharklasers.com', 'gmial.com', 'gmal.com', 'test.com', 'example.com', 'testmail.com',
+  'temp-mail.io', 'inboxkitten.com', '1secmail.com', 'burnermail.io'
 ];
 
 interface AuthModalProps {
@@ -67,7 +59,7 @@ const isValidEmail = (email: string): boolean => {
   }
 
   const domain = email.split('@')[1]?.toLowerCase();
-  if (domain && BLOCKED_DOMAINS.some(d => domain.includes(d))) {
+  if (domain && (BLOCKED_DOMAINS.some(d => domain.includes(d)) || isDisposableDomain(domain))) {
     return false;
   }
   return true;
@@ -560,6 +552,16 @@ Simply click one of the buttons below to log in or sign up immediately.`,
     setTouched({ email: true, password: true });
     if (!email || !password) return;
 
+    const emailDomain = email.trim().toLowerCase().split('@')[1];
+    if (emailDomain && isDisposableDomain(emailDomain)) {
+      setEmailAlert({
+        title: "Temporary Email Prohibited",
+        message: "Accounts using temporary or disposable email addresses (such as atomicmail.io) are strictly prohibited on College Study Hub. Please log in or sign up with a valid permanent personal or college email address.",
+        type: 'disposable'
+      });
+      return;
+    }
+
     if (!captchaToken) {
       toast({ title: "CAPTCHA Required", description: "Please complete the CAPTCHA check.", variant: "destructive" });
       return;
@@ -872,9 +874,9 @@ Simply click one of the buttons below to log in or sign up immediately.`,
               <SelectTrigger className="mt-1 w-full dark:bg-slate-950 dark:border-slate-800 dark:text-white">
                 <SelectValue placeholder="Select branch" />
               </SelectTrigger>
-              <SelectContent className="max-h-60 overflow-y-auto">
+              <SelectContent className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 max-h-60 overflow-y-auto">
                 {BRANCH_OPTIONS.map((opt) => (
-                  <SelectItem key={opt} value={opt}>
+                  <SelectItem key={opt} value={opt} className="text-slate-900 dark:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800 focus:bg-sky-600 focus:text-white dark:focus:bg-sky-600 dark:focus:text-white data-[highlighted]:bg-sky-600 data-[highlighted]:text-white cursor-pointer">
                     {opt}
                   </SelectItem>
                 ))}
@@ -895,9 +897,9 @@ Simply click one of the buttons below to log in or sign up immediately.`,
               <SelectTrigger className="mt-1 w-full dark:bg-slate-950 dark:border-slate-800 dark:text-white">
                 <SelectValue placeholder="Select batch year" />
               </SelectTrigger>
-              <SelectContent className="max-h-60 overflow-y-auto">
+              <SelectContent className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 max-h-60 overflow-y-auto">
                 {YEAR_OPTIONS.map((opt) => (
-                  <SelectItem key={opt.value} value={opt.value}>
+                  <SelectItem key={opt.value} value={opt.value} className="text-slate-900 dark:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800 focus:bg-sky-600 focus:text-white dark:focus:bg-sky-600 dark:focus:text-white data-[highlighted]:bg-sky-600 data-[highlighted]:text-white cursor-pointer">
                     {opt.label}
                   </SelectItem>
                 ))}
