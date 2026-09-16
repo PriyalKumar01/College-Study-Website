@@ -1,3 +1,4 @@
+// [step 10/12] refactor(profile-modal): inspect full completion mode year SelectContent styling
 // [step 9/12] style(profile-modal): apply high-contrast dark classes to full mode branch items
 // [step 8/12] style(profile-modal): apply high-contrast dark classes to full mode branch select
 // [step 7/12] refactor(profile-modal): inspect full completion mode branch SelectContent styling
