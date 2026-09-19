@@ -53,13 +53,22 @@ const DISPOSABLE_DOMAIN_PATTERNS = [
   /internalmail/i
 ];
 
-// Major directly allowed educational and trusted personal mail providers (instant access)
+// Major directly allowed educational and trusted personal mail providers (instant access, 0ms)
 export const DIRECT_ALLOWED_DOMAINS = new Set([
   'gmail.com', 'googlemail.com',
   'outlook.com', 'hotmail.com', 'live.com', 'msn.com', 'outlook.in',
-  'yahoo.com', 'yahoo.co.in', 'ymail.com',
+  'yahoo.com', 'yahoo.co.in', 'yahoo.in', 'ymail.com',
   'icloud.com', 'me.com', 'mac.com',
-  'hbtu.ac.in', 'iitk.ac.in', 'iitd.ac.in', 'iitb.ac.in'
+  'proton.me', 'protonmail.com', 'pm.me',
+  'zoho.com', 'zoho.in',
+  'rediffmail.com',
+  'hbtu.ac.in', 'iitk.ac.in', 'iitd.ac.in', 'iitb.ac.in',
+  'iitkgp.ac.in', 'iitm.ac.in', 'iitr.ac.in', 'iitg.ac.in',
+  'iitbhu.ac.in', 'bhu.ac.in', 'du.ac.in', 'jnu.ac.in',
+  'nitk.ac.in', 'mnnit.ac.in', 'nitt.ac.in', 'nitw.ac.in',
+  'dtu.ac.in', 'nsut.ac.in', 'iiit.ac.in', 'iiitd.ac.in', 'iiita.ac.in',
+  'bits-pilani.ac.in', 'thapar.edu', 'vit.ac.in', 'manipal.edu',
+  'srmist.edu.in', 'aktu.ac.in'
 ]);
 
 /**
@@ -75,7 +84,12 @@ export function isDirectlyAllowedDomain(domain: string): boolean {
     clean.endsWith('.ac.in') ||
     clean.endsWith('.edu') ||
     clean.endsWith('.edu.in') ||
-    clean.endsWith('.res.in')
+    clean.endsWith('.res.in') ||
+    clean.endsWith('.ernet.in') ||
+    clean.endsWith('.gov.in') ||
+    clean.endsWith('.org.in') ||
+    clean.endsWith('.ac.uk') ||
+    clean.endsWith('.edu.au')
   ) {
     return true;
   }
@@ -190,85 +204,67 @@ export async function validateEmail(email: string): Promise<EmailValidationResul
     console.warn('Failed to check CDN blocklist, falling back to APIs:', err);
   }
 
-  // 4. Real-time Live API 1: Mailcheck.ai (Real-time MX, domain age, & disposable check - detects fpklm.com and new burners)
+  // 4. Real-time Live APIs (Mailcheck, Debounce, Kickbox) executed concurrently with strict 1.5s timeout
   try {
-    const mailcheckController = new AbortController();
-    const mailcheckTimeout = setTimeout(() => mailcheckController.abort(), 3500);
+    const checkMailcheck = async (): Promise<EmailValidationResult | null> => {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 1500);
+      try {
+        const res = await fetch(`https://api.mailcheck.ai/domain/${domain}`, { signal: controller.signal });
+        clearTimeout(timeout);
+        if (res.ok) {
+          const data = await res.json();
+          if (data.disposable === true) {
+            return { isValid: false, isDisposable: true, reason: 'Temporary or disposable email domain detected.' };
+          }
+          if (data.mx === false) {
+            return { isValid: false, isDisposable: false, reason: 'This domain cannot receive emails (no valid MX record found).' };
+          }
+        }
+      } catch {}
+      return null;
+    };
 
-    const mailcheckRes = await fetch(`https://api.mailcheck.ai/domain/${domain}`, {
-      signal: mailcheckController.signal
-    });
-    clearTimeout(mailcheckTimeout);
+    const checkDebounce = async (): Promise<EmailValidationResult | null> => {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 1500);
+      try {
+        const res = await fetch(`https://disposable.debounce.io/?email=${cleanEmail}`, { signal: controller.signal });
+        clearTimeout(timeout);
+        if (res.ok) {
+          const data = await res.json();
+          if (data.disposable === 'true' || data.disposable === true) {
+            return { isValid: false, isDisposable: true, reason: 'Temporary email domain detected via verification API.' };
+          }
+        }
+      } catch {}
+      return null;
+    };
 
-    if (mailcheckRes.ok) {
-      const data = await mailcheckRes.json();
-      if (data.disposable === true) {
-        return {
-          isValid: false,
-          isDisposable: true,
-          reason: 'Temporary or disposable email domain detected via security verification.'
-        };
-      }
-      if (data.mx === false) {
-        return {
-          isValid: false,
-          isDisposable: false,
-          reason: 'This domain cannot receive emails (no valid MX record found).'
-        };
+    const checkKickbox = async (): Promise<EmailValidationResult | null> => {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 1500);
+      try {
+        const res = await fetch(`https://open.kickbox.com/v1/disposable/${domain}`, { signal: controller.signal });
+        clearTimeout(timeout);
+        if (res.ok) {
+          const data = await res.json();
+          if (data.disposable === true) {
+            return { isValid: false, isDisposable: true, reason: 'Temporary email domain detected via verification API.' };
+          }
+        }
+      } catch {}
+      return null;
+    };
+
+    const results = await Promise.allSettled([checkMailcheck(), checkDebounce(), checkKickbox()]);
+    for (const r of results) {
+      if (r.status === 'fulfilled' && r.value) {
+        return r.value;
       }
     }
   } catch (error) {
-    console.warn('Mailcheck.ai check failed, falling back to secondary APIs:', error);
-  }
-
-  // 5. Real-time Live API 2: Debounce API (Real-time active lookup)
-  try {
-    const debounceController = new AbortController();
-    const debounceTimeout = setTimeout(() => debounceController.abort(), 3000); // 3-second timeout
-
-    const debounceResponse = await fetch(`https://disposable.debounce.io/?email=${cleanEmail}`, {
-      signal: debounceController.signal
-    });
-
-    clearTimeout(debounceTimeout);
-
-    if (debounceResponse.ok) {
-      const data = await debounceResponse.json();
-      if (data.disposable === 'true' || data.disposable === true) {
-        return {
-          isValid: false,
-          isDisposable: true,
-          reason: 'Temporary email domain detected via verification API.'
-        };
-      }
-    }
-  } catch (error) {
-    console.warn('Debounce API check failed, falling back:', error);
-  }
-
-  // 6. Real-time Live API 3: Kickbox's free disposable email checker API
-  try {
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 3000); // 3-second timeout
-
-    const response = await fetch(`https://open.kickbox.com/v1/disposable/${domain}`, {
-      signal: controller.signal
-    });
-    
-    clearTimeout(timeoutId);
-
-    if (response.ok) {
-      const data = await response.json();
-      if (data.disposable === true) {
-        return {
-          isValid: false,
-          isDisposable: true,
-          reason: 'Temporary email domain detected via verification API.'
-        };
-      }
-    }
-  } catch (error) {
-    console.warn('Kickbox API check failed, relying on local filters:', error);
+    console.warn('Live API checks error, proceeding with local validations:', error);
   }
 
   return {
