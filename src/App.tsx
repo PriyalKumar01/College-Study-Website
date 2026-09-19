@@ -5,7 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { navItems } from "./nav-items";
 import { ThemeProvider } from "./providers/ThemeProvider";
-import { AuthProvider } from "./contexts/AuthContext";
+import { AuthProvider, useAuth } from "./contexts/AuthContext";
 import { SidebarProvider } from "./contexts/SidebarContext";
 import CookieConsent from "./components/CookieConsent";
 import StudyDisclaimerModal from "./components/StudyDisclaimerModal";
@@ -16,6 +16,8 @@ import ScrollToTop from "./components/ScrollToTop";
 import PageLoader from "./components/PageLoader";
 import AppLayout from "./components/AppLayout";
 import ProtectedRoute from "./components/ProtectedRoute";
+import BannedScreen from "./components/BannedScreen";
+import PendingApprovalScreen from "./components/PendingApprovalScreen";
 
 const Auth = lazy(() => import("./pages/Auth"));
 const Index = lazy(() => import("./pages/Index"));
@@ -40,18 +42,30 @@ const queryClient = new QueryClient({
 
 const IS_MAINTENANCE_MODE = false; // during maintenance make it true
 
-const App = () => {
+const AppContent = () => {
+  const { user, isBanned, approvalStatus, refreshApprovalStatus, signOut } = useAuth();
   const isLocalhost = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
   const showMaintenance = IS_MAINTENANCE_MODE && !isLocalhost;
 
+  if (isBanned) {
+    return <BannedScreen userEmail={user?.email} onSignOut={signOut} />;
+  }
+
+  if (user && approvalStatus === 'pending') {
+    return (
+      <PendingApprovalScreen
+        userEmail={user.email}
+        onRefresh={refreshApprovalStatus}
+        onSignOut={signOut}
+      />
+    );
+  }
+
   return (
-    <QueryClientProvider client={queryClient}>
-      <ThemeProvider>
-        <AuthProvider>
-          <SidebarProvider>
-            <TooltipProvider>
-              <Toaster />
-              {showMaintenance ? (
+    <SidebarProvider>
+      <TooltipProvider>
+        <Toaster />
+        {showMaintenance ? (
                 <Suspense fallback={<PageLoader />}>
                   <Maintenance />
                 </Suspense>
@@ -100,6 +114,15 @@ const App = () => {
               )}
             </TooltipProvider>
           </SidebarProvider>
+  );
+};
+
+const App = () => {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <ThemeProvider>
+        <AuthProvider>
+          <AppContent />
         </AuthProvider>
       </ThemeProvider>
     </QueryClientProvider>

@@ -420,6 +420,17 @@ Simply click one of the buttons below to log in or sign up immediately.`,
 
     } catch (err: any) {
       console.error("Verification Error:", err);
+      const errMsg = err?.message?.toLowerCase() || '';
+      if (errMsg.includes('banned') || errMsg.includes('suspended') || errMsg.includes('disabled')) {
+        localStorage.setItem('csh_banned_user', email.trim().toLowerCase());
+        toast({
+          title: "Account Suspended",
+          description: "SORRY ! YOU ARE BANNED bcz of violation of terms and conditions.",
+          variant: "destructive"
+        });
+        setTimeout(() => window.location.reload(), 800);
+        return;
+      }
       toast({
         title: "Verification Failed",
         description: err.message || "Invalid code.",
@@ -552,11 +563,11 @@ Simply click one of the buttons below to log in or sign up immediately.`,
     setTouched({ email: true, password: true });
     if (!email || !password) return;
 
-    const emailDomain = email.trim().toLowerCase().split('@')[1];
-    if (emailDomain && isDisposableDomain(emailDomain)) {
+    const validationResult = await validateEmail(email);
+    if (!validationResult.isValid || validationResult.isDisposable) {
       setEmailAlert({
         title: "Temporary Email Prohibited",
-        message: "Accounts using temporary or disposable email addresses (such as atomicmail.io) are strictly prohibited on College Study Hub. Please log in or sign up with a valid permanent personal or college email address.",
+        message: "Accounts using temporary or disposable email addresses are strictly prohibited on College Study Hub. Please log in or sign up with a valid permanent personal or college email address.",
         type: 'disposable'
       });
       return;
@@ -584,6 +595,17 @@ Simply click one of the buttons below to log in or sign up immediately.`,
     } catch (err: any) {
       captchaRef.current?.resetCaptcha();
       setCaptchaToken(null);
+      const errMsg = err?.message?.toLowerCase() || '';
+      if (errMsg.includes('banned') || errMsg.includes('suspended') || errMsg.includes('disabled')) {
+        localStorage.setItem('csh_banned_user', email.trim().toLowerCase());
+        toast({
+          title: "Account Suspended",
+          description: "SORRY ! YOU ARE BANNED bcz of violation of terms and conditions.",
+          variant: "destructive"
+        });
+        setTimeout(() => window.location.reload(), 800);
+        return;
+      }
       toast({ title: "Login Failed", description: "Invalid email, password, or captcha.", variant: "destructive" });
     } finally {
       setIsLoading(false);
