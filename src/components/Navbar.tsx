@@ -48,7 +48,7 @@ const Navbar = ({ onOpenAuth }: NavbarProps) => {
     { href: '/cgpa-calculator', label: 'CGPA Calculator', icon: Calculator },
     { href: '/premium-content', label: 'Premium Content', icon: Lock },
     { href: '/useful-ai-tools', label: '500+ AI Tools', icon: Brain },
-    { href: '/notes-contributors', label: 'Contributor List', icon: Users },
+    { href: '/notes-contributors', label: 'Contributors & Admins', icon: Users },
     { href: '/about', label: 'About', icon: Info },
     ...(isAdmin ? [{ href: '/admin-portal', label: 'Admin Portal', icon: Shield }] : []),
     ...(isOwner ? [{ href: '/owner-dashboard', label: 'Owner Dashboard', icon: Crown }] : []),
@@ -126,10 +126,23 @@ const Navbar = ({ onOpenAuth }: NavbarProps) => {
 
                 {/* 4. Useful Websites Dropdown (Hover to open) */}
                 <UsefulWebsitesDropdown />
+
+                {/* 5. Team & Contributors */}
+                <Link
+                  to="/notes-contributors"
+                  className={`text-sm font-medium transition-colors relative group py-1 ${
+                    isActive('/notes-contributors') || isActive('/admins') ? 'text-primary font-semibold' : 'text-foreground/80 hover:text-foreground'
+                  }`}
+                >
+                  Team & Contributors
+                  <span className={`absolute bottom-0 left-0 w-full h-0.5 bg-primary transform transition-transform duration-300 origin-left ${
+                    isActive('/notes-contributors') || isActive('/admins') ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100'
+                  }`} />
+                </Link>
               </>
             )}
 
-            {/* 5. About (Rightmost in nav links) */}
+            {/* 6. About (Rightmost in nav links) */}
             <Link
               to="/about"
               className={`text-sm font-medium transition-colors relative group py-1 ${

@@ -158,7 +158,15 @@ const AppSidebar = ({ className }: AppSidebarProps) => {
     { icon: <Award className="h-4 w-4" />, label: 'Scholarships', href: '/scholarship-portal' },
     { icon: <Briefcase className="h-4 w-4" />, label: `Opportunities${oppCount !== null ? ` (${oppCount})` : ''}`, href: '/opportunities' },
     { icon: <Brain className="h-4 w-4" />, label: '500+ AI Tools', href: '/useful-ai-tools' },
-    { icon: <Users className="h-4 w-4" />, label: 'Contributor List', href: '/notes-contributors' },
+    {
+      icon: <Users className="h-4 w-4" />,
+      label: 'Team & Contributors',
+      href: '/notes-contributors',
+      children: [
+        { icon: <Shield className="h-4 w-4" />, label: 'Admin Team ⚔️', href: '/notes-contributors?tab=admins' },
+        { icon: <Award className="h-4 w-4" />, label: 'Contributors 🥇', href: '/notes-contributors?tab=contributors' },
+      ]
+    },
     { icon: <Info className="h-4 w-4" />, label: 'About', href: '/about' },
     // Conditional admin/owner items
     ...(isAdmin ? [{ icon: <Shield className="h-4 w-4" />, label: 'Admin Portal', href: '/admin-portal' }] : []),

@@ -179,6 +179,8 @@ export const navItems = [
   { to: "/view-notes/:noteType", page: <ViewNotes /> },
   { to: "/web-development-notes", page: <WebDevelopmentNotes /> },
   { to: "/notes-contributors", page: <NotesContributors /> },
+  { to: "/admins", page: <NotesContributors defaultTab="admins" /> },
+  { to: "/team", page: <NotesContributors defaultTab="admins" /> },
   { to: "/bba-notes", page: <BBANotes /> },
   { to: "/mba-notes", page: <MBANotes /> },
   { to: "/ats-friendly-resume", page: <ATSFriendlyResume /> },

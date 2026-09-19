@@ -1,7 +1,7 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Coins } from "lucide-react";
+import { ArrowLeft, Coins, Shield, Award } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import Navbar from "@/components/Navbar";
 import { motion, AnimatePresence } from "framer-motion";
@@ -27,6 +27,9 @@ interface AdminRecord {
   role: string;
   from_date: string | null;
   to_date: string | null;
+  avatar_url?: string | null;
+  branch?: string | null;
+  college?: string | null;
 }
 
 // ── Constants ─────────────────────────────────────────────────────────────────
@@ -107,16 +110,21 @@ function AdminCard({ admin, index }: { admin: AdminRecord; index: number }) {
           {isOwner ? "👑" : index + 1}
         </div>
 
-        {/* Avatar */}
+        {/* Avatar (Photo or Initials Gradient) */}
         <div style={{
-          width: 44, height: 44, borderRadius: "50%", flexShrink: 0,
+          width: 48, height: 48, borderRadius: "50%", flexShrink: 0,
           background: avatarGradient(admin.user_email),
           display: "flex", alignItems: "center", justifyContent: "center",
           color: "#fff", fontWeight: 800, fontSize: 16,
           boxShadow: "0 2px 8px rgba(0,0,0,0.13)",
           userSelect: "none",
+          overflow: "hidden",
         }}>
-          {initials(displayName)}
+          {admin.avatar_url ? (
+            <img src={admin.avatar_url} alt={displayName} className="w-full h-full object-cover" />
+          ) : (
+            initials(displayName)
+          )}
         </div>
 
         {/* Info */}
@@ -136,6 +144,19 @@ function AdminCard({ admin, index }: { admin: AdminRecord; index: number }) {
             }}>
               {isOwner ? "👑 Owner" : "⚔️ Admin"}
             </span>
+
+            {/* College & Branch if available */}
+            {(admin.college || admin.branch) && (
+              <span style={{
+                padding: "2px 9px", borderRadius: 20, fontSize: 11, fontWeight: 600,
+                background: hov ? "rgba(224,242,254,0.6)" : "hsl(var(--muted))",
+                color: hov ? "#0284c7" : "hsl(var(--muted-foreground))",
+                border: "1px solid rgba(0,0,0,0.06)",
+                transition: "all 0.22s",
+              }}>
+                🎓 {admin.college || 'HBTU Kanpur'}{admin.branch ? ` • ${admin.branch}` : ''}
+              </span>
+            )}
 
             {/* Active / Former */}
             {!isOwner && isActive && (
@@ -208,9 +229,14 @@ const DEFAULT_ADMINS: AdminRecord[] = [
 ];
 
 // ── Main Page ─────────────────────────────────────────────────────────────────
-const NotesContributors = () => {
+const NotesContributors = ({ defaultTab }: { defaultTab?: "contributors" | "admins" } = {}) => {
   const navigate = useNavigate();
-  const [tab, setTab] = useState<"contributors" | "admins">("contributors");
+  const location = useLocation();
+
+  const searchParams = new URLSearchParams(location.search);
+  const requestedTab = defaultTab || (searchParams.get("tab") === "admins" || location.pathname === "/admins" || location.pathname === "/team" ? "admins" : "contributors");
+  const [tab, setTab] = useState<"contributors" | "admins">(requestedTab);
+
   const [admins, setAdmins] = useState<AdminRecord[]>(() => {
     const cached = getCachedData<AdminRecord[]>('contributors_admins', DEFAULT_CACHE_TTL_MS);
     return cached && cached.length > 0 ? cached : DEFAULT_ADMINS;
@@ -223,60 +249,94 @@ const NotesContributors = () => {
     return !getCachedData<Contributor[]>('contributors_list', DEFAULT_CACHE_TTL_MS);
   });
 
-  // Fetch contributors on mount
+  const handleTabChange = (newTab: "contributors" | "admins") => {
+    setTab(newTab);
+    const newUrl = newTab === "admins" ? "/notes-contributors?tab=admins" : "/notes-contributors";
+    window.history.replaceState(null, "", newUrl);
+  };
+
+  // Sync tab if URL changes
   useEffect(() => {
-    const cached = getCachedData<Contributor[]>('contributors_list', DEFAULT_CACHE_TTL_MS);
-    if (cached && cached.length > 0) {
-      setContributors(cached);
+    const params = new URLSearchParams(location.search);
+    if (params.get("tab") === "admins" || location.pathname === "/admins" || location.pathname === "/team") {
+      setTab("admins");
+    } else if (params.get("tab") === "contributors") {
+      setTab("contributors");
+    }
+  }, [location.search, location.pathname]);
+
+  // Fetch both contributors and admins on mount
+  useEffect(() => {
+    // 1. Contributors
+    const cachedContribs = getCachedData<Contributor[]>('contributors_list', DEFAULT_CACHE_TTL_MS);
+    if (cachedContribs && cachedContribs.length > 0) {
+      setContributors(cachedContribs);
       setLoadingContributors(false);
-      return;
+    } else {
+      setLoadingContributors(true);
+      (async () => {
+        const { data } = await (supabase as any)
+          .from("contributors")
+          .select("id, name, branch, batch, coins, linkedin_url, image_url")
+          .order("coins", { ascending: false })
+          .limit(50);
+        if (data) {
+          setContributors(data as Contributor[]);
+          setCachedData('contributors_list', data);
+        }
+        setLoadingContributors(false);
+      })();
     }
 
-    (async () => {
-      setLoadingContributors(true);
-      const { data } = await (supabase as any)
-        .from("contributors")
-        .select("id, name, branch, batch, coins, linkedin_url, image_url")
-        .order("coins", { ascending: false })
-        .limit(50);
-      if (data) {
-        setContributors(data as Contributor[]);
-        setCachedData('contributors_list', data);
-      }
-      setLoadingContributors(false);
-    })();
-  }, []);
-
-  // Fetch admins when tab switches
-  useEffect(() => {
-    if (tab === "admins") {
-      const cached = getCachedData<AdminRecord[]>('contributors_admins', DEFAULT_CACHE_TTL_MS);
-      if (cached && cached.length > 0) {
-        setAdmins(cached);
-        return;
-      }
-
+    // 2. Admins (Proactively fetched and enriched with profile avatars/college)
+    const cachedAdmins = getCachedData<AdminRecord[]>('contributors_admins', DEFAULT_CACHE_TTL_MS);
+    if (cachedAdmins && cachedAdmins.length > 0) {
+      setAdmins(cachedAdmins);
+      setLoadingAdmins(false);
+    } else {
       setLoadingAdmins(true);
-      (supabase as any)
-        .from("admin_roles")
-        .select("id, user_name, user_email, role, from_date, to_date, created_at")
-        .order("from_date", { ascending: true, nullsFirst: false })
-        .limit(20)
-        .then(({ data, error }: any) => {
-          if (!error && data && data.length > 0) {
-            setAdmins(data as AdminRecord[]);
-            setCachedData('contributors_admins', data);
+      (async () => {
+        try {
+          const { data: adminData, error } = await (supabase as any)
+            .from("admin_roles")
+            .select("id, user_name, user_email, role, from_date, to_date, created_at")
+            .order("created_at", { ascending: true })
+            .limit(30);
+
+          if (!error && adminData && adminData.length > 0) {
+            const emails = adminData.map((a: any) => a.user_email?.toLowerCase()).filter(Boolean);
+            const { data: profs } = await supabase
+              .from("profiles")
+              .select("email, first_name, last_name, branch, college, avatar_url")
+              .in("email", emails);
+
+            const profMap = new Map((profs || []).map((p: any) => [p.email?.toLowerCase(), p]));
+
+            const enriched = adminData.map((a: any) => {
+              const prof = profMap.get(a.user_email?.toLowerCase());
+              const fullName = [prof?.first_name, prof?.last_name].filter(Boolean).join(' ');
+              return {
+                ...a,
+                user_name: a.user_name || (fullName ? fullName : (a.user_email === "priyalkumar06@gmail.com" ? "Priyal Kumar" : a.user_email?.split('@')[0])),
+                avatar_url: prof?.avatar_url || null,
+                branch: prof?.branch || null,
+                college: prof?.college || 'HBTU Kanpur',
+              };
+            });
+
+            setAdmins(enriched);
+            setCachedData('contributors_admins', enriched);
           } else {
             setAdmins(prev => (prev && prev.length > 0 ? prev : DEFAULT_ADMINS));
           }
-          setLoadingAdmins(false);
-        })
-        .catch(() => {
+        } catch (e) {
           setAdmins(prev => (prev && prev.length > 0 ? prev : DEFAULT_ADMINS));
+        } finally {
           setLoadingAdmins(false);
-        });
+        }
+      })();
     }
-  }, [tab]);
+  }, []);
 
   // S-wave SVG path coordinates (viewBox 0 0 400 54)
   const S_LEFT  = "M 0 0 L 200 0 C 252 0 252 27 200 27 C 148 27 148 54 200 54 L 0 54 Z";
@@ -332,7 +392,7 @@ const NotesContributors = () => {
             <div style={{ position: "absolute", inset: 0, display: "flex", zIndex: 10 }}>
               <button
                 id="tab-contributors"
-                onClick={() => setTab("contributors")}
+                onClick={() => handleTabChange("contributors")}
                 style={{
                   flex: 1, background: "transparent", border: "none", cursor: "pointer",
                   color: tab === "contributors" ? "#ffffff" : SIDEBAR_PURPLE,
@@ -342,11 +402,11 @@ const NotesContributors = () => {
                   transition: "color 0.35s ease",
                 }}
               >
-                🥇 Contributors
+                🥇 Contributors {contributors.length > 0 ? `(${contributors.length})` : ''}
               </button>
               <button
                 id="tab-admins"
-                onClick={() => setTab("admins")}
+                onClick={() => handleTabChange("admins")}
                 style={{
                   flex: 1, background: "transparent", border: "none", cursor: "pointer",
                   color: tab === "admins" ? "#ffffff" : SIDEBAR_PURPLE,
@@ -356,7 +416,7 @@ const NotesContributors = () => {
                   transition: "color 0.35s ease",
                 }}
               >
-                ⚔️ Admins
+                ⚔️ Admins {admins.length > 0 ? `(${admins.length})` : ''}
               </button>
             </div>
           </div>
