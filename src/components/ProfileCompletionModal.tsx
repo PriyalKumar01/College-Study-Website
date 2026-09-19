@@ -315,7 +315,11 @@ export function ProfileCompletionModal() {
                 console.warn("RPC upsert warning:", rpcErr);
             }
 
-            await supabase.auth.refreshSession();
+            try {
+                await supabase.auth.refreshSession();
+            } catch (refErr) {
+                console.warn("Session refresh warning:", refErr);
+            }
             setHasChecked(true);
             toast({ title: "Profile Updated ✓", description: "Your profile has been saved!" });
             setIsOpen(false);
@@ -415,7 +419,11 @@ export function ProfileCompletionModal() {
                 console.warn("RPC upsert warning:", rpcErr);
             }
 
-            await supabase.auth.refreshSession();
+            try {
+                await supabase.auth.refreshSession();
+            } catch (refErr) {
+                console.warn("Session refresh warning:", refErr);
+            }
             setHasChecked(true);
             toast({ title: "Profile Saved ✓", description: "Welcome aboard! You're all set." });
             setIsOpen(false);

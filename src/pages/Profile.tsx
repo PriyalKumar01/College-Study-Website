@@ -303,7 +303,11 @@ export default function Profile() {
       if (userUpdateError) console.warn("User metadata update warning:", userUpdateError);
 
       // Force session refresh to allow Sidebar to see new metadata immediately
-      await supabase.auth.refreshSession();
+      try {
+        await supabase.auth.refreshSession();
+      } catch (refErr) {
+        console.warn("Session refresh warning:", refErr);
+      }
 
       setProfile({
         ...editedProfile,

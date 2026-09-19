@@ -49,48 +49,35 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const checkAndRejectDisposable = async (email?: string, userObj?: User | null): Promise<boolean> => {
     if (!email) return false;
 
-    // 1. Strictly enforce email confirmation for email provider accounts
-    const provider = userObj?.app_metadata?.provider;
-    const isEmailAccount = provider === 'email' || (userObj?.app_metadata?.providers || []).includes('email');
-    if (isEmailAccount && userObj) {
-      const isConfirmed = Boolean(userObj.email_confirmed_at || userObj.confirmed_at || userObj.user_metadata?.email_verified === true);
-      if (!isConfirmed) {
-        console.warn('Unverified email session detected and terminated:', email);
-        await supabase.auth.signOut();
-        setUser(null);
-        setSession(null);
-        setUserRole('member');
-        setLoading(false);
-        alert('Security Notice: Your email address has not been verified. Please verify your email using the verification OTP sent to your inbox before accessing College Study Hub.');
-        return true;
-      }
-    }
-
+    // 1. Fast synchronous disposable domain check
     const domain = email.split('@')[1];
-
-    // 2. Fast synchronous disposable domain check
     if (domain && isDisposableDomain(domain)) {
       console.warn('Disposable email session detected and terminated (sync):', email);
-      await supabase.auth.signOut();
+      setTimeout(() => supabase.auth.signOut(), 0);
       setUser(null);
       setSession(null);
       setUserRole('member');
       setLoading(false);
-      alert(`Security Notice: Accounts using temporary or disposable email providers (${domain}) are strictly prohibited on College Study Hub. You have been logged out. Please sign up or log in using a valid personal or university email address.`);
+      alert(`Security Notice: Accounts using temporary or disposable email providers (${domain}) are strictly prohibited on College Study Hub. You have been logged out.`);
       return true;
     }
 
-    // 3. Comprehensive asynchronous validation check (Mailcheck.ai / CDN / Debounce)
+    // If directly allowed (Gmail, Outlook, HBTU, .ac.in, .edu, etc.), allow immediately without any network delay
+    if (isDirectlyAllowedDomain(domain)) {
+      return false;
+    }
+
+    // 2. Asynchronous validation check for non-whitelisted domains
     try {
       const valResult = await validateEmail(email);
       if (!valResult.isValid || valResult.isDisposable) {
         console.warn('Disposable email session detected and terminated (async):', email);
-        await supabase.auth.signOut();
+        setTimeout(() => supabase.auth.signOut(), 0);
         setUser(null);
         setSession(null);
         setUserRole('member');
         setLoading(false);
-        alert(`Security Notice: Accounts using temporary or disposable email providers (${domain}) are strictly prohibited on College Study Hub. You have been logged out. Please sign up or log in using a valid personal or university email address.`);
+        alert(`Security Notice: Accounts using temporary or disposable email providers (${domain}) are strictly prohibited on College Study Hub. You have been logged out.`);
         return true;
       }
     } catch (valErr) {
@@ -152,36 +139,21 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     }
 
     try {
-      // 1. Verify with Supabase Auth server whether user token is banned/revoked
-      const { data: serverUserData, error: userError } = await supabase.auth.getUser();
-      if (userError) {
-        const msg = userError.message?.toLowerCase() || '';
-        if (msg.includes('banned') || userError.status === 403) {
-          console.warn('User is marked as banned by Supabase Auth server.');
-          setIsBanned(true);
-          localStorage.setItem('csh_banned_user', userObj.email || 'banned');
-          await supabase.auth.signOut();
-          setUser(null);
-          setSession(null);
-          setLoading(false);
-          return true;
-        }
-      }
-
-      // 2. Query public.profiles for banned_until and approval_status
+      // 1. Query public.profiles for banned_until and approval_status (Direct PostgREST query, no auth mutex lock)
       const { data: profile } = await supabase
         .from('profiles')
         .select('banned_until, approval_status')
-        .eq('user_id', userObj.id)
+        .or(`id.eq.${userObj.id},user_id.eq.${userObj.id}`)
         .maybeSingle();
 
-      if (profile?.banned_until) {
-        const bannedTime = new Date(profile.banned_until).getTime();
+      const bannedUntil = profile?.banned_until || (userObj as any)?.banned_until;
+      if (bannedUntil) {
+        const bannedTime = new Date(bannedUntil).getTime();
         if (bannedTime > Date.now()) {
-          console.warn('User is currently banned until:', profile.banned_until);
+          console.warn('User is currently banned until:', bannedUntil);
           setIsBanned(true);
           localStorage.setItem('csh_banned_user', userObj.email || 'banned');
-          await supabase.auth.signOut();
+          setTimeout(() => supabase.auth.signOut(), 0);
           setUser(null);
           setSession(null);
           setLoading(false);
@@ -193,7 +165,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       setIsBanned(false);
       localStorage.removeItem('csh_banned_user');
 
-      // 3. Approval status check
+      // 2. Approval status check
       const domain = userObj.email?.split('@')[1] || '';
       if (isDirectlyAllowedDomain(domain)) {
         setApprovalStatus('approved');
@@ -214,51 +186,59 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   };
 
   useEffect(() => {
-    // Set up auth state listener
+    // 1. Set up auth state listener - strictly synchronous/non-blocking
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (_event, session) => {
-        if (session?.user?.email) {
-          const isBlocked = await checkAndRejectDisposable(session.user.email, session.user);
-          if (isBlocked) return;
+      (_event, newSession) => {
+        setSession(newSession);
+        setUser(newSession?.user ?? null);
+        setLoading(false);
 
-          const isUserBanned = await checkBanAndApproval(session.user);
-          if (isUserBanned) return;
-        }
+        if (newSession?.user?.email) {
+          const activeUser = newSession.user;
+          // Defer verification to next tick outside GoTrue auth dispatch lock
+          setTimeout(async () => {
+            const isBlocked = await checkAndRejectDisposable(activeUser.email, activeUser);
+            if (isBlocked) return;
 
-        setSession(session);
-        setUser(session?.user ?? null);
-        if (session?.user?.email) {
-          // Use setTimeout to avoid Supabase deadlock during auth callback
-          setTimeout(() => fetchUserRole(session.user.email), 0);
+            const isUserBanned = await checkBanAndApproval(activeUser);
+            if (isUserBanned) return;
+
+            fetchUserRole(activeUser.email);
+          }, 0);
         } else {
           setUserRole('member');
         }
-        setLoading(false);
       }
     );
 
-    // Get initial session
+    // 2. Initial session retrieval
     const getInitialSession = async () => {
-      // Check if user was previously marked banned in localStorage
-      if (localStorage.getItem('csh_banned_user')) {
-        setIsBanned(true);
-      }
+      try {
+        if (localStorage.getItem('csh_banned_user')) {
+          setIsBanned(true);
+        }
 
-      const { data: { session } } = await supabase.auth.getSession();
-      if (session?.user?.email) {
-        const isBlocked = await checkAndRejectDisposable(session.user.email, session.user);
-        if (isBlocked) return;
+        const { data: { session: initSession } } = await supabase.auth.getSession();
+        setSession(initSession);
+        setUser(initSession?.user ?? null);
 
-        const isUserBanned = await checkBanAndApproval(session.user);
-        if (isUserBanned) return;
-      }
+        if (initSession?.user?.email) {
+          const activeUser = initSession.user;
+          setTimeout(async () => {
+            const isBlocked = await checkAndRejectDisposable(activeUser.email, activeUser);
+            if (isBlocked) return;
 
-      setSession(session);
-      setUser(session?.user ?? null);
-      if (session?.user?.email) {
-        await fetchUserRole(session.user.email);
+            const isUserBanned = await checkBanAndApproval(activeUser);
+            if (isUserBanned) return;
+
+            fetchUserRole(activeUser.email);
+          }, 0);
+        }
+      } catch (err) {
+        console.warn('Error retrieving initial session:', err);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     };
 
     getInitialSession();

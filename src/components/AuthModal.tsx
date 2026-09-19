@@ -268,13 +268,17 @@ Simply click one of the buttons below to log in or sign up immediately.`,
       if (mode === 'signup' || mode === 'signin') {
         const validationResult = await validateEmail(email);
         if (!validationResult.isValid) {
-          // Log failed attempt to database
-          await supabase.from('signup_attempts').insert({
-            email: email.trim().toLowerCase(),
-            full_name: firstName || lastName ? `${firstName} ${lastName}`.trim() : null,
-            status: 'failed',
-            error_reason: validationResult.reason || 'Disposable email blocked'
-          });
+          // Log failed attempt to database (non-blocking)
+          try {
+            await supabase.from('signup_attempts').insert({
+              email: email.trim().toLowerCase(),
+              full_name: firstName || lastName ? `${firstName} ${lastName}`.trim() : null,
+              status: 'failed',
+              error_reason: validationResult.reason || 'Disposable email blocked'
+            });
+          } catch (logErr) {
+            console.warn('Could not log failed signup attempt:', logErr);
+          }
 
           setEmailAlert({
             title: "Invalid Email Provider",
@@ -286,16 +290,20 @@ Simply click one of the buttons below to log in or sign up immediately.`,
           return;
         }
 
-        // Log pending attempt to database (only for signup mode to keep table clean)
+        // Log pending attempt to database (only for signup mode to keep table clean, non-blocking)
         if (mode === 'signup') {
-          const { data: attemptData } = await supabase.from('signup_attempts').insert({
-            email: email.trim().toLowerCase(),
-            full_name: firstName || lastName ? `${firstName} ${lastName}`.trim() : null,
-            status: 'pending'
-          }).select('id').maybeSingle();
+          try {
+            const { data: attemptData } = await supabase.from('signup_attempts').insert({
+              email: email.trim().toLowerCase(),
+              full_name: firstName || lastName ? `${firstName} ${lastName}`.trim() : null,
+              status: 'pending'
+            }).select('id').maybeSingle();
 
-          if (attemptData) {
-            signupAttemptId = (attemptData as any).id;
+            if (attemptData) {
+              signupAttemptId = (attemptData as any).id;
+            }
+          } catch (logErr) {
+            console.warn('Could not log pending signup attempt:', logErr);
           }
         }
       }
@@ -487,8 +495,8 @@ Simply click one of the buttons below to log in or sign up immediately.`,
       const fullName = `${firstName} ${lastName}`.trim();
 
       // Direct upsert into public.profiles table
-      const { data: authUserData } = await supabase.auth.getUser();
-      const currentUserId = authUserData?.user?.id;
+      const { data: sessionData } = await supabase.auth.getSession();
+      const currentUserId = sessionData?.session?.user?.id;
       if (currentUserId) {
         try {
           await supabase.from('profiles').upsert({
@@ -539,9 +547,11 @@ Simply click one of the buttons below to log in or sign up immediately.`,
         }
       });
 
-      if (error) throw error;
-
-      await supabase.auth.refreshSession();
+      try {
+        await supabase.auth.refreshSession();
+      } catch (refErr) {
+        console.warn("Session refresh warning:", refErr);
+      }
 
       sessionStorage.setItem('hasSignedUp', 'true');
       toast({
