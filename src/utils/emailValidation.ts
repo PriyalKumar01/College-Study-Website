@@ -4,6 +4,7 @@
 
 // A blacklist of common temporary / disposable email domains
 const DISPOSABLE_DOMAINS_BLACKLIST = new Set([
+  'fpklm.com', 'mail.fpklm.com',
   'atomicmail.io', 'atomicmail.com', 'atomicmail.org', 'atomic-mail.com', 'atomicmail.co',
   'yopmail.com', 'mailinator.com', 'tempmail.com', '10minutemail.com',
   'guerrillamail.com', 'dispostable.com', 'getairmail.com', 'sharklasers.com',
@@ -17,11 +18,21 @@ const DISPOSABLE_DOMAINS_BLACKLIST = new Set([
   'fxpost.org', 'fxzig.org', 'fxmail.net', 'fxspost.org', 'inboxkitten.com',
   'temp-mail.io', '1secmail.com', '1secmail.net', '1secmail.org', 'burnermail.io',
   'internalmail.net', 'mohmal.com', 'nada.ltd', 'mailsac.com', 'guerrillamailblock.com',
-  'fakemailgenerator.com', 'mytemp.email', 'emailfake.com', 'trashmail.net'
+  'fakemailgenerator.com', 'mytemp.email', 'emailfake.com', 'trashmail.net',
+  'dropmail.me', 'emlhub.com', 'mimimail.me', 'spymail.one', 'dynv6.net',
+  'blobapps.com', 'blobapps.net', 'blobapps.org'
 ]);
 
 // Common patterns in disposable email domains
 const DISPOSABLE_DOMAIN_PATTERNS = [
+  /blobapps/i,
+  /fpklm/i,
+  /dropmail/i,
+  /emlhub/i,
+  /mimimail/i,
+  /spymail/i,
+  /emailfake/i,
+  /dynv6/i,
   /atomicmail/i,
   /temp.*mail/i,
   /dispos/i,
@@ -41,6 +52,35 @@ const DISPOSABLE_DOMAIN_PATTERNS = [
   /getnada/i,
   /internalmail/i
 ];
+
+// Major directly allowed educational and trusted personal mail providers (instant access)
+export const DIRECT_ALLOWED_DOMAINS = new Set([
+  'gmail.com', 'googlemail.com',
+  'outlook.com', 'hotmail.com', 'live.com', 'msn.com', 'outlook.in',
+  'yahoo.com', 'yahoo.co.in', 'ymail.com',
+  'icloud.com', 'me.com', 'mac.com',
+  'hbtu.ac.in', 'iitk.ac.in', 'iitd.ac.in', 'iitb.ac.in'
+]);
+
+/**
+ * Checks whether an email domain is in the directly allowed whitelist (instant access).
+ * Returns true for Gmail, Outlook, Hotmail, Live, Yahoo, iCloud, HBTU, and any recognized
+ * academic domain ending with .ac.in, .edu, .edu.in, or .res.in.
+ */
+export function isDirectlyAllowedDomain(domain: string): boolean {
+  if (!domain) return false;
+  const clean = domain.trim().toLowerCase();
+  if (DIRECT_ALLOWED_DOMAINS.has(clean)) return true;
+  if (
+    clean.endsWith('.ac.in') ||
+    clean.endsWith('.edu') ||
+    clean.endsWith('.edu.in') ||
+    clean.endsWith('.res.in')
+  ) {
+    return true;
+  }
+  return false;
+}
 
 /** Synchronous check to see if a domain matches known disposable patterns or blacklist */
 export function isDisposableDomain(domain: string): boolean {
@@ -128,6 +168,14 @@ export async function validateEmail(email: string): Promise<EmailValidationResul
     };
   }
 
+  // If from a known, trusted legitimate provider (Gmail, Outlook, Yahoo, HBTU, .ac.in, .edu, etc.), allow immediately
+  if (isDirectlyAllowedDomain(domain)) {
+    return {
+      isValid: true,
+      isDisposable: false
+    };
+  }
+
   // 3. Check dynamic CDN blocklist (comprehensive check with ~8k domains)
   try {
     const cdnDomains = await fetchCdnDomains();
@@ -142,7 +190,38 @@ export async function validateEmail(email: string): Promise<EmailValidationResul
     console.warn('Failed to check CDN blocklist, falling back to APIs:', err);
   }
 
-  // 4. Dynamic Checker API 1: Debounce API (Real-time active lookup, no key needed)
+  // 4. Real-time Live API 1: Mailcheck.ai (Real-time MX, domain age, & disposable check - detects fpklm.com and new burners)
+  try {
+    const mailcheckController = new AbortController();
+    const mailcheckTimeout = setTimeout(() => mailcheckController.abort(), 3500);
+
+    const mailcheckRes = await fetch(`https://api.mailcheck.ai/domain/${domain}`, {
+      signal: mailcheckController.signal
+    });
+    clearTimeout(mailcheckTimeout);
+
+    if (mailcheckRes.ok) {
+      const data = await mailcheckRes.json();
+      if (data.disposable === true) {
+        return {
+          isValid: false,
+          isDisposable: true,
+          reason: 'Temporary or disposable email domain detected via security verification.'
+        };
+      }
+      if (data.mx === false) {
+        return {
+          isValid: false,
+          isDisposable: false,
+          reason: 'This domain cannot receive emails (no valid MX record found).'
+        };
+      }
+    }
+  } catch (error) {
+    console.warn('Mailcheck.ai check failed, falling back to secondary APIs:', error);
+  }
+
+  // 5. Real-time Live API 2: Debounce API (Real-time active lookup)
   try {
     const debounceController = new AbortController();
     const debounceTimeout = setTimeout(() => debounceController.abort(), 3000); // 3-second timeout
@@ -155,7 +234,6 @@ export async function validateEmail(email: string): Promise<EmailValidationResul
 
     if (debounceResponse.ok) {
       const data = await debounceResponse.json();
-      // Debounce returns {"disposable": "true"} or {"disposable": "false"} as strings (sometimes boolean)
       if (data.disposable === 'true' || data.disposable === true) {
         return {
           isValid: false,
@@ -168,7 +246,7 @@ export async function validateEmail(email: string): Promise<EmailValidationResul
     console.warn('Debounce API check failed, falling back:', error);
   }
 
-  // 5. Dynamic Checker API 2: Kickbox's free disposable email checker API
+  // 6. Real-time Live API 3: Kickbox's free disposable email checker API
   try {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 3000); // 3-second timeout
@@ -190,7 +268,6 @@ export async function validateEmail(email: string): Promise<EmailValidationResul
       }
     }
   } catch (error) {
-    // If external APIs fail, we fail-open on dynamic checks but still respect static list
     console.warn('Kickbox API check failed, relying on local filters:', error);
   }
 

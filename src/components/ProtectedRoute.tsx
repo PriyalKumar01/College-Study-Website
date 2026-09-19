@@ -15,6 +15,13 @@ const ProtectedRoute = () => {
         return <Navigate to="/" replace state={{ from: target }} />;
     }
 
+    // Check email verification for email-password accounts
+    const isEmailAccount = user.app_metadata?.provider === 'email' || (user.app_metadata?.providers || []).includes('email');
+    const isConfirmed = Boolean(user.email_confirmed_at || (user as any).confirmed_at || user.user_metadata?.email_verified === true);
+    if (isEmailAccount && !isConfirmed) {
+        return <Navigate to="/" replace state={{ error: 'Please verify your email address before accessing this page.' }} />;
+    }
+
     return <Outlet />;
 };
 
