@@ -181,16 +181,20 @@ export function ProfileCompletionModal() {
 
             if (!isMetaComplete || !existingCollege || !existingBranch || !existingYear) {
                 setIsUpdateMode(false);
-                // Only ask for password if user signed up via email (not OAuth like Google)
+                // Only ask for password if user signed up via email (not OAuth like Google or GitHub)
                 const isOAuthUser = user.app_metadata?.provider === "google" ||
-                    (user.app_metadata?.providers || []).includes("google");
+                    (user.app_metadata?.providers || []).includes("google") ||
+                    user.app_metadata?.provider === "github" ||
+                    (user.app_metadata?.providers || []).includes("github");
                 setAskForPassword(!isOAuthUser);
 
                 if (user.user_metadata) {
-                    const { full_name, name, college: metaCollege, branch: metaBranch, year: metaYear } = user.user_metadata;
+                    const { full_name, name, user_name, preferred_username, college: metaCollege, branch: metaBranch, year: metaYear } = user.user_metadata;
+                    const resolvedName = full_name || name || user_name || preferred_username || '';
 
-                    if ((full_name || name) && !firstName) {
-                        const names = (full_name || name).split(' ');
+                    if (resolvedName && !firstName) {
+                        const clean = resolvedName.replace(/[._-]/g, ' ').trim();
+                        const names = clean.split(' ');
                         setFirstName(names[0] || '');
                         setLastName(names.slice(1).join(' ') || '');
                     }
@@ -274,6 +278,7 @@ export function ProfileCompletionModal() {
                     year: finalYear,
                     college: resolvedCollege,
                     branch: finalBranch,
+                    email_verified: true,
                     profile_completed: true
                 },
             });
@@ -370,6 +375,7 @@ export function ProfileCompletionModal() {
                     college: resolvedCollege,
                     branch: finalBranch,
                     year: finalYear,
+                    email_verified: true,
                     profile_completed: true
                 },
             };

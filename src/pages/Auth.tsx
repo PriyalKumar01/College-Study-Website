@@ -22,6 +22,10 @@ const Auth = () => {
       const decodedError = decodeURIComponent(errorDescription).replace(/\+/g, ' ');
       setErrorMsg(decodedError);
       
+      if (decodedError.toLowerCase().includes('banned') || decodedError.toLowerCase().includes('suspended')) {
+        localStorage.setItem('csh_banned_user', 'banned');
+      }
+
       // Log the OAuth callback failure
       supabase.from('signup_attempts').insert({
         email: 'oauth-callback-failed@college-study.netlify.app',
@@ -50,14 +54,45 @@ const Auth = () => {
         metadata: user.user_metadata,
         session_expires_at: session?.expires_at,
       });
+
+      // Ensure GitHub or any OAuth user has name, full_name, first_name in user_metadata
+      const meta = user.user_metadata || {};
+      if (!meta.name && !meta.full_name) {
+        const rawName = meta.user_name || meta.preferred_username || user.email?.split('@')[0] || 'User';
+        const cleanName = rawName.replace(/[._-]/g, ' ').replace(/\b\w/g, (c: string) => c.toUpperCase()).trim();
+        const parts = cleanName.split(' ');
+        const fName = parts[0] || 'User';
+        const lName = parts.slice(1).join(' ') || '';
+
+        supabase.auth.updateUser({
+          data: {
+            name: cleanName,
+            full_name: cleanName,
+            first_name: fName,
+            last_name: lName,
+            email_verified: true
+          }
+        }).then(() => {}).catch(err => console.warn('OAuth name sync error:', err));
+      }
     }
   }, [user, session]);
 
   // Auto-redirect if logged in
   useEffect(() => {
     if (!loading && user) {
+      const redirectTarget = (()=>{
+        try {
+          const saved = sessionStorage.getItem('postLoginRedirect');
+          if (saved) {
+            sessionStorage.removeItem('postLoginRedirect');
+            return saved;
+          }
+        } catch {}
+        return '/dashboard';
+      })();
+
       // Small delay to allow session to settle
-      const timer = setTimeout(() => navigate('/dashboard'), 500);
+      const timer = setTimeout(() => navigate(redirectTarget), 500);
       return () => clearTimeout(timer);
     }
   }, [user, loading, navigate]);
