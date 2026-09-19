@@ -2,11 +2,27 @@
 -- MIGRATION: Fix Security, Disposable Email Blocking, GATE Branch, & User Meta
 -- ===========================================================================
 
--- 1. Block 'fpklm.com' and newly identified disposable domains
+-- 0. Ensure public.blocked_email_domains table exists
+CREATE TABLE IF NOT EXISTS public.blocked_email_domains (
+  domain TEXT PRIMARY KEY,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+ALTER TABLE public.blocked_email_domains ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Allow public read access to blocked_email_domains" ON public.blocked_email_domains;
+CREATE POLICY "Allow public read access to blocked_email_domains" 
+ON public.blocked_email_domains FOR SELECT 
+USING (true);
+
+-- 1. Block 'fpklm.com', 'blobapps.com', and newly identified disposable domains
 INSERT INTO public.blocked_email_domains (domain)
 VALUES
   ('fpklm.com'),
   ('mail.fpklm.com'),
+  ('blobapps.com'),
+  ('blobapps.net'),
+  ('blobapps.org'),
   ('buloan.com'),
   ('fxzig.com'),
   ('fxmail.org'),
@@ -19,8 +35,7 @@ VALUES
   ('emailfake.com'),
   ('dynv6.net'),
   ('indevs.in'),
-  ('ccwu.cc'),
-  ('mimimail.me')
+  ('ccwu.cc')
 ON CONFLICT (domain) DO NOTHING;
 
 -- 2. Enhanced Trigger function to block disposable emails at PostgreSQL database level
