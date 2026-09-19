@@ -45,6 +45,11 @@ DECLARE
   email_domain TEXT;
   is_blocked BOOLEAN;
 BEGIN
+  -- Allow updates to existing records if email itself is not being changed (e.g. banning, metadata sync)
+  IF TG_OP = 'UPDATE' AND (OLD.email = NEW.email OR OLD.email IS NOT DISTINCT FROM NEW.email) THEN
+    RETURN NEW;
+  END IF;
+
   -- Extract domain from email
   email_domain := LOWER(substring(NEW.email from '@(.*)$'));
 
@@ -59,7 +64,7 @@ BEGIN
   END IF;
 
   -- B. Check regex patterns for burner/disposable domains
-  IF email_domain ~* '(temp.*mail|dispos|throwaway|mailinator|guerrilla|10minute|trashmail|sharklaser|fake.*mail|fakeinbox|burner.*mail|inboxkitten|1secmail|mohmal|yopmail|getnada|internalmail|atomicmail|fpklm|buloan|fxzig|fxmail|dropmail|emlhub|mimimail|spymail|emailfake|dynv6\.net)' THEN
+  IF email_domain ~* '(temp.*mail|dispos|throwaway|mailinator|guerrilla|10minute|trashmail|sharklaser|fake.*mail|fakeinbox|burner.*mail|inboxkitten|1secmail|mohmal|yopmail|getnada|internalmail|atomicmail|fpklm|buloan|fxzig|fxmail|dropmail|emlhub|mimimail|spymail|emailfake|dynv6\.net|blobapps)' THEN
     RAISE EXCEPTION 'Signup/Login with temporary or disposable email addresses is not permitted. Please use a permanent, valid personal or academic email address.';
   END IF;
 
