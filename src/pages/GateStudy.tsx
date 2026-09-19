@@ -267,16 +267,15 @@ const GateStudy = () => {
           setIsRegistered(true);
           setAccessStatus('approved');
           setShowRegModal(false);
-          // Fetch target branch from profiles to set active tab
+          // Fetch target branch from purchase or profiles to set active tab
           const { data: profile } = await supabase
             .from('profiles')
             .select('branch, college, year')
             .eq('id', user.id)
             .maybeSingle();
-          if (profile?.branch) {
-            setSelectedBranch(profile.branch);
-          }
-          setCachedData(`gate_access_${user.id}`, { status: 'approved', branch: profile?.branch });
+          const targetBr = (data as any).target_branch || (data as any).branch || profile?.branch || 'CSE';
+          setSelectedBranch(targetBr);
+          setCachedData(`gate_access_${user.id}`, { status: 'approved', branch: targetBr });
         } else if (data.payment_status === 'pending' || data.payment_status === 'pending_approval') {
           setIsRegistered(false);
           setAccessStatus('pending');
@@ -287,7 +286,7 @@ const GateStudy = () => {
             .eq('id', user.id)
             .maybeSingle();
           setSubmittedDetails({
-            branch: profile?.branch,
+            branch: (data as any).target_branch || (data as any).branch || profile?.branch || 'CSE',
             college: profile?.college,
             year: profile?.year,
             submittedAt: data.purchased_at
@@ -386,25 +385,15 @@ const GateStudy = () => {
       setCheckingAccess(true);
       const targetCollege = formData.college === 'Other' ? formData.otherCollege : formData.college;
 
-      // 1. Update college, branch, and target year in profiles table
-      const { error: profileError } = await supabase
-        .from('profiles')
-        .update({
-          college: targetCollege,
-          branch: formData.preparingFor,
-          year: formData.year,
-        })
-        .eq('id', user.id);
-
-      if (profileError) throw profileError;
-
-      // 2. Insert access record in premium_purchases table for 'gate_study' plan (pending owner verification)
-      const { error: purchaseError } = await supabase
+      // Insert access record in premium_purchases table for 'gate_study' plan (pending owner verification)
+      // NOTE: We do NOT overwrite student's college branch (profiles.branch) with their GATE preparation subject!
+      const { error: purchaseError } = await (supabase as any)
         .from('premium_purchases')
         .insert({
           user_id: user.id,
           user_email: user.email?.toLowerCase(),
           plan: 'gate_study',
+          target_branch: formData.preparingFor,
           amount_paid: 0,
           original_amount: 0,
           payment_status: 'pending',

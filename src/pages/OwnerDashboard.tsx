@@ -11,7 +11,7 @@ import { Label } from '@/components/ui/label';
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import {
   CheckCircle, XCircle, User, Calendar, BookOpen, ShieldAlert,
-  Eye, Trash2, Crown, UserPlus, UserMinus, Search, Loader2, FileText, Download, GraduationCap, ExternalLink, Bell, Send, Pencil, Trophy, Coins, Link, Lock, Sparkles, Clock
+  Eye, Trash2, Crown, UserPlus, UserMinus, Search, Loader2, FileText, Download, GraduationCap, ExternalLink, Bell, Send, Pencil, Trophy, Coins, Link, Lock, Sparkles, Clock, RefreshCw
 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
@@ -549,7 +549,9 @@ const OwnerDashboard = () => {
   const [allSwiping, setAllSwiping] = useState(false);
 
   // Clickable Modal Section view state (default null so no section is expanded on page load)
-  const [activeModalSection, setActiveModalSection] = useState<'pending' | 'scholarships' | 'premium' | 'notifications' | 'contributors' | 'admins' | 'emails' | 'all' | null>(null);
+  const [activeModalSection, setActiveModalSection] = useState<'pending' | 'scholarships' | 'premium' | 'notifications' | 'contributors' | 'admins' | 'emails' | 'all' | 'account_approvals' | null>(null);
+  const [pendingApprovals, setPendingApprovals] = useState<any[]>([]);
+  const [isProcessingApproval, setIsProcessingApproval] = useState<string | null>(null);
 
   // ─── Computed variables (must be before useEffect hooks) ─────────────────────
   
@@ -896,6 +898,7 @@ const OwnerDashboard = () => {
       fetchContributors(),
       fetchPremiumPurchases(),
       fetchPendingGateRequests(),
+      fetchPendingApprovals(),
       fetchSignupStats(),
       fetchCampaignStats(),
       fetchTotalStudents(),
@@ -934,7 +937,9 @@ const OwnerDashboard = () => {
           ...p,
           first_name: prof?.first_name || '',
           last_name: prof?.last_name || '',
-          branch: prof?.branch || '',
+          branch: p.target_branch || p.branch || prof?.branch || '',
+          college_branch: prof?.branch || '',
+          target_branch: p.target_branch || p.branch || 'CSE',
           college: prof?.college || '',
           year: prof?.year || '',
           email: prof?.email || p.user_email,
@@ -1003,6 +1008,67 @@ const OwnerDashboard = () => {
       });
     } finally {
       setIsApprovingGate(null);
+    }
+  };
+
+  const fetchPendingApprovals = async () => {
+    try {
+      const { data, error } = await (supabase as any)
+        .from('profiles')
+        .select('*')
+        .eq('approval_status', 'pending')
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      setPendingApprovals(data || []);
+    } catch (err: any) {
+      console.error('Error fetching pending approvals:', err);
+    }
+  };
+
+  const handleApproveAccount = async (userId: string, email: string) => {
+    setIsProcessingApproval(userId);
+    try {
+      const { error } = await (supabase as any)
+        .from('profiles')
+        .update({ approval_status: 'approved' })
+        .eq('user_id', userId);
+
+      if (error) throw error;
+      toast({
+        title: 'Account Approved ✅',
+        description: `${email} has been approved and granted full access.`
+      });
+      await fetchPendingApprovals();
+    } catch (err: any) {
+      toast({ title: 'Approval Failed', description: err.message, variant: 'destructive' });
+    } finally {
+      setIsProcessingApproval(null);
+    }
+  };
+
+  const handleRejectAccount = async (userId: string, email: string) => {
+    if (!window.confirm(`Are you sure you want to reject and ban ${email}?`)) return;
+    setIsProcessingApproval(userId);
+    try {
+      const { error } = await (supabase as any)
+        .from('profiles')
+        .update({
+          approval_status: 'rejected',
+          banned_until: new Date(Date.now() + 1000 * 86400 * 1000).toISOString()
+        })
+        .eq('user_id', userId);
+
+      if (error) throw error;
+      toast({
+        title: 'Account Rejected ❌',
+        description: `${email} was rejected and access revoked.`
+      });
+      await fetchPendingApprovals();
+    } catch (err: any) {
+      toast({ title: 'Rejection Failed', description: err.message, variant: 'destructive' });
+    } finally {
+      setIsProcessingApproval(null);
     }
   };
 
@@ -1837,6 +1903,35 @@ const OwnerDashboard = () => {
               <p className="text-[10px] uppercase tracking-wider font-bold">All Materials</p>
             </div>
           </div>
+
+          {/* 9. Account Approvals */}
+          <div 
+            onClick={() => setActiveModalSection('account_approvals')}
+            className={`cursor-pointer border shadow-sm transition-all duration-300 rounded-xl p-4 flex items-center gap-3 border-l-4 hover:scale-[1.02] ${
+              activeModalSection === 'account_approvals'
+                ? isDark 
+                  ? 'bg-slate-900 border-amber-500 border-l-amber-500 text-white shadow-lg' 
+                  : 'bg-amber-50/50 border-amber-300 border-l-amber-500 text-amber-900 shadow-md'
+                : isDark 
+                  ? 'border-slate-800 bg-slate-900/60 border-l-amber-500 text-slate-100 hover:border-slate-700' 
+                  : 'border-slate-200 bg-white/70 border-l-amber-500 text-slate-900 hover:border-slate-350'
+            }`}
+          >
+            <div className="w-10 h-10 rounded-xl bg-amber-500/10 flex items-center justify-center text-amber-500 shrink-0 border border-amber-500/20">
+              <Clock className="h-5 w-5" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <p className="text-xl font-bold">{pendingApprovals.length}</p>
+                {pendingApprovals.length > 0 && (
+                  <Badge className="bg-amber-500 hover:bg-amber-600 text-white text-[10px] px-1.5 py-0 font-bold animate-pulse">
+                    PENDING
+                  </Badge>
+                )}
+              </div>
+              <p className="text-[10px] uppercase tracking-wider font-bold">Account Approvals</p>
+            </div>
+          </div>
         </div>
 
         {/* ── Control Panel Full Workspace Pop-up Modal ── */}
@@ -2170,9 +2265,14 @@ const OwnerDashboard = () => {
                             <div className="space-y-1">
                               <div className="flex items-center gap-2 flex-wrap">
                                 <span className="font-semibold text-sm">{fullName}</span>
-                                <Badge variant="secondary" className="text-xs">
-                                  {req.branch || 'N/A'} {req.year ? `• Year ${req.year}` : ''}
+                                <Badge variant="secondary" className="text-xs bg-indigo-50 text-indigo-700 dark:bg-indigo-950/40 dark:text-indigo-300 border-indigo-200">
+                                  GATE: {req.target_branch || req.branch || 'CSE'}
                                 </Badge>
+                                {req.college_branch && (
+                                  <Badge variant="outline" className="text-xs text-muted-foreground">
+                                    College: {req.college_branch}
+                                  </Badge>
+                                )}
                                 {req.college && (
                                   <span className="text-xs text-muted-foreground">({req.college})</span>
                                 )}
@@ -2812,6 +2912,108 @@ const OwnerDashboard = () => {
 
           <TabsContent value="emails" className="space-y-6">
             <MassEmailDashboard />
+          </TabsContent>
+
+          <TabsContent value="account_approvals" className="space-y-6">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pb-4 border-b">
+              <div>
+                <h3 className="text-xl font-bold flex items-center gap-2">
+                  <Clock className="h-5 w-5 text-amber-500" />
+                  <span>Pending Account Approvals</span>
+                  <Badge className="bg-amber-500/10 text-amber-500 border border-amber-500/20 text-xs font-bold">
+                    {pendingApprovals.length} Pending
+                  </Badge>
+                </h3>
+                <p className="text-xs text-muted-foreground mt-1">
+                  Review and approve student registrations from external or custom email domains.
+                </p>
+              </div>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={fetchPendingApprovals}
+                className="text-xs font-semibold gap-1.5"
+              >
+                <RefreshCw className="h-3.5 w-3.5" /> Refresh
+              </Button>
+            </div>
+
+            {pendingApprovals.length === 0 ? (
+              <Card className={`border text-center py-16 ${
+                isDark ? 'border-slate-800 bg-slate-900/40 text-slate-100' : 'border-slate-200 bg-white/70 text-slate-900 shadow-sm'
+              }`}>
+                <CardContent>
+                  <CheckCircle className="h-16 w-16 text-emerald-500 mx-auto mb-4 animate-bounce" />
+                  <h3 className="text-xl font-bold mb-2">All Caught Up!</h3>
+                  <p className={`${isDark ? 'text-slate-400' : 'text-slate-650'} text-sm`}>
+                    There are currently no student accounts waiting for manual approval.
+                  </p>
+                </CardContent>
+              </Card>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {pendingApprovals.map((account) => {
+                  const fullName = `${account.first_name || ''} ${account.last_name || ''}`.trim() || 'Unspecified Name';
+                  const domain = account.email?.split('@')[1] || '';
+                  const isProcessing = isProcessingApproval === account.user_id;
+
+                  return (
+                    <Card
+                      key={account.user_id}
+                      className={`border p-5 rounded-xl shadow-sm transition-all ${
+                        isDark ? 'bg-slate-900/80 border-slate-800 text-slate-100' : 'bg-white border-slate-200 text-slate-900'
+                      }`}
+                    >
+                      <div className="flex justify-between items-start gap-2 mb-3">
+                        <div>
+                          <h4 className="font-bold text-base text-foreground">{fullName}</h4>
+                          <p className="text-xs font-mono text-muted-foreground break-all">{account.email}</p>
+                        </div>
+                        <Badge className="bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/30 text-[10px] font-bold">
+                          @{domain}
+                        </Badge>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-2 text-xs py-2 border-y border-border/60 my-3">
+                        <div>
+                          <span className="text-muted-foreground block text-[10px] uppercase font-bold">College</span>
+                          <span className="font-semibold text-foreground truncate block">{account.college || 'Not specified'}</span>
+                        </div>
+                        <div>
+                          <span className="text-muted-foreground block text-[10px] uppercase font-bold">Branch</span>
+                          <span className="font-semibold text-foreground truncate block">{account.branch || 'Not specified'}</span>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center justify-between gap-3 pt-1">
+                        <span className="text-[11px] text-muted-foreground">
+                          {account.created_at ? new Date(account.created_at).toLocaleDateString('en-IN') : 'Recent'}
+                        </span>
+                        <div className="flex items-center gap-2">
+                          <Button
+                            size="sm"
+                            disabled={isProcessing}
+                            onClick={() => handleApproveAccount(account.user_id, account.email)}
+                            className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs h-8 px-3 gap-1 shadow-sm"
+                          >
+                            <CheckCircle className="h-3.5 w-3.5" /> Approve
+                          </Button>
+                          <Button
+                            variant="destructive"
+                            size="sm"
+                            disabled={isProcessing}
+                            onClick={() => handleRejectAccount(account.user_id, account.email)}
+                            className="font-bold text-xs h-8 px-3 gap-1 shadow-sm"
+                          >
+                            <XCircle className="h-3.5 w-3.5" /> Reject
+                          </Button>
+                        </div>
+                      </div>
+                    </Card>
+                  );
+                })}
+              </div>
+            )}
           </TabsContent>
         </Tabs>
       )}
