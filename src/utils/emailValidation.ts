@@ -59,9 +59,6 @@ export const DIRECT_ALLOWED_DOMAINS = new Set([
   'outlook.com', 'hotmail.com', 'live.com', 'msn.com', 'outlook.in',
   'yahoo.com', 'yahoo.co.in', 'yahoo.in', 'ymail.com',
   'icloud.com', 'me.com', 'mac.com',
-  'proton.me', 'protonmail.com', 'pm.me',
-  'zoho.com', 'zoho.in',
-  'rediffmail.com',
   'hbtu.ac.in', 'iitk.ac.in', 'iitd.ac.in', 'iitb.ac.in',
   'iitkgp.ac.in', 'iitm.ac.in', 'iitr.ac.in', 'iitg.ac.in',
   'iitbhu.ac.in', 'bhu.ac.in', 'du.ac.in', 'jnu.ac.in',
@@ -72,6 +69,30 @@ export const DIRECT_ALLOWED_DOMAINS = new Set([
 ]);
 
 /**
+ * Checks whether an email address or domain is an official college/academic credential
+ * (e.g., hbtu.ac.in, .ac.in, .edu, .edu.in).
+ */
+export function isAcademicCredential(emailOrDomain: string): boolean {
+  if (!emailOrDomain) return false;
+  const domain = emailOrDomain.includes('@')
+    ? emailOrDomain.split('@')[1].trim().toLowerCase()
+    : emailOrDomain.trim().toLowerCase();
+
+  if (domain === 'hbtu.ac.in') return true;
+  return (
+    domain.endsWith('.ac.in') ||
+    domain.endsWith('.edu') ||
+    domain.endsWith('.edu.in') ||
+    domain.endsWith('.res.in') ||
+    domain.endsWith('.ernet.in') ||
+    domain.endsWith('.gov.in') ||
+    domain.endsWith('.org.in') ||
+    domain.endsWith('.ac.uk') ||
+    domain.endsWith('.edu.au')
+  );
+}
+
+/**
  * Checks whether an email domain is in the directly allowed whitelist (instant access).
  * Returns true for Gmail, Outlook, Hotmail, Live, Yahoo, iCloud, HBTU, and any recognized
  * academic domain ending with .ac.in, .edu, .edu.in, or .res.in.
@@ -80,20 +101,7 @@ export function isDirectlyAllowedDomain(domain: string): boolean {
   if (!domain) return false;
   const clean = domain.trim().toLowerCase();
   if (DIRECT_ALLOWED_DOMAINS.has(clean)) return true;
-  if (
-    clean.endsWith('.ac.in') ||
-    clean.endsWith('.edu') ||
-    clean.endsWith('.edu.in') ||
-    clean.endsWith('.res.in') ||
-    clean.endsWith('.ernet.in') ||
-    clean.endsWith('.gov.in') ||
-    clean.endsWith('.org.in') ||
-    clean.endsWith('.ac.uk') ||
-    clean.endsWith('.edu.au')
-  ) {
-    return true;
-  }
-  return false;
+  return isAcademicCredential(clean);
 }
 
 /** Synchronous check to see if a domain matches known disposable patterns or blacklist */
