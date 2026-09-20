@@ -16,7 +16,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { Link } from 'react-router-dom';
 
 const ProfileDropdown = () => {
-  const { user, signOut } = useAuth();
+  const { user, signOut, approvalStatus } = useAuth();
 
   if (!user) return null;
 
