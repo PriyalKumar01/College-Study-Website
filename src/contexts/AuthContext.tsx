@@ -44,7 +44,15 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [isBanned, setIsBanned] = useState<boolean>(() => {
     return Boolean(localStorage.getItem('csh_banned_user'));
   });
-  const [approvalStatus, setApprovalStatus] = useState<ApprovalStatus>('approved');
+  const [approvalStatus, setApprovalStatus] = useState<ApprovalStatus>(() => {
+    try {
+      const cached = localStorage.getItem('csh_approval_status');
+      if (cached === 'approved' || cached === 'pending' || cached === 'rejected') {
+        return cached as ApprovalStatus;
+      }
+    } catch {}
+    return 'pending';
+  });
 
   const checkAndRejectDisposable = async (email?: string, userObj?: User | null): Promise<boolean> => {
     if (!email) return false;
@@ -165,15 +173,22 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       setIsBanned(false);
       localStorage.removeItem('csh_banned_user');
 
-      // 2. Approval status check
+      // 2. Approval status check: Database profile is source of truth
       const domain = userObj.email?.split('@')[1] || '';
-      if (isDirectlyAllowedDomain(domain)) {
-        setApprovalStatus('approved');
-      } else if (profile?.approval_status) {
-        setApprovalStatus(profile.approval_status as ApprovalStatus);
+      let determinedStatus: ApprovalStatus = 'pending';
+
+      if (profile?.approval_status) {
+        determinedStatus = profile.approval_status as ApprovalStatus;
+      } else if (isDirectlyAllowedDomain(domain)) {
+        determinedStatus = 'approved';
       } else {
-        setApprovalStatus('pending');
+        determinedStatus = 'pending';
       }
+
+      setApprovalStatus(determinedStatus);
+      try {
+        localStorage.setItem('csh_approval_status', determinedStatus);
+      } catch {}
     } catch (err) {
       console.warn('Error checking ban and approval status:', err);
     }
@@ -195,6 +210,11 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
         if (newSession?.user?.email) {
           const activeUser = newSession.user;
+          const domain = activeUser.email.split('@')[1] || '';
+          if (!isDirectlyAllowedDomain(domain)) {
+            setApprovalStatus('pending');
+          }
+
           // Defer verification to next tick outside GoTrue auth dispatch lock
           setTimeout(async () => {
             const isBlocked = await checkAndRejectDisposable(activeUser.email, activeUser);
@@ -207,6 +227,10 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
           }, 0);
         } else {
           setUserRole('member');
+          setApprovalStatus('approved');
+          try {
+            localStorage.removeItem('csh_approval_status');
+          } catch {}
         }
       }
     );
@@ -224,15 +248,23 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
         if (initSession?.user?.email) {
           const activeUser = initSession.user;
-          setTimeout(async () => {
-            const isBlocked = await checkAndRejectDisposable(activeUser.email, activeUser);
-            if (isBlocked) return;
+          const domain = activeUser.email.split('@')[1] || '';
+          if (!isDirectlyAllowedDomain(domain)) {
+            setApprovalStatus('pending');
+          }
 
+          const isBlocked = await checkAndRejectDisposable(activeUser.email, activeUser);
+          if (!isBlocked) {
             const isUserBanned = await checkBanAndApproval(activeUser);
-            if (isUserBanned) return;
-
-            fetchUserRole(activeUser.email);
-          }, 0);
+            if (!isUserBanned) {
+              await fetchUserRole(activeUser.email);
+            }
+          }
+        } else {
+          setApprovalStatus('approved');
+          try {
+            localStorage.removeItem('csh_approval_status');
+          } catch {}
         }
       } catch (err) {
         console.warn('Error retrieving initial session:', err);
@@ -279,7 +311,11 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
           }
 
           if (updated?.approval_status) {
-            setApprovalStatus(updated.approval_status as ApprovalStatus);
+            const newStatus = updated.approval_status as ApprovalStatus;
+            setApprovalStatus(newStatus);
+            try {
+              localStorage.setItem('csh_approval_status', newStatus);
+            } catch {}
           }
         }
       )
@@ -307,6 +343,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       removeCachedData(`role_${user.email}`);
     }
     localStorage.removeItem('csh_banned_user');
+    localStorage.removeItem('csh_approval_status');
     await supabase.auth.signOut();
     setUser(null);
     setSession(null);
