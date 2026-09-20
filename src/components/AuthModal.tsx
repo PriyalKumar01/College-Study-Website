@@ -14,7 +14,7 @@ import { Loader2, Eye, EyeOff, CheckCircle2, Mail, ArrowLeft, X, AlertCircle, Al
 import logoImg from '@/assets/college-study-hub-logo.png';
 import HCaptcha from '@hcaptcha/react-hcaptcha';
 import { BRANCH_OPTIONS, YEAR_OPTIONS } from './ProfileCompletionModal';
-import { validateEmail, isDisposableDomain } from '@/utils/emailValidation';
+import { validateEmail, isDisposableDomain, isDirectlyAllowedDomain } from '@/utils/emailValidation';
 import { sendCampaignBatch } from '@/lib/emailService';
 
 // hCaptcha Site Key provided by user
@@ -410,20 +410,47 @@ Simply click one of the buttons below to log in or sign up immediately.`,
         const isProfileCompleted = data.user.user_metadata?.profile_completed === true;
 
         if (isProfileCompleted) {
-          // User already exists and is complete -> Just log them in
-          toast({ title: "Welcome back!", description: "You already have an account. Signed in successfully." });
-          handleClose();
-          { const r = (()=>{try{const v=sessionStorage.getItem('postLoginRedirect');if(v){sessionStorage.removeItem('postLoginRedirect');return v;}}catch{}return '/dashboard';})(); navigate(r); }
+          // User already exists and is complete -> Check approval status
+          const cleanEmail = email.trim().toLowerCase();
+          const domain = cleanEmail.split('@')[1] || '';
+          const isDirect = isDirectlyAllowedDomain(domain);
+
+          let isPending = !isDirect;
+          try {
+            const { data: prof } = await supabase
+              .from('profiles')
+              .select('approval_status')
+              .or(`id.eq.${data.user.id},user_id.eq.${data.user.id}`)
+              .maybeSingle();
+
+            if (prof?.approval_status) {
+              isPending = prof.approval_status === 'pending';
+            }
+          } catch {}
+
+          if (isPending) {
+            localStorage.setItem('csh_approval_status', 'pending');
+            toast({
+              title: "Account Under Review",
+              description: "Your account is pending administrator approval before access can be granted.",
+            });
+            handleClose();
+            navigate('/pending-approval');
+          } else {
+            localStorage.setItem('csh_approval_status', 'approved');
+            toast({ title: "Welcome back!", description: "You already have an account. Signed in successfully." });
+            handleClose();
+            { const r = (()=>{try{const v=sessionStorage.getItem('postLoginRedirect');if(v){sessionStorage.removeItem('postLoginRedirect');return v;}}catch{}return '/dashboard';})(); navigate(r); }
+          }
         } else {
           // New user or incomplete profile -> Move to Profile Completion
           setStep('signup-complete');
           toast({ title: "Verified!", description: "Please complete your profile." });
         }
       } else {
-        // Default fallthrough (shouldn't really happen for signin unless we support OTP login)
         setStep('form');
         handleClose();
-        { const r = (()=>{try{const v=sessionStorage.getItem('postLoginRedirect');if(v){sessionStorage.removeItem('postLoginRedirect');return v;}}catch{}return '/dashboard';})(); navigate(r); }
+        navigate('/');
       }
 
     } catch (err: any) {
@@ -494,6 +521,11 @@ Simply click one of the buttons below to log in or sign up immediately.`,
     try {
       const fullName = `${firstName} ${lastName}`.trim();
 
+      const cleanEmail = email.trim().toLowerCase();
+      const domain = cleanEmail.split('@')[1] || '';
+      const isDomainDirect = isDirectlyAllowedDomain(domain);
+      const initialApproval = isDomainDirect ? 'approved' : 'pending';
+
       // Direct upsert into public.profiles table
       const { data: sessionData } = await supabase.auth.getSession();
       const currentUserId = sessionData?.session?.user?.id;
@@ -504,11 +536,12 @@ Simply click one of the buttons below to log in or sign up immediately.`,
             user_id: currentUserId,
             first_name: firstName,
             last_name: lastName,
-            email: email.trim().toLowerCase(),
+            email: cleanEmail,
             mobile_number: contactNo?.trim() ? contactNo.trim() : null,
             college: resolvedCollege,
             branch: finalBranch,
             year: finalYear,
+            approval_status: initialApproval,
             updated_at: new Date().toISOString()
           }, { onConflict: 'id' });
         } catch (upErr) {
@@ -524,7 +557,7 @@ Simply click one of the buttons below to log in or sign up immediately.`,
           p_college: resolvedCollege,
           p_branch: finalBranch,
           p_year: finalYear,
-          p_email: email.trim().toLowerCase(),
+          p_email: cleanEmail,
           p_mobile_number: contactNo?.trim() ? contactNo.trim() : null
         });
       } catch (rpcErr) {
@@ -554,12 +587,23 @@ Simply click one of the buttons below to log in or sign up immediately.`,
       }
 
       sessionStorage.setItem('hasSignedUp', 'true');
-      toast({
-        title: "Account Created Successfully",
-        description: "Welcome to College Study Hub!",
-      });
-      handleClose();
-      { const r = (()=>{try{const v=sessionStorage.getItem('postLoginRedirect');if(v){sessionStorage.removeItem('postLoginRedirect');return v;}}catch{}return '/dashboard';})(); navigate(r); }
+      if (initialApproval === 'pending') {
+        localStorage.setItem('csh_approval_status', 'pending');
+        toast({
+          title: "Account Registered Under Review",
+          description: "Since you registered with an external email provider, your registration is awaiting administrator verification.",
+        });
+        handleClose();
+        navigate('/pending-approval');
+      } else {
+        localStorage.setItem('csh_approval_status', 'approved');
+        toast({
+          title: "Account Created Successfully",
+          description: "Welcome to College Study Hub!",
+        });
+        handleClose();
+        { const r = (()=>{try{const v=sessionStorage.getItem('postLoginRedirect');if(v){sessionStorage.removeItem('postLoginRedirect');return v;}}catch{}return '/dashboard';})(); navigate(r); }
+      }
 
     } catch (err: any) {
       toast({ title: "Signup Failed", description: err.message, variant: "destructive" });
@@ -598,9 +642,37 @@ Simply click one of the buttons below to log in or sign up immediately.`,
 
       if (error) throw error;
       if (data.session) {
-        toast({ title: "Welcome back!", description: "Signed in successfully." });
-        handleClose();
-        { const r = (()=>{try{const v=sessionStorage.getItem('postLoginRedirect');if(v){sessionStorage.removeItem('postLoginRedirect');return v;}}catch{}return '/dashboard';})(); navigate(r); }
+        const cleanEmail = email.trim().toLowerCase();
+        const domain = cleanEmail.split('@')[1] || '';
+        const isDomainDirect = isDirectlyAllowedDomain(domain);
+        let isPending = !isDomainDirect;
+
+        try {
+          const { data: prof } = await supabase
+            .from('profiles')
+            .select('approval_status')
+            .or(`id.eq.${data.session.user.id},user_id.eq.${data.session.user.id}`)
+            .maybeSingle();
+
+          if (prof?.approval_status) {
+            isPending = prof.approval_status === 'pending';
+          }
+        } catch {}
+
+        if (isPending) {
+          localStorage.setItem('csh_approval_status', 'pending');
+          toast({
+            title: "Account Under Administrative Review",
+            description: "Your account is pending administrator approval before access can be granted.",
+          });
+          handleClose();
+          navigate('/pending-approval');
+        } else {
+          localStorage.setItem('csh_approval_status', 'approved');
+          toast({ title: "Welcome back!", description: "Signed in successfully." });
+          handleClose();
+          { const r = (()=>{try{const v=sessionStorage.getItem('postLoginRedirect');if(v){sessionStorage.removeItem('postLoginRedirect');return v;}}catch{}return '/dashboard';})(); navigate(r); }
+        }
       }
     } catch (err: any) {
       captchaRef.current?.resetCaptcha();
