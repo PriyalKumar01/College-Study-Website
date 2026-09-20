@@ -4,7 +4,7 @@ import {
   LayoutDashboard, BookOpen, Calculator, FileText, 
   Users, Award, Briefcase, Brain, Info,
   Shield, Crown, Lock, Trophy, ChevronDown, Globe, ExternalLink,
-  PanelLeft
+  PanelLeft, Clock
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useTheme } from '@/providers/ThemeProvider';
@@ -33,13 +33,16 @@ interface NavbarProps {
 
 const Navbar = ({ onOpenAuth }: NavbarProps) => {
   const { theme, toggleTheme } = useTheme();
-  const { user, signOut, isAdmin, isOwner } = useAuth();
+  const { user, signOut, isAdmin, isOwner, approvalStatus } = useAuth();
   const { isSidebarVisible, toggleSidebar } = useSidebar();
   const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
   const [mobileWebsitesOpen, setMobileWebsitesOpen] = useState(false);
 
   const isActive = (path: string) => location.pathname === path;
+
+  const isApproved = !!user && approvalStatus === 'approved';
+  const isPending = !!user && approvalStatus === 'pending';
 
   // Mobile Drawer Items (Dashboard & Notes excluded since they are already in bottom nav)
   const authenticatedMobileItems = [
@@ -59,7 +62,7 @@ const Navbar = ({ onOpenAuth }: NavbarProps) => {
     { href: '/about', label: 'About', icon: Info },
   ];
 
-  const mobileNavItems = user ? authenticatedMobileItems : defaultMobileItems;
+  const mobileNavItems = isApproved ? authenticatedMobileItems : defaultMobileItems;
   const firstName = user?.user_metadata?.first_name || 'User';
 
   return (
@@ -70,7 +73,7 @@ const Navbar = ({ onOpenAuth }: NavbarProps) => {
           
           {/* Left: Desktop Sidebar Toggle & Logo */}
           <div className="flex items-center">
-            {user && (
+            {isApproved && (
               <button
                 onClick={toggleSidebar}
                 className="hidden md:flex p-2 mr-2 rounded-lg text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors shrink-0"
@@ -105,8 +108,8 @@ const Navbar = ({ onOpenAuth }: NavbarProps) => {
               }`} />
             </Link>
 
-            {/* Authenticated Links: Dashboard, Notes Dropdown, Useful Websites Dropdown */}
-            {user && (
+            {/* Authenticated Links: Only for fully approved users */}
+            {isApproved && (
               <>
                 {/* 2. Dashboard */}
                 <Link
@@ -140,6 +143,17 @@ const Navbar = ({ onOpenAuth }: NavbarProps) => {
                   }`} />
                 </Link>
               </>
+            )}
+
+            {/* Pending Approval Badge Link */}
+            {isPending && (
+              <Link
+                to="/pending-approval"
+                className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/15 hover:bg-amber-500/25 text-amber-600 dark:text-amber-400 border border-amber-500/30 text-xs font-bold transition-all shadow-sm"
+              >
+                <Clock className="w-3.5 h-3.5 animate-pulse" />
+                <span>Pending Approval</span>
+              </Link>
             )}
 
             {/* 6. About (Rightmost in nav links) */}
