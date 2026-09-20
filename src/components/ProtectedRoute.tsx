@@ -1,8 +1,9 @@
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
+import PendingApprovalScreen from "@/components/PendingApprovalScreen";
 
 const ProtectedRoute = () => {
-    const { user, loading } = useAuth();
+    const { user, loading, approvalStatus, refreshApprovalStatus, signOut } = useAuth();
     const location = useLocation();
 
     if (loading) {
@@ -20,6 +21,17 @@ const ProtectedRoute = () => {
     const isConfirmed = Boolean(user.email_confirmed_at || (user as any).confirmed_at || user.user_metadata?.email_verified === true);
     if (isEmailAccount && !isConfirmed) {
         return <Navigate to="/" replace state={{ error: 'Please verify your email address before accessing this page.' }} />;
+    }
+
+    // Strict security check: Block pending unapproved accounts from accessing ANY protected inner route
+    if (approvalStatus === 'pending') {
+        return (
+            <PendingApprovalScreen
+                userEmail={user.email}
+                onRefresh={refreshApprovalStatus}
+                onSignOut={signOut}
+            />
+        );
     }
 
     return <Outlet />;
