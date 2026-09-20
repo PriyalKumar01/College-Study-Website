@@ -7,7 +7,7 @@ import { supabase } from '@/integrations/supabase/client';
 
 const Auth = () => {
   const navigate = useNavigate();
-  const { user, session, loading } = useAuth();
+  const { user, session, loading, approvalStatus } = useAuth();
   const [debugInfo, setDebugInfo] = useState<any>({});
 
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
@@ -80,6 +80,11 @@ const Auth = () => {
   // Auto-redirect if logged in
   useEffect(() => {
     if (!loading && user) {
+      if (approvalStatus === 'pending') {
+        const timer = setTimeout(() => navigate('/pending-approval'), 400);
+        return () => clearTimeout(timer);
+      }
+
       const redirectTarget = (()=>{
         try {
           const saved = sessionStorage.getItem('postLoginRedirect');
@@ -95,7 +100,7 @@ const Auth = () => {
       const timer = setTimeout(() => navigate(redirectTarget), 500);
       return () => clearTimeout(timer);
     }
-  }, [user, loading, navigate]);
+  }, [user, loading, approvalStatus, navigate]);
 
   return (
     <div className="min-h-screen bg-background flex flex-col items-center justify-center p-4">
