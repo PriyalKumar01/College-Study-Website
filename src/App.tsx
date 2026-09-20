@@ -51,16 +51,6 @@ const AppContent = () => {
     return <BannedScreen userEmail={user?.email} onSignOut={signOut} />;
   }
 
-  if (user && approvalStatus === 'pending') {
-    return (
-      <PendingApprovalScreen
-        userEmail={user.email}
-        onRefresh={refreshApprovalStatus}
-        onSignOut={signOut}
-      />
-    );
-  }
-
   return (
     <SidebarProvider>
       <TooltipProvider>
@@ -77,6 +67,13 @@ const AppContent = () => {
                     <Routes>
                       {/* Standalone routes */}
                       <Route path="/auth" element={<Auth />} />
+                      <Route path="/pending-approval" element={
+                        <PendingApprovalScreen
+                          userEmail={user?.email}
+                          onRefresh={refreshApprovalStatus}
+                          onSignOut={signOut}
+                        />
+                      } />
                       <Route path="/terms" element={<TermsOfService />} />
                       <Route path="/privacy" element={<PrivacyPolicy />} />
                       {/* Public deep-link for shared URLs */}
