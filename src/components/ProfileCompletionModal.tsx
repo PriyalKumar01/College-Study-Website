@@ -11,6 +11,7 @@ import { Link } from "react-router-dom";
 import { Loader2, Eye, EyeOff, ChevronDown, School, UserCheck, CheckCircle2, XCircle } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import logoImg from '@/assets/college-study-hub-logo.png';
+import { isDirectlyAllowedDomain } from '@/utils/emailValidation';
 
 // ---------------------------------------------------------------------------
 // Batch / Graduating Year dropdown options
@@ -285,6 +286,10 @@ export function ProfileCompletionModal() {
             if (userError) console.warn("updateUser metadata warning:", userError);
 
             // 2. Direct upsert into public.profiles table
+            const userDomain = (user!.email || '').split('@')[1] || '';
+            const isDomainDirect = isDirectlyAllowedDomain(userDomain);
+            const approvalVal = isDomainDirect ? 'approved' : 'pending';
+
             try {
                 await supabase.from("profiles").upsert({
                     id: user!.id,
@@ -295,6 +300,7 @@ export function ProfileCompletionModal() {
                     college: resolvedCollege,
                     branch: finalBranch,
                     year: finalYear,
+                    approval_status: approvalVal,
                     updated_at: new Date().toISOString()
                 }, { onConflict: 'id' });
             } catch (upErr) {
