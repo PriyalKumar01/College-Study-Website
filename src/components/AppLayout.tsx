@@ -7,7 +7,7 @@ import { ProfileCompletionModal } from "./ProfileCompletionModal";
 import { LayoutDashboard, BookOpen, Award, Briefcase } from "lucide-react";
 
 const AppLayout = () => {
-  const { user } = useAuth();
+  const { user, approvalStatus } = useAuth();
   const { isSidebarVisible } = useSidebar();
   const location = useLocation();
   const navigate = useNavigate();
@@ -18,8 +18,11 @@ const AppLayout = () => {
     setMobileOpen(false);
   }, [location.pathname]);
 
+  const isApproved = !!user && approvalStatus === 'approved';
+  const isPending = !!user && approvalStatus === 'pending';
+
   const isQuizExam = location.pathname.includes('/gate-study/quiz') && new URLSearchParams(location.search).get('mode') === 'exam';
-  const showSidebar = !!user && !isQuizExam;
+  const showSidebar = isApproved && !isQuizExam;
 
   const isActiveTab = (path: string) => {
     if (path === '/notes') {
@@ -63,15 +66,35 @@ const AppLayout = () => {
           </aside>
         )}
 
-        {/* ── Main Content (with safe bottom padding so footer is never cut off on mobile) ── */}
-        <main className={`flex-1 overflow-y-auto overflow-x-hidden relative scroll-smooth w-full flex flex-col ${user ? 'pb-28 md:pb-0' : 'pb-12 md:pb-0'}`}>
+        {/* ── Main Content ── */}
+        <main className={`flex-1 overflow-y-auto overflow-x-hidden relative scroll-smooth w-full flex flex-col ${isApproved ? 'pb-28 md:pb-0' : 'pb-12 md:pb-0'}`}>
+          {/* Top Notice for Pending Review Users on Public Pages */}
+          {isPending && (
+            <div className="bg-gradient-to-r from-amber-500/15 via-amber-500/10 to-amber-500/15 border-b border-amber-500/30 px-4 py-2.5 text-xs text-amber-800 dark:text-amber-200">
+              <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
+                <div className="flex items-center gap-2 text-center sm:text-left">
+                  <span className="flex h-2 w-2 rounded-full bg-amber-500 animate-ping shrink-0" />
+                  <span>
+                    <strong>Account Under Review ({user?.email}):</strong> You are currently viewing public pages. All notes, semesters, and interior dashboards remain locked until your registration is approved by an administrator.
+                  </span>
+                </div>
+                <button
+                  onClick={() => navigate('/pending-approval')}
+                  className="shrink-0 font-bold underline hover:text-amber-600 dark:hover:text-amber-300 ml-1 cursor-pointer"
+                >
+                  View Status Details &rarr;
+                </button>
+              </div>
+            </div>
+          )}
+
           <Outlet />
-          <ProfileCompletionModal />
+          {!isPending && <ProfileCompletionModal />}
         </main>
       </div>
 
-      {/* ── Professional Sticky Mobile Bottom Navigation Bar ── */}
-      {user && !isQuizExam && (
+      {/* ── Professional Sticky Mobile Bottom Navigation Bar (Only for approved members) ── */}
+      {isApproved && !isQuizExam && (
         <nav 
           className="md:hidden fixed bottom-0 left-0 right-0 z-[150] bg-white/95 dark:bg-slate-950/95 border-t border-slate-200/80 dark:border-slate-800/80 backdrop-blur-xl shadow-[0_-8px_30px_rgba(0,0,0,0.06)] dark:shadow-[0_-8px_30px_rgba(0,0,0,0.4)] transition-all duration-300"
           style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}
