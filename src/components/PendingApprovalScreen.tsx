@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Clock, CheckCircle2, LogOut, RefreshCw, ShieldCheck } from 'lucide-react';
+import { Clock, CheckCircle2, LogOut, RefreshCw, ShieldAlert, Home, Info, Lock, BookOpen, GraduationCap, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
@@ -25,19 +25,20 @@ export const PendingApprovalScreen: React.FC<PendingApprovalScreenProps> = ({
         await onRefresh();
       }
       toast({
-        title: "Status Checked",
-        description: "Your verification status has been refreshed.",
+        title: "Status Refreshed",
+        description: "Checking platform administrative records...",
       });
     } catch (e) {
       console.error(e);
     } finally {
-      setTimeout(() => setChecking(false), 500);
+      setTimeout(() => setChecking(false), 600);
     }
   };
 
   const handleSignOut = async () => {
     try {
       sessionStorage.clear();
+      localStorage.removeItem('csh_approval_status');
       await supabase.auth.signOut();
     } catch (e) {
       console.error('Sign out error:', e);
@@ -51,69 +52,105 @@ export const PendingApprovalScreen: React.FC<PendingApprovalScreenProps> = ({
 
   return (
     <div className="fixed inset-0 z-[999998] bg-background/95 backdrop-blur-2xl flex items-center justify-center p-4 select-none overflow-y-auto">
-      <div className="relative w-full max-w-lg bg-card border border-amber-500/30 dark:border-amber-500/20 rounded-2xl shadow-2xl p-6 sm:p-8 text-center text-card-foreground animate-in fade-in zoom-in-95 duration-300">
+      <div className="relative w-full max-w-xl bg-card border border-amber-500/30 dark:border-amber-500/20 rounded-2xl shadow-2xl p-6 sm:p-8 text-card-foreground animate-in fade-in zoom-in-95 duration-300 my-8">
         {/* Glow effect behind badge */}
-        <div className="absolute -top-12 left-1/2 -translate-x-1/2 w-28 h-28 bg-amber-500/20 rounded-full blur-2xl pointer-events-none" />
+        <div className="absolute -top-12 left-1/2 -translate-x-1/2 w-32 h-32 bg-amber-500/20 rounded-full blur-3xl pointer-events-none" />
 
-        {/* Icon */}
-        <div className="mx-auto mb-5 w-20 h-20 rounded-full bg-amber-500/10 border-2 border-amber-500/30 flex items-center justify-center text-amber-500 shadow-inner">
-          <Clock className="w-10 h-10 animate-spin-slow" />
-        </div>
-
-        {/* Title */}
-        <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground mb-2">
-          Account Pending Approval
-        </h1>
-
-        <p className="text-xs sm:text-sm text-muted-foreground mb-4">
-          Thank you for joining College Study Hub!
-        </p>
-
-        {/* Status Box */}
-        <div className="bg-amber-500/10 border border-amber-500/20 rounded-xl p-4 my-4 text-left">
-          <div className="flex items-start gap-3">
-            <ShieldCheck className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
-            <div>
-              <p className="text-sm font-semibold text-amber-600 dark:text-amber-400 mb-1">
-                Under Administrative Review
-              </p>
-              <p className="text-xs text-muted-foreground leading-relaxed">
-                Because your email is from an external or custom provider, your registration is queued for review by our administrative team to maintain community integrity and platform safety.
-              </p>
-            </div>
+        {/* Top Header */}
+        <div className="text-center mb-6">
+          <div className="mx-auto mb-4 w-16 h-16 rounded-2xl bg-amber-500/10 border-2 border-amber-500/30 flex items-center justify-center text-amber-500 shadow-inner">
+            <Clock className="w-8 h-8 animate-pulse" />
           </div>
+
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 text-xs font-bold uppercase tracking-wider mb-2">
+            <ShieldAlert className="w-3.5 h-3.5" />
+            Under Administrative Review
+          </div>
+
+          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">
+            Waiting for Administrator Approval
+          </h1>
+
+          <p className="text-xs sm:text-sm text-muted-foreground mt-1">
+            College Study Hub • Student Safety & Academic Verification Protocol
+          </p>
         </div>
 
+        {/* Professional Credential Notice */}
+        <div className="bg-amber-500/10 dark:bg-amber-950/30 border border-amber-500/30 dark:border-amber-800/40 rounded-xl p-4 sm:p-5 mb-5 text-left">
+          <h3 className="text-sm font-bold text-amber-700 dark:text-amber-300 flex items-center gap-2 mb-1.5">
+            <span>Credential Verification Notice</span>
+          </h3>
+          <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
+            Since your account was registered using an external or personal email provider rather than standard institutional / college credentials (e.g. <span className="font-semibold text-foreground font-mono">@hbtu.ac.in</span> or official university domain), your account has been placed in the administrative review queue.
+          </p>
+          <p className="text-xs text-muted-foreground/90 mt-2 leading-relaxed">
+            To safeguard community integrity, curb spam, and protect proprietary academic materials, all non-institutional accounts require manual verification and authorization by the platform owner before inner portal access can be unlocked.
+          </p>
+        </div>
+
+        {/* Account Details */}
         {userEmail && (
-          <div className="bg-muted/40 rounded-lg py-2 px-3 mb-5 inline-block border border-border">
-            <p className="text-xs text-muted-foreground">
-              Registered Email: <span className="font-mono font-semibold text-foreground">{userEmail}</span>
-            </p>
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-2 bg-muted/50 rounded-xl p-3 mb-5 border border-border text-xs">
+            <span className="text-muted-foreground font-medium">Registered Email:</span>
+            <span className="font-mono font-bold text-foreground bg-background px-2.5 py-1 rounded-md border border-border/80 break-all">
+              {userEmail}
+            </span>
           </div>
         )}
 
-        <p className="text-xs text-muted-foreground/80 mb-6 leading-relaxed">
-          You will automatically gain full access to all materials and portals once an administrator approves your account in the dashboard. Please check back shortly.
-        </p>
+        {/* Access Breakdown */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6 text-left">
+          <div className="rounded-xl border border-emerald-500/30 bg-emerald-500/5 p-3">
+            <div className="flex items-center gap-2 text-emerald-600 dark:text-emerald-400 font-bold text-xs mb-1">
+              <CheckCircle2 className="w-4 h-4" />
+              <span>Currently Accessible</span>
+            </div>
+            <p className="text-[11px] text-muted-foreground leading-normal">
+              Public pages: Home Overview (<span className="font-mono font-semibold">/</span>) and About Platform (<span className="font-mono font-semibold">/about</span>).
+            </p>
+          </div>
 
-        {/* Actions */}
-        <div className="flex flex-col sm:flex-row gap-3 justify-center pt-3 border-t border-border">
-          <Button
-            onClick={handleRefresh}
-            disabled={checking}
-            className="w-full sm:w-auto font-semibold flex items-center justify-center gap-2 h-11 px-5"
-          >
-            <RefreshCw className={`w-4 h-4 ${checking ? 'animate-spin' : ''}`} />
-            {checking ? 'Checking Status...' : 'Check Approval Status'}
-          </Button>
+          <div className="rounded-xl border border-amber-500/30 bg-amber-500/5 p-3">
+            <div className="flex items-center gap-2 text-amber-600 dark:text-amber-400 font-bold text-xs mb-1">
+              <Lock className="w-4 h-4" />
+              <span>Locked Until Approved</span>
+            </div>
+            <p className="text-[11px] text-muted-foreground leading-normal">
+              Semester Notes, PYQs, GATE Study, DSA Track, Resume Builder, & Dashboard.
+            </p>
+          </div>
+        </div>
+
+        {/* Action Buttons */}
+        <div className="space-y-2.5 pt-4 border-t border-border">
+          <div className="flex flex-col sm:flex-row gap-2.5">
+            <Button
+              onClick={handleRefresh}
+              disabled={checking}
+              className="flex-1 font-bold flex items-center justify-center gap-2 h-11 shadow-sm"
+            >
+              <RefreshCw className={`w-4 h-4 ${checking ? 'animate-spin' : ''}`} />
+              {checking ? 'Checking Status...' : 'Check Approval Status'}
+            </Button>
+
+            <Button
+              variant="outline"
+              onClick={() => { window.location.href = '/'; }}
+              className="flex-1 font-semibold flex items-center justify-center gap-2 h-11 border-border"
+            >
+              <Home className="w-4 h-4" />
+              Explore Home & About
+            </Button>
+          </div>
 
           <Button
-            variant="outline"
+            variant="ghost"
             onClick={handleSignOut}
-            className="w-full sm:w-auto font-medium flex items-center justify-center gap-2 h-11 px-5"
+            className="w-full text-xs font-semibold text-muted-foreground hover:text-foreground flex items-center justify-center gap-2 h-9"
           >
-            <LogOut className="w-4 h-4" />
-            Sign Out
+            <LogOut className="w-3.5 h-3.5" />
+            Sign Out & Switch Account
           </Button>
         </div>
       </div>
