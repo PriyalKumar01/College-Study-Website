@@ -32,11 +32,13 @@ const ProfileDropdown = () => {
   const branch = user.user_metadata?.branch || 'Not specified';
   const year = user.user_metadata?.year || 'Not specified';
 
+  const isPending = approvalStatus === 'pending';
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger className="focus:outline-none">
         <div className="flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity">
-          <Avatar className="h-9 w-9 border-2 border-primary/20">
+          <Avatar className={`h-9 w-9 border-2 ${isPending ? 'border-amber-500 ring-2 ring-amber-500/20' : 'border-primary/20'}`}>
             <AvatarImage src={avatarUrl} />
             <AvatarFallback className="bg-primary/10 text-xl">
               {firstName ? firstName[0].toUpperCase() : avatarEmoji}
@@ -53,9 +55,14 @@ const ProfileDropdown = () => {
                 {firstName ? firstName[0].toUpperCase() : avatarEmoji}
               </AvatarFallback>
             </Avatar>
-            <div>
-              <p className="font-semibold text-base">{fullName}</p>
-              <p className="text-xs text-muted-foreground">{email}</p>
+            <div className="min-w-0 flex-1">
+              <p className="font-semibold text-base truncate">{fullName}</p>
+              <p className="text-xs text-muted-foreground truncate">{email}</p>
+              {isPending && (
+                <span className="inline-block mt-1 text-[10px] font-bold text-amber-600 dark:text-amber-400 bg-amber-500/10 border border-amber-500/30 px-2 py-0.5 rounded-full">
+                  ⏳ Pending Approval
+                </span>
+              )}
             </div>
           </div>
         </DropdownMenuLabel>
@@ -64,26 +71,35 @@ const ProfileDropdown = () => {
           <div className="flex items-center gap-2 text-sm">
             <Building2 className="h-4 w-4 text-muted-foreground" />
             <span className="text-muted-foreground">College:</span>
-            <span className="font-medium">{college}</span>
+            <span className="font-medium truncate">{college}</span>
           </div>
           <div className="flex items-center gap-2 text-sm">
             <GraduationCap className="h-4 w-4 text-muted-foreground" />
             <span className="text-muted-foreground">Branch:</span>
-            <span className="font-medium">{branch}</span>
+            <span className="font-medium truncate">{branch}</span>
           </div>
           <div className="flex items-center gap-2 text-sm">
             <Calendar className="h-4 w-4 text-muted-foreground" />
             <span className="text-muted-foreground">Year:</span>
-            <span className="font-medium">{year}</span>
+            <span className="font-medium truncate">{year}</span>
           </div>
         </div>
         <DropdownMenuSeparator />
-        <DropdownMenuItem asChild className="cursor-pointer">
-          <Link to="/profile">
-            <User className="h-4 w-4 mr-2" />
-            My Profile
-          </Link>
-        </DropdownMenuItem>
+        {isPending ? (
+          <DropdownMenuItem asChild className="cursor-pointer text-amber-600 dark:text-amber-400 focus:text-amber-700">
+            <Link to="/pending-approval">
+              <User className="h-4 w-4 mr-2" />
+              Approval Status
+            </Link>
+          </DropdownMenuItem>
+        ) : (
+          <DropdownMenuItem asChild className="cursor-pointer">
+            <Link to="/profile">
+              <User className="h-4 w-4 mr-2" />
+              My Profile
+            </Link>
+          </DropdownMenuItem>
+        )}
         <DropdownMenuItem onClick={() => signOut()} className="cursor-pointer">
           <LogOut className="h-4 w-4 mr-2" />
           Sign Out
