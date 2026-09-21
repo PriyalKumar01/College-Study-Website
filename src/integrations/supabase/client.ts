@@ -2,8 +2,30 @@
 import { createClient } from '@supabase/supabase-js';
 import type { Database } from './types';
 
-const SUPABASE_URL = "https://axalbmmjqdezbkpffore.supabase.co";
-const SUPABASE_PUBLISHABLE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF4YWxibW1qcWRlemJrcGZmb3JlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTEyNzI1NzEsImV4cCI6MjA2Njg0ODU3MX0.N52rlXiZJlmk6ZytFubOhsrkYW6MpvDRlo6NcKHKhHA";
+// ==============================================================================
+// SUPABASE CLIENT CONFIGURATION
+// Switch between Main Project and Temporary Exam Project easily
+// ==============================================================================
+
+// 1. Main Project (Temporarily blocked till 29th quota reset)
+const MAIN_PROJECT = {
+  url: "https://axalbmmjqdezbkpffore.supabase.co",
+  anonKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF4YWxibW1qcWRlemJrcGZmb3JlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTEyNzI1NzEsImV4cCI6MjA2Njg0ODU3MX0.N52rlXiZJlmk6ZytFubOhsrkYW6MpvDRlo6NcKHKhHA"
+};
+
+// 2. Temporary Project (For exam peak days)
+const TEMP_PROJECT = {
+  url: "https://xjxdauvimiflzbozycki.supabase.co",
+  anonKey: "sb_publishable_XANfm0ZXJ8nc-YOlKHxOJw_oyN2Hlb8"
+};
+
+// TOGGLE: Set to true when using temporary project, false when 29th arrives!
+const USE_TEMP_PROJECT = true;
+
+const activeConfig = USE_TEMP_PROJECT ? TEMP_PROJECT : MAIN_PROJECT;
+
+const SUPABASE_URL = activeConfig.url;
+const SUPABASE_PUBLISHABLE_KEY = activeConfig.anonKey;
 
 // Import the supabase client like this:
 // import { supabase } from "@/integrations/supabase/client";

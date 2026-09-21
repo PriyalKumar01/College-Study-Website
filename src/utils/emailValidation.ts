@@ -198,6 +198,20 @@ export async function validateEmail(email: string): Promise<EmailValidationResul
     };
   }
 
+  // Known legitimate external email providers (e.g. Proton, Zoho, AOL, GMX)
+  // These are valid, permanent email services (not disposable), though they still require administrative approval
+  const KNOWN_LEGITIMATE_NON_ACADEMIC = new Set([
+    'proton.me', 'protonmail.com', 'pm.me',
+    'zoho.com', 'zoho.in', 'rediffmail.com',
+    'aol.com', 'mail.com', 'gmx.com', 'gmx.net', 'yandex.com'
+  ]);
+  if (KNOWN_LEGITIMATE_NON_ACADEMIC.has(domain)) {
+    return {
+      isValid: true,
+      isDisposable: false
+    };
+  }
+
   // 3. Check dynamic CDN blocklist (comprehensive check with ~8k domains)
   try {
     const cdnDomains = await fetchCdnDomains();
