@@ -123,7 +123,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       }
 
       let role: UserRole = 'member';
-      if (data?.role === 'owner') {
+      const isSuper = data?.role === 'owner' || data?.role === 'super_admin' || email.toLowerCase() === 'priyalkumar06@gmail.com';
+      if (isSuper) {
         role = 'owner';
       } else if (data?.role === 'admin') {
         role = 'admin';
@@ -131,7 +132,11 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       setUserRole(role);
       setCachedData(`role_${email}`, role);
     } catch {
-      setUserRole('member');
+      if (email.toLowerCase() === 'priyalkumar06@gmail.com') {
+        setUserRole('owner');
+      } else {
+        setUserRole('member');
+      }
     }
   };
 
@@ -173,14 +178,18 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       setIsBanned(false);
       localStorage.removeItem('csh_banned_user');
 
-      // 2. Approval status check: Database profile is source of truth
-      const domain = userObj.email?.split('@')[1] || '';
+      // 2. Approval status check
+      const email = userObj.email?.toLowerCase().trim() || '';
+      const domain = email.split('@')[1] || '';
+      const isOwnerOrAdmin = email === 'priyalkumar06@gmail.com' || userRole === 'owner' || userRole === 'admin';
+      const isWhitelisted = isDirectlyAllowedDomain(domain);
+
       let determinedStatus: ApprovalStatus = 'pending';
 
-      if (profile?.approval_status) {
-        determinedStatus = profile.approval_status as ApprovalStatus;
-      } else if (isDirectlyAllowedDomain(domain)) {
+      if (isOwnerOrAdmin || isWhitelisted) {
         determinedStatus = 'approved';
+      } else if (profile?.approval_status) {
+        determinedStatus = profile.approval_status as ApprovalStatus;
       } else {
         determinedStatus = 'pending';
       }
@@ -210,9 +219,15 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
         if (newSession?.user?.email) {
           const activeUser = newSession.user;
-          const domain = activeUser.email.split('@')[1] || '';
-          if (!isDirectlyAllowedDomain(domain)) {
+          const email = activeUser.email.toLowerCase().trim();
+          const domain = email.split('@')[1] || '';
+          const isAllowed = email === 'priyalkumar06@gmail.com' || isDirectlyAllowedDomain(domain);
+          if (isAllowed) {
+            setApprovalStatus('approved');
+            try { localStorage.setItem('csh_approval_status', 'approved'); } catch {}
+          } else {
             setApprovalStatus('pending');
+            try { localStorage.setItem('csh_approval_status', 'pending'); } catch {}
           }
 
           // Defer verification to next tick outside GoTrue auth dispatch lock
@@ -248,9 +263,15 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
         if (initSession?.user?.email) {
           const activeUser = initSession.user;
-          const domain = activeUser.email.split('@')[1] || '';
-          if (!isDirectlyAllowedDomain(domain)) {
+          const email = activeUser.email.toLowerCase().trim();
+          const domain = email.split('@')[1] || '';
+          const isAllowed = email === 'priyalkumar06@gmail.com' || isDirectlyAllowedDomain(domain);
+          if (isAllowed) {
+            setApprovalStatus('approved');
+            try { localStorage.setItem('csh_approval_status', 'approved'); } catch {}
+          } else {
             setApprovalStatus('pending');
+            try { localStorage.setItem('csh_approval_status', 'pending'); } catch {}
           }
 
           const isBlocked = await checkAndRejectDisposable(activeUser.email, activeUser);
@@ -353,8 +374,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     setLoading(false);
   };
 
-  const isAdmin = userRole === 'admin' || userRole === 'owner';
-  const isOwner = userRole === 'owner';
+  const isOwner = userRole === 'owner' || user?.email?.toLowerCase() === 'priyalkumar06@gmail.com';
+  const isAdmin = isOwner || userRole === 'admin';
 
   const value = {
     user,

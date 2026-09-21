@@ -4,10 +4,11 @@ import { useAuth } from '@/contexts/AuthContext';
 import { Loader2, AlertTriangle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
+import { isDirectlyAllowedDomain } from '@/utils/emailValidation';
 
 const Auth = () => {
   const navigate = useNavigate();
-  const { user, session, loading, approvalStatus } = useAuth();
+  const { user, session, loading, approvalStatus, isOwner, isAdmin } = useAuth();
   const [debugInfo, setDebugInfo] = useState<any>({});
 
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
@@ -80,7 +81,11 @@ const Auth = () => {
   // Auto-redirect if logged in
   useEffect(() => {
     if (!loading && user) {
-      if (approvalStatus === 'pending') {
+      const email = user.email?.toLowerCase().trim() || '';
+      const domain = email.split('@')[1] || '';
+      const isAllowed = isOwner || isAdmin || email === 'priyalkumar06@gmail.com' || isDirectlyAllowedDomain(domain) || approvalStatus === 'approved';
+
+      if (!isAllowed && approvalStatus === 'pending') {
         const timer = setTimeout(() => navigate('/pending-approval'), 400);
         return () => clearTimeout(timer);
       }
@@ -100,7 +105,7 @@ const Auth = () => {
       const timer = setTimeout(() => navigate(redirectTarget), 500);
       return () => clearTimeout(timer);
     }
-  }, [user, loading, approvalStatus, navigate]);
+  }, [user, loading, approvalStatus, isOwner, isAdmin, navigate]);
 
   return (
     <div className="min-h-screen bg-background flex flex-col items-center justify-center p-4">

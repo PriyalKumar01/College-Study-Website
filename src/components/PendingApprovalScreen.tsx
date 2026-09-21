@@ -3,6 +3,7 @@ import { Clock, CheckCircle2, LogOut, RefreshCw, ShieldAlert, Home, Info, Lock, 
 import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { isDirectlyAllowedDomain } from '@/utils/emailValidation';
 
 interface PendingApprovalScreenProps {
   userEmail?: string | null;
@@ -17,6 +18,17 @@ export const PendingApprovalScreen: React.FC<PendingApprovalScreenProps> = ({
 }) => {
   const [checking, setChecking] = useState(false);
   const { toast } = useToast();
+
+  const email = userEmail?.toLowerCase().trim() || '';
+  const domain = email.split('@')[1] || '';
+  const isWhitelisted = email === 'priyalkumar06@gmail.com' || isDirectlyAllowedDomain(domain);
+
+  React.useEffect(() => {
+    if (isWhitelisted) {
+      try { localStorage.setItem('csh_approval_status', 'approved'); } catch {}
+      window.location.href = '/dashboard';
+    }
+  }, [isWhitelisted]);
 
   const handleRefresh = async () => {
     setChecking(true);
