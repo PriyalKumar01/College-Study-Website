@@ -154,13 +154,18 @@ const BSMSSem4Notes = () => {
     }
   ];
 
-  const { data: communityNotes, refetch: refreshNotes } = useCommunityNotes('btech', 'BSMS-4th Semester');
+  const { data: communityNotes, refetch: refreshNotes } = useCommunityNotes('btech', ['BSMS-4th Semester', '4th Semester']);
   const subjects = staticSubjects.map((sub) => ({
     ...sub,
     notes: [
       ...sub.notes,
       ...(communityNotes || [])
-        .filter((cn) => cn.subject === sub.name || cn.subject === sub.id)
+        .filter((cn) => {
+          if (cn.subject === sub.name || cn.subject === sub.id) return true;
+          if (sub.id === 'pyqs' && (cn.material_type === 'pyqs' || (cn.subject && cn.subject.toLowerCase().includes('pyq')))) return true;
+          if (sub.id === 'assignments' && (cn.material_type === 'assignments' || (cn.subject && cn.subject.toLowerCase().includes('assignment')))) return true;
+          return false;
+        })
         .map((cn) => ({
           id: cn.id, title: cn.title, url: cn.file_url, isCommunity: true,
           fileName: cn.file_name, uploadedBy: cn.uploaded_by, userName: cn.user_name
@@ -193,9 +198,9 @@ const BSMSSem4Notes = () => {
           <div className="max-w-5xl mx-auto">
             <button
               onClick={() => setSelectedSubject(null)}
-              className="inline-flex items-center gap-2 text-xs font-semibold tracking-widest uppercase opacity-60 hover:opacity-100 transition-opacity mb-6"
+              className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-slate-900/90 hover:bg-slate-800 text-slate-100 dark:bg-slate-800 dark:hover:bg-slate-700 border border-slate-700/80 shadow-sm text-xs font-bold tracking-wide transition-all mb-6"
             >
-              <ArrowLeft className="h-3.5 w-3.5" /> Back to Subjects
+              <ArrowLeft className="h-4 w-4 mr-1" /> Back to 4th Sem Subjects
             </button>
             <h1 className="text-3xl font-serif leading-tight mb-2">
               {subject.name} Notes
@@ -285,10 +290,10 @@ const BSMSSem4Notes = () => {
       <div className="bg-foreground dark:bg-card text-background dark:text-foreground pt-16 pb-12 px-4 sm:px-8">
         <div className="max-w-5xl mx-auto">
           <button
-            onClick={() => navigate('/bsms-notes/second-year')}
-            className="inline-flex items-center gap-2 text-xs font-semibold tracking-widest uppercase opacity-50 hover:opacity-100 transition-opacity mb-8"
+            onClick={() => navigate('/bsms-notes')}
+            className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-slate-900/90 hover:bg-slate-800 text-slate-100 dark:bg-slate-800 dark:hover:bg-slate-700 border border-slate-700/80 shadow-sm text-xs font-bold tracking-wide transition-all mb-8"
           >
-            <ArrowLeft className="h-3.5 w-3.5" /> Back to 2nd Year
+            <ArrowLeft className="h-4 w-4 mr-1" /> Back to BS-MS Years
           </button>
           <p className="text-xs font-bold tracking-[0.2em] uppercase opacity-50 mb-3">BS-MS Science Notes</p>
           <h1 className="text-4xl md:text-5xl font-serif leading-tight mb-3">
@@ -358,7 +363,7 @@ const BSMSSem4Notes = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.06, duration: 0.4 }}
               >
-                <div className="group border border-border bg-card hover:border-foreground/30 rounded-xl p-5 transition-all duration-300 hover:shadow-lg h-full flex flex-col relative">
+                <div className="group border border-border bg-card hover:border-blue-400/60 hover:bg-blue-50/40 dark:hover:bg-blue-950/20 rounded-xl p-5 transition-all duration-300 hover:shadow-lg h-full flex flex-col relative">
                   <div className="flex items-start justify-between mb-4">
                     <span className="text-2xl">{subject.icon}</span>
                     <span className="text-xs font-bold text-white bg-green-500 px-2 py-0.5 rounded-full">
