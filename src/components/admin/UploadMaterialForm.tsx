@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useMemo } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
@@ -15,11 +15,14 @@ import {
   Sparkles, ChevronRight, Plus, Pencil
 } from 'lucide-react';
 import {
-  CATEGORIES, BTECH_YEARS, BTECH_BRANCHES,
+  CATEGORIES, BTECH_YEARS, BSMS_YEARS, BPHARMA_YEARS, MBA_YEARS, BTECH_BRANCHES, BTECH_FIRST_YEAR_SUBJECTS,
   getSubjects, getSemesters
 } from '@/data/courseStructure';
 import { saveCustomSubject, saveRenamedSubject } from '@/lib/customSubjects';
 import { clearCachePrefix } from '@/lib/cacheUtils';
+import { syncContributorCount } from '@/lib/contributorSync';
+import { MilestoneCelebrationModal } from '@/components/MilestoneCelebrationModal';
+import { isLeagueMilestone, getLeagueUpgradeInfo } from '@/lib/contributorBadgeUtils';
 
 const ICON_MAP: Record<string, React.ReactNode> = {
   GraduationCap: <GraduationCap className="h-5 w-5" />,
@@ -61,7 +64,7 @@ const UploadMaterialForm = ({ onUploadSuccess }: UploadMaterialFormProps) => {
   const [year, setYear] = useState('');
   const [semester, setSemester] = useState('');
   const [subject, setSubject] = useState('');
-  const [materialType, setMaterialType] = useState<'notes' | 'pyqs' | 'assignments'>('notes');
+  const [materialType, setMaterialType] = useState<'notes' | 'pyqs' | 'assignments' | 'book' | 'practical_file'>('notes');
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [file, setFile] = useState<File | null>(null);
@@ -76,33 +79,51 @@ const UploadMaterialForm = ({ onUploadSuccess }: UploadMaterialFormProps) => {
     "Mid Sem-1 PYQ'S",
     "Mid Sem-2 PYQ'S",
     "End Sem PYQ'S",
+    "Complete PYQ's",
     'Other',
   ];
   const ACADEMIC_YEARS = [
-    '2024-25', '2025-26', '2026-27', '2027-28',
-    '2028-29', '2029-30', '2030-31', '2031-32',
+    '2021-22',
+    '2022-23',
+    '2023-24',
+    '2024-25',
+    '2025-26',
+    '2026-27',
+    '2027-28',
+    '2028-29',
+    '2029-30',
+    '2030-31',
+    '2031-32',
+    '2032-33',
+    '2033-34',
+    '2034-35',
+    '2035-36',
   ];
   const [pyqExamType, setPyqExamType] = useState('');
-  const [pyqAcademicYear, setPyqAcademicYear] = useState('');
+  const [pyqAcademicYear, setPyqAcademicYear] = useState('2024-25');
   const [pyqCustomTitle, setPyqCustomTitle] = useState('');
 
   // Derived: is current upload a PYQ?
   const isPyqMode =
-    materialType === 'pyqs' || subject === 'Previous Year Questions';
+    materialType === 'pyqs' || subject === 'Previous Year Questions' || subject === 'Previous Year Questions (PYQs)';
 
-  // Auto-build title for PYQs
-  const autoPyqTitle =
-    isPyqMode && pyqExamType && pyqExamType !== 'Other' && pyqAcademicYear
-      ? `${pyqExamType} (${pyqAcademicYear})`
-      : isPyqMode && pyqExamType === 'Other'
-      ? pyqCustomTitle
-      : title;
+  // Auto-build title for PYQs with Subject + Exam Type + Academic Year
+  const autoPyqTitle = useMemo(() => {
+    if (!isPyqMode) return title;
+    if (pyqExamType === 'Other') return pyqCustomTitle;
+    const yearPart = pyqAcademicYear ? `(${pyqAcademicYear})` : '';
+    const examPart = pyqExamType || "PYQ's";
+    if (subject && subject !== 'Previous Year Questions' && subject !== 'Previous Year Questions (PYQs)') {
+      return `${subject} ${examPart} ${yearPart}`.trim();
+    }
+    return `${examPart} ${yearPart}`.trim();
+  }, [isPyqMode, pyqExamType, pyqAcademicYear, pyqCustomTitle, subject, title]);
 
   // Effective title used for submission
   const effectiveTitle = isPyqMode ? autoPyqTitle : title;
 
   // For 1st year: map the actual semester to the correct subject list
-  const isFirstYear = category === 'btech' && year === '1st';
+  const isFirstYear = (category === 'btech' || category === 'bsms') && year === '1st';
   const mappedSemester = isFirstYear && branchType === 'technology' && semester
     ? (semester === '1st Semester' ? '2nd Semester' : '1st Semester')
     : semester;
@@ -117,12 +138,32 @@ const UploadMaterialForm = ({ onUploadSuccess }: UploadMaterialFormProps) => {
   const [isRenamingSubject, setIsRenamingSubject] = useState(false);
   const [renameValue, setRenameValue] = useState('');
 
+  // Celebration modal state for 1st contribution / league upgrades
+  const [celebrationData, setCelebrationData] = useState<{
+    isOpen: boolean;
+    contributorName: string;
+    coins: number;
+    isFirst: boolean;
+    isPending: boolean;
+    tierName?: string;
+  } | null>(null);
+
   // Derived data
   const selectedCategory = CATEGORIES.find(c => c.id === category);
+
+  const categoryYears = useMemo(() => {
+    if (category === 'bsms') return BSMS_YEARS;
+    if (category === 'bpharma') return BPHARMA_YEARS;
+    if (category === 'mba') return MBA_YEARS;
+    return BTECH_YEARS;
+  }, [category]);
+
   const availableSemesters = category ? getSemesters(category, year) : [];
-  const availableSubjects = category && semester
-    ? getSubjects(category, isFirstYear ? (mappedSemester || semester) : semester, isFirstYear ? undefined : branch)
-    : [];
+  const availableSubjects = isFirstYear
+    ? BTECH_FIRST_YEAR_SUBJECTS
+    : (category && semester
+        ? getSubjects(category, semester, branch)
+        : []);
 
   const handleCategoryChange = (val: string) => {
     setCategory(val);
@@ -131,16 +172,25 @@ const UploadMaterialForm = ({ onUploadSuccess }: UploadMaterialFormProps) => {
     setYear('');
     setSemester('');
     setSubject('');
-    setActiveStep(val === 'btech' ? 2 : 3);
+    const targetCat = CATEGORIES.find(c => c.id === val);
+    setActiveStep(targetCat?.hasYears ? 2 : (targetCat?.hasSemesters ? 4 : 6));
   };
 
   const handleYearChange = (val: string) => {
     setYear(val);
-    setBranchType(val === '1st' ? 'all' : '');
-    setSemester('');
-    setSubject('');
-    setBranch('');
-    setActiveStep(4);
+    if ((category === 'btech' || category === 'bsms') && val === '1st') {
+      setBranchType('all');
+      setSemester('ALL-First Year (All Subjects)');
+      setSubject('');
+      setBranch('');
+      setActiveStep(6);
+    } else {
+      setBranchType('');
+      setSemester('');
+      setSubject('');
+      setBranch('');
+      setActiveStep(4);
+    }
   };
 
   const handleBranchTypeChange = (val: 'engineering' | 'technology') => {
@@ -249,8 +299,8 @@ const UploadMaterialForm = ({ onUploadSuccess }: UploadMaterialFormProps) => {
   };
 
   const derivedMaterialType = 
-    subject === 'Previous Year Questions' ? 'pyqs' :
-    subject === 'Assignments' ? 'assignments' :
+    subject === 'Previous Year Questions' || subject === 'Previous Year Questions (PYQs)' ? 'pyqs' :
+    subject === 'Assignments' || subject === 'Assignments - All Subjects' ? 'assignments' :
     ['dsa', 'coding', 'webdev', 'placement'].includes(category) ? 'notes' :
     null;
 
@@ -261,12 +311,11 @@ const UploadMaterialForm = ({ onUploadSuccess }: UploadMaterialFormProps) => {
     if (!user) return 'You are not logged in. Please re-login and try again.';
     if (!category) return 'Please select a category.';
     if (selectedCategory?.hasYears && !year) return 'Please select a year.';
-    if (selectedCategory?.hasSemesters && !semester) return 'Please select a semester.';
+    if (selectedCategory?.hasSemesters && !isFirstYear && !semester) return 'Please select a semester.';
     if (selectedCategory?.hasBranches && !isFirstYear && !branch) return 'Please select a branch.';
     if (availableSubjects.length > 0 && !subject) return 'Please select a subject.';
 
     if (isPyqMode) {
-      if (!pyqExamType) return 'Please select PYQ exam type.';
       if (!pyqAcademicYear) return 'Please select PYQ academic year.';
       if (pyqExamType === 'Other' && !pyqCustomTitle.trim()) return 'Please enter a custom PYQ title.';
     } else {
@@ -326,9 +375,17 @@ const UploadMaterialForm = ({ onUploadSuccess }: UploadMaterialFormProps) => {
 
       const dbSemester = category === 'btech'
         ? (isFirstYear
-            ? (semester.includes('2nd') ? 'ALL-2nd Semester' : 'ALL-1st Semester')
+            ? (semester || 'ALL-First Year (All Subjects)')
             : `${branch}-${semester}`)
-        : (semester || category);
+        : (category === 'bsms'
+            ? (isFirstYear
+                ? 'ALL-First Year (All Subjects)'
+                : (semester.startsWith('BSMS-') ? semester : `BSMS-${semester}`))
+            : (category === 'bpharma'
+                ? (semester.startsWith('BPHARMA-') ? semester : `BPHARMA-${semester}`)
+                : (category === 'mba'
+                    ? (semester.startsWith('MBA-') ? semester : `MBA-${semester}`)
+                    : (semester || category))));
 
       const finalTitle = effectiveTitle.trim();
 
@@ -344,6 +401,22 @@ const UploadMaterialForm = ({ onUploadSuccess }: UploadMaterialFormProps) => {
       const { data: urlData } = supabase.storage
         .from('study-materials')
         .getPublicUrl(uploadedPath);
+
+      // Check contributor's previous uploads to trigger 1st milestone or league upgrade
+      let previousCount = 0;
+      try {
+        const uId = currentUser?.id;
+        const uEmail = currentUser?.email;
+        if (uId || uEmail) {
+          const { count } = await supabase
+            .from('notes')
+            .select('id', { count: 'exact', head: true })
+            .or(`uploaded_by.eq.${uId},user_email.eq.${uEmail}`);
+          previousCount = count || 0;
+        }
+      } catch (cErr) {
+        console.warn('Could not check contribution count:', cErr);
+      }
 
       const { error: insertError } = await supabase
         .from('notes')
@@ -370,9 +443,36 @@ const UploadMaterialForm = ({ onUploadSuccess }: UploadMaterialFormProps) => {
         throw insertError;
       }
 
+      // Auto-sync contributor coins if approved right away (e.g. uploaded by owner/admin)
+      if (isOwner) {
+        syncContributorCount({
+          name: currentUser?.user_metadata?.first_name || currentUser?.email?.split('@')[0],
+          email: currentUser?.email,
+          count: 1,
+          branch: branch || (isFirstYear ? '1st Year' : semester),
+          batch: year || '28',
+        });
+      }
+
       clearCachePrefix('notes');
       if (typeof window !== 'undefined') {
         window.dispatchEvent(new Event('studyhub_notes_updated'));
+      }
+
+      const newTotalCount = previousCount + 1;
+      const isFirst = newTotalCount === 1;
+      const isMilestone = isLeagueMilestone(newTotalCount);
+
+      if (isFirst || isMilestone) {
+        const leagueInfo = getLeagueUpgradeInfo(newTotalCount);
+        setCelebrationData({
+          isOpen: true,
+          contributorName: currentUser?.user_metadata?.first_name || currentUser?.email?.split('@')[0] || 'Contributor',
+          coins: newTotalCount,
+          isFirst: isFirst,
+          isPending: !isOwner,
+          tierName: leagueInfo.badgeLabel,
+        });
       }
 
       toast({
@@ -407,9 +507,9 @@ const UploadMaterialForm = ({ onUploadSuccess }: UploadMaterialFormProps) => {
   // ── Selection breadcrumb ─────────────────────────────────────
   const breadcrumb = [
     selectedCategory?.label,
-    isFirstYear && branchType ? (branchType === 'engineering' ? 'Engineering Branch' : 'Technology Branch') : undefined,
+    isFirstYear && branchType ? (branchType === 'all' ? '1st Year (Unified)' : branchType === 'engineering' ? 'Engineering Branch' : 'Technology Branch') : undefined,
     !isFirstYear && branch ? BTECH_BRANCHES.find(b => b.code === branch)?.fullName : undefined,
-    year && BTECH_YEARS.find(y => y.id === year)?.label,
+    year && (categoryYears.find(y => y.id === year)?.label || `${year} Year`),
     semester,
     subject && availableSubjects.find(s => s.name === subject)?.fullName,
   ].filter(Boolean);
@@ -491,8 +591,8 @@ const UploadMaterialForm = ({ onUploadSuccess }: UploadMaterialFormProps) => {
         )}
       </div>
 
-      {/* Step 2: Year (BTech only) */}
-      {category === 'btech' && (
+      {/* Step 2: Year */}
+      {selectedCategory?.hasYears && (
         <div className="space-y-3" ref={yearRef}>
           {year && activeStep !== 2 ? (
             <div
@@ -503,7 +603,7 @@ const UploadMaterialForm = ({ onUploadSuccess }: UploadMaterialFormProps) => {
                 <div className="w-6 h-6 rounded-full bg-emerald-600 text-white flex items-center justify-center text-xs font-bold">✓</div>
                 <div>
                   <p className="text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold uppercase tracking-wider">Step 2: Academic Year Selected</p>
-                  <p className="text-sm font-bold text-foreground">{BTECH_YEARS.find(y => y.id === year)?.label}</p>
+                  <p className="text-sm font-bold text-foreground">{categoryYears.find(y => y.id === year)?.label}</p>
                 </div>
               </div>
               <span className="text-xs text-emerald-600 dark:text-emerald-400 font-semibold hover:underline">Change</span>
@@ -514,8 +614,8 @@ const UploadMaterialForm = ({ onUploadSuccess }: UploadMaterialFormProps) => {
                 <span className="w-7 h-7 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-xs font-bold shadow-md">2</span>
                 Select Year
               </Label>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                {BTECH_YEARS.map(y => (
+              <div className={`grid grid-cols-2 ${categoryYears.length >= 5 ? 'sm:grid-cols-5' : 'sm:grid-cols-4'} gap-3`}>
+                {categoryYears.map(y => (
                   <Card
                     key={y.id}
                     className={`cursor-pointer transition-all duration-200 text-center border-border bg-card ${
@@ -528,7 +628,7 @@ const UploadMaterialForm = ({ onUploadSuccess }: UploadMaterialFormProps) => {
                     <CardContent className="p-3.5">
                       <div className="text-base font-extrabold text-primary">{y.label}</div>
                       <div className="text-xs text-muted-foreground mt-1">
-                        {y.semesters.join(' & ')}
+                        {y.semesters.filter(s => !s.includes('(All Subjects)')).join(' & ')}
                       </div>
                     </CardContent>
                   </Card>
@@ -540,7 +640,7 @@ const UploadMaterialForm = ({ onUploadSuccess }: UploadMaterialFormProps) => {
       )}
 
       {/* Step 3 (1st year): Branch Type - Optional Unified or Specific Cycle */}
-      {isFirstYear && (
+      {isFirstYear && category === 'btech' && (
         <div className="space-y-3" ref={branchRef}>
           {branchType && activeStep !== 3 ? (
             <div
@@ -611,7 +711,7 @@ const UploadMaterialForm = ({ onUploadSuccess }: UploadMaterialFormProps) => {
       )}
 
       {/* Step 3/4: Semester */}
-      {((category === 'btech' && year) || (selectedCategory?.hasSemesters && category !== 'btech')) && (
+      {((selectedCategory?.hasYears ? (year && !isFirstYear) : selectedCategory?.hasSemesters) && availableSemesters.length > 0) && (
         <div className="space-y-3" ref={semesterRef}>
           {semester && activeStep !== 4 ? (
             <div
@@ -931,17 +1031,17 @@ const UploadMaterialForm = ({ onUploadSuccess }: UploadMaterialFormProps) => {
             Upload Material Details 📁
           </Label>
 
-          {/* Material Type */}
+          {/* Material Type Selection */}
           {!derivedMaterialType && (
             <div className="space-y-2">
-              <Label className="text-sm font-semibold text-foreground">Material Type</Label>
-              <div className="flex flex-wrap gap-3">
+              <Label className="text-sm font-semibold text-foreground">Select Resource / Material Type</Label>
+              <div className="flex flex-wrap gap-2.5">
                 <Badge
                   variant={materialType === 'notes' ? 'default' : 'outline'}
-                  className={`cursor-pointer px-4 py-2 text-sm transition-all ${
+                  className={`cursor-pointer px-3.5 py-2 text-xs sm:text-sm font-semibold transition-all ${
                     materialType === 'notes' 
-                      ? 'bg-primary text-primary-foreground' 
-                      : 'hover:bg-muted border-border'
+                      ? 'bg-blue-600 text-white shadow-sm' 
+                      : 'hover:bg-muted border-border text-foreground'
                   }`}
                   onClick={() => setMaterialType('notes')}
                 >
@@ -949,28 +1049,52 @@ const UploadMaterialForm = ({ onUploadSuccess }: UploadMaterialFormProps) => {
                   Notes
                 </Badge>
                 <Badge
-                  variant={materialType === 'pyqs' ? 'default' : 'outline'}
-                  className={`cursor-pointer px-4 py-2 text-sm transition-all ${
-                    materialType === 'pyqs' 
-                      ? 'bg-primary text-primary-foreground' 
-                      : 'hover:bg-muted border-border'
-                  }`}
-                  onClick={() => setMaterialType('pyqs')}
-                >
-                  <BookOpen className="h-4 w-4 mr-1.5" />
-                  Previous Year Questions
-                </Badge>
-                <Badge
                   variant={materialType === 'assignments' ? 'default' : 'outline'}
-                  className={`cursor-pointer px-4 py-2 text-sm transition-all ${
+                  className={`cursor-pointer px-3.5 py-2 text-xs sm:text-sm font-semibold transition-all ${
                     materialType === 'assignments' 
-                      ? 'bg-primary text-primary-foreground' 
-                      : 'hover:bg-muted border-border'
+                      ? 'bg-orange-600 text-white shadow-sm' 
+                      : 'hover:bg-muted border-border text-foreground'
                   }`}
                   onClick={() => setMaterialType('assignments')}
                 >
                   <Briefcase className="h-4 w-4 mr-1.5" />
                   Assignments
+                </Badge>
+                <Badge
+                  variant={materialType === 'book' ? 'default' : 'outline'}
+                  className={`cursor-pointer px-3.5 py-2 text-xs sm:text-sm font-semibold transition-all ${
+                    materialType === 'book' 
+                      ? 'bg-emerald-600 text-white shadow-sm' 
+                      : 'hover:bg-muted border-border text-foreground'
+                  }`}
+                  onClick={() => setMaterialType('book')}
+                >
+                  <BookOpen className="h-4 w-4 mr-1.5" />
+                  Book / Reference
+                </Badge>
+                <Badge
+                  variant={materialType === 'practical_file' ? 'default' : 'outline'}
+                  className={`cursor-pointer px-3.5 py-2 text-xs sm:text-sm font-semibold transition-all ${
+                    materialType === 'practical_file' 
+                      ? 'bg-purple-600 text-white shadow-sm' 
+                      : 'hover:bg-muted border-border text-foreground'
+                  }`}
+                  onClick={() => setMaterialType('practical_file')}
+                >
+                  <GraduationCap className="h-4 w-4 mr-1.5" />
+                  Practical File / Lab
+                </Badge>
+                <Badge
+                  variant={materialType === 'pyqs' ? 'default' : 'outline'}
+                  className={`cursor-pointer px-3.5 py-2 text-xs sm:text-sm font-semibold transition-all ${
+                    materialType === 'pyqs' 
+                      ? 'bg-red-600 text-white shadow-sm' 
+                      : 'hover:bg-muted border-border text-foreground'
+                  }`}
+                  onClick={() => setMaterialType('pyqs')}
+                >
+                  <Sparkles className="h-4 w-4 mr-1.5" />
+                  Previous Year Questions (PYQs)
                 </Badge>
               </div>
             </div>
@@ -1132,6 +1256,19 @@ const UploadMaterialForm = ({ onUploadSuccess }: UploadMaterialFormProps) => {
             <span>Your upload will be sent to the site owner for approval before appearing live on the notes page.</span>
           </div>
         </div>
+      )}
+
+      {/* 1st Contribution & League Upgrade Celebration Modal */}
+      {celebrationData && (
+        <MilestoneCelebrationModal
+          isOpen={celebrationData.isOpen}
+          onClose={() => setCelebrationData(null)}
+          contributorName={celebrationData.contributorName}
+          coins={celebrationData.coins}
+          tierName={celebrationData.tierName}
+          isFirstContribution={celebrationData.isFirst}
+          isPendingApproval={celebrationData.isPending}
+        />
       )}
     </div>
   );
