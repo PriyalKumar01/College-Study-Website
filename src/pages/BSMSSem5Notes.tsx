@@ -140,13 +140,18 @@ const BSMSSem5Notes = () => {
     }
   ];
 
-  const { data: communityNotes, refetch: refreshNotes } = useCommunityNotes('btech', 'BSMS-5th Semester');
+  const { data: communityNotes, refetch: refreshNotes } = useCommunityNotes('btech', ['BSMS-5th Semester', '5th Semester']);
   const subjects = staticSubjects.map((sub) => ({
     ...sub,
     notes: [
       ...sub.notes,
       ...(communityNotes || [])
-        .filter((cn) => cn.subject === sub.name || cn.subject === sub.id)
+        .filter((cn) => {
+          if (cn.subject === sub.name || cn.subject === sub.id) return true;
+          if (sub.id === 'pyqs' && (cn.material_type === 'pyqs' || (cn.subject && cn.subject.toLowerCase().includes('pyq')))) return true;
+          if (sub.id === 'assignments' && (cn.material_type === 'assignments' || (cn.subject && cn.subject.toLowerCase().includes('assignment')))) return true;
+          return false;
+        })
         .map((cn) => ({
           id: cn.id, title: cn.title, url: cn.file_url, isCommunity: true,
           fileName: cn.file_name, uploadedBy: cn.uploaded_by, userName: cn.user_name
