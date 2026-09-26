@@ -1,13 +1,15 @@
 import { useNavigate, useLocation } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Coins, Shield, Award } from "lucide-react";
+import { ArrowLeft, Coins, Shield, Award, Sparkles } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import Navbar from "@/components/Navbar";
 import { motion, AnimatePresence } from "framer-motion";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { getCachedData, setCachedData, DEFAULT_CACHE_TTL_MS } from "@/lib/cacheUtils";
+import { getContributorBadge } from "@/lib/contributorBadgeUtils";
+import { MilestoneCelebrationModal } from "@/components/MilestoneCelebrationModal";
 
 // ── Interfaces ──────────────────────────────────────────────────────────────
 interface Contributor {
@@ -35,183 +37,76 @@ interface AdminRecord {
 // ── Constants ─────────────────────────────────────────────────────────────────
 const SIDEBAR_PURPLE = "#1e1b4b";
 
-// ── Avatar helpers ────────────────────────────────────────────────────────────
-const GRADIENTS = [
-  "linear-gradient(135deg,#667eea,#764ba2)",
-  "linear-gradient(135deg,#f093fb,#f5576c)",
-  "linear-gradient(135deg,#4facfe,#00f2fe)",
-  "linear-gradient(135deg,#43e97b,#38f9d7)",
-  "linear-gradient(135deg,#fa709a,#fee140)",
-  "linear-gradient(135deg,#a18cd1,#fbc2eb)",
-  "linear-gradient(135deg,#ffecd2,#fcb69f)",
-];
-
-function initials(name: string) {
-  const p = name.trim().split(" ");
-  return p.length === 1 ? (p[0][0] || "?").toUpperCase() : (p[0][0] + p[p.length - 1][0]).toUpperCase();
-}
-
-function avatarGradient(seed: string) {
-  let h = 0;
-  for (let i = 0; i < seed.length; i++) h = seed.charCodeAt(i) + ((h << 5) - h);
-  return GRADIENTS[Math.abs(h) % GRADIENTS.length];
-}
-
-// ── Admin Card ────────────────────────────────────────────────────────────────
+// ── Admin Card (Matching Rank 4+ Contributor Layout) ──────────────────────────
 function AdminCard({ admin, index }: { admin: AdminRecord; index: number }) {
   const isOwner = admin.role === "owner" || admin.role === "super_admin";
   const isActive = !admin.to_date;
   const displayName = admin.user_name || (admin.user_email === "priyalkumar06@gmail.com" ? "Priyal Kumar" : admin.user_email.split("@")[0]);
-  const [hov, setHov] = useState(false);
 
   const fmt = (d: string | null) =>
     d ? new Date(d).toLocaleDateString("en-IN", { month: "short", year: "numeric" }) : null;
 
-  // card bg: card background → very light professional sky blue tint on hover
-  const cardBg   = hov ? "rgba(56, 189, 248, 0.12)" : "hsl(var(--card))";
-  const textMain  = hov ? "#0284c7" : "hsl(var(--foreground))";
-  const textSub   = hov ? "#0369a1" : "hsl(var(--muted-foreground))";
-
   return (
     <motion.div
-      initial={{ opacity: 0, y: 14 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: index * 0.07, duration: 0.3 }}
-      style={{ marginBottom: 10 }}
+      initial={{ opacity: 0, x: -20 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ delay: index * 0.05, duration: 0.35 }}
     >
-      <div
-        onMouseEnter={() => setHov(true)}
-        onMouseLeave={() => setHov(false)}
-        style={{
-          background: cardBg,
-          borderRadius: 14,
-          padding: "16px 22px",
-          display: "flex",
-          alignItems: "center",
-          gap: 14,
-          transition: "all 0.22s ease",
-          border: hov ? "1.5px solid rgba(56, 189, 248, 0.5)" : "1.5px solid transparent",
-          boxShadow: hov
-            ? "0 8px 24px rgba(14, 165, 233, 0.14)"
-            : "0 1px 4px rgba(0,0,0,0.07)",
-          cursor: "default",
-          width: "100%",
-        }}
-      >
-        {/* Rank or Crown */}
-        <div style={{
-          width: 38, height: 38, borderRadius: 10, flexShrink: 0,
-          display: "flex", alignItems: "center", justifyContent: "center",
-          background: hov ? "#e0f2fe" : isOwner ? "#fef3c7" : "#ede9fe",
-          fontSize: isOwner ? 18 : 13, fontWeight: 800,
-          color: hov ? "#0284c7" : isOwner ? "#d97706" : "#6d28d9",
-          transition: "background 0.22s, color 0.22s",
-        }}>
-          {isOwner ? "👑" : index + 1}
-        </div>
+      <Card className="border border-border/70 shadow-sm hover:shadow-md transition-all duration-200 bg-white dark:bg-card hover:scale-[1.01] hover:border-sky-300/80 hover:bg-sky-50/40 dark:hover:border-sky-800/80 dark:hover:bg-sky-950/20 border-l-4 border-l-transparent hover:border-l-sky-500 hover:shadow-sky-500/5">
+        <div className="p-4 sm:p-5 flex items-center justify-between">
+          <div className="flex items-center gap-4 md:gap-6">
+            <div className={`flex items-center justify-center w-10 h-10 md:w-12 md:h-12 rounded-full font-bold text-lg shadow-sm flex-shrink-0 ${
+              isOwner
+                ? "bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300 border border-amber-300"
+                : "bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300"
+            }`}>
+              {isOwner ? "👑" : index + 1}
+            </div>
 
-        {/* Avatar (Photo or Initials Gradient) */}
-        <div style={{
-          width: 48, height: 48, borderRadius: "50%", flexShrink: 0,
-          background: avatarGradient(admin.user_email),
-          display: "flex", alignItems: "center", justifyContent: "center",
-          color: "#fff", fontWeight: 800, fontSize: 16,
-          boxShadow: "0 2px 8px rgba(0,0,0,0.13)",
-          userSelect: "none",
-          overflow: "hidden",
-        }}>
-          {admin.avatar_url ? (
-            <img src={admin.avatar_url} alt={displayName} className="w-full h-full object-cover" />
-          ) : (
-            initials(displayName)
-          )}
-        </div>
+            <div>
+              <div className="flex items-center gap-2 flex-wrap mb-1">
+                <h3 className="font-bold text-lg md:text-xl text-slate-800 dark:text-slate-100">
+                  {displayName}
+                </h3>
 
-        {/* Info */}
-        <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 7, flexWrap: "wrap", marginBottom: 3 }}>
-            <span style={{ fontWeight: 700, fontSize: 15, color: textMain, transition: "color 0.22s" }}>
-              {displayName}
-            </span>
+                {/* Role badge */}
+                <span className={`px-2.5 py-0.5 rounded-full text-xs font-bold border ${
+                  isOwner
+                    ? "bg-amber-100 text-amber-800 border-amber-300 dark:bg-amber-950/50 dark:text-amber-300"
+                    : "bg-purple-100 text-purple-800 border-purple-300 dark:bg-purple-950/50 dark:text-purple-300"
+                }`}>
+                  {isOwner ? "👑 Owner" : "⚔️ Admin"}
+                </span>
 
-            {/* Role badge */}
-            <span style={{
-              padding: "2px 10px", borderRadius: 20, fontSize: 11, fontWeight: 700,
-              background: hov ? "#e0f2fe" : isOwner ? "#fef3c7" : "#ede9fe",
-              color: hov ? "#0369a1" : isOwner ? "#b45309" : "#5b21b6",
-              border: `1.5px solid ${hov ? "rgba(56, 189, 248, 0.4)" : isOwner ? "#fcd34d" : "#c4b5fd"}`,
-              transition: "all 0.22s",
-            }}>
-              {isOwner ? "👑 Owner" : "⚔️ Admin"}
-            </span>
+                {/* Active / Former */}
+                {isActive ? (
+                  <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-800">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" /> Active
+                  </span>
+                ) : (
+                  <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-600 border border-slate-200 dark:bg-slate-800 dark:text-slate-400">
+                    Former
+                  </span>
+                )}
+              </div>
 
-            {/* College & Branch if available */}
-            {(admin.college || admin.branch) && (
-              <span style={{
-                padding: "2px 9px", borderRadius: 20, fontSize: 11, fontWeight: 600,
-                background: hov ? "rgba(224,242,254,0.6)" : "hsl(var(--muted))",
-                color: hov ? "#0284c7" : "hsl(var(--muted-foreground))",
-                border: "1px solid rgba(0,0,0,0.06)",
-                transition: "all 0.22s",
-              }}>
-                🎓 {admin.college || 'HBTU Kanpur'}{admin.branch ? ` • ${admin.branch}` : ''}
-              </span>
-            )}
-
-            {/* Active / Former */}
-            {!isOwner && isActive && (
-              <span style={{
-                padding: "2px 9px", borderRadius: 20, fontSize: 11, fontWeight: 700,
-                display: "inline-flex", alignItems: "center", gap: 5,
-                background: hov ? "rgba(134,239,172,0.15)" : "#f0fdf4",
-                color: hov ? "#15803d" : "#16a34a",
-                border: `1.5px solid ${hov ? "rgba(134,239,172,0.4)" : "#bbf7d0"}`,
-                transition: "all 0.22s",
-              }}>
-                <span style={{ width: 5, height: 5, borderRadius: "50%", background: hov ? "#16a34a" : "#22c55e" }} />
-                Active
-              </span>
-            )}
-            {!isOwner && !isActive && (
-              <span style={{
-                padding: "2px 9px", borderRadius: 20, fontSize: 11, fontWeight: 600,
-                background: hov ? "#f1f5f9" : "#f8fafc",
-                color: hov ? "#475569" : "#64748b",
-                border: `1.5px solid ${hov ? "#cbd5e1" : "#e2e8f0"}`,
-                transition: "all 0.22s",
-              }}>
-                Former
-              </span>
-            )}
+              <div className="flex items-center gap-2 flex-wrap">
+                <Badge variant="secondary" className="bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-600">
+                  🎓 {admin.college || 'HBTU Kanpur'}{admin.branch ? ` • ${admin.branch}` : ''}
+                </Badge>
+              </div>
+            </div>
           </div>
 
-          <p style={{ fontSize: 12, margin: 0, color: textSub, transition: "color 0.22s" }}>
-            {admin.user_email}
-          </p>
-
-          {/* Mobile dates */}
-          {admin.from_date && (
-            <p className="sm:hidden" style={{ fontSize: 11, margin: "4px 0 0", color: textSub, transition: "color 0.22s" }}>
-              📅 {fmt(admin.from_date)} → {admin.to_date ? fmt(admin.to_date) : "Present"}
-            </p>
-          )}
-        </div>
-
-        {/* Desktop date range */}
-        {(admin.from_date || admin.to_date) && (
-          <div className="hidden sm:block" style={{ textAlign: "right", flexShrink: 0, minWidth: 88 }}>
-            <span style={{ display: "block", fontSize: 12, fontWeight: 600, color: textMain, opacity: 0.8, transition: "color 0.22s" }}>
-              {fmt(admin.from_date) || "?"}
-            </span>
-            <span style={{ display: "block", fontSize: 11, color: textSub, transition: "color 0.22s" }}>
-              →{" "}
-              {admin.to_date
-                ? fmt(admin.to_date)
-                : <span style={{ color: hov ? "#86efac" : "#16a34a", fontWeight: 700 }}>Present</span>}
-            </span>
+          {/* Tenure right side */}
+          <div className="text-right min-w-fit pl-4">
+            <div className="text-sm sm:text-base font-bold text-slate-800 dark:text-slate-200">
+              {fmt(admin.from_date) || "Start"} → {admin.to_date ? fmt(admin.to_date) : <span className="text-emerald-600 dark:text-emerald-400 font-extrabold">Present</span>}
+            </div>
+            <p className="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wide font-medium mt-0.5">Tenure</p>
           </div>
-        )}
-      </div>
+        </div>
+      </Card>
     </motion.div>
   );
 }
@@ -248,6 +143,20 @@ const NotesContributors = ({ defaultTab }: { defaultTab?: "contributors" | "admi
   const [loadingContributors, setLoadingContributors] = useState(() => {
     return !getCachedData<Contributor[]>('contributors_list', DEFAULT_CACHE_TTL_MS);
   });
+  const [celebrationData, setCelebrationData] = useState<{ name: string; coins: number; tierName: string } | null>(null);
+
+  const sortedAdmins = useMemo(() => {
+    return [...admins].sort((a, b) => {
+      const isOwnerA = a.role === "owner" || a.role === "super_admin" || a.user_email === "priyalkumar06@gmail.com";
+      const isOwnerB = b.role === "owner" || b.role === "super_admin" || b.user_email === "priyalkumar06@gmail.com";
+      if (isOwnerA && !isOwnerB) return -1;
+      if (!isOwnerA && isOwnerB) return 1;
+
+      const nameA = (a.user_name || a.user_email.split('@')[0]).trim().toLowerCase();
+      const nameB = (b.user_name || b.user_email.split('@')[0]).trim().toLowerCase();
+      return nameA.localeCompare(nameB);
+    });
+  }, [admins]);
 
   const handleTabChange = (newTab: "contributors" | "admins") => {
     setTab(newTab);
@@ -469,6 +378,17 @@ const NotesContributors = ({ defaultTab }: { defaultTab?: "contributors" | "admi
                               <a href={contributors[1].linkedin_url || "#"} target="_blank" rel="noopener noreferrer">
                                 <h3 className="font-bold text-lg text-slate-800 dark:text-slate-100 hover:text-primary transition-colors">{contributors[1].name}</h3>
                               </a>
+
+                              {/* Dominator #2 Badge */}
+                              <button
+                                type="button"
+                                onClick={() => setCelebrationData({ name: contributors[1].name, coins: contributors[1].coins, tierName: 'Dominator #2' })}
+                                className="mt-1 mb-1 bg-gradient-to-r from-slate-400 to-zinc-500 text-white font-extrabold border border-slate-300 text-xs px-3 py-0.5 rounded-full shadow-xs hover:scale-105 transition-transform cursor-pointer"
+                                title="Click to view League Achievement"
+                              >
+                                🥈 Dominator #2
+                              </button>
+
                               <Badge variant="secondary" className="mt-1 mb-2 bg-gray-200 dark:bg-slate-700 text-gray-700 dark:text-gray-300">
                                 {contributors[1].branch} '{contributors[1].batch} • HBTU
                               </Badge>
@@ -497,13 +417,24 @@ const NotesContributors = ({ defaultTab }: { defaultTab?: "contributors" | "admi
                             <a href={contributors[0].linkedin_url || "#"} target="_blank" rel="noopener noreferrer">
                               <h3 className="font-bold text-2xl text-slate-900 dark:text-slate-50 hover:text-yellow-700 dark:hover:text-yellow-400 transition-colors">{contributors[0].name}</h3>
                             </a>
-                            <Badge className="mt-2 mb-3 bg-yellow-100 text-yellow-800 border-yellow-200 text-sm px-3">
+
+                            {/* Dominator #1 Badge */}
+                            <button
+                              type="button"
+                              onClick={() => setCelebrationData({ name: contributors[0].name, coins: contributors[0].coins, tierName: 'Dominator #1' })}
+                              className="mt-2 mb-2 bg-gradient-to-r from-amber-500 to-yellow-500 text-white font-extrabold border border-yellow-300 text-xs px-3.5 py-0.5 rounded-full shadow-md hover:scale-105 transition-transform cursor-pointer"
+                              title="Click to view League Achievement"
+                            >
+                              👑 Dominator #1
+                            </button>
+
+                            <Badge className="mt-1 mb-3 bg-yellow-100 text-yellow-800 border-yellow-200 text-sm px-3">
                               {contributors[0].branch} '{contributors[0].batch} • HBTU
                             </Badge>
                             <div className="flex items-center text-yellow-600 dark:text-yellow-400 font-extrabold text-xl">
                               <Coins className="h-6 w-6 mr-1" />{contributors[0].coins}
                             </div>
-                            <p className="text-xs text-yellow-600/60 dark:text-yellow-400/60 font-medium uppercase tracking-wider mt-2">Top Contributor</p>
+                            <p className="text-xs text-yellow-600/60 dark:text-yellow-400/60 font-medium uppercase tracking-wider mt-1">Top Contributor</p>
                           </div>
                         </Card>
                       </motion.div>
@@ -525,6 +456,17 @@ const NotesContributors = ({ defaultTab }: { defaultTab?: "contributors" | "admi
                               <a href={contributors[2].linkedin_url || "#"} target="_blank" rel="noopener noreferrer">
                                 <h3 className="font-bold text-lg text-slate-800 dark:text-slate-100 hover:text-primary transition-colors">{contributors[2].name}</h3>
                               </a>
+
+                              {/* Dominator #3 Badge */}
+                              <button
+                                type="button"
+                                onClick={() => setCelebrationData({ name: contributors[2].name, coins: contributors[2].coins, tierName: 'Dominator #3' })}
+                                className="mt-1 mb-1 bg-gradient-to-r from-amber-600 to-orange-600 text-white font-extrabold border border-orange-300 text-xs px-3 py-0.5 rounded-full shadow-xs hover:scale-105 transition-transform cursor-pointer"
+                                title="Click to view League Achievement"
+                              >
+                                🥉 Dominator #3
+                              </button>
+
                               <Badge variant="secondary" className="mt-1 mb-2 bg-orange-100 dark:bg-slate-700 text-orange-800 dark:text-orange-200">
                                 {contributors[2].branch} '{contributors[2].batch} • HBTU
                               </Badge>
@@ -538,41 +480,63 @@ const NotesContributors = ({ defaultTab }: { defaultTab?: "contributors" | "admi
                     </div>
                   )}
 
-                  {/* ── Remaining list (rank 4+) ── */}
+                  {/* ── Remaining list (rank 4+) with Tier Badges ── */}
                   <div className="max-w-4xl mx-auto space-y-3">
-                    {contributors.slice(3).map((c, idx) => (
-                      <motion.div
-                        key={c.id}
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: 0.3 + idx * 0.05, duration: 0.4 }}
-                      >
-                        <Card className="border border-border/70 shadow-sm hover:shadow-md transition-all duration-200 bg-white dark:bg-card hover:scale-[1.01] hover:border-sky-300/80 hover:bg-sky-50/40 dark:hover:border-sky-800/80 dark:hover:bg-sky-950/20 border-l-4 border-l-transparent hover:border-l-sky-500 hover:shadow-sky-500/5">
-                          <div className="p-4 sm:p-5 flex items-center justify-between">
-                            <div className="flex items-center gap-4 md:gap-6">
-                              <div className="flex items-center justify-center w-10 h-10 md:w-12 md:h-12 rounded-full font-bold text-lg shadow-sm bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 flex-shrink-0">
-                                {idx + 4}
+                    {contributors.slice(3).map((c, idx) => {
+                      const rank = idx + 4;
+                      const badge = getContributorBadge(rank, c.coins);
+
+                      return (
+                        <motion.div
+                          key={c.id}
+                          initial={{ opacity: 0, x: -20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: 0.3 + idx * 0.05, duration: 0.4 }}
+                        >
+                          <Card className="border border-border/70 shadow-sm hover:shadow-md transition-all duration-200 bg-white dark:bg-card hover:scale-[1.01] hover:border-sky-300/80 hover:bg-sky-50/40 dark:hover:border-sky-800/80 dark:hover:bg-sky-950/20 border-l-4 border-l-transparent hover:border-l-sky-500 hover:shadow-sky-500/5">
+                            <div className="p-4 sm:p-5 flex items-center justify-between">
+                              <div className="flex items-center gap-4 md:gap-6">
+                                <div className="flex items-center justify-center w-10 h-10 md:w-12 md:h-12 rounded-full font-bold text-lg shadow-sm bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 flex-shrink-0">
+                                  {rank}
+                                </div>
+                                <div>
+                                  <div className="flex items-center gap-2 flex-wrap">
+                                    <a href={c.linkedin_url || "#"} target="_blank" rel="noopener noreferrer">
+                                      <h3 className="font-bold text-lg md:text-xl text-slate-800 dark:text-slate-100 hover:text-primary transition-colors">{c.name}</h3>
+                                    </a>
+
+                                    {/* Tier Badge */}
+                                    <button
+                                      type="button"
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        setCelebrationData({ name: c.name, coins: c.coins, tierName: badge.badgeLabel });
+                                      }}
+                                      className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs hover:scale-105 transition-transform cursor-pointer ${badge.badgeClass}`}
+                                      title="Click to view League Milestone"
+                                    >
+                                      <span>{badge.icon}</span> {badge.badgeLabel}
+                                    </button>
+                                  </div>
+                                  <div className="flex items-center gap-2 mt-1">
+                                    <Badge variant="secondary" className="bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-600">
+                                      {c.branch} '{c.batch} • HBTU
+                                    </Badge>
+                                  </div>
+                                </div>
                               </div>
-                              <div>
-                                <a href={c.linkedin_url || "#"} target="_blank" rel="noopener noreferrer">
-                                  <h3 className="font-bold text-lg md:text-xl text-slate-800 dark:text-slate-100 hover:text-primary transition-colors">{c.name}</h3>
-                                </a>
-                                <Badge variant="secondary" className="mt-1 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-600">
-                                  {c.branch} '{c.batch} • HBTU
-                                </Badge>
+                              <div className="text-right min-w-fit pl-4">
+                                <div className="flex items-center gap-1.5 text-yellow-600 dark:text-yellow-500 font-bold text-lg md:text-xl justify-end">
+                                  <Coins className="h-5 w-5 fill-yellow-500 text-yellow-600" />
+                                  {c.coins.toLocaleString()}
+                                </div>
+                                <p className="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wide font-medium mt-0.5">Notes</p>
                               </div>
                             </div>
-                            <div className="text-right min-w-fit pl-4">
-                              <div className="flex items-center gap-1.5 text-yellow-600 dark:text-yellow-500 font-bold text-lg md:text-xl justify-end">
-                                <Coins className="h-5 w-5 fill-yellow-500 text-yellow-600" />
-                                {c.coins.toLocaleString()}
-                              </div>
-                              <p className="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wide font-medium mt-0.5">Notes</p>
-                            </div>
-                          </div>
-                        </Card>
-                      </motion.div>
-                    ))}
+                          </Card>
+                        </motion.div>
+                      );
+                    })}
                   </div>
 
                   {/* ── CTA ── */}
@@ -610,13 +574,8 @@ const NotesContributors = ({ defaultTab }: { defaultTab?: "contributors" | "admi
                 </p>
               </div>
 
-              {/* Sky-blue section wrapper */}
-              <div className="max-w-3xl mx-auto" style={{
-                background: "linear-gradient(160deg,#f0f9ff 0%,#e0f2fe 100%)",
-                borderRadius: 20,
-                padding: "20px 16px",
-                boxShadow: "0 2px 20px rgba(14,165,233,0.1)",
-              }}>
+              {/* Clean layout matching rank 4+ contributor cards */}
+              <div className="max-w-4xl mx-auto space-y-3">
                 {loadingAdmins ? (
                   <div className="flex justify-center py-14">
                     <div className="w-8 h-8 rounded-full border-2 border-indigo-400 border-t-transparent animate-spin" />
@@ -624,7 +583,7 @@ const NotesContributors = ({ defaultTab }: { defaultTab?: "contributors" | "admi
                 ) : admins.length === 0 ? (
                   <div className="text-center py-12 text-muted-foreground">No admin records found.</div>
                 ) : (
-                  admins.map((admin, i) => <AdminCard key={admin.id} admin={admin} index={i} />)
+                  sortedAdmins.map((admin, i) => <AdminCard key={admin.id} admin={admin} index={i} />)
                 )}
               </div>
             </motion.div>
@@ -632,6 +591,17 @@ const NotesContributors = ({ defaultTab }: { defaultTab?: "contributors" | "admi
 
         </AnimatePresence>
       </div>
+
+      {/* 50+ Milestone Celebration Modal */}
+      {celebrationData && (
+        <MilestoneCelebrationModal
+          isOpen={!!celebrationData}
+          onClose={() => setCelebrationData(null)}
+          contributorName={celebrationData.name}
+          coins={celebrationData.coins}
+          tierName={celebrationData.tierName}
+        />
+      )}
     </div>
   );
 };
