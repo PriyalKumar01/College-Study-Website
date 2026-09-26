@@ -12,7 +12,6 @@ import {
 import Navbar from '@/components/Navbar';
 import AnimatedCounter from '@/components/AnimatedCounter';
 import AuthModal from '@/components/AuthModal';
-import CookieConsent from '@/components/CookieConsent';
 import { InfiniteMovingCards } from '@/components/ui/infinite-moving-cards';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -320,9 +319,6 @@ const Index = () => {
         onClose={handleAuthClose}
         defaultMode={authMode}
       />
-
-      {/* Cookie Consent */}
-      <CookieConsent />
 
       {/* Hero Section */}
       {/* Hero Section */}
