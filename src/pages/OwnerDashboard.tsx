@@ -11,7 +11,7 @@ import { Label } from '@/components/ui/label';
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import {
   CheckCircle, XCircle, User, Calendar, BookOpen, ShieldAlert,
-  Eye, Trash2, Crown, UserPlus, UserMinus, Search, Loader2, FileText, Download, GraduationCap, ExternalLink, Bell, Send, Pencil, Trophy, Coins, Link, Lock, Sparkles, Clock, RefreshCw
+  Eye, Trash2, Crown, UserPlus, UserMinus, Search, Loader2, FileText, Download, GraduationCap, ExternalLink, Bell, Send, Pencil, Trophy, Coins, Link, Lock, Sparkles, Clock, RefreshCw, RotateCcw
 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
@@ -21,6 +21,7 @@ import { smartDownload } from '@/lib/downloadUtils';
 import MassEmailDashboard from '@/components/admin/MassEmailDashboard';
 import SubmitScholarshipForm from '@/components/admin/SubmitScholarshipForm';
 import { clearCachePrefix } from '@/lib/cacheUtils';
+import { syncContributorCount } from '@/lib/contributorSync';
 
 interface Material {
   id: string;
@@ -491,6 +492,144 @@ const PremiumSection = ({ title, icon: Icon, color, items, onRevoke, onRevokeAll
   );
 };
 
+const GATE_ITEMS_PER_PAGE = 50;
+
+const GateEnrolledSection = ({ items, onRevoke, revokingId }: any) => {
+  const [page, setPage] = useState(1);
+  const totalPages = Math.ceil(items.length / GATE_ITEMS_PER_PAGE) || 1;
+  const paginated = items.slice((page - 1) * GATE_ITEMS_PER_PAGE, page * GATE_ITEMS_PER_PAGE);
+
+  return (
+    <Card className="gradient-card border border-border/80 shadow-md overflow-hidden">
+      <CardHeader className="border-b pb-3.5 pt-4 bg-muted/20">
+        <div className="flex items-center justify-between flex-wrap gap-2">
+          <CardTitle className="flex items-center gap-2.5 text-base font-bold text-foreground">
+            <div className="w-8 h-8 rounded-lg bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 flex items-center justify-center">
+              <BookOpen className="h-4 w-4" />
+            </div>
+            <span>GATE Study Enrolled Students</span>
+            <Badge variant="secondary" className="bg-indigo-100 text-indigo-800 dark:bg-indigo-950 dark:text-indigo-300 font-bold text-xs">
+              {items.length} Total
+            </Badge>
+          </CardTitle>
+          <span className="text-xs text-muted-foreground font-medium bg-background/80 px-2.5 py-1 rounded-md border border-border">
+            50 per page
+          </span>
+        </div>
+      </CardHeader>
+      <CardContent className="p-0">
+        {items.length === 0 ? (
+          <div className="text-center py-10 text-muted-foreground">
+            <UserMinus className="h-8 w-8 mx-auto mb-2 opacity-30" />
+            <p className="text-sm">No students currently enrolled in GATE Study.</p>
+          </div>
+        ) : (
+          <div className="divide-y divide-border/60">
+            {paginated.map((item: any, idx: number) => {
+              const fullName = `${item.first_name || ''} ${item.last_name || ''}`.trim() || 'Anonymous Student';
+              const pur = item.purchases.find((p: any) => p.plan === 'gate_study') || item.purchases[0];
+              const isBoth = item.purchases.some((p: any) => p.plan !== 'gate_study');
+              const globalIndex = (page - 1) * GATE_ITEMS_PER_PAGE + idx + 1;
+              const isRevoking = revokingId === `${item.user_id}-gate_study` || revokingId === `${item.user_id}-${pur?.plan}`;
+
+              return (
+                <div
+                  key={item.user_id}
+                  className="flex items-center justify-between px-4 py-2 hover:bg-muted/30 transition-colors text-xs gap-3 w-full"
+                >
+                  {/* Left: Index + Name & Email */}
+                  <div className="flex items-center gap-3 min-w-0 flex-1">
+                    <span className="w-8 text-muted-foreground font-mono text-[11px] shrink-0 text-right">
+                      #{globalIndex}
+                    </span>
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className="font-semibold text-foreground truncate max-w-[200px] sm:max-w-[280px]">
+                          {fullName}
+                        </span>
+                        {item.branch && (
+                          <span className="px-1.5 py-0.5 rounded text-[10px] font-medium bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 shrink-0">
+                            {item.branch}
+                          </span>
+                        )}
+                        {isBoth && (
+                          <span className="text-[10px] font-bold text-amber-700 bg-amber-100 dark:bg-amber-950 dark:text-amber-300 px-1.5 py-0.2 rounded border border-amber-300 dark:border-amber-800 shrink-0">
+                            ⭐ Mutual (Both)
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-muted-foreground text-[11px] truncate">{item.email}</p>
+                    </div>
+                  </div>
+
+                  {/* Right: Enrolled info & Revoke Button */}
+                  <div className="flex items-center gap-3 shrink-0">
+                    <span className="text-[11px] text-muted-foreground hidden md:inline">
+                      {pur?.purchased_at
+                        ? new Date(pur.purchased_at).toLocaleDateString('en-IN', {
+                            day: '2-digit',
+                            month: 'short',
+                            year: 'numeric'
+                          })
+                        : 'Enrolled'}
+                    </span>
+                    <Badge variant="outline" className="text-[10px] font-semibold text-indigo-600 dark:text-indigo-400 border-indigo-200 dark:border-indigo-800/60 hidden sm:inline-flex">
+                      GATE Study
+                    </Badge>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => onRevoke(item.user_id, pur?.plan || 'gate_study', fullName)}
+                      disabled={revokingId !== null}
+                      className="h-7 px-2.5 text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-950/40 text-xs gap-1 font-medium"
+                      title="Revoke GATE Access"
+                    >
+                      {isRevoking ? (
+                        <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                      ) : (
+                        <Trash2 className="w-3.5 h-3.5" />
+                      )}
+                      <span>Revoke</span>
+                    </Button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+
+        {totalPages > 1 && (
+          <div className="flex items-center justify-between px-4 py-3 border-t bg-muted/20">
+            <span className="text-xs text-muted-foreground">
+              Showing {(page - 1) * GATE_ITEMS_PER_PAGE + 1}–{Math.min(page * GATE_ITEMS_PER_PAGE, items.length)} of {items.length} students (Page {page} of {totalPages})
+            </span>
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                className="h-8 text-xs"
+                onClick={() => setPage(p => Math.max(1, p - 1))}
+                disabled={page === 1}
+              >
+                ← Prev
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                className="h-8 text-xs"
+                onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+                disabled={page === totalPages}
+              >
+                Next →
+              </Button>
+            </div>
+          </div>
+        )}
+      </CardContent>
+    </Card>
+  );
+};
+
 const OwnerDashboard = () => {
   const { user, isOwner, loading: authLoading } = useAuth();
   const { theme } = useTheme();
@@ -805,7 +944,7 @@ const OwnerDashboard = () => {
     try {
       const { data: profilesData } = await supabase
         .from('profiles')
-        .select('created_at, branch, college, full_name, first_name, last_name, email');
+        .select('created_at, branch, college, first_name, last_name, email');
 
       if (profilesData) {
         const counts: Record<string, number> = {};
@@ -1013,6 +1152,14 @@ const OwnerDashboard = () => {
 
   const fetchPendingApprovals = async () => {
     try {
+      // 1. Try secure RPC function first
+      const { data: rpcData, error: rpcError } = await (supabase as any).rpc('get_pending_account_approvals');
+      if (!rpcError && rpcData) {
+        setPendingApprovals(rpcData || []);
+        return;
+      }
+
+      // 2. Direct profiles fallback
       const { data, error } = await (supabase as any)
         .from('profiles')
         .select('*')
@@ -1267,6 +1414,7 @@ const OwnerDashboard = () => {
     try {
       const { error } = await (supabase as any).from('contributors').insert({
         name: newContrib.name.trim(),
+        role: 'Contributor',
         branch: newContrib.branch.trim(),
         batch: newContrib.batch.trim(),
         coins: Math.max(0, parseInt(newContrib.coins) || 0),
@@ -1330,6 +1478,20 @@ const OwnerDashboard = () => {
         .eq('id', noteId);
 
       if (error) throw error;
+
+      // Auto-increment contributor coin count or add new contributor on approval
+      if (newStatus === 'approved') {
+        const approvedNote = pendingMaterials.find(m => m.id === noteId) || allMaterials.find(m => m.id === noteId);
+        if (approvedNote) {
+          syncContributorCount({
+            name: approvedNote.user_name || approvedNote.uploaded_by,
+            email: approvedNote.user_email,
+            count: 1,
+            branch: approvedNote.semester,
+            batch: approvedNote.year,
+          });
+        }
+      }
 
       clearCachePrefix('notes');
       if (typeof window !== 'undefined') {
@@ -2323,11 +2485,23 @@ const OwnerDashboard = () => {
                 </CardContent>
               </Card>
 
-              {/* GATE Study Section */}
-              <PremiumSection title="GATE Study Enrolled" icon={BookOpen} color="indigo" items={filteredGroupedList.filter(item => item.purchases.some((p:any) => p.plan === 'gate_study'))} onRevoke={handleRevokeAccess} onRevokeAll={handleRevokeAllAccess} revokingId={revokingId} />
+              {/* Premium Packages Section (Only shows users with premium package access, including mutual/both) */}
+              <PremiumSection
+                title="Premium Packages Access"
+                icon={Crown}
+                color="purple"
+                items={filteredGroupedList.filter(item => item.purchases.some((p: any) => p.plan !== 'gate_study'))}
+                onRevoke={handleRevokeAccess}
+                onRevokeAll={handleRevokeAllAccess}
+                revokingId={revokingId}
+              />
 
-              {/* Other Premium Section */}
-              <PremiumSection title="Other Premium Packages" icon={Lock} color="purple" items={filteredGroupedList.filter(item => item.purchases.some((p:any) => p.plan !== 'gate_study'))} onRevoke={handleRevokeAccess} onRevokeAll={handleRevokeAllAccess} revokingId={revokingId} />
+              {/* Dedicated GATE Enrolled Card with 50-per-page slim data rows */}
+              <GateEnrolledSection
+                items={filteredGroupedList.filter(item => item.purchases.some((p: any) => p.plan === 'gate_study'))}
+                onRevoke={handleRevokeAccess}
+                revokingId={revokingId}
+              />
             </TabsContent>
 
           {/* TAB: Notifications */}
@@ -2670,204 +2844,6 @@ const OwnerDashboard = () => {
                           <Download className="h-3.5 w-3.5" /> Download
                         </Button>
                       </div>
-                    </div>
-                  </Card>
-                ))}
-              </div>
-            )}
-          </TabsContent>
-
-
-          {/* TAB 2: Manage Admins */}
-          <TabsContent value="admins" className="space-y-6">
-            {/* Add new admin */}
-            <Card className="gradient-card border-2 border-primary/10">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <UserPlus className="h-5 w-5" /> Add New Admin
-                </CardTitle>
-                <CardDescription>
-                  Enter the name and email of the user to grant admin privileges.
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="flex flex-col sm:flex-row gap-3">
-                  <Input
-                    value={newAdminName}
-                    onChange={(e) => setNewAdminName(e.target.value)}
-                    placeholder="Full Name (e.g. Rahul Singh)"
-                    className="flex-1"
-                  />
-                  <Input
-                    value={newAdminEmail}
-                    onChange={(e) => setNewAdminEmail(e.target.value)}
-                    placeholder="user@gmail.com"
-                    className="flex-1"
-                  />
-                  <Button
-                    onClick={handlePromoteAdmin}
-                    disabled={isPromoting || !newAdminEmail.trim()}
-                    className="btn-hero flex-shrink-0"
-                  >
-                    {isPromoting ? (
-                      <Loader2 className="h-4 w-4 animate-spin" />
-                    ) : (
-                      <><UserPlus className="h-4 w-4 mr-2" /> Add Admin</>
-                    )}
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Admin list */}
-            <div className="space-y-3">
-              {adminRoles.map((role, idx) => (
-                <AdminRoleCard
-                  key={role.id}
-                  role={role}
-                  rank={idx + 1}
-                  currentUserEmail={user?.email}
-                  onRemove={handleRemoveAdmin}
-                  onRefresh={fetchAdminRoles}
-                />
-              ))}
-            </div>
-          </TabsContent>
-
-          {/* TAB 3: All Materials (Grid card layout) */}
-          <TabsContent value="all" className="space-y-6">
-            {/* Filters */}
-            <div className={`flex flex-col md:flex-row gap-4 border p-4 rounded-xl ${
-              isDark ? 'bg-slate-900/60 border-slate-800' : 'bg-white/80 border-slate-200 shadow-sm'
-            }`}>
-              <div className="relative flex-1">
-                <Search className="absolute left-3 top-2.5 h-4 w-4 text-slate-500" />
-                <Input
-                  placeholder="Search by title, subject, or email..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className={`pl-10 h-9 text-xs ${
-                    isDark ? 'bg-slate-950 border-slate-800 text-slate-200' : 'bg-slate-50 border-slate-200 text-slate-900'
-                  }`}
-                />
-              </div>
-              <div className={`flex items-center gap-1 border p-1 rounded-xl w-fit ${
-                isDark ? 'bg-slate-950 border-slate-900' : 'bg-slate-100 border-slate-200'
-              }`}>
-                {(['all', 'pending', 'approved', 'rejected'] as const).map(filter => (
-                  <button
-                    key={filter}
-                    onClick={() => setMaterialFilter(filter)}
-                    className={`px-3 py-1 rounded-lg text-xs font-bold transition-all uppercase tracking-wider ${
-                      materialFilter === filter 
-                        ? isDark 
-                          ? 'bg-sky-500/10 text-sky-400 border border-sky-500/20' 
-                          : 'bg-white text-sky-650 shadow-sm border border-slate-200'
-                        : isDark 
-                          ? 'text-slate-400 hover:text-slate-200 border border-transparent' 
-                          : 'text-slate-600 hover:text-slate-800 border border-transparent'
-                    }`}
-                  >
-                    {filter === 'all' ? 'All' : filter === 'pending' ? 'Pending' : filter === 'approved' ? 'Approved' : 'Rejected'}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {filteredMaterials.length === 0 ? (
-              <Card className={`border text-center py-16 ${
-                isDark ? 'border-slate-800 bg-slate-900/40 text-slate-100' : 'border-slate-200 bg-white/70 text-slate-900 shadow-sm'
-              }`}>
-                <CardContent>
-                  <FileText className="h-16 w-16 text-slate-500 mx-auto mb-4" />
-                  <h3 className="text-xl font-bold mb-2">No materials found</h3>
-                  <p className="text-slate-400 text-sm">
-                    {searchQuery ? 'Try adjusting your search criteria.' : 'No materials recorded yet.'}
-                  </p>
-                </CardContent>
-              </Card>
-            ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {filteredMaterials.map((material) => (
-                  <Card key={material.id} className={`border backdrop-blur-md transition-all duration-300 shadow-md overflow-hidden flex flex-col justify-between h-full group ${
-                    isDark 
-                      ? 'border-slate-800/80 bg-slate-900/60 hover:border-sky-500/50' 
-                      : 'border-slate-200 bg-white/80 hover:border-sky-500/40 hover:shadow-sm'
-                  }`}>
-                    <div className="p-5 flex-1 flex flex-col justify-between">
-                      <div>
-                        <div className="flex justify-between items-start mb-3 gap-2">
-                          <Badge className="bg-sky-500/10 text-sky-400 hover:bg-sky-500/20 text-[10px] uppercase font-bold border border-sky-500/20 px-2 py-0.5 rounded-full">
-                            {material.material_type === 'pyqs' ? '📄 PYQs' : '📝 Notes'}
-                          </Badge>
-                          <div className="flex gap-1.5">
-                            <Badge className={material.status === 'pending' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400' : material.status === 'approved' ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400' : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'}>{material.status}</Badge>
-                            <Badge className="bg-purple-500/10 text-purple-400 text-[10px] font-bold border border-purple-500/20 px-2 py-0.5 rounded-full">
-                              Sem {material.semester}
-                            </Badge>
-                          </div>
-                        </div>
-                        
-                        <h4 className={`text-base font-bold mb-1.5 line-clamp-1 group-hover:text-sky-400 transition-colors ${
-                          isDark ? 'text-slate-100' : 'text-slate-800'
-                        }`} title={material.title}>
-                          {material.title}
-                        </h4>
-                        <p className={`text-xs mb-4 line-clamp-2 h-8 leading-relaxed ${
-                          isDark ? 'text-slate-400' : 'text-slate-600'
-                        }`}>
-                          {material.description || 'No description provided.'}
-                        </p>
-                      </div>
-
-                      <div className={`space-y-1.5 text-[11px] border-t pt-3 ${
-                        isDark ? 'text-slate-400 border-slate-800/60' : 'text-slate-500 border-slate-200'
-                      }`}>
-                        <div className="flex items-center gap-1.5">
-                          <BookOpen className="h-3.5 w-3.5 text-sky-500/70" />
-                          <span className={`font-semibold ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>Subject:</span> <span className="truncate max-w-[150px]">{material.subject}</span>
-                        </div>
-                        <div className="flex items-center gap-1.5">
-                          <User className="h-3.5 w-3.5 text-sky-500/70" />
-                          <span className={`font-semibold ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>Uploader:</span> <span className="truncate max-w-[150px]">{material.user_email}</span>
-                        </div>
-                        <div className="flex items-center gap-1.5">
-                          <Calendar className="h-3.5 w-3.5 text-sky-500/70" />
-                          <span>Uploaded: {material.uploaded_at ? new Date(material.uploaded_at).toLocaleDateString('en-IN') : 'Unknown Date'}</span>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Actions */}
-                    <div className={`p-4 border-t space-y-3 ${
-                      isDark ? 'bg-slate-950/40 border-slate-800/60' : 'bg-slate-50/50 border-slate-200'
-                    }`}>
-                      <div className="flex gap-2">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          className={`flex-1 text-[11px] font-semibold h-8 gap-1 border ${
-                            isDark 
-                              ? 'text-slate-300 hover:text-white hover:bg-slate-800/50 border-slate-800' 
-                              : 'text-slate-700 hover:text-slate-900 hover:bg-slate-100 border-slate-200'
-                          }`}
-                          onClick={() => window.open(material.file_url, '_blank')}
-                        >
-                          <Eye className="h-3.5 w-3.5" /> Preview
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          className={`flex-1 text-[11px] font-semibold h-8 gap-1 border ${
-                            isDark 
-                              ? 'text-slate-300 hover:text-white hover:bg-slate-800/50 border-slate-800' 
-                              : 'text-slate-700 hover:text-slate-900 hover:bg-slate-100 border-slate-200'
-                          }`}
-                          onClick={() => handleDownload(material.file_url)}
-                        >
-                          <Download className="h-3.5 w-3.5" /> Download
-                        </Button>
-                      </div>
 
                       <div className={`flex flex-col gap-2 border-t pt-3 ${isDark ? 'border-slate-850' : 'border-slate-200'}`}>
                         {material.status === 'pending' && (
@@ -2889,7 +2865,17 @@ const OwnerDashboard = () => {
                             </Button>
                           </div>
                         )}
-                        
+
+                        {material.status === 'rejected' && (
+                          <Button
+                            size="sm"
+                            className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs h-8 shadow-sm"
+                            onClick={(e) => { e.stopPropagation(); handleApproval(material.id, 'approved'); }}
+                          >
+                            <RotateCcw className="h-3.5 w-3.5 mr-1" /> Restore Material (Approve)
+                          </Button>
+                        )}
+
                         <Button
                           variant="ghost"
                           size="sm"
