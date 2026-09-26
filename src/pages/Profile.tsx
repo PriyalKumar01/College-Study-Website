@@ -302,6 +302,10 @@ export default function Profile() {
 
       if (userUpdateError) console.warn("User metadata update warning:", userUpdateError);
 
+      try {
+        localStorage.setItem(`profile_completed_${user.id}`, 'true');
+      } catch {}
+
       // Force session refresh to allow Sidebar to see new metadata immediately
       try {
         await supabase.auth.refreshSession();
