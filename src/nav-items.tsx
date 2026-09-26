@@ -22,6 +22,7 @@ const ThirdSemesterCHENotes = lazy(() => import("./pages/ThirdSemesterCHENotes")
 const ThirdSemesterCENotes = lazy(() => import("./pages/ThirdSemesterCENotes"));
 const MBANotes = lazy(() => import("./pages/MBANotes"));
 const BBANotes = lazy(() => import("./pages/BBANotes"));
+const BPharmaNotes = lazy(() => import("./pages/BPharmaNotes"));
 const ThirdSemesterLFTNotes = lazy(() => import("./pages/ThirdSemesterLFTNotes"));
 const ThirdSemesterETNotes = lazy(() => import("./pages/ThirdSemesterETNotes"));
 const ThirdSemesterPTNotes = lazy(() => import("./pages/ThirdSemesterPTNotes"));
@@ -182,6 +183,7 @@ export const navItems = [
   { to: "/admins", page: <NotesContributors defaultTab="admins" /> },
   { to: "/team", page: <NotesContributors defaultTab="admins" /> },
   { to: "/bba-notes", page: <BBANotes /> },
+  { to: "/bpharma-notes", page: <BPharmaNotes /> },
   { to: "/mba-notes", page: <MBANotes /> },
   { to: "/ats-friendly-resume", page: <ATSFriendlyResume /> },
   { to: "/admin-portal", page: <AdminPortal /> },
