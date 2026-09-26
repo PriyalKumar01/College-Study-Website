@@ -35,6 +35,16 @@ const noteCategories = [
     accentColor: 'from-indigo-500 to-indigo-700',
   },
   {
+    id: 'bpharma',
+    title: 'B.Pharma Notes',
+    description: 'Bachelor of Pharmacy — Pharmaceutical sciences, labs & past papers',
+    route: '/bpharma-notes',
+    image: '/card_bpharma.png',
+    badge: '1st – 8th Sem',
+    badgeColor: 'bg-emerald-100 text-emerald-700',
+    accentColor: 'from-emerald-500 to-teal-700',
+  },
+  {
     id: 'bba',
     title: 'BBA Notes',
     description: 'Bachelor of Business Administration study materials',
