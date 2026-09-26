@@ -37,6 +37,7 @@ interface NoteItem {
   uploadedBy?: string;
   userName?: string;
   yearSession?: string;
+  materialType?: string;
 }
 
 interface PlaylistEntry {
@@ -159,9 +160,9 @@ const FirstYearNotes = () => {
     // ── CORE SCIENCES & MATHS ──────────────────────────────────────────
     {
       id: 'math',
-      code: 'DMA101',
-      name: 'Mathematics-I',
-      fullName: 'Engineering Mathematics-I',
+      code: 'DMA 101 / 102',
+      name: 'Engineering Mathematics-I',
+      fullName: 'Engineering Mathematics-I (DMA 101 / DMA 102)',
       category: 'core',
       icon: '📐',
       color: 'bg-green-600',
@@ -575,23 +576,6 @@ const FirstYearNotes = () => {
       ]
     },
 
-    {
-      id: 'elementary_math',
-      code: 'DMA102',
-      name: 'Elementary Mathematics (for Bio & Tech Branches)',
-      fullName: 'Elementary Mathematics (Foundations for Technology & Biological Sciences)',
-      category: 'core',
-      icon: '📊',
-      color: 'bg-slate-600',
-      badge: '0 Files • Notes Wanted',
-      description: 'Foundational mathematics for students in Biotechnology, Food Tech, and chemical technology streams. Notes coming soon — contribute your lecture notes!',
-      playlists: {
-        detailed: [],
-        oneshot: []
-      },
-      notes: []
-    },
-
     // ── ASSIGNMENTS & PYQs ─────────────────────────────────────────────
     {
       id: 'assignments',
@@ -666,10 +650,37 @@ const FirstYearNotes = () => {
     return staticSubjects.map(sub => {
       const matchedCommunityNotes = allCommunityNotes
         .filter(cn => {
-          const s = (cn.subject || '').toLowerCase();
-          const target = sub.name.toLowerCase();
-          const subId = sub.id.toLowerCase();
-          return s === target || s.includes(subId) || target.includes(s);
+          const s = (cn.subject || '').toLowerCase().trim();
+          const target = sub.name.toLowerCase().trim();
+          const subId = sub.id.toLowerCase().trim();
+          const code = (sub.code || '').toLowerCase().trim();
+          const fullName = (sub.fullName || '').toLowerCase().trim();
+
+          // PYQs general card captures pyqs or pyq tags
+          if (sub.id === 'pyqs') {
+            if (cn.material_type === 'pyqs' || s.includes('pyq')) return true;
+          }
+
+          // Engineering Mathematics-I handles DMA 101, 102, elementary math
+          if (sub.id === 'math') {
+            if (s.includes('dma') || s.includes('math') || s.includes('dma 101') || s.includes('dma 102')) {
+              return true;
+            }
+          }
+
+          // Direct or substring matches
+          if (s === target || s === code || s === fullName || s.includes(subId) || target.includes(s)) {
+            return true;
+          }
+
+          // Clean code match (e.g. 'dee101')
+          const cleanCode = code.replace(/[^a-z0-9]/g, '');
+          const cleanS = s.replace(/[^a-z0-9]/g, '');
+          if (cleanCode && (cleanS.includes(cleanCode) || cleanCode.includes(cleanS))) {
+            return true;
+          }
+
+          return false;
         })
         .map(cn => ({
           id: cn.id,
@@ -678,7 +689,8 @@ const FirstYearNotes = () => {
           isCommunity: true,
           fileName: cn.file_name,
           uploadedBy: cn.uploaded_by,
-          userName: cn.user_name
+          userName: cn.user_name,
+          materialType: cn.material_type
         }));
 
       return {
@@ -841,13 +853,18 @@ const FirstYearNotes = () => {
                         <Trash2 className="h-4 w-4" />
                       </button>
                     )}
-                    <div className="flex items-center gap-2 mb-3">
+                    <div className="flex items-center gap-2 mb-3 flex-wrap">
                       <div className={`w-8 h-8 rounded-lg ${subject.color} flex items-center justify-center text-white text-xs shadow-sm`}>
                         <FileText className="h-4 w-4" />
                       </div>
                       <span className="text-[10px] font-bold tracking-wider uppercase bg-muted text-muted-foreground px-2 py-0.5 rounded">PDF</span>
                       {note.isCommunity && (
                         <span className="text-[10px] font-bold tracking-wider uppercase bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400 px-2 py-0.5 rounded border border-blue-100 dark:border-blue-900/50">Community</span>
+                      )}
+                      {note.materialType && (
+                        <span className="text-[10px] font-bold tracking-wider uppercase bg-amber-500/10 text-amber-700 dark:text-amber-400 px-2 py-0.5 rounded border border-amber-500/20">
+                          {note.materialType === 'pyqs' ? 'PYQ ❓' : note.materialType === 'assignments' ? 'Assignment 📝' : note.materialType === 'book' ? 'Book 📚' : note.materialType === 'practical_file' ? 'Practical File 🔬' : 'Notes 📖'}
+                        </span>
                       )}
                     </div>
                     <h3 className="font-semibold text-foreground text-sm leading-snug flex-1 mb-3">{note.title}</h3>
