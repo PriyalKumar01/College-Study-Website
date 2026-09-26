@@ -650,7 +650,7 @@ export default function PremiumContent() {
         open={premiumModal.open}
         onClose={() => setPremiumModal(p => ({ ...p, open: false }))}
         plan={premiumModal.plan}
-        onSuccess={checkPurchases}
+        onSuccess={() => checkPurchases(true)}
       />
       <Footer />
     </div>
