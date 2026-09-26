@@ -447,6 +447,46 @@ Simply click one of the buttons below to log in or sign up immediately.`,
           setStep('signup-complete');
           toast({ title: "Verified!", description: "Please complete your profile." });
         }
+      } else if (mode === 'signin') {
+        // Direct OTP Sign-in -> Check approval status and redirect
+        const cleanEmail = email.trim().toLowerCase();
+        const domain = cleanEmail.split('@')[1] || '';
+        const isDirect = isDirectlyAllowedDomain(domain);
+
+        let isPending = !isDirect;
+        try {
+          const { data: prof } = await supabase
+            .from('profiles')
+            .select('approval_status')
+            .or(`id.eq.${data.user.id},user_id.eq.${data.user.id}`)
+            .maybeSingle();
+
+          if (prof?.approval_status) {
+            isPending = prof.approval_status === 'pending';
+          }
+        } catch {}
+
+        if (isPending) {
+          localStorage.setItem('csh_approval_status', 'pending');
+          toast({
+            title: "Account Under Review",
+            description: "Your account is pending administrator approval before access can be granted.",
+          });
+          handleClose();
+          navigate('/pending-approval');
+        } else {
+          localStorage.setItem('csh_approval_status', 'approved');
+          toast({ title: "Welcome back!", description: "Signed in successfully via OTP." });
+          handleClose();
+          const r = (() => {
+            try {
+              const v = sessionStorage.getItem('postLoginRedirect');
+              if (v) { sessionStorage.removeItem('postLoginRedirect'); return v; }
+            } catch {}
+            return '/dashboard';
+          })();
+          navigate(r);
+        }
       } else {
         setStep('form');
         handleClose();
@@ -524,12 +564,16 @@ Simply click one of the buttons below to log in or sign up immediately.`,
       const cleanEmail = email.trim().toLowerCase();
       const domain = cleanEmail.split('@')[1] || '';
       const isDomainDirect = isDirectlyAllowedDomain(domain);
-      const initialApproval = isDomainDirect ? 'approved' : 'pending';
+      const isOwnerOrAdmin = cleanEmail === 'priyalkumar06@gmail.com';
+      const initialApproval = (isDomainDirect || isOwnerOrAdmin) ? 'approved' : 'pending';
 
       // Direct upsert into public.profiles table
       const { data: sessionData } = await supabase.auth.getSession();
       const currentUserId = sessionData?.session?.user?.id;
       if (currentUserId) {
+        try {
+          localStorage.setItem(`profile_completed_${currentUserId}`, 'true');
+        } catch {}
         try {
           await supabase.from('profiles').upsert({
             id: currentUserId,
@@ -612,6 +656,61 @@ Simply click one of the buttons below to log in or sign up immediately.`,
     }
   };
 
+  const handleSignInWithOtpStart = async () => {
+    setTouched(prev => ({ ...prev, email: true }));
+    const error = getEmailError(email, true);
+    if (error) {
+      toast({ title: "Email Required", description: error, variant: "destructive" });
+      return;
+    }
+
+    if (resendTimer > 0) {
+      toast({ title: "Please Wait", description: `You can request another code in ${resendTimer} seconds.`, variant: "destructive" });
+      return;
+    }
+
+    setIsSendingOtp(true);
+    setIsLoading(true);
+
+    try {
+      console.log('Sending login OTP to:', email);
+      const { error: otpError } = await supabase.auth.signInWithOtp({
+        email: email.trim().toLowerCase(),
+        options: {
+          shouldCreateUser: false,
+        }
+      });
+
+      if (otpError) {
+        if (otpError.message?.toLowerCase().includes('user not found') || otpError.message?.toLowerCase().includes('signups not allowed')) {
+          throw new Error("No account found with this email. Please click 'Create Account' to sign up first.");
+        }
+        throw otpError;
+      }
+
+      const expiry = Date.now() + 120 * 1000;
+      localStorage.setItem('otp_timer_expiry', expiry.toString());
+      setStep('otp');
+      setResendTimer(120);
+      setOtp('');
+
+      toast({
+        title: "Login OTP Sent! 📩",
+        description: `Check your inbox at ${email} for your 6-digit code.`,
+      });
+    } catch (err: any) {
+      console.error("Login OTP error:", err);
+      toast({
+        title: "Unable to Send OTP",
+        description: err.message || "Failed to send login code. Please try again or use password.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsSendingOtp(false);
+      setIsLoading(false);
+    }
+  };
+
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
     setTouched({ email: true, password: true });
@@ -627,18 +726,35 @@ Simply click one of the buttons below to log in or sign up immediately.`,
       return;
     }
 
-    if (!captchaToken) {
+    const isLocalhost = typeof window !== 'undefined' && (
+      window.location.hostname === 'localhost' ||
+      window.location.hostname === '127.0.0.1'
+    );
+
+    if (!captchaToken && !isLocalhost) {
       toast({ title: "CAPTCHA Required", description: "Please complete the CAPTCHA check.", variant: "destructive" });
       return;
     }
 
     setIsLoading(true);
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({
+      let { data, error } = await supabase.auth.signInWithPassword({
         email: email.trim().toLowerCase(),
         password,
-        options: { captchaToken }
+        options: captchaToken ? { captchaToken } : undefined
       });
+
+      // If captcha error occurs or backend doesn't expect captchaToken, retry cleanly
+      if (error && (error.message?.toLowerCase().includes('captcha') || error.status === 400 && captchaToken)) {
+        const retry = await supabase.auth.signInWithPassword({
+          email: email.trim().toLowerCase(),
+          password
+        });
+        if (!retry.error) {
+          data = retry.data;
+          error = null;
+        }
+      }
 
       if (error) throw error;
       if (data.session) {
@@ -678,6 +794,8 @@ Simply click one of the buttons below to log in or sign up immediately.`,
       captchaRef.current?.resetCaptcha();
       setCaptchaToken(null);
       const errMsg = err?.message?.toLowerCase() || '';
+      console.error("Sign in failed:", err);
+
       if (errMsg.includes('banned') || errMsg.includes('suspended') || errMsg.includes('disabled')) {
         localStorage.setItem('csh_banned_user', email.trim().toLowerCase());
         toast({
@@ -688,7 +806,13 @@ Simply click one of the buttons below to log in or sign up immediately.`,
         setTimeout(() => window.location.reload(), 800);
         return;
       }
-      toast({ title: "Login Failed", description: "Invalid email, password, or captcha.", variant: "destructive" });
+
+      let userMsg = err.message || "Invalid email or password.";
+      if (errMsg.includes('invalid login credentials') || errMsg.includes('invalid credentials')) {
+        userMsg = "Incorrect password for this database. If you registered via Google/OTP or forgot your password, please click 'Login with Email OTP' below or use 'Forgot Password'.";
+      }
+
+      toast({ title: "Login Failed", description: userMsg, variant: "destructive" });
     } finally {
       setIsLoading(false);
     }
@@ -1162,9 +1286,11 @@ Simply click one of the buttons below to log in or sign up immediately.`,
                     />
                   </div>
 
-                  <Button type="submit" disabled={isLoading} className="w-full h-10 bg-gray-900 dark:bg-slate-50 dark:text-slate-900 dark:hover:bg-slate-200 text-white">
-                    {isLoading ? <Loader2 className="animate-spin" /> : 'Login'}
-                  </Button>
+                  <div className="pt-1">
+                    <Button type="submit" disabled={isLoading} className="w-full h-10 bg-gray-900 dark:bg-slate-50 dark:text-slate-900 dark:hover:bg-slate-200 text-white font-bold">
+                      {isLoading ? <Loader2 className="animate-spin" /> : 'Login'}
+                    </Button>
+                  </div>
                 </form>
                 <div className="space-y-2 text-center text-sm pt-0">
                   <button onClick={() => switchMode('forgot')} className="text-blue-600 dark:text-blue-400 hover:text-blue-700 font-medium text-xs">Forgot Password?</button>
