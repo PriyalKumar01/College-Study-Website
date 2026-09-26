@@ -123,6 +123,9 @@ export function ProfileCompletionModal() {
         if (!user) return;
 
         try {
+            // 0. Instant localStorage check
+            const localCompleted = typeof window !== 'undefined' && localStorage.getItem(`profile_completed_${user.id}`) === 'true';
+
             // Safely fetch profile data from profiles table
             let data: any = null;
             try {
@@ -140,21 +143,27 @@ export function ProfileCompletionModal() {
             }
 
             const existingYear: string = data?.year || user.user_metadata?.year || "";
-            const yearNeedsUpdate = !isValidYearOption(existingYear);
+            const yearNeedsUpdate = existingYear !== "" && !isValidYearOption(existingYear);
 
             const existingCollege: string = data?.college || user.user_metadata?.college || "";
             const collegeIsHBTUVariant = existingCollege !== "" && isHBTUCollege(existingCollege) && existingCollege !== "HBTU Kanpur";
             const collegeNeedsUpdate = existingCollege === "" || collegeIsHBTUVariant;
             
             const existingBranch: string = data?.branch || user.user_metadata?.branch || "";
-            const branchNeedsUpdate = !existingBranch || (!BRANCH_OPTIONS.includes(existingBranch === "Other" ? "Other" : existingBranch) && !existingBranch);
+            const existingFirstName: string = data?.first_name || user.user_metadata?.first_name || "";
 
-            const isMetaComplete = user.user_metadata?.profile_completed === true &&
-                Boolean(existingCollege) &&
-                Boolean(existingBranch) &&
-                Boolean(existingYear);
+            const hasCompleteDetails = Boolean(existingFirstName && existingCollege && existingBranch && existingYear);
+            const isMetaComplete = user.user_metadata?.profile_completed === true || localCompleted || hasCompleteDetails;
 
-            if (isMetaComplete && (yearNeedsUpdate || collegeNeedsUpdate || branchNeedsUpdate)) {
+            // If user already has complete details and doesn't need migration, NEVER show modal
+            if (hasCompleteDetails && !collegeIsHBTUVariant && !yearNeedsUpdate) {
+                setIsOpen(false);
+                setHasChecked(true);
+                try { localStorage.setItem(`profile_completed_${user.id}`, 'true'); } catch {}
+                return;
+            }
+
+            if (isMetaComplete && (yearNeedsUpdate || collegeNeedsUpdate)) {
                 setIsUpdateMode(true);
                 setFirstName(data?.first_name || user.user_metadata?.first_name || "");
                 setLastName(data?.last_name || user.user_metadata?.last_name || "");
@@ -219,12 +228,11 @@ export function ProfileCompletionModal() {
 
             // Profile is completely filled
             setHasChecked(true);
+            setIsOpen(false);
+            try { localStorage.setItem(`profile_completed_${user.id}`, 'true'); } catch {}
         } catch (err) {
             console.error("Profile check failed:", err);
-            // Fallback: If anything failed, show modal if essential metadata is missing
-            if (!user.user_metadata?.college || !user.user_metadata?.branch || !user.user_metadata?.year) {
-                setIsOpen(true);
-            }
+            setHasChecked(true);
         }
     };
 
@@ -270,25 +278,29 @@ export function ProfileCompletionModal() {
             const fullName = `${effectiveFirstName} ${effectiveLastName}`.trim() || user?.user_metadata?.name || user?.user_metadata?.full_name || '';
 
             // 1. Update Supabase Auth User Metadata
-            const { error: userError } = await supabase.auth.updateUser({
-                data: {
-                    first_name: effectiveFirstName,
-                    last_name: effectiveLastName,
-                    name: fullName,
-                    full_name: fullName,
-                    year: finalYear,
-                    college: resolvedCollege,
-                    branch: finalBranch,
-                    email_verified: true,
-                    profile_completed: true
-                },
-            });
-            if (userError) console.warn("updateUser metadata warning:", userError);
+            try {
+                await supabase.auth.updateUser({
+                    data: {
+                        first_name: effectiveFirstName,
+                        last_name: effectiveLastName,
+                        name: fullName,
+                        full_name: fullName,
+                        year: finalYear,
+                        college: resolvedCollege,
+                        branch: finalBranch,
+                        email_verified: true,
+                        profile_completed: true
+                    },
+                });
+            } catch (uErr) {
+                console.warn("updateUser metadata warning:", uErr);
+            }
 
             // 2. Direct upsert into public.profiles table
             const userDomain = (user!.email || '').split('@')[1] || '';
             const isDomainDirect = isDirectlyAllowedDomain(userDomain);
-            const approvalVal = isDomainDirect ? 'approved' : 'pending';
+            const isOwnerOrAdmin = (user!.email?.toLowerCase() === 'priyalkumar06@gmail.com');
+            const approvalVal = (isDomainDirect || isOwnerOrAdmin) ? 'approved' : 'pending';
 
             try {
                 await supabase.from("profiles").upsert({
@@ -322,14 +334,22 @@ export function ProfileCompletionModal() {
             }
 
             try {
+                localStorage.setItem(`profile_completed_${user!.id}`, 'true');
+            } catch {}
+
+            try {
                 await supabase.auth.refreshSession();
             } catch (refErr) {
                 console.warn("Session refresh warning:", refErr);
             }
+
+            if (typeof window !== 'undefined') {
+                window.dispatchEvent(new Event('studyhub_profile_updated'));
+            }
+
             setHasChecked(true);
-            toast({ title: "Profile Updated ✓", description: "Your profile has been saved!" });
             setIsOpen(false);
-            window.location.reload();
+            toast({ title: "Profile Updated ✓", description: "Your profile has been saved!" });
         } catch (err: any) {
             toast({ title: "Error", description: err.message || "Failed to update profile.", variant: "destructive" });
         } finally {
@@ -376,25 +396,38 @@ export function ProfileCompletionModal() {
             const fullName = `${firstName} ${lastName}`.trim();
 
             // 1. Update Supabase Auth User Metadata (Crucial for auth.users raw_user_meta_data)
-            const authUpdates: any = {
-                data: {
-                    first_name: firstName,
-                    last_name: lastName,
-                    name: fullName,
-                    full_name: fullName,
-                    college: resolvedCollege,
-                    branch: finalBranch,
-                    year: finalYear,
-                    email_verified: true,
-                    profile_completed: true
-                },
-            };
-            if (password) authUpdates.password = password;
+            try {
+                await supabase.auth.updateUser({
+                    data: {
+                        first_name: firstName,
+                        last_name: lastName,
+                        name: fullName,
+                        full_name: fullName,
+                        college: resolvedCollege,
+                        branch: finalBranch,
+                        year: finalYear,
+                        email_verified: true,
+                        profile_completed: true
+                    },
+                });
+            } catch (uErr) {
+                console.warn("updateUser metadata warning:", uErr);
+            }
 
-            const { error: userError } = await supabase.auth.updateUser(authUpdates);
-            if (userError) console.warn("updateUser metadata warning:", userError);
+            if (password) {
+                try {
+                    await supabase.auth.updateUser({ password });
+                } catch (pErr) {
+                    console.warn("updateUser password warning:", pErr);
+                }
+            }
 
             // 2. Direct upsert into public.profiles table
+            const userDomain = (user!.email || '').split('@')[1] || '';
+            const isDomainDirect = isDirectlyAllowedDomain(userDomain);
+            const isOwnerOrAdmin = (user!.email?.toLowerCase() === 'priyalkumar06@gmail.com');
+            const approvalVal = (isDomainDirect || isOwnerOrAdmin) ? 'approved' : 'pending';
+
             try {
                 await supabase.from("profiles").upsert({
                     id: user!.id,
@@ -405,6 +438,7 @@ export function ProfileCompletionModal() {
                     college: resolvedCollege,
                     branch: finalBranch,
                     year: finalYear,
+                    approval_status: approvalVal,
                     updated_at: new Date().toISOString()
                 }, { onConflict: 'id' });
             } catch (upErr) {
@@ -426,14 +460,22 @@ export function ProfileCompletionModal() {
             }
 
             try {
+                localStorage.setItem(`profile_completed_${user!.id}`, 'true');
+            } catch {}
+
+            try {
                 await supabase.auth.refreshSession();
             } catch (refErr) {
                 console.warn("Session refresh warning:", refErr);
             }
+
+            if (typeof window !== 'undefined') {
+                window.dispatchEvent(new Event('studyhub_profile_updated'));
+            }
+
             setHasChecked(true);
-            toast({ title: "Profile Saved ✓", description: "Welcome aboard! You're all set." });
             setIsOpen(false);
-            window.location.reload();
+            toast({ title: "Profile Saved ✓", description: "Welcome aboard! You're all set." });
         } catch (error: any) {
             console.error("Profile update error:", error);
             
