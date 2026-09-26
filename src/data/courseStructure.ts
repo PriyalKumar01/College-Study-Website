@@ -35,7 +35,9 @@ export interface CategoryInfo {
 // ── All note categories on the site ─────────────────────────────
 export const CATEGORIES: CategoryInfo[] = [
   { id: 'btech', label: 'B.Tech Notes', icon: 'GraduationCap', hasYears: true, hasBranches: true, hasSemesters: true, gradient: 'from-blue-500 to-blue-600' },
-  { id: 'mba', label: 'MBA Notes', icon: 'Briefcase', hasYears: false, hasBranches: false, hasSemesters: true, gradient: 'from-indigo-500 to-indigo-600' },
+  { id: 'bsms', label: 'BS-MS Notes', icon: 'BookOpen', hasYears: true, hasBranches: false, hasSemesters: true, gradient: 'from-violet-500 to-purple-700' },
+  { id: 'bpharma', label: 'B.Pharma Notes', icon: 'BookOpen', hasYears: true, hasBranches: false, hasSemesters: true, gradient: 'from-emerald-500 to-teal-700' },
+  { id: 'mba', label: 'MBA Notes', icon: 'Briefcase', hasYears: true, hasBranches: false, hasSemesters: true, gradient: 'from-indigo-500 to-indigo-600' },
   { id: 'bba', label: 'BBA Notes', icon: 'Briefcase', hasYears: false, hasBranches: false, hasSemesters: true, gradient: 'from-pink-500 to-pink-600' },
   { id: 'dsa', label: 'DSA Notes', icon: 'Database', hasYears: false, hasBranches: false, hasSemesters: false, gradient: 'from-green-500 to-green-600' },
   { id: 'coding', label: 'Coding Study Material', icon: 'Code', hasYears: false, hasBranches: false, hasSemesters: false, gradient: 'from-purple-500 to-purple-600' },
@@ -49,6 +51,29 @@ export const BTECH_YEARS = [
   { id: '2nd', label: '2nd Year', semesters: ['3rd Semester', '4th Semester'] },
   { id: '3rd', label: '3rd Year', semesters: ['5th Semester', '6th Semester'] },
   { id: '4th', label: '4th Year', semesters: ['7th Semester', '8th Semester'] },
+];
+
+// ── BS-MS Year → Semester mapping ────────────────────────────────
+export const BSMS_YEARS = [
+  { id: '1st', label: '1st Year', semesters: ['1st Semester', '2nd Semester', 'First Year (All Subjects)'] },
+  { id: '2nd', label: '2nd Year', semesters: ['3rd Semester', '4th Semester'] },
+  { id: '3rd', label: '3rd Year', semesters: ['5th Semester', '6th Semester'] },
+  { id: '4th', label: '4th Year', semesters: ['7th Semester', '8th Semester'] },
+  { id: '5th', label: '5th Year', semesters: ['9th Semester', '10th Semester'] },
+];
+
+// ── B.Pharma Year → Semester mapping ─────────────────────────────
+export const BPHARMA_YEARS = [
+  { id: '1st', label: '1st Year', semesters: ['1st Semester', '2nd Semester'] },
+  { id: '2nd', label: '2nd Year', semesters: ['3rd Semester', '4th Semester'] },
+  { id: '3rd', label: '3rd Year', semesters: ['5th Semester', '6th Semester'] },
+  { id: '4th', label: '4th Year', semesters: ['7th Semester', '8th Semester'] },
+];
+
+// ── MBA Year → Semester mapping ──────────────────────────────────
+export const MBA_YEARS = [
+  { id: '1st', label: '1st Year', semesters: ['1st Semester', '2nd Semester'] },
+  { id: '2nd', label: '2nd Year', semesters: ['3rd Semester', '4th Semester'] },
 ];
 
 export const BTECH_BRANCHES = [
@@ -83,32 +108,23 @@ const SPECIAL_SECTIONS: SubjectInfo[] = [
 export const BTECH_FIRST_YEAR_SUBJECTS: SubjectInfo[] = [
   { name: 'Programming for Problem Solving (PPS)', fullName: 'Programming for Problem Solving (C Language & Problem Solving)' },
   { name: 'Python Programming', fullName: 'Python Programming (Core Language, Data Structures & Scripting)' },
-  { name: 'Mathematics-I', fullName: 'Engineering Mathematics-I' },
-  { name: 'Mathematics-II', fullName: 'Engineering Mathematics-II' },
-  { name: 'Elementary Mathematics', fullName: 'Elementary Mathematics (DMA102)' },
-  { name: 'Engineering Physics', fullName: 'Engineering Physics' },
-  { name: 'Engineering Chemistry', fullName: 'Engineering Chemistry' },
-  { name: 'Basic Electrical Engineering (BEE)', fullName: 'Basic Electrical Engineering' },
-  { name: 'Basic Electronics Engineering', fullName: 'Basic Electronics Engineering' },
-  { name: 'Engineering Mechanics', fullName: 'Engineering Mechanics' },
-  { name: 'Professional Communication', fullName: 'Professional Communication (English & Technical)' },
-  { name: 'Environmental Studies', fullName: 'Environmental Studies & Ecology' },
-  { name: 'Web Designing Workshop', fullName: 'Web Designing Workshop (HTML, CSS, JS)' },
-  { name: 'Workshop & Manufacturing Practice', fullName: 'Workshop Practice & Digital Fabrication' },
-  { name: 'Engineering Graphics & Design', fullName: 'Engineering Graphics & Computer Aided Drawing (CAD)' },
-  { name: 'Data Science & AI Applications', fullName: 'Introduction to Data Science & Artificial Intelligence' },
-  { name: 'Intro to Food Technology', fullName: 'Introduction to Food Technology & Processing' },
-  { name: 'Intro to Plastic & Polymer Technology', fullName: 'Introduction to Plastic, Polymer & Rubber Technology' },
-  { name: 'Intro to Paint & Coating Technology', fullName: 'Introduction to Paint, Varnish & Coating Technology' },
-  { name: 'Intro to Oil & Surfactant Technology', fullName: 'Introduction to Oil, Fat & Oleochemical Technology' },
-  { name: 'Intro to Chemical Engineering', fullName: 'Introduction to Chemical Engineering & Processes' },
-  { name: 'Intro to Biochemical Engineering', fullName: 'Introduction to Biochemical Engineering & Industrial Biotech' },
-  { name: 'Intro to Leather & Footwear Technology', fullName: 'Introduction to Leather, Footwear & Tanning Technology' },
-  { name: 'Civil Engineering', fullName: 'Civil Engineering' },
-  { name: 'ICS', fullName: 'Introduction to Computer Science' },
-  { name: 'ICT', fullName: 'Intro to Communication Technology' },
-  { name: 'IET', fullName: 'Intro to Emerging Technology' },
-  { name: 'Workshop', fullName: 'Workshop Practice' },
+  { name: 'Engineering Mathematics-I', fullName: 'Engineering Mathematics-I (DMA 101 / DMA 102)' },
+  { name: 'Engineering Physics', fullName: 'Engineering Physics (Optics, Quantum, Electromagnetics)' },
+  { name: 'Engineering Chemistry', fullName: 'Engineering Chemistry (Organic, Polymers, Electrochemistry)' },
+  { name: 'Basic Electrical Engineering (BEE)', fullName: 'Basic Electrical Engineering (Circuits & Machines)' },
+  { name: 'Engineering Graphics & Design', fullName: 'Engineering Graphics & Design (Projections, Sections, CAD)' },
+  { name: 'Basic Engineering Mechanics (BEM)', fullName: 'Basic Engineering Mechanics (Statics, Dynamics, Friction)' },
+  { name: 'Basic Electronics Engineering (BET / IET)', fullName: 'Basic Electronics Engineering / Introduction to Electronics Tech' },
+  { name: 'Environmental Science & Engineering (EES / Civil)', fullName: 'Environmental Science & Engineering / Civil Engineering Fundamentals' },
+  { name: 'Digital Fabrication & Workshop Practices', fullName: 'Digital Fabrication & Workshop / Manufacturing Practices' },
+  { name: 'Universal Human Values (UHV)', fullName: 'Universal Human Values (Understanding Harmony & Human Conduct)' },
+  { name: 'English for Technical Writing / Communication Skills', fullName: 'English for Technical Writing & Communication Skills (PC)' },
+  { name: 'Introduction to Food Technology (IFT)', fullName: 'Introduction to Food Technology / Food Preservation Basics' },
+  { name: 'Introduction to Paint Technology (IPT)', fullName: 'Introduction to Paint & Surface Coating Technology' },
+  { name: 'Introduction to Leather Technology (ILT)', fullName: 'Introduction to Leather & Footwear Technology' },
+  { name: 'Introduction to Plastic & Polymer Tech', fullName: 'Introduction to Plastic Technology & Polymer Science' },
+  { name: 'Previous Year Questions (PYQs)', fullName: 'Previous Year Questions (PYQs) - All 1st Year', type: 'pyqs' },
+  { name: 'Assignments - All Subjects', fullName: 'Assignments - All 1st Year Subjects', type: 'assignments' },
 ];
 
 export const SUBJECTS: Record<string, SubjectInfo[]> = {
@@ -615,35 +631,6 @@ export const SUBJECTS: Record<string, SubjectInfo[]> = {
     { name: 'Open Elective-II', fullName: 'Open Elective-II (OE2)' },
   ],
 
-  // ════════════════════════════════════════════════════════════════
-  // MBA Semesters
-  // ════════════════════════════════════════════════════════════════
-  'MBA-1st Semester': [
-    { name: 'Management Principles', fullName: 'Principles of Management' },
-    { name: 'Organizational Behavior', fullName: 'Organizational Behavior' },
-    { name: 'Managerial Economics', fullName: 'Managerial Economics' },
-    { name: 'Financial Accounting', fullName: 'Financial Accounting' },
-    { name: 'Business Statistics', fullName: 'Business Statistics' },
-  ],
-  'MBA-2nd Semester': [
-    { name: 'Marketing Management', fullName: 'Marketing Management' },
-    { name: 'Financial Management', fullName: 'Financial Management' },
-    { name: 'HRM', fullName: 'Human Resource Management' },
-    { name: 'Operations Management', fullName: 'Operations Management' },
-    { name: 'Business Research', fullName: 'Business Research Methods' },
-  ],
-  'MBA-3rd Semester': [
-    { name: 'Strategic Management', fullName: 'Strategic Management' },
-    { name: 'International Business', fullName: 'International Business' },
-    { name: 'Business Law', fullName: 'Business Law & Ethics' },
-    { name: 'Entrepreneurship', fullName: 'Entrepreneurship Development' },
-  ],
-  'MBA-4th Semester': [
-    { name: 'Project Management', fullName: 'Project Management' },
-    { name: 'Supply Chain Management', fullName: 'Supply Chain Management' },
-    { name: 'Business Analytics', fullName: 'Business Analytics' },
-    { name: 'Corporate Governance', fullName: 'Corporate Governance' },
-  ],
 
   // ════════════════════════════════════════════════════════════════
   // BBA Semesters
@@ -684,6 +671,153 @@ export const SUBJECTS: Record<string, SubjectInfo[]> = {
     { name: 'Corporate Governance', fullName: 'Corporate Governance' },
     { name: 'Business Ethics', fullName: 'Business Ethics & CSR' },
   ],
+
+  // ── BS-MS Subjects ───────────────────────────────────────────────
+  'BSMS-1st Semester': BTECH_FIRST_YEAR_SUBJECTS,
+  'BSMS-2nd Semester': BTECH_FIRST_YEAR_SUBJECTS,
+  'BSMS-First Year (All Subjects)': BTECH_FIRST_YEAR_SUBJECTS,
+  'BSMS-3rd Semester': [
+    { name: 'Engineering Mathematics-II', fullName: 'Engineering Mathematics-II (Calculus & ODEs)' },
+    { name: 'Economics & Management', fullName: 'Economics & Management (Business Principles)' },
+    { name: 'Statistical Methods', fullName: 'Statistical Methods (Probability & Estimation)' },
+    { name: 'Data Structures & Algorithms', fullName: 'Data Structures & Algorithms (DSA)' },
+    { name: 'Probability & Random Processes', fullName: 'Probability & Random Processes (PRP)' },
+    { name: 'Data Science', fullName: 'Data Science (Statistics & Machine Learning Foundations)' },
+    { name: 'Real Analysis', fullName: 'Real Analysis (Mathematical Rigor & Proofs)' },
+  ],
+  'BSMS-4th Semester': [
+    { name: 'Engineering Mathematics-III', fullName: 'Engineering Mathematics-III (PDE & Complex Variables)' },
+    { name: 'CONM Notes', fullName: 'Computer Oriented Numerical Methods (CONM)' },
+    { name: 'Numerical Optimization', fullName: 'Numerical Optimization (Algorithms & Models)' },
+    { name: 'Discrete Maths Structure', fullName: 'Discrete Mathematical Structures (DMS)' },
+    { name: 'Computational Linear Algebra (CLA)', fullName: 'Computational Linear Algebra (CLA)' },
+    { name: 'R for Data Science', fullName: 'R Programming for Data Science' },
+  ],
+  'BSMS-5th Semester': [
+    { name: 'Principles of Data Science', fullName: 'Principles of Data Science' },
+    { name: 'Machine Learning', fullName: 'Machine Learning (Algorithms & Supervised Learning)' },
+    { name: 'Modern Algebra', fullName: 'Modern Algebra (Groups, Rings & Fields)' },
+    { name: 'Topology & Geometry', fullName: 'Topology & Geometry' },
+    { name: 'Computational Statistics', fullName: 'Computational Statistics' },
+    { name: 'Data Science Lab - 3', fullName: 'Data Science Lab - 3 (Practical Implementation)' },
+  ],
+  'BSMS-6th Semester': [
+    { name: 'Deep Learning', fullName: 'Deep Learning (Neural Networks & Architectures)' },
+    { name: 'Fundamental of Computing', fullName: 'Fundamental of Computing (TOC & Automata)' },
+    { name: 'Functional Analysis', fullName: 'Functional Analysis (Banach & Hilbert Spaces)' },
+    { name: 'Big Data Analytics', fullName: 'Big Data Analytics (Hadoop, Spark & Pipelines)' },
+    { name: 'Program Elective (POC)', fullName: 'Program Elective (POC)' },
+    { name: 'Open Elective (OEC)', fullName: 'Open Elective (OEC)' },
+    { name: 'Multivariate Analysis', fullName: 'Multivariate Statistical Analysis' },
+  ],
+  'BSMS-7th Semester': [
+    { name: 'Advanced Research Methodology', fullName: 'Advanced Research Methodology & Scientific Writing' },
+    { name: 'Scientific Computing & Modeling', fullName: 'Scientific Computing & Simulation Models' },
+    { name: 'Specialization Core - I', fullName: 'Advanced Specialization Core Topic I' },
+  ],
+  'BSMS-8th Semester': [
+    { name: 'Specialization Core - II', fullName: 'Advanced Specialization Core Topic II' },
+    { name: 'Research Project Phase - 1', fullName: 'Masters Research Project & Dissertation (Phase 1)' },
+  ],
+  'BSMS-9th Semester': [
+    { name: 'Master Dissertation - Phase I', fullName: 'Integrated Masters Research & Thesis Work' },
+    { name: 'Department Colloquium', fullName: 'Research Seminar & Colloquium' },
+  ],
+  'BSMS-10th Semester': [
+    { name: 'Final Masters Thesis & Viva', fullName: 'Final Master Dissertation Defense & Publication' },
+  ],
+
+  // ── MBA Subjects ─────────────────────────────────────────────────
+  'MBA-1st Semester': [
+    { name: 'Managerial Economics', fullName: 'Managerial Economics' },
+    { name: 'Business Environment', fullName: 'Business Environment & Policy' },
+    { name: 'Business Statistics', fullName: 'Business Statistics & Analytics' },
+    { name: 'Business Communication', fullName: 'Business Communication & Soft Skills' },
+    { name: 'Computer Applications', fullName: 'Computer Applications in Management' },
+    { name: 'Financial Accounting', fullName: 'Financial Accounting & Reporting' },
+    { name: 'Principles of Management', fullName: 'Principles and Practice of Management' },
+  ],
+  'MBA-2nd Semester': [
+    { name: 'Marketing Management', fullName: 'Marketing Management' },
+    { name: 'Financial Management', fullName: 'Financial Management & Corporate Finance' },
+    { name: 'Human Resource Management', fullName: 'Human Resource Management (HRM)' },
+    { name: 'Operations Research', fullName: 'Operations Research & Supply Chain' },
+    { name: 'Research Methodology', fullName: 'Business Research Methodology' },
+    { name: 'Cost & Management Accounting', fullName: 'Cost & Management Accounting' },
+  ],
+  'MBA-3rd Semester': [
+    { name: 'Strategic Management', fullName: 'Strategic Management & Business Policy' },
+    { name: 'Consumer Behavior', fullName: 'Consumer Behavior & Market Insights' },
+    { name: 'Security Analysis', fullName: 'Security Analysis & Portfolio Management' },
+    { name: 'Industrial Relations', fullName: 'Industrial Relations & Labor Law' },
+    { name: 'Summer Internship Project', fullName: 'Summer Internship Project & Report' },
+  ],
+  'MBA-4th Semester': [
+    { name: 'Corporate Governance & Ethics', fullName: 'Corporate Governance, Business Ethics & CSR' },
+    { name: 'Entrepreneurship Development', fullName: 'Entrepreneurship & New Venture Planning' },
+    { name: 'Digital Marketing & E-Commerce', fullName: 'Digital Marketing & Social Media Strategy' },
+    { name: 'Final Project & Viva', fullName: 'Comprehensive Final Project & Viva-Voce' },
+  ],
+
+  // ── B.Pharma Subjects ────────────────────────────────────────────
+  'BPHARMA-1st Semester': [
+    { name: 'Human Anatomy & Physiology I', fullName: 'Human Anatomy and Physiology I (Theory & Practical)' },
+    { name: 'Pharmaceutical Analysis I', fullName: 'Pharmaceutical Analysis I' },
+    { name: 'Pharmaceutics I', fullName: 'Pharmaceutics I (General Pharmacy)' },
+    { name: 'Pharmaceutical Inorganic Chemistry', fullName: 'Pharmaceutical Inorganic Chemistry' },
+    { name: 'Communication Skills', fullName: 'Communication Skills' },
+    { name: 'Remedial Biology / Math', fullName: 'Remedial Biology / Remedial Mathematics' },
+  ],
+  'BPHARMA-2nd Semester': [
+    { name: 'Human Anatomy & Physiology II', fullName: 'Human Anatomy and Physiology II' },
+    { name: 'Pharmaceutical Organic Chemistry I', fullName: 'Pharmaceutical Organic Chemistry I' },
+    { name: 'Biochemistry', fullName: 'Biochemistry & Biomolecules' },
+    { name: 'Pathophysiology', fullName: 'Pathophysiology of Common Diseases' },
+    { name: 'Computer Applications in Pharmacy', fullName: 'Computer Applications in Pharmacy' },
+    { name: 'Environmental Sciences', fullName: 'Environmental Sciences' },
+  ],
+  'BPHARMA-3rd Semester': [
+    { name: 'Pharmaceutical Organic Chemistry II', fullName: 'Pharmaceutical Organic Chemistry II' },
+    { name: 'Physical Pharmaceutics I', fullName: 'Physical Pharmaceutics I' },
+    { name: 'Pharmaceutical Microbiology', fullName: 'Pharmaceutical Microbiology' },
+    { name: 'Pharmaceutical Engineering', fullName: 'Pharmaceutical Engineering' },
+  ],
+  'BPHARMA-4th Semester': [
+    { name: 'Pharmaceutical Organic Chemistry III', fullName: 'Pharmaceutical Organic Chemistry III' },
+    { name: 'Medicinal Chemistry I', fullName: 'Medicinal Chemistry I' },
+    { name: 'Physical Pharmaceutics II', fullName: 'Physical Pharmaceutics II' },
+    { name: 'Pharmacology I', fullName: 'Pharmacology I' },
+    { name: 'Pharmacognosy & Phytochemistry I', fullName: 'Pharmacognosy and Phytochemistry I' },
+  ],
+  'BPHARMA-5th Semester': [
+    { name: 'Medicinal Chemistry II', fullName: 'Medicinal Chemistry II' },
+    { name: 'Industrial Pharmacy I', fullName: 'Industrial Pharmacy I' },
+    { name: 'Pharmacology II', fullName: 'Pharmacology II' },
+    { name: 'Pharmacognosy & Phytochemistry II', fullName: 'Pharmacognosy and Phytochemistry II' },
+    { name: 'Pharmaceutical Jurisprudence', fullName: 'Pharmaceutical Jurisprudence & Drug Laws' },
+  ],
+  'BPHARMA-6th Semester': [
+    { name: 'Medicinal Chemistry III', fullName: 'Medicinal Chemistry III' },
+    { name: 'Pharmacology III', fullName: 'Pharmacology III' },
+    { name: 'Herbal Drug Technology', fullName: 'Herbal Drug Technology' },
+    { name: 'Biopharmaceutics & Pharmacokinetics', fullName: 'Biopharmaceutics & Pharmacokinetics' },
+    { name: 'Pharmaceutical Biotechnology', fullName: 'Pharmaceutical Biotechnology' },
+    { name: 'Quality Assurance', fullName: 'Quality Assurance & GMP Guidelines' },
+  ],
+  'BPHARMA-7th Semester': [
+    { name: 'Instrumental Methods of Analysis', fullName: 'Instrumental Methods of Chemical Analysis' },
+    { name: 'Industrial Pharmacy II', fullName: 'Industrial Pharmacy II' },
+    { name: 'Pharmacy Practice', fullName: 'Pharmacy Practice & Hospital Pharmacy' },
+    { name: 'Novel Drug Delivery System', fullName: 'Novel Drug Delivery System (NDDS)' },
+  ],
+  'BPHARMA-8th Semester': [
+    { name: 'Biostatistics & Research Methodology', fullName: 'Biostatistics and Research Methodology' },
+    { name: 'Social & Preventive Pharmacy', fullName: 'Social and Preventive Pharmacy' },
+    { name: 'Pharma Marketing Management', fullName: 'Pharma Marketing Management' },
+    { name: 'Regulatory Science', fullName: 'Pharmaceutical Regulatory Science' },
+    { name: 'Pharmacovigilance', fullName: 'Pharmacovigilance & Drug Safety' },
+    { name: 'Project Work', fullName: 'Pharmaceutical Final Year Project Work' },
+  ],
 };
 
 // ── Helper functions ─────────────────────────────────────────────
@@ -721,10 +855,27 @@ export function getSubjects(
         baseSubjects = BTECH_FIRST_YEAR_SUBJECTS;
       }
     }
+  } else if (category === 'bsms') {
+    if (semester.includes('1st') || semester.includes('2nd') || semester.toLowerCase().includes('first')) {
+      baseSubjects = BTECH_FIRST_YEAR_SUBJECTS;
+    } else {
+      const cleanSem = semester.replace(/^BSMS-/, '');
+      const key = `BSMS-${cleanSem}`;
+      if (SUBJECTS[key]) baseSubjects = SUBJECTS[key];
+    }
+  } else if (category === 'bpharma') {
+    const cleanSem = semester.replace(/^BPHARMA-/, '');
+    const key = `BPHARMA-${cleanSem}`;
+    if (SUBJECTS[key]) baseSubjects = SUBJECTS[key];
   } else {
     // MBA/BBA
-    const key = `${category.toUpperCase()}-${semester}`;
-    if (SUBJECTS[key]) baseSubjects = SUBJECTS[key];
+    const cleanSem = semester.replace(new RegExp(`^${category.toUpperCase()}-`, 'i'), '');
+    const key = `${category.toUpperCase()}-${cleanSem}`;
+    if (SUBJECTS[key]) {
+      baseSubjects = SUBJECTS[key];
+    } else if (SUBJECTS[`${category.toUpperCase()}-${semester}`]) {
+      baseSubjects = SUBJECTS[`${category.toUpperCase()}-${semester}`];
+    }
   }
 
   // Fetch custom subjects added dynamically by Owner
@@ -771,8 +922,17 @@ export function getSubjectsOnly(
     if (SUBJECTS[allKey]) return SUBJECTS[allKey];
     return [];
   }
-  const key = `${category.toUpperCase()}-${semester}`;
-  return SUBJECTS[key] || [];
+  if (category === 'bsms') {
+    const cleanSem = semester.replace(/^BSMS-/, '');
+    return SUBJECTS[`BSMS-${cleanSem}`] || [];
+  }
+  if (category === 'bpharma') {
+    const cleanSem = semester.replace(/^BPHARMA-/, '');
+    return SUBJECTS[`BPHARMA-${cleanSem}`] || [];
+  }
+  const cleanSem = semester.replace(new RegExp(`^${category.toUpperCase()}-`, 'i'), '');
+  const key = `${category.toUpperCase()}-${cleanSem}`;
+  return SUBJECTS[key] || SUBJECTS[`${category.toUpperCase()}-${semester}`] || [];
 }
 
 /** Get semesters for a given category and year */
@@ -781,7 +941,25 @@ export function getSemesters(category: string, year?: string): string[] {
     const y = BTECH_YEARS.find(y => y.id === year);
     return y ? y.semesters : [];
   }
+  if (category === 'bsms') {
+    if (year) {
+      const y = BSMS_YEARS.find(y => y.id === year);
+      return y ? y.semesters : [];
+    }
+    return ['1st Semester', '2nd Semester', '3rd Semester', '4th Semester', '5th Semester', '6th Semester', '7th Semester', '8th Semester', '9th Semester', '10th Semester'];
+  }
+  if (category === 'bpharma') {
+    if (year) {
+      const y = BPHARMA_YEARS.find(y => y.id === year);
+      return y ? y.semesters : [];
+    }
+    return ['1st Semester', '2nd Semester', '3rd Semester', '4th Semester', '5th Semester', '6th Semester', '7th Semester', '8th Semester'];
+  }
   if (category === 'mba') {
+    if (year) {
+      const y = MBA_YEARS.find(y => y.id === year);
+      return y ? y.semesters : [];
+    }
     return ['1st Semester', '2nd Semester', '3rd Semester', '4th Semester'];
   }
   if (category === 'bba') {
