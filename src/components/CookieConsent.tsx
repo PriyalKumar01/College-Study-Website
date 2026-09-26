@@ -19,13 +19,19 @@ const CookieConsent = () => {
     }
   }, []);
 
-  const handleAccept = () => {
-    localStorage.setItem('cookie-consent', 'accepted');
+  const handleAccept = (e?: React.MouseEvent | React.TouchEvent) => {
+    if (e) e.stopPropagation();
+    try {
+      localStorage.setItem('cookie-consent', 'accepted');
+    } catch {}
     setShowConsent(false);
   };
 
-  const handleReject = () => {
-    localStorage.setItem('cookie-consent', 'rejected');
+  const handleReject = (e?: React.MouseEvent | React.TouchEvent) => {
+    if (e) e.stopPropagation();
+    try {
+      localStorage.setItem('cookie-consent', 'rejected');
+    } catch {}
     setShowConsent(false);
   };
 
