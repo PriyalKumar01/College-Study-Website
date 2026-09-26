@@ -4,6 +4,7 @@ import { Download, ArrowLeft, FileText, ChevronDown, ChevronRight, ExternalLink 
 import { useNavigate } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import { useCommunityNotes } from '@/hooks/useCommunityNotes';
 
 const MBANotes = () => {
   const navigate = useNavigate();
@@ -17,7 +18,7 @@ const MBANotes = () => {
     );
   };
 
-  const subjects = [
+  const staticSubjects = [
     {
       id: 'me',
       name: 'Managerial Economics',
@@ -116,6 +117,39 @@ const MBANotes = () => {
     { title: 'Mid Sem-2 PYQs (2024-25)', url: 'https://drive.google.com/uc?export=download&id=1P0DibtM2x0G-64ySMveLvqTcn1pOgtqv', sem: '2nd' },
     { title: 'End Sem PYQs (2023-24)', url: 'https://drive.google.com/uc?export=download&id=188KoRVuImmJ8b60srkb1Z_hzM-G25hs5', sem: '2nd' },
     { title: 'End Sem PYQs (2024-25)', url: 'https://drive.google.com/uc?export=download&id=1Zj5gxZ82y_eJNyjItA0thc-XxIJaNN26', sem: '2nd' }
+  ];
+
+  const { data: communityNotes } = useCommunityNotes('mba', ['mba', 'MBA-1st Semester', 'MBA-2nd Semester', 'MBA-3rd Semester', 'MBA-4th Semester']);
+
+  const subjects = staticSubjects.map(sub => {
+    const matched = (communityNotes || []).filter(cn =>
+      cn.subject === sub.name ||
+      cn.subject === sub.fullName ||
+      cn.subject === sub.id ||
+      (cn.subject && cn.subject.toLowerCase() === sub.name.toLowerCase())
+    );
+    return {
+      ...sub,
+      notes: [
+        ...sub.notes,
+        ...matched.map(m => ({
+          title: m.title,
+          url: m.file_url,
+          fileName: m.file_name,
+        }))
+      ]
+    };
+  });
+
+  const allPyqs = [
+    ...pyqs,
+    ...(communityNotes || [])
+      .filter(cn => cn.material_type === 'pyqs' || (cn.subject && cn.subject.toLowerCase().includes('pyq')))
+      .map(cn => ({
+        title: cn.title,
+        url: cn.file_url,
+        sem: cn.semester?.includes('2nd') ? '2nd' : '1st',
+      }))
   ];
 
   return (
@@ -221,7 +255,7 @@ const MBANotes = () => {
                   <div className="flex items-center gap-3 mb-2 flex-wrap">
                     <h3 className="font-semibold text-foreground text-lg leading-snug">Previous Year Questions</h3>
                     <span className="text-xs font-bold text-white bg-green-500 px-2 py-0.5 rounded-full">
-                      {pyqs.length} files
+                      {allPyqs.length} files
                     </span>
                   </div>
                   <p className="text-xs text-muted-foreground">Practice with past examination papers</p>
@@ -243,7 +277,7 @@ const MBANotes = () => {
                   <div>
                     <h4 className="text-xs font-bold tracking-wider uppercase text-muted-foreground mb-3">1st Semester PYQs</h4>
                     <div className="grid gap-2 sm:grid-cols-2">
-                      {pyqs.filter(p => p.sem === '1st').map((pyq, idx) => (
+                      {allPyqs.filter(p => p.sem === '1st').map((pyq, idx) => (
                         <a
                           key={idx}
                           href={pyq.url}
@@ -264,7 +298,7 @@ const MBANotes = () => {
                   <div>
                     <h4 className="text-xs font-bold tracking-wider uppercase text-muted-foreground mb-3">2nd Semester PYQs</h4>
                     <div className="grid gap-2 sm:grid-cols-2">
-                      {pyqs.filter(p => p.sem === '2nd').map((pyq, idx) => (
+                      {allPyqs.filter(p => p.sem === '2nd').map((pyq, idx) => (
                         <a
                           key={idx}
                           href={pyq.url}
