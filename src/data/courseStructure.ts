@@ -123,6 +123,10 @@ export const BTECH_FIRST_YEAR_SUBJECTS: SubjectInfo[] = [
   { name: 'Introduction to Paint Technology (IPT)', fullName: 'Introduction to Paint & Surface Coating Technology' },
   { name: 'Introduction to Leather Technology (ILT)', fullName: 'Introduction to Leather & Footwear Technology' },
   { name: 'Introduction to Plastic & Polymer Tech', fullName: 'Introduction to Plastic Technology & Polymer Science' },
+  { name: 'Introduction to Oils and Oleo Chemicals (DOT-101)', fullName: 'Introduction to Oils and Oleo Chemicals DOT - 101' },
+  { name: 'Introduction to Biochemical Engineering (DBE-101)', fullName: 'DBE101 Introduction to Biochemical engineering' },
+  { name: 'Introduction to Chemical Engineering (DCH-101)', fullName: 'Introduction to chemical engineering DCH 101' },
+  { name: 'Introduction to Biotechnology (DBT-101)', fullName: 'Introduction to biotechnology DBT 101' },
   { name: 'Previous Year Questions (PYQs)', fullName: 'Previous Year Questions (PYQs) - All 1st Year', type: 'pyqs' },
   { name: 'Assignments - All Subjects', fullName: 'Assignments - All 1st Year Subjects', type: 'assignments' },
 ];
