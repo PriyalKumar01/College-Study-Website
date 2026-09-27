@@ -126,14 +126,19 @@ export function ProfileCompletionModal() {
             // 0. Instant localStorage check
             const localCompleted = typeof window !== 'undefined' && localStorage.getItem(`profile_completed_${user.id}`) === 'true';
 
-            // Safely fetch profile data from profiles table
+            // Safely fetch profile data from profiles table (by id, user_id, or email)
             let data: any = null;
             try {
-                const { data: pData, error: pError } = await supabase
+                let query = supabase
                     .from("profiles")
-                    .select("first_name, last_name, college, branch, year")
-                    .or(`id.eq.${user.id},user_id.eq.${user.id}`)
-                    .maybeSingle();
+                    .select("id, user_id, email, first_name, last_name, college, branch, year");
+
+                if (user.email) {
+                    query = query.or(`id.eq.${user.id},user_id.eq.${user.id},email.eq.${user.email.toLowerCase()}`);
+                } else {
+                    query = query.or(`id.eq.${user.id},user_id.eq.${user.id}`);
+                }
+                const { data: pData, error: pError } = await query.maybeSingle();
 
                 if (!pError && pData) {
                     data = pData;
@@ -142,50 +147,40 @@ export function ProfileCompletionModal() {
                 console.warn("Could not query profiles table:", pErr);
             }
 
-            const existingYear: string = data?.year || user.user_metadata?.year || "";
-            const yearNeedsUpdate = existingYear !== "" && !isValidYearOption(existingYear);
+            const existingYear: string = (data?.year || user.user_metadata?.year || "").trim();
+            const existingCollege: string = (data?.college || user.user_metadata?.college || "").trim();
+            const existingBranch: string = (data?.branch || user.user_metadata?.branch || "").trim();
+            const existingFirstName: string = (data?.first_name || user.user_metadata?.first_name || "").trim();
 
-            const existingCollege: string = data?.college || user.user_metadata?.college || "";
             const collegeIsHBTUVariant = existingCollege !== "" && isHBTUCollege(existingCollege) && existingCollege !== "HBTU Kanpur";
-            const collegeNeedsUpdate = existingCollege === "" || collegeIsHBTUVariant;
-            
-            const existingBranch: string = data?.branch || user.user_metadata?.branch || "";
-            const existingFirstName: string = data?.first_name || user.user_metadata?.first_name || "";
 
-            const hasCompleteDetails = Boolean(existingFirstName && existingCollege && existingBranch && existingYear);
+            // If user already has basic required profile fields (firstName, college, branch), they are already COMPLETE!
+            const hasCompleteDetails = Boolean(existingFirstName && existingCollege && existingBranch);
             const isMetaComplete = user.user_metadata?.profile_completed === true || localCompleted || hasCompleteDetails;
 
-            // If user already has complete details and doesn't need migration, NEVER show modal
-            if (hasCompleteDetails && !collegeIsHBTUVariant && !yearNeedsUpdate) {
+            // If user already has complete details, NEVER show modal
+            if (hasCompleteDetails || isMetaComplete) {
                 setIsOpen(false);
                 setHasChecked(true);
                 try { localStorage.setItem(`profile_completed_${user.id}`, 'true'); } catch {}
-                return;
-            }
 
-            if (isMetaComplete && (yearNeedsUpdate || collegeNeedsUpdate)) {
-                setIsUpdateMode(true);
-                setFirstName(data?.first_name || user.user_metadata?.first_name || "");
-                setLastName(data?.last_name || user.user_metadata?.last_name || "");
-                
-                // Handle existing branch
-                if (existingBranch && BRANCH_OPTIONS.includes(existingBranch)) {
-                    setBranch(existingBranch);
-                } else if (existingBranch) {
-                    setBranch("Other");
-                    setOtherBranch(existingBranch);
-                }
-
-                if (collegeIsHBTUVariant) {
-                    setCollegeType("hbtu");
-                    setCollege("HBTU Kanpur");
-                } else if (existingCollege !== "") {
-                    setCollegeType("non-hbtu");
-                    setCustomCollege(existingCollege);
-                    setCollege(existingCollege);
-                }
-                setIsOpen(true);
-                setHasChecked(true);
+                // Silent background cleanup if needed (normalize HBTU variant & link user_id)
+                (async () => {
+                    try {
+                        const updates: any = {};
+                        if (collegeIsHBTUVariant) updates.college = "HBTU Kanpur";
+                        if (data && data.user_id !== user.id) updates.user_id = user.id;
+                        if (Object.keys(updates).length > 0) {
+                            if (user.email) {
+                                await supabase.from("profiles").update(updates).eq("email", user.email.toLowerCase());
+                            } else {
+                                await supabase.from("profiles").update(updates).eq("id", user.id);
+                            }
+                        }
+                    } catch (e) {
+                        // Silent non-blocking background sync
+                    }
+                })();
                 return;
             }
 
