@@ -575,6 +575,58 @@ const FirstYearNotes = () => {
         { title: 'General Chemical Tech Notes: Priyal Kumar', url: 'https://drive.google.com/file/d/1PzevLkCwsQBQh_bZDwZnPgdWA6Qqv_5m/view?usp=drivesdk' }
       ]
     },
+    {
+      id: 'oil_tech',
+      code: 'DOT-101',
+      name: 'Introduction to Oils and Oleo Chemicals (DOT-101)',
+      fullName: 'Introduction to Oils and Oleo Chemicals DOT - 101',
+      category: 'tech',
+      icon: '🛢️',
+      color: 'bg-yellow-600',
+      badge: 'Tech Branch',
+      description: 'Introductory course for Oil Technology (OT) first-year students.',
+      playlists: { detailed: [], oneshot: [] },
+      notes: []
+    },
+    {
+      id: 'biochem_tech',
+      code: 'DBE-101',
+      name: 'Introduction to Biochemical Engineering (DBE-101)',
+      fullName: 'DBE101 Introduction to Biochemical engineering',
+      category: 'tech',
+      icon: '🧬',
+      color: 'bg-purple-600',
+      badge: 'Tech Branch',
+      description: 'Introductory course for Biochemical Engineering (BE) first-year students.',
+      playlists: { detailed: [], oneshot: [] },
+      notes: []
+    },
+    {
+      id: 'chemical_eng',
+      code: 'DCH-101',
+      name: 'Introduction to Chemical Engineering (DCH-101)',
+      fullName: 'Introduction to chemical engineering DCH 101',
+      category: 'tech',
+      icon: '⚗️',
+      color: 'bg-red-600',
+      badge: 'Tech Branch',
+      description: 'Introductory course for Chemical Engineering (CHE) first-year students.',
+      playlists: { detailed: [], oneshot: [] },
+      notes: []
+    },
+    {
+      id: 'biotech_tech',
+      code: 'DBT-101',
+      name: 'Introduction to Biotechnology (DBT-101)',
+      fullName: 'Introduction to biotechnology DBT 101',
+      category: 'tech',
+      icon: '🧫',
+      color: 'bg-emerald-600',
+      badge: 'Tech Branch',
+      description: 'Introductory course for Biotechnology (BT) first-year students.',
+      playlists: { detailed: [], oneshot: [] },
+      notes: []
+    },
 
     // ── ASSIGNMENTS & PYQs ─────────────────────────────────────────────
     {
