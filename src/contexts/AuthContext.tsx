@@ -114,6 +114,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         .from('admin_roles')
         .select('role')
         .eq('user_email', email)
+        .neq('role', 'removed')
         .maybeSingle();
 
       if (error) {
