@@ -406,27 +406,37 @@ Simply click one of the buttons below to log in or sign up immediately.`,
         setStep('reset-password');
         toast({ title: "Verified", description: "Please set your new password." });
       } else if (mode === 'signup') {
-        // Check if profile is already completed (e.g., existing user trying to signup again)
-        const isProfileCompleted = data.user.user_metadata?.profile_completed === true;
+        const cleanEmail = email.trim().toLowerCase();
+        let isProfileCompleted = data.user.user_metadata?.profile_completed === true;
+
+        let existingProfile: any = null;
+        try {
+          const { data: prof } = await supabase
+            .from('profiles')
+            .select('first_name, college, branch, approval_status')
+            .or(`email.eq.${cleanEmail},id.eq.${data.user.id},user_id.eq.${data.user.id}`)
+            .maybeSingle();
+
+          if (prof) {
+            existingProfile = prof;
+            if (prof.first_name && prof.college && prof.branch) {
+              isProfileCompleted = true;
+              try { localStorage.setItem(`profile_completed_${data.user.id}`, 'true'); } catch {}
+            }
+          }
+        } catch (e) {
+          console.warn('Profile check failed in AuthModal:', e);
+        }
 
         if (isProfileCompleted) {
           // User already exists and is complete -> Check approval status
-          const cleanEmail = email.trim().toLowerCase();
           const domain = cleanEmail.split('@')[1] || '';
           const isDirect = isDirectlyAllowedDomain(domain);
 
           let isPending = !isDirect;
-          try {
-            const { data: prof } = await supabase
-              .from('profiles')
-              .select('approval_status')
-              .or(`id.eq.${data.user.id},user_id.eq.${data.user.id}`)
-              .maybeSingle();
-
-            if (prof?.approval_status) {
-              isPending = prof.approval_status === 'pending';
-            }
-          } catch {}
+          if (existingProfile?.approval_status) {
+            isPending = existingProfile.approval_status === 'pending';
+          }
 
           if (isPending) {
             localStorage.setItem('csh_approval_status', 'pending');
@@ -458,7 +468,7 @@ Simply click one of the buttons below to log in or sign up immediately.`,
           const { data: prof } = await supabase
             .from('profiles')
             .select('approval_status')
-            .or(`id.eq.${data.user.id},user_id.eq.${data.user.id}`)
+            .or(`email.eq.${cleanEmail},id.eq.${data.user.id},user_id.eq.${data.user.id}`)
             .maybeSingle();
 
           if (prof?.approval_status) {
