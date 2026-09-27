@@ -153,12 +153,19 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     }
 
     try {
-      // 1. Query public.profiles for banned_until and approval_status (Direct PostgREST query, no auth mutex lock)
-      const { data: profile } = await supabase
+      // 1. Query public.profiles for banned_until and approval_status (Direct PostgREST query, matching by id, user_id, or email)
+      const email = userObj.email?.toLowerCase().trim() || '';
+      let query = supabase
         .from('profiles')
-        .select('banned_until, approval_status')
-        .or(`id.eq.${userObj.id},user_id.eq.${userObj.id}`)
-        .maybeSingle();
+        .select('banned_until, approval_status');
+
+      if (email) {
+        query = query.or(`id.eq.${userObj.id},user_id.eq.${userObj.id},email.eq.${email}`);
+      } else {
+        query = query.or(`id.eq.${userObj.id},user_id.eq.${userObj.id}`);
+      }
+
+      const { data: profile } = await query.maybeSingle();
 
       const bannedUntil = profile?.banned_until || (userObj as any)?.banned_until;
       if (bannedUntil) {
@@ -180,7 +187,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       localStorage.removeItem('csh_banned_user');
 
       // 2. Approval status check
-      const email = userObj.email?.toLowerCase().trim() || '';
       const domain = email.split('@')[1] || '';
       const isOwnerOrAdmin = email === 'priyalkumar06@gmail.com' || userRole === 'owner' || userRole === 'admin';
       const isWhitelisted = isDirectlyAllowedDomain(domain);
