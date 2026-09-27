@@ -402,12 +402,32 @@ const UploadMaterialForm = ({ onUploadSuccess }: UploadMaterialFormProps) => {
         .from('study-materials')
         .getPublicUrl(uploadedPath);
 
-      // Check contributor's previous uploads to trigger 1st milestone or league upgrade
+      // Check contributor's previous uploads and contributors list to accurately trigger 1st milestone or league upgrade
       let previousCount = 0;
+      let alreadyInContributorList = false;
       try {
         const uId = currentUser?.id;
-        const uEmail = currentUser?.email;
-        if (uId || uEmail) {
+        const uEmail = currentUser?.email?.toLowerCase();
+        const uName = (currentUser?.user_metadata?.first_name || currentUser?.email?.split('@')[0] || '').toLowerCase().trim();
+
+        // Check contributors table first
+        const { data: contribList } = await (supabase as any)
+          .from('contributors')
+          .select('id, name, coins');
+
+        if (contribList && Array.isArray(contribList)) {
+          const matched = contribList.find((c: any) => {
+            const cName = (c.name || '').toLowerCase().trim();
+            return cName === uName || (uName && cName.includes(uName)) || (uName && uName.includes(cName));
+          });
+          if (matched) {
+            alreadyInContributorList = true;
+            previousCount = Number(matched.coins) || 0;
+          }
+        }
+
+        // If not in contributors table, check existing notes
+        if (!alreadyInContributorList && (uId || uEmail)) {
           const { count } = await supabase
             .from('notes')
             .select('id', { count: 'exact', head: true })
@@ -460,7 +480,7 @@ const UploadMaterialForm = ({ onUploadSuccess }: UploadMaterialFormProps) => {
       }
 
       const newTotalCount = previousCount + 1;
-      const isFirst = newTotalCount === 1;
+      const isFirst = !alreadyInContributorList && previousCount === 0;
       const isMilestone = isLeagueMilestone(newTotalCount);
 
       if (isFirst || isMilestone) {
@@ -476,10 +496,12 @@ const UploadMaterialForm = ({ onUploadSuccess }: UploadMaterialFormProps) => {
       }
 
       toast({
-        title: '✅ Uploaded Successfully!',
+        title: isFirst ? '🎉 Congratulations on Your 1st Contribution!' : '✅ Uploaded Successfully!',
         description: isOwner
           ? 'Your material is approved and live on the website immediately.'
-          : 'Your material has been submitted for approval. It will appear on the website once the owner approves it.',
+          : (isFirst 
+              ? 'Congratulations! Your first contribution is submitted for review and will be added to the Wall of Contributors once verified!' 
+              : 'Your material has been submitted for approval. It will appear on the website once approved.'),
       });
 
       // Reset form
