@@ -209,6 +209,7 @@ const NotesContributors = ({ defaultTab }: { defaultTab?: "contributors" | "admi
           const { data: adminData, error } = await (supabase as any)
             .from("admin_roles")
             .select("id, user_name, user_email, role, from_date, to_date, created_at")
+            .neq("role", "removed")
             .order("created_at", { ascending: true })
             .limit(30);
 
@@ -245,6 +246,37 @@ const NotesContributors = ({ defaultTab }: { defaultTab?: "contributors" | "admi
         }
       })();
     }
+  }, []);
+
+  // Listen to updates from OwnerDashboard or uploads
+  useEffect(() => {
+    const handleUpdate = () => {
+      (async () => {
+        const { data: contribData } = await (supabase as any)
+          .from("contributors")
+          .select("id, name, branch, batch, coins, linkedin_url, image_url")
+          .order("coins", { ascending: false })
+          .limit(50);
+        if (contribData) {
+          setContributors(contribData as Contributor[]);
+          setCachedData('contributors_list', contribData);
+        }
+
+        const { data: adminData } = await (supabase as any)
+          .from("admin_roles")
+          .select("id, user_name, user_email, role, from_date, to_date, created_at")
+          .neq("role", "removed")
+          .order("created_at", { ascending: true })
+          .limit(30);
+        if (adminData) {
+          setAdmins(adminData);
+          setCachedData('contributors_admins', adminData);
+        }
+      })();
+    };
+
+    window.addEventListener('studyhub_contributors_updated', handleUpdate);
+    return () => window.removeEventListener('studyhub_contributors_updated', handleUpdate);
   }, []);
 
   // S-wave SVG path coordinates (viewBox 0 0 400 54)
@@ -541,17 +573,26 @@ const NotesContributors = ({ defaultTab }: { defaultTab?: "contributors" | "admi
 
                   {/* ── CTA ── */}
                   <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.8 }} className="mt-12 text-center">
-                    <Card className="max-w-2xl mx-auto bg-gradient-to-r from-primary/10 to-purple-500/10 border-dashed border-2">
-                      <CardContent className="pt-6">
-                        <h3 className="text-xl font-semibold mb-2">Want to Contribute?</h3>
-                        <p className="text-muted-foreground mb-4">Share your notes and help fellow students. Earn coins and get recognized!</p>
-                        <Button className="btn-hero" onClick={() => window.open(
-                          "https://wa.me/918957221543?text=Respected%20Priyal%20Sir%2C%20I%20would%20like%20to%20share%20my%20notes%20to%20help%20other%20students.%20I%E2%80%99ll%20send%20the%20maximum%20possible%20PDFs%20so%20they%20can%20be%20uploaded%20and%20make%20learning%20easier%20and%20more%20accessible%20for%20everyone.",
-                          "_blank")}>
-                          Start Contributing
+                    <div className="rounded-2xl border border-slate-800 bg-slate-900 text-slate-100 p-6 sm:p-8 text-center space-y-3 max-w-2xl mx-auto shadow-xl">
+                      <div className="w-12 h-12 rounded-full bg-indigo-500/10 border border-indigo-500/30 flex items-center justify-center mx-auto text-indigo-400">
+                        <Award className="h-6 w-6" />
+                      </div>
+                      <h3 className="font-bold text-white text-xl">Have Class Notes or Slides for 1st Year?</h3>
+                      <p className="text-xs sm:text-sm text-slate-300 max-w-xl mx-auto leading-relaxed">
+                        CollegeStudy Hub is maintained by students, for students. If you take neat notes from your professors or have tutorial solutions, message Priyal Sir (CSE'27 HBTU) on WhatsApp to get contributor credentials!
+                      </p>
+                      <div className="pt-2">
+                        <Button
+                          onClick={() => window.open(
+                            "https://wa.me/918957221543?text=" + encodeURIComponent("Hello Priyal Sir (CSE'27 HBTU), I want to share my notes to help other students on CollegeStudy Hub."),
+                            "_blank"
+                          )}
+                          className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs uppercase tracking-wider px-6 py-2.5 rounded-xl shadow-lg transition-all active:scale-95 gap-2"
+                        >
+                          Start Contributing on WhatsApp
                         </Button>
-                      </CardContent>
-                    </Card>
+                      </div>
+                    </div>
                   </motion.div>
                 </>
               )}
