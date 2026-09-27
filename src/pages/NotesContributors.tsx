@@ -174,105 +174,95 @@ const NotesContributors = ({ defaultTab }: { defaultTab?: "contributors" | "admi
     }
   }, [location.search, location.pathname]);
 
-  // Fetch both contributors and admins on mount
+  // Helper to fetch and enrich all admins from admin_roles + profiles
+  const fetchAdminsList = async () => {
+    try {
+      const { data: adminData, error } = await (supabase as any)
+        .from("admin_roles")
+        .select("id, user_name, user_email, role, from_date, to_date, created_at")
+        .neq("role", "removed")
+        .order("created_at", { ascending: true });
+
+      if (!error && adminData && adminData.length > 0) {
+        const emails = adminData.map((a: any) => a.user_email?.toLowerCase()).filter(Boolean);
+        const { data: profs } = await supabase
+          .from("profiles")
+          .select("email, first_name, last_name, branch, college, avatar_url")
+          .in("email", emails);
+
+        const profMap = new Map((profs || []).map((p: any) => [p.email?.toLowerCase(), p]));
+
+        const enriched = adminData.map((a: any) => {
+          const prof = profMap.get(a.user_email?.toLowerCase());
+          const fullName = [prof?.first_name, prof?.last_name].filter(Boolean).join(' ');
+          return {
+            ...a,
+            user_name: a.user_name || (fullName ? fullName : (a.user_email === "priyalkumar06@gmail.com" ? "Priyal Kumar" : a.user_email?.split('@')[0])),
+            avatar_url: prof?.avatar_url || null,
+            branch: prof?.branch || null,
+            college: prof?.college || 'HBTU Kanpur',
+          };
+        });
+
+        setAdmins(enriched);
+        setCachedData('contributors_admins', enriched);
+      } else if (!adminData || adminData.length === 0) {
+        setAdmins(prev => (prev && prev.length > 0 ? prev : DEFAULT_ADMINS));
+      }
+    } catch (e) {
+      console.warn("Error fetching admin team:", e);
+      setAdmins(prev => (prev && prev.length > 0 ? prev : DEFAULT_ADMINS));
+    } finally {
+      setLoadingAdmins(false);
+    }
+  };
+
+  // Helper to fetch all contributors
+  const fetchContributorsList = async () => {
+    try {
+      const { data } = await (supabase as any)
+        .from("contributors")
+        .select("id, name, branch, batch, coins, linkedin_url, image_url")
+        .order("coins", { ascending: false });
+      if (data) {
+        setContributors(data as Contributor[]);
+        setCachedData('contributors_list', data);
+      }
+    } catch (e) {
+      console.warn("Error fetching contributors:", e);
+    } finally {
+      setLoadingContributors(false);
+    }
+  };
+
+  // Fetch both contributors and admins on mount (Stale-While-Revalidate pattern)
   useEffect(() => {
-    // 1. Contributors
+    // 1. Contributors: render cache immediately if available, then fetch fresh in background
     const cachedContribs = getCachedData<Contributor[]>('contributors_list', DEFAULT_CACHE_TTL_MS);
     if (cachedContribs && cachedContribs.length > 0) {
       setContributors(cachedContribs);
       setLoadingContributors(false);
     } else {
       setLoadingContributors(true);
-      (async () => {
-        const { data } = await (supabase as any)
-          .from("contributors")
-          .select("id, name, branch, batch, coins, linkedin_url, image_url")
-          .order("coins", { ascending: false })
-          .limit(50);
-        if (data) {
-          setContributors(data as Contributor[]);
-          setCachedData('contributors_list', data);
-        }
-        setLoadingContributors(false);
-      })();
     }
+    fetchContributorsList();
 
-    // 2. Admins (Proactively fetched and enriched with profile avatars/college)
+    // 2. Admins: render cache immediately if available, then fetch fresh in background
     const cachedAdmins = getCachedData<AdminRecord[]>('contributors_admins', DEFAULT_CACHE_TTL_MS);
     if (cachedAdmins && cachedAdmins.length > 0) {
       setAdmins(cachedAdmins);
       setLoadingAdmins(false);
     } else {
       setLoadingAdmins(true);
-      (async () => {
-        try {
-          const { data: adminData, error } = await (supabase as any)
-            .from("admin_roles")
-            .select("id, user_name, user_email, role, from_date, to_date, created_at")
-            .neq("role", "removed")
-            .order("created_at", { ascending: true })
-            .limit(30);
-
-          if (!error && adminData && adminData.length > 0) {
-            const emails = adminData.map((a: any) => a.user_email?.toLowerCase()).filter(Boolean);
-            const { data: profs } = await supabase
-              .from("profiles")
-              .select("email, first_name, last_name, branch, college, avatar_url")
-              .in("email", emails);
-
-            const profMap = new Map((profs || []).map((p: any) => [p.email?.toLowerCase(), p]));
-
-            const enriched = adminData.map((a: any) => {
-              const prof = profMap.get(a.user_email?.toLowerCase());
-              const fullName = [prof?.first_name, prof?.last_name].filter(Boolean).join(' ');
-              return {
-                ...a,
-                user_name: a.user_name || (fullName ? fullName : (a.user_email === "priyalkumar06@gmail.com" ? "Priyal Kumar" : a.user_email?.split('@')[0])),
-                avatar_url: prof?.avatar_url || null,
-                branch: prof?.branch || null,
-                college: prof?.college || 'HBTU Kanpur',
-              };
-            });
-
-            setAdmins(enriched);
-            setCachedData('contributors_admins', enriched);
-          } else {
-            setAdmins(prev => (prev && prev.length > 0 ? prev : DEFAULT_ADMINS));
-          }
-        } catch (e) {
-          setAdmins(prev => (prev && prev.length > 0 ? prev : DEFAULT_ADMINS));
-        } finally {
-          setLoadingAdmins(false);
-        }
-      })();
     }
+    fetchAdminsList();
   }, []);
 
   // Listen to updates from OwnerDashboard or uploads
   useEffect(() => {
     const handleUpdate = () => {
-      (async () => {
-        const { data: contribData } = await (supabase as any)
-          .from("contributors")
-          .select("id, name, branch, batch, coins, linkedin_url, image_url")
-          .order("coins", { ascending: false })
-          .limit(50);
-        if (contribData) {
-          setContributors(contribData as Contributor[]);
-          setCachedData('contributors_list', contribData);
-        }
-
-        const { data: adminData } = await (supabase as any)
-          .from("admin_roles")
-          .select("id, user_name, user_email, role, from_date, to_date, created_at")
-          .neq("role", "removed")
-          .order("created_at", { ascending: true })
-          .limit(30);
-        if (adminData) {
-          setAdmins(adminData);
-          setCachedData('contributors_admins', adminData);
-        }
-      })();
+      fetchContributorsList();
+      fetchAdminsList();
     };
 
     window.addEventListener('studyhub_contributors_updated', handleUpdate);
