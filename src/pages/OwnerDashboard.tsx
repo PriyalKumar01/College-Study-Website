@@ -10,6 +10,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Label } from '@/components/ui/label';
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import {
   CheckCircle, XCircle, User, Calendar, BookOpen, ShieldAlert,
   Eye, Trash2, Crown, UserPlus, UserMinus, Search, Loader2, FileText, Download, GraduationCap, ExternalLink, Bell, Send, Pencil, Trophy, Coins, Link, Lock, Sparkles, Clock, RefreshCw, RotateCcw
 } from 'lucide-react';
@@ -20,8 +27,40 @@ import { useTheme } from '@/providers/ThemeProvider';
 import { smartDownload } from '@/lib/downloadUtils';
 import MassEmailDashboard from '@/components/admin/MassEmailDashboard';
 import SubmitScholarshipForm from '@/components/admin/SubmitScholarshipForm';
-import { clearCachePrefix } from '@/lib/cacheUtils';
+import { clearCachePrefix, removeCachedData } from '@/lib/cacheUtils';
 import { syncContributorCount } from '@/lib/contributorSync';
+
+// ── Complete list of branches for Contributor management (15 B.Tech branches + core) ─────────
+const ALL_BRANCHES = [
+  { code: 'CSE', label: 'Computer Science & Engineering (CSE)' },
+  { code: 'IT', label: 'Information Technology (IT)' },
+  { code: 'CSE-AIML', label: 'CSE - AI & Machine Learning (AIML)' },
+  { code: 'ET', label: 'Electronics Technology (ET)' },
+  { code: 'EE', label: 'Electrical Engineering (EE)' },
+  { code: 'ME', label: 'Mechanical Engineering (ME)' },
+  { code: 'CE', label: 'Civil Engineering (CE)' },
+  { code: 'CHE', label: 'Chemical Engineering (CHE)' },
+  { code: 'BE', label: 'Biochemical Engineering (BE)' },
+  { code: 'LFT', label: 'Leather & Fashion Technology (LFT)' },
+  { code: 'PT', label: 'Paint Technology (PT)' },
+  { code: 'PL', label: 'Plastic Technology (PL)' },
+  { code: 'FT', label: 'Food Technology (FT)' },
+  { code: 'OT', label: 'Oil Technology (OT)' },
+  { code: 'BT', label: 'Biotechnology (BT)' },
+  { code: 'BS-MS', label: 'BS-MS Science & Mathematics' },
+  { code: 'B.Pharma', label: 'B.Pharma' },
+  { code: 'MBA', label: 'Master of Business Admin (MBA)' },
+];
+
+// ── Batch options from 2021 to 2040 (displayed as 2028, 2029, 2030 in dropdown) ──────────────
+const BATCH_OPTIONS = Array.from({ length: 2040 - 2021 + 1 }, (_, i) => {
+  const fullYear = 2021 + i;
+  const twoDigit = String(fullYear).slice(-2);
+  return {
+    value: twoDigit,
+    label: `${fullYear}`,
+  };
+});
 
 interface Material {
   id: string;
@@ -263,7 +302,7 @@ function AdminRoleCard({ role, rank, currentUserEmail, onRemove, onRefresh }: Ad
   );
 }
 
-// ─── ContributorCard — inline edit/delete for each contributor ────────────────
+// ─── ContributorCard — compact data row with inline edit/delete for each contributor ────────────────
 interface ContributorCardProps {
   contributor: ContributorRecord;
   rank: number;
@@ -276,8 +315,8 @@ function ContributorCard({ contributor, rank, onRefresh }: ContributorCardProps)
   const [saving, setSaving] = useState(false);
   const [editName, setEditName] = useState(contributor.name);
   const [editBranch, setEditBranch] = useState(contributor.branch);
-  const [editBatch, setEditBatch] = useState(contributor.batch);
-  const [editCoins, setEditCoins] = useState(String(contributor.coins));
+  const [editBatch, setEditBatch] = useState(contributor.batch?.replace(/^'+/, '') || '28');
+  const [editCoins, setEditCoins] = useState(String(Math.max(0, contributor.coins || 0)));
   const [editLinkedin, setEditLinkedin] = useState(contributor.linkedin_url || '');
   const [editImage, setEditImage] = useState(contributor.image_url || '');
 
@@ -287,19 +326,26 @@ function ContributorCard({ contributor, rank, onRefresh }: ContributorCardProps)
     if (!editName.trim()) return;
     setSaving(true);
     try {
+      const cleanCoins = Math.max(0, parseInt(editCoins) || 0);
+      const cleanBatch = editBatch.trim().replace(/^'+/, '');
       const { error } = await (supabase as any)
         .from('contributors')
         .update({
           name: editName.trim(),
           branch: editBranch.trim(),
-          batch: editBatch.trim(),
-          coins: Math.max(0, parseInt(editCoins) || 0),
+          batch: cleanBatch,
+          coins: cleanCoins,
           linkedin_url: editLinkedin.trim() || null,
           image_url: editImage.trim() || null,
         })
         .eq('id', contributor.id);
       if (error) throw error;
-      toast({ title: 'Updated ✅', description: 'Contributor saved.' });
+      toast({ title: 'Updated ✅', description: 'Contributor details saved.' });
+      clearCachePrefix('contributors');
+      removeCachedData('contributors_list');
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new Event('studyhub_contributors_updated'));
+      }
       setEditing(false);
       onRefresh();
     } catch (err: any) {
@@ -310,78 +356,190 @@ function ContributorCard({ contributor, rank, onRefresh }: ContributorCardProps)
   };
 
   const handleDelete = async () => {
-    if (!confirm(`Remove ${contributor.name} from contributors list?`)) return;
+    if (!confirm(`Are you sure you want to remove ${contributor.name} from the contributors list?`)) return;
     try {
       const { error } = await (supabase as any).from('contributors').delete().eq('id', contributor.id);
       if (error) throw error;
-      toast({ title: 'Removed', description: `${contributor.name} deleted.` });
+      toast({ title: 'Removed', description: `${contributor.name} has been deleted.` });
+      clearCachePrefix('contributors');
+      removeCachedData('contributors_list');
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new Event('studyhub_contributors_updated'));
+      }
       onRefresh();
     } catch (err: any) {
       toast({ title: 'Error', description: err.message, variant: 'destructive' });
     }
   };
 
+  const cleanBatchDisplay = (contributor.batch || '').replace(/^'+/, '');
+
   return (
-    <Card className="feature-card">
-      <CardContent className="p-4">
-        {editing ? (
-          <div className="space-y-3">
-            <p className="text-xs text-muted-foreground font-semibold uppercase tracking-wide">Editing: {contributor.name}</p>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-              <Input value={editName} onChange={e => setEditName(e.target.value)} placeholder="Full Name *" className="col-span-2" />
-              <Input value={editBranch} onChange={e => setEditBranch(e.target.value)} placeholder="Branch" />
-              <Input value={editBatch} onChange={e => setEditBatch(e.target.value)} placeholder="Batch" />
+    <div className="border border-border/70 rounded-xl p-3 sm:p-3.5 bg-card hover:bg-sky-50/60 dark:hover:bg-sky-950/25 hover:border-sky-300 dark:hover:border-sky-800 transition-all duration-200 shadow-xs">
+      {editing ? (
+        <div className="space-y-3 p-1">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Editing Contributor</span>
+            <span className="text-xs font-mono text-muted-foreground">{contributor.id.slice(0, 8)}...</span>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-4 gap-2.5">
+            <Input
+              value={editName}
+              onChange={e => setEditName(e.target.value)}
+              placeholder="Full Name *"
+              className="sm:col-span-2 text-sm"
+            />
+            {/* Branch dropdown */}
+            <Select value={editBranch} onValueChange={setEditBranch}>
+              <SelectTrigger className="text-xs h-9">
+                <SelectValue placeholder="Branch" />
+              </SelectTrigger>
+              <SelectContent>
+                {ALL_BRANCHES.map(b => (
+                  <SelectItem key={b.code} value={b.code} className="text-xs">
+                    {b.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+
+            {/* Passout Year dropdown (2021 to 2040) */}
+            <Select value={editBatch} onValueChange={setEditBatch}>
+              <SelectTrigger className="text-xs h-9">
+                <SelectValue placeholder="Passout Year" />
+              </SelectTrigger>
+              <SelectContent>
+                {BATCH_OPTIONS.map(opt => (
+                  <SelectItem key={opt.value} value={opt.value} className="text-xs">
+                    {opt.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+            <div>
+              <Label className="text-[10px] text-muted-foreground">Coins / PDF Count (min 0)</Label>
+              <Input
+                type="number"
+                min="0"
+                value={editCoins}
+                onKeyDown={e => { if (e.key === '-' || e.key === 'e' || e.key === '+') e.preventDefault(); }}
+                onChange={e => setEditCoins(Math.max(0, parseInt(e.target.value) || 0).toString())}
+                placeholder="Coins (notes count)"
+                className="text-xs h-9"
+              />
             </div>
-            <div className="grid grid-cols-2 gap-2">
-              <Input type="number" value={editCoins} onChange={e => setEditCoins(e.target.value)} placeholder="Coins" />
-              <Input value={editLinkedin} onChange={e => setEditLinkedin(e.target.value)} placeholder="LinkedIn URL (optional)" />
-            </div>
-            <Input value={editImage} onChange={e => setEditImage(e.target.value)} placeholder="Image path/URL (optional, e.g. /Devanshi.png)" />
-            <div className="flex gap-2">
-              <Button size="sm" onClick={handleSave} disabled={saving || !editName.trim()}
-                style={{ background: 'hsl(var(--primary))' }} className="text-white">
-                {saving ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : 'Save Changes'}
-              </Button>
-              <Button size="sm" variant="outline" onClick={() => { setEditing(false); setEditName(contributor.name); setEditBranch(contributor.branch); setEditBatch(contributor.batch); setEditCoins(String(contributor.coins)); setEditLinkedin(contributor.linkedin_url || ''); setEditImage(contributor.image_url || ''); }}>
-                Cancel
-              </Button>
+            <div className="sm:col-span-2">
+              <Label className="text-[10px] text-muted-foreground">LinkedIn URL (optional)</Label>
+              <Input
+                value={editLinkedin}
+                onChange={e => setEditLinkedin(e.target.value)}
+                placeholder="https://linkedin.com/in/..."
+                className="text-xs h-9"
+              />
             </div>
           </div>
-        ) : (
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full flex items-center justify-center text-lg font-bold bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 flex-shrink-0">
+          <div>
+            <Label className="text-[10px] text-muted-foreground">Image URL / Path (optional, e.g. /Devanshi.png)</Label>
+            <Input
+              value={editImage}
+              onChange={e => setEditImage(e.target.value)}
+              placeholder="e.g. /Devanshi.png or https://..."
+              className="text-xs h-9"
+            />
+          </div>
+          <div className="flex gap-2 justify-end pt-1">
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => {
+                setEditing(false);
+                setEditName(contributor.name);
+                setEditBranch(contributor.branch);
+                setEditBatch(contributor.batch?.replace(/^'+/, '') || '28');
+                setEditCoins(String(Math.max(0, contributor.coins || 0)));
+                setEditLinkedin(contributor.linkedin_url || '');
+                setEditImage(contributor.image_url || '');
+              }}
+              className="h-8 text-xs font-medium"
+            >
+              Cancel
+            </Button>
+            <Button
+              size="sm"
+              onClick={handleSave}
+              disabled={saving || !editName.trim()}
+              className="h-8 text-xs font-bold bg-primary text-primary-foreground hover:bg-primary/90"
+            >
+              {saving ? <Loader2 className="h-3.5 w-3.5 animate-spin mr-1" /> : null}
+              Save Changes
+            </Button>
+          </div>
+        </div>
+      ) : (
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          {/* Left: Rank, Name, Details */}
+          <div className="flex items-center gap-3 min-w-0">
+            <div className="w-8 h-8 rounded-lg flex items-center justify-center text-sm font-bold bg-muted/80 text-foreground shrink-0 border border-border/50">
               {MEDAL[rank] || rank}
             </div>
-            <div className="flex-1 min-w-0">
+            <div className="min-w-0">
               <div className="flex items-center gap-2 flex-wrap">
-                <span className="font-semibold text-sm">{contributor.name}</span>
-                <Badge variant="outline" className="text-xs">{contributor.branch} {"'"}{contributor.batch} • HBTU</Badge>
-                <Badge className="text-xs bg-yellow-50 text-yellow-700 border-yellow-200 dark:bg-yellow-900/20 dark:text-yellow-400">
-                  <Coins className="h-3 w-3 mr-1" />{contributor.coins}
+                <span className="font-semibold text-sm text-foreground truncate">{contributor.name}</span>
+                <Badge variant="outline" className="text-[11px] font-semibold bg-muted/50 border-border px-2 py-0">
+                  {contributor.branch || 'Engg'} '{cleanBatchDisplay || '28'} • HBTU
+                </Badge>
+                <Badge className="text-[11px] bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 px-2 py-0 font-bold">
+                  <Coins className="h-3 w-3 mr-1 text-amber-500" />
+                  {contributor.coins || 0} PDFs
                 </Badge>
               </div>
-              <div className="flex items-center gap-3 mt-0.5 flex-wrap">
-                <span className="text-xs text-muted-foreground">Rank #{rank}</span>
+              <div className="flex items-center gap-3 mt-1 text-xs text-muted-foreground flex-wrap">
+                <span className="text-[11px]">Rank #{rank}</span>
                 {contributor.linkedin_url && (
-                  <a href={contributor.linkedin_url} target="_blank" rel="noopener noreferrer" className="text-xs text-blue-500 hover:underline flex items-center gap-1">
+                  <a
+                    href={contributor.linkedin_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[11px] text-blue-500 hover:text-blue-600 hover:underline flex items-center gap-1 font-medium"
+                  >
                     <Link className="h-3 w-3" /> LinkedIn
                   </a>
                 )}
-                {contributor.image_url && <span className="text-xs text-green-600">📷 Image set</span>}
+                {contributor.image_url && (
+                  <span className="text-[11px] text-emerald-600 dark:text-emerald-400 font-medium flex items-center gap-1">
+                    📷 Photo linked
+                  </span>
+                )}
               </div>
             </div>
-            <div className="flex gap-1 flex-shrink-0">
-              <Button variant="ghost" size="sm" className="text-primary hover:bg-primary/10 h-8 px-2" onClick={() => setEditing(true)}>
-                <Pencil className="h-3.5 w-3.5" />
-              </Button>
-              <Button variant="ghost" size="sm" className="text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 h-8 px-2" onClick={handleDelete}>
-                <Trash2 className="h-3.5 w-3.5" />
-              </Button>
-            </div>
           </div>
-        )}
-      </CardContent>
-    </Card>
+
+          {/* Right: Actions (High contrast, clearly visible on hover and default) */}
+          <div className="flex items-center gap-2 shrink-0 self-end sm:self-center">
+            <Button
+              variant="outline"
+              size="sm"
+              className="h-8 px-2.5 text-xs font-semibold rounded-lg border border-blue-300 dark:border-blue-700 bg-blue-50/80 dark:bg-blue-950/40 text-blue-700 dark:text-blue-300 hover:bg-blue-600 hover:text-white dark:hover:bg-blue-600 dark:hover:text-white shadow-xs transition-colors flex items-center gap-1.5"
+              onClick={() => setEditing(true)}
+            >
+              <Pencil className="h-3.5 w-3.5" />
+              <span>Edit</span>
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              className="h-8 px-2.5 text-xs font-semibold rounded-lg border border-red-300 dark:border-red-700 bg-red-50/80 dark:bg-red-950/40 text-red-700 dark:text-red-300 hover:bg-red-600 hover:text-white dark:hover:bg-red-600 dark:hover:text-white shadow-xs transition-colors flex items-center gap-1.5"
+              onClick={handleDelete}
+            >
+              <Trash2 className="h-3.5 w-3.5" />
+              <span>Delete</span>
+            </Button>
+          </div>
+        </div>
+      )}
+    </div>
   );
 }
 
@@ -420,74 +578,115 @@ const isHBTUCollege = (name?: string | null): boolean => {
   return HBTU_PATTERNS.some(re => re.test(name));
 };
 
-const ITEMS_PER_PAGE = 10;
+const PREMIUM_ITEMS_PER_PAGE = 20;
 
 const PremiumSection = ({ title, icon: Icon, color, items, onRevoke, onRevokeAll, revokingId }: any) => {
   const [page, setPage] = useState(1);
-  const totalPages = Math.ceil(items.length / ITEMS_PER_PAGE);
-  const paginated = items.slice((page-1)*ITEMS_PER_PAGE, page*ITEMS_PER_PAGE);
+  const totalPages = Math.ceil(items.length / PREMIUM_ITEMS_PER_PAGE) || 1;
+  const paginated = items.slice((page - 1) * PREMIUM_ITEMS_PER_PAGE, page * PREMIUM_ITEMS_PER_PAGE);
   
   const planLabel = (plan: string) => ({'companies':'Companies Page','hr_emails':'HR Emails','resume':'Resume Guide','roadmaps':'Roadmap Guide','gate_study':'GATE Study'}[plan] || plan);
-  const planColor = (plan: string) => (plan === 'gate_study' ? 'bg-indigo-100 text-indigo-700 border-indigo-200' : plan === 'companies' ? 'bg-violet-100 text-violet-700 border-violet-200' : plan === 'hr_emails' ? 'bg-emerald-100 text-emerald-700 border-emerald-200' : plan === 'roadmaps' ? 'bg-sky-100 text-sky-700 border-sky-200' : 'bg-orange-100 text-orange-700 border-orange-200');
+  const planColor = (plan: string) => (plan === 'gate_study' ? 'bg-indigo-50 text-indigo-700 dark:bg-indigo-950/40 dark:text-indigo-300 border-indigo-200 dark:border-indigo-800' : plan === 'companies' ? 'bg-violet-50 text-violet-700 dark:bg-violet-950/40 dark:text-violet-300 border-violet-200 dark:border-violet-800' : plan === 'hr_emails' ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800' : plan === 'roadmaps' ? 'bg-sky-50 text-sky-700 dark:bg-sky-950/40 dark:text-sky-300 border-sky-200 dark:border-sky-800' : 'bg-orange-50 text-orange-700 dark:bg-orange-950/40 dark:text-orange-300 border-orange-200 dark:border-orange-800');
 
   return (
-    <Card className="gradient-card">
-      <CardHeader className="border-b pb-4">
-        <div className="flex items-center justify-between">
-          <CardTitle className="flex items-center gap-2 text-base font-bold">
-            <Icon className="h-4 w-4 text-primary" />
-            {title} <Badge variant="secondary">{items.length}</Badge>
+    <Card className="border border-border/80 shadow-md overflow-hidden bg-card">
+      <CardHeader className="border-b pb-3.5 pt-4 bg-muted/20">
+        <div className="flex items-center justify-between flex-wrap gap-2">
+          <CardTitle className="flex items-center gap-2.5 text-base font-bold text-foreground">
+            <div className="w-8 h-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center">
+              <Icon className="h-4 w-4" />
+            </div>
+            <span>{title}</span>
+            <Badge variant="secondary" className="font-bold text-xs">
+              {items.length} Total
+            </Badge>
           </CardTitle>
+          <span className="text-xs text-muted-foreground font-medium bg-background px-2.5 py-1 rounded-md border border-border">
+            {PREMIUM_ITEMS_PER_PAGE} per page
+          </span>
         </div>
       </CardHeader>
-      <CardContent className="pt-4">
+      <CardContent className="p-0">
         {items.length === 0 ? (
-          <div className="text-center py-8 text-muted-foreground">
-            <UserMinus className="h-10 w-10 mx-auto mb-2 opacity-30" />
+          <div className="text-center py-10 text-muted-foreground">
+            <UserMinus className="h-8 w-8 mx-auto mb-2 opacity-30" />
             <p className="text-sm">No users in this category.</p>
           </div>
         ) : (
-          <>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {paginated.map((item: any) => {
-                const fullName = `${item.first_name || ''} ${item.last_name || ''}`.trim() || 'Anonymous';
-                const isInBoth = item.purchases.some((p:any) => p.plan === 'gate_study') && item.purchases.some((p:any) => p.plan !== 'gate_study');
-                return (
-                  <div key={item.user_id} className={`relative p-4 rounded-xl border-l-4 feature-card flex flex-col justify-between gap-3 ${isInBoth ? 'border-l-yellow-400 bg-yellow-50/30' : 'border-l-slate-800 bg-card'}`}>
-                    {isInBoth && <span className="absolute top-2 right-4 text-[10px] font-bold text-yellow-700 bg-yellow-100 px-2 py-0.5 rounded-full border border-yellow-300">⭐ Both Plans</span>}
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <span className="font-semibold text-sm text-foreground">{fullName}</span>
-                        {item.branch && <Badge variant="outline" className="text-xs">{item.branch}</Badge>}
+          <div className="divide-y divide-border/60">
+            {paginated.map((item: any, idx: number) => {
+              const fullName = `${item.first_name || ''} ${item.last_name || ''}`.trim() || 'Anonymous Student';
+              const isInBoth = item.purchases.some((p: any) => p.plan === 'gate_study') && item.purchases.some((p: any) => p.plan !== 'gate_study');
+              const globalIndex = (page - 1) * PREMIUM_ITEMS_PER_PAGE + idx + 1;
+
+              return (
+                <div
+                  key={item.user_id}
+                  className="flex flex-col lg:flex-row lg:items-center justify-between p-3.5 sm:px-5 sm:py-3.5 hover:bg-sky-50/50 dark:hover:bg-sky-950/20 transition-colors text-xs gap-3 w-full"
+                >
+                  {/* Left: Index, User Info, Badges */}
+                  <div className="flex items-center gap-3 min-w-0 flex-1">
+                    <span className="w-7 text-muted-foreground font-mono text-[11px] shrink-0 text-right">
+                      #{globalIndex}
+                    </span>
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className="font-bold text-sm text-foreground truncate max-w-[200px] sm:max-w-xs">{fullName}</span>
+                        {item.branch && <Badge variant="outline" className="text-[11px] font-semibold">{item.branch}</Badge>}
+                        {isInBoth && (
+                          <span className="text-[10px] font-bold text-yellow-800 dark:text-yellow-300 bg-yellow-100 dark:bg-yellow-950/50 px-2 py-0.5 rounded-full border border-yellow-300 dark:border-yellow-700">
+                            ⭐ Both Plans
+                          </span>
+                        )}
                       </div>
-                      <p className="text-xs text-muted-foreground">{item.email}</p>
-                    </div>
-                    <div className="flex flex-wrap gap-2 items-center">
-                      {item.purchases.map((pur: any) => (
-                        <div key={pur.id} className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg border text-xs font-semibold ${planColor(pur.plan)}`}>
-                          <span>{planLabel(pur.plan)}</span>
-                          <span className="opacity-60">({pur.payment_status === 'free' ? `FREE` : `₹${(pur.amount_paid||0)/100}`})</span>
-                          <button onClick={() => onRevoke(item.user_id, pur.plan, fullName)} disabled={revokingId !== null} className="ml-1 text-red-500 hover:text-red-700 disabled:opacity-40"><Trash2 className="w-3 h-3" /></button>
-                        </div>
-                      ))}
-                      {item.purchases.length > 1 && <Button variant="destructive" size="sm" onClick={() => onRevokeAll(item.user_id, fullName)} disabled={revokingId !== null} className="h-7 text-xs"><Trash2 className="w-3 h-3 mr-1" />All</Button>}
+                      <p className="text-xs text-muted-foreground truncate font-mono mt-0.5">{item.email}</p>
                     </div>
                   </div>
-                );
-              })}
-            </div>
-            {totalPages > 1 && (
-              <div className="flex items-center justify-between mt-4 pt-4 border-t">
-                <span className="text-xs text-muted-foreground">Page {page} of {totalPages} ({items.length} total)</span>
-                <div className="flex gap-2">
-                  <Button variant="outline" size="sm" onClick={() => setPage(p => Math.max(1, p-1))} disabled={page === 1}>← Prev</Button>
-                  <Button variant="outline" size="sm" onClick={() => setPage(p => Math.min(totalPages, p+1))} disabled={page === totalPages}>Next →</Button>
+
+                  {/* Right: Packages badges + Revoke actions */}
+                  <div className="flex flex-wrap items-center gap-2 shrink-0 self-end lg:self-center">
+                    {item.purchases.map((pur: any) => (
+                      <div key={pur.id} className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-semibold shadow-2xs ${planColor(pur.plan)}`}>
+                        <span>{planLabel(pur.plan)}</span>
+                        <span className="opacity-70 text-[10px]">({pur.payment_status === 'free' ? 'FREE' : `₹${(pur.amount_paid||0)/100}`})</span>
+                        <button
+                          onClick={() => onRevoke(item.user_id, pur.plan, fullName)}
+                          disabled={revokingId !== null}
+                          title={`Revoke ${planLabel(pur.plan)}`}
+                          className="ml-1 text-red-500 hover:text-red-700 dark:hover:text-red-400 p-0.5 rounded hover:bg-red-50 dark:hover:bg-red-950/50 transition-colors disabled:opacity-40"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    ))}
+                    {item.purchases.length > 1 && (
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        onClick={() => onRevokeAll(item.user_id, fullName)}
+                        disabled={revokingId !== null}
+                        className="h-7 text-xs font-semibold px-2.5 shadow-xs"
+                      >
+                        <Trash2 className="w-3 h-3 mr-1" />
+                        Revoke All
+                      </Button>
+                    )}
+                  </div>
                 </div>
-              </div>
-            )}
-          </>
+              );
+            })}
+          </div>
         )}
       </CardContent>
+      {totalPages > 1 && (
+        <div className="flex items-center justify-between p-3.5 border-t border-border/80 bg-muted/10 text-xs">
+          <span className="text-muted-foreground font-medium">Page {page} of {totalPages} ({items.length} total)</span>
+          <div className="flex gap-2">
+            <Button variant="outline" size="sm" onClick={() => setPage(p => Math.max(1, p-1))} disabled={page === 1} className="h-7 text-xs">← Prev</Button>
+            <Button variant="outline" size="sm" onClick={() => setPage(p => Math.min(totalPages, p+1))} disabled={page === totalPages} className="h-7 text-xs">Next →</Button>
+          </div>
+        </div>
+      )}
     </Card>
   );
 };
@@ -688,9 +887,10 @@ const OwnerDashboard = () => {
   const [allSwiping, setAllSwiping] = useState(false);
 
   // Clickable Modal Section view state (default null so no section is expanded on page load)
-  const [activeModalSection, setActiveModalSection] = useState<'pending' | 'scholarships' | 'premium' | 'notifications' | 'contributors' | 'admins' | 'emails' | 'all' | 'account_approvals' | null>(null);
+  const [activeModalSection, setActiveModalSection] = useState<'pending' | 'scholarships' | 'premium' | 'notifications' | 'contributors' | 'admins' | 'emails' | 'all' | 'account_approvals' | 'gate_requests' | null>(null);
   const [pendingApprovals, setPendingApprovals] = useState<any[]>([]);
   const [isProcessingApproval, setIsProcessingApproval] = useState<string | null>(null);
+  const [contribSearch, setContribSearch] = useState('');
 
   // ─── Computed variables (must be before useEffect hooks) ─────────────────────
   
@@ -728,6 +928,21 @@ const OwnerDashboard = () => {
       m.user_email.toLowerCase().includes(searchQuery.toLowerCase());
     return matchesFilter && matchesSearch;
   });
+
+  const filteredContributors = useMemo(() => {
+    if (!contribSearch.trim()) return contributors;
+    const q = contribSearch.toLowerCase().trim();
+    return contributors.filter(c =>
+      (c.name && c.name.toLowerCase().includes(q)) ||
+      (c.branch && c.branch.toLowerCase().includes(q)) ||
+      (c.batch && c.batch.includes(q))
+    );
+  }, [contributors, contribSearch]);
+
+  const totalContribPages = Math.max(1, Math.ceil(filteredContributors.length / 50));
+  const currentContribs = useMemo(() => {
+    return filteredContributors.slice((contribPage - 1) * 50, contribPage * 50);
+  }, [filteredContributors, contribPage]);
 
 
   // Group premium purchases by user
@@ -1410,20 +1625,28 @@ const OwnerDashboard = () => {
       toast({ title: 'Missing fields', description: 'Name, Branch and Batch are required.', variant: 'destructive' });
       return;
     }
+    const cleanCoins = Math.max(0, parseInt(newContrib.coins) || 0);
+    const cleanBatch = newContrib.batch.trim().replace(/^'+/, '');
+
     setIsAddingContrib(true);
     try {
       const { error } = await (supabase as any).from('contributors').insert({
         name: newContrib.name.trim(),
         role: 'Contributor',
         branch: newContrib.branch.trim(),
-        batch: newContrib.batch.trim(),
-        coins: Math.max(0, parseInt(newContrib.coins) || 0),
+        batch: cleanBatch,
+        coins: cleanCoins,
         linkedin_url: newContrib.linkedin_url.trim() || null,
         image_url: newContrib.image_url.trim() || null,
       });
       if (error) throw error;
-      toast({ title: 'Contributor added ✅', description: `${newContrib.name} added and auto-ranked by coins.` });
+      toast({ title: 'Contributor added ✅', description: `${newContrib.name} added and ranked with ${cleanCoins} PDFs/coins.` });
       setNewContrib({ name: '', branch: '', batch: '', coins: '', linkedin_url: '', image_url: '' });
+      clearCachePrefix('contributors');
+      removeCachedData('contributors_list');
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new Event('studyhub_contributors_updated'));
+      }
       fetchContributors();
     } catch (err: any) {
       toast({ title: 'Error', description: err.message, variant: 'destructive' });
@@ -1461,8 +1684,11 @@ const OwnerDashboard = () => {
     const { data, error } = await supabase
       .from('admin_roles')
       .select('*')
+      .neq('role', 'removed')
       .order('created_at', { ascending: false });
-    if (!error) setAdminRoles(data || []);
+    if (!error && data) {
+      setAdminRoles(data.filter((r: any) => r.role !== 'removed'));
+    }
   };
 
   const handleApproval = async (noteId: string, newStatus: 'approved' | 'rejected') => {
@@ -1483,13 +1709,19 @@ const OwnerDashboard = () => {
       if (newStatus === 'approved') {
         const approvedNote = pendingMaterials.find(m => m.id === noteId) || allMaterials.find(m => m.id === noteId);
         if (approvedNote) {
-          syncContributorCount({
+          const syncRes = await syncContributorCount({
             name: approvedNote.user_name || approvedNote.uploaded_by,
             email: approvedNote.user_email,
             count: 1,
-            branch: approvedNote.semester,
-            batch: approvedNote.year,
+            branch: approvedNote.semester?.split('-')[0] || 'Engineering',
+            batch: approvedNote.year || '28',
           });
+          if (syncRes?.isNew) {
+            toast({
+              title: `🎉 Welcome ${syncRes.name} to Contributors!`,
+              description: `Added to Wall of Contributors with 1 PDF contribution!`
+            });
+          }
         }
       }
 
@@ -1597,19 +1829,71 @@ const OwnerDashboard = () => {
   };
 
   const handleRemoveAdmin = async (roleId: string, email: string) => {
-    if (email === user?.email) {
-      toast({ title: 'Cannot remove', description: "You can't remove your own role.", variant: 'destructive' });
+    const cleanEmail = email.trim().toLowerCase();
+    if (cleanEmail === user?.email?.toLowerCase() || cleanEmail === 'priyalkumar06@gmail.com') {
+      toast({ title: 'Cannot remove', description: "Owner cannot remove their own role.", variant: 'destructive' });
       return;
     }
-    if (!confirm(`Remove admin privileges from ${email}?`)) return;
+    if (!confirm(`Are you sure you want to remove admin privileges from ${email}?`)) return;
+
+    // 1. Optimistic UI update immediately
+    setAdminRoles(prev => prev.filter(r => r.id !== roleId && r.user_email?.toLowerCase() !== cleanEmail));
 
     try {
-      const { error } = await supabase.from('admin_roles').delete().eq('id', roleId);
-      if (error) throw error;
-      toast({ title: 'Admin removed', description: `${email} is no longer an admin.` });
-      fetchAdminRoles();
+      // 2. Try RPC first (runs with SECURITY DEFINER privileges)
+      let removedViaRpc = false;
+      try {
+        const { error: rpcErr } = await (supabase as any).rpc('remove_admin_role', {
+          p_role_id: roleId,
+          p_email: cleanEmail
+        });
+        if (!rpcErr) {
+          removedViaRpc = true;
+        }
+      } catch (rpcEx) {}
+
+      // 3. Direct DELETE attempt
+      let directDeleted = false;
+      if (!removedViaRpc) {
+        const { error: delErr, count } = await (supabase as any)
+          .from('admin_roles')
+          .delete({ count: 'exact' })
+          .eq('id', roleId);
+        
+        if (!delErr && count !== null && count > 0) {
+          directDeleted = true;
+        }
+      }
+
+      // 4. Robust fallback: UPDATE role = 'removed' if delete is blocked by RLS
+      if (!removedViaRpc && !directDeleted) {
+        const { error: updateErr } = await (supabase as any)
+          .from('admin_roles')
+          .update({
+            role: 'removed',
+            to_date: new Date().toISOString().split('T')[0]
+          })
+          .eq('id', roleId);
+
+        if (updateErr) {
+          console.warn('Admin removal update fallback warning:', updateErr);
+        }
+      }
+
+      // 5. Invalidate client caches
+      removeCachedData(`role_${cleanEmail}`);
+      removeCachedData('contributors_admins');
+      clearCachePrefix('contributors');
+
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new Event('studyhub_contributors_updated'));
+      }
+
+      toast({ title: 'Admin removed ✅', description: `${email} has been removed from the admin team.` });
+      await fetchAdminRoles();
     } catch (err: any) {
-      toast({ title: 'Error', description: err.message, variant: 'destructive' });
+      toast({ title: 'Error removing admin', description: err.message, variant: 'destructive' });
+      await fetchAdminRoles();
     }
   };
 
@@ -1688,69 +1972,53 @@ const OwnerDashboard = () => {
           {/* Quick Metrics stats grid */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
             {/* 1. Total Students */}
-            <Card className={`border shadow-sm transition-all duration-300 backdrop-blur-md ${
-              isDark 
-                ? 'border-indigo-500/20 bg-slate-900/60 text-slate-100' 
-                : 'border-indigo-500/30 bg-white/70 text-slate-900 shadow-sm'
-            }`}>
-              <CardContent className="p-4 flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-indigo-500/10 flex items-center justify-center text-indigo-505 shrink-0 border border-indigo-500/20">
+            <Card className="border border-border/70 bg-card/85 backdrop-blur-md rounded-2xl shadow-xs hover:shadow-md transition-all duration-200">
+              <CardContent className="p-4 flex items-center gap-3.5">
+                <div className="w-11 h-11 rounded-xl bg-indigo-500/10 flex items-center justify-center text-indigo-600 dark:text-indigo-400 shrink-0 border border-indigo-500/20">
                   <User className="h-5 w-5" />
                 </div>
                 <div>
-                  <p className="text-2xl font-bold">{totalStudentsCount}</p>
-                  <p className="text-[9px] text-indigo-500 uppercase tracking-widest font-bold font-semibold">Total Students</p>
+                  <p className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">{totalStudentsCount}</p>
+                  <p className="text-[10px] text-muted-foreground uppercase tracking-wider font-bold">Total Students</p>
                 </div>
               </CardContent>
             </Card>
 
             {/* 2. Total Materials */}
-            <Card className={`border shadow-sm transition-all duration-300 backdrop-blur-md ${
-              isDark 
-                ? 'border-cyan-500/20 bg-slate-900/60 text-slate-100' 
-                : 'border-cyan-500/30 bg-white/70 text-slate-900 shadow-sm'
-            }`}>
-              <CardContent className="p-4 flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-cyan-500/10 flex items-center justify-center text-cyan-500 shrink-0 border border-cyan-500/20">
+            <Card className="border border-border/70 bg-card/85 backdrop-blur-md rounded-2xl shadow-xs hover:shadow-md transition-all duration-200">
+              <CardContent className="p-4 flex items-center gap-3.5">
+                <div className="w-11 h-11 rounded-xl bg-cyan-500/10 flex items-center justify-center text-cyan-600 dark:text-cyan-400 shrink-0 border border-cyan-500/20">
                   <FileText className="h-5 w-5" />
                 </div>
                 <div>
-                  <p className="text-2xl font-bold">{allMaterials.length}</p>
-                  <p className="text-[9px] text-cyan-500 uppercase tracking-widest font-bold font-semibold">Total Materials</p>
+                  <p className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">{allMaterials.length}</p>
+                  <p className="text-[10px] text-muted-foreground uppercase tracking-wider font-bold">Total Materials</p>
                 </div>
               </CardContent>
             </Card>
 
             {/* 3. GATE Enrolled */}
-            <Card className={`border shadow-sm transition-all duration-300 backdrop-blur-md ${
-              isDark 
-                ? 'border-sky-500/20 bg-slate-900/60 text-slate-100' 
-                : 'border-sky-500/30 bg-white/70 text-slate-900 shadow-sm'
-            }`}>
-              <CardContent className="p-4 flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-sky-500/10 flex items-center justify-center text-sky-500 shrink-0 border border-sky-500/20">
+            <Card className="border border-border/70 bg-card/85 backdrop-blur-md rounded-2xl shadow-xs hover:shadow-md transition-all duration-200">
+              <CardContent className="p-4 flex items-center gap-3.5">
+                <div className="w-11 h-11 rounded-xl bg-sky-500/10 flex items-center justify-center text-sky-600 dark:text-sky-400 shrink-0 border border-sky-500/20">
                   <GraduationCap className="h-5 w-5" />
                 </div>
                 <div>
-                  <p className="text-2xl font-bold">{gateEnrolledCount}</p>
-                  <p className="text-[9px] text-sky-500 uppercase tracking-widest font-bold font-semibold">GATE Enrolled</p>
+                  <p className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">{gateEnrolledCount}</p>
+                  <p className="text-[10px] text-muted-foreground uppercase tracking-wider font-bold">GATE Enrolled</p>
                 </div>
               </CardContent>
             </Card>
 
             {/* 4. Premium Access */}
-            <Card className={`border shadow-sm transition-all duration-300 backdrop-blur-md ${
-              isDark 
-                ? 'border-purple-500/20 bg-slate-900/60 text-slate-100' 
-                : 'border-purple-500/30 bg-white/70 text-slate-900 shadow-sm'
-            }`}>
-              <CardContent className="p-4 flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center text-purple-500 shrink-0 border border-purple-500/20">
+            <Card className="border border-border/70 bg-card/85 backdrop-blur-md rounded-2xl shadow-xs hover:shadow-md transition-all duration-200">
+              <CardContent className="p-4 flex items-center gap-3.5">
+                <div className="w-11 h-11 rounded-xl bg-purple-500/10 flex items-center justify-center text-purple-600 dark:text-purple-400 shrink-0 border border-purple-500/20">
                   <Lock className="h-5 w-5" />
                 </div>
                 <div>
-                  <p className="text-2xl font-bold">{premiumAccessCount}</p>
-                  <p className="text-[9px] text-purple-500 uppercase tracking-widest font-bold font-semibold">Premium Access</p>
+                  <p className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">{premiumAccessCount}</p>
+                  <p className="text-[10px] text-muted-foreground uppercase tracking-wider font-bold">Premium Access</p>
                 </div>
               </CardContent>
             </Card>
@@ -1888,210 +2156,220 @@ const OwnerDashboard = () => {
           </p>
         </div>
 
-        {/* 8 Clickable Dashboard Control Cards */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-          {/* 1. Pending Queue */}
+        {/* 10 Clickable Dashboard Control Cards */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3.5 mb-8">
+          {/* 1. Pending Notes */}
           <div 
             onClick={() => setActiveModalSection('pending')}
-            className={`cursor-pointer border shadow-sm transition-all duration-300 rounded-xl p-4 flex items-center gap-3 border-l-4 hover:scale-[1.02] ${
+            className={`group cursor-pointer rounded-2xl p-4 sm:p-5 flex flex-col justify-between transition-all duration-200 border shadow-xs hover:shadow-md hover:-translate-y-0.5 ${
               activeModalSection === 'pending'
-                ? isDark 
-                  ? 'bg-slate-900 border-amber-500 border-l-amber-500 text-white shadow-lg' 
-                  : 'bg-amber-50/50 border-amber-300 border-l-amber-500 text-amber-900 shadow-md'
-                : isDark 
-                  ? 'border-slate-800 bg-slate-900/60 border-l-amber-500 text-slate-100 hover:border-slate-700' 
-                  : 'border-slate-200 bg-white/70 border-l-amber-500 text-slate-900 hover:border-slate-350'
+                ? 'bg-sky-50 dark:bg-sky-950/40 border-sky-500 ring-2 ring-sky-500/30 text-foreground'
+                : 'bg-card border-border/80 hover:bg-sky-50/50 dark:hover:bg-sky-950/20 hover:border-sky-300 dark:hover:border-sky-700 text-foreground'
             }`}
           >
-            <div className="w-10 h-10 rounded-xl bg-amber-500/10 flex items-center justify-center text-amber-500 shrink-0 border border-amber-500/20">
-              <BookOpen className="h-5 w-5" />
+            <div className="flex items-center justify-between mb-3">
+              <div className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200/80 dark:border-slate-700/80 flex items-center justify-center group-hover:bg-sky-100/70 dark:group-hover:bg-sky-900/40 group-hover:text-sky-600 dark:group-hover:text-sky-400 group-hover:border-sky-300 dark:group-hover:border-sky-700 transition-colors">
+                <BookOpen className="h-5 w-5" />
+              </div>
+              {pendingMaterials.length > 0 && (
+                <Badge className="bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/30 text-[10px] px-2 py-0.5 font-bold rounded-full animate-pulse">
+                  {pendingMaterials.length} PENDING
+                </Badge>
+              )}
             </div>
             <div>
-              <p className="text-xl font-bold">{pendingMaterials.length}</p>
-              <p className="text-[10px] uppercase tracking-wider font-bold">Pending Queue</p>
+              <p className="text-2xl font-bold tracking-tight text-foreground">{pendingMaterials.length}</p>
+              <p className="text-[11px] text-muted-foreground uppercase tracking-wider font-semibold mt-0.5">Pending Notes</p>
             </div>
           </div>
 
-          {/* 2. Scholarships */}
+          {/* 2. Dedicated Pending GATE Access Requests Box */}
           <div 
-            onClick={() => setActiveModalSection('scholarships')}
-            className={`cursor-pointer border shadow-sm transition-all duration-300 rounded-xl p-4 flex items-center gap-3 border-l-4 hover:scale-[1.02] ${
-              activeModalSection === 'scholarships'
-                ? isDark 
-                  ? 'bg-slate-900 border-emerald-500 border-l-emerald-500 text-white shadow-lg' 
-                  : 'bg-emerald-50/50 border-emerald-300 border-l-emerald-500 text-emerald-900 shadow-md'
-                : isDark 
-                  ? 'border-slate-800 bg-slate-900/60 border-l-emerald-500 text-slate-100 hover:border-slate-700' 
-                  : 'border-slate-200 bg-white/70 border-l-emerald-500 text-slate-900 hover:border-slate-350'
+            onClick={() => setActiveModalSection('gate_requests')}
+            className={`group cursor-pointer rounded-2xl p-4 sm:p-5 flex flex-col justify-between transition-all duration-200 border shadow-xs hover:shadow-md hover:-translate-y-0.5 ${
+              activeModalSection === 'gate_requests'
+                ? 'bg-sky-50 dark:bg-sky-950/40 border-sky-500 ring-2 ring-sky-500/30 text-foreground'
+                : 'bg-card border-border/80 hover:bg-sky-50/50 dark:hover:bg-sky-950/20 hover:border-sky-300 dark:hover:border-sky-700 text-foreground'
             }`}
           >
-            <div className="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-500 shrink-0 border border-emerald-500/20">
-              <GraduationCap className="h-5 w-5" />
+            <div className="flex items-center justify-between mb-3">
+              <div className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200/80 dark:border-slate-700/80 flex items-center justify-center group-hover:bg-sky-100/70 dark:group-hover:bg-sky-900/40 group-hover:text-sky-600 dark:group-hover:text-sky-400 group-hover:border-sky-300 dark:group-hover:border-sky-700 transition-colors">
+                <GraduationCap className="h-5 w-5" />
+              </div>
+              {pendingGateRequests.length > 0 && (
+                <Badge className="bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/30 text-[10px] px-2 py-0.5 font-bold rounded-full animate-pulse">
+                  {pendingGateRequests.length} NEW
+                </Badge>
+              )}
             </div>
             <div>
-              <p className="text-xl font-bold">{scholarships.length}</p>
-              <p className="text-[10px] uppercase tracking-wider font-bold">Scholarships</p>
+              <p className="text-2xl font-bold tracking-tight text-foreground">{pendingGateRequests.length}</p>
+              <p className="text-[11px] text-muted-foreground uppercase tracking-wider font-semibold mt-0.5">GATE Requests</p>
             </div>
           </div>
 
-          {/* 3. Premium Access */}
-          <div 
-            onClick={() => setActiveModalSection('premium')}
-            className={`cursor-pointer border shadow-sm transition-all duration-300 rounded-xl p-4 flex items-center gap-3 border-l-4 hover:scale-[1.02] ${
-              activeModalSection === 'premium'
-                ? isDark 
-                  ? 'bg-slate-900 border-purple-500 border-l-purple-500 text-white shadow-lg' 
-                  : 'bg-purple-50/50 border-purple-300 border-l-purple-500 text-purple-900 shadow-md'
-                : isDark 
-                  ? 'border-slate-800 bg-slate-900/60 border-l-purple-500 text-slate-100 hover:border-slate-700' 
-                  : 'border-slate-200 bg-white/70 border-l-purple-500 text-slate-900 hover:border-slate-350'
-            }`}
-          >
-            <div className="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center text-purple-500 shrink-0 border border-purple-500/20">
-              <Lock className="h-5 w-5" />
-            </div>
-            <div>
-              <p className="text-xl font-bold">{premiumAccessCount}</p>
-              <p className="text-[10px] uppercase tracking-wider font-bold">Premium Access</p>
-            </div>
-          </div>
-
-          {/* 4. Notifications */}
-          <div 
-            onClick={() => setActiveModalSection('notifications')}
-            className={`cursor-pointer border shadow-sm transition-all duration-300 rounded-xl p-4 flex items-center gap-3 border-l-4 hover:scale-[1.02] ${
-              activeModalSection === 'notifications'
-                ? isDark 
-                  ? 'bg-slate-900 border-sky-500 border-l-sky-500 text-white shadow-lg' 
-                  : 'bg-sky-50/50 border-sky-300 border-l-sky-500 text-sky-900 shadow-md'
-                : isDark 
-                  ? 'border-slate-800 bg-slate-900/60 border-l-sky-500 text-slate-100 hover:border-slate-700' 
-                  : 'border-slate-200 bg-white/70 border-l-sky-500 text-slate-900 hover:border-slate-350'
-            }`}
-          >
-            <div className="w-10 h-10 rounded-xl bg-sky-500/10 flex items-center justify-center text-sky-500 shrink-0 border border-sky-500/20">
-              <Bell className="h-5 w-5" />
-            </div>
-            <div>
-              <p className="text-xl font-bold">{notifications.length}</p>
-              <p className="text-[10px] uppercase tracking-wider font-bold">Notifications</p>
-            </div>
-          </div>
-
-          {/* 5. Contributors */}
-          <div 
-            onClick={() => setActiveModalSection('contributors')}
-            className={`cursor-pointer border shadow-sm transition-all duration-300 rounded-xl p-4 flex items-center gap-3 border-l-4 hover:scale-[1.02] ${
-              activeModalSection === 'contributors'
-                ? isDark 
-                  ? 'bg-slate-900 border-rose-500 border-l-rose-500 text-white shadow-lg' 
-                  : 'bg-rose-50/50 border-rose-300 border-l-rose-500 text-rose-900 shadow-md'
-                : isDark 
-                  ? 'border-slate-800 bg-slate-900/60 border-l-rose-500 text-slate-100 hover:border-slate-700' 
-                  : 'border-slate-200 bg-white/70 border-l-rose-500 text-slate-900 hover:border-slate-350'
-            }`}
-          >
-            <div className="w-10 h-10 rounded-xl bg-rose-500/10 flex items-center justify-center text-rose-500 shrink-0 border border-rose-500/20">
-              <Trophy className="h-5 w-5" />
-            </div>
-            <div>
-              <p className="text-xl font-bold">{contributors.length}</p>
-              <p className="text-[10px] uppercase tracking-wider font-bold">Contributors</p>
-            </div>
-          </div>
-
-          {/* 6. Admins */}
-          <div 
-            onClick={() => setActiveModalSection('admins')}
-            className={`cursor-pointer border shadow-sm transition-all duration-300 rounded-xl p-4 flex items-center gap-3 border-l-4 hover:scale-[1.02] ${
-              activeModalSection === 'admins'
-                ? isDark 
-                  ? 'bg-slate-900 border-indigo-500 border-l-indigo-500 text-white shadow-lg' 
-                  : 'bg-indigo-50/50 border-indigo-300 border-l-indigo-500 text-indigo-900 shadow-md'
-                : isDark 
-                  ? 'border-slate-800 bg-slate-900/60 border-l-indigo-500 text-slate-100 hover:border-slate-700' 
-                  : 'border-slate-200 bg-white/70 border-l-indigo-500 text-slate-900 hover:border-slate-350'
-            }`}
-          >
-            <div className="w-10 h-10 rounded-xl bg-indigo-500/10 flex items-center justify-center text-indigo-505 shrink-0 border border-indigo-500/20">
-              <Crown className="h-5 w-5" />
-            </div>
-            <div>
-              <p className="text-xl font-bold">{adminRoles.length}</p>
-              <p className="text-[10px] uppercase tracking-wider font-bold">Admins</p>
-            </div>
-          </div>
-
-          {/* 7. Mass Emails */}
-          <div 
-            onClick={() => setActiveModalSection('emails')}
-            className={`cursor-pointer border shadow-sm transition-all duration-300 rounded-xl p-4 flex items-center gap-3 border-l-4 hover:scale-[1.02] ${
-              activeModalSection === 'emails'
-                ? isDark 
-                  ? 'bg-slate-900 border-pink-500 border-l-pink-500 text-white shadow-lg' 
-                  : 'bg-pink-50/50 border-pink-300 border-l-pink-500 text-pink-900 shadow-md'
-                : isDark 
-                  ? 'border-slate-800 bg-slate-900/60 border-l-pink-500 text-slate-100 hover:border-slate-700' 
-                  : 'border-slate-200 bg-white/70 border-l-pink-500 text-slate-900 hover:border-slate-350'
-            }`}
-          >
-            <div className="w-10 h-10 rounded-xl bg-pink-500/10 flex items-center justify-center text-pink-500 shrink-0 border border-pink-500/20">
-              <Send className="h-5 w-5" />
-            </div>
-            <div>
-              <p className="text-xl font-bold">Emails</p>
-              <p className="text-[10px] uppercase tracking-wider font-bold">Mass Emails</p>
-            </div>
-          </div>
-
-          {/* 8. All Materials */}
-          <div 
-            onClick={() => setActiveModalSection('all')}
-            className={`cursor-pointer border shadow-sm transition-all duration-300 rounded-xl p-4 flex items-center gap-3 border-l-4 hover:scale-[1.02] ${
-              activeModalSection === 'all'
-                ? isDark 
-                  ? 'bg-slate-900 border-cyan-500 border-l-cyan-500 text-white shadow-lg' 
-                  : 'bg-cyan-50/50 border-cyan-300 border-l-cyan-500 text-cyan-900 shadow-md'
-                : isDark 
-                  ? 'border-slate-800 bg-slate-900/60 border-l-cyan-500 text-slate-100 hover:border-slate-700' 
-                  : 'border-slate-200 bg-white/70 border-l-cyan-500 text-slate-900 hover:border-slate-350'
-            }`}
-          >
-            <div className="w-10 h-10 rounded-xl bg-cyan-500/10 flex items-center justify-center text-cyan-500 shrink-0 border border-cyan-500/20">
-              <FileText className="h-5 w-5" />
-            </div>
-            <div>
-              <p className="text-xl font-bold">{allMaterials.length}</p>
-              <p className="text-[10px] uppercase tracking-wider font-bold">All Materials</p>
-            </div>
-          </div>
-
-          {/* 9. Account Approvals */}
+          {/* 3. Account Approvals */}
           <div 
             onClick={() => setActiveModalSection('account_approvals')}
-            className={`cursor-pointer border shadow-sm transition-all duration-300 rounded-xl p-4 flex items-center gap-3 border-l-4 hover:scale-[1.02] ${
+            className={`group cursor-pointer rounded-2xl p-4 sm:p-5 flex flex-col justify-between transition-all duration-200 border shadow-xs hover:shadow-md hover:-translate-y-0.5 ${
               activeModalSection === 'account_approvals'
-                ? isDark 
-                  ? 'bg-slate-900 border-amber-500 border-l-amber-500 text-white shadow-lg' 
-                  : 'bg-amber-50/50 border-amber-300 border-l-amber-500 text-amber-900 shadow-md'
-                : isDark 
-                  ? 'border-slate-800 bg-slate-900/60 border-l-amber-500 text-slate-100 hover:border-slate-700' 
-                  : 'border-slate-200 bg-white/70 border-l-amber-500 text-slate-900 hover:border-slate-350'
+                ? 'bg-sky-50 dark:bg-sky-950/40 border-sky-500 ring-2 ring-sky-500/30 text-foreground'
+                : 'bg-card border-border/80 hover:bg-sky-50/50 dark:hover:bg-sky-950/20 hover:border-sky-300 dark:hover:border-sky-700 text-foreground'
             }`}
           >
-            <div className="w-10 h-10 rounded-xl bg-amber-500/10 flex items-center justify-center text-amber-500 shrink-0 border border-amber-500/20">
-              <Clock className="h-5 w-5" />
+            <div className="flex items-center justify-between mb-3">
+              <div className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200/80 dark:border-slate-700/80 flex items-center justify-center group-hover:bg-sky-100/70 dark:group-hover:bg-sky-900/40 group-hover:text-sky-600 dark:group-hover:text-sky-400 group-hover:border-sky-300 dark:group-hover:border-sky-700 transition-colors">
+                <Clock className="h-5 w-5" />
+              </div>
+              {pendingApprovals.length > 0 && (
+                <Badge className="bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/30 text-[10px] px-2 py-0.5 font-bold rounded-full animate-pulse">
+                  {pendingApprovals.length} PENDING
+                </Badge>
+              )}
             </div>
             <div>
-              <div className="flex items-center gap-2">
-                <p className="text-xl font-bold">{pendingApprovals.length}</p>
-                {pendingApprovals.length > 0 && (
-                  <Badge className="bg-amber-500 hover:bg-amber-600 text-white text-[10px] px-1.5 py-0 font-bold animate-pulse">
-                    PENDING
-                  </Badge>
-                )}
+              <p className="text-2xl font-bold tracking-tight text-foreground">{pendingApprovals.length}</p>
+              <p className="text-[11px] text-muted-foreground uppercase tracking-wider font-semibold mt-0.5">Account Approvals</p>
+            </div>
+          </div>
+
+          {/* 4. Contributors */}
+          <div 
+            onClick={() => setActiveModalSection('contributors')}
+            className={`group cursor-pointer rounded-2xl p-4 sm:p-5 flex flex-col justify-between transition-all duration-200 border shadow-xs hover:shadow-md hover:-translate-y-0.5 ${
+              activeModalSection === 'contributors'
+                ? 'bg-sky-50 dark:bg-sky-950/40 border-sky-500 ring-2 ring-sky-500/30 text-foreground'
+                : 'bg-card border-border/80 hover:bg-sky-50/50 dark:hover:bg-sky-950/20 hover:border-sky-300 dark:hover:border-sky-700 text-foreground'
+            }`}
+          >
+            <div className="flex items-center justify-between mb-3">
+              <div className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200/80 dark:border-slate-700/80 flex items-center justify-center group-hover:bg-sky-100/70 dark:group-hover:bg-sky-900/40 group-hover:text-sky-600 dark:group-hover:text-sky-400 group-hover:border-sky-300 dark:group-hover:border-sky-700 transition-colors">
+                <Trophy className="h-5 w-5" />
               </div>
-              <p className="text-[10px] uppercase tracking-wider font-bold">Account Approvals</p>
+            </div>
+            <div>
+              <p className="text-2xl font-bold tracking-tight text-foreground">{contributors.length}</p>
+              <p className="text-[11px] text-muted-foreground uppercase tracking-wider font-semibold mt-0.5">Contributors</p>
+            </div>
+          </div>
+
+          {/* 5. Admins */}
+          <div 
+            onClick={() => setActiveModalSection('admins')}
+            className={`group cursor-pointer rounded-2xl p-4 sm:p-5 flex flex-col justify-between transition-all duration-200 border shadow-xs hover:shadow-md hover:-translate-y-0.5 ${
+              activeModalSection === 'admins'
+                ? 'bg-sky-50 dark:bg-sky-950/40 border-sky-500 ring-2 ring-sky-500/30 text-foreground'
+                : 'bg-card border-border/80 hover:bg-sky-50/50 dark:hover:bg-sky-950/20 hover:border-sky-300 dark:hover:border-sky-700 text-foreground'
+            }`}
+          >
+            <div className="flex items-center justify-between mb-3">
+              <div className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200/80 dark:border-slate-700/80 flex items-center justify-center group-hover:bg-sky-100/70 dark:group-hover:bg-sky-900/40 group-hover:text-sky-600 dark:group-hover:text-sky-400 group-hover:border-sky-300 dark:group-hover:border-sky-700 transition-colors">
+                <Crown className="h-5 w-5" />
+              </div>
+            </div>
+            <div>
+              <p className="text-2xl font-bold tracking-tight text-foreground">{adminRoles.length}</p>
+              <p className="text-[11px] text-muted-foreground uppercase tracking-wider font-semibold mt-0.5">Admin Team</p>
+            </div>
+          </div>
+
+          {/* 6. Premium Access */}
+          <div 
+            onClick={() => setActiveModalSection('premium')}
+            className={`group cursor-pointer rounded-2xl p-4 sm:p-5 flex flex-col justify-between transition-all duration-200 border shadow-xs hover:shadow-md hover:-translate-y-0.5 ${
+              activeModalSection === 'premium'
+                ? 'bg-sky-50 dark:bg-sky-950/40 border-sky-500 ring-2 ring-sky-500/30 text-foreground'
+                : 'bg-card border-border/80 hover:bg-sky-50/50 dark:hover:bg-sky-950/20 hover:border-sky-300 dark:hover:border-sky-700 text-foreground'
+            }`}
+          >
+            <div className="flex items-center justify-between mb-3">
+              <div className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200/80 dark:border-slate-700/80 flex items-center justify-center group-hover:bg-sky-100/70 dark:group-hover:bg-sky-900/40 group-hover:text-sky-600 dark:group-hover:text-sky-400 group-hover:border-sky-300 dark:group-hover:border-sky-700 transition-colors">
+                <Lock className="h-5 w-5" />
+              </div>
+            </div>
+            <div>
+              <p className="text-2xl font-bold tracking-tight text-foreground">{premiumAccessCount}</p>
+              <p className="text-[11px] text-muted-foreground uppercase tracking-wider font-semibold mt-0.5">Premium Access</p>
+            </div>
+          </div>
+
+          {/* 7. All Materials */}
+          <div 
+            onClick={() => setActiveModalSection('all')}
+            className={`group cursor-pointer rounded-2xl p-4 sm:p-5 flex flex-col justify-between transition-all duration-200 border shadow-xs hover:shadow-md hover:-translate-y-0.5 ${
+              activeModalSection === 'all'
+                ? 'bg-sky-50 dark:bg-sky-950/40 border-sky-500 ring-2 ring-sky-500/30 text-foreground'
+                : 'bg-card border-border/80 hover:bg-sky-50/50 dark:hover:bg-sky-950/20 hover:border-sky-300 dark:hover:border-sky-700 text-foreground'
+            }`}
+          >
+            <div className="flex items-center justify-between mb-3">
+              <div className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200/80 dark:border-slate-700/80 flex items-center justify-center group-hover:bg-sky-100/70 dark:group-hover:bg-sky-900/40 group-hover:text-sky-600 dark:group-hover:text-sky-400 group-hover:border-sky-300 dark:group-hover:border-sky-700 transition-colors">
+                <FileText className="h-5 w-5" />
+              </div>
+            </div>
+            <div>
+              <p className="text-2xl font-bold tracking-tight text-foreground">{allMaterials.length}</p>
+              <p className="text-[11px] text-muted-foreground uppercase tracking-wider font-semibold mt-0.5">All Materials</p>
+            </div>
+          </div>
+
+          {/* 8. Scholarships */}
+          <div 
+            onClick={() => setActiveModalSection('scholarships')}
+            className={`group cursor-pointer rounded-2xl p-4 sm:p-5 flex flex-col justify-between transition-all duration-200 border shadow-xs hover:shadow-md hover:-translate-y-0.5 ${
+              activeModalSection === 'scholarships'
+                ? 'bg-sky-50 dark:bg-sky-950/40 border-sky-500 ring-2 ring-sky-500/30 text-foreground'
+                : 'bg-card border-border/80 hover:bg-sky-50/50 dark:hover:bg-sky-950/20 hover:border-sky-300 dark:hover:border-sky-700 text-foreground'
+            }`}
+          >
+            <div className="flex items-center justify-between mb-3">
+              <div className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200/80 dark:border-slate-700/80 flex items-center justify-center group-hover:bg-sky-100/70 dark:group-hover:bg-sky-900/40 group-hover:text-sky-600 dark:group-hover:text-sky-400 group-hover:border-sky-300 dark:group-hover:border-sky-700 transition-colors">
+                <GraduationCap className="h-5 w-5" />
+              </div>
+            </div>
+            <div>
+              <p className="text-2xl font-bold tracking-tight text-foreground">{scholarships.length}</p>
+              <p className="text-[11px] text-muted-foreground uppercase tracking-wider font-semibold mt-0.5">Scholarships</p>
+            </div>
+          </div>
+
+          {/* 9. Mass Emails */}
+          <div 
+            onClick={() => setActiveModalSection('emails')}
+            className={`group cursor-pointer rounded-2xl p-4 sm:p-5 flex flex-col justify-between transition-all duration-200 border shadow-xs hover:shadow-md hover:-translate-y-0.5 ${
+              activeModalSection === 'emails'
+                ? 'bg-sky-50 dark:bg-sky-950/40 border-sky-500 ring-2 ring-sky-500/30 text-foreground'
+                : 'bg-card border-border/80 hover:bg-sky-50/50 dark:hover:bg-sky-950/20 hover:border-sky-300 dark:hover:border-sky-700 text-foreground'
+            }`}
+          >
+            <div className="flex items-center justify-between mb-3">
+              <div className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200/80 dark:border-slate-700/80 flex items-center justify-center group-hover:bg-sky-100/70 dark:group-hover:bg-sky-900/40 group-hover:text-sky-600 dark:group-hover:text-sky-400 group-hover:border-sky-300 dark:group-hover:border-sky-700 transition-colors">
+                <Send className="h-5 w-5" />
+              </div>
+            </div>
+            <div>
+              <p className="text-2xl font-bold tracking-tight text-foreground">Emails</p>
+              <p className="text-[11px] text-muted-foreground uppercase tracking-wider font-semibold mt-0.5">Campaigns</p>
+            </div>
+          </div>
+
+          {/* 10. Notifications */}
+          <div 
+            onClick={() => setActiveModalSection('notifications')}
+            className={`group cursor-pointer rounded-2xl p-4 sm:p-5 flex flex-col justify-between transition-all duration-200 border shadow-xs hover:shadow-md hover:-translate-y-0.5 ${
+              activeModalSection === 'notifications'
+                ? 'bg-sky-50 dark:bg-sky-950/40 border-sky-500 ring-2 ring-sky-500/30 text-foreground'
+                : 'bg-card border-border/80 hover:bg-sky-50/50 dark:hover:bg-sky-950/20 hover:border-sky-300 dark:hover:border-sky-700 text-foreground'
+            }`}
+          >
+            <div className="flex items-center justify-between mb-3">
+              <div className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200/80 dark:border-slate-700/80 flex items-center justify-center group-hover:bg-sky-100/70 dark:group-hover:bg-sky-900/40 group-hover:text-sky-600 dark:group-hover:text-sky-400 group-hover:border-sky-300 dark:group-hover:border-sky-700 transition-colors">
+                <Bell className="h-5 w-5" />
+              </div>
+            </div>
+            <div>
+              <p className="text-2xl font-bold tracking-tight text-foreground">{notifications.length}</p>
+              <p className="text-[11px] text-muted-foreground uppercase tracking-wider font-semibold mt-0.5">Notifications</p>
             </div>
           </div>
         </div>
@@ -2393,98 +2671,6 @@ const OwnerDashboard = () => {
                 <Card className="gradient-card"><CardContent className="pt-4"><p className="text-xs text-muted-foreground uppercase font-semibold mb-1">Both Plans</p><p className="text-2xl font-bold">{filteredGroupedList.filter(i => i.purchases.some((p:any) => p.plan === 'gate_study') && i.purchases.some((p:any) => p.plan !== 'gate_study')).length}</p></CardContent></Card>
               </div>
 
-              {/* Pending GATE Access Requests */}
-              <Card className="border-2 border-amber-500/30 bg-amber-500/5">
-                <CardHeader className="pb-3">
-                  <div className="flex items-center justify-between">
-                    <CardTitle className="text-base sm:text-lg flex items-center gap-2 text-amber-700 dark:text-amber-400">
-                      <Clock className="h-5 w-5 text-amber-500" />
-                      Pending GATE Access Requests ({pendingGateRequests.length})
-                    </CardTitle>
-                    <Badge variant="outline" className="border-amber-500/40 text-amber-600 dark:text-amber-400 bg-amber-500/10">
-                      Requires Approval
-                    </Badge>
-                  </div>
-                  <CardDescription>
-                    Students who registered for GATE Study section and are waiting for verification.
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  {pendingGateRequests.length === 0 ? (
-                    <p className="text-sm text-muted-foreground py-3 text-center">
-                      No pending approval requests right now. All requests are cleared! 🎉
-                    </p>
-                  ) : (
-                    <div className="space-y-3">
-                      {pendingGateRequests.map((req: any) => {
-                        const fullName = [req.first_name, req.last_name].filter(Boolean).join(' ') || 'Student';
-                        const isProcessing = isApprovingGate === req.id;
-                        return (
-                          <div
-                            key={req.id}
-                            className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 rounded-lg border border-amber-500/20 bg-background/80 hover:bg-background transition-colors"
-                          >
-                            <div className="space-y-1">
-                              <div className="flex items-center gap-2 flex-wrap">
-                                <span className="font-semibold text-sm">{fullName}</span>
-                                <Badge variant="secondary" className="text-xs bg-indigo-50 text-indigo-700 dark:bg-indigo-950/40 dark:text-indigo-300 border-indigo-200">
-                                  GATE: {req.target_branch || req.branch || 'CSE'}
-                                </Badge>
-                                {req.college_branch && (
-                                  <Badge variant="outline" className="text-xs text-muted-foreground">
-                                    College: {req.college_branch}
-                                  </Badge>
-                                )}
-                                {req.college && (
-                                  <span className="text-xs text-muted-foreground">({req.college})</span>
-                                )}
-                              </div>
-                              <p className="text-xs text-muted-foreground">{req.email}</p>
-                              <p className="text-[11px] text-muted-foreground/80 flex items-center gap-1">
-                                <Calendar className="h-3 w-3" />
-                                Requested: {new Date(req.purchased_at).toLocaleString('en-IN', {
-                                  day: 'numeric',
-                                  month: 'short',
-                                  year: 'numeric',
-                                  hour: '2-digit',
-                                  minute: '2-digit'
-                                })}
-                              </p>
-                            </div>
-                            <div className="flex items-center gap-2 shrink-0">
-                              <Button
-                                size="sm"
-                                variant="default"
-                                className="bg-emerald-600 hover:bg-emerald-700 text-white gap-1.5 h-8 text-xs"
-                                disabled={isProcessing}
-                                onClick={() => handleApproveGateRequest(req.id, req.user_id, fullName)}
-                              >
-                                {isProcessing ? (
-                                  <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                                ) : (
-                                  <CheckCircle className="h-3.5 w-3.5" />
-                                )}
-                                Approve
-                              </Button>
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                className="border-red-500/30 text-red-600 hover:bg-red-500/10 dark:hover:bg-red-950/30 gap-1.5 h-8 text-xs"
-                                disabled={isProcessing}
-                                onClick={() => handleRejectGateRequest(req.id, req.user_id, fullName)}
-                              >
-                                <XCircle className="h-3.5 w-3.5" />
-                                Decline
-                              </Button>
-                            </div>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-
               {/* Premium Packages Section (Only shows users with premium package access, including mutual/both) */}
               <PremiumSection
                 title="Premium Packages Access"
@@ -2503,6 +2689,111 @@ const OwnerDashboard = () => {
                 revokingId={revokingId}
               />
             </TabsContent>
+
+          {/* TAB: Dedicated Pending GATE Access Requests */}
+          <TabsContent value="gate_requests" className="space-y-6">
+            <Card className="border border-border bg-card">
+              <CardHeader className="border-b pb-4">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                  <div>
+                    <CardTitle className="text-lg font-bold flex items-center gap-2 text-foreground">
+                      <GraduationCap className="h-5 w-5 text-indigo-500" />
+                      Pending GATE Access Requests ({pendingGateRequests.length})
+                    </CardTitle>
+                    <CardDescription className="text-xs text-muted-foreground mt-1">
+                      Students who submitted a request for GATE Study access and are awaiting verification.
+                    </CardDescription>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Badge variant="outline" className="border-amber-500/40 text-amber-600 dark:text-amber-400 bg-amber-500/10 px-2.5 py-1">
+                      {pendingGateRequests.length} Pending
+                    </Badge>
+                    <Button variant="outline" size="sm" onClick={fetchPremiumPurchases} className="h-8 text-xs">
+                      Refresh
+                    </Button>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent className="pt-4">
+                {pendingGateRequests.length === 0 ? (
+                  <div className="text-center py-12">
+                    <CheckCircle className="h-12 w-12 text-emerald-500 mx-auto mb-3" />
+                    <p className="text-base font-bold text-foreground">All Clear!</p>
+                    <p className="text-xs text-muted-foreground mt-1">No pending GATE approval requests right now. All requests are processed! 🎉</p>
+                  </div>
+                ) : (
+                  <div className="space-y-3">
+                    {pendingGateRequests.map((req: any) => {
+                      const fullName = [req.first_name, req.last_name].filter(Boolean).join(' ') || 'Student';
+                      const isProcessing = isApprovingGate === req.id;
+                      return (
+                        <div
+                          key={req.id}
+                          className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 rounded-xl border border-border/80 bg-background/70 hover:bg-background transition-all shadow-xs"
+                        >
+                          <div className="space-y-1.5">
+                            <div className="flex items-center gap-2 flex-wrap">
+                              <span className="font-bold text-sm text-foreground">{fullName}</span>
+                              <Badge variant="secondary" className="text-xs font-semibold bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20">
+                                GATE Target: {req.target_branch || req.branch || 'CSE'}
+                              </Badge>
+                              {req.college_branch && (
+                                <Badge variant="outline" className="text-xs text-muted-foreground">
+                                  College: {req.college_branch}
+                                </Badge>
+                              )}
+                              {req.college && (
+                                <span className="text-xs text-muted-foreground font-medium">({req.college})</span>
+                              )}
+                            </div>
+                            <p className="text-xs text-muted-foreground flex items-center gap-2">
+                              <span className="font-mono">{req.email}</span>
+                              {req.phone && <span>• {req.phone}</span>}
+                            </p>
+                            <p className="text-[11px] text-muted-foreground/80 flex items-center gap-1">
+                              <Calendar className="h-3 w-3 text-indigo-400" />
+                              Requested on {new Date(req.purchased_at).toLocaleString('en-IN', {
+                                day: 'numeric',
+                                month: 'short',
+                                year: 'numeric',
+                                hour: '2-digit',
+                                minute: '2-digit'
+                              })}
+                            </p>
+                          </div>
+                          <div className="flex items-center gap-2 shrink-0">
+                            <Button
+                              size="sm"
+                              className="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold gap-1.5 h-8 text-xs shadow-xs"
+                              disabled={isProcessing}
+                              onClick={() => handleApproveGateRequest(req.id, req.user_id, fullName)}
+                            >
+                              {isProcessing ? (
+                                <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                              ) : (
+                                <CheckCircle className="h-3.5 w-3.5" />
+                              )}
+                              Approve Access
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              className="border-red-500/30 text-red-600 hover:bg-red-500/10 dark:hover:bg-red-950/30 font-semibold gap-1.5 h-8 text-xs"
+                              disabled={isProcessing}
+                              onClick={() => handleRejectGateRequest(req.id, req.user_id, fullName)}
+                            >
+                              <XCircle className="h-3.5 w-3.5" />
+                              Decline
+                            </Button>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
 
           {/* TAB: Notifications */}
           <TabsContent value="notifications" className="space-y-6">
@@ -2584,31 +2875,107 @@ const OwnerDashboard = () => {
           {/* TAB: Contributors Management */}
           <TabsContent value="contributors" className="space-y-6">
             {/* Add form */}
-            <Card className="gradient-card border-2 border-primary/10">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
+            <Card className="border border-border bg-card">
+              <CardHeader className="border-b pb-4">
+                <CardTitle className="flex items-center gap-2 text-base font-bold text-foreground">
                   <Trophy className="h-5 w-5 text-yellow-500" /> Add New Contributor
                 </CardTitle>
                 <CardDescription>
-                  Contributors auto-sort by coins. Top 3 with image show on the podium.
+                  Contributors auto-sort by coins/PDFs count. Top 3 with image show on the podium. Batch is formatted as '28, '29, '30.
                 </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-3">
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                  <Input value={newContrib.name} onChange={e => setNewContrib({...newContrib, name: e.target.value})} placeholder="Full Name *" className="col-span-2" />
-                  <Input value={newContrib.branch} onChange={e => setNewContrib({...newContrib, branch: e.target.value})} placeholder="Branch * (e.g. CSE)" />
-                  <Input value={newContrib.batch} onChange={e => setNewContrib({...newContrib, batch: e.target.value})} placeholder="Batch * (e.g. 28)" />
+              <CardContent className="space-y-4 pt-4">
+                <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
+                  <Input
+                    value={newContrib.name}
+                    onChange={e => setNewContrib({...newContrib, name: e.target.value})}
+                    placeholder="Full Name *"
+                    className="sm:col-span-2"
+                  />
+                  {/* Branch select */}
+                  <Select
+                    value={newContrib.branch}
+                    onValueChange={(val) => setNewContrib(prev => ({ ...prev, branch: val }))}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Branch *" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {ALL_BRANCHES.map(b => (
+                        <SelectItem key={b.code} value={b.code}>
+                          {b.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+
+                  {/* Passout Year select (2021 to 2040) */}
+                  <Select
+                    value={newContrib.batch}
+                    onValueChange={(val) => setNewContrib(prev => ({ ...prev, batch: val }))}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Passout Year *" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {BATCH_OPTIONS.map(opt => (
+                        <SelectItem key={opt.value} value={opt.value}>
+                          {opt.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
-                <div className="grid grid-cols-2 gap-3">
-                  <Input type="number" value={newContrib.coins} onChange={e => setNewContrib({...newContrib, coins: e.target.value})} placeholder="Coins (notes count)" />
-                  <Input value={newContrib.linkedin_url} onChange={e => setNewContrib({...newContrib, linkedin_url: e.target.value})} placeholder="LinkedIn URL (optional)" />
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <Label className="text-[11px] font-semibold text-muted-foreground uppercase">Number of PDFs / Coins (Minimum 0)</Label>
+                    <Input
+                      type="number"
+                      min="0"
+                      value={newContrib.coins}
+                      onKeyDown={e => { if (e.key === '-' || e.key === 'e' || e.key === '+') e.preventDefault(); }}
+                      onChange={e => {
+                        const val = e.target.value;
+                        if (val === '') {
+                          setNewContrib({ ...newContrib, coins: '' });
+                        } else {
+                          const num = Math.max(0, parseInt(val) || 0);
+                          setNewContrib({ ...newContrib, coins: num.toString() });
+                        }
+                      }}
+                      placeholder="e.g. 5"
+                      className="mt-1"
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-[11px] font-semibold text-muted-foreground uppercase">LinkedIn Profile URL (Optional)</Label>
+                    <Input
+                      value={newContrib.linkedin_url}
+                      onChange={e => setNewContrib({...newContrib, linkedin_url: e.target.value})}
+                      placeholder="https://linkedin.com/in/..."
+                      className="mt-1"
+                    />
+                  </div>
                 </div>
-                <Input value={newContrib.image_url} onChange={e => setNewContrib({...newContrib, image_url: e.target.value})} placeholder="Image path or URL (optional, e.g. /Devanshi.png or https://...)" />
-                <p className="text-xs text-muted-foreground">💡 Image is only shown for top-3 podium. Upload image to /public folder first, then enter path like /Name.png</p>
+
+                <div>
+                  <Label className="text-[11px] font-semibold text-muted-foreground uppercase">Avatar Image Path or URL (Optional)</Label>
+                  <Input
+                    value={newContrib.image_url}
+                    onChange={e => setNewContrib({...newContrib, image_url: e.target.value})}
+                    placeholder="e.g. /Devanshi.png or https://..."
+                    className="mt-1"
+                  />
+                  <p className="text-[11px] text-muted-foreground mt-1.5">
+                    💡 Image is shown on the top-3 podium. Upload image to public folder or paste image URL.
+                  </p>
+                </div>
+
                 <Button
                   onClick={handleAddContributor}
                   disabled={isAddingContrib || !newContrib.name.trim() || !newContrib.branch.trim() || !newContrib.batch.trim()}
-                  className="btn-hero gap-2"
+                  className="font-bold gap-2 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-5 rounded-xl shadow-xs"
                 >
                   {isAddingContrib ? <Loader2 className="h-4 w-4 animate-spin" /> : <UserPlus className="h-4 w-4" />}
                   Add Contributor
@@ -2616,42 +2983,89 @@ const OwnerDashboard = () => {
               </CardContent>
             </Card>
 
-                        {/* Contributors list */}
-              <Card className="gradient-card">
-                <CardHeader className="border-b pb-4">
-                  <div className="flex items-center justify-between">
-                    <CardTitle className="flex items-center gap-2 text-base font-bold">
-                      <Trophy className="h-4 w-4 text-yellow-500" /> All Contributors ({contributors.length}) — by coins
+            {/* Contributors list with Search and 50-per-page Pagination */}
+            <Card className="border border-border bg-card">
+              <CardHeader className="border-b pb-4">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                  <div>
+                    <CardTitle className="flex items-center gap-2 text-base font-bold text-foreground">
+                      <Trophy className="h-5 w-5 text-yellow-500" /> All Contributors ({filteredContributors.length})
                     </CardTitle>
-                    <Button variant="outline" size="sm" onClick={fetchContributors}>Refresh</Button>
+                    <CardDescription className="text-xs text-muted-foreground mt-0.5">
+                      Sorted by PDF count / coins. 50 items displayed per page.
+                    </CardDescription>
                   </div>
-                </CardHeader>
-                <CardContent className="pt-4">
-                  {contributors.length === 0 ? (
-                    <div className="text-center py-8 text-muted-foreground">
-                      <Trophy className="h-10 w-10 mx-auto mb-2 opacity-30" />
-                      <p className="text-sm">No contributors yet.</p>
+                  <Button variant="outline" size="sm" onClick={fetchContributors} className="h-8 text-xs">
+                    Refresh
+                  </Button>
+                </div>
+                {/* Search Bar */}
+                <div className="relative mt-3">
+                  <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    placeholder="Search by contributor name, branch, or batch ('28)..."
+                    value={contribSearch}
+                    onChange={e => {
+                      setContribSearch(e.target.value);
+                      setContribPage(1);
+                    }}
+                    className="pl-9 text-xs sm:text-sm bg-background"
+                  />
+                </div>
+              </CardHeader>
+              <CardContent className="pt-4">
+                {filteredContributors.length === 0 ? (
+                  <div className="text-center py-12 text-muted-foreground">
+                    <Trophy className="h-10 w-10 mx-auto mb-2 opacity-30" />
+                    <p className="text-sm font-semibold">No contributors found.</p>
+                    <p className="text-xs mt-1">Try adjusting your search query.</p>
+                  </div>
+                ) : (
+                  <>
+                    <div className="space-y-2">
+                      {currentContribs.map((c, idx) => (
+                        <ContributorCard
+                          key={c.id}
+                          contributor={c}
+                          rank={(contribPage - 1) * 50 + idx + 1}
+                          onRefresh={fetchContributors}
+                        />
+                      ))}
                     </div>
-                  ) : (
-                    <>
-                      <div className="space-y-3">
-                        {contributors.slice((contribPage-1)*8, contribPage*8).map((c, idx) => (
-                          <ContributorCard key={c.id} contributor={c} rank={(contribPage-1)*8 + idx + 1} onRefresh={fetchContributors} />
-                        ))}
-                      </div>
-                      {Math.ceil(contributors.length / 8) > 1 && (
-                        <div className="flex items-center justify-between mt-4 pt-4 border-t">
-                          <span className="text-xs text-muted-foreground">Page {contribPage} of {Math.ceil(contributors.length/8)} ({contributors.length} total)</span>
-                          <div className="flex gap-2">
-                            <Button variant="outline" size="sm" onClick={() => setContribPage(p => Math.max(1, p-1))} disabled={contribPage === 1}>← Prev</Button>
-                            <Button variant="outline" size="sm" onClick={() => setContribPage(p => Math.min(Math.ceil(contributors.length/8), p+1))} disabled={contribPage === Math.ceil(contributors.length/8)}>Next →</Button>
-                          </div>
+                    {totalContribPages > 1 && (
+                      <div className="flex flex-col sm:flex-row items-center justify-between gap-3 mt-4 pt-4 border-t border-border">
+                        <span className="text-xs text-muted-foreground font-medium">
+                          Showing {(contribPage - 1) * 50 + 1}–{Math.min(contribPage * 50, filteredContributors.length)} of {filteredContributors.length} contributors (Page {contribPage} of {totalContribPages})
+                        </span>
+                        <div className="flex items-center gap-2">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setContribPage(p => Math.max(1, p - 1))}
+                            disabled={contribPage === 1}
+                            className="h-8 text-xs font-semibold px-3"
+                          >
+                            ← Previous
+                          </Button>
+                          <span className="text-xs font-bold px-2 text-foreground">
+                            {contribPage} / {totalContribPages}
+                          </span>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setContribPage(p => Math.min(totalContribPages, p + 1))}
+                            disabled={contribPage >= totalContribPages}
+                            className="h-8 text-xs font-semibold px-3"
+                          >
+                            Next →
+                          </Button>
                         </div>
-                      )}
-                    </>
-                  )}
-                </CardContent>
-              </Card>
+                      </div>
+                    )}
+                  </>
+                )}
+              </CardContent>
+            </Card>
           </TabsContent>
 
           {/* TAB 2: Manage Admins */}
