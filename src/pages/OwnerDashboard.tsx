@@ -622,55 +622,68 @@ const PremiumSection = ({ title, icon: Icon, color, items, onRevoke, onRevokeAll
               return (
                 <div
                   key={item.user_id}
-                  className="flex flex-col lg:flex-row lg:items-center justify-between p-3.5 sm:px-5 sm:py-3.5 hover:bg-sky-50/50 dark:hover:bg-sky-950/20 transition-colors text-xs gap-3 w-full"
+                  className="p-3.5 sm:p-4 hover:bg-muted/40 transition-colors border-b border-border/50 last:border-b-0"
                 >
-                  {/* Left: Index, User Info, Badges */}
-                  <div className="flex items-center gap-3 min-w-0 flex-1">
-                    <span className="w-7 text-muted-foreground font-mono text-[11px] shrink-0 text-right">
-                      #{globalIndex}
-                    </span>
-                    <div className="min-w-0 flex-1">
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <span className="font-bold text-sm text-foreground truncate max-w-[200px] sm:max-w-xs">{fullName}</span>
-                        {item.branch && <Badge variant="outline" className="text-[11px] font-semibold">{item.branch}</Badge>}
-                        {isInBoth && (
-                          <span className="text-[10px] font-bold text-yellow-800 dark:text-yellow-300 bg-yellow-100 dark:bg-yellow-950/50 px-2 py-0.5 rounded-full border border-yellow-300 dark:border-yellow-700">
-                            ⭐ Both Plans
-                          </span>
-                        )}
+                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
+                    {/* User Profile Info */}
+                    <div className="flex items-center gap-3 min-w-0 md:max-w-md">
+                      <div className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 border border-border text-muted-foreground font-mono font-bold text-xs flex items-center justify-center shrink-0">
+                        #{globalIndex}
                       </div>
-                      <p className="text-xs text-muted-foreground truncate font-mono mt-0.5">{item.email}</p>
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <span className="font-bold text-sm text-foreground truncate">{fullName}</span>
+                          {item.branch && (
+                            <Badge variant="outline" className="text-[10px] font-semibold py-0 px-1.5 h-5 bg-background">
+                              {item.branch}
+                            </Badge>
+                          )}
+                          {isInBoth && (
+                            <span className="text-[10px] font-bold text-amber-700 dark:text-amber-300 bg-amber-50 dark:bg-amber-950/50 px-2 py-0.5 rounded-full border border-amber-300 dark:border-amber-800 shrink-0">
+                              ⭐ Both Plans
+                            </span>
+                          )}
+                        </div>
+                        <p className="text-xs text-muted-foreground font-mono truncate mt-0.5">{item.email}</p>
+                      </div>
                     </div>
-                  </div>
 
-                  {/* Right: Packages badges + Revoke actions */}
-                  <div className="flex flex-wrap items-center gap-2 shrink-0 self-end lg:self-center">
-                    {item.purchases.map((pur: any) => (
-                      <div key={pur.id} className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-semibold shadow-2xs ${planColor(pur.plan)}`}>
-                        <span>{planLabel(pur.plan)}</span>
-                        <span className="opacity-70 text-[10px]">({pur.payment_status === 'free' ? 'FREE' : `₹${(pur.amount_paid||0)/100}`})</span>
-                        <button
-                          onClick={() => onRevoke(item.user_id, pur.plan, fullName)}
-                          disabled={revokingId !== null}
-                          title={`Revoke ${planLabel(pur.plan)}`}
-                          className="ml-1 text-red-500 hover:text-red-700 dark:hover:text-red-400 p-0.5 rounded hover:bg-red-50 dark:hover:bg-red-950/50 transition-colors disabled:opacity-40"
+                    {/* Active Packages Badges & Actions */}
+                    <div className="flex flex-wrap items-center md:justify-end gap-1.5 pl-11 md:pl-0">
+                      {item.purchases.map((pur: any) => (
+                        <div
+                          key={pur.id}
+                          className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md border text-xs font-medium shadow-2xs ${planColor(pur.plan)}`}
                         >
-                          <Trash2 className="w-3.5 h-3.5" />
-                        </button>
-                      </div>
-                    ))}
-                    {item.purchases.length > 1 && (
-                      <Button
-                        variant="destructive"
-                        size="sm"
-                        onClick={() => onRevokeAll(item.user_id, fullName)}
-                        disabled={revokingId !== null}
-                        className="h-7 text-xs font-semibold px-2.5 shadow-xs"
-                      >
-                        <Trash2 className="w-3 h-3 mr-1" />
-                        Revoke All
-                      </Button>
-                    )}
+                          <span>{planLabel(pur.plan)}</span>
+                          <span className="opacity-60 text-[10px] uppercase font-mono">
+                            ({pur.payment_status === 'free' ? 'FREE' : `₹${(pur.amount_paid || 0) / 100}`})
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() => onRevoke(item.user_id, pur.plan, fullName)}
+                            disabled={revokingId !== null}
+                            title={`Revoke ${planLabel(pur.plan)}`}
+                            className="ml-0.5 text-red-500 hover:text-red-700 dark:hover:text-red-400 p-0.5 rounded hover:bg-red-100/50 dark:hover:bg-red-950/60 transition-colors disabled:opacity-40"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      ))}
+
+                      {item.purchases.length > 1 && (
+                        <Button
+                          variant="destructive"
+                          size="sm"
+                          onClick={() => onRevokeAll(item.user_id, fullName)}
+                          disabled={revokingId !== null}
+                          className="h-7 text-xs font-semibold px-2.5 shadow-xs ml-1"
+                        >
+                          <Trash2 className="w-3 h-3 mr-1" />
+                          Revoke All
+                        </Button>
+                      )}
+                    </div>
                   </div>
                 </div>
               );
