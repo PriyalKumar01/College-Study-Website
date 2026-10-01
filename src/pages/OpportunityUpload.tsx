@@ -152,6 +152,8 @@ const OpportunityUpload = () => {
           image_url: imageUrl,
           created_by: user.id,
           user_name: user.email?.split('@')[0] || 'Admin',
+        category: formData.is_trending ? 'Trending' : '',
+        is_trending: formData.is_trending,
         });
 
       if (insertError) {
