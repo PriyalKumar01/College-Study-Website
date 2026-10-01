@@ -122,7 +122,7 @@ export default function PremiumContent() {
   const hasCompaniesAccess = isPlanUnlocked('companies');
   const hasHRAccess = isPlanUnlocked('hr_emails');
   const hasResumeAccess = isPlanUnlocked('resume');
-  const hasRoadmapsAccess = unlockedPlans.includes('roadmaps');
+  const hasRoadmapsAccess = isPlanUnlocked('roadmaps');
 
   const toggleCategory = (catId: string) => {
     setExpandedCategories(prev =>
