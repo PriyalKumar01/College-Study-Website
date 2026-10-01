@@ -17,14 +17,9 @@ ALTER TABLE public.contributors ADD COLUMN IF NOT EXISTS image_url TEXT;
 ALTER TABLE public.email_templates ADD COLUMN IF NOT EXISTS header_url TEXT;
 ALTER TABLE public.email_templates ADD COLUMN IF NOT EXISTS show_header_image BOOLEAN DEFAULT true;
 
-ALTER TABLE public.premium_purchases ADD COLUMN IF NOT EXISTS target_branch TEXT;
-
-
--- Add is_trending flag to opportunities
 ALTER TABLE public.opportunities ADD COLUMN IF NOT EXISTS is_trending BOOLEAN DEFAULT false;
-COMMENT ON COLUMN public.opportunities.is_trending IS 'Flag for highlighting top opportunities in trending banner';
 
--- Ensure unique constraint on user_id and plan
+-- Allow user updates on premium_purchases and ensure unique constraint
 DO $$ 
 BEGIN 
   IF NOT EXISTS (
@@ -45,5 +40,3 @@ BEGIN
       WITH CHECK (auth.uid() = user_id);
   END IF;
 END $$;
-
-CREATE INDEX IF NOT EXISTS idx_opportunities_is_trending ON public.opportunities(is_trending) WHERE is_trending = true;
