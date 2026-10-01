@@ -9,14 +9,6 @@ import {
 import { PremiumPlan } from './LockedSection';
 import { removeCachedData } from '@/lib/cacheUtils';
 
-// Validated: PLACE@75 for Placement Roadmap Guide to specific plans
-const VALID_PLAN_COUPONS: Record<string, string> = {
-  companies: 'HBTU@1843',
-  hr_emails: 'HBTU@1843',
-  resume: 'HBTU@143',
-  roadmaps: 'PLACE@75',
-};
-
 interface PremiumModalProps {
   open: boolean;
   onClose: () => void;
@@ -125,139 +117,148 @@ export function PremiumModal({ open, onClose, plan, onSuccess }: PremiumModalPro
     },
   }[plan];
 
+  // Strict, exclusive coupon code mapping per user instruction
+  const STRICT_PLAN_COUPONS: Record<PremiumPlan, string> = {
+    companies: 'HBTU@1843',
+    hr_emails: 'HBTU@1843',
+    resume: 'HBTU@143',
+    roadmaps: 'PLACE@75',
+  };
+
   const handleApplyCoupon = async () => {
     if (!coupon.trim()) return;
 
     const upper = coupon.trim().toUpperCase();
+    const requiredCode = STRICT_PLAN_COUPONS[plan];
 
-    // Universal 100% discount coupons recognized across all premium packages
-    const universal100Coupons = ['HBTU@1843', 'HBTU@143', 'FREE100', 'STUDYHUB100', 'OWNER100', 'PRIYAL100'];
-    if (universal100Coupons.includes(upper)) {
-      setDiscount(100); // 100% OFF applied
-      setCouponApplied(true);
+    if (upper !== requiredCode) {
+      setDiscount(0);
+      setCouponApplied(false);
       toast({
-        title: `🎉 Coupon Applied! 100% off`,
-        description: 'Special 100% Discount Applied! Lifetime access unlocked.'
+        title: '❌ Invalid Coupon',
+        description: `This coupon code is not valid for ${planConfig.title}.`,
+        variant: 'destructive'
       });
       return;
     }
 
-    if (upper === 'PLACE@75' && (plan === 'roadmaps' || plan === 'resume')) {
-      setDiscount(100);
-      setCouponApplied(true);
-      toast({
-        title: `🎉 Coupon Applied! 100% off`,
-        description: 'Placement Roadmap Special Offer Applied!'
-      });
-      return;
-    }
-
-    setValidatingCoupon(true);
-    try {
-      const { data, error } = await (supabase as any).rpc('validate_coupon', {
-        p_code: upper,
-        p_plan: plan
-      });
-      if (error) throw error;
-      if (data?.valid) {
-        setDiscount(data.discount_percent);
-        setCouponApplied(true);
-        toast({
-          title: `🎉 Coupon Applied! ${data.discount_percent}% off`,
-          description: data.message
-        });
-      } else {
-        toast({
-          title: '❌ Invalid Coupon',
-          description: data?.message || 'Coupon not valid for this plan',
-          variant: 'destructive'
-        });
-      }
-    } catch {
-      // Fallback: if validating RPC fails but code looks like a 100% promo
-      if (upper.endsWith('100') || upper.includes('FREE')) {
-        setDiscount(100);
-        setCouponApplied(true);
-        toast({
-          title: `🎉 Coupon Applied! 100% off`,
-          description: 'Special Promotional Access Applied!'
-        });
-      } else {
-        toast({
-          title: 'Error validating coupon',
-          variant: 'destructive'
-        });
-      }
-    } finally {
-      setValidatingCoupon(false);
-    }
+    setDiscount(100);
+    setCouponApplied(true);
+    toast({
+      title: `🎉 Coupon Applied! 100% off`,
+      description: `Special 100% Discount Applied for ${planConfig.title}! Click Claim Free Access below.`
+    });
   };
 
   const handleFreeEnroll = async () => {
     if (!user) {
       toast({
         title: 'Please login first',
+        description: 'You need to be logged in to claim premium access.',
         variant: 'destructive'
       });
       return;
     }
-    setProcessing(true);
-    let granted = false;
-    const cleanCoupon = coupon.trim().toUpperCase() || 'FREE100';
 
-    try {
-      // 1. Try secure RPC function first
-      const { data, error } = await (supabase as any).rpc('record_free_purchase', {
-        p_plan: plan,
-        p_coupon: cleanCoupon,
-        p_discount: discount || 100
+    const cleanCoupon = coupon.trim().toUpperCase();
+    const requiredCode = STRICT_PLAN_COUPONS[plan];
+    if (cleanCoupon !== requiredCode) {
+      toast({
+        title: '❌ Invalid Coupon',
+        description: 'Only the designated coupon code for this package is accepted.',
+        variant: 'destructive'
       });
-      if (!error && (data?.success || data?.message?.includes('Already purchased'))) {
-        granted = true;
-      }
-    } catch (rpcErr) {
-      console.warn('RPC record_free_purchase warning:', rpcErr);
+      return;
     }
 
-    // 2. Direct database insert fallback if RPC failed
+    setProcessing(true);
+    let granted = false;
+
+    // 1. Check if user already has this plan in DB
+    try {
+      const { data: existingPurchase } = await (supabase as any)
+        .from('premium_purchases')
+        .select('id, payment_status')
+        .eq('user_id', user.id)
+        .eq('plan', plan)
+        .maybeSingle();
+
+      if (existingPurchase) {
+        if (existingPurchase.payment_status === 'completed' || existingPurchase.payment_status === 'free') {
+          granted = true;
+        } else {
+          const { error: updateErr } = await (supabase as any)
+            .from('premium_purchases')
+            .update({
+              payment_status: 'free',
+              coupon_used: cleanCoupon,
+              discount_percent: 100,
+              amount_paid: 0,
+            })
+            .eq('id', existingPurchase.id);
+          if (!updateErr) granted = true;
+        }
+      }
+    } catch (checkErr) {
+      console.warn('Existing purchase check warning:', checkErr);
+    }
+
+    // 2. Try secure RPC function
+    if (!granted) {
+      try {
+        const { data, error } = await (supabase as any).rpc('record_free_purchase', {
+          p_plan: plan,
+          p_coupon: cleanCoupon,
+          p_discount: 100
+        });
+        if (!error && (data?.success || data?.message?.includes('Already purchased'))) {
+          granted = true;
+        }
+      } catch (rpcErr) {
+        console.warn('RPC record_free_purchase warning:', rpcErr);
+      }
+    }
+
+    // 3. Direct database insert fallback (without failing onConflict)
     if (!granted) {
       try {
         const { error: insertErr } = await (supabase as any)
           .from('premium_purchases')
-          .upsert({
+          .insert({
             user_id: user.id,
             user_email: user.email || '',
             plan: plan,
             amount_paid: 0,
             original_amount: originalPrice * 100,
             coupon_used: cleanCoupon,
-            discount_percent: discount || 100,
+            discount_percent: 100,
             payment_status: 'free',
             razorpay_payment_id: `free_coupon_${cleanCoupon}`,
-          }, { onConflict: 'user_id,plan' });
+          });
 
         if (!insertErr) {
           granted = true;
         } else {
-          console.error('Direct fallback insert error:', insertErr);
+          console.warn('Direct insert note:', insertErr);
         }
       } catch (dbErr) {
-        console.error('Direct DB fallback error:', dbErr);
+        console.warn('Direct DB fallback error:', dbErr);
       }
     }
 
+    // 4. If DB grant succeeded, invalidate cache so DB remains true source of truth
     if (granted) {
-      // Invalidate frontend cache immediately so the user doesn't wait 15 minutes
       removeCachedData(`purchases_${user.id}`);
       if (typeof window !== 'undefined') {
         try {
           localStorage.removeItem(`purchases_${user.id}`);
+          localStorage.removeItem(`unlocked_${plan}`);
         } catch (_) {}
       }
 
       toast({
         title: '✅ Access Granted!',
-        description: 'You now have full lifetime access.'
+        description: `Lifetime access to ${planConfig.title} is now unlocked.`
       });
       onSuccess?.();
       onClose();
@@ -416,7 +417,3 @@ export function PremiumModal({ open, onClose, plan, onSuccess }: PremiumModalPro
     </AnimatePresence>
   );
 }
-
-
-
-
