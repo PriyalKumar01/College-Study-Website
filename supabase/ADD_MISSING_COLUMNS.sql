@@ -33,3 +33,15 @@ BEGIN
     ALTER TABLE public.premium_purchases ADD CONSTRAINT uq_premium_purchases_user_plan UNIQUE (user_id, plan);
   END IF;
 END $$;
+
+DO $$ 
+BEGIN 
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_policies WHERE tablename = 'premium_purchases' AND policyname = 'Users can update their own purchases'
+  ) THEN 
+    CREATE POLICY "Users can update their own purchases"
+      ON public.premium_purchases FOR UPDATE
+      USING (auth.uid() = user_id)
+      WITH CHECK (auth.uid() = user_id);
+  END IF;
+END $$;
