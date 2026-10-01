@@ -9,6 +9,14 @@ import {
 import { PremiumPlan } from './LockedSection';
 import { removeCachedData } from '@/lib/cacheUtils';
 
+// Strictly map 100% OFF coupons to specific plans
+const VALID_PLAN_COUPONS: Record<string, string> = {
+  companies: 'HBTU@1843',
+  hr_emails: 'HBTU@1843',
+  resume: 'HBTU@143',
+  roadmaps: 'PLACE@75',
+};
+
 interface PremiumModalProps {
   open: boolean;
   onClose: () => void;
