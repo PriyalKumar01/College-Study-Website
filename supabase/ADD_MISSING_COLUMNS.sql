@@ -22,3 +22,4 @@ ALTER TABLE public.premium_purchases ADD COLUMN IF NOT EXISTS target_branch TEXT
 
 -- Add is_trending flag to opportunities
 ALTER TABLE public.opportunities ADD COLUMN IF NOT EXISTS is_trending BOOLEAN DEFAULT false;
+COMMENT ON COLUMN public.opportunities.is_trending IS 'Flag for highlighting top opportunities in trending banner';
