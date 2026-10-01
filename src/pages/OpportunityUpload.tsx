@@ -28,6 +28,7 @@ const OpportunityUpload = () => {
     location: '',
     apply_url: '',
     deadline: '',
+    is_trending: false,
     created_at: new Date().toISOString().slice(0, 10),
     image: null as File | null,
   });
