@@ -120,7 +120,7 @@ export default function PremiumContent() {
   };
 
   const hasCompaniesAccess = isPlanUnlocked('companies');
-  const hasHRAccess = unlockedPlans.includes('hr_emails');
+  const hasHRAccess = isPlanUnlocked('hr_emails');
   const hasResumeAccess = unlockedPlans.includes('resume');
   const hasRoadmapsAccess = unlockedPlans.includes('roadmaps');
 
