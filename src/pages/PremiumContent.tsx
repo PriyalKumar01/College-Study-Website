@@ -114,7 +114,12 @@ export default function PremiumContent() {
     checkPurchases();
   }, [checkPurchases]);
 
-  const hasCompaniesAccess = unlockedPlans.includes('companies');
+  const isPlanUnlocked = (p: string) => {
+    if (isOwner) return true;
+    return unlockedPlans.includes(p);
+  };
+
+  const hasCompaniesAccess = isPlanUnlocked('companies');
   const hasHRAccess = unlockedPlans.includes('hr_emails');
   const hasResumeAccess = unlockedPlans.includes('resume');
   const hasRoadmapsAccess = unlockedPlans.includes('roadmaps');
