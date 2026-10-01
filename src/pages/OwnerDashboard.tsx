@@ -1506,6 +1506,8 @@ const OwnerDashboard = () => {
 
       if (error) throw error;
 
+      removeCachedData(`purchases_${userId}`);
+
       toast({
         title: 'Access Revoked 🚫',
         description: `Successfully revoked "${planCode}" access for ${userName}.`
@@ -1535,6 +1537,8 @@ const OwnerDashboard = () => {
         .eq('user_id', userId);
 
       if (error) throw error;
+
+      removeCachedData(`purchases_${userId}`);
 
       toast({
         title: 'All Access Revoked 🚫',
@@ -3606,6 +3610,3 @@ function OtherCollegesModal({
 }
 
 export default OwnerDashboard;
-
-
-
