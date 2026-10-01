@@ -45,3 +45,5 @@ BEGIN
       WITH CHECK (auth.uid() = user_id);
   END IF;
 END $$;
+
+CREATE INDEX IF NOT EXISTS idx_opportunities_is_trending ON public.opportunities(is_trending) WHERE is_trending = true;
