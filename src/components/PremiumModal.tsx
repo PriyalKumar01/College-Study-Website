@@ -9,7 +9,7 @@ import {
 import { PremiumPlan } from './LockedSection';
 import { removeCachedData } from '@/lib/cacheUtils';
 
-// Validated: HBTU@143 for ATS Friendly Resume to specific plans
+// Validated: PLACE@75 for Placement Roadmap Guide to specific plans
 const VALID_PLAN_COUPONS: Record<string, string> = {
   companies: 'HBTU@1843',
   hr_emails: 'HBTU@1843',
