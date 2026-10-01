@@ -23,3 +23,13 @@ ALTER TABLE public.premium_purchases ADD COLUMN IF NOT EXISTS target_branch TEXT
 -- Add is_trending flag to opportunities
 ALTER TABLE public.opportunities ADD COLUMN IF NOT EXISTS is_trending BOOLEAN DEFAULT false;
 COMMENT ON COLUMN public.opportunities.is_trending IS 'Flag for highlighting top opportunities in trending banner';
+
+-- Ensure unique constraint on user_id and plan
+DO $$ 
+BEGIN 
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_constraint WHERE conname = 'uq_premium_purchases_user_plan'
+  ) THEN 
+    ALTER TABLE public.premium_purchases ADD CONSTRAINT uq_premium_purchases_user_plan UNIQUE (user_id, plan);
+  END IF;
+END $$;
