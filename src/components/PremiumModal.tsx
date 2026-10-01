@@ -9,7 +9,7 @@ import {
 import { PremiumPlan } from './LockedSection';
 import { removeCachedData } from '@/lib/cacheUtils';
 
-// Validated: HBTU@1843 for Company Career Pages to specific plans
+// Validated: HBTU@1843 for HR Email Directory to specific plans
 const VALID_PLAN_COUPONS: Record<string, string> = {
   companies: 'HBTU@1843',
   hr_emails: 'HBTU@1843',
