@@ -18,3 +18,7 @@ ALTER TABLE public.email_templates ADD COLUMN IF NOT EXISTS header_url TEXT;
 ALTER TABLE public.email_templates ADD COLUMN IF NOT EXISTS show_header_image BOOLEAN DEFAULT true;
 
 ALTER TABLE public.premium_purchases ADD COLUMN IF NOT EXISTS target_branch TEXT;
+
+
+-- Add is_trending flag to opportunities
+ALTER TABLE public.opportunities ADD COLUMN IF NOT EXISTS is_trending BOOLEAN DEFAULT false;
