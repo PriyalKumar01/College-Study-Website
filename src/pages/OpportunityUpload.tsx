@@ -162,7 +162,7 @@ const OpportunityUpload = () => {
       
       toast({
         title: 'Opportunity posted successfully!',
-        description: 'The opportunity is now live on the platform.',
+        description: 'The opportunity is live and featured in the Trending Showcase!',
       });
 
       // Reset form
