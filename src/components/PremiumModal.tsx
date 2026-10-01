@@ -133,7 +133,7 @@ export function PremiumModal({ open, onClose, plan, onSuccess }: PremiumModalPro
     // Universal 100% discount coupons recognized across all premium packages
     const universal100Coupons = ['HBTU@1843', 'HBTU@143', 'FREE100', 'STUDYHUB100', 'OWNER100', 'PRIYAL100'];
     if (universal100Coupons.includes(upper)) {
-      setDiscount(100);
+      setDiscount(100); // 100% OFF applied
       setCouponApplied(true);
       toast({
         title: `🎉 Coupon Applied! 100% off`,
