@@ -28,9 +28,9 @@ const OpportunityUpload = () => {
     location: '',
     apply_url: '',
     deadline: '',
-    is_trending: false,
     created_at: new Date().toISOString().slice(0, 10),
     image: null as File | null,
+    is_trending: false,
   });
 
   const categories = ['Internship', 'Full-Time', 'Hackathons', 'Challenges', 'Contests', 'Others'];
@@ -138,31 +138,53 @@ const OpportunityUpload = () => {
       }
 
       // Insert opportunity record into database
-      const { error: insertError } = await supabase
-        .from('opportunities')
-        .insert({
-          title: formData.title,
-          company: formData.company,
-          type: formData.type,
-          description: formData.description,
-          location: formData.location,
-          apply_url: formData.apply_url,
-          deadline: formData.deadline || null,
-          created_at: formData.created_at ? new Date(formData.created_at).toISOString() : new Date().toISOString(),
-          image_url: imageUrl,
-          created_by: user.id,
-          user_name: user.email?.split('@')[0] || 'Admin',
+      const payload: any = {
+        title: formData.title,
+        company: formData.company,
+        type: formData.type,
+        description: formData.description,
+        location: formData.location,
+        apply_url: formData.apply_url,
+        deadline: formData.deadline || null,
+        created_at: formData.created_at ? new Date(formData.created_at).toISOString() : new Date().toISOString(),
+        image_url: imageUrl,
+        created_by: user.id,
+        user_name: user.email?.split('@')[0] || 'Admin',
         category: formData.is_trending ? 'Trending' : '',
         is_trending: formData.is_trending,
-        });
+      };
+
+      let { data: insertedData, error: insertError } = await supabase
+        .from('opportunities')
+        .insert(payload)
+        .select()
+        .maybeSingle();
+
+      if (insertError && insertError.message?.includes('is_trending')) {
+        delete payload.is_trending;
+        const retry = await supabase.from('opportunities').insert(payload).select().maybeSingle();
+        insertError = retry.error;
+        insertedData = retry.data;
+      }
 
       if (insertError) {
         throw insertError;
       }
+
+      // Sync local trending ids
+      if (formData.is_trending && insertedData && (insertedData as any).id) {
+        try {
+          const trendingIds: string[] = JSON.parse(localStorage.getItem('trending_opportunity_ids') || '[]');
+          trendingIds.push((insertedData as any).id);
+          localStorage.setItem('trending_opportunity_ids', JSON.stringify(Array.from(new Set(trendingIds))));
+        } catch (_) {}
+      }
       
       toast({
         title: 'Opportunity posted successfully!',
-        description: 'The opportunity is live and featured in the Trending Showcase!',
+        description: formData.is_trending 
+          ? 'The opportunity is live and featured in the Trending Showcase!' 
+          : 'The opportunity is now live on the platform.',
       });
 
       // Reset form
@@ -379,6 +401,31 @@ const OpportunityUpload = () => {
                     )}
                   </div>
 
+                  {isAdmin && (
+                    <div className="p-3.5 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-between">
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-8 h-8 rounded-xl bg-amber-500/20 text-amber-500 flex items-center justify-center font-bold">
+                          🔥
+                        </div>
+                        <div>
+                          <Label htmlFor="is_trending_upload" className="text-xs font-bold block cursor-pointer">
+                            Mark as Trending Opportunity (Feature in Top Carousel)
+                          </Label>
+                          <span className="text-[10px] text-muted-foreground block">
+                            Only visible to owner/admin. Displays in the auto-sliding header banner on the Opportunities page.
+                          </span>
+                        </div>
+                      </div>
+                      <input
+                        id="is_trending_upload"
+                        type="checkbox"
+                        checked={formData.is_trending}
+                        onChange={(e) => setFormData({ ...formData, is_trending: e.target.checked })}
+                        className="w-5 h-5 rounded-md text-amber-500 focus:ring-amber-400 cursor-pointer accent-amber-500"
+                      />
+                    </div>
+                  )}
+
                   <Button
                     type="submit"
                     disabled={isUploading}
@@ -446,6 +493,3 @@ const OpportunityUpload = () => {
 };
 
 export default OpportunityUpload;
-
-
-
