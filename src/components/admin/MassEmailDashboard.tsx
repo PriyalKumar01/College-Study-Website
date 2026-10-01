@@ -238,9 +238,77 @@ Click below to check out the details, themes, and registration links.`,
   const fetchUsers = async () => {
     setLoadingUsers(true);
     try {
-      const { data, error } = await supabase.rpc('get_user_login_activity');
-      if (error) throw error;
-      setUsers(data || []);
+      let allUsers: UserActivityRecord[] = [];
+      let page = 0;
+      const pageSize = 1000;
+      let hasMore = true;
+
+      // 1. Paginated RPC loop to bypass default 1000-row PostgREST limit
+      try {
+        while (hasMore) {
+          const from = page * pageSize;
+          const to = from + pageSize - 1;
+          const { data, error } = await (supabase as any)
+            .rpc('get_user_login_activity')
+            .range(from, to);
+
+          if (error) {
+            console.warn('RPC range pagination note:', error);
+            break;
+          }
+          if (!data || data.length === 0) {
+            hasMore = false;
+            break;
+          }
+          allUsers.push(...data);
+          if (data.length < pageSize) {
+            hasMore = false;
+          } else {
+            page++;
+          }
+        }
+      } catch (rpcErr) {
+        console.warn('get_user_login_activity error:', rpcErr);
+      }
+
+      // 2. If RPC returned nothing or was limited, also complement/fallback with profiles table
+      if (allUsers.length === 0) {
+        let pPage = 0;
+        let pHasMore = true;
+        while (pHasMore) {
+          const from = pPage * pageSize;
+          const to = from + pageSize - 1;
+          const { data: profs, error: profErr } = await (supabase as any)
+            .from('profiles')
+            .select('id, user_id, email, first_name, last_name, created_at, updated_at')
+            .order('created_at', { ascending: false })
+            .range(from, to);
+
+          if (profErr || !profs || profs.length === 0) {
+            pHasMore = false;
+            break;
+          }
+          const mapped: UserActivityRecord[] = profs
+            .filter((p: any) => p.email && p.email.includes('@'))
+            .map((p: any) => ({
+              id: p.user_id || p.id,
+              email: p.email,
+              full_name: `${p.first_name || ''} ${p.last_name || ''}`.trim() || p.email.split('@')[0],
+              provider: 'Email',
+              created_at: p.created_at || new Date().toISOString(),
+              last_sign_in_at: p.updated_at || p.created_at || null,
+              is_verified: true,
+            }));
+          allUsers.push(...mapped);
+          if (profs.length < pageSize) {
+            pHasMore = false;
+          } else {
+            pPage++;
+          }
+        }
+      }
+
+      setUsers(allUsers);
     } catch (err: any) {
       console.error('Error fetching users:', err);
       toast({ title: 'Error fetching users', description: err.message, variant: 'destructive' });
@@ -252,12 +320,33 @@ Click below to check out the details, themes, and registration links.`,
   const fetchSignupAttempts = async () => {
     setLoadingAttempts(true);
     try {
-      const { data, error } = await supabase
-        .from('signup_attempts')
-        .select('*')
-        .order('created_at', { ascending: false });
-      if (error) throw error;
-      setSignupAttempts(data || []);
+      let allAttempts: SignupAttemptRecord[] = [];
+      let page = 0;
+      const pageSize = 1000;
+      let hasMore = true;
+
+      while (hasMore) {
+        const from = page * pageSize;
+        const to = from + pageSize - 1;
+        const { data, error } = await supabase
+          .from('signup_attempts')
+          .select('*')
+          .order('created_at', { ascending: false })
+          .range(from, to);
+
+        if (error || !data || data.length === 0) {
+          hasMore = false;
+          break;
+        }
+        allAttempts.push(...data);
+        if (data.length < pageSize) {
+          hasMore = false;
+        } else {
+          page++;
+        }
+      }
+
+      setSignupAttempts(allAttempts);
     } catch (err: any) {
       console.error('Error fetching signup attempts:', err);
     } finally {
@@ -1185,9 +1274,11 @@ Click below to check out the details, themes, and registration links.`,
                         <SelectValue placeholder="Do not exclude inactive users" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="0">Do Not Exclude (Send to All)</SelectItem>
-                        <SelectItem value="30">Exclude if inactive &gt; 30 Days</SelectItem>
-                        <SelectItem value="60">Exclude if inactive &gt; 60 Days</SelectItem>
+                        <SelectItem value="0">Do Not Exclude (Show All Uncapped)</SelectItem>
+                        <SelectItem value="7">Active within last 7 Days</SelectItem>
+                        <SelectItem value="30">Active within last 30 Days (Exact Count)</SelectItem>
+                        <SelectItem value="60">Active within last 60 Days (Exact Count)</SelectItem>
+                        <SelectItem value="90">Active within last 90 Days</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -1218,8 +1309,20 @@ Click below to check out the details, themes, and registration links.`,
               {/* Target Summary Banner */}
               <div className="p-4 rounded-xl bg-slate-900 text-slate-100 dark:bg-slate-100 dark:text-slate-900 flex justify-between items-center shadow-md">
                 <div>
-                  <span className="text-xs opacity-75 font-semibold block uppercase tracking-wider">Filtered Target Recipients</span>
-                  <span className="text-2xl font-black">{recipientsList.length} Users Selected</span>
+                  <span className="text-xs opacity-75 font-semibold block uppercase tracking-wider">Filtered Target Recipients (Exact Uncapped Count)</span>
+                  <div className="flex items-baseline gap-2 mt-0.5">
+                    <span className="text-2xl font-black">{recipientsList.length.toLocaleString()} Users Selected</span>
+                    {recipientsList.length > 1000 && (
+                      <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+                        &gt; 1,000 Uncapped
+                      </span>
+                    )}
+                  </div>
+                  <div className="flex items-center gap-3 mt-1.5 text-[11px] opacity-80">
+                    <span>⚡ Sending Plan (~300 emails/day): <strong>{Math.ceil(recipientsList.length / 300)} days</strong></span>
+                    <span>•</span>
+                    <span>Total Database Users: <strong>{users.length.toLocaleString()}</strong></span>
+                  </div>
                 </div>
                 <Users className="h-8 w-8 opacity-80" />
               </div>
@@ -1563,18 +1666,3 @@ Click below to check out the details, themes, and registration links.`,
     </div>
   );
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
