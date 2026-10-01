@@ -19,6 +19,7 @@ import { getCachedData, setCachedData, DEFAULT_CACHE_TTL_MS } from '@/lib/cacheU
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 interface Opportunity {
+  is_trending?: boolean;
   id: string;
   title: string;
   company: string;
