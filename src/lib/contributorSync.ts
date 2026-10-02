@@ -162,7 +162,9 @@ export async function syncContributorCount({
 
       // If matched: Update ONLY existing record count (DO NOT duplicate!)
       if (matched) {
-        const updatedCoins = (Number(matched.coins) || 0) + cleanCount;
+        const previousCoins = Number(matched.coins) || 0;
+        const updatedCoins = previousCoins + cleanCount;
+        const oldLeague = getLeagueUpgradeInfo(previousCoins);
         await (supabase as any)
           .from('contributors')
           .update({
