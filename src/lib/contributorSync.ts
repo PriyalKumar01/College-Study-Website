@@ -166,6 +166,7 @@ export async function syncContributorCount({
         const updatedCoins = previousCoins + cleanCount;
         const oldLeague = getLeagueUpgradeInfo(previousCoins);
         const newLeague = getLeagueUpgradeInfo(updatedCoins);
+        const tierUpgraded = oldLeague.tierName !== newLeague.tierName;
         await (supabase as any)
           .from('contributors')
           .update({
