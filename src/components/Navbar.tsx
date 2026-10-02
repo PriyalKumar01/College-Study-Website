@@ -128,18 +128,7 @@ const Navbar = ({ onOpenAuth }: NavbarProps) => {
                 {/* 4. Useful Websites Dropdown (Hover to open) */}
                 <UsefulWebsitesDropdown />
 
-                {/* 5. Team & Contributors - desktop link */}
-                <Link
-                  to="/notes-contributors"
-                  className={`text-sm font-medium transition-colors relative group py-1 ${
-                    isActive('/notes-contributors') || isActive('/admins') ? 'text-primary font-semibold' : 'text-foreground/80 hover:text-foreground'
-                  }`}
-                >
-                  Team & Contributors
-                  <span className={`absolute bottom-0 left-0 w-full h-0.5 bg-primary transform transition-transform duration-300 origin-left ${
-                    isActive('/notes-contributors') || isActive('/admins') ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100'
-                  }`} />
-                </Link>
+                // Team & Contributors moved to mobile drawer only
               </>
             )}
 
