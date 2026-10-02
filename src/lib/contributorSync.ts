@@ -2,17 +2,6 @@ import { supabase } from '@/integrations/supabase/client';
 import { clearCachePrefix, removeCachedData } from '@/lib/cacheUtils';
 import { getLeagueUpgradeInfo } from '@/lib/contributorBadgeUtils';
 
-/**
- * Automatically increments an existing contributor's coin count or creates a
- * new contributor profile when study materials are approved or published.
- * 
- * - If contributor (or admin) already exists in the contributor list:
- *   Only increments their existing coin count by the number of uploaded PDFs.
- *   Never creates duplicate entries repeatedly.
- * - If 1st time contributor (not in contributor list):
- *   Adds them to the contributor list with the uploaded PDF count and sends
- *   a congratulation notification.
- */
 export interface ContributorSyncResult {
   isNew: boolean;
   tierUpgraded: boolean;
@@ -23,6 +12,17 @@ export interface ContributorSyncResult {
   coins: number;
 }
 
+/**
+ * Automatically increments an existing contributor's coin count or creates a
+ * new contributor profile when study materials are approved or published.
+ * 
+ * - If contributor (or admin) already exists in the contributor list:
+ *   Only increments their existing coin count by the number of uploaded PDFs.
+ *   Never creates duplicate entries repeatedly.
+ * - If 1st time contributor (not in contributor list):
+ *   Adds them to the contributor list with the uploaded PDF count.
+ *   Instant celebration pop-up is displayed to the contributor on milestone upgrade.
+ */
 export function parseAdminDetails(rawAdminName?: string | null): { name: string; branch: string; batch: string } {
   if (!rawAdminName) return { name: '', branch: '', batch: '' };
   const raw = rawAdminName.trim();
@@ -51,7 +51,7 @@ export async function syncContributorCount({
   count?: number;
   branch?: string | null;
   batch?: string | null;
-}): Promise<{ isNew: boolean; name: string; coins: number } | null> {
+}): Promise<ContributorSyncResult | null> {
   const cleanCount = Math.max(1, Math.round(Number(count) || 1));
   let cleanBranch = (branch || '').trim();
   let cleanBatch = (batch || '').trim().replace(/^'+/, ''); // normalize '28 -> 28
@@ -167,6 +167,7 @@ export async function syncContributorCount({
         const oldLeague = getLeagueUpgradeInfo(previousCoins);
         const newLeague = getLeagueUpgradeInfo(updatedCoins);
         const tierUpgraded = oldLeague.tierName !== newLeague.tierName;
+
         await (supabase as any)
           .from('contributors')
           .update({
@@ -180,13 +181,34 @@ export async function syncContributorCount({
         removeCachedData('contributors_list');
         if (typeof window !== 'undefined') {
           window.dispatchEvent(new Event('studyhub_contributors_updated'));
+          if (tierUpgraded) {
+            window.dispatchEvent(new CustomEvent('studyhub_contributor_milestone', {
+              detail: {
+                isNew: false,
+                contributorName: matched.name,
+                coins: updatedCoins,
+                tierName: newLeague.badgeLabel,
+                oldTier: oldLeague.tierName,
+                newTier: newLeague.tierName,
+              }
+            }));
+          }
         }
 
-        return { isNew: false, name: matched.name, coins: updatedCoins };
+        return {
+          isNew: false,
+          tierUpgraded,
+          oldTier: oldLeague.tierName,
+          newTier: newLeague.tierName,
+          tierBadge: newLeague.badgeLabel,
+          name: matched.name,
+          coins: updatedCoins,
+        };
       }
     }
 
     // 3. If no match found: This is a 1st time contributor (new admin/student upload)
+    const newLeague = getLeagueUpgradeInfo(cleanCount);
     const { data: newEntry, error: insertErr } = await (supabase as any)
       .from('contributors')
       .insert({
@@ -203,15 +225,33 @@ export async function syncContributorCount({
       console.error('[syncContributorCount] Error inserting new contributor:', insertErr);
     }
 
-    // No global notification broadcast - celebration pop-up shown directly to contributor
+    // No global notification insert — celebration pop-up is shown directly to the contributor only
 
     clearCachePrefix('contributors');
     removeCachedData('contributors_list');
     if (typeof window !== 'undefined') {
       window.dispatchEvent(new Event('studyhub_contributors_updated'));
+      window.dispatchEvent(new CustomEvent('studyhub_contributor_milestone', {
+        detail: {
+          isNew: true,
+          contributorName: resolvedName,
+          coins: cleanCount,
+          tierName: newLeague.badgeLabel,
+          oldTier: null,
+          newTier: newLeague.tierName,
+        }
+      }));
     }
 
-    return { isNew: true, name: resolvedName, coins: cleanCount };
+    return {
+      isNew: true,
+      tierUpgraded: true,
+      oldTier: null,
+      newTier: newLeague.tierName,
+      tierBadge: newLeague.badgeLabel,
+      name: resolvedName,
+      coins: cleanCount,
+    };
   } catch (err) {
     console.error('[syncContributorCount] Unhandled error:', err);
     return null;
