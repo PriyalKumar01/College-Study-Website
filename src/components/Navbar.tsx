@@ -160,10 +160,7 @@ const Navbar = ({ onOpenAuth }: NavbarProps) => {
           {/* Right Section: Desktop Auth/Actions & Mobile Header Actions */}
           <div className="flex items-center gap-2 sm:gap-3">
             
-            {/* Desktop Download App Button */}
-            <div className="hidden md:block">
-              <InstallPWAButton variant="desktop-navbar" />
-            </div>
+            // Download App button removed from desktop
 
             {/* Notification Bell - desktop */}
             {user && (
