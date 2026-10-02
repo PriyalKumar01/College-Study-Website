@@ -127,8 +127,6 @@ const Navbar = ({ onOpenAuth }: NavbarProps) => {
 
                 {/* 4. Useful Websites Dropdown (Hover to open) */}
                 <UsefulWebsitesDropdown />
-
-                // Team & Contributors moved to mobile drawer only
               </>
             )}
 
@@ -160,8 +158,6 @@ const Navbar = ({ onOpenAuth }: NavbarProps) => {
           {/* Right Section: Desktop Auth/Actions & Mobile Header Actions */}
           <div className="flex items-center gap-2 sm:gap-3">
             
-            // Download App button removed from desktop
-
             {/* Notification Bell - desktop */}
             {user && (
               <div className="hidden md:block">
@@ -396,4 +392,3 @@ const Navbar = ({ onOpenAuth }: NavbarProps) => {
 };
 
 export default Navbar;
-
