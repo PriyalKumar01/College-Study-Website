@@ -87,7 +87,7 @@ export const MilestoneCelebrationModal: React.FC<MilestoneCelebrationModalProps>
           {/* Subheading / Tier info */}
           <p className="text-sm font-semibold text-amber-300 mb-3">
             {isFirst ? (
-              <span>Joined the <span className="underline decoration-amber-400 font-extrabold">Iron Contributor League 🛡️</span></span>
+              <span>You are now in the <span className="underline decoration-amber-400 font-extrabold text-white">Iron Contributor 🛡️</span> category!</span>
             ) : (
               <span>Promoted to <span className="underline decoration-amber-400 font-extrabold">{resolvedTier}</span></span>
             )}
