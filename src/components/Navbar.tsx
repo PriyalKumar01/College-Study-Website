@@ -128,7 +128,7 @@ const Navbar = ({ onOpenAuth }: NavbarProps) => {
                 {/* 4. Useful Websites Dropdown (Hover to open) */}
                 <UsefulWebsitesDropdown />
 
-                {/* 5. Team & Contributors */}
+                {/* 5. Team & Contributors - desktop link */}
                 <Link
                   to="/notes-contributors"
                   className={`text-sm font-medium transition-colors relative group py-1 ${
