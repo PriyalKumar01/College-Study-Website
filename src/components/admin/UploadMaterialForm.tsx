@@ -38,7 +38,7 @@ interface UploadMaterialFormProps {
 }
 
 const UploadMaterialForm = ({ onUploadSuccess }: UploadMaterialFormProps) => {
-  const { user, isOwner } = useAuth();
+  const { user, isAdmin, isOwner } = useAuth();
   const { toast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
