@@ -466,7 +466,7 @@ const UploadMaterialForm = ({ onUploadSuccess }: UploadMaterialFormProps) => {
         throw insertError;
       }
 
-      // Auto-sync contributor coins if approved right away (e.g. uploaded by owner/admin)
+      // Auto-sync contributor coins and trigger celebration popup on milestone if approved right away (e.g. uploaded by owner/admin)
       if (isOwner) {
         syncContributorCount({
           name: currentUser?.user_metadata?.first_name || currentUser?.email?.split('@')[0],
