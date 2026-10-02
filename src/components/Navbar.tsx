@@ -396,3 +396,4 @@ const Navbar = ({ onOpenAuth }: NavbarProps) => {
 };
 
 export default Navbar;
+
