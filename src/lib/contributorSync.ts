@@ -1,5 +1,6 @@
 import { supabase } from '@/integrations/supabase/client';
 import { clearCachePrefix, removeCachedData } from '@/lib/cacheUtils';
+import { getLeagueUpgradeInfo } from '@/lib/contributorBadgeUtils';
 
 /**
  * Automatically increments an existing contributor's coin count or creates a
