@@ -456,9 +456,6 @@ const UploadMaterialForm = ({ onUploadSuccess }: UploadMaterialFormProps) => {
           approved: (isOwner || isAdmin) ? true : false,
           approved_at: (isOwner || isAdmin) ? new Date().toISOString() : null,
           approved_by: (isOwner || isAdmin) ? currentUser?.id : null,
-          approved: isOwner ? true : false,
-          approved_at: isOwner ? new Date().toISOString() : null,
-          approved_by: isOwner ? currentUser?.id : null,
         });
 
       if (insertError) {
@@ -466,9 +463,10 @@ const UploadMaterialForm = ({ onUploadSuccess }: UploadMaterialFormProps) => {
         throw insertError;
       }
 
-      // Auto-sync contributor coins and trigger celebration popup on milestone if approved right away (e.g. uploaded by owner/admin)
-      if (isOwner) {
-        syncContributorCount({
+      // Auto-sync contributor coins if approved right away (e.g. uploaded by owner/admin)
+      let syncResult = null;
+      if (isOwner || isAdmin) {
+        syncResult = await syncContributorCount({
           name: currentUser?.user_metadata?.first_name || currentUser?.email?.split('@')[0],
           email: currentUser?.email,
           count: 1,
@@ -482,25 +480,42 @@ const UploadMaterialForm = ({ onUploadSuccess }: UploadMaterialFormProps) => {
         window.dispatchEvent(new Event('studyhub_notes_updated'));
       }
 
-      const newTotalCount = previousCount + 1;
-      const isFirst = !alreadyInContributorList && previousCount === 0;
-      const isMilestone = isLeagueMilestone(newTotalCount);
+      if (syncResult) {
+        // Trigger celebration only if new contributor OR tier upgraded
+        if (syncResult.isNew || syncResult.tierUpgraded) {
+          setCelebrationData({
+            isOpen: true,
+            contributorName: syncResult.name || currentUser?.user_metadata?.first_name || 'Contributor',
+            coins: syncResult.coins,
+            isFirst: syncResult.isNew,
+            isPending: false,
+            tierName: syncResult.tierBadge,
+          });
+        }
+      } else {
+        const newTotalCount = previousCount + 1;
+        const prevTier = previousCount > 0 ? getLeagueUpgradeInfo(previousCount).tierName : null;
+        const nextLeague = getLeagueUpgradeInfo(newTotalCount);
+        const isFirstPending = !alreadyInContributorList && previousCount === 0;
+        const tierChanged = !isFirstPending && prevTier !== null && prevTier !== nextLeague.tierName;
 
-      if (isFirst || isMilestone) {
-        const leagueInfo = getLeagueUpgradeInfo(newTotalCount);
-        setCelebrationData({
-          isOpen: true,
-          contributorName: currentUser?.user_metadata?.first_name || currentUser?.email?.split('@')[0] || 'Contributor',
-          coins: newTotalCount,
-          isFirst: isFirst,
-          isPending: !isOwner,
-          tierName: leagueInfo.badgeLabel,
-        });
+        if (isFirstPending || tierChanged) {
+          setCelebrationData({
+            isOpen: true,
+            contributorName: currentUser?.user_metadata?.first_name || currentUser?.email?.split('@')[0] || 'Contributor',
+            coins: newTotalCount,
+            isFirst: isFirstPending,
+            isPending: !(isOwner || isAdmin),
+            tierName: nextLeague.badgeLabel,
+          });
+        }
       }
+
+      const isFirst = syncResult ? syncResult.isNew : (!alreadyInContributorList && previousCount === 0);
 
       toast({
         title: isFirst ? '🎉 Congratulations on Your 1st Contribution!' : '✅ Uploaded Successfully!',
-        description: isOwner
+        description: (isOwner || isAdmin)
           ? 'Your material is approved and live on the website immediately.'
           : (isFirst 
               ? 'Congratulations! Your first contribution is submitted for review and will be added to the Wall of Contributors once verified!' 
@@ -1300,6 +1315,4 @@ const UploadMaterialForm = ({ onUploadSuccess }: UploadMaterialFormProps) => {
 };
 
 export default UploadMaterialForm;
-
-
 
