@@ -81,7 +81,7 @@ export const MilestoneCelebrationModal: React.FC<MilestoneCelebrationModalProps>
 
           {/* Heading */}
           <h2 className="text-2xl sm:text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-yellow-200 via-amber-200 to-white mb-2 leading-tight">
-            Congratulations, {contributorName}!
+            Congratulations, {contributorName}! 🎉
           </h2>
 
           {/* Subheading / Tier info */}
