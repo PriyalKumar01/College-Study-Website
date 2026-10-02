@@ -169,9 +169,9 @@ CREATE TABLE IF NOT EXISTS public.notes (
   uploaded_by TEXT NOT NULL,
   user_email TEXT NOT NULL,
   user_name TEXT NOT NULL,
-  status TEXT DEFAULT 'approved',
-  approved BOOLEAN DEFAULT true,
-  approved_at TIMESTAMP WITH TIME ZONE DEFAULT now(),
+  status TEXT DEFAULT 'pending',
+  approved BOOLEAN DEFAULT false,
+  approved_at TIMESTAMP WITH TIME ZONE,
   approved_by TEXT,
   uploaded_at TIMESTAMP WITH TIME ZONE DEFAULT now()
 );

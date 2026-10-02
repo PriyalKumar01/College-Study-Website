@@ -38,7 +38,7 @@ interface UploadMaterialFormProps {
 }
 
 const UploadMaterialForm = ({ onUploadSuccess }: UploadMaterialFormProps) => {
-  const { user, isAdmin, isOwner } = useAuth();
+  const { user, isOwner } = useAuth();
   const { toast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -452,10 +452,10 @@ const UploadMaterialForm = ({ onUploadSuccess }: UploadMaterialFormProps) => {
           uploaded_by: currentUser?.id || 'admin',
           user_email: currentUser?.email || 'admin@studyhub.com',
           user_name: currentUser?.user_metadata?.first_name || currentUser?.email?.split('@')[0] || 'Admin',
-          status: (isOwner || isAdmin) ? 'approved' : 'pending',
-          approved: (isOwner || isAdmin) ? true : false,
-          approved_at: (isOwner || isAdmin) ? new Date().toISOString() : null,
-          approved_by: (isOwner || isAdmin) ? currentUser?.id : null,
+          status: isOwner ? 'approved' : 'pending',
+          approved: isOwner ? true : false,
+          approved_at: isOwner ? new Date().toISOString() : null,
+          approved_by: isOwner ? currentUser?.id : null,
         });
 
       if (insertError) {
@@ -463,9 +463,9 @@ const UploadMaterialForm = ({ onUploadSuccess }: UploadMaterialFormProps) => {
         throw insertError;
       }
 
-      // Auto-sync contributor coins if approved right away (e.g. uploaded by owner/admin)
+      // Auto-sync contributor coins if approved right away (e.g. uploaded directly by owner)
       let syncResult = null;
-      if (isOwner || isAdmin) {
+      if (isOwner) {
         syncResult = await syncContributorCount({
           name: currentUser?.user_metadata?.first_name || currentUser?.email?.split('@')[0],
           email: currentUser?.email,
@@ -505,7 +505,7 @@ const UploadMaterialForm = ({ onUploadSuccess }: UploadMaterialFormProps) => {
             contributorName: currentUser?.user_metadata?.first_name || currentUser?.email?.split('@')[0] || 'Contributor',
             coins: newTotalCount,
             isFirst: isFirstPending,
-            isPending: !(isOwner || isAdmin),
+            isPending: !isOwner,
             tierName: nextLeague.badgeLabel,
           });
         }
@@ -514,12 +514,12 @@ const UploadMaterialForm = ({ onUploadSuccess }: UploadMaterialFormProps) => {
       const isFirst = syncResult ? syncResult.isNew : (!alreadyInContributorList && previousCount === 0);
 
       toast({
-        title: isFirst ? '🎉 Congratulations on Your 1st Contribution!' : '✅ Uploaded Successfully!',
-        description: (isOwner || isAdmin)
+        title: isFirst ? '🎉 Congratulations on Your 1st Contribution!' : (isOwner ? '✅ Uploaded Successfully!' : '📤 Submitted for Approval!'),
+        description: isOwner
           ? 'Your material is approved and live on the website immediately.'
           : (isFirst 
-              ? 'Congratulations! Your first contribution is submitted for review and will be added to the Wall of Contributors once verified!' 
-              : 'Your material has been submitted for approval. It will appear on the website once approved.'),
+              ? 'Congratulations! Your first contribution is submitted for review and will be added to the Wall of Contributors once verified by the owner!' 
+              : 'Your material has been submitted for owner approval. It will appear on the website once approved by the owner.'),
       });
 
       // Reset form

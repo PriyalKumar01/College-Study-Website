@@ -15,7 +15,7 @@ import Navbar from '@/components/Navbar';
 import { smartDownload } from '@/lib/downloadUtils';
 
 const AdminDashboard = () => {
-  const { user } = useAuth();
+  const { user, isOwner } = useAuth();
   const { toast } = useToast();
   const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -82,10 +82,19 @@ const AdminDashboard = () => {
   };
 
   const handleNoteApproval = async (noteId: string, approved: boolean) => {
+    if (!isOwner) {
+      toast({
+        title: 'Permission Denied',
+        description: 'Only the site owner has permission to approve or reject notes.',
+        variant: 'destructive',
+      });
+      return;
+    }
     try {
       const { error } = await supabase
         .from('notes')
         .update({ 
+          status: approved ? 'approved' : 'rejected',
           approved,
           approved_at: approved ? new Date().toISOString() : null,
           approved_by: approved ? user?.id : null
