@@ -13,6 +13,16 @@ import { getLeagueUpgradeInfo } from '@/lib/contributorBadgeUtils';
  *   Adds them to the contributor list with the uploaded PDF count and sends
  *   a congratulation notification.
  */
+export interface ContributorSyncResult {
+  isNew: boolean;
+  tierUpgraded: boolean;
+  oldTier: string | null;
+  newTier: string;
+  tierBadge: string;
+  name: string;
+  coins: number;
+}
+
 export function parseAdminDetails(rawAdminName?: string | null): { name: string; branch: string; batch: string } {
   if (!rawAdminName) return { name: '', branch: '', batch: '' };
   const raw = rawAdminName.trim();
