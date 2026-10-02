@@ -89,7 +89,7 @@ export const MilestoneCelebrationModal: React.FC<MilestoneCelebrationModalProps>
             {isFirst ? (
               <span>You are now in the <span className="underline decoration-amber-400 font-extrabold text-white">Iron Contributor 🛡️</span> category!</span>
             ) : (
-              <span>Promoted to <span className="underline decoration-amber-400 font-extrabold">{resolvedTier}</span></span>
+              <span>You are now promoted to the <span className="underline decoration-amber-400 font-extrabold text-white">{resolvedTier}</span> category!</span>
             )}
           </p>
 
