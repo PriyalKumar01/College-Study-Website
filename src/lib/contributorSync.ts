@@ -199,18 +199,7 @@ export async function syncContributorCount({
       console.error('[syncContributorCount] Error inserting new contributor:', insertErr);
     }
 
-    // 4. Send congratulatory system notification for first contribution
-    try {
-      await (supabase as any).from('notifications').insert({
-        title: `🎉 Welcome ${resolvedName} to Contributors Wall!`,
-        body: `Congratulations ${resolvedName}! Your first contribution (${cleanCount} study material PDF${cleanCount > 1 ? 's' : ''}) has been published. Thank you for helping fellow students!`,
-        sent_by: 'StudyHub Team',
-        sent_by_email: 'priyalkumar06@gmail.com',
-        is_active: true,
-      });
-    } catch (notifErr) {
-      console.warn('[syncContributorCount] Could not post congratulation notification:', notifErr);
-    }
+    // No global notification broadcast - celebration pop-up shown directly to contributor
 
     clearCachePrefix('contributors');
     removeCachedData('contributors_list');
