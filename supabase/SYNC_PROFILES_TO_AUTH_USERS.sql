@@ -3,4 +3,4 @@
 
 BEGIN;
 
--- Handle unique email constraints and ON CONFLICT DO NOTHING
+-- Ensure confirmation_token is populated with non-null strings for GoTrue compatibility
