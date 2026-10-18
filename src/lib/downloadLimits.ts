@@ -69,6 +69,16 @@ export async function checkAndRecordDownload(
     const startOfMonth = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1)).toISOString();
 
     const userEmail = user.email.toLowerCase().trim();
-   
+    const userId = user.id;
+
+    // 4. Query downloads for today
+    const { count: dailyCount, error: dailyErr } = await supabase
+      .from('note_downloads')
+      .select('id', { count: 'exact', head: true })
+      .or(`user_id.eq.${userId},user_email.eq.${userEmail}`)
+      .gte('download_timestamp', startOfToday);
+
+    if (dailyErr) {
+      console.warn('[DownloadLimits] Daily check query error
   return { allowed: true, message: "OK" };
 }
