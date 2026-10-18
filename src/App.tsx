@@ -18,6 +18,7 @@ import AppLayout from "./components/AppLayout";
 import ProtectedRoute from "./components/ProtectedRoute";
 import BannedScreen from "./components/BannedScreen";
 import PendingApprovalScreen from "./components/PendingApprovalScreen";
+import SecurityShield from "./components/SecurityShield";
 
 const Auth = lazy(() => import("./pages/Auth"));
 const Index = lazy(() => import("./pages/Index"));
@@ -55,6 +56,7 @@ const AppContent = () => {
     <SidebarProvider>
       <TooltipProvider>
         <Toaster />
+        <SecurityShield />
         {showMaintenance ? (
                 <Suspense fallback={<PageLoader />}>
                   <Maintenance />
