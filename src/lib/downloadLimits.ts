@@ -51,6 +51,14 @@ export async function checkAndRecordDownload(
     }
 
     // 2. Check email verification (email_confirmed_at or confirmed_at)
-    co
+    const isEmailConfirmed = Boolean(user.email_confirmed_at || (user as any).confirmed_at);
+    // Google OAuth logins are automatically verified
+    const isGoogleAuth = user.app_metadata?.provider === 'google' || user.identities?.some(i => i.provider === 'google');
+    
+    if (!isEmailConfirmed && !isGoogleAuth) {
+      return {
+        allowed: false,
+        reason: 'NOT_VERIFIED',
+        message: 'Please verify your email address to download notes. Check your inbox for the verification link.',
   return { allowed: true, message: "OK" };
 }
