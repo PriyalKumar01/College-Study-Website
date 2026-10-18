@@ -60,5 +60,15 @@ export async function checkAndRecordDownload(
         allowed: false,
         reason: 'NOT_VERIFIED',
         message: 'Please verify your email address to download notes. Check your inbox for the verification link.',
+      };
+    }
+
+    // 3. Calculate start of today (midnight) & start of this month in UTC
+    const now = new Date();
+    const startOfToday = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate())).toISOString();
+    const startOfMonth = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1)).toISOString();
+
+    const userEmail = user.email.toLowerCase().trim();
+   
   return { allowed: true, message: "OK" };
 }
