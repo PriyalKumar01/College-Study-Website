@@ -96,6 +96,18 @@ export async function checkAndRecordDownload(
     // 5. Query downloads for this month
     const { count: monthlyCount, error: monthlyErr } = await supabase
       .from('note_downloads')
-      .select('id', {
+      .select('id', { count: 'exact', head: true })
+      .or(`user_id.eq.${userId},user_email.eq.${userEmail}`)
+      .gte('download_timestamp', startOfMonth);
+
+    if (monthlyErr) {
+      console.warn('[DownloadLimits] Monthly check query error:', monthlyErr);
+    }
+
+    const currentMonthly = monthlyCount ?? 0;
+    if (currentMonthly >= MONTHLY_LIMIT) {
+      return {
+        allowed: false,
+        reason: 'MONTHL
   return { allowed: true, message: "OK" };
 }
