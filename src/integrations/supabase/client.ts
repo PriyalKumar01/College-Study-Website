@@ -19,7 +19,7 @@ export const TEMP_PROJECT = {
 };
 
 // TOGGLE: Set to true when using temporary project, false when 29th arrives!
-export const USE_TEMP_PROJECT = false; // toggle for dual project fallback
+export const USE_TEMP_PROJECT = false; // dual write enabled
 
 const activeConfig = USE_TEMP_PROJECT ? TEMP_PROJECT : MAIN_PROJECT;
 const secondaryConfig = USE_TEMP_PROJECT ? MAIN_PROJECT : TEMP_PROJECT;
