@@ -81,5 +81,4 @@ export const SecurityShield = () => {
   return null;
 };
 
-// Shield active
 export default SecurityShield;
