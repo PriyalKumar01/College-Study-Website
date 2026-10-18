@@ -305,7 +305,6 @@ body {
    ANTI-PRINT & CONTENT PROTECTION SHIELD
    Hides all content if a user tries to Print or 'Save as PDF' from browser
    ============================================================================== */
-/* Anti-print shield */
 @media print {
   html, body {
     display: none !important;
