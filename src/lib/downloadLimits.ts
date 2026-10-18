@@ -1,7 +1,9 @@
+import { supabase } from '@/integrations/supabase/client';
+
 export interface DownloadCheckResult {
   allowed: boolean;
-  reason?: 'NOT_LOGGED_IN' | 'NOT_VERIFIED' | 'DAILY_LIMIT_REACHED' | 'MONTHLY_LIMIT_REACHED' | 'STORAGE_VIEW_ONLY' | 'ERROR';
   message: string;
-  dailyRemaining?: number;
-  monthlyRemaining?: number;
 }
+
+const DAILY_LIMIT = 5;
+const MONTHLY_LIMIT = 20;
