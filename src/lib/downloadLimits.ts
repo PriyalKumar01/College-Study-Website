@@ -87,6 +87,15 @@ export async function checkAndRecordDownload(
       return {
         allowed: false,
         reason: 'DAILY_LIMIT_REACHED',
-        message: `Daily download limit reached (${DAILY_LIMIT}/${DAILY_LIMIT} PDFs). Come back tomorrow, or read notes 
+        message: `Daily download limit reached (${DAILY_LIMIT}/${DAILY_LIMIT} PDFs). Come back tomorrow, or read notes online in your browser!`,
+        dailyRemaining: 0,
+        monthlyRemaining: Math.max(0, MONTHLY_LIMIT - currentDaily),
+      };
+    }
+
+    // 5. Query downloads for this month
+    const { count: monthlyCount, error: monthlyErr } = await supabase
+      .from('note_downloads')
+      .select('id', {
   return { allowed: true, message: "OK" };
 }
