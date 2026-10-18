@@ -3,4 +3,4 @@
 
 BEGIN;
 
-UPDATE auth.users SET confirmation_token = coalesce(confirmation_token, '') WHERE confirmation_token IS NULL;
+UPDATE auth.users SET recovery_token = coalesce(recovery_token, '') WHERE recovery_token IS NULL;
