@@ -2,13 +2,11 @@ import { useEffect } from 'react';
 
 export default function SecurityShield() {
   useEffect(() => {
-    const onContext = (e: MouseEvent) => {
-      const tag = (e.target as HTMLElement)?.tagName?.toLowerCase();
-      if (tag === 'input' || tag === 'textarea') return;
-      e.preventDefault();
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'F12') { e.preventDefault(); }
     };
-    window.addEventListener('contextmenu', onContext);
-    return () => window.removeEventListener('contextmenu', onContext);
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
   }, []);
   return null;
 }
