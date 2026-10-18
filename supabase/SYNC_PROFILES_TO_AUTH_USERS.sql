@@ -3,4 +3,4 @@
 
 BEGIN;
 
--- Ensure confirmation_token is populated with non-null strings for GoTrue compatibility
+-- Insert into auth.identities with matching user_id UUID and provider_id
