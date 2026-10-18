@@ -79,6 +79,14 @@ export async function checkAndRecordDownload(
       .gte('download_timestamp', startOfToday);
 
     if (dailyErr) {
-      console.warn('[DownloadLimits] Daily check query error
+      console.warn('[DownloadLimits] Daily check query error:', dailyErr);
+    }
+
+    const currentDaily = dailyCount ?? 0;
+    if (currentDaily >= DAILY_LIMIT) {
+      return {
+        allowed: false,
+        reason: 'DAILY_LIMIT_REACHED',
+        message: `Daily download limit reached (${DAILY_LIMIT}/${DAILY_LIMIT} PDFs). Come back tomorrow, or read notes 
   return { allowed: true, message: "OK" };
 }
