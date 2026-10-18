@@ -299,4 +299,18 @@ body {
 
 .animate-slow-coin {
   animation: slow-coin-spin 10s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+/* ==============================================================================
+   ANTI-PRINT & CONTENT PROTECTION SHIELD
+   Hides all content if a user tries to Print or 'Save as PDF' from browser
+   ============================================================================== */
+/* Anti-print shield */
+@media print {
+  html, body {
+    display: none !important;
+    visibility: hidden !important;
+    height: 0 !important;
+    overflow: hidden !important;
+  }
 }
