@@ -34,6 +34,23 @@ export async function checkAndRecordDownload(
   }
   isDownloadInProgress = true;
 
-  try
+  try {
+    // 1. Get current authenticated user
+    let user = userOverride;
+    if (!user) {
+      const { data } = await supabase.auth.getUser();
+      user = data?.user ?? null;
+    }
+
+    if (!user || !user.email) {
+      return {
+        allowed: false,
+        reason: 'NOT_LOGGED_IN',
+        message: 'Please sign in to download syllabus notes. You can still preview them online without downloading!',
+      };
+    }
+
+    // 2. Check email verification (email_confirmed_at or confirmed_at)
+    co
   return { allowed: true, message: "OK" };
 }
