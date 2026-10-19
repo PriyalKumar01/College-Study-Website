@@ -1301,7 +1301,7 @@ const Opportunities = () => {
                   onChange={e => setFilterLoc(e.target.value)}
                   className="w-full px-2.5 py-1.5 rounded-md border border-zinc-200 dark:border-zinc-750 bg-zinc-50 dark:bg-zinc-800/60 text-xs font-medium text-zinc-800 dark:text-zinc-200 focus:outline-none focus:ring-1 focus:ring-zinc-400"
                 >
-                  {locationsList.map(l => ( /* Location filter */
+                  {locationsList.map(l => (
                     <option key={l} value={l}>
                       {l === 'all' ? 'All Locations' : l}
                     </option>
@@ -1314,7 +1314,7 @@ const Opportunities = () => {
                 <div className="rounded-md p-3 bg-zinc-100 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-750 text-xs space-y-1.5">
                   <div className="flex items-center gap-1.5 font-semibold text-zinc-900 dark:text-zinc-100">
                     <Crown className="w-3.5 h-3.5 text-amber-500" />
-                    <span>Direct HR Contacts</span>
+                    <span>Direct HR Contacts /* Callout */</span>
                   </div>
                   <p className="text-[11px] text-zinc-500 dark:text-zinc-400 leading-snug">
                     Access 1800+ verified corporate HR emails and 90+ career portals.
