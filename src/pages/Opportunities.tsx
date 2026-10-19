@@ -1186,7 +1186,7 @@ const Opportunities = () => {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
 
           {/* ──── LEFT SIDEBAR FILTERS (Sticky on Desktop) ──── */}
-          <aside className="hidden lg:block lg:col-span-3 sticky top-20 /* Sticky Filters */ space-y-4">
+          <aside className="hidden lg:block lg:col-span-3 sticky top-20 space-y-4">
             <div className="bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-800 p-4 shadow-xs space-y-5">
               
               {/* Filter Header */}
@@ -1208,7 +1208,7 @@ const Opportunities = () => {
               {/* Search Box */}
               <div className="space-y-1">
                 <label className="text-[11px] font-semibold text-zinc-700 dark:text-zinc-300">
-                  Search Keywords
+                  Search Keywords /* Search */
                 </label>
                 <div className="relative">
                   <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-zinc-400" />
