@@ -405,7 +405,7 @@ function OpportunityCard({ item, isOwner, onEdit, onDelete, onToggleTrending }: 
           {item.description}
         </p>
 
-        {item.description && item.description.length > 90 /* Collapse toggle */ && (
+        {item.description && item.description.length > 90 && (
           <button
             onClick={() => setIsExpanded(!isExpanded)}
             className="mb-2 flex items-center gap-0.5 text-[11px] font-medium text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200 cursor-pointer p-0"
@@ -425,7 +425,7 @@ function OpportunityCard({ item, isOwner, onEdit, onDelete, onToggleTrending }: 
           href={item.apply_url}
           target="_blank"
           rel="noopener noreferrer"
-          className={`flex-1 inline-flex items-center justify-center gap-1.5 py-2 px-3 rounded-md text-xs font-semibold text-white bg-zinc-900 hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200 transition-colors shadow-xs ${
+          className={`flex-1 inline-flex items-center justify-center gap-1.5 py-2 px-3 rounded-md text-xs font-semibold text-white bg-zinc-900 hover:bg-zinc-800 dark:bg-zinc-100 /* Solid CTA */ dark:text-zinc-900 dark:hover:bg-zinc-200 transition-colors shadow-xs ${
             !isActive ? 'pointer-events-none opacity-50' : ''
           }`}
         >
