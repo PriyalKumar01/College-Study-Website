@@ -106,7 +106,7 @@ const FirstYearNotes = () => {
       syllabusUrl: 'https://hbtu.ac.in/naac/CS/B.Tech.%201st%20Year%20Course%20C-06222026063347.pdf',
       playlists: {
         detailed: [
-          { title: 'Programming for Problem Solving (C Language) - Gate Smashers', url: 'https://youtube.com/playlist?list=PLxCzCOWd7aiGmiGl_ndKXJ430Sc8rq4uO', recommended: true },
+          { title: 'Programming for Problem Solving (C Language) - Gate Smashers', url: 'https://youtube.com/playlist?list=PLxCzCOWd7aiGmiGl_DOuRMJYG8tOVuapB', recommended: true },
           { title: 'C Programming for Beginners - Neso Academy', url: 'https://youtube.com/playlist?list=PLBlnK6fEyqRhX6r2uhhlubuF5QextdCSM', recommended: true },
         ],
         oneshot: [
@@ -456,7 +456,7 @@ const FirstYearNotes = () => {
       description: 'Value education, harmony in self, family, society, nature, and professional ethics.',
       playlists: {
         detailed: [
-          { title: 'Universal Human Values (UHV) Complete Lectures', url: 'https://youtube.com/playlist?list=PL49mRA0Y_C8uQ6B-qZtYm-b3e3rO8g76Y', recommended: true }
+          { title: 'Universal Human Values (UHV) Complete Lectures - Dwivedi Guidance', url: 'https://youtube.com/playlist?list=PLsh2FvSr3n7doww8dqQ9YIL2G66tWZQz3', recommended: true }
         ],
         oneshot: []
       },
