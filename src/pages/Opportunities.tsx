@@ -1195,7 +1195,7 @@ const Opportunities = () => {
                   <SlidersHorizontal className="w-3.5 h-3.5 text-zinc-500" />
                   <span>Filter Roles</span>
                 </div>
-                {hasActiveFilters && (
+                {hasActiveFilters && ( /* Filter chips */
                   <button
                     onClick={resetAllFilters}
                     className="text-[11px] font-semibold text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100 cursor-pointer"
@@ -1504,7 +1504,7 @@ const Opportunities = () => {
       </main>
 
       {/* ──── MOBILE FILTER DRAWER ──── */}
-      {mobileFilterOpen && ( /* Mobile drawer */
+      {mobileFilterOpen && (
         <div
           className="fixed inset-0 z-50 bg-black/60 flex justify-end lg:hidden"
           onClick={() => setMobileFilterOpen(false)}
