@@ -48,7 +48,7 @@ const StudentSuccessStories = () => {
     // Local Rate Us State (Visual only)
     const [userRating, setUserRating] = useState(0);
     const [hasRated, setHasRated] = useState(false);
-    const [liveLearnersCount, setLiveLearnersCount] = useState(1890);
+    const [liveLearnersCount, setLiveLearnersCount] = useState(3096);
 
     useEffect(() => {
         const storedRating = localStorage.getItem('college-hub-user-rating');
@@ -64,7 +64,7 @@ const StudentSuccessStories = () => {
         let incrementInterval: any;
 
         const initLiveCount = async () => {
-            let dbCount = 1890; // Default fallback
+            let dbCount = 3096; // Default to real student count
             const cachedCount = getCachedData<number>('total_students_count', DEFAULT_CACHE_TTL_MS);
             if (cachedCount) {
                 dbCount = cachedCount;
