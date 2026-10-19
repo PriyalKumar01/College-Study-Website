@@ -456,7 +456,7 @@ function OpportunityCard({ item, isOwner, onEdit, onDelete, onToggleTrending }: 
             </button>
             <button
               onClick={() => onEdit(item)}
-              className="p-1.5 rounded-md text-zinc-400 hover:text-blue-500 /* Edit button */ transition-colors"
+              className="p-1.5 rounded-md text-zinc-400 hover:text-blue-500 transition-colors"
               title="Edit"
             >
               <Pencil className="w-3.5 h-3.5" />
@@ -1129,7 +1129,7 @@ const Opportunities = () => {
       <Navbar />
 
       {/* ══════════ HERO SECTION (Solid Professional Slate/Zinc) ══════════ */}
-      <section className="bg-zinc-950 text-white pt-8 pb-8 border-b border-zinc-800">
+      <section className="bg-zinc-950 text-white pt-8 pb-8 /* Solid Hero */ border-b border-zinc-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-5">
             <div className="space-y-1.5">
