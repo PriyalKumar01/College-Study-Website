@@ -53,7 +53,6 @@ export const checkIsTrending = (item: Opportunity): boolean => {
 };
 
 // ─── Tabs Configuration (Solid, Professional, Minimal) ────────────────────────
-// Minimal solid tabs
 const TABS: { id: TabType; label: string; icon: React.ReactNode }[] = [
   { id: 'All', label: 'All Opportunities', icon: <Briefcase className="w-3.5 h-3.5" /> },
   { id: 'Jobs', label: 'Jobs & Full-Time', icon: <Briefcase className="w-3.5 h-3.5" /> },
@@ -62,6 +61,7 @@ const TABS: { id: TabType; label: string; icon: React.ReactNode }[] = [
   { id: 'Competitions', label: 'Competitions', icon: <Trophy className="w-3.5 h-3.5" /> },
 ];
 
+// Keyword mappings
 const tabTypeMap: Record<TabType, string[]> = {
   All: ['job', 'intern', 'hack', 'comp', 'full-time', 'part-time', 'competition'],
   Jobs: ['job', 'full-time', 'part-time', 'remote', 'hybrid', 'onsite', 'permanent'],
