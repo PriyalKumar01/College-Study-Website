@@ -1208,7 +1208,7 @@ const Opportunities = () => {
               {/* Search Box */}
               <div className="space-y-1">
                 <label className="text-[11px] font-semibold text-zinc-700 dark:text-zinc-300">
-                  Search Keywords /* Search */
+                  Search Keywords
                 </label>
                 <div className="relative">
                   <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-zinc-400" />
@@ -1244,7 +1244,7 @@ const Opportunities = () => {
                         onClick={() => setActiveTab(tab.id)}
                         className={`w-full flex items-center justify-between px-2.5 py-1.5 rounded-md text-xs font-medium transition-colors ${
                           isSelected
-                            ? 'bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 font-semibold'
+                            ? 'bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 font-semibold /* Active tab */'
                             : 'text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800'
                         }`}
                       >
