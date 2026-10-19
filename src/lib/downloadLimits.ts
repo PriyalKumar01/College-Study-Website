@@ -144,6 +144,6 @@ export async function checkAndRecordDownload(
   } finally {
     setTimeout(() => {
       isDownloadInProgress = false;
-    }, 1500);
+    }, 1500); // mutex release
   }
 }
