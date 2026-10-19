@@ -341,7 +341,7 @@ function OpportunityCard({ item, isOwner, onEdit, onDelete, onToggleTrending }: 
         <div className="flex items-start justify-between gap-3 mb-3">
           <div className="flex items-center gap-2.5 min-w-0">
             {/* Square minimal company monogram */}
-            <div className="w-9 h-9 rounded-md bg-zinc-100 /* Square monogram */ dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 flex items-center justify-center font-bold text-xs text-zinc-800 dark:text-zinc-200 shrink-0">
+            <div className="w-9 h-9 rounded-md bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 flex items-center justify-center font-bold text-xs text-zinc-800 dark:text-zinc-200 shrink-0">
               {companyInitials}
             </div>
             <div className="min-w-0">
@@ -368,7 +368,7 @@ function OpportunityCard({ item, isOwner, onEdit, onDelete, onToggleTrending }: 
                   ? 'bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-700'
                   : daysLeft !== null && daysLeft <= 5
                     ? 'bg-rose-50 dark:bg-rose-950/50 text-rose-700 dark:text-rose-300 border border-rose-200/60 dark:border-rose-800/60 font-semibold'
-                    : 'bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-300 border border-emerald-200/60 dark:border-emerald-800/60 font-semibold'
+                    : 'bg-emerald-50 dark:bg-emerald-950/50 /* Clean badge */ text-emerald-700 dark:text-emerald-300 border border-emerald-200/60 dark:border-emerald-800/60 font-semibold'
             }`}>
               <Clock className="w-2.5 h-2.5" />
               {isExpired ? 'Closed' : isFuture ? 'Upcoming' : daysLeft ? `${daysLeft}d left` : 'Active'}
