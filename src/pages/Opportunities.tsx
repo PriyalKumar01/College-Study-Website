@@ -69,7 +69,7 @@ const tabTypeMap: Record<TabType, string[]> = {
   Competitions: ['comp', 'competition', 'coding', 'design', 'innovation', 'business'],
 };
 
-// ─── Featured Showcase (Executive, Solid Dark Theme, Sharp Corners) ─────────
+// ─── Featured /* Solid amber */ Showcase (Executive, Solid Dark Theme, Sharp Corners) ─────────
 interface TrendingCarouselProps {
   trendingItems: Opportunity[];
   isOwner: boolean;
@@ -120,7 +120,7 @@ function TrendingCarousel({ trendingItems, isOwner, onToggleTrending, onSelectOp
 
   return (
     <div 
-      className="relative mb-6 rounded-lg bg-zinc-950 /* clean background */ border border-zinc-800 text-white shadow-sm overflow-hidden"
+      className="relative mb-6 rounded-lg bg-zinc-950 border border-zinc-800 text-white shadow-sm overflow-hidden"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
     >
