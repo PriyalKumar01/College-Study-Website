@@ -292,7 +292,6 @@ interface OpportunityCardProps {
   onToggleTrending: (item: Opportunity, forcedState?: boolean) => void;
 }
 
-// Minimalist Job Card
 function OpportunityCard({ item, isOwner, onEdit, onDelete, onToggleTrending }: OpportunityCardProps) {
   const { toast } = useToast();
   const [isExpanded, setIsExpanded] = useState(false);
@@ -342,7 +341,7 @@ function OpportunityCard({ item, isOwner, onEdit, onDelete, onToggleTrending }: 
         <div className="flex items-start justify-between gap-3 mb-3">
           <div className="flex items-center gap-2.5 min-w-0">
             {/* Square minimal company monogram */}
-            <div className="w-9 h-9 rounded-md bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 flex items-center justify-center font-bold text-xs text-zinc-800 dark:text-zinc-200 shrink-0">
+            <div className="w-9 h-9 rounded-md bg-zinc-100 /* Square monogram */ dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 flex items-center justify-center font-bold text-xs text-zinc-800 dark:text-zinc-200 shrink-0">
               {companyInitials}
             </div>
             <div className="min-w-0">
