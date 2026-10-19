@@ -145,7 +145,7 @@ function TrendingCarousel({ trendingItems, isOwner, onToggleTrending, onSelectOp
           )}
           <button
             onClick={handlePrev}
-            className="w-6 h-6 rounded border border-zinc-800 /* Square arrow */ bg-zinc-900 hover:bg-zinc-800 text-zinc-300 flex items-center justify-center transition-colors"
+            className="w-6 h-6 rounded border border-zinc-800 bg-zinc-900 hover:bg-zinc-800 text-zinc-300 flex items-center justify-center transition-colors"
             title="Previous"
           >
             <ChevronLeft className="w-3.5 h-3.5" />
@@ -172,7 +172,7 @@ function TrendingCarousel({ trendingItems, isOwner, onToggleTrending, onSelectOp
           exit={{ opacity: 0, y: -6 }}
           transition={{ duration: 0.2 }}
           className="p-5 sm:p-6 cursor-pointer"
-          onDoubleClick={() => {
+          onDoubleClick={() => { /* owner toggle */
             if (isOwner) onToggleTrending(current, false);
           }}
         >
