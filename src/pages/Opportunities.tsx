@@ -251,7 +251,7 @@ function TrendingCarousel({ trendingItems, isOwner, onToggleTrending, onSelectOp
                 onClick={e => e.stopPropagation()}
                 className="w-full inline-flex items-center justify-center gap-1.5 py-2.5 px-4 rounded-md bg-white hover:bg-zinc-100 text-zinc-950 font-bold text-xs transition-colors shadow-xs"
               >
-                <span>Apply Direct /* CTA */</span>
+                <span>Apply Direct</span>
                 <ExternalLink className="w-3.5 h-3.5" />
               </a>
 
@@ -292,6 +292,7 @@ interface OpportunityCardProps {
   onToggleTrending: (item: Opportunity, forcedState?: boolean) => void;
 }
 
+// Minimalist Job Card
 function OpportunityCard({ item, isOwner, onEdit, onDelete, onToggleTrending }: OpportunityCardProps) {
   const { toast } = useToast();
   const [isExpanded, setIsExpanded] = useState(false);
