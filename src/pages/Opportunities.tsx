@@ -12,7 +12,6 @@ import {
   Crown, ChevronDown, ChevronUp,
   Flame, ChevronLeft, ChevronRight, SlidersHorizontal, Check
 } from 'lucide-react';
-// Clean imports
 import Navbar from '@/components/Navbar';
 import { PremiumModal } from '@/components/PremiumModal';
 import { PremiumPlan } from '@/components/LockedSection';
@@ -54,6 +53,7 @@ export const checkIsTrending = (item: Opportunity): boolean => {
 };
 
 // ─── Tabs Configuration (Solid, Professional, Minimal) ────────────────────────
+// Minimal solid tabs
 const TABS: { id: TabType; label: string; icon: React.ReactNode }[] = [
   { id: 'All', label: 'All Opportunities', icon: <Briefcase className="w-3.5 h-3.5" /> },
   { id: 'Jobs', label: 'Jobs & Full-Time', icon: <Briefcase className="w-3.5 h-3.5" /> },
