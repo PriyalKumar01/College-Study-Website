@@ -30,6 +30,7 @@ import {
 } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import { useLiveStudentCount } from '@/hooks/useLiveStudentCount';
 
 // Smooth counting animation helper component for the stats widget
 const AboutStatCounterInline = ({ targetVal, decimals = 0, isK = false }: { targetVal: number; decimals?: number; isK?: boolean }) => {
@@ -64,6 +65,8 @@ const AboutStatCounterInline = ({ targetVal, decimals = 0, isK = false }: { targ
 };
 
 const About = () => {
+  const { rawCount } = useLiveStudentCount();
+  const studentBaseK = Number((rawCount / 1000).toFixed(2)) || 3.1;
   const [stackIndex, setStackIndex] = useState(0);
   const [swiping, setSwiping] = useState(false);
 
@@ -292,7 +295,7 @@ const About = () => {
               {/* Users Card */}
               <div className="bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800 p-4 rounded-2xl shadow-sm flex flex-col items-center justify-center text-center">
                 <div className="text-2xl md:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-650 dark:from-blue-400 dark:to-indigo-400 mb-1.5">
-                  <AboutStatCounterInline targetVal={2.25} isK={true} />
+                  <AboutStatCounterInline targetVal={studentBaseK} isK={true} />
                 </div>
                 
                 <div className="flex items-center gap-1.5 text-green-500 mb-2">
