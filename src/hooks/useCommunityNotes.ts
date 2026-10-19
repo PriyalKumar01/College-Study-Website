@@ -48,8 +48,25 @@ export function useCommunityNotes(category: string, semester?: string | string[]
         .limit(100);
 
       if (!error && notes && isMountedRef.current) {
-        setCachedData(cacheKey, notes);
-        setData(notes);
+        // Sanitize: filter out broken server entries that have working duplicates or are unreachable
+        const sanitizedNotes = notes.filter((note, idx, arr) => {
+          if (!note.file_url) return false;
+          // If note is on blocked server, check if active working note exists
+          if (note.file_url.includes('axalbmmjqdezbkpffore')) {
+            const hasWorkingReplacement = arr.some(
+              other =>
+                other.id !== note.id &&
+                !other.file_url.includes('axalbmmjqdezbkpffore') &&
+                (other.title?.toLowerCase().trim() === note.title?.toLowerCase().trim() ||
+                  (other.file_name && other.file_name === note.file_name))
+            );
+            if (hasWorkingReplacement) return false; // exclude broken duplicate
+          }
+          return true;
+        });
+
+        setCachedData(cacheKey, sanitizedNotes);
+        setData(sanitizedNotes);
       }
     } catch (e) {
       console.error("Failed to fetch community notes", e);
