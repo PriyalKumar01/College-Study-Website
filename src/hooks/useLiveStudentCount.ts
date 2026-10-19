@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { getCachedData, setCachedData, DEFAULT_CACHE_TTL_MS } from '@/lib/cacheUtils';
 
-// Query exact profiles count via Supabase
 export function useLiveStudentCount() {
   const [count, setCount] = useState<number>(() => {
     return getCachedData<number>('live_student_count', DEFAULT_CACHE_TTL_MS) || 2484;
