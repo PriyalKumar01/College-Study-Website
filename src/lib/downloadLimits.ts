@@ -133,6 +133,17 @@ export async function checkAndRecordDownload(
       monthlyRemaining: Math.max(0, MONTHLY_LIMIT - (currentMonthly + 1)),
     };
   } catch (error: any) {
-    c
-  return { allowed: true, message: "OK" };
+    console.error('[DownloadLimits] Verification error:', error);
+    // Fail safe: allow download if network hiccup
+    return {
+      allowed: true,
+      message: 'Download permitted.',
+      dailyRemaining: 1,
+      monthlyRemaining: 1,
+    };
+  } finally {
+    setTimeout(() => {
+      isDownloadInProgress = false;
+    }, 1500);
+  }
 }
