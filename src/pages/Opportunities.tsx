@@ -77,7 +77,6 @@ interface TrendingCarouselProps {
   onSelectOpportunity: (item: Opportunity) => void;
 }
 
-// Executive Showcase
 function TrendingCarousel({ trendingItems, isOwner, onToggleTrending, onSelectOpportunity }: TrendingCarouselProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
@@ -121,7 +120,7 @@ function TrendingCarousel({ trendingItems, isOwner, onToggleTrending, onSelectOp
 
   return (
     <div 
-      className="relative mb-6 rounded-lg bg-zinc-950 border border-zinc-800 text-white shadow-sm overflow-hidden"
+      className="relative mb-6 rounded-lg bg-zinc-950 /* clean background */ border border-zinc-800 text-white shadow-sm overflow-hidden"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
     >
