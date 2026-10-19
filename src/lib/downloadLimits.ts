@@ -123,6 +123,16 @@ export async function checkAndRecordDownload(
       user_name: userName,
       note_title: title,
       note_url: url,
-      download
+      download_timestamp: new Date().toISOString(),
+    });
+
+    return {
+      allowed: true,
+      message: 'Download permitted.',
+      dailyRemaining: Math.max(0, DAILY_LIMIT - (currentDaily + 1)),
+      monthlyRemaining: Math.max(0, MONTHLY_LIMIT - (currentMonthly + 1)),
+    };
+  } catch (error: any) {
+    c
   return { allowed: true, message: "OK" };
 }
