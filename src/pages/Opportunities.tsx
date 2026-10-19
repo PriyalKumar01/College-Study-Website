@@ -61,7 +61,6 @@ const TABS: { id: TabType; label: string; icon: React.ReactNode }[] = [
   { id: 'Competitions', label: 'Competitions', icon: <Trophy className="w-3.5 h-3.5" /> },
 ];
 
-// Keyword mappings
 const tabTypeMap: Record<TabType, string[]> = {
   All: ['job', 'intern', 'hack', 'comp', 'full-time', 'part-time', 'competition'],
   Jobs: ['job', 'full-time', 'part-time', 'remote', 'hybrid', 'onsite', 'permanent'],
@@ -78,6 +77,7 @@ interface TrendingCarouselProps {
   onSelectOpportunity: (item: Opportunity) => void;
 }
 
+// Executive Showcase
 function TrendingCarousel({ trendingItems, isOwner, onToggleTrending, onSelectOpportunity }: TrendingCarouselProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
