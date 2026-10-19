@@ -38,7 +38,7 @@ export interface Opportunity {
 }
 
 export type TabType = 'All' | 'Jobs' | 'Internships' | 'Hackathons' | 'Competitions';
-export type StatusFilter /* Status checks */ = 'all' | 'active' | 'closing_soon' | 'upcoming';
+export type StatusFilter = 'all' | 'active' | 'closing_soon' | 'upcoming';
 export type SortOption = 'newest' | 'deadline';
 
 // Helper to check if an opportunity is trending
@@ -1301,7 +1301,7 @@ const Opportunities = () => {
                   onChange={e => setFilterLoc(e.target.value)}
                   className="w-full px-2.5 py-1.5 rounded-md border border-zinc-200 dark:border-zinc-750 bg-zinc-50 dark:bg-zinc-800/60 text-xs font-medium text-zinc-800 dark:text-zinc-200 focus:outline-none focus:ring-1 focus:ring-zinc-400"
                 >
-                  {locationsList.map(l => (
+                  {locationsList.map(l => ( /* Location filter */
                     <option key={l} value={l}>
                       {l === 'all' ? 'All Locations' : l}
                     </option>
