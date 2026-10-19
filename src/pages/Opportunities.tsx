@@ -1314,7 +1314,7 @@ const Opportunities = () => {
                 <div className="rounded-md p-3 bg-zinc-100 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-750 text-xs space-y-1.5">
                   <div className="flex items-center gap-1.5 font-semibold text-zinc-900 dark:text-zinc-100">
                     <Crown className="w-3.5 h-3.5 text-amber-500" />
-                    <span>Direct HR Contacts /* Callout */</span>
+                    <span>Direct HR Contacts</span>
                   </div>
                   <p className="text-[11px] text-zinc-500 dark:text-zinc-400 leading-snug">
                     Access 1800+ verified corporate HR emails and 90+ career portals.
@@ -1504,7 +1504,7 @@ const Opportunities = () => {
       </main>
 
       {/* ──── MOBILE FILTER DRAWER ──── */}
-      {mobileFilterOpen && (
+      {mobileFilterOpen && ( /* Mobile drawer */
         <div
           className="fixed inset-0 z-50 bg-black/60 flex justify-end lg:hidden"
           onClick={() => setMobileFilterOpen(false)}
