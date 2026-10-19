@@ -127,7 +127,7 @@ const Dashboard = () => {
           setUserCount(val);
           setCachedData('dash_user_count', val);
         } else {
-          setUserCount('4,500+'); // Fallback estimate if table/rpc missing
+          setUserCount('3,000+'); // Fallback estimate if table/rpc missing
         }
       }
     };
@@ -195,11 +195,17 @@ const Dashboard = () => {
   ];
 
   const [currentStatIndex, setCurrentStatIndex] = useState(0);
-  const [isHovered, setIsHovered] = useState(false);
+  const userCountFormatted /* dynamic */ = (() => {
+    const num = typeof userCount === 'number' ? userCount : parseInt(userCount.toString().replace(/[^0-9]/g, ''));
+    if (!isNaN(num) && num > 0) {
+      return `${(num / 1000).toFixed(2)}k+`;
+    }
+    return '3.10k+';
+  })();
 
   const statCardsData = [
     {
-      value: '2.25k+',
+      value: userCountFormatted,
       label: 'Registered Users',
       badge: 'Active Now',
       description: 'Join a rapidly growing community of students sharing resources, collaborating, and studying together in real time.',
