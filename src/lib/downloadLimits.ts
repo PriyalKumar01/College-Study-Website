@@ -108,6 +108,13 @@ export async function checkAndRecordDownload(
     if (currentMonthly >= MONTHLY_LIMIT) {
       return {
         allowed: false,
-        reason: 'MONTHL
+        reason: 'MONTHLY_LIMIT_REACHED',
+        message: `Monthly download limit reached (${MONTHLY_LIMIT}/${MONTHLY_LIMIT} PDFs). You can still view all notes anytime in your browser!`,
+        dailyRemaining: Math.max(0, DAILY_LIMIT - currentDaily),
+        monthlyRemaining: 0,
+      };
+    }
+
+    // 6. Record download
   return { allowed: true, message: "OK" };
 }
