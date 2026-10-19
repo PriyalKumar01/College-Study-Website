@@ -383,7 +383,7 @@ function OpportunityCard({ item, isOwner, onEdit, onDelete, onToggleTrending }: 
 
         {/* Meta Chips */}
         <div className="flex flex-wrap gap-1.5 mb-2.5">
-          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-medium bg-zinc-100 dark:bg-zinc-800 text-zinc-700 /* Meta chip */ dark:text-zinc-300 border border-zinc-200 dark:border-zinc-750">
+          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-medium bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-750">
             <Briefcase className="w-2.5 h-2.5 text-zinc-500" /> {item.type}
           </span>
           {item.duration && (
@@ -405,7 +405,7 @@ function OpportunityCard({ item, isOwner, onEdit, onDelete, onToggleTrending }: 
           {item.description}
         </p>
 
-        {item.description && item.description.length > 90 && (
+        {item.description && item.description.length > 90 /* Collapse toggle */ && (
           <button
             onClick={() => setIsExpanded(!isExpanded)}
             className="mb-2 flex items-center gap-0.5 text-[11px] font-medium text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200 cursor-pointer p-0"
