@@ -1,6 +1,32 @@
+import { checkAndRecordDownload } from './downloadLimits';
+import { User } from '@supabase/supabase-js';
+
 /**
- * Downloads a file using blob fetch to force download instead of opening in browser.
- * Works for cross-origin URLs (e.g., Supabase storage).
+ * Checks if a given URL is a Google Drive file link.
+ */
+export const isGoogleDriveUrl = (url?: string): boolean => {
+  if (!url || url === '#') return false;
+  return url.includes('drive.google.com') || url.includes('docs.google.com');
+};
+
+/**
+ * Checks if a given URL belongs to Supabase Storage.
+ */
+export const isSupabaseStorageUrl = (url?: string): boolean => {
+  if (!url || url === '#') return false;
+  return url.includes('supabase.co/storage');
+};
+
+/**
+ * Checks if a URL points to the old/paused Supabase project (axalbmmjqdezbkpffore).
+ */
+export const isBlockedServerUrl = (url?: string): boolean => {
+  if (!url || url === '#') return false;
+  return url.includes('axalbmmjqdezbkpffore.supabase.co');
+};
+
+/**
+ * Downloads a file using blob fetch.
  */
 export const downloadFile = async (url: string, filename: string) => {
   try {
@@ -22,19 +48,29 @@ export const downloadFile = async (url: string, filename: string) => {
 };
 
 /**
- * Opens a Google Drive file for in-browser preview (not download).
- * Converts uc?export=download or any Drive link to a /view link.
- * Falls back to opening the URL as-is for non-Drive or Supabase links.
+ * Opens a file in browser for preview.
+ * - Converts Drive download links to preview /view links.
+ * - Intercepts paused server links gracefully without crashing.
  */
 export const viewInBrowser = (url: string) => {
-  if (url === '#') return;
+  if (!url || url === '#') return;
+
+  // Intercept blocked/paused server #1 URLs
+  if (isBlockedServerUrl(url)) {
+    alert(
+      "⚠️ Note Status: This material was uploaded to Server #1, which is undergoing scheduled maintenance until the Oct 29 quota reset.\n\nPlease refer to the verified Google Drive notes above in this section, or contact an admin."
+    );
+    return;
+  }
+
   try {
-    // Extract file ID from either /d/ID or ?id= patterns
+    // Extract file ID from either /d/ID or ?id= patterns for Google Drive
     const fileId =
       url.match(/\/d\/([a-zA-Z0-9-_]+)/)?.[1] ||
       new URL(url).searchParams.get('id');
+
     if (fileId) {
-      window.open(`https://drive.google.com/file/d/${fileId}/view`, '_blank');
+      window.open(`https://drive.google.com/file/d/${fileId}/preview`, '_blank');
     } else {
       window.open(url, '_blank');
     }
@@ -44,43 +80,62 @@ export const viewInBrowser = (url: string) => {
 };
 
 /**
- * Smart download handler that handles both Google Drive and Supabase storage URLs.
- * - Google Drive file URLs (drive.google.com): extracts file ID and opens direct download link
- * - Google Docs/Sheets/Slides URLs (docs.google.com) and other links: open as-is in new tab
- * - Supabase/other URLs: uses blob fetch to force download
+ * Smart download handler:
+ * 1. Supabase Storage notes are VIEW-ONLY (prevents server egress consumption).
+ * 2. Paused server notes are intercepted gracefully.
+ * 3. Google Drive downloads enforce rate-limits:
+ *    - Max 5 downloads per day per verified user
+ *    - Max 20 downloads per month
  */
-export const smartDownload = async (url: string, title: string = 'download.pdf') => {
-  if (url === '#') return;
+export const smartDownload = async (
+  url: string,
+  title: string = 'download.pdf',
+  currentUser?: User | null
+) => {
+  if (!url || url === '#') return;
 
+  // 1. Blocked / Paused Server Guard
+  if (isBlockedServerUrl(url)) {
+    alert(
+      "⚠️ Server Notice: This material is located on Server #1 (maintenance until Oct 29 quota reset). Please use the verified syllabus notes on Google Drive above."
+    );
+    return;
+  }
+
+  // 2. Supabase Storage Guard: Force View-Only to protect free bandwidth quota
+  if (!isGoogleDriveUrl(url)) {
+    alert(
+      "📄 View Mode Active:\nTo keep StudyHub 100% free for all students and preserve server limits, community notes open directly in browser preview.\n\nOpening preview now..."
+    );
+    viewInBrowser(url);
+    return;
+  }
+
+  // 3. Enforce Verified User Download Limits (5/day, 20/month)
+  const limitCheck = await checkAndRecordDownload(url, title, currentUser);
+  if (!limitCheck.allowed) {
+    alert(`🔒 Download Restricted:\n\n${limitCheck.message}`);
+    return;
+  }
+
+  // 4. Trigger Direct Google Drive Download
   try {
     const parsed = new URL(url);
-
-    // Only convert drive.google.com file links to downloadable links
     if (parsed.hostname === 'drive.google.com') {
-      const fileId = url.match(/\/d\/([a-zA-Z0-9-_]+)/)?.[1];
+      const fileId = url.match(/\/d\/([a-zA-Z0-9-_]+)/)?.[1] || parsed.searchParams.get('id');
       if (fileId) {
         const downloadUrl = `https://drive.google.com/uc?export=download&id=${fileId}`;
         window.open(downloadUrl, '_blank');
         return;
       }
-      // uc?export=download links that have ?id= param
-      const idParam = parsed.searchParams.get('id');
-      if (idParam) {
-        window.open(url, '_blank');
-        return;
-      }
     }
 
-    // Google Docs, Sheets, Slides, Forms, or any other web URL — open as-is
     if (parsed.hostname.includes('google.com') || parsed.protocol === 'https:') {
       window.open(url, '_blank');
       return;
     }
   } catch {
-    // Not a valid URL, fall through to blob download
+    // URL parsing fallback
+    window.open(url, '_blank');
   }
-
-  // For Supabase storage and other non-HTTP URLs, use blob download
-  const filename = title.replace(/[^a-zA-Z0-9._-]/g, '_') + '.pdf';
-  await downloadFile(url, filename);
 };
