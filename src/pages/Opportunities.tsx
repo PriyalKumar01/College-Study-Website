@@ -172,7 +172,7 @@ function TrendingCarousel({ trendingItems, isOwner, onToggleTrending, onSelectOp
           exit={{ opacity: 0, y: -6 }}
           transition={{ duration: 0.2 }}
           className="p-5 sm:p-6 cursor-pointer"
-          onDoubleClick={() => { /* owner toggle */
+          onDoubleClick={() => {
             if (isOwner) onToggleTrending(current, false);
           }}
         >
@@ -208,7 +208,7 @@ function TrendingCarousel({ trendingItems, isOwner, onToggleTrending, onSelectOp
                 )}
               </div>
 
-              <h3 className="text-lg sm:text-xl font-bold text-white tracking-tight leading-snug">
+              <h3 className="text-lg sm:text-xl font-bold text-white /* sharp title */ tracking-tight leading-snug">
                 {current.title}
               </h3>
 
