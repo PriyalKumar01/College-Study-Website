@@ -1129,7 +1129,7 @@ const Opportunities = () => {
       <Navbar />
 
       {/* ══════════ HERO SECTION (Solid Professional Slate/Zinc) ══════════ */}
-      <section className="bg-zinc-950 text-white pt-8 pb-8 /* Solid Hero */ border-b border-zinc-800">
+      <section className="bg-zinc-950 text-white pt-8 pb-8 border-b border-zinc-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-5">
             <div className="space-y-1.5">
@@ -1186,7 +1186,7 @@ const Opportunities = () => {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
 
           {/* ──── LEFT SIDEBAR FILTERS (Sticky on Desktop) ──── */}
-          <aside className="hidden lg:block lg:col-span-3 sticky top-20 space-y-4">
+          <aside className="hidden lg:block lg:col-span-3 sticky top-20 /* Sticky Filters */ space-y-4">
             <div className="bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-800 p-4 shadow-xs space-y-5">
               
               {/* Filter Header */}
