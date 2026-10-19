@@ -38,7 +38,7 @@ export interface Opportunity {
 }
 
 export type TabType = 'All' | 'Jobs' | 'Internships' | 'Hackathons' | 'Competitions';
-export type StatusFilter = 'all' | 'active' | 'closing_soon' | 'upcoming';
+export type StatusFilter /* Status checks */ = 'all' | 'active' | 'closing_soon' | 'upcoming';
 export type SortOption = 'newest' | 'deadline';
 
 // Helper to check if an opportunity is trending
@@ -1244,7 +1244,7 @@ const Opportunities = () => {
                         onClick={() => setActiveTab(tab.id)}
                         className={`w-full flex items-center justify-between px-2.5 py-1.5 rounded-md text-xs font-medium transition-colors ${
                           isSelected
-                            ? 'bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 font-semibold /* Active tab */'
+                            ? 'bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 font-semibold'
                             : 'text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800'
                         }`}
                       >
