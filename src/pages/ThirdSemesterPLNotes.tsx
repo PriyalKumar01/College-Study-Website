@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { PlaylistModal } from '@/components/PlaylistModal';
-import { smartDownload, viewInBrowser } from '@/lib/downloadUtils';
+import { smartDownload, viewInBrowser, isGoogleDriveUrl } from '@/lib/downloadUtils';
 import { matchesSubject } from '@/utils/subjectMatcher';
 
 const ThirdSemesterPLNotes = () => {
@@ -271,7 +271,7 @@ interface Note {
     url: 'https://drive.google.com/file/d/1PUot9TyqITqB2FKt2ej6lb-NLMPEx2tE/view?usp=drivesdk'
   };
 
-  const handleDownload = (url: string, title: string) => smartDownload(url, title);
+  const handleDownload = (url: string, title: string) => smartDownload(url, title, user);
 
   if (selectedSubject) {
     const subject = subjects.find(s => s.id === selectedSubject);
@@ -337,20 +337,22 @@ interface Note {
                       <p className="text-[10px] text-muted-foreground mb-3">Uploaded by: {note.userName}</p>
                     )}
                     <div className="flex gap-2">
-                      <button
-                        onClick={() => handleDownload(note.url, note.title)}
-                        className="flex-1 inline-flex items-center justify-center gap-1.5 text-xs font-bold tracking-wider uppercase py-2 px-3 rounded bg-foreground text-background hover:opacity-85 transition-opacity"
-                        disabled={note.url === '#'}
-                      >
-                        <Download className="h-3.5 w-3.5" /> Download
-                      </button>
+                      {isGoogleDriveUrl(note.url) && (
+                        <button
+                          onClick={() => handleDownload(note.url, note.title)}
+                          className="flex-1 inline-flex items-center justify-center gap-1.5 text-xs font-bold tracking-wider uppercase py-2 px-3 rounded bg-foreground text-background hover:opacity-85 transition-opacity"
+                          disabled={note.url === '#'}
+                        >
+                          <Download className="h-3.5 w-3.5" /> Download
+                        </button>
+                      )}
                       <button
                         onClick={() => viewInBrowser(note.url)}
-                        className="inline-flex items-center justify-center p-2 rounded border border-foreground/20 hover:bg-muted transition-colors"
+                        className={`${isGoogleDriveUrl(note.url) ? 'inline-flex items-center justify-center p-2 rounded border border-foreground/20 hover:bg-muted transition-colors' : 'flex-1 inline-flex items-center justify-center gap-1.5 text-xs font-bold tracking-wider uppercase py-2 px-3 rounded bg-foreground text-background hover:opacity-85 transition-opacity'}`}
                         disabled={note.url === '#'}
                         title="View in Browser"
                       >
-                        <ExternalLink className="h-3.5 w-3.5 text-foreground" />
+                        <ExternalLink className="h-3.5 w-3.5" /> {isGoogleDriveUrl(note.url) ? '' : 'View Notes'}
                       </button>
                     </div>
                   </div>
