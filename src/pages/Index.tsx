@@ -19,6 +19,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Star, MessageSquarePlus } from 'lucide-react';
 import StudentSuccessStories from '@/components/StudentSuccessStories';
+import { useLiveStudentCount } from '@/hooks/useLiveStudentCount';
 
 const HOME_CAROUSEL_SLIDES = [
   {
@@ -121,6 +122,7 @@ const HOME_CAROUSEL_SLIDES = [
 
 const Index = () => {
   const { user, isOwner } = useAuth();
+  const { rawCount } = useLiveStudentCount();
   const navigate = useNavigate();
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [authMode, setAuthMode] = useState<'signin' | 'signup'>('signin');
@@ -252,7 +254,7 @@ const Index = () => {
 
   const stats = [
     {
-      end: 4500,
+      end: rawCount || 3096,
       suffix: '+',
       title: 'Active Students',
       description: 'Students actively using our platform',
