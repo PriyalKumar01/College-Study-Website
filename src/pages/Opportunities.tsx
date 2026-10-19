@@ -208,7 +208,7 @@ function TrendingCarousel({ trendingItems, isOwner, onToggleTrending, onSelectOp
                 )}
               </div>
 
-              <h3 className="text-lg sm:text-xl font-bold text-white /* sharp title */ tracking-tight leading-snug">
+              <h3 className="text-lg sm:text-xl font-bold text-white tracking-tight leading-snug">
                 {current.title}
               </h3>
 
@@ -251,7 +251,7 @@ function TrendingCarousel({ trendingItems, isOwner, onToggleTrending, onSelectOp
                 onClick={e => e.stopPropagation()}
                 className="w-full inline-flex items-center justify-center gap-1.5 py-2.5 px-4 rounded-md bg-white hover:bg-zinc-100 text-zinc-950 font-bold text-xs transition-colors shadow-xs"
               >
-                <span>Apply Direct</span>
+                <span>Apply Direct /* CTA */</span>
                 <ExternalLink className="w-3.5 h-3.5" />
               </a>
 
