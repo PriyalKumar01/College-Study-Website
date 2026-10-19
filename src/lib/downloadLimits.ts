@@ -115,6 +115,14 @@ export async function checkAndRecordDownload(
       };
     }
 
-    // 6. Record download
+    // 6. Record download log in note_downloads table
+    const userName = user.user_metadata?.first_name || user.email.split('@')[0];
+    await supabase.from('note_downloads').insert({
+      user_id: userId,
+      user_email: userEmail,
+      user_name: userName,
+      note_title: title,
+      note_url: url,
+      download
   return { allowed: true, message: "OK" };
 }
