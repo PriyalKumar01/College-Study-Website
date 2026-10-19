@@ -195,7 +195,7 @@ const Dashboard = () => {
   ];
 
   const [currentStatIndex, setCurrentStatIndex] = useState(0);
-  const userCountFormatted /* dynamic */ = (() => {
+  const userCountFormatted = (() => {
     const num = typeof userCount === 'number' ? userCount : parseInt(userCount.toString().replace(/[^0-9]/g, ''));
     if (!isNaN(num) && num > 0) {
       return `${(num / 1000).toFixed(2)}k+`;
