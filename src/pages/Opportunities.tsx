@@ -367,7 +367,7 @@ function OpportunityCard({ item, isOwner, onEdit, onDelete, onToggleTrending }: 
                 : isFuture 
                   ? 'bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-700'
                   : daysLeft !== null && daysLeft <= 5
-                    ? 'bg-rose-50 dark:bg-rose-950/50 /* Warning badge */ text-rose-700 dark:text-rose-300 border border-rose-200/60 dark:border-rose-800/60 font-semibold'
+                    ? 'bg-rose-50 dark:bg-rose-950/50 text-rose-700 dark:text-rose-300 border border-rose-200/60 dark:border-rose-800/60 font-semibold'
                     : 'bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-300 border border-emerald-200/60 dark:border-emerald-800/60 font-semibold'
             }`}>
               <Clock className="w-2.5 h-2.5" />
@@ -383,7 +383,7 @@ function OpportunityCard({ item, isOwner, onEdit, onDelete, onToggleTrending }: 
 
         {/* Meta Chips */}
         <div className="flex flex-wrap gap-1.5 mb-2.5">
-          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-medium bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-750">
+          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-medium bg-zinc-100 dark:bg-zinc-800 text-zinc-700 /* Meta chip */ dark:text-zinc-300 border border-zinc-200 dark:border-zinc-750">
             <Briefcase className="w-2.5 h-2.5 text-zinc-500" /> {item.type}
           </span>
           {item.duration && (
