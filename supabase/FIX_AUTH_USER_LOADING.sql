@@ -59,5 +59,3 @@ SELECT
   (SELECT COUNT(*) FROM auth.users) AS total_auth_users,
   (SELECT COUNT(*) FROM auth.identities) AS total_identities,
   (SELECT COUNT(*) FROM public.profiles) AS total_profiles;
-
--- Verified 2,484 accounts loaded into auth.users.

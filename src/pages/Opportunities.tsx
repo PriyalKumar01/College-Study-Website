@@ -1195,7 +1195,7 @@ const Opportunities = () => {
                   <SlidersHorizontal className="w-3.5 h-3.5 text-zinc-500" />
                   <span>Filter Roles</span>
                 </div>
-                {hasActiveFilters && ( /* Filter chips */
+                {hasActiveFilters && (
                   <button
                     onClick={resetAllFilters}
                     className="text-[11px] font-semibold text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100 cursor-pointer"
