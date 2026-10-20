@@ -195,6 +195,7 @@ const Dashboard = () => {
   ];
 
   const [currentStatIndex, setCurrentStatIndex] = useState(0);
+  const [isHovered, setIsHovered] = useState(false);
   const userCountFormatted = (() => {
     const num = typeof userCount === 'number' ? userCount : parseInt(userCount.toString().replace(/[^0-9]/g, ''));
     if (!isNaN(num) && num > 0) {

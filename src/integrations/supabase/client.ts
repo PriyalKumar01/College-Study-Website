@@ -39,9 +39,10 @@ export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABL
 // Secondary Supabase client for mirroring & synchronization
 export const supabaseSecondary = createClient<Database>(secondaryConfig.url, secondaryConfig.anonKey, {
   auth: {
-    storage: undefined,
+    storageKey: 'studyhub_secondary_auth',
     persistSession: false,
     autoRefreshToken: false,
+    detectSessionInUrl: false,
   }
 });
 
