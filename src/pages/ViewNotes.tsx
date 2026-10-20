@@ -5,12 +5,12 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Search, Download, User, Calendar, BookOpen, Filter } from 'lucide-react';
+import { Search, Download, User, Calendar, BookOpen, Filter, Eye } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import Navbar from '@/components/Navbar';
 import NotesCategories from '@/components/NotesCategories';
-import { smartDownload } from '@/lib/downloadUtils';
+import { smartDownload, viewInBrowser } from '@/lib/downloadUtils';
 
 const ViewNotes = () => {
   const { toast } = useToast();
@@ -209,11 +209,11 @@ const ViewNotes = () => {
                           <span>File: {note.file_name}</span>
                         </div>
                         <Button
-                          onClick={() => handleDownload(note.id, note.title, note.file_url)}
+                          onClick={() => viewInBrowser(note.file_url)}
                           className="w-full btn-hero"
                         >
-                          <Download className="h-4 w-4 mr-2" />
-                          Download Notes
+                          <Eye className="h-4 w-4 mr-2" />
+                          View Notes
                         </Button>
                       </div>
                     </CardContent>

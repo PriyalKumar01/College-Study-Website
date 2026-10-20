@@ -248,21 +248,33 @@ const FourthSemesterOTNotes = () => {
                       <p className="text-[10px] text-muted-foreground mb-3">Uploaded by: {note.userName}</p>
                     )}
                     <div className="flex gap-2">
-                      <button
-                        onClick={() => handleDownload(note.url, note.title)}
-                        className="flex-1 inline-flex items-center justify-center gap-1.5 text-xs font-bold tracking-wider uppercase py-2 px-3 rounded bg-foreground text-background hover:opacity-85 transition-opacity"
-                        disabled={note.url === '#'}
-                      >
-                        <Download className="h-3.5 w-3.5" /> Download
-                      </button>
-                      <button
-                        onClick={() => viewInBrowser(note.url)}
-                        className="inline-flex items-center justify-center p-2 rounded border border-foreground/20 hover:bg-muted transition-colors"
-                        disabled={note.url === '#'}
-                        title="View in Browser"
-                      >
-                        <ExternalLink className="h-3.5 w-3.5 text-foreground" />
-                      </button>
+                      {note.isCommunity ? (
+                        <button
+                          onClick={() => viewInBrowser(note.url)}
+                          className="flex-1 inline-flex items-center justify-center gap-1.5 text-xs font-bold tracking-wider uppercase py-2 px-3 rounded bg-foreground text-background hover:opacity-85 transition-opacity"
+                          disabled={note.url === '#'}
+                        >
+                          <ExternalLink className="h-3.5 w-3.5" /> View Notes
+                        </button>
+                      ) : (
+                        <>
+                          <button
+                            onClick={() => handleDownload(note.url, note.title)}
+                            className="flex-1 inline-flex items-center justify-center gap-1.5 text-xs font-bold tracking-wider uppercase py-2 px-3 rounded bg-foreground text-background hover:opacity-85 transition-opacity"
+                            disabled={note.url === '#'}
+                          >
+                            <Download className="h-3.5 w-3.5" /> Download
+                          </button>
+                          <button
+                            onClick={() => viewInBrowser(note.url)}
+                            className="inline-flex items-center justify-center p-2 rounded border border-foreground/20 hover:bg-muted transition-colors"
+                            disabled={note.url === '#'}
+                            title="View in Browser"
+                          >
+                            <ExternalLink className="h-3.5 w-3.5 text-foreground" />
+                          </button>
+                        </>
+                      )}
                     </div>
                   </div>
                 </motion.div>

@@ -93,9 +93,9 @@ export const smartDownload = async (
     return;
   }
 
-  // 1. Direct Supabase Storage / Community PDF Download
+  // 1. Supabase Storage / Community PDF: VIEW-ONLY (Preserves server bandwidth and enforces preview)
   if (isSupabaseStorageUrl(url) || !isGoogleDriveUrl(url)) {
-    await downloadFile(url, title);
+    viewInBrowser(url);
     return;
   }
 
