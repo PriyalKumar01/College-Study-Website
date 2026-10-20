@@ -41,7 +41,7 @@ const ViewNotes = () => {
       const validNotes = (data || []).filter(note => {
         if (!note.file_url || note.file_url === '#' || note.file_url.trim() === '') return false;
         if (note.material_type === 'subject_placeholder') return false;
-        if (note.file_url.includes('axalbmmjqdezbkpffore')) return false;
+        
         return true;
       });
 

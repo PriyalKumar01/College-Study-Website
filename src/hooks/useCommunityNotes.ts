@@ -8,7 +8,7 @@ export function useCommunityNotes(category: string, semester?: string | string[]
   const [data, setData] = useState<any[]>(() => {
     const cached = getCachedData<any[]>(cacheKey, DEFAULT_CACHE_TTL_MS) || [];
     return cached.filter(
-      note => note?.file_url && note.file_url !== '#' && !note.file_url.includes('axalbmmjqdezbkpffore') && note.material_type !== 'subject_placeholder'
+      note => note?.file_url && note.file_url !== '#' && note.material_type !== 'subject_placeholder'
     );
   });
 
@@ -55,7 +55,7 @@ export function useCommunityNotes(category: string, semester?: string | string[]
         const sanitizedNotes = notes.filter((note) => {
           if (!note.file_url || note.file_url === '#' || note.file_url.trim() === '') return false;
           if (note.material_type === 'subject_placeholder') return false;
-          if (note.file_url.includes('axalbmmjqdezbkpffore')) return false;
+          
           return true;
         });
 

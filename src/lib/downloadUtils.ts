@@ -21,8 +21,7 @@ export const isSupabaseStorageUrl = (url?: string): boolean => {
  * Checks if a URL points to any decommissioned/dead host.
  */
 export const isBlockedServerUrl = (url?: string): boolean => {
-  if (!url || url === '#') return true;
-  return url.includes('axalbmmjqdezbkpffore.supabase.co');
+  return !url || url === '#' || url.trim() === '';
 };
 
 /**
