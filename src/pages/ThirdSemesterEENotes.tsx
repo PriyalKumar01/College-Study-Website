@@ -93,11 +93,16 @@ const ThirdSemesterEENotes = () => {
   // Playlist data for EE subjects
   const subjectPlaylists = {
     bsa: {
-      detailed: [],
+      detailed: [
+        { title: 'Signals & Systems Full Course by Umesh Dhande (GATE Academy)', url: 'https://www.youtube.com/playlist?list=PLqHE5qNs7QAhCj62sM9qF5cOnD411470e', recommended: true },
+        { title: 'Signals and Systems Complete Playlist (Engineering Funda)', url: 'https://www.youtube.com/playlist?list=PLHxIOuzvjEuXUqfL3G0gG4mH0kUa7Oa0p', recommended: true }
+      ],
       oneshot: []
     },
     'electrical-machines-1': {
-      detailed: [],
+      detailed: [
+        { title: 'Electrical Machines - I by Prof. Tapas K. Bhattacharya (NPTEL IIT Kharagpur)', url: 'https://www.youtube.com/playlist?list=PLbMVogVj5nJSgXN80b5bF2Q22F61Z65-h', recommended: true }
+      ],
       oneshot: []
     },
     eemi: {
@@ -159,14 +164,20 @@ const ThirdSemesterEENotes = () => {
       name: 'Electrical Machines-I',
       icon: '⚡',
       color: 'bg-amber-500',
-      notes: []
+      notes: [
+        { title: 'Electrical Machines-I (Transformers & DC Machines) Complete Notes', url: 'https://drive.google.com/uc?export=download&id=122gY7moNtAZyisChZzdgtvkGI0dEHIux', recommended: true },
+        { title: 'Electrical Machines Formula Sheet & Important Derivations', url: 'https://drive.google.com/uc?export=download&id=1-L15l3RWjJfZYbIymeVjnwxSYevcDgGh', recommended: true }
+      ]
     },
     {
       id: 'bsa',
       name: 'Basic System Analysis',
       icon: '🧲',
       color: 'bg-red-500',
-      notes: []
+      notes: [
+        { title: 'Signals, Systems & Transforms (Laplace & Fourier) Notes', url: 'https://drive.google.com/file/d/1EZQ7WMY4EoS9kewXgqRp-dbkLFcsVx-J/view?usp=drivesdk', recommended: true },
+        { title: 'Laplace Transform Unit 3 Revision Notes', url: 'https://drive.google.com/file/d/1_PtU2rwcwDjGnrBwBpTtSeohDrbvxDBa/view?usp=drive_link', recommended: true }
+      ]
     },
       {
       id: 'emmi',

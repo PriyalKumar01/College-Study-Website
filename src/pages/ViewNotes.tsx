@@ -37,7 +37,15 @@ const ViewNotes = () => {
         throw error;
       }
 
-      setNotes(data || []);
+      // Filter out any unreachable server files or placeholders
+      const validNotes = (data || []).filter(note => {
+        if (!note.file_url || note.file_url === '#' || note.file_url.trim() === '') return false;
+        if (note.material_type === 'subject_placeholder') return false;
+        if (note.file_url.includes('axalbmmjqdezbkpffore')) return false;
+        return true;
+      });
+
+      setNotes(validNotes);
     } catch (error) {
       console.error('Error fetching notes:', error);
       toast({

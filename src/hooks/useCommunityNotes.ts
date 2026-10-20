@@ -6,7 +6,10 @@ export function useCommunityNotes(category: string, semester?: string | string[]
   const cacheKey = `notes_${category}_${Array.isArray(semester) ? semester.join('_') : (semester || 'all')}`;
 
   const [data, setData] = useState<any[]>(() => {
-    return getCachedData<any[]>(cacheKey, DEFAULT_CACHE_TTL_MS) || [];
+    const cached = getCachedData<any[]>(cacheKey, DEFAULT_CACHE_TTL_MS) || [];
+    return cached.filter(
+      note => note?.file_url && note.file_url !== '#' && !note.file_url.includes('axalbmmjqdezbkpffore') && note.material_type !== 'subject_placeholder'
+    );
   });
 
   const isMountedRef = useRef(true);
@@ -48,20 +51,11 @@ export function useCommunityNotes(category: string, semester?: string | string[]
         .limit(100);
 
       if (!error && notes && isMountedRef.current) {
-        // Sanitize: filter out broken server entries that have working duplicates or are unreachable
-        const sanitizedNotes = notes.filter((note, idx, arr) => {
-          if (!note.file_url) return false;
-          // If note is on blocked server, check if active working note exists
-          if (note.file_url.includes('axalbmmjqdezbkpffore')) {
-            const hasWorkingReplacement = arr.some(
-              other =>
-                other.id !== note.id &&
-                !other.file_url.includes('axalbmmjqdezbkpffore') &&
-                (other.title?.toLowerCase().trim() === note.title?.toLowerCase().trim() ||
-                  (other.file_name && other.file_name === note.file_name))
-            );
-            if (hasWorkingReplacement) return false; // exclude broken duplicate
-          }
+        // Sanitize: filter out broken server entries, placeholder subjects, or dead links
+        const sanitizedNotes = notes.filter((note) => {
+          if (!note.file_url || note.file_url === '#' || note.file_url.trim() === '') return false;
+          if (note.material_type === 'subject_placeholder') return false;
+          if (note.file_url.includes('axalbmmjqdezbkpffore')) return false;
           return true;
         });
 

@@ -5,7 +5,7 @@ import type { Database } from './types';
 // ==============================================================================
 // DUAL SUPABASE CONFIGURATION
 // Active: Temporary Project (Handling peak load)
-// Secondary: Main Project (Temporarily blocked till 29th quota reset)
+// Secondary: Archived Legacy Project
 // ==============================================================================
 
 export const MAIN_PROJECT = {
@@ -18,7 +18,7 @@ export const TEMP_PROJECT = {
   anonKey: "sb_publishable_XANfm0ZXJ8nc-YOlKHxOJw_oyN2Hlb8"
 };
 
-// TOGGLE: Set to true when using temporary project, false when 29th arrives!
+// Active Production Project: xjxdauvimiflzbozycki
 export const USE_TEMP_PROJECT = true;
 
 const activeConfig = USE_TEMP_PROJECT ? TEMP_PROJECT : MAIN_PROJECT;
