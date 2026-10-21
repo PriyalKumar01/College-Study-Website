@@ -3198,4 +3198,84 @@ export const STRIVER_A2Z_FULL_STEPS: DsaStep[] = [
               "Trying out all Combos / Hard"
             ]
           }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "a2z-step-8",
+    "title": "Step 8: Bit Manipulation [Concepts & Problems]",
+    "lectures": [
+      {
+        "id": "a2z-step-8-sub-1",
+        "title": "Learn Bit Manipulation",
+        "problems": [
+          {
+            "id": "a2z-s8-l1-p1",
+            "title": "Introduction to Bit Manipulation [Theory]",
+            "difficulty": "Easy",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/introduction-to-bits-and-tricks",
+            "youtubeUrl": "https://youtu.be/qQd-ViW7bfk?si=QtdNaRhHmZb08Mr8",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Bit Manipulation",
+              "Learn Bit Manipulation"
+            ]
+          },
+          {
+            "id": "a2z-s8-l1-p2",
+            "title": "Check if the i-th bit is set or not",
+            "difficulty": "Easy",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/check-if-the-i-th-bit-is-set-or-not",
+            "youtubeUrl": "https://youtu.be/nttpF8kwgd4?si=x9o8PsYaA2XVZ9rV",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Bit Manipulation",
+              "Learn Bit Manipulation"
+            ]
+          },
+          {
+            "id": "a2z-s8-l1-p3",
+            "title": "Check if a number is odd or not",
+            "difficulty": "Easy",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/check-if-a-number-is-odd-or-not",
+            "youtubeUrl": "https://youtu.be/nttpF8kwgd4?si=x9o8PsYaA2XVZ9rV",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Bit Manipulation",
+              "Learn Bit Manipulation"
+            ]
+          },
+          {
+            "id": "a2z-s8-l1-p4",
+            "title": "Check if a number is power of 2 or not",
+            "difficulty": "Easy",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/power-of-two/",
+            "youtubeUrl": "https://youtu.be/nttpF8kwgd4?si=x9o8PsYaA2XVZ9rV",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Bit Manipulation",
+              "Learn Bit Manipulation"
+            ]
+          },
+          {
+            "id": "a2z-s8-l1-p5",
+            "title": "Count the number of set bits",
+            "difficulty": "Easy",
 ];
