@@ -7278,4 +7278,84 @@ export const STRIVER_A2Z_FULL_STEPS: DsaStep[] = [
             "youtubeUrl": "https://www.youtube.com/watch?v=yMnH0jrir0Q",
             "articleUrl": "https://takeuforward.org/data-structure/minimum-insertions-deletions-to-convert-string-dp-30/",
             "companies": [
+              "Amazon"
+            ],
+            "tags": [
+              "Dynamic Programming",
+              "DP on Strings"
+            ]
+          },
+          {
+            "id": "a2z-s16-l5-p7",
+            "title": "Shortest Common Supersequence | (DP - 31)",
+            "difficulty": "Hard",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/shortest-common-supersequence/",
+            "youtubeUrl": "https://youtu.be/xElxAuBcvsU",
+            "articleUrl": "https://takeuforward.org/data-structure/shortest-common-supersequence-dp-31/",
+            "companies": [
+              "Microsoft",
+              "Google"
+            ],
+            "tags": [
+              "Dynamic Programming",
+              "DP on Strings"
+            ]
+          },
+          {
+            "id": "a2z-s16-l5-p8",
+            "title": "Distinct Subsequences| (DP-32)",
+            "difficulty": "Hard",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/distinct-subsequences/",
+            "youtubeUrl": "https://youtu.be/nVG7eTiD2bY",
+            "articleUrl": "https://takeuforward.org/data-structure/distinct-subsequences-dp-32/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Dynamic Programming",
+              "DP on Strings"
+            ]
+          },
+          {
+            "id": "a2z-s16-l5-p9",
+            "title": "Edit Distance | (DP-33)",
+            "difficulty": "Hard",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/edit-distance/",
+            "youtubeUrl": "https://youtu.be/fJaKO8FbDdo",
+            "articleUrl": "https://takeuforward.org/data-structure/edit-distance-dp-33/",
+            "companies": [
+              "Google",
+              "Amazon",
+              "Microsoft"
+            ],
+            "tags": [
+              "Dynamic Programming",
+              "DP on Strings"
+            ]
+          },
+          {
+            "id": "a2z-s16-l5-p10",
+            "title": "Wildcard Matching | (DP-34)",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/wildcard-matching/",
+            "youtubeUrl": "https://youtu.be/ZmlQ3vgAOMo",
+            "articleUrl": "https://takeuforward.org/data-structure/wildcard-matching-dp-34/",
+            "companies": [
+              "Google",
+              "Meta"
+            ],
+            "tags": [
+              "Dynamic Programming",
+              "DP on Strings"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "a2z-step-16-sub-6",
 ];
