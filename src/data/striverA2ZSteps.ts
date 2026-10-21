@@ -5118,4 +5118,84 @@ export const STRIVER_A2Z_FULL_STEPS: DsaStep[] = [
               "Medium Problems"
             ]
           },
+          {
+            "id": "a2z-s13-l2-p5",
+            "title": "Check if two trees are identical or not",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/same-tree/",
+            "youtubeUrl": "https://youtu.be/BhuvF_-PWS0",
+            "articleUrl": "https://takeuforward.org/data-structure/check-if-two-trees-are-identical/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Binary Trees",
+              "Medium Problems"
+            ]
+          },
+          {
+            "id": "a2z-s13-l2-p6",
+            "title": "Zig Zag Traversal of Binary Tree",
+            "difficulty": "Easy",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/binary-tree-zigzag-level-order-traversal/",
+            "youtubeUrl": "https://youtu.be/3OXWEdlIGl4",
+            "articleUrl": "https://takeuforward.org/data-structure/zig-zag-traversal-of-binary-tree/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Binary Trees",
+              "Medium Problems"
+            ]
+          },
+          {
+            "id": "a2z-s13-l2-p7",
+            "title": "Boundary Traversal of Binary Tree",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/boundary-of-binary-tree/",
+            "youtubeUrl": "https://youtu.be/0ca1nvR0be4",
+            "articleUrl": "https://takeuforward.org/data-structure/boundary-traversal-of-a-binary-tree/",
+            "companies": [
+              "Amazon",
+              "Microsoft"
+            ],
+            "tags": [
+              "Binary Trees",
+              "Medium Problems"
+            ]
+          },
+          {
+            "id": "a2z-s13-l2-p8",
+            "title": "Vertical Order Traversal of Binary Tree",
+            "difficulty": "Easy",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/vertical-order-traversal-of-a-binary-tree/",
+            "youtubeUrl": "https://youtu.be/q_a6lpbKJdw",
+            "articleUrl": "https://takeuforward.org/data-structure/vertical-order-traversal-of-binary-tree/",
+            "companies": [
+              "Amazon",
+              "Meta",
+              "Google"
+            ],
+            "tags": [
+              "Binary Trees",
+              "Medium Problems"
+            ]
+          },
+          {
+            "id": "a2z-s13-l2-p9",
+            "title": "Top View of Binary Tree",
+            "difficulty": "Easy",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/top-view-of-bt",
+            "youtubeUrl": "https://youtu.be/Et9OCDNvJ78",
+            "articleUrl": "https://takeuforward.org/data-structure/top-view-of-a-binary-tree/",
+            "companies": [
+              "Amazon",
+              "Microsoft",
 ];
