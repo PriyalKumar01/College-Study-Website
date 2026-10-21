@@ -6398,4 +6398,84 @@ export const STRIVER_A2Z_FULL_STEPS: DsaStep[] = [
             "difficulty": "Medium",
             "platform": "LeetCode",
             "problemUrl": "https://leetcode.com/problems/network-delay-time/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Graphs",
+              "Shortest Path Algorithms and Problems"
+            ]
+          },
+          {
+            "id": "a2z-s15-l4-p9",
+            "title": "Number of ways to arrive at destination",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/number-of-ways-to-arrive-at-destination/",
+            "youtubeUrl": "https://youtu.be/_-0mx0SmYxA",
+            "articleUrl": "https://takeuforward.org/data-structure/g-40-number-of-ways-to-arrive-at-destination/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Graphs",
+              "Shortest Path Algorithms and Problems"
+            ]
+          },
+          {
+            "id": "a2z-s15-l4-p10",
+            "title": "Minimum steps to reach end from start by performing multiplication and mod operations with array elements",
+            "difficulty": "Hard",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/minimum-multiplications-to-reach-end",
+            "youtubeUrl": "https://www.youtube.com/watch?v=_BvEJ3VIDWw&list=PLgUwDviBIf0oE3gA41TKO2H5bHpPd7fzn&index=39",
+            "articleUrl": "https://takeuforward.org/graph/g-39-minimum-multiplications-to-reach-end/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Graphs",
+              "Shortest Path Algorithms and Problems"
+            ]
+          },
+          {
+            "id": "a2z-s15-l4-p11",
+            "title": "Bellman Ford Algorithm",
+            "difficulty": "Hard",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/bellman-ford-algorithm",
+            "youtubeUrl": "https://youtu.be/0vVofAhAYjc",
+            "articleUrl": "https://takeuforward.org/data-structure/bellman-ford-algorithm-g-41/",
+            "companies": [
+              "Amazon",
+              "Google"
+            ],
+            "tags": [
+              "Graphs",
+              "Shortest Path Algorithms and Problems"
+            ]
+          },
+          {
+            "id": "a2z-s15-l4-p12",
+            "title": "Floyd Warshal Algorithm",
+            "difficulty": "Hard",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/floyd-warshall-algorithm",
+            "youtubeUrl": "https://youtu.be/YbY8cVwWAvw",
+            "articleUrl": "https://takeuforward.org/data-structure/floyd-warshall-algorithm-g-42/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Graphs",
+              "Shortest Path Algorithms and Problems"
+            ]
+          },
+          {
+            "id": "a2z-s15-l4-p13",
+            "title": "Find the city with the smallest number of neighbors in a threshold distance",
 ];
