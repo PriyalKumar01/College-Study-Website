@@ -318,4 +318,84 @@ export const STRIVER_A2Z_FULL_STEPS: DsaStep[] = [
             "difficulty": "Basic",
             "platform": "Other",
             "problemUrl": "https://takeuforward.org/plus/dsa/problems/divisors-of-a-number",
+            "youtubeUrl": "https://youtu.be/1xNbjMdbjug?t=1580",
+            "articleUrl": "https://takeuforward.org/data-structure/print-all-divisors-of-a-given-number/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Learn the basics",
+              "Know Basic Maths"
+            ]
+          },
+          {
+            "id": "a2z-s1-l4-p7",
+            "title": "Check for Prime",
+            "difficulty": "Basic",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/check-for-prime-number",
+            "youtubeUrl": "https://youtu.be/1xNbjMdbjug?t=2381",
+            "articleUrl": "https://takeuforward.org/data-structure/check-if-a-number-is-prime-or-not/",
+            "companies": [
+              "Amazon"
+            ],
+            "tags": [
+              "Learn the basics",
+              "Know Basic Maths"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "a2z-step-1-sub-5",
+        "title": "Learn Basic Recursion",
+        "problems": [
+          {
+            "id": "a2z-s1-l5-p1",
+            "title": "Understand recursion by print something N times",
+            "difficulty": "Basic",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/recursion/introduction-to-recursion-understand-recursion-by-printing-something-n-times/",
+            "youtubeUrl": "https://www.youtube.com/watch?v=yVdKa8dnKiE&list=PLgUwDviBIf0rGlzIn_7rsaR2FQ5e6ZOL9",
+            "articleUrl": "https://takeuforward.org/recursion/introduction-to-recursion-understand-recursion-by-printing-something-n-times/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Learn the basics",
+              "Learn Basic Recursion"
+            ]
+          },
+          {
+            "id": "a2z-s1-l5-p2",
+            "title": "Print name N times using recursion",
+            "difficulty": "Basic",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/recursion/print-name-n-times-using-recursion/",
+            "youtubeUrl": "https://www.youtube.com/watch?v=un6PLygfXrA&list=PLgUwDviBIf0rGlzIn_7rsaR2FQ5e6ZOL9&index=2",
+            "articleUrl": "https://takeuforward.org/recursion/print-name-n-times-using-recursion/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Learn the basics",
+              "Learn Basic Recursion"
+            ]
+          },
+          {
+            "id": "a2z-s1-l5-p3",
+            "title": "Print 1 to N using recursion",
+            "difficulty": "Basic",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/print-1-to-n-using-recursion",
+            "youtubeUrl": "https://www.youtube.com/watch?v=un6PLygfXrA&list=PLgUwDviBIf0rGlzIn_7rsaR2FQ5e6ZOL9&index=2",
+            "articleUrl": "https://takeuforward.org/recursion/print-1-to-n-using-recursion/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
 ];
