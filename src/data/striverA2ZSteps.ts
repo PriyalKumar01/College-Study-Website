@@ -3038,4 +3038,84 @@ export const STRIVER_A2Z_FULL_STEPS: DsaStep[] = [
             "problemUrl": "https://leetcode.com/problems/combination-sum-iii/",
             "companies": [
               "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Recursion",
+              "Subsequences Pattern"
+            ]
+          },
+          {
+            "id": "a2z-s7-l2-p12",
+            "title": "Letter Combinations of a Phone number",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/letter-combinations-of-a-phone-number/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Recursion",
+              "Subsequences Pattern"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "a2z-step-7-sub-3",
+        "title": "Trying out all Combos / Hard",
+        "problems": [
+          {
+            "id": "a2z-s7-l3-p1",
+            "title": "Palindrome Partitioning",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/palindrome-partitioning/",
+            "youtubeUrl": "https://www.youtube.com/watch?v=WBgsABoClE0&list=PLgUwDviBIf0p4ozDR_kJJkONnb1wdx2Ma&index=51",
+            "articleUrl": "https://takeuforward.org/data-structure/palindrome-partitioning/",
+            "companies": [
+              "Amazon",
+              "Microsoft",
+              "Meta"
+            ],
+            "tags": [
+              "Recursion",
+              "Trying out all Combos / Hard"
+            ]
+          },
+          {
+            "id": "a2z-s7-l3-p2",
+            "title": "Word Search",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/word-search/",
+            "articleUrl": "https://takeuforward.org/data-structure/word-search-leetcode/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Recursion",
+              "Trying out all Combos / Hard"
+            ]
+          },
+          {
+            "id": "a2z-s7-l3-p3",
+            "title": "N Queen",
+            "difficulty": "Hard",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/n-queens/",
+            "youtubeUrl": "https://www.youtube.com/watch?v=i05Ju7AftcM&list=PLgUwDviBIf0p4ozDR_kJJkONnb1wdx2Ma&index=57",
+            "articleUrl": "https://takeuforward.org/data-structure/n-queen-problem-return-all-distinct-solutions-to-the-n-queens-puzzle/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Recursion",
+              "Trying out all Combos / Hard"
+            ]
+          },
+          {
 ];
