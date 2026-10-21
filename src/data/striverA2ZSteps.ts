@@ -1358,4 +1358,84 @@ export const STRIVER_A2Z_FULL_STEPS: DsaStep[] = [
             "difficulty": "Hard",
             "platform": "Other",
             "problemUrl": "https://takeuforward.org/plus/dsa/problems/count-inversions",
+            "youtubeUrl": "https://youtu.be/AseUmwVNaoY",
+            "articleUrl": "https://takeuforward.org/data-structure/count-inversions-in-an-array/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Solve Problems on Arrays",
+              "Hard"
+            ]
+          },
+          {
+            "id": "a2z-s3-l3-p11",
+            "title": "Reverse Pairs",
+            "difficulty": "Hard",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/reverse-pairs/",
+            "youtubeUrl": "https://youtu.be/0e4bZaP3MDI",
+            "articleUrl": "https://takeuforward.org/data-structure/count-reverse-pairs/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Solve Problems on Arrays",
+              "Hard"
+            ]
+          },
+          {
+            "id": "a2z-s3-l3-p12",
+            "title": "Maximum Product Subarray",
+            "difficulty": "Easy",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/maximum-product-subarray/",
+            "youtubeUrl": "https://youtu.be/hnswaLJvr6g",
+            "articleUrl": "https://takeuforward.org/data-structure/maximum-product-subarray-in-an-array/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Solve Problems on Arrays",
+              "Hard"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "a2z-step-4",
+    "title": "Step 4: Binary Search [1D, 2D Arrays, Search Space]",
+    "lectures": [
+      {
+        "id": "a2z-step-4-sub-1",
+        "title": "BS on 1D Arrays",
+        "problems": [
+          {
+            "id": "a2z-s4-l1-p1",
+            "title": "Binary Search to find X in sorted array",
+            "difficulty": "Easy",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/binary-search/",
+            "youtubeUrl": "https://youtu.be/MHf6awe89xw",
+            "articleUrl": "https://takeuforward.org/data-structure/binary-search-explained/",
+            "companies": [
+              "Amazon",
+              "Google"
+            ],
+            "tags": [
+              "Binary Search",
+              "BS on 1D Arrays"
+            ]
+          },
+          {
+            "id": "a2z-s4-l1-p2",
+            "title": "Implement Lower Bound",
+            "difficulty": "Easy",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/lower-bound-",
 ];
