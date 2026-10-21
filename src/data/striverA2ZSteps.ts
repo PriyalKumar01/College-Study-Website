@@ -7358,4 +7358,84 @@ export const STRIVER_A2Z_FULL_STEPS: DsaStep[] = [
       },
       {
         "id": "a2z-step-16-sub-6",
+        "title": "DP on Stocks",
+        "problems": [
+          {
+            "id": "a2z-s16-l6-p1",
+            "title": "Best Time to Buy and Sell Stock |(DP-35)",
+            "difficulty": "Hard",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/best-time-to-buy-and-sell-stock/",
+            "youtubeUrl": "https://youtu.be/excAOvwF_Wk",
+            "articleUrl": "https://takeuforward.org/data-structure/stock-buy-and-sell-dp-35/",
+            "companies": [
+              "Amazon",
+              "Google",
+              "Microsoft",
+              "Meta"
+            ],
+            "tags": [
+              "Dynamic Programming",
+              "DP on Stocks"
+            ]
+          },
+          {
+            "id": "a2z-s16-l6-p2",
+            "title": "Buy and Sell Stock - II|(DP-36)",
+            "difficulty": "Hard",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/best-time-to-buy-and-sell-stock-ii/",
+            "youtubeUrl": "https://youtu.be/nGJmxkUJQGs",
+            "articleUrl": "https://takeuforward.org/data-structure/buy-and-sell-stock-ii-dp-36/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Dynamic Programming",
+              "DP on Stocks"
+            ]
+          },
+          {
+            "id": "a2z-s16-l6-p3",
+            "title": "Buy and Sell Stocks III|(DP-37)",
+            "difficulty": "Hard",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/best-time-to-buy-and-sell-stock-iii/description/",
+            "youtubeUrl": "https://youtu.be/-uQGzhYj8BQ",
+            "articleUrl": "https://takeuforward.org/data-structure/buy-and-sell-stock-iii-dp-37/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Dynamic Programming",
+              "DP on Stocks"
+            ]
+          },
+          {
+            "id": "a2z-s16-l6-p4",
+            "title": "Buy and Stock Sell IV |(DP-38)",
+            "difficulty": "Hard",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/best-time-to-buy-and-sell-stock-iv/",
+            "youtubeUrl": "https://youtu.be/IV1dHbk5CDc",
+            "articleUrl": "https://takeuforward.org/data-structure/buy-and-sell-stock-iv-dp-38/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Dynamic Programming",
+              "DP on Stocks"
+            ]
+          },
+          {
+            "id": "a2z-s16-l6-p5",
+            "title": "Buy and Sell Stocks With Cooldown|(DP-39)",
+            "difficulty": "Hard",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/best-time-to-buy-and-sell-stock-with-cooldown/",
+            "youtubeUrl": "https://youtu.be/IGIe46xw3YY",
+            "articleUrl": "https://takeuforward.org/data-structure/buy-and-sell-stocks-with-cooldown-dp-39/",
 ];
