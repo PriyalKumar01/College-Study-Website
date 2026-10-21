@@ -2158,4 +2158,84 @@ export const STRIVER_A2Z_FULL_STEPS: DsaStep[] = [
           {
             "id": "a2z-s5-l2-p5",
             "title": "Count Number of Substrings",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problemset/all/?search=Count%20Number%20of%20Substrings",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Strings",
+              "Medium String Problems"
+            ]
+          },
+          {
+            "id": "a2z-s5-l2-p6",
+            "title": "Longest Palindromic Substring[Do it without DP]",
+            "difficulty": "Hard",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/longest-palindromic-substring/",
+            "companies": [
+              "Amazon",
+              "Microsoft",
+              "Google"
+            ],
+            "tags": [
+              "Strings",
+              "Medium String Problems"
+            ]
+          },
+          {
+            "id": "a2z-s5-l2-p7",
+            "title": "Sum of Beauty of all substring",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/sum-of-beauty-of-all-substrings/",
+            "companies": [
+              "Google"
+            ],
+            "tags": [
+              "Strings",
+              "Medium String Problems"
+            ]
+          },
+          {
+            "id": "a2z-s5-l2-p8",
+            "title": "Reverse Every Word in A String",
+            "difficulty": "Easy",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/reverse-words-in-a-string/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Strings",
+              "Medium String Problems"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "a2z-step-6",
+    "title": "Step 6: Learn LinkedList [Single LL, Double LL, Medium, Hard Problems]",
+    "lectures": [
+      {
+        "id": "a2z-step-6-sub-1",
+        "title": "Learn 1D LinkedList",
+        "problems": [
+          {
+            "id": "a2z-s6-l1-p1",
+            "title": "Introduction to LinkedList, learn about struct, and how is node represented",
+            "difficulty": "Easy",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/linked-list/linked-list-introduction",
+            "youtubeUrl": "https://youtu.be/Nq7ok-OyEpg?si=9PR1o8OPRWil7fRA",
+            "articleUrl": "https://takeuforward.org/linked-list/linked-list-introduction",
+            "companies": [
+              "Google",
+              "Amazon"
 ];
