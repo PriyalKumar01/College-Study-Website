@@ -2078,4 +2078,84 @@ export const STRIVER_A2Z_FULL_STEPS: DsaStep[] = [
             "title": "Check if two strings are anagram of each other",
             "difficulty": "Medium",
             "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/valid-anagram/#:~:text=Given%20two%20strings%20s%20and,the%20original%20letters%20exactly%20once.&text=Constraints%3A,.length%20%3C%3D%205%20*%2010",
+            "articleUrl": "https://takeuforward.org/data-structure/check-if-two-strings-are-anagrams-of-each-other/",
+            "companies": [
+              "Amazon",
+              "Google",
+              "Uber"
+            ],
+            "tags": [
+              "Strings",
+              "Basic and Easy String Problems"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "a2z-step-5-sub-2",
+        "title": "Medium String Problems",
+        "problems": [
+          {
+            "id": "a2z-s5-l2-p1",
+            "title": "Sort Characters by frequency",
+            "difficulty": "Easy",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/sort-characters-by-frequency/",
+            "companies": [
+              "Amazon",
+              "Google"
+            ],
+            "tags": [
+              "Strings",
+              "Medium String Problems"
+            ]
+          },
+          {
+            "id": "a2z-s5-l2-p2",
+            "title": "Maximum Nesting Depth of Paranthesis",
+            "difficulty": "Easy",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/maximum-nesting-depth-of-the-parentheses/",
+            "companies": [
+              "Meta"
+            ],
+            "tags": [
+              "Strings",
+              "Medium String Problems"
+            ]
+          },
+          {
+            "id": "a2z-s5-l2-p3",
+            "title": "Roman Number to Integer and vice versa",
+            "difficulty": "Easy",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/roman-to-integer/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Strings",
+              "Medium String Problems"
+            ]
+          },
+          {
+            "id": "a2z-s5-l2-p4",
+            "title": "Implement Atoi",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/string-to-integer-atoi/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Strings",
+              "Medium String Problems"
+            ]
+          },
+          {
+            "id": "a2z-s5-l2-p5",
+            "title": "Count Number of Substrings",
 ];
