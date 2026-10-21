@@ -3358,4 +3358,84 @@ export const STRIVER_A2Z_FULL_STEPS: DsaStep[] = [
             "tags": [
               "Bit Manipulation",
               "Interview Problems"
+            ]
+          },
+          {
+            "id": "a2z-s8-l2-p2",
+            "title": "Find the number that appears odd number of times",
+            "difficulty": "Easy",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/single-number/",
+            "youtubeUrl": "https://youtu.be/sFBCAl8yBfE?si=fETk-BA0cvmF02rR",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Bit Manipulation",
+              "Interview Problems"
+            ]
+          },
+          {
+            "id": "a2z-s8-l2-p3",
+            "title": "Power Set",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/subsets/",
+            "youtubeUrl": "https://youtu.be/LqKaUv1G3_I?si=UXU_T5OsHiokPRvP",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Bit Manipulation",
+              "Interview Problems"
+            ]
+          },
+          {
+            "id": "a2z-s8-l2-p4",
+            "title": "Find xor of numbers from L to R",
+            "difficulty": "Easy",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/xor-of-numbers-in-a-given-range",
+            "youtubeUrl": "https://youtu.be/WqGb7159h7Q?si=uGUEbNUUaIN_6Vvr",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Bit Manipulation",
+              "Interview Problems"
+            ]
+          },
+          {
+            "id": "a2z-s8-l2-p5",
+            "title": "Find the two numbers appearing odd number of times",
+            "difficulty": "Easy",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/single-number---iii",
+            "youtubeUrl": "https://youtu.be/UA5JnV1J2sI?si=VFBRJyb3boZvx_r1",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Bit Manipulation",
+              "Interview Problems"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "a2z-step-8-sub-3",
+        "title": "Advanced Maths",
+        "problems": [
+          {
+            "id": "a2z-s8-l3-p1",
+            "title": "Print Prime Factors of a Number",
+            "difficulty": "Easy",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/prime-factorisation-of-a-number",
+            "youtubeUrl": "https://youtu.be/LT7XhVdeRyg?si=6HkjQokJRPTFai21",
+            "companies": [
 ];
