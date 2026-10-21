@@ -4238,4 +4238,84 @@ export const STRIVER_A2Z_FULL_STEPS: DsaStep[] = [
             ],
             "tags": [
               "Sliding Window & Two Pointer Combined Problems",
+              "Hard Problems"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "a2z-step-11",
+    "title": "Step 11: Heaps [Learning, Medium, Hard Problems]",
+    "lectures": [
+      {
+        "id": "a2z-step-11-sub-1",
+        "title": "Learning",
+        "problems": [
+          {
+            "id": "a2z-s11-l1-p1",
+            "title": "Introduction to Priority Queues using Binary Heaps",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problemset/all/?search=Introduction%20to%20Priority%20Queues%20using%20Binary%20Heaps",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Heaps",
+              "Learning"
+            ]
+          },
+          {
+            "id": "a2z-s11-l1-p2",
+            "title": "Min Heap and Max Heap Implementation",
+            "difficulty": "Medium",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/implement-min-heap",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Heaps",
+              "Learning"
+            ]
+          },
+          {
+            "id": "a2z-s11-l1-p3",
+            "title": "Check if an array represents a min-heap or not",
+            "difficulty": "Medium",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/check-if-an-array-represents-a-min-heap-",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Heaps",
+              "Learning"
+            ]
+          },
+          {
+            "id": "a2z-s11-l1-p4",
+            "title": "Convert min Heap to max Heap",
+            "difficulty": "Medium",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/convert-min-heap-to-max-heap",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Heaps",
+              "Learning"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "a2z-step-11-sub-2",
+        "title": "Medium Problems",
 ];
