@@ -7438,4 +7438,84 @@ export const STRIVER_A2Z_FULL_STEPS: DsaStep[] = [
             "problemUrl": "https://leetcode.com/problems/best-time-to-buy-and-sell-stock-with-cooldown/",
             "youtubeUrl": "https://youtu.be/IGIe46xw3YY",
             "articleUrl": "https://takeuforward.org/data-structure/buy-and-sell-stocks-with-cooldown-dp-39/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Dynamic Programming",
+              "DP on Stocks"
+            ]
+          },
+          {
+            "id": "a2z-s16-l6-p6",
+            "title": "Buy and Sell Stocks With Transaction Fee|(DP-40)",
+            "difficulty": "Hard",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/best-time-to-buy-and-sell-stock-with-transaction-fee/",
+            "youtubeUrl": "https://youtu.be/k4eK-vEmnKg",
+            "articleUrl": "https://takeuforward.org/data-structure/buy-and-sell-stocks-with-transaction-fees-dp-40/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Dynamic Programming",
+              "DP on Stocks"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "a2z-step-16-sub-7",
+        "title": "DP on LIS",
+        "problems": [
+          {
+            "id": "a2z-s16-l7-p1",
+            "title": "Longest Increasing Subsequence |(DP-41)",
+            "difficulty": "Hard",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/longest-increasing-subsequence/",
+            "youtubeUrl": "https://youtu.be/ekcwMsSIzVc",
+            "articleUrl": "https://takeuforward.org/data-structure/longest-increasing-subsequence-dp-41/",
+            "companies": [
+              "Google",
+              "Amazon",
+              "Microsoft",
+              "Meta"
+            ],
+            "tags": [
+              "Dynamic Programming",
+              "DP on LIS"
+            ]
+          },
+          {
+            "id": "a2z-s16-l7-p2",
+            "title": "Printing Longest Increasing Subsequence|(DP-42)",
+            "difficulty": "Hard",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/print-longest-increasing-subsequence",
+            "youtubeUrl": "https://youtu.be/IFfYfonAFGc",
+            "articleUrl": "https://takeuforward.org/data-structure/printing-longest-increasing-subsequence-dp-42/",
+            "companies": [
+              "Google",
+              "Amazon",
+              "Microsoft",
+              "Meta"
+            ],
+            "tags": [
+              "Dynamic Programming",
+              "DP on LIS"
+            ]
+          },
+          {
+            "id": "a2z-s16-l7-p3",
+            "title": "Longest Increasing Subsequence |(DP-43)",
+            "difficulty": "Hard",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/longest-increasing-subsequence",
+            "youtubeUrl": "https://youtu.be/on2hvxBXJH4",
+            "articleUrl": "https://takeuforward.org/data-structure/longest-increasing-subsequence-binary-search-dp-43/",
+            "companies": [
+              "Google",
 ];
