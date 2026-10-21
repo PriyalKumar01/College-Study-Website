@@ -26,8 +26,15 @@ export const isBlockedServerUrl = (url?: string): boolean => {
 
 /**
  * Downloads a file using blob fetch or opens in a new tab.
+ * Supabase Storage files are automatically intercepted and routed to online reading to eliminate egress.
  */
 export const downloadFile = async (url: string, filename: string) => {
+  if (isSupabaseStorageUrl(url)) {
+    alert('📖 Online Reading Mode:\n\nTo keep StudyHub 100% free and protect server bandwidth, direct PDF download is disabled for community notes. Opening in fast online reader!');
+    viewInBrowser(url);
+    return;
+  }
+
   try {
     const response = await fetch(url);
     if (!response.ok) throw new Error('Download failed');
@@ -49,7 +56,7 @@ export const downloadFile = async (url: string, filename: string) => {
 /**
  * Opens a file in browser for preview.
  * - Converts Drive download links to preview /preview links.
- * - Opens Supabase Storage / PDF links directly in browser viewer.
+ * - Opens Supabase Storage files in Google Docs Viewer so Google CDN caches the rendering and eliminates egress.
  */
 export const viewInBrowser = (url: string) => {
   if (!url || url === '#') return;
@@ -67,9 +74,16 @@ export const viewInBrowser = (url: string) => {
 
     if (fileId) {
       window.open(`https://drive.google.com/file/d/${fileId}/preview`, '_blank');
-    } else {
-      window.open(url, '_blank');
+      return;
     }
+
+    // Supabase Storage: Use Google Docs Viewer to offload file delivery to Google CDN
+    if (isSupabaseStorageUrl(url)) {
+      window.open(`https://docs.google.com/viewer?url=${encodeURIComponent(url)}&embedded=false`, '_blank');
+      return;
+    }
+
+    window.open(url, '_blank');
   } catch {
     window.open(url, '_blank');
   }
@@ -79,7 +93,7 @@ export const viewInBrowser = (url: string) => {
  * Smart download handler:
  * - Downloads PDFs smoothly without blocking alert popups.
  * - Direct Google Drive downloads enforce student rate-limits (5/day, 20/month).
- * - Supabase Storage files download directly or open seamlessly in browser.
+ * - Supabase Storage files are kept strictly view-only to maintain egress limits.
  */
 export const smartDownload = async (
   url: string,
@@ -94,7 +108,13 @@ export const smartDownload = async (
   }
 
   // 1. Supabase Storage / Community PDF: VIEW-ONLY (Preserves server bandwidth and enforces preview)
-  if (isSupabaseStorageUrl(url) || !isGoogleDriveUrl(url)) {
+  if (isSupabaseStorageUrl(url)) {
+    alert('📖 Online Reading Mode:\n\nDirect downloading for community notes is restricted to protect monthly server limits. Opening in online preview mode for reading!');
+    viewInBrowser(url);
+    return;
+  }
+
+  if (!isGoogleDriveUrl(url)) {
     viewInBrowser(url);
     return;
   }
