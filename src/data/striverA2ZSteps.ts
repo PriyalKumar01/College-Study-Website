@@ -78,4 +78,84 @@ export const STRIVER_A2Z_FULL_STEPS: DsaStep[] = [
           },
           {
             "id": "a2z-s1-l1-p5",
+            "title": "What are arrays, strings?",
+            "difficulty": "Basic",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/cpp",
+            "youtubeUrl": "https://youtu.be/EAR7De6Goz4?t=2415",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Learn the basics",
+              "Things to Know in C++/Java/Python or any language"
+            ]
+          },
+          {
+            "id": "a2z-s1-l1-p6",
+            "title": "For loops",
+            "difficulty": "Basic",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/cpp",
+            "youtubeUrl": "https://youtu.be/EAR7De6Goz4?t=3096",
+            "articleUrl": "https://takeuforward.org/for-loop/understanding-for-loop/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Learn the basics",
+              "Things to Know in C++/Java/Python or any language"
+            ]
+          },
+          {
+            "id": "a2z-s1-l1-p7",
+            "title": "While loops",
+            "difficulty": "Basic",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/cpp",
+            "youtubeUrl": "https://youtu.be/EAR7De6Goz4?t=3459",
+            "articleUrl": "https://takeuforward.org/while-loop/while-loops-in-programming/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Learn the basics",
+              "Things to Know in C++/Java/Python or any language"
+            ]
+          },
+          {
+            "id": "a2z-s1-l1-p8",
+            "title": "Functions (Pass by Reference and Value)",
+            "difficulty": "Basic",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/cpp",
+            "youtubeUrl": "https://youtu.be/EAR7De6Goz4?t=3677",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Learn the basics",
+              "Things to Know in C++/Java/Python or any language"
+            ]
+          },
+          {
+            "id": "a2z-s1-l1-p9",
+            "title": "Time Complexity [Learn Basics, and then analyse in next Steps]",
+            "difficulty": "Basic",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/time-complexity/time-and-space-complexity-strivers-a2z-dsa-course/",
+            "youtubeUrl": "https://youtu.be/FPu9Uld7W-E",
+            "articleUrl": "https://takeuforward.org/time-complexity/time-and-space-complexity-strivers-a2z-dsa-course/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Learn the basics",
+              "Things to Know in C++/Java/Python or any language"
+            ]
 ];
