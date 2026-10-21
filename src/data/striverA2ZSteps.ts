@@ -638,4 +638,84 @@ export const STRIVER_A2Z_FULL_STEPS: DsaStep[] = [
             "youtubeUrl": "https://youtu.be/ogjf7ORKfd8",
             "articleUrl": "https://takeuforward.org/data-structure/merge-sort-algorithm/",
             "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Learn Important Sorting Techniques",
+              "Sorting-II"
+            ]
+          },
+          {
+            "id": "a2z-s2-l2-p2",
+            "title": "Recursive Bubble Sort",
+            "difficulty": "Easy",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/recursive-bubble-sort",
+            "articleUrl": "https://takeuforward.org/arrays/recursive-bubble-sort-algorithm/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Learn Important Sorting Techniques",
+              "Sorting-II"
+            ]
+          },
+          {
+            "id": "a2z-s2-l2-p3",
+            "title": "Recursive Insertion Sort",
+            "difficulty": "Easy",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/recursive-insertion-sort",
+            "articleUrl": "https://takeuforward.org/arrays/recursive-insertion-sort-algorithm/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Learn Important Sorting Techniques",
+              "Sorting-II"
+            ]
+          },
+          {
+            "id": "a2z-s2-l2-p4",
+            "title": "Quick Sort",
+            "difficulty": "Easy",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/quick-sorting",
+            "youtubeUrl": "https://youtu.be/WIrA4YexLRQ",
+            "articleUrl": "https://takeuforward.org/data-structure/quick-sort-algorithm/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Learn Important Sorting Techniques",
+              "Sorting-II"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "a2z-step-3",
+    "title": "Step 3: Solve Problems on Arrays [Easy -> Medium -> Hard]",
+    "lectures": [
+      {
+        "id": "a2z-step-3-sub-1",
+        "title": "Easy",
+        "problems": [
+          {
+            "id": "a2z-s3-l1-p1",
+            "title": "Largest Element in an Array",
+            "difficulty": "Easy",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/largest-element",
+            "youtubeUrl": "https://youtu.be/37E9ckMDdTk?t=526",
+            "articleUrl": "https://takeuforward.org/data-structure/find-the-largest-element-in-an-array/",
+            "companies": [
+              "Amazon",
+              "Microsoft"
 ];
