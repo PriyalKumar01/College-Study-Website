@@ -1838,4 +1838,84 @@ export const STRIVER_A2Z_FULL_STEPS: DsaStep[] = [
             "youtubeUrl": "https://www.youtube.com/watch?v=kMSBvlZ-_HA&list=PLgUwDviBIf0pMFMWuuvDNMAkoQFi-h0ZF&index=21",
             "articleUrl": "https://takeuforward.org/arrays/minimise-maximum-distance-between-gas-stations/",
             "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Binary Search",
+              "BS on Answers"
+            ]
+          },
+          {
+            "id": "a2z-s4-l2-p13",
+            "title": "Median of 2 sorted arrays",
+            "difficulty": "Hard",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/median-of-two-sorted-arrays/",
+            "youtubeUrl": "https://youtu.be/C2rRzz-JDk8",
+            "articleUrl": "https://takeuforward.org/data-structure/median-of-two-sorted-arrays-of-different-sizes/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Binary Search",
+              "BS on Answers"
+            ]
+          },
+          {
+            "id": "a2z-s4-l2-p14",
+            "title": "Kth element of 2 sorted arrays",
+            "difficulty": "Medium",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/kth-element-of-2-sorted-arrays",
+            "youtubeUrl": "https://youtu.be/D1oDwWCq50g",
+            "articleUrl": "https://takeuforward.org/data-structure/k-th-element-of-two-sorted-arrays/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Binary Search",
+              "BS on Answers"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "a2z-step-4-sub-3",
+        "title": "BS on 2D Arrays",
+        "problems": [
+          {
+            "id": "a2z-s4-l3-p1",
+            "title": "Find the row with maximum number of 1's",
+            "difficulty": "Easy",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/find-row-with-maximum-1's",
+            "youtubeUrl": "https://youtu.be/SCz-1TtYxDI",
+            "articleUrl": "https://takeuforward.org/arrays/find-the-row-with-maximum-number-of-1s/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Binary Search",
+              "BS on 2D Arrays"
+            ]
+          },
+          {
+            "id": "a2z-s4-l3-p2",
+            "title": "Search in a 2 D matrix",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/search-a-2d-matrix/",
+            "youtubeUrl": "https://youtu.be/JXU4Akft7yk",
+            "articleUrl": "https://takeuforward.org/data-structure/search-in-a-sorted-2d-matrix/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Binary Search",
+              "BS on 2D Arrays"
 ];
