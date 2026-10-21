@@ -3438,4 +3438,84 @@ export const STRIVER_A2Z_FULL_STEPS: DsaStep[] = [
             "problemUrl": "https://takeuforward.org/plus/dsa/problems/prime-factorisation-of-a-number",
             "youtubeUrl": "https://youtu.be/LT7XhVdeRyg?si=6HkjQokJRPTFai21",
             "companies": [
+              "Amazon"
+            ],
+            "tags": [
+              "Bit Manipulation",
+              "Advanced Maths"
+            ]
+          },
+          {
+            "id": "a2z-s8-l3-p2",
+            "title": "All Divisors of a Number",
+            "difficulty": "Easy",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/divisors-of-a-number",
+            "youtubeUrl": "https://youtu.be/Ae_Ag_saG9s?si=QQoDTW5DxyZ3Lfjg",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Bit Manipulation",
+              "Advanced Maths"
+            ]
+          },
+          {
+            "id": "a2z-s8-l3-p3",
+            "title": "Sieve of Eratosthenes",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/count-primes/",
+            "youtubeUrl": "https://youtu.be/g5Fuxn_AvSk?si=fv6Q-Po7wrMW0a5n",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Bit Manipulation",
+              "Advanced Maths"
+            ]
+          },
+          {
+            "id": "a2z-s8-l3-p4",
+            "title": "Find Prime Factorisation of a Number using Sieve",
+            "difficulty": "Medium",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/prime-factorisation-of-a-number",
+            "youtubeUrl": "https://youtu.be/glKWkmKFlMw?si=3k5K5oq3FvKVrWLB",
+            "companies": [
+              "Amazon"
+            ],
+            "tags": [
+              "Bit Manipulation",
+              "Advanced Maths"
+            ]
+          },
+          {
+            "id": "a2z-s8-l3-p5",
+            "title": "Power(n, x)",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/powx-n/",
+            "youtubeUrl": "https://youtu.be/hFWckDXE-K8?si=lBoOx3qYcmGo_j5b",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Bit Manipulation",
+              "Advanced Maths"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "a2z-step-9",
+    "title": "Step 9: Stack and Queues [Learning, Pre-In-Post-fix, Monotonic Stack, Implementation]",
+    "lectures": [
+      {
+        "id": "a2z-step-9-sub-1",
 ];
