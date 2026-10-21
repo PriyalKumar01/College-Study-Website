@@ -4638,4 +4638,84 @@ export const STRIVER_A2Z_FULL_STEPS: DsaStep[] = [
               "Amazon"
             ],
             "tags": [
+              "Greedy Algorithms",
+              "Medium/Hard"
+            ]
+          },
+          {
+            "id": "a2z-s12-l2-p2",
+            "title": "Jump Game",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/jump-game/",
+            "youtubeUrl": "https://youtu.be/tZAa_jJ3SwQ?si=voKd7n9VTLDRRNzJ",
+            "articleUrl": "https://takeuforward.org/Greedy/jump-game-i",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Greedy Algorithms",
+              "Medium/Hard"
+            ]
+          },
+          {
+            "id": "a2z-s12-l2-p3",
+            "title": "Jump Game 2",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/jump-game-ii/",
+            "youtubeUrl": "https://youtu.be/7SBVnw7GSTk?si=9uUouBELh9K3m2jZ",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Greedy Algorithms",
+              "Medium/Hard"
+            ]
+          },
+          {
+            "id": "a2z-s12-l2-p4",
+            "title": "Minimum number of platforms required for a railway",
+            "difficulty": "Medium",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/minimum-number-of-platforms-required-for-a-railway",
+            "youtubeUrl": "https://youtu.be/AsGzwR_FWok?si=165acXU_dtqOHuo9",
+            "articleUrl": "https://takeuforward.org/data-structure/minimum-number-of-platforms-required-for-a-railway/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Greedy Algorithms",
+              "Medium/Hard"
+            ]
+          },
+          {
+            "id": "a2z-s12-l2-p5",
+            "title": "Job sequencing Problem",
+            "difficulty": "Medium",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/job-sequencing-problem",
+            "youtubeUrl": "https://youtu.be/QbwltemZbRg?si=wvcemJ5BLPlTRmkG",
+            "articleUrl": "https://takeuforward.org/data-structure/job-sequencing-problem/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Greedy Algorithms",
+              "Medium/Hard"
+            ]
+          },
+          {
+            "id": "a2z-s12-l2-p6",
+            "title": "Candy",
+            "difficulty": "Hard",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/candy/",
+            "youtubeUrl": "https://youtu.be/IIqVFvKE6RY?si=EjmuXZJNLQLUkEd7",
+            "companies": [
+              "Google",
 ];
