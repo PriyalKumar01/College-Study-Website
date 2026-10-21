@@ -2718,4 +2718,84 @@ export const STRIVER_A2Z_FULL_STEPS: DsaStep[] = [
               "Amazon"
             ],
             "tags": [
+              "Learn LinkedList",
+              "Hard Problems of LL"
+            ]
+          },
+          {
+            "id": "a2z-s6-l5-p2",
+            "title": "Rotate a LL",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/rotate-list/description/",
+            "youtubeUrl": "https://youtu.be/uT7YI7XbTY8?si=ZaChW3a68c_v54Is",
+            "articleUrl": "https://takeuforward.org/data-structure/rotate-a-linked-list/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Learn LinkedList",
+              "Hard Problems of LL"
+            ]
+          },
+          {
+            "id": "a2z-s6-l5-p3",
+            "title": "Flattening of LL",
+            "difficulty": "Hard",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/flattening-of-ll",
+            "youtubeUrl": "https://youtu.be/ykelywHJWLg?si=InMg9MmTHzY22NSR",
+            "articleUrl": "https://takeuforward.org/data-structure/flattening-a-linked-list/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Learn LinkedList",
+              "Hard Problems of LL"
+            ]
+          },
+          {
+            "id": "a2z-s6-l5-p4",
+            "title": "Clone a Linked List with random and next pointer",
+            "difficulty": "Hard",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/copy-list-with-random-pointer/",
+            "youtubeUrl": "https://youtu.be/q570bKdrnlw?si=epZtpWvtNwuTf23o",
+            "articleUrl": "https://takeuforward.org/data-structure/clone-linked-list-with-random-and-next-pointer/",
+            "companies": [
+              "Amazon",
+              "Microsoft",
+              "Google"
+            ],
+            "tags": [
+              "Learn LinkedList",
+              "Hard Problems of LL"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "a2z-step-7",
+    "title": "Step 7: Recursion [PatternWise]",
+    "lectures": [
+      {
+        "id": "a2z-step-7-sub-1",
+        "title": "Get a Strong Hold",
+        "problems": [
+          {
+            "id": "a2z-s7-l1-p1",
+            "title": "Recursive Implementation of atoi()",
+            "difficulty": "Hard",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/string-to-integer-atoi/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Recursion",
 ];
