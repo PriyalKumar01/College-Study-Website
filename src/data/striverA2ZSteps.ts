@@ -2318,4 +2318,84 @@ export const STRIVER_A2Z_FULL_STEPS: DsaStep[] = [
         "title": "Learn Doubly LinkedList",
         "problems": [
           {
+            "id": "a2z-s6-l2-p1",
+            "title": "Introduction to DLL, learn about struct, and how is node represented",
+            "difficulty": "Easy",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/introduction-to-doubly-ll",
+            "youtubeUrl": "https://youtu.be/0eKMU10uEDI?si=uDnoj_C5ghEpNLvP",
+            "articleUrl": "https://takeuforward.org/linked-list/introduction-to-doubly-linked-list",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Learn LinkedList",
+              "Learn Doubly LinkedList"
+            ]
+          },
+          {
+            "id": "a2z-s6-l2-p2",
+            "title": "Insert a node in DLL",
+            "difficulty": "Easy",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/insert-node-before-head-in-dll",
+            "youtubeUrl": "https://youtu.be/0eKMU10uEDI?si=J5a0pQTosimcO_aA&t=2684",
+            "articleUrl": "https://takeuforward.org/data-structure/insert-at-end-of-doubly-linked-list/",
+            "companies": [
+              "Amazon",
+              "Microsoft"
+            ],
+            "tags": [
+              "Learn LinkedList",
+              "Learn Doubly LinkedList"
+            ]
+          },
+          {
+            "id": "a2z-s6-l2-p3",
+            "title": "Delete a node in DLL",
+            "difficulty": "Medium",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/delete-head-of-dll",
+            "youtubeUrl": "https://youtu.be/0eKMU10uEDI?si=sE7jqrW46lfRHVLd&t=853",
+            "articleUrl": "https://takeuforward.org/data-structure/delete-last-node-of-a-doubly-linked-list/",
+            "companies": [
+              "Amazon",
+              "Microsoft"
+            ],
+            "tags": [
+              "Learn LinkedList",
+              "Learn Doubly LinkedList"
+            ]
+          },
+          {
+            "id": "a2z-s6-l2-p4",
+            "title": "Reverse a DLL",
+            "difficulty": "Medium",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/reverse-a-doubly-linked-list",
+            "youtubeUrl": "https://youtu.be/u3WUW2qe6ww?si=96Wwlju72IvmzkxE",
+            "articleUrl": "https://takeuforward.org/data-structure/reverse-a-doubly-linked-list/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Learn LinkedList",
+              "Learn Doubly LinkedList"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "a2z-step-6-sub-3",
+        "title": "Medium Problems of LL",
+        "problems": [
+          {
+            "id": "a2z-s6-l3-p1",
+            "title": "Middle of a LinkedList [TortoiseHare Method]",
+            "difficulty": "Easy",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/middle-of-the-linked-list/",
+            "youtubeUrl": "https://youtu.be/7LjQ57RqgEc?si=ir_rRDio38rhamU_",
 ];
