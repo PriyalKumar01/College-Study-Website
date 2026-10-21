@@ -3518,4 +3518,84 @@ export const STRIVER_A2Z_FULL_STEPS: DsaStep[] = [
     "lectures": [
       {
         "id": "a2z-step-9-sub-1",
+        "title": "Learning",
+        "problems": [
+          {
+            "id": "a2z-s9-l1-p1",
+            "title": "Implement Stack using Arrays",
+            "difficulty": "Easy",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/implement-stack-using-arrays",
+            "youtubeUrl": "https://youtu.be/tqQ5fTamIN4?si=ofLt8Zt1ZvhikZ6w",
+            "articleUrl": "https://takeuforward.org/data-structure/implement-stack-using-array/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Stack and Queues",
+              "Learning"
+            ]
+          },
+          {
+            "id": "a2z-s9-l1-p2",
+            "title": "Implement Queue using Arrays",
+            "difficulty": "Easy",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/implement-queue-using-arrays",
+            "youtubeUrl": "https://youtu.be/tqQ5fTamIN4?si=ofLt8Zt1ZvhikZ6w",
+            "articleUrl": "https://takeuforward.org/data-structure/implement-queue-using-array/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Stack and Queues",
+              "Learning"
+            ]
+          },
+          {
+            "id": "a2z-s9-l1-p3",
+            "title": "Implement Stack using Queue",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/implement-stack-using-queues/",
+            "youtubeUrl": "https://youtu.be/tqQ5fTamIN4?si=ofLt8Zt1ZvhikZ6w",
+            "articleUrl": "https://takeuforward.org/data-structure/implement-stack-using-single-queue/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Stack and Queues",
+              "Learning"
+            ]
+          },
+          {
+            "id": "a2z-s9-l1-p4",
+            "title": "Implement Queue using Stack",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/implement-queue-using-stacks/",
+            "youtubeUrl": "https://youtu.be/tqQ5fTamIN4?si=ofLt8Zt1ZvhikZ6w",
+            "articleUrl": "https://takeuforward.org/data-structure/implement-queue-using-stack/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Stack and Queues",
+              "Learning"
+            ]
+          },
+          {
+            "id": "a2z-s9-l1-p5",
+            "title": "Implement stack using Linkedlist",
+            "difficulty": "Easy",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/implement-stack-using-linkedlist",
+            "youtubeUrl": "https://youtu.be/tqQ5fTamIN4?si=ofLt8Zt1ZvhikZ6w",
+            "articleUrl": "https://takeuforward.org/data-structure/implement-stack-using-linked-list/",
+            "companies": [
+              "Google",
 ];
