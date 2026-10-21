@@ -558,4 +558,84 @@ export const STRIVER_A2Z_FULL_STEPS: DsaStep[] = [
             "tags": [
               "Learn the basics",
               "Learn Basic Hashing"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "a2z-step-2",
+    "title": "Step 2: Learn Important Sorting Techniques",
+    "lectures": [
+      {
+        "id": "a2z-step-2-sub-1",
+        "title": "Sorting-I",
+        "problems": [
+          {
+            "id": "a2z-s2-l1-p1",
+            "title": "Selection Sort",
+            "difficulty": "Easy",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/selection-sort",
+            "youtubeUrl": "https://youtu.be/HGk_ypEuS24?t=167",
+            "articleUrl": "https://takeuforward.org/sorting/selection-sort-algorithm/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Learn Important Sorting Techniques",
+              "Sorting-I"
+            ]
+          },
+          {
+            "id": "a2z-s2-l1-p2",
+            "title": "Bubble Sort",
+            "difficulty": "Easy",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/bubble-sort",
+            "youtubeUrl": "https://youtu.be/HGk_ypEuS24?t=1061",
+            "articleUrl": "https://takeuforward.org/data-structure/bubble-sort-algorithm/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Learn Important Sorting Techniques",
+              "Sorting-I"
+            ]
+          },
+          {
+            "id": "a2z-s2-l1-p3",
+            "title": "Insertion Sort",
+            "difficulty": "Easy",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/insertion-sorting",
+            "youtubeUrl": "https://youtu.be/HGk_ypEuS24?t=1900",
+            "articleUrl": "https://takeuforward.org/data-structure/insertion-sort-algorithm/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Learn Important Sorting Techniques",
+              "Sorting-I"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "a2z-step-2-sub-2",
+        "title": "Sorting-II",
+        "problems": [
+          {
+            "id": "a2z-s2-l2-p1",
+            "title": "Merge Sort",
+            "difficulty": "Medium",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/merge-sorting",
+            "youtubeUrl": "https://youtu.be/ogjf7ORKfd8",
+            "articleUrl": "https://takeuforward.org/data-structure/merge-sort-algorithm/",
+            "companies": [
 ];
