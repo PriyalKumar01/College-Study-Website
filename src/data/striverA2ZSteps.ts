@@ -6558,4 +6558,84 @@ export const STRIVER_A2Z_FULL_STEPS: DsaStep[] = [
             "articleUrl": "https://takeuforward.org/data-structure/disjoint-set-union-by-rank-union-by-size-path-compression-g-46/",
             "companies": [
               "Amazon",
+              "Google"
+            ],
+            "tags": [
+              "Graphs",
+              "MinimumSpanningTree/Disjoint Set and Problems"
+            ]
+          },
+          {
+            "id": "a2z-s15-l5-p5",
+            "title": "Kruskal's Algorithm",
+            "difficulty": "Hard",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/find-the-mst-weight",
+            "youtubeUrl": "https://youtu.be/DMnDM_sxVig",
+            "articleUrl": "https://takeuforward.org/data-structure/kruskals-algorithm-minimum-spanning-tree-g-47/",
+            "companies": [
+              "Amazon",
+              "Google"
+            ],
+            "tags": [
+              "Graphs",
+              "MinimumSpanningTree/Disjoint Set and Problems"
+            ]
+          },
+          {
+            "id": "a2z-s15-l5-p6",
+            "title": "Number of operations to make network connected",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/number-of-operations-to-make-network-connected/",
+            "youtubeUrl": "https://youtu.be/FYrl7iz9_ZU",
+            "articleUrl": "https://takeuforward.org/data-structure/number-of-operations-to-make-network-connected-dsu-g-49/",
+            "companies": [
+              "Amazon",
+              "Google"
+            ],
+            "tags": [
+              "Graphs",
+              "MinimumSpanningTree/Disjoint Set and Problems"
+            ]
+          },
+          {
+            "id": "a2z-s15-l5-p7",
+            "title": "Most stones removed with same rows or columns",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/most-stones-removed-with-same-row-or-column/",
+            "youtubeUrl": "https://youtu.be/OwMNX8SPavM",
+            "articleUrl": "https://takeuforward.org/data-structure/most-stones-removed-with-same-row-or-column-dsu-g-53/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Graphs",
+              "MinimumSpanningTree/Disjoint Set and Problems"
+            ]
+          },
+          {
+            "id": "a2z-s15-l5-p8",
+            "title": "Accounts merge",
+            "difficulty": "Hard",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/accounts-merge/",
+            "youtubeUrl": "https://youtu.be/FMwpt_aQOGw",
+            "articleUrl": "https://takeuforward.org/data-structure/accounts-merge-dsu-g-50/",
+            "companies": [
+              "Meta",
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Graphs",
+              "MinimumSpanningTree/Disjoint Set and Problems"
+            ]
+          },
+          {
+            "id": "a2z-s15-l5-p9",
+            "title": "Number of island II",
+            "difficulty": "Hard",
 ];
