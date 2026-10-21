@@ -1118,4 +1118,84 @@ export const STRIVER_A2Z_FULL_STEPS: DsaStep[] = [
               "Amazon",
               "Google",
               "Spotify"
+            ],
+            "tags": [
+              "Solve Problems on Arrays",
+              "Medium"
+            ]
+          },
+          {
+            "id": "a2z-s3-l2-p11",
+            "title": "Set Matrix Zeros",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/set-matrix-zeroes/",
+            "youtubeUrl": "https://youtu.be/N0MgLvceX7M",
+            "articleUrl": "https://takeuforward.org/data-structure/set-matrix-zero/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Solve Problems on Arrays",
+              "Medium"
+            ]
+          },
+          {
+            "id": "a2z-s3-l2-p12",
+            "title": "Rotate Matrix by 90 degrees",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/rotate-image/",
+            "youtubeUrl": "https://youtu.be/Z0R2u6gd3GU",
+            "articleUrl": "https://takeuforward.org/data-structure/rotate-image-by-90-degree/",
+            "companies": [
+              "Google",
+              "Amazon",
+              "Microsoft"
+            ],
+            "tags": [
+              "Solve Problems on Arrays",
+              "Medium"
+            ]
+          },
+          {
+            "id": "a2z-s3-l2-p13",
+            "title": "Print the matrix in spiral manner",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/spiral-matrix/",
+            "youtubeUrl": "https://youtu.be/3Zv-s9UUrFM",
+            "articleUrl": "https://takeuforward.org/data-structure/spiral-traversal-of-matrix/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Solve Problems on Arrays",
+              "Medium"
+            ]
+          },
+          {
+            "id": "a2z-s3-l2-p14",
+            "title": "Count subarrays with given sum",
+            "difficulty": "Easy",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/subarray-sum-equals-k/",
+            "youtubeUrl": "https://www.youtube.com/watch?v=xvNwoz-ufXA&list=PLgUwDviBIf0oF6QL8m22w1hIDC1vJ_BHz&index=32",
+            "articleUrl": "https://takeuforward.org/arrays/count-subarray-sum-equals-k/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Solve Problems on Arrays",
+              "Medium"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "a2z-step-3-sub-3",
+        "title": "Hard",
 ];
