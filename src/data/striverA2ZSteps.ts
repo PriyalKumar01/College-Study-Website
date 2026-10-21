@@ -5598,4 +5598,84 @@ export const STRIVER_A2Z_FULL_STEPS: DsaStep[] = [
               "Google"
             ],
             "tags": [
+              "Binary Search Trees",
+              "Practice Problems"
+            ]
+          },
+          {
+            "id": "a2z-s14-l2-p3",
+            "title": "Insert a given Node in Binary Search Tree",
+            "difficulty": "Easy",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/insert-into-a-binary-search-tree/",
+            "youtubeUrl": "https://youtu.be/FiFiNvM29ps",
+            "companies": [
+              "Amazon",
+              "Google"
+            ],
+            "tags": [
+              "Binary Search Trees",
+              "Practice Problems"
+            ]
+          },
+          {
+            "id": "a2z-s14-l2-p4",
+            "title": "Delete a Node in Binary Search Tree",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/delete-node-in-a-bst/",
+            "youtubeUrl": "https://youtu.be/kouxiP_H5WE",
+            "companies": [
+              "Amazon",
+              "Google"
+            ],
+            "tags": [
+              "Binary Search Trees",
+              "Practice Problems"
+            ]
+          },
+          {
+            "id": "a2z-s14-l2-p5",
+            "title": "Find K-th smallest/largest element in BST",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/kth-smallest-element-in-a-bst/",
+            "youtubeUrl": "https://youtu.be/9TJYWh0adfk",
+            "articleUrl": "https://takeuforward.org/data-structure/kth-largest-smallest-element-in-binary-search-tree/",
+            "companies": [
+              "Amazon",
+              "Microsoft"
+            ],
+            "tags": [
+              "Binary Search Trees",
+              "Practice Problems"
+            ]
+          },
+          {
+            "id": "a2z-s14-l2-p6",
+            "title": "Check if a tree is a BST or BT",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/validate-binary-search-tree/",
+            "youtubeUrl": "https://youtu.be/f-sj7I5oXEI",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Binary Search Trees",
+              "Practice Problems"
+            ]
+          },
+          {
+            "id": "a2z-s14-l2-p7",
+            "title": "LCA in Binary Search Tree",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-search-tree/",
+            "youtubeUrl": "https://youtu.be/cX_kPV_foZc",
+            "companies": [
+              "Amazon",
+              "Google"
+            ],
 ];
