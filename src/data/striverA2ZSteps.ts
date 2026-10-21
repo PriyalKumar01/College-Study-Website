@@ -5838,4 +5838,84 @@ export const STRIVER_A2Z_FULL_STEPS: DsaStep[] = [
               "Google",
               "Amazon"
             ],
+            "tags": [
+              "Graphs",
+              "Learning"
+            ]
+          },
+          {
+            "id": "a2z-s15-l1-p4",
+            "title": "Connected Components | Logic Explanation",
+            "difficulty": "Hard",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/number-of-connected-components-in-an-undirected-graph/",
+            "youtubeUrl": "https://youtu.be/lea-Wl_uWXY",
+            "articleUrl": "https://takeuforward.org/graph/connected-components-in-graphs/",
+            "companies": [
+              "Amazon"
+            ],
+            "tags": [
+              "Graphs",
+              "Learning"
+            ]
+          },
+          {
+            "id": "a2z-s15-l1-p5",
+            "title": "BFS",
+            "difficulty": "Medium",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/traversal-techniques",
+            "youtubeUrl": "https://youtu.be/-tgVpUgsQ5k",
+            "articleUrl": "https://takeuforward.org/graph/breadth-first-search-bfs-level-order-traversal/",
+            "companies": [
+              "Amazon",
+              "Google"
+            ],
+            "tags": [
+              "Graphs",
+              "Learning"
+            ]
+          },
+          {
+            "id": "a2z-s15-l1-p6",
+            "title": "DFS",
+            "difficulty": "Hard",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/traversal-techniques",
+            "youtubeUrl": "https://youtu.be/Qzf1a--rhp8",
+            "articleUrl": "https://takeuforward.org/data-structure/depth-first-search-dfs/",
+            "companies": [
+              "Amazon",
+              "Google"
+            ],
+            "tags": [
+              "Graphs",
+              "Learning"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "a2z-step-15-sub-2",
+        "title": "Problems on BFS/DFS",
+        "problems": [
+          {
+            "id": "a2z-s15-l2-p1",
+            "title": "Number of provinces (leetcode)",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/number-of-provinces/#:~:text=A%20province%20is%20a%20group,the%20total%20number%20of%20provinces.",
+            "youtubeUrl": "https://youtu.be/ACzkVtewUYA",
+            "articleUrl": "https://takeuforward.org/data-structure/number-of-provinces/",
+            "companies": [
+              "Amazon",
+              "Microsoft"
+            ],
+            "tags": [
+              "Graphs",
+              "Problems on BFS/DFS"
+            ]
+          },
+          {
+            "id": "a2z-s15-l2-p2",
 ];
