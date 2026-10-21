@@ -958,4 +958,84 @@ export const STRIVER_A2Z_FULL_STEPS: DsaStep[] = [
             "platform": "LeetCode",
             "problemUrl": "https://leetcode.com/problems/two-sum/",
             "youtubeUrl": "https://youtu.be/UXDSeD9mN-k",
+            "articleUrl": "https://takeuforward.org/data-structure/two-sum-check-if-a-pair-with-given-sum-exists-in-array/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Solve Problems on Arrays",
+              "Medium"
+            ]
+          },
+          {
+            "id": "a2z-s3-l2-p2",
+            "title": "Sort an array of 0's 1's and 2's",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/sort-colors/",
+            "youtubeUrl": "https://youtu.be/tp8JIuCXBaU",
+            "articleUrl": "https://takeuforward.org/data-structure/sort-an-array-of-0s-1s-and-2s/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Solve Problems on Arrays",
+              "Medium"
+            ]
+          },
+          {
+            "id": "a2z-s3-l2-p3",
+            "title": "Majority Element (>n/2 times)",
+            "difficulty": "Easy",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/majority-element/",
+            "youtubeUrl": "https://youtu.be/nP_ns3uSh80",
+            "articleUrl": "https://takeuforward.org/data-structure/find-the-majority-element-that-occurs-more-than-n-2-times/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Solve Problems on Arrays",
+              "Medium"
+            ]
+          },
+          {
+            "id": "a2z-s3-l2-p4",
+            "title": "Kadane's Algorithm, maximum subarray sum",
+            "difficulty": "Easy",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/maximum-subarray/",
+            "youtubeUrl": "https://youtu.be/AHZpyENo7k4?si=QJpof4R1hHokm1hw",
+            "articleUrl": "https://takeuforward.org/data-structure/kadanes-algorithm-maximum-subarray-sum-in-an-array/",
+            "companies": [
+              "Amazon",
+              "Google",
+              "Microsoft"
+            ],
+            "tags": [
+              "Solve Problems on Arrays",
+              "Medium"
+            ]
+          },
+          {
+            "id": "a2z-s3-l2-p5",
+            "title": "Print subarray with maximum subarray sum (extended version of above problem)",
+            "difficulty": "Medium",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/kadane's-algorithm",
+            "youtubeUrl": "https://youtu.be/AHZpyENo7k4",
+            "articleUrl": "https://takeuforward.org/data-structure/kadanes-algorithm-maximum-subarray-sum-in-an-array/",
+            "companies": [
+              "Amazon",
+              "Google",
+              "Microsoft"
+            ],
+            "tags": [
+              "Solve Problems on Arrays",
+              "Medium"
+            ]
+          },
 ];
