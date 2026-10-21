@@ -6878,4 +6878,84 @@ export const STRIVER_A2Z_FULL_STEPS: DsaStep[] = [
             ],
             "tags": [
               "Dynamic Programming",
+              "2D/3D DP and DP on Grids"
+            ]
+          },
+          {
+            "id": "a2z-s16-l3-p2",
+            "title": "Grid Unique Paths : DP on Grids (DP8)",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/unique-paths/",
+            "youtubeUrl": "https://www.youtube.com/watch?v=sdE0A2Oxofw",
+            "articleUrl": "https://takeuforward.org/data-structure/grid-unique-paths-dp-on-grids-dp8/",
+            "companies": [
+              "Google",
+              "Amazon",
+              "Microsoft"
+            ],
+            "tags": [
+              "Dynamic Programming",
+              "2D/3D DP and DP on Grids"
+            ]
+          },
+          {
+            "id": "a2z-s16-l3-p3",
+            "title": "Grid Unique Paths 2 (DP 9)",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/unique-paths-ii/",
+            "youtubeUrl": "https://www.youtube.com/watch?v=TmhpgXScLyY",
+            "articleUrl": "https://takeuforward.org/data-structure/grid-unique-paths-2-dp-9/",
+            "companies": [
+              "Google",
+              "Amazon",
+              "Microsoft"
+            ],
+            "tags": [
+              "Dynamic Programming",
+              "2D/3D DP and DP on Grids"
+            ]
+          },
+          {
+            "id": "a2z-s16-l3-p4",
+            "title": "Minimum path sum in Grid (DP 10)",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/minimum-path-sum/",
+            "youtubeUrl": "https://www.youtube.com/watch?v=_rgTlyky1uQ",
+            "articleUrl": "https://takeuforward.org/data-structure/minimum-path-sum-in-a-grid-dp-10/",
+            "companies": [
+              "Amazon",
+              "Google"
+            ],
+            "tags": [
+              "Dynamic Programming",
+              "2D/3D DP and DP on Grids"
+            ]
+          },
+          {
+            "id": "a2z-s16-l3-p5",
+            "title": "Minimum path sum in Triangular Grid (DP 11)",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/triangle/",
+            "youtubeUrl": "https://www.youtube.com/watch?v=SrP-PiLSYC0",
+            "articleUrl": "https://takeuforward.org/data-structure/minimum-path-sum-in-triangular-grid-dp-11/",
+            "companies": [
+              "Amazon",
+              "Google"
+            ],
+            "tags": [
+              "Dynamic Programming",
+              "2D/3D DP and DP on Grids"
+            ]
+          },
+          {
+            "id": "a2z-s16-l3-p6",
+            "title": "Minimum/Maximum Falling Path Sum (DP-12)",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/minimum-falling-path-sum/",
+            "youtubeUrl": "https://www.youtube.com/watch?v=N_aJ5qQbYA0",
 ];
