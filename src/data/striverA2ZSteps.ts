@@ -6638,4 +6638,84 @@ export const STRIVER_A2Z_FULL_STEPS: DsaStep[] = [
             "id": "a2z-s15-l5-p9",
             "title": "Number of island II",
             "difficulty": "Hard",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/number-of-islands-ii/",
+            "youtubeUrl": "https://youtu.be/Rn6B-Q4SNyA",
+            "articleUrl": "https://takeuforward.org/graph/number-of-islands-ii-online-queries-dsu-g-51/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Graphs",
+              "MinimumSpanningTree/Disjoint Set and Problems"
+            ]
+          },
+          {
+            "id": "a2z-s15-l5-p10",
+            "title": "Making a Large Island",
+            "difficulty": "Hard",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/making-a-large-island/",
+            "youtubeUrl": "https://youtu.be/lgiz0Oup6gM",
+            "articleUrl": "https://takeuforward.org/data-structure/making-a-large-island-dsu-g-52/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Graphs",
+              "MinimumSpanningTree/Disjoint Set and Problems"
+            ]
+          },
+          {
+            "id": "a2z-s15-l5-p11",
+            "title": "Swim in rising water",
+            "difficulty": "Hard",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/swim-in-rising-water/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Graphs",
+              "MinimumSpanningTree/Disjoint Set and Problems"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "a2z-step-15-sub-6",
+        "title": "Other Algorithms",
+        "problems": [
+          {
+            "id": "a2z-s15-l6-p1",
+            "title": "Bridges in Graph",
+            "difficulty": "Hard",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/critical-connections-in-a-network/discuss/382385/find-bridges-in-a-graph",
+            "youtubeUrl": "https://youtu.be/qrAub5z8FeA",
+            "articleUrl": "https://takeuforward.org/graph/bridges-in-graph-using-tarjans-algorithm-of-time-in-and-low-time-g-55/",
+            "companies": [
+              "Amazon",
+              "Google"
+            ],
+            "tags": [
+              "Graphs",
+              "Other Algorithms"
+            ]
+          },
+          {
+            "id": "a2z-s15-l6-p2",
+            "title": "Articulation Point",
+            "difficulty": "Hard",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/articulation-point-in-graph",
+            "youtubeUrl": "https://youtu.be/j1QDfU21iZk",
+            "articleUrl": "https://takeuforward.org/data-structure/articulation-point-in-graph-g-56/",
+            "companies": [
+              "Amazon",
+              "Google"
+            ],
 ];
