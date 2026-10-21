@@ -478,4 +478,84 @@ export const STRIVER_A2Z_FULL_STEPS: DsaStep[] = [
             "problemUrl": "https://leetcode.com/problems/valid-palindrome/",
             "youtubeUrl": "https://www.youtube.com/watch?v=twuC1F6gLI8&list=PLgUwDviBIf0rGlzIn_7rsaR2FQ5e6ZOL9&index=4",
             "articleUrl": "https://takeuforward.org/data-structure/check-if-the-given-string-is-palindrome-or-not/",
+            "companies": [
+              "Amazon",
+              "Microsoft",
+              "Meta"
+            ],
+            "tags": [
+              "Learn the basics",
+              "Learn Basic Recursion"
+            ]
+          },
+          {
+            "id": "a2z-s1-l5-p9",
+            "title": "Fibonacci Number",
+            "difficulty": "Basic",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/fibonacci-number/",
+            "youtubeUrl": "https://www.youtube.com/watch?v=kvRjNm4rVBE&list=PLgUwDviBIf0rGlzIn_7rsaR2FQ5e6ZOL9&index=5",
+            "articleUrl": "https://takeuforward.org/arrays/print-fibonacci-series-up-to-nth-term/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Learn the basics",
+              "Learn Basic Recursion"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "a2z-step-1-sub-6",
+        "title": "Learn Basic Hashing",
+        "problems": [
+          {
+            "id": "a2z-s1-l6-p1",
+            "title": "Hashing Theory",
+            "difficulty": "Basic",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/hashing/hashing-maps-time-complexity-collisions-division-rule-of-hashing-strivers-a2z-dsa-course/",
+            "youtubeUrl": "https://www.youtube.com/watch?v=KEs5UyBJ39g",
+            "articleUrl": "https://takeuforward.org/hashing/hashing-maps-time-complexity-collisions-division-rule-of-hashing-strivers-a2z-dsa-course/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Learn the basics",
+              "Learn Basic Hashing"
+            ]
+          },
+          {
+            "id": "a2z-s1-l6-p2",
+            "title": "Counting frequencies of array elements",
+            "difficulty": "Basic",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/counting-frequencies-of-array-elements",
+            "articleUrl": "https://takeuforward.org/data-structure/count-frequency-of-each-element-in-the-array/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Learn the basics",
+              "Learn Basic Hashing"
+            ]
+          },
+          {
+            "id": "a2z-s1-l6-p3",
+            "title": "Find the highest/lowest frequency element",
+            "difficulty": "Basic",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/frequency-of-the-most-frequent-element/",
+            "articleUrl": "https://takeuforward.org/arrays/find-the-highest-lowest-frequency-element/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Learn the basics",
+              "Learn Basic Hashing"
 ];
