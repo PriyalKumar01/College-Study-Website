@@ -1998,4 +1998,84 @@ export const STRIVER_A2Z_FULL_STEPS: DsaStep[] = [
           },
           {
             "id": "a2z-s5-l1-p2",
+            "title": "Reverse words in a given string / Palindrome Check",
+            "difficulty": "Easy",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/reverse-words-in-a-string/",
+            "articleUrl": "https://takeuforward.org/data-structure/reverse-words-in-a-string/",
+            "companies": [
+              "Amazon",
+              "Microsoft",
+              "Meta"
+            ],
+            "tags": [
+              "Strings",
+              "Basic and Easy String Problems"
+            ]
+          },
+          {
+            "id": "a2z-s5-l1-p3",
+            "title": "Largest odd number in a string",
+            "difficulty": "Easy",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/largest-odd-number-in-string/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Strings",
+              "Basic and Easy String Problems"
+            ]
+          },
+          {
+            "id": "a2z-s5-l1-p4",
+            "title": "Longest Common Prefix",
+            "difficulty": "Easy",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/longest-common-prefix/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Strings",
+              "Basic and Easy String Problems"
+            ]
+          },
+          {
+            "id": "a2z-s5-l1-p5",
+            "title": "Isomorphic String",
+            "difficulty": "Easy",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/isomorphic-strings/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Strings",
+              "Basic and Easy String Problems"
+            ]
+          },
+          {
+            "id": "a2z-s5-l1-p6",
+            "title": "check whether one string is a rotation of another",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/rotate-string/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Strings",
+              "Basic and Easy String Problems"
+            ]
+          },
+          {
+            "id": "a2z-s5-l1-p7",
+            "title": "Check if two strings are anagram of each other",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
 ];
