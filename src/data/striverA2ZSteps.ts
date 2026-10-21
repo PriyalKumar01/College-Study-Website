@@ -398,4 +398,84 @@ export const STRIVER_A2Z_FULL_STEPS: DsaStep[] = [
               "Amazon"
             ],
             "tags": [
+              "Learn the basics",
+              "Learn Basic Recursion"
+            ]
+          },
+          {
+            "id": "a2z-s1-l5-p4",
+            "title": "Print N to 1 using recursion",
+            "difficulty": "Basic",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/print-n-to-1-using-recursion",
+            "youtubeUrl": "https://www.youtube.com/watch?v=un6PLygfXrA&list=PLgUwDviBIf0rGlzIn_7rsaR2FQ5e6ZOL9&index=2",
+            "articleUrl": "https://takeuforward.org/recursion/print-n-to-1-using-recursion/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Learn the basics",
+              "Learn Basic Recursion"
+            ]
+          },
+          {
+            "id": "a2z-s1-l5-p5",
+            "title": "Sum of first N numbers",
+            "difficulty": "Basic",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/sum-of-first-n-numbers",
+            "youtubeUrl": "https://www.youtube.com/watch?v=69ZCDFy-OUo&list=PLgUwDviBIf0rGlzIn_7rsaR2FQ5e6ZOL9&index=3",
+            "articleUrl": "https://takeuforward.org/data-structure/sum-of-first-n-natural-numbers/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Learn the basics",
+              "Learn Basic Recursion"
+            ]
+          },
+          {
+            "id": "a2z-s1-l5-p6",
+            "title": "Factorial of N numbers",
+            "difficulty": "Basic",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/factorial-of-a-given-number",
+            "youtubeUrl": "https://www.youtube.com/watch?v=69ZCDFy-OUo&list=PLgUwDviBIf0rGlzIn_7rsaR2FQ5e6ZOL9&index=3",
+            "articleUrl": "https://takeuforward.org/data-structure/factorial-of-a-number-iterative-and-recursive/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Learn the basics",
+              "Learn Basic Recursion"
+            ]
+          },
+          {
+            "id": "a2z-s1-l5-p7",
+            "title": "Reverse an array",
+            "difficulty": "Basic",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/reverse-an-array",
+            "youtubeUrl": "https://www.youtube.com/watch?v=twuC1F6gLI8&list=PLgUwDviBIf0rGlzIn_7rsaR2FQ5e6ZOL9&index=4",
+            "articleUrl": "https://takeuforward.org/data-structure/reverse-a-given-array/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Learn the basics",
+              "Learn Basic Recursion"
+            ]
+          },
+          {
+            "id": "a2z-s1-l5-p8",
+            "title": "Check if a string is palindrome or not",
+            "difficulty": "Basic",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/valid-palindrome/",
+            "youtubeUrl": "https://www.youtube.com/watch?v=twuC1F6gLI8&list=PLgUwDviBIf0rGlzIn_7rsaR2FQ5e6ZOL9&index=4",
+            "articleUrl": "https://takeuforward.org/data-structure/check-if-the-given-string-is-palindrome-or-not/",
 ];
