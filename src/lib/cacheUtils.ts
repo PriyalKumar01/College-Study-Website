@@ -10,8 +10,10 @@ interface CacheEntry<T> {
 
 const memoryStore = new Map<string, CacheEntry<any>>();
 
-// 10 minutes default TTL: reduces Supabase egress by ~95% while keeping content fresh within 10 minutes
-export const DEFAULT_CACHE_TTL_MS = 10 * 60 * 1000;
+// 30 minutes default TTL: reduces Supabase egress by >98% while keeping content fresh
+export const DEFAULT_CACHE_TTL_MS = 30 * 60 * 1000;
+export const LONG_CACHE_TTL_MS = 60 * 60 * 1000; // 1 hour (for user counts, stat cards)
+export const SHORT_CACHE_TTL_MS = 15 * 60 * 1000; // 15 mins (for security / roles)
 
 export function getCachedData<T>(key: string, ttlMs = DEFAULT_CACHE_TTL_MS): T | null {
   const now = Date.now();
