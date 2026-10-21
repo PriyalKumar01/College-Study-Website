@@ -798,4 +798,84 @@ export const STRIVER_A2Z_FULL_STEPS: DsaStep[] = [
             "difficulty": "Easy",
             "platform": "LeetCode",
             "problemUrl": "https://leetcode.com/problems/rotate-array/",
+            "youtubeUrl": "https://youtu.be/wvcQg43_V8U?t=485",
+            "articleUrl": "https://takeuforward.org/data-structure/rotate-array-by-k-elements/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Solve Problems on Arrays",
+              "Easy"
+            ]
+          },
+          {
+            "id": "a2z-s3-l1-p7",
+            "title": "Move Zeros to end",
+            "difficulty": "Easy",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/move-zeroes/",
+            "youtubeUrl": "https://youtu.be/wvcQg43_V8U?t=1633",
+            "articleUrl": "https://takeuforward.org/data-structure/move-all-zeros-to-the-end-of-the-array/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Solve Problems on Arrays",
+              "Easy"
+            ]
+          },
+          {
+            "id": "a2z-s3-l1-p8",
+            "title": "Linear Search",
+            "difficulty": "Easy",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/linear-search",
+            "youtubeUrl": "https://youtu.be/wvcQg43_V8U?t=2465",
+            "articleUrl": "https://takeuforward.org/data-structure/linear-search-in-c/",
+            "companies": [
+              "Wipro",
+              "TCS"
+            ],
+            "tags": [
+              "Solve Problems on Arrays",
+              "Easy"
+            ]
+          },
+          {
+            "id": "a2z-s3-l1-p9",
+            "title": "Find the Union",
+            "difficulty": "Medium",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/union-of-two-sorted-arrays",
+            "youtubeUrl": "https://youtu.be/wvcQg43_V8U?t=2584",
+            "articleUrl": "https://takeuforward.org/data-structure/union-of-two-sorted-arrays/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Solve Problems on Arrays",
+              "Easy"
+            ]
+          },
+          {
+            "id": "a2z-s3-l1-p10",
+            "title": "Find missing number in an array",
+            "difficulty": "Easy",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/missing-number/",
+            "youtubeUrl": "https://youtu.be/bYWLJb3vCWY?t=57",
+            "articleUrl": "https://takeuforward.org/arrays/find-the-missing-number-in-an-array/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Solve Problems on Arrays",
+              "Easy"
+            ]
+          },
+          {
 ];
