@@ -1198,4 +1198,84 @@ export const STRIVER_A2Z_FULL_STEPS: DsaStep[] = [
       {
         "id": "a2z-step-3-sub-3",
         "title": "Hard",
+        "problems": [
+          {
+            "id": "a2z-s3-l3-p1",
+            "title": "Pascal's Triangle",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/pascals-triangle/",
+            "youtubeUrl": "https://youtu.be/bR7mQgwQ_o8",
+            "articleUrl": "https://takeuforward.org/data-structure/program-to-generate-pascals-triangle/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Solve Problems on Arrays",
+              "Hard"
+            ]
+          },
+          {
+            "id": "a2z-s3-l3-p2",
+            "title": "Majority Element (n/3 times)",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/majority-element-ii/",
+            "youtubeUrl": "https://youtu.be/vwZj1K0e9U8",
+            "articleUrl": "https://takeuforward.org/data-structure/majority-elementsn-3-times-find-the-elements-that-appears-more-than-n-3-times-in-the-array/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Solve Problems on Arrays",
+              "Hard"
+            ]
+          },
+          {
+            "id": "a2z-s3-l3-p3",
+            "title": "3-Sum Problem",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/3sum/",
+            "youtubeUrl": "https://youtu.be/DhFh8Kw7ymk",
+            "articleUrl": "https://takeuforward.org/data-structure/3-sum-find-triplets-that-add-up-to-a-zero/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Solve Problems on Arrays",
+              "Hard"
+            ]
+          },
+          {
+            "id": "a2z-s3-l3-p4",
+            "title": "4-Sum Problem",
+            "difficulty": "Hard",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/4sum/",
+            "youtubeUrl": "https://youtu.be/eD95WRfh81c",
+            "articleUrl": "https://takeuforward.org/data-structure/4-sum-find-quads-that-add-up-to-a-target-value/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Solve Problems on Arrays",
+              "Hard"
+            ]
+          },
+          {
+            "id": "a2z-s3-l3-p5",
+            "title": "Largest Subarray with 0 Sum",
+            "difficulty": "Medium",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/largest-subarray-with-sum-0",
+            "youtubeUrl": "https://www.youtube.com/watch?v=xmguZ6GbatA&list=PLgUwDviBIf0p4ozDR_kJJkONnb1wdx2Ma&index=23",
+            "articleUrl": "https://takeuforward.org/data-structure/length-of-the-longest-subarray-with-zero-sum/",
+            "companies": [
+              "Google",
+              "Amazon"
 ];
