@@ -6798,4 +6798,84 @@ export const STRIVER_A2Z_FULL_STEPS: DsaStep[] = [
             "platform": "Other",
             "problemUrl": "https://takeuforward.org/plus/dsa/problems/frog-jump",
             "youtubeUrl": "https://www.youtube.com/watch?v=EgG3jsGoPvQ",
+            "articleUrl": "https://takeuforward.org/data-structure/dynamic-programming-frog-jump-dp-3/",
+            "companies": [
+              "Google"
+            ],
+            "tags": [
+              "Dynamic Programming",
+              "1D DP"
+            ]
+          },
+          {
+            "id": "a2z-s16-l2-p3",
+            "title": "Frog Jump with k distances(DP-4)",
+            "difficulty": "Medium",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/frog-jump-with-k-distances",
+            "youtubeUrl": "https://www.youtube.com/watch?v=Kmh3rhyEtB8",
+            "articleUrl": "https://takeuforward.org/data-structure/dynamic-programming-frog-jump-with-k-distances-dp-4/",
+            "companies": [
+              "Google"
+            ],
+            "tags": [
+              "Dynamic Programming",
+              "1D DP"
+            ]
+          },
+          {
+            "id": "a2z-s16-l2-p4",
+            "title": "Maximum sum of non-adjacent elements (DP 5)",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/house-robber/",
+            "youtubeUrl": "https://www.youtube.com/watch?v=GrMBfJNk_NY",
+            "articleUrl": "https://takeuforward.org/data-structure/maximum-sum-of-non-adjacent-elements-dp-5/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Dynamic Programming",
+              "1D DP"
+            ]
+          },
+          {
+            "id": "a2z-s16-l2-p5",
+            "title": "House Robber (DP 6)",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/house-robber-ii/",
+            "youtubeUrl": "https://www.youtube.com/watch?v=3WaxQMELSkw",
+            "articleUrl": "https://takeuforward.org/data-structure/dynamic-programming-house-robber-dp-6/",
+            "companies": [
+              "Amazon",
+              "Google",
+              "Microsoft"
+            ],
+            "tags": [
+              "Dynamic Programming",
+              "1D DP"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "a2z-step-16-sub-3",
+        "title": "2D/3D DP and DP on Grids",
+        "problems": [
+          {
+            "id": "a2z-s16-l3-p1",
+            "title": "Ninja's Training (DP 7)",
+            "difficulty": "Medium",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/ninja's-training",
+            "youtubeUrl": "https://www.youtube.com/watch?v=AE39gJYuRog",
+            "articleUrl": "https://takeuforward.org/data-structure/dynamic-programming-ninjas-training-dp-7/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Dynamic Programming",
 ];
