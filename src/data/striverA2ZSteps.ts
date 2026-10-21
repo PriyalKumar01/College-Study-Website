@@ -3918,4 +3918,84 @@ export const STRIVER_A2Z_FULL_STEPS: DsaStep[] = [
             "problemUrl": "https://leetcode.com/problems/largest-rectangle-in-histogram/",
             "youtubeUrl": "https://youtu.be/Bzat9vgD0fs?si=DiBlLejXcr6EJoyB",
             "articleUrl": "https://takeuforward.org/data-structure/area-of-largest-rectangle-in-histogram/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Stack and Queues",
+              "Monotonic Stack/Queue Problems"
+            ]
+          },
+          {
+            "id": "a2z-s9-l3-p11",
+            "title": "Maximal Rectangles",
+            "difficulty": "Hard",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/maximal-rectangle/",
+            "youtubeUrl": "https://youtu.be/ttVu6G7Ayik?si=RhyeKepNwjRUYp7A",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Stack and Queues",
+              "Monotonic Stack/Queue Problems"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "a2z-step-9-sub-4",
+        "title": "Implementation Problems",
+        "problems": [
+          {
+            "id": "a2z-s9-l4-p1",
+            "title": "Sliding Window maximum",
+            "difficulty": "Hard",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/sliding-window-maximum/",
+            "youtubeUrl": "https://youtu.be/NwBvene4Imo?si=eU1PY-bcQfk5wdog",
+            "articleUrl": "https://takeuforward.org/data-structure/sliding-window-maximum/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Stack and Queues",
+              "Implementation Problems"
+            ]
+          },
+          {
+            "id": "a2z-s9-l4-p2",
+            "title": "Stock span problem",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/online-stock-span/",
+            "youtubeUrl": "https://youtu.be/eay-zoSRkVc?si=deNNe5i38BOAntha",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Stack and Queues",
+              "Implementation Problems"
+            ]
+          },
+          {
+            "id": "a2z-s9-l4-p3",
+            "title": "The Celebrity Problem",
+            "difficulty": "Hard",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/accounts/login/?next=/problems/find-the-celebrity/",
+            "youtubeUrl": "https://youtu.be/cEadsbTeze4?si=olXYfOs7l-SEn2zl",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Stack and Queues",
+              "Implementation Problems"
+            ]
+          },
 ];
