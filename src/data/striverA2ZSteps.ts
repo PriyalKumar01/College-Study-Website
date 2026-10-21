@@ -5278,4 +5278,84 @@ export const STRIVER_A2Z_FULL_STEPS: DsaStep[] = [
             "tags": [
               "Binary Trees",
               "Hard Problems"
+            ]
+          },
+          {
+            "id": "a2z-s13-l3-p2",
+            "title": "LCA in Binary Tree",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-tree/",
+            "youtubeUrl": "https://youtu.be/_-QHfMDde90",
+            "articleUrl": "https://takeuforward.org/data-structure/lowest-common-ancestor-for-two-given-nodes/",
+            "companies": [
+              "Amazon",
+              "Meta",
+              "Microsoft",
+              "Google"
+            ],
+            "tags": [
+              "Binary Trees",
+              "Hard Problems"
+            ]
+          },
+          {
+            "id": "a2z-s13-l3-p3",
+            "title": "Maximum width of a Binary Tree",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/maximum-width-of-binary-tree/",
+            "youtubeUrl": "https://youtu.be/ZbybYvcVLks",
+            "articleUrl": "https://takeuforward.org/data-structure/maximum-width-of-a-binary-tree/",
+            "companies": [
+              "Amazon",
+              "Google"
+            ],
+            "tags": [
+              "Binary Trees",
+              "Hard Problems"
+            ]
+          },
+          {
+            "id": "a2z-s13-l3-p4",
+            "title": "Check for Children Sum Property",
+            "difficulty": "Hard",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/children-sum-property-in-binary-tree",
+            "youtubeUrl": "https://youtu.be/fnmisPM6cVo",
+            "articleUrl": "https://takeuforward.org/data-structure/check-for-children-sum-property-in-a-binary-tree/",
+            "companies": [
+              "Amazon"
+            ],
+            "tags": [
+              "Binary Trees",
+              "Hard Problems"
+            ]
+          },
+          {
+            "id": "a2z-s13-l3-p5",
+            "title": "Print all the Nodes at a distance of K in a Binary Tree",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/all-nodes-distance-k-in-binary-tree/",
+            "youtubeUrl": "https://youtu.be/i9ORlEy6EsI",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Binary Trees",
+              "Hard Problems"
+            ]
+          },
+          {
+            "id": "a2z-s13-l3-p6",
+            "title": "Minimum time taken to BURN the Binary Tree from a Node",
+            "difficulty": "Hard",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/minimum-time-taken-to-burn-the-bt-from-a-given-node",
+            "youtubeUrl": "https://youtu.be/2r5wLmQfD6g",
+            "companies": [
+              "Google",
+              "Amazon"
 ];
