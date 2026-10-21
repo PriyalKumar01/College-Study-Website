@@ -5,7 +5,8 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FileText, Download, ExternalLink, Users, Sparkles } from 'lucide-react';
-import { downloadFile } from '@/lib/downloadUtils';
+import { smartDownload, viewInBrowser } from '@/lib/downloadUtils';
+import { getCachedData, setCachedData, DEFAULT_CACHE_TTL_MS } from '@/lib/cacheUtils';
 
 interface CommunityMaterial {
   id: string;
@@ -32,11 +33,25 @@ interface CommunityMaterialsProps {
  * Place this component inside existing notes pages to inject live approved uploads.
  */
 const CommunityMaterials = ({ semester, subject, className = '' }: CommunityMaterialsProps) => {
-  const [materials, setMaterials] = useState<CommunityMaterial[]>([]);
-  const [loading, setLoading] = useState(true);
+  const cacheKey = `comm_mat_${semester}_${subject || 'all'}`;
+  const [materials, setMaterials] = useState<CommunityMaterial[]>(() => {
+    return getCachedData<CommunityMaterial[]>(cacheKey, DEFAULT_CACHE_TTL_MS) || [];
+  });
+  const [loading, setLoading] = useState(() => {
+    return !getCachedData<CommunityMaterial[]>(cacheKey, DEFAULT_CACHE_TTL_MS);
+  });
 
   useEffect(() => {
-    const fetchMaterials = async () => {
+    const fetchMaterials = async (force = false) => {
+      if (!force) {
+        const cached = getCachedData<CommunityMaterial[]>(cacheKey, DEFAULT_CACHE_TTL_MS);
+        if (cached) {
+          setMaterials(cached);
+          setLoading(false);
+          return;
+        }
+      }
+
       setLoading(true);
       let query = supabase
         .from('notes')
@@ -54,12 +69,17 @@ const CommunityMaterials = ({ semester, subject, className = '' }: CommunityMate
 
       if (!error && data) {
         setMaterials(data as CommunityMaterial[]);
+        setCachedData(cacheKey, data);
       }
       setLoading(false);
     };
 
     fetchMaterials();
-  }, [semester, subject]);
+
+    const handleUpdate = () => fetchMaterials(true);
+    window.addEventListener('studyhub_notes_updated', handleUpdate);
+    return () => window.removeEventListener('studyhub_notes_updated', handleUpdate);
+  }, [semester, subject, cacheKey]);
 
   if (loading) return null;
   if (materials.length === 0) return null;
@@ -158,7 +178,7 @@ const MaterialCard = ({ material, index }: { material: CommunityMaterial; index:
               variant="ghost"
               size="icon"
               className="h-8 w-8 text-muted-foreground hover:text-violet-600"
-              onClick={() => window.open(material.file_url, '_blank')}
+              onClick={() => viewInBrowser(material.file_url)}
               title="Preview"
             >
               <ExternalLink className="h-4 w-4" />
@@ -167,7 +187,7 @@ const MaterialCard = ({ material, index }: { material: CommunityMaterial; index:
               variant="ghost"
               size="icon"
               className="h-8 w-8 text-muted-foreground hover:text-emerald-600"
-              onClick={() => downloadFile(material.file_url, material.file_name || 'download.pdf')}
+              onClick={() => smartDownload(material.file_url, material.file_name || 'download.pdf')}
               title="Download"
             >
               <Download className="h-4 w-4" />
