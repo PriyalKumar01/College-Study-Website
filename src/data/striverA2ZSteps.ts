@@ -6238,4 +6238,84 @@ export const STRIVER_A2Z_FULL_STEPS: DsaStep[] = [
             "difficulty": "Hard",
             "platform": "LeetCode",
             "problemUrl": "https://leetcode.com/problems/find-eventual-safe-states/",
+            "youtubeUrl": "https://youtu.be/2gtg3VsDGyc",
+            "articleUrl": "https://takeuforward.org/data-structure/find-eventual-safe-states-bfs-topological-sort-g-25/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Graphs",
+              "Topo Sort and Problems"
+            ]
+          },
+          {
+            "id": "a2z-s15-l3-p7",
+            "title": "Alien dictionary",
+            "difficulty": "Hard",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/alien-dictionary/solution/",
+            "youtubeUrl": "https://youtu.be/U3N_je7tWAs",
+            "articleUrl": "https://takeuforward.org/data-structure/alien-dictionary-topological-sort-g-26/",
+            "companies": [
+              "Google",
+              "Amazon",
+              "Meta"
+            ],
+            "tags": [
+              "Graphs",
+              "Topo Sort and Problems"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "a2z-step-15-sub-4",
+        "title": "Shortest Path Algorithms and Problems",
+        "problems": [
+          {
+            "id": "a2z-s15-l4-p1",
+            "title": "Shortest Path in UG with unit weights",
+            "difficulty": "Hard",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/shortest-path-in-undirected-graph-with-unit-weights",
+            "youtubeUrl": "https://www.youtube.com/watch?v=C4gxoTaI71U&list=PLgUwDviBIf0oE3gA41TKO2H5bHpPd7fzn&index=28",
+            "articleUrl": "https://takeuforward.org/data-structure/shortest-path-in-undirected-graph-with-unit-distance-g-28/",
+            "companies": [
+              "Amazon",
+              "Google"
+            ],
+            "tags": [
+              "Graphs",
+              "Shortest Path Algorithms and Problems"
+            ]
+          },
+          {
+            "id": "a2z-s15-l4-p2",
+            "title": "Shortest Path in DAG",
+            "difficulty": "Hard",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/shortest-path-in-dag",
+            "youtubeUrl": "https://www.youtube.com/watch?v=ZUFQfFaU-8U&list=PLgUwDviBIf0oE3gA41TKO2H5bHpPd7fzn&index=27",
+            "articleUrl": "https://takeuforward.org/data-structure/shortest-path-in-directed-acyclic-graph-topological-sort-g-27/",
+            "companies": [
+              "Amazon",
+              "Google"
+            ],
+            "tags": [
+              "Graphs",
+              "Shortest Path Algorithms and Problems"
+            ]
+          },
+          {
+            "id": "a2z-s15-l4-p3",
+            "title": "Djisktra's Algorithm",
+            "difficulty": "Hard",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/dijkstra's-algorithm",
+            "youtubeUrl": "https://www.youtube.com/watch?v=rp1SMw7HSO8&list=PLgUwDviBIf0oE3gA41TKO2H5bHpPd7fzn&index=35",
+            "articleUrl": "https://takeuforward.org/data-structure/dijkstras-algorithm-using-set-g-33/",
+            "companies": [
+              "Google",
+              "Amazon"
 ];
