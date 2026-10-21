@@ -4478,4 +4478,84 @@ export const STRIVER_A2Z_FULL_STEPS: DsaStep[] = [
               "Hard Problems"
             ]
           },
+          {
+            "id": "a2z-s11-l3-p4",
+            "title": "Maximum Sum Combination",
+            "difficulty": "Medium",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/maximum-sum-combination",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Heaps",
+              "Hard Problems"
+            ]
+          },
+          {
+            "id": "a2z-s11-l3-p5",
+            "title": "Find Median from Data Stream",
+            "difficulty": "Hard",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/find-median-from-data-stream/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Heaps",
+              "Hard Problems"
+            ]
+          },
+          {
+            "id": "a2z-s11-l3-p6",
+            "title": "K most frequent elements",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/top-k-frequent-elements/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Heaps",
+              "Hard Problems"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "a2z-step-12",
+    "title": "Step 12: Greedy Algorithms [Easy, Medium/Hard]",
+    "lectures": [
+      {
+        "id": "a2z-step-12-sub-1",
+        "title": "Easy Problems",
+        "problems": [
+          {
+            "id": "a2z-s12-l1-p1",
+            "title": "Assign Cookies",
+            "difficulty": "Easy",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/assign-cookies/",
+            "youtubeUrl": "https://youtu.be/DIX2p7vb9co?si=GofAIDimue-Av0Fi",
+            "articleUrl": "https://takeuforward.org/Greedy/assign-cookies",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Greedy Algorithms",
+              "Easy Problems"
+            ]
+          },
+          {
+            "id": "a2z-s12-l1-p2",
+            "title": "Fractional Knapsack Problem",
+            "difficulty": "Medium",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/fractional-knapsack",
 ];
