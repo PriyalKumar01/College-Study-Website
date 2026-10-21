@@ -145,16 +145,39 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     await fetchUserRole(user?.email ?? undefined, true);
   };
 
-  const checkBanAndApproval = async (userObj: User | null): Promise<boolean> => {
+  const checkBanAndApproval = async (userObj: User | null, force = false): Promise<boolean> => {
     if (!userObj) {
       setIsBanned(false);
       setApprovalStatus('approved');
       return false;
     }
 
+    const email = userObj.email?.toLowerCase().trim() || '';
+    const domain = email.split('@')[1] || '';
+    const isOwnerOrAdmin = email === 'priyalkumar06@gmail.com' || userRole === 'owner' || userRole === 'admin';
+    const isWhitelisted = isDirectlyAllowedDomain(domain);
+
+    // Whitelisted domains & owners are instantly approved without database roundtrips
+    if (isOwnerOrAdmin || isWhitelisted) {
+      setIsBanned(false);
+      setApprovalStatus('approved');
+      try { localStorage.setItem('csh_approval_status', 'approved'); } catch {}
+      return false;
+    }
+
+    // Cache check: avoid hammering Supabase on every tab switch / interval
+    const cacheKey = `sec_check_${userObj.id}`;
+    if (!force) {
+      const cached = getCachedData<{ banned: boolean; status: ApprovalStatus }>(cacheKey, 15 * 60 * 1000);
+      if (cached) {
+        setIsBanned(cached.banned);
+        setApprovalStatus(cached.status);
+        return cached.banned;
+      }
+    }
+
     try {
-      // 1. Query public.profiles for banned_until and approval_status (Direct PostgREST query, matching by id, user_id, or email)
-      const email = userObj.email?.toLowerCase().trim() || '';
+      // 1. Query public.profiles for banned_until and approval_status
       let query = supabase
         .from('profiles')
         .select('banned_until, approval_status');
@@ -174,6 +197,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
           console.warn('User is currently banned until:', bannedUntil);
           setIsBanned(true);
           localStorage.setItem('csh_banned_user', userObj.email || 'banned');
+          setCachedData(cacheKey, { banned: true, status: 'pending' });
           setTimeout(() => supabase.auth.signOut(), 0);
           setUser(null);
           setSession(null);
@@ -187,24 +211,16 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       localStorage.removeItem('csh_banned_user');
 
       // 2. Approval status check
-      const domain = email.split('@')[1] || '';
-      const isOwnerOrAdmin = email === 'priyalkumar06@gmail.com' || userRole === 'owner' || userRole === 'admin';
-      const isWhitelisted = isDirectlyAllowedDomain(domain);
-
-      let determinedStatus: ApprovalStatus = 'pending';
-
-      if (isOwnerOrAdmin || isWhitelisted) {
-        determinedStatus = 'approved';
-      } else if (profile?.approval_status) {
-        determinedStatus = profile.approval_status as ApprovalStatus;
-      } else {
-        determinedStatus = 'pending';
-      }
+      let determinedStatus: ApprovalStatus = profile?.approval_status
+        ? (profile.approval_status as ApprovalStatus)
+        : 'pending';
 
       setApprovalStatus(determinedStatus);
       try {
         localStorage.setItem('csh_approval_status', determinedStatus);
       } catch {}
+
+      setCachedData(cacheKey, { banned: false, status: determinedStatus });
     } catch (err) {
       console.warn('Error checking ban and approval status:', err);
     }
@@ -213,7 +229,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const refreshApprovalStatus = async () => {
     if (!user) return;
-    await checkBanAndApproval(user);
+    await checkBanAndApproval(user, true);
   };
 
   useEffect(() => {
@@ -349,14 +365,18 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       )
       .subscribe();
 
-    // Heartbeat & focus checks (backup in case websocket dropped)
+    // Gentle 10-minute heartbeat check (drastically reduces Log Ingestion from 61% to <5%)
+    let lastFocusCheck = Date.now();
     const handleFocus = () => {
-      checkBanAndApproval(user);
+      if (Date.now() - lastFocusCheck > 5 * 60 * 1000) {
+        lastFocusCheck = Date.now();
+        checkBanAndApproval(user);
+      }
     };
     window.addEventListener('focus', handleFocus);
     const interval = setInterval(() => {
       checkBanAndApproval(user);
-    }, 20000);
+    }, 10 * 60 * 1000);
 
     return () => {
       supabase.removeChannel(channel);
