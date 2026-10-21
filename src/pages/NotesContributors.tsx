@@ -235,27 +235,27 @@ const NotesContributors = ({ defaultTab }: { defaultTab?: "contributors" | "admi
     }
   };
 
-  // Fetch both contributors and admins on mount (Stale-While-Revalidate pattern)
+  // Fetch both contributors and admins on mount (uses cached data if fresh)
   useEffect(() => {
-    // 1. Contributors: render cache immediately if available, then fetch fresh in background
+    // 1. Contributors: render cache immediately if available, only fetch if cache missing
     const cachedContribs = getCachedData<Contributor[]>('contributors_list', DEFAULT_CACHE_TTL_MS);
     if (cachedContribs && cachedContribs.length > 0) {
       setContributors(cachedContribs);
       setLoadingContributors(false);
     } else {
       setLoadingContributors(true);
+      fetchContributorsList();
     }
-    fetchContributorsList();
 
-    // 2. Admins: render cache immediately if available, then fetch fresh in background
+    // 2. Admins: render cache immediately if available, only fetch if cache missing
     const cachedAdmins = getCachedData<AdminRecord[]>('contributors_admins', DEFAULT_CACHE_TTL_MS);
     if (cachedAdmins && cachedAdmins.length > 0) {
       setAdmins(cachedAdmins);
       setLoadingAdmins(false);
     } else {
       setLoadingAdmins(true);
+      fetchAdminsList();
     }
-    fetchAdminsList();
   }, []);
 
   // Listen to updates from OwnerDashboard or uploads
