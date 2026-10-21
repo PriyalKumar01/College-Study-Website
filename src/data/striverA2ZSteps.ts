@@ -3598,4 +3598,84 @@ export const STRIVER_A2Z_FULL_STEPS: DsaStep[] = [
             "articleUrl": "https://takeuforward.org/data-structure/implement-stack-using-linked-list/",
             "companies": [
               "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Stack and Queues",
+              "Learning"
+            ]
+          },
+          {
+            "id": "a2z-s9-l1-p6",
+            "title": "Implement queue using Linkedlist",
+            "difficulty": "Medium",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/implement-queue-using-linkedlist",
+            "youtubeUrl": "https://youtu.be/tqQ5fTamIN4?si=ofLt8Zt1ZvhikZ6w",
+            "articleUrl": "https://takeuforward.org/data-structure/implement-queue-using-linked-list/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Stack and Queues",
+              "Learning"
+            ]
+          },
+          {
+            "id": "a2z-s9-l1-p7",
+            "title": "Check for balanced paranthesis",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/valid-parentheses/",
+            "youtubeUrl": "https://youtu.be/xwjS0iZhw4I?si=UoyKpFn4Q3nf5h2R",
+            "articleUrl": "https://takeuforward.org/data-structure/check-for-balanced-parentheses/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Stack and Queues",
+              "Learning"
+            ]
+          },
+          {
+            "id": "a2z-s9-l1-p8",
+            "title": "Implement Min Stack",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/min-stack/",
+            "youtubeUrl": "https://youtu.be/NdDIaH91P0g?si=4_Jbsq5trFvfSdUY",
+            "articleUrl": "https://takeuforward.org/data-structure/implement-min-stack-o2n-and-on-space-complexity/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Stack and Queues",
+              "Learning"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "a2z-step-9-sub-2",
+        "title": "Prefix, Infix, PostFix Conversion Problems",
+        "problems": [
+          {
+            "id": "a2z-s9-l2-p1",
+            "title": "Infix to Postfix Conversion using Stack",
+            "difficulty": "Medium",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/infix-to-postfix-conversion",
+            "youtubeUrl": "https://youtu.be/4pIc9UBHJtk?si=ryeVvQWpCgwbTQrh",
+            "articleUrl": "https://takeuforward.org/data-structure/infix-to-postfix/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Stack and Queues",
+              "Prefix, Infix, PostFix Conversion Problems"
+            ]
 ];
