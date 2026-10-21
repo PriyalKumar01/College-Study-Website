@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
@@ -279,19 +279,21 @@ const Dashboard = () => {
     }
   ];
 
-  const handleNextStat = () => {
-    setCurrentStatIndex((prev) => (prev + 1) % statCardsData.length);
-  };
+  const STAT_CARDS_LENGTH = 8;
 
-  const handlePrevStat = () => {
-    setCurrentStatIndex((prev) => (prev - 1 + statCardsData.length) % statCardsData.length);
-  };
+  const handleNextStat = useCallback(() => {
+    setCurrentStatIndex((prev) => (prev + 1) % STAT_CARDS_LENGTH);
+  }, []);
+
+  const handlePrevStat = useCallback(() => {
+    setCurrentStatIndex((prev) => (prev - 1 + STAT_CARDS_LENGTH) % STAT_CARDS_LENGTH);
+  }, []);
 
   useEffect(() => {
     if (isHovered) return;
     const interval = setInterval(handleNextStat, 4500);
     return () => clearInterval(interval);
-  }, [isHovered]);
+  }, [isHovered, handleNextStat]);
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-background transition-colors duration-300">
