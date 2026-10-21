@@ -6158,4 +6158,84 @@ export const STRIVER_A2Z_FULL_STEPS: DsaStep[] = [
             ],
             "tags": [
               "Graphs",
+              "Topo Sort and Problems"
+            ]
+          },
+          {
+            "id": "a2z-s15-l3-p2",
+            "title": "Kahn's Algorithm",
+            "difficulty": "Hard",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/topological-sort-or-kahns-algorithm",
+            "youtubeUrl": "https://youtu.be/73sneFXuTEg",
+            "articleUrl": "https://takeuforward.org/data-structure/kahns-algorithm-topological-sort-algorithm-bfs-g-22/",
+            "companies": [
+              "Amazon",
+              "Google"
+            ],
+            "tags": [
+              "Graphs",
+              "Topo Sort and Problems"
+            ]
+          },
+          {
+            "id": "a2z-s15-l3-p3",
+            "title": "Cycle Detection in Directed Graph (BFS)",
+            "difficulty": "Hard",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/detect-a-cycle-in-a-directed-graph",
+            "youtubeUrl": "https://youtu.be/iTBaI90lpDQ",
+            "companies": [
+              "Amazon",
+              "Google"
+            ],
+            "tags": [
+              "Graphs",
+              "Topo Sort and Problems"
+            ]
+          },
+          {
+            "id": "a2z-s15-l3-p4",
+            "title": "Course Schedule - I",
+            "difficulty": "Hard",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/course-schedule/",
+            "youtubeUrl": "https://youtu.be/WAOfKpxYHR8",
+            "articleUrl": "https://takeuforward.org/data-structure/course-schedule-i-and-ii-pre-requisite-tasks-topological-sort-g-24/",
+            "companies": [
+              "Amazon",
+              "Google",
+              "Microsoft",
+              "Meta"
+            ],
+            "tags": [
+              "Graphs",
+              "Topo Sort and Problems"
+            ]
+          },
+          {
+            "id": "a2z-s15-l3-p5",
+            "title": "Course Schedule - II",
+            "difficulty": "Hard",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/course-schedule-ii/",
+            "youtubeUrl": "https://youtu.be/WAOfKpxYHR8",
+            "articleUrl": "https://takeuforward.org/data-structure/course-schedule-i-and-ii-pre-requisite-tasks-topological-sort-g-24/",
+            "companies": [
+              "Amazon",
+              "Google",
+              "Microsoft",
+              "Meta"
+            ],
+            "tags": [
+              "Graphs",
+              "Topo Sort and Problems"
+            ]
+          },
+          {
+            "id": "a2z-s15-l3-p6",
+            "title": "Find eventual safe states",
+            "difficulty": "Hard",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/find-eventual-safe-states/",
 ];
