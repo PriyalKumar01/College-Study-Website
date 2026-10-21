@@ -7198,4 +7198,84 @@ export const STRIVER_A2Z_FULL_STEPS: DsaStep[] = [
               "Dynamic Programming",
               "DP on Strings"
             ]
+          },
+          {
+            "id": "a2z-s16-l5-p2",
+            "title": "Print Longest Common Subsequence | (DP - 26)",
+            "difficulty": "Hard",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/longest-common-subsequence",
+            "youtubeUrl": "https://youtu.be/-zI4mrF2Pb4",
+            "articleUrl": "https://takeuforward.org/data-structure/print-longest-common-subsequence-dp-26/",
+            "companies": [
+              "Amazon",
+              "Google",
+              "Microsoft"
+            ],
+            "tags": [
+              "Dynamic Programming",
+              "DP on Strings"
+            ]
+          },
+          {
+            "id": "a2z-s16-l5-p3",
+            "title": "Longest Common Substring | (DP - 27)",
+            "difficulty": "Hard",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/longest-common-substring",
+            "youtubeUrl": "https://youtu.be/_wP9mWNPL5w",
+            "articleUrl": "https://takeuforward.org/data-structure/longest-common-substring-dp-27/",
+            "companies": [
+              "Amazon",
+              "Microsoft"
+            ],
+            "tags": [
+              "Dynamic Programming",
+              "DP on Strings"
+            ]
+          },
+          {
+            "id": "a2z-s16-l5-p4",
+            "title": "Longest Palindromic Subsequence | (DP-28)",
+            "difficulty": "Hard",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/longest-palindromic-subsequence/",
+            "youtubeUrl": "https://youtu.be/6i_T5kkfv4A",
+            "articleUrl": "https://takeuforward.org/data-structure/longest-palindromic-subsequence-dp-28/",
+            "companies": [
+              "Amazon",
+              "Microsoft"
+            ],
+            "tags": [
+              "Dynamic Programming",
+              "DP on Strings"
+            ]
+          },
+          {
+            "id": "a2z-s16-l5-p5",
+            "title": "Minimum insertions to make string palindrome | DP-29",
+            "difficulty": "Hard",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/minimum-insertion-steps-to-make-a-string-palindrome/",
+            "youtubeUrl": "https://www.youtube.com/watch?v=xPBLEj41rFU",
+            "articleUrl": "https://takeuforward.org/data-structure/minimum-insertions-to-make-string-palindrome-dp-29/",
+            "companies": [
+              "Amazon",
+              "Microsoft",
+              "Meta"
+            ],
+            "tags": [
+              "Dynamic Programming",
+              "DP on Strings"
+            ]
+          },
+          {
+            "id": "a2z-s16-l5-p6",
+            "title": "Minimum Insertions/Deletions to Convert String | (DP- 30)",
+            "difficulty": "Hard",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/delete-operation-for-two-strings/",
+            "youtubeUrl": "https://www.youtube.com/watch?v=yMnH0jrir0Q",
+            "articleUrl": "https://takeuforward.org/data-structure/minimum-insertions-deletions-to-convert-string-dp-30/",
+            "companies": [
 ];
