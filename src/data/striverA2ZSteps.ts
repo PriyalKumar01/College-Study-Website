@@ -718,4 +718,84 @@ export const STRIVER_A2Z_FULL_STEPS: DsaStep[] = [
             "companies": [
               "Amazon",
               "Microsoft"
+            ],
+            "tags": [
+              "Solve Problems on Arrays",
+              "Easy"
+            ]
+          },
+          {
+            "id": "a2z-s3-l1-p2",
+            "title": "Second Largest Element in an Array without sorting",
+            "difficulty": "Easy",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/second-largest-element",
+            "youtubeUrl": "https://youtu.be/37E9ckMDdTk?t=810",
+            "articleUrl": "https://takeuforward.org/data-structure/find-second-smallest-and-second-largest-element-in-an-array/",
+            "companies": [
+              "Amazon",
+              "Microsoft"
+            ],
+            "tags": [
+              "Solve Problems on Arrays",
+              "Easy"
+            ]
+          },
+          {
+            "id": "a2z-s3-l1-p3",
+            "title": "Check if the array is sorted",
+            "difficulty": "Easy",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/check-if-array-is-sorted-and-rotated/#:~:text=Input%3A%20nums%20%3D%20%5B2%2C,no%20rotation)%20to%20make%20nums.",
+            "youtubeUrl": "https://youtu.be/37E9ckMDdTk?t=17224",
+            "articleUrl": "https://takeuforward.org/data-structure/check-if-an-array-is-sorted/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Solve Problems on Arrays",
+              "Easy"
+            ]
+          },
+          {
+            "id": "a2z-s3-l1-p4",
+            "title": "Remove duplicates from Sorted array",
+            "difficulty": "Easy",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/remove-duplicates-from-sorted-array/#:~:text=Input%3A%20nums%20%3D%20%5B0%2C,%2C%203%2C%20and%204%20respectively.",
+            "youtubeUrl": "https://youtu.be/37E9ckMDdTk?t=1887",
+            "articleUrl": "https://takeuforward.org/data-structure/remove-duplicates-in-place-from-sorted-array/",
+            "companies": [
+              "Microsoft",
+              "Google"
+            ],
+            "tags": [
+              "Solve Problems on Arrays",
+              "Easy"
+            ]
+          },
+          {
+            "id": "a2z-s3-l1-p5",
+            "title": "Left Rotate an array by one place",
+            "difficulty": "Easy",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/rotate-array/",
+            "youtubeUrl": "https://youtu.be/wvcQg43_V8U?t=61",
+            "articleUrl": "https://takeuforward.org/data-structure/left-rotate-the-array-by-one/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Solve Problems on Arrays",
+              "Easy"
+            ]
+          },
+          {
+            "id": "a2z-s3-l1-p6",
+            "title": "Left rotate an array by D places",
+            "difficulty": "Easy",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/rotate-array/",
 ];
