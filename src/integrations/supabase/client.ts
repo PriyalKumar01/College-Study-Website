@@ -28,6 +28,8 @@ export const SUPABASE_URL = activeConfig.url;
 export const SUPABASE_PUBLISHABLE_KEY = activeConfig.anonKey;
 
 // Primary active Supabase client
+// - Unique storageKey prevents duplicate GoTrueClient warning
+// - db.schema kept minimal to reduce log ingestion
 export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
   auth: {
     storageKey: 'studyhub_primary_auth',
@@ -35,18 +37,30 @@ export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABL
     persistSession: true,
     autoRefreshToken: true,
     detectSessionInUrl: true,
-  }
+  },
+  global: {
+    headers: {
+      'x-client-info': 'studyhub-web',
+    },
+  },
+  // Disable realtime on secondary channels to reduce log ingestion & WebSocket egress
+  realtime: {
+    params: {
+      eventsPerSecond: 2,
+    },
+  },
 });
 
 // Secondary Supabase client for mirroring & synchronization
 // Uses a completely separate storage key to avoid GoTrueClient conflicts
+// Realtime fully disabled — only used for data writes
 export const supabaseSecondary = createClient<Database>(secondaryConfig.url, secondaryConfig.anonKey, {
   auth: {
     storageKey: 'studyhub_secondary_auth',
     persistSession: false,
     autoRefreshToken: false,
     detectSessionInUrl: false,
-  }
+  },
 });
 
 /**
