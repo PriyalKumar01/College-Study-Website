@@ -6318,4 +6318,84 @@ export const STRIVER_A2Z_FULL_STEPS: DsaStep[] = [
             "companies": [
               "Google",
               "Amazon"
+            ],
+            "tags": [
+              "Graphs",
+              "Shortest Path Algorithms and Problems"
+            ]
+          },
+          {
+            "id": "a2z-s15-l4-p4",
+            "title": "Why priority Queue is used in Djisktra's Algorithm",
+            "difficulty": "Medium",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/dijkstra's-algorithm",
+            "youtubeUrl": "https://www.youtube.com/watch?v=rp1SMw7HSO8&list=PLgUwDviBIf0oE3gA41TKO2H5bHpPd7fzn&index=35",
+            "articleUrl": "https://takeuforward.org/data-structure/dijkstras-algorithm-using-priority-queue-g-32/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Graphs",
+              "Shortest Path Algorithms and Problems"
+            ]
+          },
+          {
+            "id": "a2z-s15-l4-p5",
+            "title": "Shortest path in a binary maze",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/shortest-path-in-binary-matrix/",
+            "youtubeUrl": "https://www.youtube.com/watch?v=U5Mw4eyUmw4&list=PLgUwDviBIf0oE3gA41TKO2H5bHpPd7fzn&index=36",
+            "articleUrl": "https://takeuforward.org/data-structure/g-36-shortest-distance-in-a-binary-maze/",
+            "companies": [
+              "Amazon",
+              "Google"
+            ],
+            "tags": [
+              "Graphs",
+              "Shortest Path Algorithms and Problems"
+            ]
+          },
+          {
+            "id": "a2z-s15-l4-p6",
+            "title": "Path with minimum effort",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/path-with-minimum-effort/",
+            "youtubeUrl": "https://youtu.be/0ytpZyiZFhA",
+            "articleUrl": "https://takeuforward.org/data-structure/g-37-path-with-minimum-effort/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Graphs",
+              "Shortest Path Algorithms and Problems"
+            ]
+          },
+          {
+            "id": "a2z-s15-l4-p7",
+            "title": "Cheapest flights within k stops",
+            "difficulty": "Hard",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/cheapest-flights-within-k-stops/",
+            "youtubeUrl": "https://youtu.be/9XybHVqTHcQ",
+            "articleUrl": "https://takeuforward.org/data-structure/g-38-cheapest-flights-within-k-stops/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Graphs",
+              "Shortest Path Algorithms and Problems"
+            ]
+          },
+          {
+            "id": "a2z-s15-l4-p8",
+            "title": "Network Delay time",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/network-delay-time/",
 ];
