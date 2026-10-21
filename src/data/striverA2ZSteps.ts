@@ -5358,4 +5358,84 @@ export const STRIVER_A2Z_FULL_STEPS: DsaStep[] = [
             "companies": [
               "Google",
               "Amazon"
+            ],
+            "tags": [
+              "Binary Trees",
+              "Hard Problems"
+            ]
+          },
+          {
+            "id": "a2z-s13-l3-p7",
+            "title": "Count total Nodes in a COMPLETE Binary Tree",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/count-complete-tree-nodes/",
+            "youtubeUrl": "https://youtu.be/u-yWemKGWO0",
+            "articleUrl": "https://takeuforward.org/binary-tree/count-number-of-nodes-in-a-binary-tree/",
+            "companies": [
+              "Amazon",
+              "Google"
+            ],
+            "tags": [
+              "Binary Trees",
+              "Hard Problems"
+            ]
+          },
+          {
+            "id": "a2z-s13-l3-p8",
+            "title": "Requirements needed to construct a Unique Binary Tree | Theory",
+            "difficulty": "Medium",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/requirements-needed-to-construct-a-unique-bt",
+            "youtubeUrl": "https://youtu.be/9GMECGQgWrQ",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Binary Trees",
+              "Hard Problems"
+            ]
+          },
+          {
+            "id": "a2z-s13-l3-p9",
+            "title": "Construct Binary Tree from inorder and preorder",
+            "difficulty": "Hard",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/construct-binary-tree-from-preorder-and-inorder-traversal/",
+            "youtubeUrl": "https://youtu.be/aZNaLrVebKQ",
+            "articleUrl": "https://takeuforward.org/data-structure/construct-a-binary-tree-from-inorder-and-preorder-traversal/",
+            "companies": [
+              "Amazon",
+              "Microsoft"
+            ],
+            "tags": [
+              "Binary Trees",
+              "Hard Problems"
+            ]
+          },
+          {
+            "id": "a2z-s13-l3-p10",
+            "title": "Construct the Binary Tree from Postorder and Inorder Traversal",
+            "difficulty": "Hard",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/construct-binary-tree-from-inorder-and-postorder-traversal/",
+            "youtubeUrl": "https://youtu.be/LgLRTaEMRVc",
+            "articleUrl": "https://takeuforward.org/data-structure/construct-binary-tree-from-inorder-and-postorder-traversal/",
+            "companies": [
+              "Amazon",
+              "Microsoft"
+            ],
+            "tags": [
+              "Binary Trees",
+              "Hard Problems"
+            ]
+          },
+          {
+            "id": "a2z-s13-l3-p11",
+            "title": "Serialize and deserialize Binary Tree",
+            "difficulty": "Hard",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/serialize-and-deserialize-binary-tree/",
+            "youtubeUrl": "https://youtu.be/-YbXySKJsX8",
 ];
