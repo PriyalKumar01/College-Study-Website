@@ -6958,4 +6958,84 @@ export const STRIVER_A2Z_FULL_STEPS: DsaStep[] = [
             "platform": "LeetCode",
             "problemUrl": "https://leetcode.com/problems/minimum-falling-path-sum/",
             "youtubeUrl": "https://www.youtube.com/watch?v=N_aJ5qQbYA0",
+            "articleUrl": "https://takeuforward.org/data-structure/minimum-maximum-falling-path-sum-dp-12/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Dynamic Programming",
+              "2D/3D DP and DP on Grids"
+            ]
+          },
+          {
+            "id": "a2z-s16-l3-p7",
+            "title": "3-d DP : Ninja and his friends (DP-13)",
+            "difficulty": "Medium",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/ninja-and-his-friends",
+            "youtubeUrl": "https://www.youtube.com/watch?v=QGfn7JeXK54",
+            "articleUrl": "https://takeuforward.org/data-structure/3-d-dp-ninja-and-his-friends-dp-13/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Dynamic Programming",
+              "2D/3D DP and DP on Grids"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "a2z-step-16-sub-4",
+        "title": "DP on Subsequences",
+        "problems": [
+          {
+            "id": "a2z-s16-l4-p1",
+            "title": "Subset sum equal to target (DP- 14)",
+            "difficulty": "Medium",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/subset-sum-equals-to-target",
+            "youtubeUrl": "https://www.youtube.com/watch?v=fWX9xDmIzRI",
+            "articleUrl": "https://takeuforward.org/data-structure/subset-sum-equal-to-target-dp-14/",
+            "companies": [
+              "Amazon",
+              "Microsoft"
+            ],
+            "tags": [
+              "Dynamic Programming",
+              "DP on Subsequences"
+            ]
+          },
+          {
+            "id": "a2z-s16-l4-p2",
+            "title": "Partition Equal Subset Sum (DP- 15)",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/partition-equal-subset-sum/",
+            "youtubeUrl": "https://www.youtube.com/watch?v=7win3dcgo3k",
+            "articleUrl": "https://takeuforward.org/data-structure/partition-equal-subset-sum-dp-15/",
+            "companies": [
+              "Amazon",
+              "Microsoft"
+            ],
+            "tags": [
+              "Dynamic Programming",
+              "DP on Subsequences"
+            ]
+          },
+          {
+            "id": "a2z-s16-l4-p3",
+            "title": "Partition Set Into 2 Subsets With Min Absolute Sum Diff (DP- 16)",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/partition-array-into-two-arrays-to-minimize-sum-difference/",
+            "youtubeUrl": "https://www.youtube.com/watch?v=GS_OqZb2CWc",
+            "articleUrl": "https://takeuforward.org/data-structure/partition-set-into-2-subsets-with-min-absolute-sum-diff-dp-16/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
 ];
