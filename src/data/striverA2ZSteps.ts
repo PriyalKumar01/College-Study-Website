@@ -6718,4 +6718,84 @@ export const STRIVER_A2Z_FULL_STEPS: DsaStep[] = [
               "Amazon",
               "Google"
             ],
+            "tags": [
+              "Graphs",
+              "Other Algorithms"
+            ]
+          },
+          {
+            "id": "a2z-s15-l6-p3",
+            "title": "Kosaraju's Algorithm",
+            "difficulty": "Hard",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/kosaraju's-algorithm",
+            "youtubeUrl": "https://youtu.be/R6uoSjZ2imo",
+            "articleUrl": "https://takeuforward.org/graph/strongly-connected-components-kosarajus-algorithm-g-54/",
+            "companies": [
+              "Amazon"
+            ],
+            "tags": [
+              "Graphs",
+              "Other Algorithms"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "a2z-step-16",
+    "title": "Step 16: Dynamic Programming [Patterns and Problems]",
+    "lectures": [
+      {
+        "id": "a2z-step-16-sub-1",
+        "title": "Introduction to DP",
+        "problems": [
+          {
+            "id": "a2z-s16-l1-p1",
+            "title": "Dynamic Programming Introduction",
+            "difficulty": "Medium",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/introduction-to-dp",
+            "youtubeUrl": "https://youtu.be/tyB0ztf0DNY",
+            "articleUrl": "https://takeuforward.org/data-structure/dynamic-programming-introduction/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Dynamic Programming",
+              "Introduction to DP"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "a2z-step-16-sub-2",
+        "title": "1D DP",
+        "problems": [
+          {
+            "id": "a2z-s16-l2-p1",
+            "title": "Climbing Stars",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/climbing-stairs/",
+            "youtubeUrl": "https://youtu.be/mLfjzJsN8us",
+            "articleUrl": "https://takeuforward.org/data-structure/dynamic-programming-climbing-stairs/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Dynamic Programming",
+              "1D DP"
+            ]
+          },
+          {
+            "id": "a2z-s16-l2-p2",
+            "title": "Frog Jump(DP-3)",
+            "difficulty": "Medium",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/frog-jump",
+            "youtubeUrl": "https://www.youtube.com/watch?v=EgG3jsGoPvQ",
 ];
