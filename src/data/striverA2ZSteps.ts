@@ -1518,4 +1518,84 @@ export const STRIVER_A2Z_FULL_STEPS: DsaStep[] = [
           {
             "id": "a2z-s4-l1-p7",
             "title": "Count occurrences of a number in a sorted array with duplicates",
+            "difficulty": "Easy",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/count-occurrences-in-a-sorted-array",
+            "youtubeUrl": "https://youtu.be/hjR1IYVx9lY",
+            "articleUrl": "https://takeuforward.org/data-structure/count-occurrences-in-sorted-array/",
+            "companies": [
+              "Amazon"
+            ],
+            "tags": [
+              "Binary Search",
+              "BS on 1D Arrays"
+            ]
+          },
+          {
+            "id": "a2z-s4-l1-p8",
+            "title": "Search in Rotated Sorted Array I",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/search-in-rotated-sorted-array/",
+            "youtubeUrl": "https://youtu.be/5qGrJbHhqFs",
+            "articleUrl": "https://takeuforward.org/data-structure/search-element-in-a-rotated-sorted-array/",
+            "companies": [
+              "Google",
+              "Microsoft",
+              "Amazon"
+            ],
+            "tags": [
+              "Binary Search",
+              "BS on 1D Arrays"
+            ]
+          },
+          {
+            "id": "a2z-s4-l1-p9",
+            "title": "Search in Rotated Sorted Array II",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/search-in-rotated-sorted-array-ii/",
+            "youtubeUrl": "https://youtu.be/w2G2W8l__pc",
+            "articleUrl": "https://takeuforward.org/arrays/search-element-in-rotated-sorted-array-ii/",
+            "companies": [
+              "Google",
+              "Microsoft",
+              "Amazon"
+            ],
+            "tags": [
+              "Binary Search",
+              "BS on 1D Arrays"
+            ]
+          },
+          {
+            "id": "a2z-s4-l1-p10",
+            "title": "Find minimum in Rotated Sorted Array",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/find-minimum-in-rotated-sorted-array/",
+            "youtubeUrl": "https://youtu.be/nhEMDKMB44g",
+            "articleUrl": "https://takeuforward.org/data-structure/minimum-in-rotated-sorted-array/",
+            "companies": [
+              "Amazon",
+              "Microsoft"
+            ],
+            "tags": [
+              "Binary Search",
+              "BS on 1D Arrays"
+            ]
+          },
+          {
+            "id": "a2z-s4-l1-p11",
+            "title": "Find out how many times has an array been rotated",
+            "difficulty": "Easy",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/find-out-how-many-times-the-array-is-rotated",
+            "youtubeUrl": "https://youtu.be/jtSiWTPLwd0",
+            "articleUrl": "https://takeuforward.org/arrays/find-out-how-many-times-the-array-has-been-rotated/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Binary Search",
 ];
