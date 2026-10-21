@@ -7118,4 +7118,84 @@ export const STRIVER_A2Z_FULL_STEPS: DsaStep[] = [
             "companies": [
               "Amazon",
               "Meta"
+            ],
+            "tags": [
+              "Dynamic Programming",
+              "DP on Subsequences"
+            ]
+          },
+          {
+            "id": "a2z-s16-l4-p9",
+            "title": "Coin Change 2 (DP - 22)",
+            "difficulty": "Hard",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/coin-change-2/",
+            "youtubeUrl": "https://www.youtube.com/watch?v=HgyouUi11zk",
+            "articleUrl": "https://takeuforward.org/data-structure/coin-change-2-dp-22/",
+            "companies": [
+              "Amazon",
+              "Google",
+              "Microsoft"
+            ],
+            "tags": [
+              "Dynamic Programming",
+              "DP on Subsequences"
+            ]
+          },
+          {
+            "id": "a2z-s16-l4-p10",
+            "title": "Unbounded Knapsack (DP - 23)",
+            "difficulty": "Hard",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/unbounded-knapsack",
+            "youtubeUrl": "https://youtu.be/OgvOZ6OrJoY",
+            "articleUrl": "https://takeuforward.org/data-structure/unbounded-knapsack-dp-23/",
+            "companies": [
+              "Amazon"
+            ],
+            "tags": [
+              "Dynamic Programming",
+              "DP on Subsequences"
+            ]
+          },
+          {
+            "id": "a2z-s16-l4-p11",
+            "title": "Rod Cutting Problem | (DP - 24)",
+            "difficulty": "Hard",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/rod-cutting-problem",
+            "youtubeUrl": "https://youtu.be/mO8XpGoJwuo",
+            "articleUrl": "https://takeuforward.org/data-structure/rod-cutting-problem-dp-24/",
+            "companies": [
+              "Amazon",
+              "Google"
+            ],
+            "tags": [
+              "Dynamic Programming",
+              "DP on Subsequences"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "a2z-step-16-sub-5",
+        "title": "DP on Strings",
+        "problems": [
+          {
+            "id": "a2z-s16-l5-p1",
+            "title": "Longest Common Subsequence | (DP - 25)",
+            "difficulty": "Hard",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/longest-common-subsequence/",
+            "youtubeUrl": "https://youtu.be/NPZn9jBrX8U",
+            "articleUrl": "https://takeuforward.org/data-structure/longest-common-subsequence-dp-25/",
+            "companies": [
+              "Amazon",
+              "Google",
+              "Microsoft"
+            ],
+            "tags": [
+              "Dynamic Programming",
+              "DP on Strings"
+            ]
 ];
