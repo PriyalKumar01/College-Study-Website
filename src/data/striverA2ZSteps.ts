@@ -2238,4 +2238,84 @@ export const STRIVER_A2Z_FULL_STEPS: DsaStep[] = [
             "companies": [
               "Google",
               "Amazon"
+            ],
+            "tags": [
+              "Learn LinkedList",
+              "Learn 1D LinkedList"
+            ]
+          },
+          {
+            "id": "a2z-s6-l1-p2",
+            "title": "Inserting a node in LinkedList",
+            "difficulty": "Easy",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/insertion-at-the-head-of-ll",
+            "youtubeUrl": "https://youtu.be/VaECK03Dz-g?si=vHSwdf9jhE05adKM&t=1934",
+            "articleUrl": "https://takeuforward.org/linked-list/insert-at-the-head-of-a-linked-list",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Learn LinkedList",
+              "Learn 1D LinkedList"
+            ]
+          },
+          {
+            "id": "a2z-s6-l1-p3",
+            "title": "Deleting a node in LinkedList",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/delete-node-in-a-linked-list/",
+            "youtubeUrl": "https://youtu.be/VaECK03Dz-g?si=CRaBHbOo2bHFbOT5",
+            "articleUrl": "https://takeuforward.org/data-structure/delete-last-node-of-linked-list/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Learn LinkedList",
+              "Learn 1D LinkedList"
+            ]
+          },
+          {
+            "id": "a2z-s6-l1-p4",
+            "title": "Find the length of the linkedlist [learn traversal]",
+            "difficulty": "Easy",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/find-the-length-of-the-linked-list",
+            "youtubeUrl": "https://youtu.be/Nq7ok-OyEpg?si=xqQbukLfo2oZ6C6s&t=2240",
+            "articleUrl": "https://takeuforward.org/linked-list/find-the-length-of-a-linked-list",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Learn LinkedList",
+              "Learn 1D LinkedList"
+            ]
+          },
+          {
+            "id": "a2z-s6-l1-p5",
+            "title": "Search an element in the LL",
+            "difficulty": "Easy",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/search-in-linked-list",
+            "youtubeUrl": "https://youtu.be/Nq7ok-OyEpg?si=WNXcIaXZ_B6cNq0s&t=2524",
+            "articleUrl": "https://takeuforward.org/linked-list/search-an-element-in-a-linked-list",
+            "companies": [
+              "Amazon"
+            ],
+            "tags": [
+              "Learn LinkedList",
+              "Learn 1D LinkedList"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "a2z-step-6-sub-2",
+        "title": "Learn Doubly LinkedList",
+        "problems": [
+          {
 ];
