@@ -2398,4 +2398,84 @@ export const STRIVER_A2Z_FULL_STEPS: DsaStep[] = [
             "platform": "LeetCode",
             "problemUrl": "https://leetcode.com/problems/middle-of-the-linked-list/",
             "youtubeUrl": "https://youtu.be/7LjQ57RqgEc?si=ir_rRDio38rhamU_",
+            "articleUrl": "https://takeuforward.org/data-structure/find-middle-element-in-a-linked-list/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Learn LinkedList",
+              "Medium Problems of LL"
+            ]
+          },
+          {
+            "id": "a2z-s6-l3-p2",
+            "title": "Reverse a LinkedList [Iterative]",
+            "difficulty": "Easy",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/reverse-linked-list/",
+            "youtubeUrl": "https://youtu.be/D2vI2DNJGd8?si=RCaLSx01qR21IBdh",
+            "articleUrl": "https://takeuforward.org/data-structure/reverse-a-linked-list/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Learn LinkedList",
+              "Medium Problems of LL"
+            ]
+          },
+          {
+            "id": "a2z-s6-l3-p3",
+            "title": "Reverse a LL [Recursive]",
+            "difficulty": "Easy",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/reverse-linked-list/",
+            "youtubeUrl": "https://youtu.be/D2vI2DNJGd8?si=RCaLSx01qR21IBdh",
+            "articleUrl": "https://takeuforward.org/data-structure/reverse-a-linked-list/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Learn LinkedList",
+              "Medium Problems of LL"
+            ]
+          },
+          {
+            "id": "a2z-s6-l3-p4",
+            "title": "Detect a loop in LL",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/linked-list-cycle/",
+            "youtubeUrl": "https://youtu.be/wiOo4DC5GGA?si=zagt6O6tFXc4_3cx",
+            "articleUrl": "https://takeuforward.org/data-structure/detect-a-cycle-in-a-linked-list/",
+            "companies": [
+              "Amazon",
+              "Microsoft",
+              "Google"
+            ],
+            "tags": [
+              "Learn LinkedList",
+              "Medium Problems of LL"
+            ]
+          },
+          {
+            "id": "a2z-s6-l3-p5",
+            "title": "Find the starting point in LL",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/linked-list-cycle-ii/",
+            "youtubeUrl": "https://youtu.be/2Kd0KKmmHFc?si=7UreDPRjRvapeVB0",
+            "articleUrl": "https://takeuforward.org/data-structure/starting-point-of-loop-in-a-linked-list/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Learn LinkedList",
+              "Medium Problems of LL"
+            ]
+          },
+          {
 ];
