@@ -4078,4 +4078,84 @@ export const STRIVER_A2Z_FULL_STEPS: DsaStep[] = [
           },
           {
             "id": "a2z-s10-l1-p3",
+            "title": "Fruit Into Baskets",
+            "difficulty": "Medium",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/fruit-into-baskets",
+            "youtubeUrl": "https://youtu.be/e3bs0uA1NhQ?si=gR8pO62u-nJeFAXk",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Sliding Window & Two Pointer Combined Problems",
+              "Medium Problems"
+            ]
+          },
+          {
+            "id": "a2z-s10-l1-p4",
+            "title": "longest repeating character replacement",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/longest-repeating-character-replacement/",
+            "youtubeUrl": "https://youtu.be/_eNhaDCr6P0?si=pBWcEjozF5poom0p",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Sliding Window & Two Pointer Combined Problems",
+              "Medium Problems"
+            ]
+          },
+          {
+            "id": "a2z-s10-l1-p5",
+            "title": "Binary subarray with sum",
+            "difficulty": "Easy",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/binary-subarrays-with-sum/",
+            "youtubeUrl": "https://youtu.be/XnMdNUkX6VM?si=Nyt8EveeLUg8lmty",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Sliding Window & Two Pointer Combined Problems",
+              "Medium Problems"
+            ]
+          },
+          {
+            "id": "a2z-s10-l1-p6",
+            "title": "Count number of nice subarrays",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/count-number-of-nice-subarrays/",
+            "youtubeUrl": "https://youtu.be/j_QOv9OT9Og?si=Oq5-5hyFkzVSOZpP",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Sliding Window & Two Pointer Combined Problems",
+              "Medium Problems"
+            ]
+          },
+          {
+            "id": "a2z-s10-l1-p7",
+            "title": "Number of substring containing all three characters",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/number-of-substrings-containing-all-three-characters/",
+            "youtubeUrl": "https://youtu.be/xtqN4qlgr8s?si=kuaLHVOLXhh5Z2tW",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Sliding Window & Two Pointer Combined Problems",
+              "Medium Problems"
+            ]
+          },
+          {
+            "id": "a2z-s10-l1-p8",
 ];
