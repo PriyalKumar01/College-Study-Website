@@ -3118,4 +3118,84 @@ export const STRIVER_A2Z_FULL_STEPS: DsaStep[] = [
             ]
           },
           {
+            "id": "a2z-s7-l3-p4",
+            "title": "Rat in a Maze",
+            "difficulty": "Hard",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/rat-in-a-maze",
+            "youtubeUrl": "https://www.youtube.com/watch?v=bLGZhJlt4y0&list=PLgUwDviBIf0p4ozDR_kJJkONnb1wdx2Ma&index=60",
+            "articleUrl": "https://takeuforward.org/data-structure/rat-in-a-maze/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Recursion",
+              "Trying out all Combos / Hard"
+            ]
+          },
+          {
+            "id": "a2z-s7-l3-p5",
+            "title": "Word Break",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/word-break/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Recursion",
+              "Trying out all Combos / Hard"
+            ]
+          },
+          {
+            "id": "a2z-s7-l3-p6",
+            "title": "M Coloring Problem",
+            "difficulty": "Hard",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/m-coloring-problem",
+            "youtubeUrl": "https://www.youtube.com/watch?v=wuVwUK25Rfc&list=PLgUwDviBIf0p4ozDR_kJJkONnb1wdx2Ma&index=59",
+            "articleUrl": "https://takeuforward.org/data-structure/m-coloring-problem/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Recursion",
+              "Trying out all Combos / Hard"
+            ]
+          },
+          {
+            "id": "a2z-s7-l3-p7",
+            "title": "Sudoko Solver",
+            "difficulty": "Hard",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/sudoku-solver/",
+            "youtubeUrl": "https://www.youtube.com/watch?v=FWAIf_EVUKE&list=PLgUwDviBIf0p4ozDR_kJJkONnb1wdx2Ma&index=58",
+            "articleUrl": "https://takeuforward.org/data-structure/sudoku-solver/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Recursion",
+              "Trying out all Combos / Hard"
+            ]
+          },
+          {
+            "id": "a2z-s7-l3-p8",
+            "title": "Expression Add Operators",
+            "difficulty": "Hard",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/expression-add-operators/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Recursion",
+              "Trying out all Combos / Hard"
+            ]
+          }
 ];
