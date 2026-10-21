@@ -1278,4 +1278,84 @@ export const STRIVER_A2Z_FULL_STEPS: DsaStep[] = [
             "companies": [
               "Google",
               "Amazon"
+            ],
+            "tags": [
+              "Solve Problems on Arrays",
+              "Hard"
+            ]
+          },
+          {
+            "id": "a2z-s3-l3-p6",
+            "title": "Count number of subarrays with given xor K",
+            "difficulty": "Hard",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/count-subarrays-with-given-xor-k",
+            "youtubeUrl": "https://youtu.be/eZr-6p0B7ME",
+            "articleUrl": "https://takeuforward.org/data-structure/count-the-number-of-subarrays-with-given-xor-k/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Solve Problems on Arrays",
+              "Hard"
+            ]
+          },
+          {
+            "id": "a2z-s3-l3-p7",
+            "title": "Merge Overlapping Subintervals",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/merge-intervals/",
+            "youtubeUrl": "https://youtu.be/IexN60k62jo",
+            "articleUrl": "https://takeuforward.org/data-structure/merge-overlapping-sub-intervals/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Solve Problems on Arrays",
+              "Hard"
+            ]
+          },
+          {
+            "id": "a2z-s3-l3-p8",
+            "title": "Merge two sorted arrays without extra space",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/merge-sorted-array/",
+            "youtubeUrl": "https://youtu.be/n7uwj04E0I4",
+            "articleUrl": "https://takeuforward.org/data-structure/merge-two-sorted-arrays-without-extra-space/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Solve Problems on Arrays",
+              "Hard"
+            ]
+          },
+          {
+            "id": "a2z-s3-l3-p9",
+            "title": "Find the repeating and missing number",
+            "difficulty": "Hard",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/find-the-repeating-and-missing-number",
+            "youtubeUrl": "https://youtu.be/2D0D8HE6uak",
+            "articleUrl": "https://takeuforward.org/data-structure/find-the-repeating-and-missing-numbers/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Solve Problems on Arrays",
+              "Hard"
+            ]
+          },
+          {
+            "id": "a2z-s3-l3-p10",
+            "title": "Count Inversions",
+            "difficulty": "Hard",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/count-inversions",
 ];
