@@ -238,4 +238,84 @@ export const STRIVER_A2Z_FULL_STEPS: DsaStep[] = [
               "Google",
               "Amazon"
             ],
+            "tags": [
+              "Learn the basics",
+              "Know Basic Maths"
+            ]
+          },
+          {
+            "id": "a2z-s1-l4-p2",
+            "title": "Reverse a Number",
+            "difficulty": "Basic",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/reverse-integer/",
+            "youtubeUrl": "https://youtu.be/1xNbjMdbjug?t=930",
+            "articleUrl": "https://takeuforward.org/maths/reverse-digits-of-a-number",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Learn the basics",
+              "Know Basic Maths"
+            ]
+          },
+          {
+            "id": "a2z-s1-l4-p3",
+            "title": "Check Palindrome",
+            "difficulty": "Basic",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/palindrome-number/",
+            "youtubeUrl": "https://youtu.be/1xNbjMdbjug?t=1230",
+            "articleUrl": "https://takeuforward.org/data-structure/check-if-a-number-is-palindrome-or-not/",
+            "companies": [
+              "Amazon",
+              "Microsoft",
+              "Meta"
+            ],
+            "tags": [
+              "Learn the basics",
+              "Know Basic Maths"
+            ]
+          },
+          {
+            "id": "a2z-s1-l4-p4",
+            "title": "GCD Or HCF",
+            "difficulty": "Basic",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/gcd-of-two-numbers",
+            "youtubeUrl": "https://youtu.be/1xNbjMdbjug?t=2684",
+            "articleUrl": "https://takeuforward.org/data-structure/find-gcd-of-two-numbers/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Learn the basics",
+              "Know Basic Maths"
+            ]
+          },
+          {
+            "id": "a2z-s1-l4-p5",
+            "title": "Armstrong Numbers",
+            "difficulty": "Basic",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/armstrong-number/",
+            "youtubeUrl": "https://youtu.be/1xNbjMdbjug?t=1418",
+            "articleUrl": "https://takeuforward.org/maths/check-if-a-number-is-armstrong-number-or-not/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Learn the basics",
+              "Know Basic Maths"
+            ]
+          },
+          {
+            "id": "a2z-s1-l4-p6",
+            "title": "Print all Divisors",
+            "difficulty": "Basic",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/divisors-of-a-number",
 ];
