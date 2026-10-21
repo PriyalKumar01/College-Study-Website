@@ -2478,4 +2478,84 @@ export const STRIVER_A2Z_FULL_STEPS: DsaStep[] = [
             ]
           },
           {
+            "id": "a2z-s6-l3-p6",
+            "title": "Length of Loop in LL",
+            "difficulty": "Easy",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/length-of-loop-in-ll",
+            "youtubeUrl": "https://youtu.be/I4g1qbkTPus?si=ONktpqewvx57T8pF",
+            "articleUrl": "https://takeuforward.org/linked-list/length-of-loop-in-linked-list",
+            "companies": [
+              "Amazon"
+            ],
+            "tags": [
+              "Learn LinkedList",
+              "Medium Problems of LL"
+            ]
+          },
+          {
+            "id": "a2z-s6-l3-p7",
+            "title": "Check if LL is palindrome or not",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/palindrome-linked-list/",
+            "youtubeUrl": "https://youtu.be/lRY_G-u_8jk?si=BpM8hRYvXSYyjl-G",
+            "articleUrl": "https://takeuforward.org/data-structure/check-if-given-linked-list-is-plaindrome/",
+            "companies": [
+              "Amazon",
+              "Microsoft",
+              "Meta"
+            ],
+            "tags": [
+              "Learn LinkedList",
+              "Medium Problems of LL"
+            ]
+          },
+          {
+            "id": "a2z-s6-l3-p8",
+            "title": "Segrregate odd and even nodes in LL",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/odd-even-linked-list/",
+            "youtubeUrl": "https://youtu.be/qf6qp7GzD5Q?si=JozAyXUdT8EJMSCQ",
+            "articleUrl": "https://takeuforward.org/data-structure/segregate-even-and-odd-nodes-in-linkedlist",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Learn LinkedList",
+              "Medium Problems of LL"
+            ]
+          },
+          {
+            "id": "a2z-s6-l3-p9",
+            "title": "Remove Nth node from the back of the LL",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/remove-nth-node-from-end-of-list/",
+            "youtubeUrl": "https://youtu.be/3kMKYQ2wNIU?si=DtFDnPU7z9HMz_GM",
+            "articleUrl": "https://takeuforward.org/data-structure/remove-n-th-node-from-the-end-of-a-linked-list/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Learn LinkedList",
+              "Medium Problems of LL"
+            ]
+          },
+          {
+            "id": "a2z-s6-l3-p10",
+            "title": "Delete the middle node of LL",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/delete-the-middle-node-of-a-linked-list/#:~:text=You%20are%20given%20the%20head,than%20or%20equal%20to%20x%20.",
+            "youtubeUrl": "https://youtu.be/ePpV-_pfOeI?si=Au9GsZkVO57j6SiN",
+            "articleUrl": "https://takeuforward.org/linked-list/delete-the-middle-node-of-the-linked-list",
+            "companies": [
+              "Amazon",
+              "Microsoft"
+            ],
+            "tags": [
 ];
