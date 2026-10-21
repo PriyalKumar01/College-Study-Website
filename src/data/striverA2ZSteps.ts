@@ -3838,4 +3838,84 @@ export const STRIVER_A2Z_FULL_STEPS: DsaStep[] = [
             "youtubeUrl": "https://youtu.be/1_5VuquLbXg?si=NFG6df318_6OtGvg",
             "articleUrl": "https://takeuforward.org/data-structure/trapping-rainwater/",
             "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Stack and Queues",
+              "Monotonic Stack/Queue Problems"
+            ]
+          },
+          {
+            "id": "a2z-s9-l3-p6",
+            "title": "Sum of subarray minimum",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/sum-of-subarray-minimums/",
+            "youtubeUrl": "https://youtu.be/v0e8p9JCgRc?si=XAU7ekECgS5nboRw",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Stack and Queues",
+              "Monotonic Stack/Queue Problems"
+            ]
+          },
+          {
+            "id": "a2z-s9-l3-p7",
+            "title": "Asteroid Collision",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/asteroid-collision/",
+            "youtubeUrl": "https://youtu.be/_eYGqw_VDR4?si=YyxibcHq800RqgIQ",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Stack and Queues",
+              "Monotonic Stack/Queue Problems"
+            ]
+          },
+          {
+            "id": "a2z-s9-l3-p8",
+            "title": "Sum of subarray ranges",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/sum-of-subarray-ranges/",
+            "youtubeUrl": "https://youtu.be/gIrMptNPf5M?si=Q_GHuBvzZVs27X_U",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Stack and Queues",
+              "Monotonic Stack/Queue Problems"
+            ]
+          },
+          {
+            "id": "a2z-s9-l3-p9",
+            "title": "Remove k Digits",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/remove-k-digits/",
+            "youtubeUrl": "https://youtu.be/jmbuRzYPGrg?si=WN387gwQ7aXWkUao",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Stack and Queues",
+              "Monotonic Stack/Queue Problems"
+            ]
+          },
+          {
+            "id": "a2z-s9-l3-p10",
+            "title": "Largest rectangle in a histogram",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/largest-rectangle-in-histogram/",
+            "youtubeUrl": "https://youtu.be/Bzat9vgD0fs?si=DiBlLejXcr6EJoyB",
+            "articleUrl": "https://takeuforward.org/data-structure/area-of-largest-rectangle-in-histogram/",
 ];
