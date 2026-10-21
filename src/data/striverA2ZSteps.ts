@@ -3278,4 +3278,84 @@ export const STRIVER_A2Z_FULL_STEPS: DsaStep[] = [
             "id": "a2z-s8-l1-p5",
             "title": "Count the number of set bits",
             "difficulty": "Easy",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/count-the-number-of-set-bits",
+            "youtubeUrl": "https://youtu.be/nttpF8kwgd4?si=x9o8PsYaA2XVZ9rV",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Bit Manipulation",
+              "Learn Bit Manipulation"
+            ]
+          },
+          {
+            "id": "a2z-s8-l1-p6",
+            "title": "Set/Unset the rightmost unset bit",
+            "difficulty": "Easy",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problemset/all/?search=Set%2FUnset%20the%20rightmost%20unset%20bit",
+            "youtubeUrl": "https://youtu.be/nttpF8kwgd4?si=x9o8PsYaA2XVZ9rV",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Bit Manipulation",
+              "Learn Bit Manipulation"
+            ]
+          },
+          {
+            "id": "a2z-s8-l1-p7",
+            "title": "Swap two numbers",
+            "difficulty": "Easy",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/swap-two-numbers",
+            "youtubeUrl": "https://youtu.be/nttpF8kwgd4?si=x9o8PsYaA2XVZ9rV",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Bit Manipulation",
+              "Learn Bit Manipulation"
+            ]
+          },
+          {
+            "id": "a2z-s8-l1-p8",
+            "title": "Divide two integers without using multiplication, division and mod operator",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/divide-two-integers/",
+            "youtubeUrl": "https://youtu.be/pBD4B1tzgVc?si=G9c5pEE-RrzeU6sz",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Bit Manipulation",
+              "Learn Bit Manipulation"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "a2z-step-8-sub-2",
+        "title": "Interview Problems",
+        "problems": [
+          {
+            "id": "a2z-s8-l2-p1",
+            "title": "Count number of bits to be flipped to convert A to B",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/minimum-bit-flips-to-convert-number/",
+            "youtubeUrl": "https://youtu.be/OOdrmcfZXd8?si=rnkRVz1UiVBKWC69",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Bit Manipulation",
+              "Interview Problems"
 ];
