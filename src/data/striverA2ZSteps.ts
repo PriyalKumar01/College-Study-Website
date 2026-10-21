@@ -2878,4 +2878,84 @@ export const STRIVER_A2Z_FULL_STEPS: DsaStep[] = [
             "companies": [
               "Google",
               "Amazon"
+            ],
+            "tags": [
+              "Recursion",
+              "Subsequences Pattern"
+            ]
+          },
+          {
+            "id": "a2z-s7-l2-p2",
+            "title": "Generate Paranthesis",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/generate-parentheses/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Recursion",
+              "Subsequences Pattern"
+            ]
+          },
+          {
+            "id": "a2z-s7-l2-p3",
+            "title": "Print all subsequences/Power Set",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/subsets/",
+            "youtubeUrl": "https://youtu.be/b7AYbpM5YrE",
+            "articleUrl": "https://takeuforward.org/data-structure/power-set-print-all-the-possible-subsequences-of-the-string/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Recursion",
+              "Subsequences Pattern"
+            ]
+          },
+          {
+            "id": "a2z-s7-l2-p4",
+            "title": "Learn All Patterns of Subsequences (Theory)",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problemset/all/?search=Learn%20All%20Patterns%20of%20Subsequences%20(Theory)",
+            "youtubeUrl": "https://www.youtube.com/watch?v=eQCS_v3bw0Q&list=PLgUwDviBIf0rGlzIn_7rsaR2FQ5e6ZOL9&index=7",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Recursion",
+              "Subsequences Pattern"
+            ]
+          },
+          {
+            "id": "a2z-s7-l2-p5",
+            "title": "Count all subsequences with sum K",
+            "difficulty": "Hard",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/count-all-subsequences-with-sum-k",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Recursion",
+              "Subsequences Pattern"
+            ]
+          },
+          {
+            "id": "a2z-s7-l2-p6",
+            "title": "Check if there exists a subsequence with sum K",
+            "difficulty": "Medium",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/check-if-there-exists-a-subsequence-with-sum-k",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
 ];
