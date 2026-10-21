@@ -4158,4 +4158,84 @@ export const STRIVER_A2Z_FULL_STEPS: DsaStep[] = [
           },
           {
             "id": "a2z-s10-l1-p8",
+            "title": "Maximum point you can obtain from cards",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/maximum-points-you-can-obtain-from-cards/",
+            "youtubeUrl": "https://youtu.be/pBWCOCS636U?si=-X64rY67noxvOwrG",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Sliding Window & Two Pointer Combined Problems",
+              "Medium Problems"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "a2z-step-10-sub-2",
+        "title": "Hard Problems",
+        "problems": [
+          {
+            "id": "a2z-s10-l2-p1",
+            "title": "Longest Substring with At Most K Distinct Characters",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/longest-substring-with-at-most-k-distinct-characters/",
+            "youtubeUrl": "https://youtu.be/teM9ZsVRQyc?si=Kh0_u6aCkkBU3Q33",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Sliding Window & Two Pointer Combined Problems",
+              "Hard Problems"
+            ]
+          },
+          {
+            "id": "a2z-s10-l2-p2",
+            "title": "Subarray with k different integers",
+            "difficulty": "Hard",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/subarrays-with-k-different-integers/",
+            "youtubeUrl": "https://youtu.be/7wYGbV_LsX4?si=KWa48RgLDCvdNqRb",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Sliding Window & Two Pointer Combined Problems",
+              "Hard Problems"
+            ]
+          },
+          {
+            "id": "a2z-s10-l2-p3",
+            "title": "Minimum Window Substring",
+            "difficulty": "Hard",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/minimum-window-substring/",
+            "youtubeUrl": "https://youtu.be/WJaij9ffOIY?si=-xnsWIH84zWU0ICd",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Sliding Window & Two Pointer Combined Problems",
+              "Hard Problems"
+            ]
+          },
+          {
+            "id": "a2z-s10-l2-p4",
+            "title": "Minimum Window Subsequence",
+            "difficulty": "Hard",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/minimum-window-subsequence/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Sliding Window & Two Pointer Combined Problems",
 ];
