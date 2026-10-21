@@ -1038,4 +1038,84 @@ export const STRIVER_A2Z_FULL_STEPS: DsaStep[] = [
               "Medium"
             ]
           },
+          {
+            "id": "a2z-s3-l2-p6",
+            "title": "Stock Buy and Sell",
+            "difficulty": "Easy",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/best-time-to-buy-and-sell-stock/",
+            "youtubeUrl": "https://youtu.be/excAOvwF_Wk",
+            "articleUrl": "https://takeuforward.org/data-structure/stock-buy-and-sell/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Solve Problems on Arrays",
+              "Medium"
+            ]
+          },
+          {
+            "id": "a2z-s3-l2-p7",
+            "title": "Rearrange the array in alternating positive and negative items",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/rearrange-array-elements-by-sign/",
+            "youtubeUrl": "https://youtu.be/h4aBagy4Uok",
+            "articleUrl": "https://takeuforward.org/arrays/rearrange-array-elements-by-sign/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Solve Problems on Arrays",
+              "Medium"
+            ]
+          },
+          {
+            "id": "a2z-s3-l2-p8",
+            "title": "Next Permutation",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/next-permutation/",
+            "youtubeUrl": "https://youtu.be/JDOXKqF60RQ",
+            "articleUrl": "https://takeuforward.org/data-structure/next_permutation-find-next-lexicographically-greater-permutation/",
+            "companies": [
+              "Google",
+              "Meta"
+            ],
+            "tags": [
+              "Solve Problems on Arrays",
+              "Medium"
+            ]
+          },
+          {
+            "id": "a2z-s3-l2-p9",
+            "title": "Leaders in an Array problem",
+            "difficulty": "Easy",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/leaders-in-an-array",
+            "youtubeUrl": "https://youtu.be/cHrH9CQ8pmY",
+            "articleUrl": "https://takeuforward.org/data-structure/leaders-in-an-array/",
+            "companies": [
+              "Amazon",
+              "Goldman Sachs"
+            ],
+            "tags": [
+              "Solve Problems on Arrays",
+              "Medium"
+            ]
+          },
+          {
+            "id": "a2z-s3-l2-p10",
+            "title": "Longest Consecutive Sequence in an Array",
+            "difficulty": "Easy",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/longest-consecutive-sequence/solution/",
+            "youtubeUrl": "https://youtu.be/oO5uLE7EUlM",
+            "articleUrl": "https://takeuforward.org/data-structure/longest-consecutive-sequence-in-an-array/",
+            "companies": [
+              "Amazon",
+              "Google",
+              "Spotify"
 ];
