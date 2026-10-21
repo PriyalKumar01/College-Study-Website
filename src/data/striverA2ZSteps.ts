@@ -4398,4 +4398,84 @@ export const STRIVER_A2Z_FULL_STEPS: DsaStep[] = [
             ]
           },
           {
+            "id": "a2z-s11-l2-p6",
+            "title": "Task Scheduler",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/task-scheduler/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Heaps",
+              "Medium Problems"
+            ]
+          },
+          {
+            "id": "a2z-s11-l2-p7",
+            "title": "Hands of Straights",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/hand-of-straights/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Heaps",
+              "Medium Problems"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "a2z-step-11-sub-3",
+        "title": "Hard Problems",
+        "problems": [
+          {
+            "id": "a2z-s11-l3-p1",
+            "title": "Design twitter",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/design-twitter/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Heaps",
+              "Hard Problems"
+            ]
+          },
+          {
+            "id": "a2z-s11-l3-p2",
+            "title": "Connect `n` ropes with minimal cost",
+            "difficulty": "Medium",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/minimum-cost-to-connect-sticks",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Heaps",
+              "Hard Problems"
+            ]
+          },
+          {
+            "id": "a2z-s11-l3-p3",
+            "title": "Kth largest element in a stream of running integers",
+            "difficulty": "Easy",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/kth-largest-element-in-a-stream/#:~:text=Implement%20KthLargest%20class%3A,largest%20element%20in%20the%20stream.",
+            "companies": [
+              "Amazon",
+              "Microsoft"
+            ],
+            "tags": [
+              "Heaps",
+              "Hard Problems"
+            ]
+          },
 ];
