@@ -7038,4 +7038,84 @@ export const STRIVER_A2Z_FULL_STEPS: DsaStep[] = [
               "Amazon"
             ],
             "tags": [
+              "Dynamic Programming",
+              "DP on Subsequences"
+            ]
+          },
+          {
+            "id": "a2z-s16-l4-p4",
+            "title": "Count Subsets with Sum K (DP - 17)",
+            "difficulty": "Medium",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/count-subsets-with-sum-k",
+            "youtubeUrl": "https://www.youtube.com/watch?v=ZHyb-A2Mte4",
+            "articleUrl": "https://takeuforward.org/data-structure/count-subsets-with-sum-k-dp-17/",
+            "companies": [
+              "Amazon"
+            ],
+            "tags": [
+              "Dynamic Programming",
+              "DP on Subsequences"
+            ]
+          },
+          {
+            "id": "a2z-s16-l4-p5",
+            "title": "Count Partitions with Given Difference (DP - 18)",
+            "difficulty": "Medium",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/count-partitions-with-given-difference",
+            "youtubeUrl": "https://www.youtube.com/watch?v=zoilQD1kYSg",
+            "articleUrl": "https://takeuforward.org/data-structure/count-partitions-with-given-difference-dp-18/",
+            "companies": [
+              "Amazon"
+            ],
+            "tags": [
+              "Dynamic Programming",
+              "DP on Subsequences"
+            ]
+          },
+          {
+            "id": "a2z-s16-l4-p6",
+            "title": "Assign Cookies",
+            "difficulty": "Hard",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/assign-cookies/",
+            "youtubeUrl": "https://youtu.be/DIX2p7vb9co?si=6G7JzMZ2TSP_LWSG",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Dynamic Programming",
+              "DP on Subsequences"
+            ]
+          },
+          {
+            "id": "a2z-s16-l4-p7",
+            "title": "Minimum Coins (DP - 20)",
+            "difficulty": "Hard",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/coin-change/",
+            "youtubeUrl": "https://www.youtube.com/watch?v=myPeWb3Y68A",
+            "articleUrl": "https://takeuforward.org/data-structure/minimum-coins-dp-20/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Dynamic Programming",
+              "DP on Subsequences"
+            ]
+          },
+          {
+            "id": "a2z-s16-l4-p8",
+            "title": "Target Sum (DP - 21)",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/target-sum/",
+            "youtubeUrl": "https://www.youtube.com/watch?v=b3GD8263-PQ",
+            "articleUrl": "https://takeuforward.org/data-structure/target-sum-dp-21/",
+            "companies": [
+              "Amazon",
+              "Meta"
 ];
