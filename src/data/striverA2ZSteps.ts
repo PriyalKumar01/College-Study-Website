@@ -5678,4 +5678,84 @@ export const STRIVER_A2Z_FULL_STEPS: DsaStep[] = [
               "Amazon",
               "Google"
             ],
+            "tags": [
+              "Binary Search Trees",
+              "Practice Problems"
+            ]
+          },
+          {
+            "id": "a2z-s14-l2-p8",
+            "title": "Construct a BST from a preorder traversal",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/construct-binary-search-tree-from-preorder-traversal/",
+            "youtubeUrl": "https://youtu.be/UmJT3j26t1I",
+            "companies": [
+              "Amazon",
+              "Microsoft"
+            ],
+            "tags": [
+              "Binary Search Trees",
+              "Practice Problems"
+            ]
+          },
+          {
+            "id": "a2z-s14-l2-p9",
+            "title": "Inorder Successor/Predecessor in BST",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/inorder-successor-in-bst/",
+            "youtubeUrl": "https://youtu.be/SXKAD2svfmI",
+            "companies": [
+              "Amazon",
+              "Microsoft"
+            ],
+            "tags": [
+              "Binary Search Trees",
+              "Practice Problems"
+            ]
+          },
+          {
+            "id": "a2z-s14-l2-p10",
+            "title": "Merge 2 BST's",
+            "difficulty": "Hard",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/binary-search-tree-iterator/",
+            "youtubeUrl": "https://youtu.be/D2jMcmxU4bs",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Binary Search Trees",
+              "Practice Problems"
+            ]
+          },
+          {
+            "id": "a2z-s14-l2-p11",
+            "title": "Two Sum In BST | Check if there exists a pair with Sum K",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/two-sum-iv-input-is-a-bst/",
+            "youtubeUrl": "https://youtu.be/ssL3sHwPeb4",
+            "companies": [
+              "Google",
+              "Amazon",
+              "Meta"
+            ],
+            "tags": [
+              "Binary Search Trees",
+              "Practice Problems"
+            ]
+          },
+          {
+            "id": "a2z-s14-l2-p12",
+            "title": "Recover BST | Correct BST with two nodes swapped",
+            "difficulty": "Hard",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/recover-binary-search-tree/",
+            "youtubeUrl": "https://youtu.be/ZWGW7FminDM",
+            "companies": [
+              "Amazon",
+              "Microsoft"
 ];
