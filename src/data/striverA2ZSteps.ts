@@ -3678,4 +3678,84 @@ export const STRIVER_A2Z_FULL_STEPS: DsaStep[] = [
               "Stack and Queues",
               "Prefix, Infix, PostFix Conversion Problems"
             ]
+          },
+          {
+            "id": "a2z-s9-l2-p2",
+            "title": "Prefix to Infix Conversion",
+            "difficulty": "Medium",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/prefix-to-infix-conversion",
+            "youtubeUrl": "https://youtu.be/4pIc9UBHJtk?si=ryeVvQWpCgwbTQrh",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Stack and Queues",
+              "Prefix, Infix, PostFix Conversion Problems"
+            ]
+          },
+          {
+            "id": "a2z-s9-l2-p3",
+            "title": "Prefix to Postfix Conversion",
+            "difficulty": "Medium",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/prefix-to-postfix-conversion",
+            "youtubeUrl": "https://youtu.be/4pIc9UBHJtk?si=0pWtyDC1GhbiYP3P",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Stack and Queues",
+              "Prefix, Infix, PostFix Conversion Problems"
+            ]
+          },
+          {
+            "id": "a2z-s9-l2-p4",
+            "title": "Postfix to Prefix Conversion",
+            "difficulty": "Medium",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/postfix-to-prefix-conversion",
+            "youtubeUrl": "https://youtu.be/4pIc9UBHJtk?si=0pWtyDC1GhbiYP3P",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Stack and Queues",
+              "Prefix, Infix, PostFix Conversion Problems"
+            ]
+          },
+          {
+            "id": "a2z-s9-l2-p5",
+            "title": "Postfix to Infix",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problemset/all/?search=Postfix%20to%20Infix",
+            "youtubeUrl": "https://youtu.be/4pIc9UBHJtk?si=0pWtyDC1GhbiYP3P",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Stack and Queues",
+              "Prefix, Infix, PostFix Conversion Problems"
+            ]
+          },
+          {
+            "id": "a2z-s9-l2-p6",
+            "title": "Convert Infix To Prefix Notation",
+            "difficulty": "Medium",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/infix-to-prefix-conversion",
+            "youtubeUrl": "https://youtu.be/4pIc9UBHJtk?si=0pWtyDC1GhbiYP3P",
+            "articleUrl": "https://takeuforward.org/data-structure/infix-to-prefix/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Stack and Queues",
+              "Prefix, Infix, PostFix Conversion Problems"
 ];
