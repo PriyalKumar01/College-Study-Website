@@ -3758,4 +3758,84 @@ export const STRIVER_A2Z_FULL_STEPS: DsaStep[] = [
             "tags": [
               "Stack and Queues",
               "Prefix, Infix, PostFix Conversion Problems"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "a2z-step-9-sub-3",
+        "title": "Monotonic Stack/Queue Problems [VVV. Imp]",
+        "problems": [
+          {
+            "id": "a2z-s9-l3-p1",
+            "title": "Next Greater Element",
+            "difficulty": "Easy",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/next-greater-element-i/",
+            "youtubeUrl": "https://youtu.be/e7XQLtOQM3I?si=QdcHpTtx6gAHsext",
+            "articleUrl": "https://takeuforward.org/data-structure/next-greater-element-using-stack/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Stack and Queues",
+              "Monotonic Stack/Queue Problems"
+            ]
+          },
+          {
+            "id": "a2z-s9-l3-p2",
+            "title": "Next Greater Element 2",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/next-greater-element-ii/",
+            "youtubeUrl": "https://youtu.be/7PrncD7v9YQ?si=UkBc7eVy9HGlBpeW",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Stack and Queues",
+              "Monotonic Stack/Queue Problems"
+            ]
+          },
+          {
+            "id": "a2z-s9-l3-p3",
+            "title": "Next Smaller Element",
+            "difficulty": "Easy",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/next-smaller-element",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Stack and Queues",
+              "Monotonic Stack/Queue Problems"
+            ]
+          },
+          {
+            "id": "a2z-s9-l3-p4",
+            "title": "Number of NGEs to the right",
+            "difficulty": "Easy",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/next-greater-element",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Stack and Queues",
+              "Monotonic Stack/Queue Problems"
+            ]
+          },
+          {
+            "id": "a2z-s9-l3-p5",
+            "title": "Trapping Rainwater",
+            "difficulty": "Hard",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/trapping-rain-water/",
+            "youtubeUrl": "https://youtu.be/1_5VuquLbXg?si=NFG6df318_6OtGvg",
+            "articleUrl": "https://takeuforward.org/data-structure/trapping-rainwater/",
+            "companies": [
 ];
