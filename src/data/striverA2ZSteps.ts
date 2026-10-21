@@ -4318,4 +4318,84 @@ export const STRIVER_A2Z_FULL_STEPS: DsaStep[] = [
       {
         "id": "a2z-step-11-sub-2",
         "title": "Medium Problems",
+        "problems": [
+          {
+            "id": "a2z-s11-l2-p1",
+            "title": "Kth largest element in an array [use priority queue]",
+            "difficulty": "Easy",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/kth-largest-element-in-an-array/",
+            "articleUrl": "https://takeuforward.org/data-structure/kth-largest-smallest-element-in-an-array/",
+            "companies": [
+              "Amazon",
+              "Microsoft"
+            ],
+            "tags": [
+              "Heaps",
+              "Medium Problems"
+            ]
+          },
+          {
+            "id": "a2z-s11-l2-p2",
+            "title": "Kth smallest element in an array [use priority queue]",
+            "difficulty": "Easy",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/data-structure/kth-largest-smallest-element-in-an-array/",
+            "articleUrl": "https://takeuforward.org/data-structure/kth-largest-smallest-element-in-an-array/",
+            "companies": [
+              "Amazon",
+              "Google"
+            ],
+            "tags": [
+              "Heaps",
+              "Medium Problems"
+            ]
+          },
+          {
+            "id": "a2z-s11-l2-p3",
+            "title": "Sort K sorted array",
+            "difficulty": "Easy",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problemset/all/?search=Sort%20K%20sorted%20array",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Heaps",
+              "Medium Problems"
+            ]
+          },
+          {
+            "id": "a2z-s11-l2-p4",
+            "title": "Merge M sorted Lists",
+            "difficulty": "Hard",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/merge-k-sorted-lists/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Heaps",
+              "Medium Problems"
+            ]
+          },
+          {
+            "id": "a2z-s11-l2-p5",
+            "title": "Replace each array element by its corresponding rank",
+            "difficulty": "Easy",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/data-structure/replace-elements-by-its-rank-in-the-array/",
+            "articleUrl": "https://takeuforward.org/data-structure/replace-elements-by-its-rank-in-the-array/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Heaps",
+              "Medium Problems"
+            ]
+          },
+          {
 ];
