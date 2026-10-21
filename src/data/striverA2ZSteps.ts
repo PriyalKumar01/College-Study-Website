@@ -4558,4 +4558,84 @@ export const STRIVER_A2Z_FULL_STEPS: DsaStep[] = [
             "difficulty": "Medium",
             "platform": "Other",
             "problemUrl": "https://takeuforward.org/plus/dsa/problems/fractional-knapsack",
+            "youtubeUrl": "https://youtu.be/1ibsQrnuEEg?si=8R2By3wpHo0zZVHE",
+            "articleUrl": "https://takeuforward.org/data-structure/fractional-knapsack-problem-greedy-approach/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Greedy Algorithms",
+              "Easy Problems"
+            ]
+          },
+          {
+            "id": "a2z-s12-l1-p3",
+            "title": "Greedy algorithm to find minimum number of coins",
+            "difficulty": "Medium",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/minimum-coins",
+            "youtubeUrl": "https://www.youtube.com/watch?v=mVg9CfJvayM&list=PLgUwDviBIf0p4ozDR_kJJkONnb1wdx2Ma&index=48",
+            "articleUrl": "https://takeuforward.org/data-structure/find-minimum-number-of-coins/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Greedy Algorithms",
+              "Easy Problems"
+            ]
+          },
+          {
+            "id": "a2z-s12-l1-p4",
+            "title": "Lemonade Change",
+            "difficulty": "Easy",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/lemonade-change/",
+            "youtubeUrl": "https://youtu.be/n_tmibEhO6Q?si=q1NW8MfPy0QU6fIl",
+            "articleUrl": "https://takeuforward.org/Greedy/lemonade-change",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Greedy Algorithms",
+              "Easy Problems"
+            ]
+          },
+          {
+            "id": "a2z-s12-l1-p5",
+            "title": "Valid Paranthesis Checker",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/valid-parenthesis-string/",
+            "youtubeUrl": "https://youtu.be/cHT6sG_hUZI?si=XRHeyh7jOaLaTy3g",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Greedy Algorithms",
+              "Easy Problems"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "a2z-step-12-sub-2",
+        "title": "Medium/Hard",
+        "problems": [
+          {
+            "id": "a2z-s12-l2-p1",
+            "title": "N meetings in one room",
+            "difficulty": "Medium",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/n-meetings-in-one-room",
+            "youtubeUrl": "https://youtu.be/mKfhTotEguk?si=2RELeq18mpmIIN3Q",
+            "articleUrl": "https://takeuforward.org/data-structure/n-meetings-in-one-room/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
 ];
