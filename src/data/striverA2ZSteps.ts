@@ -1758,4 +1758,84 @@ export const STRIVER_A2Z_FULL_STEPS: DsaStep[] = [
             "tags": [
               "Binary Search",
               "BS on Answers"
+            ]
+          },
+          {
+            "id": "a2z-s4-l2-p8",
+            "title": "Aggressive Cows",
+            "difficulty": "Hard",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/aggressive-cows",
+            "youtubeUrl": "https://youtu.be/R_Mfw4ew-Vo",
+            "articleUrl": "https://takeuforward.org/data-structure/aggressive-cows-detailed-solution/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Binary Search",
+              "BS on Answers"
+            ]
+          },
+          {
+            "id": "a2z-s4-l2-p9",
+            "title": "Book Allocation Problem",
+            "difficulty": "Hard",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/book-allocation-problem",
+            "youtubeUrl": "https://youtu.be/Z0hwjftStI4",
+            "articleUrl": "https://takeuforward.org/data-structure/allocate-minimum-number-of-pages/",
+            "companies": [
+              "Google",
+              "Amazon",
+              "Microsoft"
+            ],
+            "tags": [
+              "Binary Search",
+              "BS on Answers"
+            ]
+          },
+          {
+            "id": "a2z-s4-l2-p10",
+            "title": "Split array - Largest Sum",
+            "difficulty": "Hard",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/split-array-largest-sum/",
+            "youtubeUrl": "https://www.youtube.com/watch?v=thUd_WJn6wk&list=PLgUwDviBIf0pMFMWuuvDNMAkoQFi-h0ZF&index=20",
+            "articleUrl": "https://takeuforward.org/arrays/split-array-largest-sum/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Binary Search",
+              "BS on Answers"
+            ]
+          },
+          {
+            "id": "a2z-s4-l2-p11",
+            "title": "Painter's partition",
+            "difficulty": "Hard",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/painters-partition",
+            "youtubeUrl": "https://www.youtube.com/watch?v=thUd_WJn6wk&list=PLgUwDviBIf0pMFMWuuvDNMAkoQFi-h0ZF&index=20",
+            "articleUrl": "https://takeuforward.org/arrays/painters-partition-problem/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Binary Search",
+              "BS on Answers"
+            ]
+          },
+          {
+            "id": "a2z-s4-l2-p12",
+            "title": "Minimize Max Distance to Gas Station",
+            "difficulty": "Hard",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/minimize-max-distance-to-gas-station/",
+            "youtubeUrl": "https://www.youtube.com/watch?v=kMSBvlZ-_HA&list=PLgUwDviBIf0pMFMWuuvDNMAkoQFi-h0ZF&index=21",
+            "articleUrl": "https://takeuforward.org/arrays/minimise-maximum-distance-between-gas-stations/",
+            "companies": [
 ];
