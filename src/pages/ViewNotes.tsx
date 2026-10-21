@@ -11,25 +11,43 @@ import { useToast } from '@/hooks/use-toast';
 import Navbar from '@/components/Navbar';
 import NotesCategories from '@/components/NotesCategories';
 import { smartDownload, viewInBrowser } from '@/lib/downloadUtils';
+import { getCachedData, setCachedData, DEFAULT_CACHE_TTL_MS } from '@/lib/cacheUtils';
 
 const ViewNotes = () => {
   const { toast } = useToast();
   const [searchTerm, setSearchTerm] = useState('');
   const [filterSubject, setFilterSubject] = useState('all');
   const [filterSemester, setFilterSemester] = useState('all');
-  const [notes, setNotes] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [notes, setNotes] = useState<any[]>(() => {
+    return getCachedData<any[]>('view_notes_all', DEFAULT_CACHE_TTL_MS) || [];
+  });
+  const [loading, setLoading] = useState(() => {
+    return !getCachedData<any[]>('view_notes_all', DEFAULT_CACHE_TTL_MS);
+  });
 
-  // Fetch notes from Supabase
+  // Fetch notes from Supabase with caching
   useEffect(() => {
     fetchNotes();
+
+    const handleUpdate = () => fetchNotes(true);
+    window.addEventListener('studyhub_notes_updated', handleUpdate);
+    return () => window.removeEventListener('studyhub_notes_updated', handleUpdate);
   }, []);
 
-  const fetchNotes = async () => {
+  const fetchNotes = async (force = false) => {
+    if (!force) {
+      const cached = getCachedData<any[]>('view_notes_all', DEFAULT_CACHE_TTL_MS);
+      if (cached && cached.length > 0) {
+        setNotes(cached);
+        setLoading(false);
+        return;
+      }
+    }
+
     try {
       const { data, error } = await supabase
         .from('notes')
-        .select('*')
+        .select('id, title, description, file_url, file_name, material_type, subject, semester, user_name, uploaded_at')
         .eq('approved', true)
         .order('uploaded_at', { ascending: false });
 
@@ -46,6 +64,7 @@ const ViewNotes = () => {
       });
 
       setNotes(validNotes);
+      setCachedData('view_notes_all', validNotes);
     } catch (error) {
       console.error('Error fetching notes:', error);
       toast({
