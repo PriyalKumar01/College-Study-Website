@@ -5518,4 +5518,84 @@ export const STRIVER_A2Z_FULL_STEPS: DsaStep[] = [
             "title": "Introduction to Binary Search Tree",
             "difficulty": "Easy",
             "platform": "Other",
+            "problemUrl": "https://takeuforward.org/binary-search-tree/introduction-to-binary-search-trees/",
+            "youtubeUrl": "https://youtu.be/p7-9UvDQZ3w",
+            "articleUrl": "https://takeuforward.org/binary-search-tree/introduction-to-binary-search-trees/",
+            "companies": [
+              "Amazon",
+              "Google"
+            ],
+            "tags": [
+              "Binary Search Trees",
+              "Concepts"
+            ]
+          },
+          {
+            "id": "a2z-s14-l1-p2",
+            "title": "Search in a Binary Search Tree",
+            "difficulty": "Easy",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/search-in-a-binary-search-tree/",
+            "youtubeUrl": "https://youtu.be/KcNt6v_56cc",
+            "articleUrl": "https://takeuforward.org/data-structure/search-in-a-binary-search-tree-2/",
+            "companies": [
+              "Amazon",
+              "Google"
+            ],
+            "tags": [
+              "Binary Search Trees",
+              "Concepts"
+            ]
+          },
+          {
+            "id": "a2z-s14-l1-p3",
+            "title": "Find Min/Max in BST",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problemset/all/?search=Find%20Min%2FMax%20in%20BST",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Binary Search Trees",
+              "Concepts"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "a2z-step-14-sub-2",
+        "title": "Practice Problems",
+        "problems": [
+          {
+            "id": "a2z-s14-l2-p1",
+            "title": "Ceil in a Binary Search Tree",
+            "difficulty": "Easy",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/floor-and-ceil-in-a-bst",
+            "youtubeUrl": "https://youtu.be/KSsk8AhdOZA",
+            "articleUrl": "https://takeuforward.org/binary-search-tree/ceil-in-a-binary-search-tree/",
+            "companies": [
+              "Amazon",
+              "Google"
+            ],
+            "tags": [
+              "Binary Search Trees",
+              "Practice Problems"
+            ]
+          },
+          {
+            "id": "a2z-s14-l2-p2",
+            "title": "Floor in a Binary Search Tree",
+            "difficulty": "Easy",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/floor-and-ceil-in-a-bst",
+            "youtubeUrl": "https://youtu.be/xm_W1ub-K-w",
+            "articleUrl": "https://takeuforward.org/binary-search-tree/floor-in-a-binary-search-tree/",
+            "companies": [
+              "Amazon",
+              "Google"
+            ],
+            "tags": [
 ];
