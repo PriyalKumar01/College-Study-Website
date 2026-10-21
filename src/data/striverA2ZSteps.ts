@@ -1598,4 +1598,84 @@ export const STRIVER_A2Z_FULL_STEPS: DsaStep[] = [
             ],
             "tags": [
               "Binary Search",
+              "BS on 1D Arrays"
+            ]
+          },
+          {
+            "id": "a2z-s4-l1-p12",
+            "title": "Single element in a Sorted Array",
+            "difficulty": "Easy",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/single-element-in-a-sorted-array/",
+            "youtubeUrl": "https://youtu.be/AZOmHuHadxQ",
+            "articleUrl": "https://takeuforward.org/data-structure/search-single-element-in-a-sorted-array/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Binary Search",
+              "BS on 1D Arrays"
+            ]
+          },
+          {
+            "id": "a2z-s4-l1-p13",
+            "title": "Find peak element",
+            "difficulty": "Hard",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/find-peak-element/#:~:text=Find%20Peak%20Element%20%2D%20LeetCode&text=A%20peak%20element%20is%20an,to%20any%20of%20the%20peaks.",
+            "youtubeUrl": "https://youtu.be/cXxmbemS6XM",
+            "articleUrl": "https://takeuforward.org/data-structure/peak-element-in-array/",
+            "companies": [
+              "Google",
+              "Meta"
+            ],
+            "tags": [
+              "Binary Search",
+              "BS on 1D Arrays"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "a2z-step-4-sub-2",
+        "title": "BS on Answers",
+        "problems": [
+          {
+            "id": "a2z-s4-l2-p1",
+            "title": "Find square root of a number in log n",
+            "difficulty": "Medium",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/find-square-root-of-a-number",
+            "youtubeUrl": "https://youtu.be/Bsv3FPUX_BA",
+            "articleUrl": "https://takeuforward.org/binary-search/finding-sqrt-of-a-number-using-binary-search/",
+            "companies": [
+              "Microsoft",
+              "Amazon"
+            ],
+            "tags": [
+              "Binary Search",
+              "BS on Answers"
+            ]
+          },
+          {
+            "id": "a2z-s4-l2-p2",
+            "title": "Find the Nth root of a number using binary search",
+            "difficulty": "Medium",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/find-nth-root-of-a-number",
+            "youtubeUrl": "https://youtu.be/rjEJeYCasHs",
+            "articleUrl": "https://takeuforward.org/data-structure/nth-root-of-a-number-using-binary-search/",
+            "companies": [
+              "Amazon",
+              "Google"
+            ],
+            "tags": [
+              "Binary Search",
+              "BS on Answers"
+            ]
+          },
+          {
+            "id": "a2z-s4-l2-p3",
+            "title": "Koko Eating Bananas",
 ];
