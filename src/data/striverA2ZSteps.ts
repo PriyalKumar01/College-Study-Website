@@ -5918,4 +5918,84 @@ export const STRIVER_A2Z_FULL_STEPS: DsaStep[] = [
           },
           {
             "id": "a2z-s15-l2-p2",
+            "title": "Connected Components Problem in Matrix",
+            "difficulty": "Hard",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/connected-components",
+            "companies": [
+              "Amazon"
+            ],
+            "tags": [
+              "Graphs",
+              "Problems on BFS/DFS"
+            ]
+          },
+          {
+            "id": "a2z-s15-l2-p3",
+            "title": "Rotten Oranges",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/rotting-oranges/",
+            "youtubeUrl": "https://www.youtube.com/watch?v=yf3oUhkvqA0",
+            "articleUrl": "https://takeuforward.org/data-structure/rotten-oranges-min-time-to-rot-all-oranges-bfs/",
+            "companies": [
+              "Amazon",
+              "Microsoft"
+            ],
+            "tags": [
+              "Graphs",
+              "Problems on BFS/DFS"
+            ]
+          },
+          {
+            "id": "a2z-s15-l2-p4",
+            "title": "Flood fill",
+            "difficulty": "Hard",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/flood-fill/",
+            "youtubeUrl": "https://youtu.be/C-2_uSRli8o",
+            "articleUrl": "https://takeuforward.org/graph/flood-fill-algorithm-graphs/",
+            "companies": [
+              "Amazon",
+              "Microsoft",
+              "Google"
+            ],
+            "tags": [
+              "Graphs",
+              "Problems on BFS/DFS"
+            ]
+          },
+          {
+            "id": "a2z-s15-l2-p5",
+            "title": "Cycle Detection in unirected Graph (bfs)",
+            "difficulty": "Hard",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/detect-a-cycle-in-an-undirected-graph",
+            "youtubeUrl": "https://youtu.be/BPlrALf1LDU",
+            "articleUrl": "https://takeuforward.org/data-structure/detect-cycle-in-an-undirected-graph-using-bfs/",
+            "companies": [
+              "Amazon",
+              "Google"
+            ],
+            "tags": [
+              "Graphs",
+              "Problems on BFS/DFS"
+            ]
+          },
+          {
+            "id": "a2z-s15-l2-p6",
+            "title": "Cycle Detection in undirected Graph (dfs)",
+            "difficulty": "Hard",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/detect-a-cycle-in-an-undirected-graph",
+            "youtubeUrl": "https://youtu.be/zQ3zgFypzX4",
+            "articleUrl": "https://takeuforward.org/data-structure/detect-cycle-in-an-undirected-graph-using-dfs/",
+            "companies": [
+              "Amazon",
+              "Google"
+            ],
+            "tags": [
+              "Graphs",
+              "Problems on BFS/DFS"
+            ]
 ];
