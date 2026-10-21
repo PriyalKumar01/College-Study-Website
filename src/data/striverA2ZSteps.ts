@@ -6078,4 +6078,84 @@ export const STRIVER_A2Z_FULL_STEPS: DsaStep[] = [
             "youtubeUrl": "https://youtu.be/AD4SFl7tu7I?si=EpcJQTWm2YeURvEG",
             "articleUrl": "https://takeuforward.org/graph/g-30-word-ladder-ii/",
             "companies": [
+              "Google",
+              "Amazon",
+              "Microsoft"
+            ],
+            "tags": [
+              "Graphs",
+              "Problems on BFS/DFS"
+            ]
+          },
+          {
+            "id": "a2z-s15-l2-p12",
+            "title": "Number of Distinct Islands [dfs multisource]",
+            "difficulty": "Hard",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/number-of-distinct-islands-ii/",
+            "youtubeUrl": "https://youtu.be/muncqlKJrH0",
+            "articleUrl": "https://takeuforward.org/data-structure/number-of-islands/",
+            "companies": [
+              "Amazon",
+              "Google"
+            ],
+            "tags": [
+              "Graphs",
+              "Problems on BFS/DFS"
+            ]
+          },
+          {
+            "id": "a2z-s15-l2-p13",
+            "title": "Bipartite Graph (DFS)",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/is-graph-bipartite/",
+            "youtubeUrl": "https://youtu.be/KG5YFfR0j8A",
+            "articleUrl": "https://takeuforward.org/graph/bipartite-graph-dfs-implementation/",
+            "companies": [
+              "Amazon",
+              "Google"
+            ],
+            "tags": [
+              "Graphs",
+              "Problems on BFS/DFS"
+            ]
+          },
+          {
+            "id": "a2z-s15-l2-p14",
+            "title": "Cycle Detection in Directed Graph (DFS)",
+            "difficulty": "Hard",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/course-schedule-ii/discuss/293048/detecting-cycle-in-directed-graph-problem",
+            "youtubeUrl": "https://youtu.be/9twcmtQj4DU",
+            "articleUrl": "https://takeuforward.org/data-structure/detect-cycle-in-a-directed-graph-using-dfs-g-19/",
+            "companies": [
+              "Amazon",
+              "Google"
+            ],
+            "tags": [
+              "Graphs",
+              "Problems on BFS/DFS"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "a2z-step-15-sub-3",
+        "title": "Topo Sort and Problems",
+        "problems": [
+          {
+            "id": "a2z-s15-l3-p1",
+            "title": "Topo Sort",
+            "difficulty": "Hard",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/topological-sort-or-kahns-algorithm",
+            "youtubeUrl": "https://youtu.be/5lZ0iJMrUMk",
+            "articleUrl": "https://takeuforward.org/data-structure/topological-sort-algorithm-dfs-g-21/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Graphs",
 ];
