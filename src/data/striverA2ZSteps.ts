@@ -5998,4 +5998,84 @@ export const STRIVER_A2Z_FULL_STEPS: DsaStep[] = [
               "Graphs",
               "Problems on BFS/DFS"
             ]
+          },
+          {
+            "id": "a2z-s15-l2-p7",
+            "title": "0/1 Matrix (Bfs Problem)",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/01-matrix/",
+            "youtubeUrl": "https://youtu.be/edXdVwkYHF8",
+            "articleUrl": "https://takeuforward.org/graph/distance-of-nearest-cell-having-1/",
+            "companies": [
+              "Amazon",
+              "Google"
+            ],
+            "tags": [
+              "Graphs",
+              "Problems on BFS/DFS"
+            ]
+          },
+          {
+            "id": "a2z-s15-l2-p8",
+            "title": "Surrounded Regions (dfs)",
+            "difficulty": "Hard",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/surrounded-regions/",
+            "youtubeUrl": "https://youtu.be/BtdgAys4yMk",
+            "articleUrl": "https://takeuforward.org/graph/surrounded-regions-replace-os-with-xs/",
+            "companies": [
+              "Amazon",
+              "Google"
+            ],
+            "tags": [
+              "Graphs",
+              "Problems on BFS/DFS"
+            ]
+          },
+          {
+            "id": "a2z-s15-l2-p9",
+            "title": "Number of Enclaves [flood fill implementation - multisource]",
+            "difficulty": "Hard",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/number-of-enclaves/",
+            "youtubeUrl": "https://youtu.be/rxKcepXQgU4",
+            "articleUrl": "https://takeuforward.org/graph/number-of-enclaves/",
+            "companies": [
+              "Amazon",
+              "Microsoft",
+              "Google"
+            ],
+            "tags": [
+              "Graphs",
+              "Problems on BFS/DFS"
+            ]
+          },
+          {
+            "id": "a2z-s15-l2-p10",
+            "title": "Word ladder - 1",
+            "difficulty": "Hard",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/word-ladder/",
+            "youtubeUrl": "https://youtu.be/tRPda0rcf8E",
+            "articleUrl": "https://takeuforward.org/graph/word-ladder-i-g-29/",
+            "companies": [
+              "Google",
+              "Amazon",
+              "Microsoft"
+            ],
+            "tags": [
+              "Graphs",
+              "Problems on BFS/DFS"
+            ]
+          },
+          {
+            "id": "a2z-s15-l2-p11",
+            "title": "Word ladder - 2",
+            "difficulty": "Hard",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/word-ladder-ii/",
+            "youtubeUrl": "https://youtu.be/AD4SFl7tu7I?si=EpcJQTWm2YeURvEG",
+            "articleUrl": "https://takeuforward.org/graph/g-30-word-ladder-ii/",
+            "companies": [
 ];
