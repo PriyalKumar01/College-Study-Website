@@ -5038,4 +5038,84 @@ export const STRIVER_A2Z_FULL_STEPS: DsaStep[] = [
               "Microsoft"
             ],
             "tags": [
+              "Binary Trees",
+              "Traversals"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "a2z-step-13-sub-2",
+        "title": "Medium Problems",
+        "problems": [
+          {
+            "id": "a2z-s13-l2-p1",
+            "title": "Height of a Binary Tree",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/maximum-depth-of-binary-tree/",
+            "youtubeUrl": "https://youtu.be/eD3tmO66aBA",
+            "articleUrl": "https://takeuforward.org/data-structure/maximum-depth-of-a-binary-tree/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Binary Trees",
+              "Medium Problems"
+            ]
+          },
+          {
+            "id": "a2z-s13-l2-p2",
+            "title": "Check if the Binary tree is height-balanced or not",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/balanced-binary-tree/",
+            "youtubeUrl": "https://youtu.be/Yt50Jfbd8Po",
+            "articleUrl": "https://takeuforward.org/data-structure/check-if-the-binary-tree-is-balanced-binary-tree/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Binary Trees",
+              "Medium Problems"
+            ]
+          },
+          {
+            "id": "a2z-s13-l2-p3",
+            "title": "Diameter of Binary Tree",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/diameter-of-binary-tree/",
+            "youtubeUrl": "https://youtu.be/Rezetez59Nk",
+            "articleUrl": "https://takeuforward.org/data-structure/calculate-the-diameter-of-a-binary-tree/",
+            "companies": [
+              "Amazon",
+              "Meta",
+              "Google"
+            ],
+            "tags": [
+              "Binary Trees",
+              "Medium Problems"
+            ]
+          },
+          {
+            "id": "a2z-s13-l2-p4",
+            "title": "Maximum path sum",
+            "difficulty": "Hard",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/binary-tree-maximum-path-sum/",
+            "youtubeUrl": "https://youtu.be/WszrfSwMz58",
+            "articleUrl": "https://takeuforward.org/data-structure/maximum-sum-path-in-binary-tree/",
+            "companies": [
+              "Amazon",
+              "Meta",
+              "Google"
+            ],
+            "tags": [
+              "Binary Trees",
+              "Medium Problems"
+            ]
+          },
 ];
