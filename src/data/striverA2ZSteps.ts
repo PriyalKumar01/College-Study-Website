@@ -158,4 +158,84 @@ export const STRIVER_A2Z_FULL_STEPS: DsaStep[] = [
               "Learn the basics",
               "Things to Know in C++/Java/Python or any language"
             ]
+          }
+        ]
+      },
+      {
+        "id": "a2z-step-1-sub-2",
+        "title": "Build-up Logical Thinking",
+        "problems": [
+          {
+            "id": "a2z-s1-l2-p1",
+            "title": "Patterns",
+            "difficulty": "Basic",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/easy-and-medium",
+            "youtubeUrl": "https://www.youtube.com/watch?v=tNm_NNSB3_w&list=PLgUwDviBIf0oF6QL8m22w1hIDC1vJ_BHz&index=3",
+            "articleUrl": "https://takeuforward.org/strivers-a2z-dsa-course/must-do-pattern-problems-before-starting-dsa/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Learn the basics",
+              "Build-up Logical Thinking"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "a2z-step-1-sub-3",
+        "title": "Learn STL/Java-Collections or similar thing in your\n            language",
+        "problems": [
+          {
+            "id": "a2z-s1-l3-p1",
+            "title": "C++ STL",
+            "difficulty": "Basic",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/c/c-stl-tutorial-most-frequent-used-stl-containers/",
+            "youtubeUrl": "https://www.youtube.com/watch?v=RRVYpIET_RU",
+            "articleUrl": "https://takeuforward.org/c/c-stl-tutorial-most-frequent-used-stl-containers/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Learn the basics",
+              "Learn STL/Java-Collections or similar thing in your\n            language"
+            ]
+          },
+          {
+            "id": "a2z-s1-l3-p2",
+            "title": "Java Collections",
+            "difficulty": "Basic",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problemset/all/?search=Java%20Collections",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Learn the basics",
+              "Learn STL/Java-Collections or similar thing in your\n            language"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "a2z-step-1-sub-4",
+        "title": "Know Basic Maths",
+        "problems": [
+          {
+            "id": "a2z-s1-l4-p1",
+            "title": "Count Digits",
+            "difficulty": "Basic",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/count-all-digits-of-a-number",
+            "youtubeUrl": "https://youtu.be/1xNbjMdbjug",
+            "articleUrl": "https://takeuforward.org/data-structure/count-digits-in-a-number/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
 ];
