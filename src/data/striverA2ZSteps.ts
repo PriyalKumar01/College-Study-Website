@@ -3998,4 +3998,84 @@ export const STRIVER_A2Z_FULL_STEPS: DsaStep[] = [
               "Implementation Problems"
             ]
           },
+          {
+            "id": "a2z-s9-l4-p4",
+            "title": "LRU cache (IMPORTANT)",
+            "difficulty": "Hard",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/lru-cache/",
+            "youtubeUrl": "https://youtu.be/z9bJUPxzFOw?si=IUo_d35rXBD0CBAF",
+            "articleUrl": "https://takeuforward.org/data-structure/implement-lru-cache/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Stack and Queues",
+              "Implementation Problems"
+            ]
+          },
+          {
+            "id": "a2z-s9-l4-p5",
+            "title": "LFU cache",
+            "difficulty": "Hard",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/lfu-cache/",
+            "youtubeUrl": "https://www.youtube.com/watch?v=0PSB9y8ehbk&list=PLgUwDviBIf0p4ozDR_kJJkONnb1wdx2Ma&index=79",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Stack and Queues",
+              "Implementation Problems"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "a2z-step-10",
+    "title": "Step 10: Sliding Window & Two Pointer Combined Problems",
+    "lectures": [
+      {
+        "id": "a2z-step-10-sub-1",
+        "title": "Medium Problems",
+        "problems": [
+          {
+            "id": "a2z-s10-l1-p1",
+            "title": "Longest Substring Without Repeating Characters",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/longest-substring-without-repeating-characters/",
+            "youtubeUrl": "https://youtu.be/-zSxTJkcdAo?si=I2zfR-vlDMg0zU9z",
+            "articleUrl": "https://takeuforward.org/data-structure/length-of-longest-substring-without-any-repeating-character/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Sliding Window & Two Pointer Combined Problems",
+              "Medium Problems"
+            ]
+          },
+          {
+            "id": "a2z-s10-l1-p2",
+            "title": "Max Consecutive Ones III",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/max-consecutive-ones-iii/",
+            "youtubeUrl": "https://youtu.be/3E4JBHSLpYk?si=SoOW64pP6otEKxBw",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Sliding Window & Two Pointer Combined Problems",
+              "Medium Problems"
+            ]
+          },
+          {
+            "id": "a2z-s10-l1-p3",
 ];
