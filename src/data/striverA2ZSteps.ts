@@ -4878,4 +4878,84 @@ export const STRIVER_A2Z_FULL_STEPS: DsaStep[] = [
             "platform": "Other",
             "problemUrl": "https://takeuforward.org/binary-tree/binary-tree-traversal-inorder-preorder-postorder/",
             "youtubeUrl": "https://youtu.be/jmy0LaGET1I",
+            "articleUrl": "https://takeuforward.org/binary-tree/binary-tree-traversal-inorder-preorder-postorder/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Binary Trees",
+              "Traversals"
+            ]
+          },
+          {
+            "id": "a2z-s13-l1-p5",
+            "title": "Preorder Traversal of Binary Tree",
+            "difficulty": "Easy",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/binary-tree-preorder-traversal/",
+            "youtubeUrl": "https://youtu.be/RlUu72JrOCQ",
+            "articleUrl": "https://takeuforward.org/data-structure/preorder-traversal-of-binary-tree/",
+            "companies": [
+              "Amazon",
+              "Microsoft"
+            ],
+            "tags": [
+              "Binary Trees",
+              "Traversals"
+            ]
+          },
+          {
+            "id": "a2z-s13-l1-p6",
+            "title": "Inorder Traversal of Binary Tree",
+            "difficulty": "Easy",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/binary-tree-inorder-traversal/",
+            "youtubeUrl": "https://youtu.be/Z_NEgBgbRVI",
+            "articleUrl": "https://takeuforward.org/data-structure/inorder-traversal-of-binary-tree/",
+            "companies": [
+              "Amazon",
+              "Microsoft"
+            ],
+            "tags": [
+              "Binary Trees",
+              "Traversals"
+            ]
+          },
+          {
+            "id": "a2z-s13-l1-p7",
+            "title": "Post-order Traversal of Binary Tree",
+            "difficulty": "Easy",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/binary-tree-postorder-traversal/",
+            "youtubeUrl": "https://youtu.be/COQOU6klsBg",
+            "articleUrl": "https://takeuforward.org/data-structure/post-order-traversal-of-binary-tree/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Binary Trees",
+              "Traversals"
+            ]
+          },
+          {
+            "id": "a2z-s13-l1-p8",
+            "title": "Level order Traversal / Level order traversal in spiral form",
+            "difficulty": "Easy",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/binary-tree-level-order-traversal/",
+            "youtubeUrl": "https://youtu.be/EoAsWbO7sqg",
+            "articleUrl": "https://takeuforward.org/data-structure/level-order-traversal-of-a-binary-tree/",
+            "companies": [
+              "Amazon",
+              "Microsoft",
+              "Google"
+            ],
+            "tags": [
+              "Binary Trees",
+              "Traversals"
+            ]
+          },
+          {
 ];
