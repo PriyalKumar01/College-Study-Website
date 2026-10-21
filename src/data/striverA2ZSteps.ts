@@ -2798,4 +2798,84 @@ export const STRIVER_A2Z_FULL_STEPS: DsaStep[] = [
             ],
             "tags": [
               "Recursion",
+              "Get a Strong Hold"
+            ]
+          },
+          {
+            "id": "a2z-s7-l1-p2",
+            "title": "Pow(x, n)",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/powx-n/",
+            "youtubeUrl": "https://youtu.be/l0YC3876qxg",
+            "articleUrl": "https://takeuforward.org/data-structure/implement-powxn-x-raised-to-the-power-n/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Recursion",
+              "Get a Strong Hold"
+            ]
+          },
+          {
+            "id": "a2z-s7-l1-p3",
+            "title": "Count Good numbers",
+            "difficulty": "Easy",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/count-good-numbers/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Recursion",
+              "Get a Strong Hold"
+            ]
+          },
+          {
+            "id": "a2z-s7-l1-p4",
+            "title": "Sort a stack using recursion",
+            "difficulty": "Medium",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/sort-a-stack",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Recursion",
+              "Get a Strong Hold"
+            ]
+          },
+          {
+            "id": "a2z-s7-l1-p5",
+            "title": "Reverse a stack using recursion",
+            "difficulty": "Easy",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/reverse-a-stack",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Recursion",
+              "Get a Strong Hold"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "a2z-step-7-sub-2",
+        "title": "Subsequences Pattern",
+        "problems": [
+          {
+            "id": "a2z-s7-l2-p1",
+            "title": "Generate all binary strings",
+            "difficulty": "Medium",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/generate-binary-strings-without-consecutive-1s",
+            "companies": [
+              "Google",
+              "Amazon"
 ];
