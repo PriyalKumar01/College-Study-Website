@@ -2638,4 +2638,84 @@ export const STRIVER_A2Z_FULL_STEPS: DsaStep[] = [
             "articleUrl": "https://takeuforward.org/data-structure/add-two-numbers-represented-as-linked-lists/",
             "companies": [
               "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Learn LinkedList",
+              "Medium Problems of LL"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "a2z-step-6-sub-4",
+        "title": "Medium Problems of DLL",
+        "problems": [
+          {
+            "id": "a2z-s6-l4-p1",
+            "title": "Delete all occurrences of a key in DLL",
+            "difficulty": "Medium",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/delete-all-occurrences-of-a-key-in-dll",
+            "youtubeUrl": "https://youtu.be/Mh0NH_SD92k?si=tCYshBRi1upMqSVz",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Learn LinkedList",
+              "Medium Problems of DLL"
+            ]
+          },
+          {
+            "id": "a2z-s6-l4-p2",
+            "title": "Find pairs with given sum in DLL",
+            "difficulty": "Medium",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/find-pairs-with-given-sum-in-doubly-linked-list",
+            "youtubeUrl": "https://youtu.be/YitR4dQsddE?si=iZAC259hdngV_OxC",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Learn LinkedList",
+              "Medium Problems of DLL"
+            ]
+          },
+          {
+            "id": "a2z-s6-l4-p3",
+            "title": "Remove duplicates from sorted DLL",
+            "difficulty": "Medium",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/remove-duplicated-from-sorted-dll",
+            "youtubeUrl": "https://youtu.be/YJKVTnOJXSY?si=AsZoNUoewetsBjr0",
+            "companies": [
+              "Microsoft",
+              "Google"
+            ],
+            "tags": [
+              "Learn LinkedList",
+              "Medium Problems of DLL"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "a2z-step-6-sub-5",
+        "title": "Hard Problems of LL",
+        "problems": [
+          {
+            "id": "a2z-s6-l5-p1",
+            "title": "Reverse LL in group of given size K",
+            "difficulty": "Hard",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/reverse-nodes-in-k-group/",
+            "youtubeUrl": "https://youtu.be/lIar1skcQYI?si=_jFghHKX4eaK36a1",
+            "articleUrl": "https://takeuforward.org/data-structure/reverse-linked-list-in-groups-of-size-k/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
 ];
