@@ -2558,4 +2558,84 @@ export const STRIVER_A2Z_FULL_STEPS: DsaStep[] = [
               "Microsoft"
             ],
             "tags": [
+              "Learn LinkedList",
+              "Medium Problems of LL"
+            ]
+          },
+          {
+            "id": "a2z-s6-l3-p11",
+            "title": "Sort LL",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/sort-list/",
+            "youtubeUrl": "https://youtu.be/8ocB7a_c-Cc?si=Gv-Y8q8-WyARoV35",
+            "articleUrl": "https://takeuforward.org/linked-list/sort-a-linked-list",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Learn LinkedList",
+              "Medium Problems of LL"
+            ]
+          },
+          {
+            "id": "a2z-s6-l3-p12",
+            "title": "Sort a LL of 0's 1's and 2's by changing links",
+            "difficulty": "Medium",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/sort-a-ll-of-0's-1's-and-2's",
+            "youtubeUrl": "https://youtu.be/gRII7LhdJWc?si=l3qRC7w3NhY7OAqw",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Learn LinkedList",
+              "Medium Problems of LL"
+            ]
+          },
+          {
+            "id": "a2z-s6-l3-p13",
+            "title": "Find the intersection point of Y LL",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/intersection-of-two-linked-lists/",
+            "youtubeUrl": "https://youtu.be/0DYoPz2Tpt4?si=L-uJs5yXUxj4VJM2",
+            "articleUrl": "https://takeuforward.org/data-structure/find-intersection-of-two-linked-lists/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Learn LinkedList",
+              "Medium Problems of LL"
+            ]
+          },
+          {
+            "id": "a2z-s6-l3-p14",
+            "title": "Add 1 to a number represented by LL",
+            "difficulty": "Medium",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/add-one-to-a-number-represented-by-ll\\",
+            "youtubeUrl": "https://youtu.be/aXQWhbvT3w0?si=uRgU9S4r5cVmnUy7",
+            "companies": [
+              "Amazon",
+              "Microsoft"
+            ],
+            "tags": [
+              "Learn LinkedList",
+              "Medium Problems of LL"
+            ]
+          },
+          {
+            "id": "a2z-s6-l3-p15",
+            "title": "Add 2 numbers in LL",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/add-two-numbers/",
+            "youtubeUrl": "https://youtu.be/XmRrGzR6udg?si=VYuZYUcaVCrZCgpA",
+            "articleUrl": "https://takeuforward.org/data-structure/add-two-numbers-represented-as-linked-lists/",
+            "companies": [
+              "Google",
 ];
