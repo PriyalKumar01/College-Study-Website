@@ -1678,4 +1678,84 @@ export const STRIVER_A2Z_FULL_STEPS: DsaStep[] = [
           {
             "id": "a2z-s4-l2-p3",
             "title": "Koko Eating Bananas",
+            "difficulty": "Hard",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/koko-eating-bananas/",
+            "youtubeUrl": "https://youtu.be/qyfekrNni90",
+            "articleUrl": "https://takeuforward.org/binary-search/koko-eating-bananas/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Binary Search",
+              "BS on Answers"
+            ]
+          },
+          {
+            "id": "a2z-s4-l2-p4",
+            "title": "Minimum days to make M bouquets",
+            "difficulty": "Hard",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/minimum-number-of-days-to-make-m-bouquets/",
+            "youtubeUrl": "https://youtu.be/TXAuxeYBTdg",
+            "articleUrl": "https://takeuforward.org/arrays/minimum-days-to-make-m-bouquets/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Binary Search",
+              "BS on Answers"
+            ]
+          },
+          {
+            "id": "a2z-s4-l2-p5",
+            "title": "Find the smallest Divisor",
+            "difficulty": "Easy",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/find-the-smallest-divisor-given-a-threshold/",
+            "youtubeUrl": "https://youtu.be/UvBKTVaG6U8",
+            "articleUrl": "https://takeuforward.org/arrays/find-the-smallest-divisor-given-a-threshold/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Binary Search",
+              "BS on Answers"
+            ]
+          },
+          {
+            "id": "a2z-s4-l2-p6",
+            "title": "Capacity to Ship Packages within D Days",
+            "difficulty": "Hard",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/capacity-to-ship-packages-within-d-days/",
+            "youtubeUrl": "https://youtu.be/MG-Ac4TAvTY",
+            "articleUrl": "https://takeuforward.org/arrays/capacity-to-ship-packages-within-d-days/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Binary Search",
+              "BS on Answers"
+            ]
+          },
+          {
+            "id": "a2z-s4-l2-p7",
+            "title": "Kth Missing Positive Number",
+            "difficulty": "Easy",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/kth-missing-positive-number/#:~:text=Given%20an%20array%20arr%20of,13%2C...%5D.",
+            "youtubeUrl": "https://youtu.be/uZ0N_hZpyps",
+            "articleUrl": "https://takeuforward.org/arrays/kth-missing-positive-number/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Binary Search",
+              "BS on Answers"
 ];
