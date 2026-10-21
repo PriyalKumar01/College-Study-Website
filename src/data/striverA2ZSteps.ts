@@ -1438,4 +1438,84 @@ export const STRIVER_A2Z_FULL_STEPS: DsaStep[] = [
             "difficulty": "Easy",
             "platform": "Other",
             "problemUrl": "https://takeuforward.org/plus/dsa/problems/lower-bound-",
+            "youtubeUrl": "https://youtu.be/6zhGS79oQ4k",
+            "articleUrl": "https://takeuforward.org/arrays/implement-lower-bound-bs-2/",
+            "companies": [
+              "Amazon"
+            ],
+            "tags": [
+              "Binary Search",
+              "BS on 1D Arrays"
+            ]
+          },
+          {
+            "id": "a2z-s4-l1-p3",
+            "title": "Implement Upper Bound",
+            "difficulty": "Easy",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/upper-bound",
+            "youtubeUrl": "https://youtu.be/6zhGS79oQ4k",
+            "articleUrl": "https://takeuforward.org/arrays/implement-upper-bound/",
+            "companies": [
+              "Amazon"
+            ],
+            "tags": [
+              "Binary Search",
+              "BS on 1D Arrays"
+            ]
+          },
+          {
+            "id": "a2z-s4-l1-p4",
+            "title": "Search Insert Position",
+            "difficulty": "Easy",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/search-insert-position/#:~:text=Search%20Insert%20Position%20%2D%20LeetCode&text=Given%20a%20sorted%20array%20of,(log%20n)%20runtime%20complexity.",
+            "youtubeUrl": "https://youtu.be/6zhGS79oQ4k",
+            "articleUrl": "https://takeuforward.org/arrays/search-insert-position/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Binary Search",
+              "BS on 1D Arrays"
+            ]
+          },
+          {
+            "id": "a2z-s4-l1-p5",
+            "title": "Floor/Ceil in Sorted Array",
+            "difficulty": "Medium",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/floor-and-ceil-in-sorted-array",
+            "youtubeUrl": "https://www.youtube.com/watch?v=6zhGS79oQ4k&list=PLgUwDviBIf0pMFMWuuvDNMAkoQFi-h0ZF&index=3",
+            "articleUrl": "https://takeuforward.org/arrays/floor-and-ceil-in-sorted-array/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Binary Search",
+              "BS on 1D Arrays"
+            ]
+          },
+          {
+            "id": "a2z-s4-l1-p6",
+            "title": "Find the first or last occurrence of a given number in a sorted array",
+            "difficulty": "Easy",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/find-first-and-last-position-of-element-in-sorted-array/",
+            "youtubeUrl": "https://youtu.be/hjR1IYVx9lY",
+            "articleUrl": "https://takeuforward.org/data-structure/last-occurrence-in-a-sorted-array/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Binary Search",
+              "BS on 1D Arrays"
+            ]
+          },
+          {
+            "id": "a2z-s4-l1-p7",
+            "title": "Count occurrences of a number in a sorted array with duplicates",
 ];
