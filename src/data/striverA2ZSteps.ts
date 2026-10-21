@@ -2958,4 +2958,84 @@ export const STRIVER_A2Z_FULL_STEPS: DsaStep[] = [
               "Amazon"
             ],
             "tags": [
+              "Recursion",
+              "Subsequences Pattern"
+            ]
+          },
+          {
+            "id": "a2z-s7-l2-p7",
+            "title": "Combination Sum",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/combination-sum/",
+            "youtubeUrl": "https://www.youtube.com/watch?v=OyZFFqQtu98&list=PLgUwDviBIf0p4ozDR_kJJkONnb1wdx2Ma&index=49",
+            "articleUrl": "https://takeuforward.org/data-structure/combination-sum-1/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Recursion",
+              "Subsequences Pattern"
+            ]
+          },
+          {
+            "id": "a2z-s7-l2-p8",
+            "title": "Combination Sum-II",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/combination-sum-ii/",
+            "youtubeUrl": "https://www.youtube.com/watch?v=G1fRTGRxXU8&list=PLgUwDviBIf0p4ozDR_kJJkONnb1wdx2Ma&index=50",
+            "articleUrl": "https://takeuforward.org/data-structure/combination-sum-ii-find-all-unique-combinations/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Recursion",
+              "Subsequences Pattern"
+            ]
+          },
+          {
+            "id": "a2z-s7-l2-p9",
+            "title": "Subset Sum-I",
+            "difficulty": "Medium",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/subsets-i",
+            "youtubeUrl": "https://www.youtube.com/watch?v=rYkfBRtMJr8&list=PLgUwDviBIf0p4ozDR_kJJkONnb1wdx2Ma&index=52",
+            "articleUrl": "https://takeuforward.org/data-structure/subset-sum-sum-of-all-subsets/",
+            "companies": [
+              "Amazon",
+              "Microsoft"
+            ],
+            "tags": [
+              "Recursion",
+              "Subsequences Pattern"
+            ]
+          },
+          {
+            "id": "a2z-s7-l2-p10",
+            "title": "Subset Sum-II",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/subsets-ii/",
+            "youtubeUrl": "https://www.youtube.com/watch?v=RIn3gOkbhQE&list=PLgUwDviBIf0p4ozDR_kJJkONnb1wdx2Ma&index=53",
+            "articleUrl": "https://takeuforward.org/data-structure/subset-ii-print-all-the-unique-subsets/",
+            "companies": [
+              "Amazon",
+              "Microsoft"
+            ],
+            "tags": [
+              "Recursion",
+              "Subsequences Pattern"
+            ]
+          },
+          {
+            "id": "a2z-s7-l2-p11",
+            "title": "Combination Sum - III",
+            "difficulty": "Hard",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/combination-sum-iii/",
+            "companies": [
+              "Google",
 ];
