@@ -5198,4 +5198,84 @@ export const STRIVER_A2Z_FULL_STEPS: DsaStep[] = [
             "companies": [
               "Amazon",
               "Microsoft",
+              "Google"
+            ],
+            "tags": [
+              "Binary Trees",
+              "Medium Problems"
+            ]
+          },
+          {
+            "id": "a2z-s13-l2-p10",
+            "title": "Bottom View of Binary Tree",
+            "difficulty": "Medium",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/bottom-view-of-bt",
+            "youtubeUrl": "https://youtu.be/0FtVY6I4pB8",
+            "articleUrl": "https://takeuforward.org/data-structure/bottom-view-of-a-binary-tree/",
+            "companies": [
+              "Amazon",
+              "Microsoft"
+            ],
+            "tags": [
+              "Binary Trees",
+              "Medium Problems"
+            ]
+          },
+          {
+            "id": "a2z-s13-l2-p11",
+            "title": "Right/Left View of Binary Tree",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/binary-tree-right-side-view/",
+            "youtubeUrl": "https://youtu.be/KV4mRzTjlAk",
+            "articleUrl": "https://takeuforward.org/data-structure/right-left-view-of-binary-tree/",
+            "companies": [
+              "Amazon",
+              "Microsoft",
+              "Meta"
+            ],
+            "tags": [
+              "Binary Trees",
+              "Medium Problems"
+            ]
+          },
+          {
+            "id": "a2z-s13-l2-p12",
+            "title": "Symmetric Binary Tree",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/symmetric-tree/",
+            "youtubeUrl": "https://youtu.be/nKggiEpBE",
+            "articleUrl": "https://takeuforward.org/data-structure/check-for-symmetrical-binary-tree/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Binary Trees",
+              "Medium Problems"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "a2z-step-13-sub-3",
+        "title": "Hard Problems",
+        "problems": [
+          {
+            "id": "a2z-s13-l3-p1",
+            "title": "Root to Node Path in Binary Tree",
+            "difficulty": "Medium",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/print-root-to-note-path-in-bt",
+            "youtubeUrl": "https://youtu.be/fmflMqVOC7k",
+            "articleUrl": "https://takeuforward.org/data-structure/print-root-to-node-path-in-a-binary-tree/",
+            "companies": [
+              "Amazon",
+              "Google"
+            ],
+            "tags": [
+              "Binary Trees",
+              "Hard Problems"
 ];
