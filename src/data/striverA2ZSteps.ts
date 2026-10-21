@@ -4958,4 +4958,84 @@ export const STRIVER_A2Z_FULL_STEPS: DsaStep[] = [
             ]
           },
           {
+            "id": "a2z-s13-l1-p9",
+            "title": "Iterative Preorder Traversal of Binary Tree",
+            "difficulty": "Easy",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/binary-tree-preorder-traversal/",
+            "youtubeUrl": "https://youtu.be/Bfqd8BsPVuw",
+            "articleUrl": "https://takeuforward.org/data-structure/iterative-preorder-traversal-of-binary-tree",
+            "companies": [
+              "Amazon",
+              "Microsoft"
+            ],
+            "tags": [
+              "Binary Trees",
+              "Traversals"
+            ]
+          },
+          {
+            "id": "a2z-s13-l1-p10",
+            "title": "Iterative Inorder Traversal of Binary Tree",
+            "difficulty": "Easy",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/binary-tree-inorder-traversal/",
+            "youtubeUrl": "https://youtu.be/lxTGsVXjwvM",
+            "articleUrl": "https://takeuforward.org/data-structure/inorder-traversal-of-binary-tree/",
+            "companies": [
+              "Amazon",
+              "Microsoft"
+            ],
+            "tags": [
+              "Binary Trees",
+              "Traversals"
+            ]
+          },
+          {
+            "id": "a2z-s13-l1-p11",
+            "title": "Post-order Traversal of Binary Tree using 2 stack",
+            "difficulty": "Easy",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/binary-tree-postorder-traversal/",
+            "youtubeUrl": "https://youtu.be/2YBhNLodD8Q",
+            "articleUrl": "https://takeuforward.org/data-structure/iterative-postorder-traversal-of-binary-tree-using-2-stack",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Binary Trees",
+              "Traversals"
+            ]
+          },
+          {
+            "id": "a2z-s13-l1-p12",
+            "title": "Post-order Traversal of Binary Tree using 1 stack",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/binary-tree-postorder-traversal/",
+            "youtubeUrl": "https://youtu.be/NzIGLLwZBS8",
+            "articleUrl": "https://takeuforward.org/data-structure/post-order-traversal-of-binary-tree/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Binary Trees",
+              "Traversals"
+            ]
+          },
+          {
+            "id": "a2z-s13-l1-p13",
+            "title": "Preorder, Inorder, and Postorder Traversal in one Traversal",
+            "difficulty": "Medium",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/pre,-post,-inorder-in-one-traversal",
+            "youtubeUrl": "https://youtu.be/ySp2epYvgTE",
+            "articleUrl": "https://takeuforward.org/data-structure/preorder-inorder-postorder-traversals-in-one-traversal/",
+            "companies": [
+              "Amazon",
+              "Microsoft"
+            ],
+            "tags": [
 ];
