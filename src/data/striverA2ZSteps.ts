@@ -4718,4 +4718,84 @@ export const STRIVER_A2Z_FULL_STEPS: DsaStep[] = [
             "youtubeUrl": "https://youtu.be/IIqVFvKE6RY?si=EjmuXZJNLQLUkEd7",
             "companies": [
               "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Greedy Algorithms",
+              "Medium/Hard"
+            ]
+          },
+          {
+            "id": "a2z-s12-l2-p7",
+            "title": "Program for Shortest Job First (or SJF) CPU Scheduling",
+            "difficulty": "Medium",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/shortest-job-first",
+            "youtubeUrl": "https://youtu.be/3-QbX1iDbXs?si=IH8QZUblr01F7UoQ",
+            "articleUrl": "https://takeuforward.org/Greedy/shortest-job-first-or-sjf-cpu-scheduling",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Greedy Algorithms",
+              "Medium/Hard"
+            ]
+          },
+          {
+            "id": "a2z-s12-l2-p8",
+            "title": "Program for Least Recently Used (LRU) Page Replacement Algorithm",
+            "difficulty": "Medium",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/lru-cache",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Greedy Algorithms",
+              "Medium/Hard"
+            ]
+          },
+          {
+            "id": "a2z-s12-l2-p9",
+            "title": "Insert Interval",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/insert-interval/",
+            "youtubeUrl": "https://youtu.be/xxRE-46OCC8?si=a7aPuIw16zDx2lAa",
+            "articleUrl": "https://takeuforward.org/?s=Insert+Interval",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Greedy Algorithms",
+              "Medium/Hard"
+            ]
+          },
+          {
+            "id": "a2z-s12-l2-p10",
+            "title": "Merge Intervals",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/merge-intervals/",
+            "youtubeUrl": "https://www.youtube.com/watch?v=2JzRBPFYbKE&list=PLgUwDviBIf0rPG3Ictpu74YWBQ1CaBkm2&index=6",
+            "articleUrl": "https://takeuforward.org/data-structure/merge-overlapping-sub-intervals/",
+            "companies": [
+              "Google",
+              "Meta",
+              "Microsoft"
+            ],
+            "tags": [
+              "Greedy Algorithms",
+              "Medium/Hard"
+            ]
+          },
+          {
+            "id": "a2z-s12-l2-p11",
+            "title": "Non-overlapping Intervals",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/non-overlapping-intervals/",
 ];
