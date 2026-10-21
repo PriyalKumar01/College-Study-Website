@@ -4798,4 +4798,84 @@ export const STRIVER_A2Z_FULL_STEPS: DsaStep[] = [
             "difficulty": "Medium",
             "platform": "LeetCode",
             "problemUrl": "https://leetcode.com/problems/non-overlapping-intervals/",
+            "youtubeUrl": "https://youtu.be/HDHQ8lAWakY?si=JVtLqboGdpUTOVjf",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Greedy Algorithms",
+              "Medium/Hard"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "a2z-step-13",
+    "title": "Step 13: Binary Trees [Traversals, Medium and Hard Problems]",
+    "lectures": [
+      {
+        "id": "a2z-step-13-sub-1",
+        "title": "Traversals",
+        "problems": [
+          {
+            "id": "a2z-s13-l1-p1",
+            "title": "Introduction to Trees",
+            "difficulty": "Easy",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/binary-tree/introduction-to-trees/",
+            "youtubeUrl": "https://youtu.be/_ANrF3FJm7I",
+            "articleUrl": "https://takeuforward.org/binary-tree/introduction-to-trees/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Binary Trees",
+              "Traversals"
+            ]
+          },
+          {
+            "id": "a2z-s13-l1-p2",
+            "title": "Binary Tree Representation in C++",
+            "difficulty": "Easy",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/binary-tree/binary-tree-representation-in-c/",
+            "youtubeUrl": "https://youtu.be/ctCpP0RFDFc",
+            "articleUrl": "https://takeuforward.org/binary-tree/binary-tree-representation-in-c/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Binary Trees",
+              "Traversals"
+            ]
+          },
+          {
+            "id": "a2z-s13-l1-p3",
+            "title": "Binary Tree Representation in Java",
+            "difficulty": "Easy",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/binary-tree/binary-tree-representation-in-java/",
+            "youtubeUrl": "https://youtu.be/hyLyW7rP24I",
+            "articleUrl": "https://takeuforward.org/binary-tree/binary-tree-representation-in-java/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Binary Trees",
+              "Traversals"
+            ]
+          },
+          {
+            "id": "a2z-s13-l1-p4",
+            "title": "Binary Tree Traversals in Binary Tree",
+            "difficulty": "Easy",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/binary-tree/binary-tree-traversal-inorder-preorder-postorder/",
+            "youtubeUrl": "https://youtu.be/jmy0LaGET1I",
 ];
