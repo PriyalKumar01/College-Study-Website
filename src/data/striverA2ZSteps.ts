@@ -1918,4 +1918,84 @@ export const STRIVER_A2Z_FULL_STEPS: DsaStep[] = [
             "tags": [
               "Binary Search",
               "BS on 2D Arrays"
+            ]
+          },
+          {
+            "id": "a2z-s4-l3-p3",
+            "title": "Search in a row and column wise sorted matrix",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/search-a-2d-matrix-ii/",
+            "youtubeUrl": "https://youtu.be/9ZbB397jU4k",
+            "articleUrl": "https://takeuforward.org/arrays/search-in-a-row-and-column-wise-sorted-matrix/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Binary Search",
+              "BS on 2D Arrays"
+            ]
+          },
+          {
+            "id": "a2z-s4-l3-p4",
+            "title": "Find Peak Element (2D Matrix)",
+            "difficulty": "Hard",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/find-a-peak-element-ii/",
+            "youtubeUrl": "https://youtu.be/nGGp5XBzC4g?si=WCop5C6Azj5gAELH",
+            "companies": [
+              "Google",
+              "Meta"
+            ],
+            "tags": [
+              "Binary Search",
+              "BS on 2D Arrays"
+            ]
+          },
+          {
+            "id": "a2z-s4-l3-p5",
+            "title": "Matrix Median",
+            "difficulty": "Hard",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/matrix-median",
+            "youtubeUrl": "https://youtu.be/Q9wXgdxJq48?si=ScI_0uzJh7yg8nrX",
+            "articleUrl": "https://takeuforward.org/data-structure/median-of-row-wise-sorted-matrix/",
+            "companies": [
+              "Amazon"
+            ],
+            "tags": [
+              "Binary Search",
+              "BS on 2D Arrays"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "a2z-step-5",
+    "title": "Step 5: Strings [Basic and Medium]",
+    "lectures": [
+      {
+        "id": "a2z-step-5-sub-1",
+        "title": "Basic and Easy String Problems",
+        "problems": [
+          {
+            "id": "a2z-s5-l1-p1",
+            "title": "Remove outermost Paranthesis",
+            "difficulty": "Easy",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/remove-outermost-parentheses/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Strings",
+              "Basic and Easy String Problems"
+            ]
+          },
+          {
+            "id": "a2z-s5-l1-p2",
 ];
