@@ -6478,4 +6478,84 @@ export const STRIVER_A2Z_FULL_STEPS: DsaStep[] = [
           {
             "id": "a2z-s15-l4-p13",
             "title": "Find the city with the smallest number of neighbors in a threshold distance",
+            "difficulty": "Hard",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/find-the-city-with-the-smallest-number-of-neighbors-at-a-threshold-distance/",
+            "youtubeUrl": "https://youtu.be/9XybHVqTHcQ",
+            "articleUrl": "https://takeuforward.org/data-structure/find-the-city-with-the-smallest-number-of-neighbours-at-a-threshold-distance-g-43/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Graphs",
+              "Shortest Path Algorithms and Problems"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "a2z-step-15-sub-5",
+        "title": "MinimumSpanningTree/Disjoint Set and Problems",
+        "problems": [
+          {
+            "id": "a2z-s15-l5-p1",
+            "title": "Minimum Spanning Tree",
+            "difficulty": "Hard",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/mst-theory",
+            "youtubeUrl": "https://youtu.be/ZSPjZuZWCME",
+            "articleUrl": "https://takeuforward.org/data-structure/minimum-spanning-tree-theory-g-44/",
+            "companies": [
+              "Amazon",
+              "Google"
+            ],
+            "tags": [
+              "Graphs",
+              "MinimumSpanningTree/Disjoint Set and Problems"
+            ]
+          },
+          {
+            "id": "a2z-s15-l5-p2",
+            "title": "Prim's Algorithm",
+            "difficulty": "Hard",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/find-the-mst-weight",
+            "youtubeUrl": "https://youtu.be/mJcZjjKzeqk",
+            "articleUrl": "https://takeuforward.org/data-structure/prims-algorithm-minimum-spanning-tree-c-and-java-g-45/",
+            "companies": [
+              "Amazon"
+            ],
+            "tags": [
+              "Graphs",
+              "MinimumSpanningTree/Disjoint Set and Problems"
+            ]
+          },
+          {
+            "id": "a2z-s15-l5-p3",
+            "title": "Disjoint Set [Union by Rank]",
+            "difficulty": "Hard",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/disjoint-set-",
+            "youtubeUrl": "https://youtu.be/aBxjDBC4M1U",
+            "articleUrl": "https://takeuforward.org/data-structure/disjoint-set-union-by-rank-union-by-size-path-compression-g-46/",
+            "companies": [
+              "Amazon",
+              "Google"
+            ],
+            "tags": [
+              "Graphs",
+              "MinimumSpanningTree/Disjoint Set and Problems"
+            ]
+          },
+          {
+            "id": "a2z-s15-l5-p4",
+            "title": "Disjoint Set [Union by Size]",
+            "difficulty": "Hard",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/disjoint-set-",
+            "youtubeUrl": "https://youtu.be/aBxjDBC4M1U",
+            "articleUrl": "https://takeuforward.org/data-structure/disjoint-set-union-by-rank-union-by-size-path-compression-g-46/",
+            "companies": [
+              "Amazon",
 ];
