@@ -30,13 +30,16 @@ export const SUPABASE_PUBLISHABLE_KEY = activeConfig.anonKey;
 // Primary active Supabase client
 export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
   auth: {
+    storageKey: 'studyhub_primary_auth',
     storage: localStorage,
     persistSession: true,
     autoRefreshToken: true,
+    detectSessionInUrl: true,
   }
 });
 
 // Secondary Supabase client for mirroring & synchronization
+// Uses a completely separate storage key to avoid GoTrueClient conflicts
 export const supabaseSecondary = createClient<Database>(secondaryConfig.url, secondaryConfig.anonKey, {
   auth: {
     storageKey: 'studyhub_secondary_auth',
