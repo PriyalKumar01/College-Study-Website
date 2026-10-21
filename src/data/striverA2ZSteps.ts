@@ -5758,4 +5758,84 @@ export const STRIVER_A2Z_FULL_STEPS: DsaStep[] = [
             "companies": [
               "Amazon",
               "Microsoft"
+            ],
+            "tags": [
+              "Binary Search Trees",
+              "Practice Problems"
+            ]
+          },
+          {
+            "id": "a2z-s14-l2-p13",
+            "title": "Largest BST in Binary Tree",
+            "difficulty": "Hard",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/largest-bst-in-binary-tree",
+            "youtubeUrl": "https://youtu.be/X0oXMdtUDwo",
+            "companies": [
+              "Amazon",
+              "Google",
+              "Microsoft"
+            ],
+            "tags": [
+              "Binary Search Trees",
+              "Practice Problems"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "a2z-step-15",
+    "title": "Step 15: Graphs [Concepts & Problems]",
+    "lectures": [
+      {
+        "id": "a2z-step-15-sub-1",
+        "title": "Learning",
+        "problems": [
+          {
+            "id": "a2z-s15-l1-p1",
+            "title": "Graph and Types",
+            "difficulty": "Easy",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/graph/introduction-to-graph/",
+            "youtubeUrl": "https://youtu.be/M3_pLsDdeuU",
+            "articleUrl": "https://takeuforward.org/graph/introduction-to-graph/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Graphs",
+              "Learning"
+            ]
+          },
+          {
+            "id": "a2z-s15-l1-p2",
+            "title": "Graph Representation | C++",
+            "difficulty": "Easy",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/graph/graph-representation-in-c/",
+            "youtubeUrl": "https://youtu.be/3oI-34aPMWM",
+            "articleUrl": "https://takeuforward.org/graph/graph-representation-in-c/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Graphs",
+              "Learning"
+            ]
+          },
+          {
+            "id": "a2z-s15-l1-p3",
+            "title": "Graph Representation | Java",
+            "difficulty": "Easy",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problemset/all/?search=Graph%20Representation%20%7C%20Java",
+            "youtubeUrl": "https://youtu.be/3oI-34aPMWM",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
 ];
