@@ -878,4 +878,84 @@ export const STRIVER_A2Z_FULL_STEPS: DsaStep[] = [
             ]
           },
           {
+            "id": "a2z-s3-l1-p11",
+            "title": "Maximum Consecutive Ones",
+            "difficulty": "Easy",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/max-consecutive-ones/",
+            "youtubeUrl": "https://youtu.be/bYWLJb3vCWY?t=1124",
+            "articleUrl": "https://takeuforward.org/data-structure/count-maximum-consecutive-ones-in-the-array/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Solve Problems on Arrays",
+              "Easy"
+            ]
+          },
+          {
+            "id": "a2z-s3-l1-p12",
+            "title": "Find the number that appears once, and other numbers twice.",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/single-number/",
+            "youtubeUrl": "https://youtu.be/bYWLJb3vCWY?t=1369",
+            "articleUrl": "https://takeuforward.org/arrays/find-the-number-that-appears-once-and-the-other-numbers-twice/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Solve Problems on Arrays",
+              "Easy"
+            ]
+          },
+          {
+            "id": "a2z-s3-l1-p13",
+            "title": "Longest subarray with given sum K(positives)",
+            "difficulty": "Medium",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/longest-subarray-with-sum-k",
+            "youtubeUrl": "https://www.youtube.com/watch?v=frf7qxiN2qU&feature=youtu.be",
+            "articleUrl": "https://takeuforward.org/data-structure/longest-subarray-with-given-sum-k/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Solve Problems on Arrays",
+              "Easy"
+            ]
+          },
+          {
+            "id": "a2z-s3-l1-p14",
+            "title": "Longest subarray with sum K (Positives + Negatives)",
+            "difficulty": "Medium",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/longest-subarray-with-sum-k",
+            "youtubeUrl": "https://www.youtube.com/watch?v=frf7qxiN2qU",
+            "articleUrl": "https://takeuforward.org/arrays/longest-subarray-with-sum-k-postives-and-negatives/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Solve Problems on Arrays",
+              "Easy"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "a2z-step-3-sub-2",
+        "title": "Medium",
+        "problems": [
+          {
+            "id": "a2z-s3-l2-p1",
+            "title": "2Sum Problem",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/two-sum/",
+            "youtubeUrl": "https://youtu.be/UXDSeD9mN-k",
 ];
