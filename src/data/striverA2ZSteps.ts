@@ -5438,4 +5438,84 @@ export const STRIVER_A2Z_FULL_STEPS: DsaStep[] = [
             "platform": "LeetCode",
             "problemUrl": "https://leetcode.com/problems/serialize-and-deserialize-binary-tree/",
             "youtubeUrl": "https://youtu.be/-YbXySKJsX8",
+            "articleUrl": "https://takeuforward.org/data-structure/serialize-and-deserialize-a-binary-tree/",
+            "companies": [
+              "Google",
+              "Meta",
+              "Amazon",
+              "Microsoft"
+            ],
+            "tags": [
+              "Binary Trees",
+              "Hard Problems"
+            ]
+          },
+          {
+            "id": "a2z-s13-l3-p12",
+            "title": "Morris Preorder Traversal of a Binary Tree",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/binary-tree-inorder-traversal/",
+            "youtubeUrl": "https://youtu.be/80Zug6D1_r4",
+            "articleUrl": "https://takeuforward.org/data-structure/morris-preorder-traversal-of-a-binary-tree/",
+            "companies": [
+              "Amazon",
+              "Microsoft"
+            ],
+            "tags": [
+              "Binary Trees",
+              "Hard Problems"
+            ]
+          },
+          {
+            "id": "a2z-s13-l3-p13",
+            "title": "Morris Inorder Traversal of a Binary Tree",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/binary-tree-inorder-traversal/",
+            "youtubeUrl": "https://youtu.be/80Zug6D1_r4",
+            "articleUrl": "https://takeuforward.org/data-structure/morris-inorder-traversal-of-a-binary-tree/",
+            "companies": [
+              "Amazon",
+              "Microsoft"
+            ],
+            "tags": [
+              "Binary Trees",
+              "Hard Problems"
+            ]
+          },
+          {
+            "id": "a2z-s13-l3-p14",
+            "title": "Flatten Binary Tree to LinkedList",
+            "difficulty": "Hard",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/flatten-binary-tree-to-linked-list/",
+            "youtubeUrl": "https://youtu.be/sWf7k1x9XR4",
+            "articleUrl": "https://takeuforward.org/data-structure/flatten-binary-tree-to-linked-list/",
+            "companies": [
+              "Amazon",
+              "Microsoft"
+            ],
+            "tags": [
+              "Binary Trees",
+              "Hard Problems"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "a2z-step-14",
+    "title": "Step 14: Binary Search Trees [Concept and Problems]",
+    "lectures": [
+      {
+        "id": "a2z-step-14-sub-1",
+        "title": "Concepts",
+        "problems": [
+          {
+            "id": "a2z-s14-l1-p1",
+            "title": "Introduction to Binary Search Tree",
+            "difficulty": "Easy",
+            "platform": "Other",
 ];
