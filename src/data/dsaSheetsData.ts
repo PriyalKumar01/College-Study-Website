@@ -248,4 +248,54 @@ export const NEETCODE_150_SHEET: DsaSheet = {
       ],
     },
     {
+      id: 'nc-advanced-graphs',
+      title: 'Advanced Graphs (6 Problems)',
+      lectures: [
+        {
+          id: 'nc-ag-1',
+          title: 'Shortest Path & MST',
+          problems: [
+            { id: 'nc-93', title: 'Reconstruct Itinerary', difficulty: 'Hard', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/reconstruct-itinerary/', youtubeUrl: 'https://www.youtube.com/watch?v=ZyB_gQ89GA4', companies: ['Uber'], tags: ['Graph', 'Eulerian Path'] },
+            { id: 'nc-94', title: 'Min Cost to Connect All Points', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/min-cost-to-connect-all-points/', youtubeUrl: 'https://www.youtube.com/watch?v=f7JOBJIC-NA', tags: ['Graph', 'Prim', 'Kruskal'] },
+            { id: 'nc-95', title: 'Network Delay Time', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/network-delay-time/', youtubeUrl: 'https://www.youtube.com/watch?v=EaphyqKU4PQ', tags: ['Graph', 'Dijkstra'] },
+            { id: 'nc-96', title: 'Swim in Rising Water', difficulty: 'Hard', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/swim-in-rising-water/', youtubeUrl: 'https://www.youtube.com/watch?v=amvrKlMLuGY', tags: ['Graph', 'Binary Search'] },
+            { id: 'nc-97', title: 'Alien Dictionary', difficulty: 'Hard', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/alien-dictionary/', youtubeUrl: 'https://www.youtube.com/watch?v=6kTZYvNNyps', companies: ['Google', 'Meta'], tags: ['Graph', 'Topological Sort'] },
+            { id: 'nc-98', title: 'Cheapest Flights Within K Stops', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/cheapest-flights-within-k-stops/', youtubeUrl: 'https://www.youtube.com/watch?v=5eIK3zUdYmE', tags: ['Graph', 'Bellman-Ford'] },
+          ],
+        },
+      ],
+    },
+    {
+      id: 'nc-1d-dp',
+      title: '1-D Dynamic Programming (12 Problems)',
+      lectures: [
+        {
+          id: 'nc-1dp-1',
+          title: 'Optimal Substructure & Memoization',
+          problems: [
+            { id: 'nc-99', title: 'Climbing Stairs', difficulty: 'Easy', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/climbing-stairs/', youtubeUrl: 'https://www.youtube.com/watch?v=Y0lT9Fck7q8', tags: ['DP'] },
+            { id: 'nc-100', title: 'Min Cost Climbing Stairs', difficulty: 'Easy', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/min-cost-climbing-stairs/', youtubeUrl: 'https://www.youtube.com/watch?v=ktmzAZWkEZ0', tags: ['DP'] },
+            { id: 'nc-101', title: 'House Robber', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/house-robber/', youtubeUrl: 'https://www.youtube.com/watch?v=73r3KWiEvyk', companies: ['Amazon', 'Microsoft'], tags: ['DP'] },
+            { id: 'nc-102', title: 'House Robber II', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/house-robber-ii/', youtubeUrl: 'https://www.youtube.com/watch?v=rWAJCfYYOvM', tags: ['DP'] },
+            { id: 'nc-103', title: 'Longest Palindromic Substring', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/longest-palindromic-substring/', youtubeUrl: 'https://www.youtube.com/watch?v=XYQecbcd6_c', companies: ['Amazon', 'Google'], tags: ['DP'] },
+            { id: 'nc-104', title: 'Palindromic Substrings', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/palindromic-substrings/', youtubeUrl: 'https://www.youtube.com/watch?v=4RACzI5-du8', tags: ['DP'] },
+            { id: 'nc-105', title: 'Decode Ways', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/decode-ways/', youtubeUrl: 'https://www.youtube.com/watch?v=6aEyTjOwlJU', companies: ['Meta', 'Amazon'], tags: ['DP'] },
+            { id: 'nc-106', title: 'Coin Change', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/coin-change/', youtubeUrl: 'https://www.youtube.com/watch?v=H9bfqozJoqs', companies: ['Amazon', 'Google'], tags: ['DP'] },
+            { id: 'nc-107', title: 'Maximum Product Subarray', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/maximum-product-subarray/', youtubeUrl: 'https://www.youtube.com/watch?v=lXVy6YWFcRM', companies: ['Google', 'Microsoft'], tags: ['DP'] },
+            { id: 'nc-108', title: 'Word Break', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/word-break/', youtubeUrl: 'https://www.youtube.com/watch?v=Sx9NNgInc3A', companies: ['Amazon', 'Meta'], tags: ['DP'] },
+            { id: 'nc-109', title: 'Longest Increasing Subsequence', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/longest-increasing-subsequence/', youtubeUrl: 'https://www.youtube.com/watch?v=cjWnW0hdF1Y', companies: ['Google', 'Amazon'], tags: ['DP', 'Binary Search'] },
+            { id: 'nc-110', title: 'Partition Equal Subset Sum', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/partition-equal-subset-sum/', youtubeUrl: 'https://www.youtube.com/watch?v=IsvocB5BJhw', tags: ['DP', 'Knapsack'] },
+          ],
+        },
+      ],
+    },
+    {
+      id: 'nc-2d-dp',
+      title: '2-D Dynamic Programming (11 Problems)',
+      lectures: [
+        {
+          id: 'nc-2dp-1',
+          title: 'Grids & String Subsequences',
+          problems: [
+            { id: 'nc-111', title: 'Unique Paths', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/unique-paths/', youtubeUrl: 'https://www.youtube.com/watch?v=IlEsdxuD4lY', companies: ['Amazon', 'Google'], tags: ['DP'] },
 ];
