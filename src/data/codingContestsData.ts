@@ -66,3 +66,20 @@ export function getPredictableContests(baseDate: Date = new Date()): ContestEven
 
       // 2. CodeChef Starters (Every Wednesday 08:00 PM - 10:00 PM IST)
       if (dayOfWeek === 3) {
+        const start = new Date(year, targetMonth, day, 20, 0, 0);
+        const end = new Date(year, targetMonth, day, 22, 0, 0);
+        const diffWeeks = Math.round((start.getTime() - CC_STARTERS_ANCHOR.getTime()) / (7 * 24 * 3600 * 1000));
+        const starterNum = 136 + diffWeeks;
+
+        contests.push({
+          id: `cc-starters-${year}-${targetMonth + 1}-${day}`,
+          title: `CodeChef Starters ${starterNum}`,
+          platform: 'CodeChef',
+          startTime: start.toISOString(),
+          endTime: end.toISOString(),
+          durationMinutes: 120,
+          url: `https://www.codechef.com/START${starterNum}`,
+          difficulty: 'Div 1, 2, 3 & 4',
+          subscribersCount: 18400,
+        });
+      }
