@@ -117,3 +117,20 @@ export function getPredictableContests(baseDate: Date = new Date()): ContestEven
           title: `AtCoder Beginner Contest ${abcNum} (ABC)`,
           platform: 'AtCoder',
           startTime: acStart.toISOString(),
+          endTime: acEnd.toISOString(),
+          durationMinutes: 100,
+          url: `https://atcoder.jp/contests/abc${abcNum}`,
+          difficulty: 'Rating 0 - 1999',
+          subscribersCount: 14100,
+        });
+
+        // LeetCode Biweekly (Alternate Saturday 08:00 PM - 09:30 PM IST)
+        const biweekDiff = Math.round((acStart.getTime() - LC_BIWEEKLY_ANCHOR.getTime()) / (7 * 24 * 3600 * 1000));
+        if (Math.abs(biweekDiff) % 2 === 0) {
+          const lcBiStart = new Date(year, targetMonth, day, 20, 0, 0);
+          const lcBiEnd = new Date(year, targetMonth, day, 21, 30, 0);
+          const biweekNum = 130 + Math.floor(biweekDiff / 2);
+
+          contests.push({
+            id: `lc-biweekly-${year}-${targetMonth + 1}-${day}`,
+            title: `LeetCode Biweekly Contest ${biweekNum}`,
