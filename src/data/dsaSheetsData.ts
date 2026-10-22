@@ -98,4 +98,54 @@ export const NEETCODE_150_SHEET: DsaSheet = {
         },
       ],
     },
+    {
+      id: 'nc-binary-search',
+      title: 'Binary Search (7 Problems)',
+      lectures: [
+        {
+          id: 'nc-bs-1',
+          title: 'Search Space Reduction',
+          problems: [
+            { id: 'nc-28', title: 'Binary Search', difficulty: 'Easy', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/binary-search/', youtubeUrl: 'https://www.youtube.com/watch?v=s4DPM8ct1pI', tags: ['Binary Search'] },
+            { id: 'nc-29', title: 'Search a 2D Matrix', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/search-a-2d-matrix/', youtubeUrl: 'https://www.youtube.com/watch?v=Ber2pi2C0j0', companies: ['Amazon', 'Microsoft'], tags: ['Binary Search'] },
+            { id: 'nc-30', title: 'Koko Eating Bananas', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/koko-eating-bananas/', youtubeUrl: 'https://www.youtube.com/watch?v=U2SozAs9RzA', companies: ['Google'], tags: ['Binary Search'] },
+            { id: 'nc-31', title: 'Find Minimum in Rotated Sorted Array', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/find-minimum-in-rotated-sorted-array/', youtubeUrl: 'https://www.youtube.com/watch?v=nIVW4P8b1VA', companies: ['Microsoft', 'Uber'], tags: ['Binary Search'] },
+            { id: 'nc-32', title: 'Search in Rotated Sorted Array', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/search-in-rotated-sorted-array/', youtubeUrl: 'https://www.youtube.com/watch?v=U8XENwh8Oy8', companies: ['Google', 'Amazon'], tags: ['Binary Search'] },
+            { id: 'nc-33', title: 'Time Based Key-Value Store', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/time-based-key-value-store/', youtubeUrl: 'https://www.youtube.com/watch?v=fu2cD_6E8Hw', companies: ['Google', 'Apple'], tags: ['Binary Search', 'Design'] },
+            { id: 'nc-34', title: 'Median of Two Sorted Arrays', difficulty: 'Hard', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/median-of-two-sorted-arrays/', youtubeUrl: 'https://www.youtube.com/watch?v=q6IEA26hvPE', companies: ['Google', 'Amazon', 'Microsoft'], tags: ['Binary Search', 'Divide and Conquer'] },
+          ],
+        },
+      ],
+    },
+    {
+      id: 'nc-linked-list',
+      title: 'Linked List (11 Problems)',
+      lectures: [
+        {
+          id: 'nc-ll-1',
+          title: 'Pointer & In-Place Node Manipulation',
+          problems: [
+            { id: 'nc-35', title: 'Reverse Linked List', difficulty: 'Easy', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/reverse-linked-list/', youtubeUrl: 'https://www.youtube.com/watch?v=G0_I-ZF0S38', companies: ['Amazon', 'Microsoft'], tags: ['Linked List'] },
+            { id: 'nc-36', title: 'Merge Two Sorted Lists', difficulty: 'Easy', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/merge-two-sorted-lists/', youtubeUrl: 'https://www.youtube.com/watch?v=XIdigk956u0', companies: ['Amazon', 'Apple'], tags: ['Linked List'] },
+            { id: 'nc-37', title: 'Reorder List', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/reorder-list/', youtubeUrl: 'https://www.youtube.com/watch?v=S5bfdUTrKLM', companies: ['Meta', 'Amazon'], tags: ['Linked List'] },
+            { id: 'nc-38', title: 'Remove Nth Node From End of List', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/remove-nth-node-from-end-of-list/', youtubeUrl: 'https://www.youtube.com/watch?v=XVuQxVej6y8', companies: ['Google', 'Amazon'], tags: ['Linked List'] },
+            { id: 'nc-39', title: 'Copy List with Random Pointer', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/copy-list-with-random-pointer/', youtubeUrl: 'https://www.youtube.com/watch?v=5Y2EiZST97Y', companies: ['Microsoft', 'Amazon'], tags: ['Linked List'] },
+            { id: 'nc-40', title: 'Add Two Numbers', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/add-two-numbers/', youtubeUrl: 'https://www.youtube.com/watch?v=wgFPrzTjm7s', companies: ['Amazon', 'Meta'], tags: ['Linked List'] },
+            { id: 'nc-41', title: 'Linked List Cycle', difficulty: 'Easy', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/linked-list-cycle/', youtubeUrl: 'https://www.youtube.com/watch?v=gBTe7lFR3vc', companies: ['Amazon', 'Microsoft'], tags: ['Fast-Slow Pointers'] },
+            { id: 'nc-42', title: 'Find the Duplicate Number', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/find-the-duplicate-number/', youtubeUrl: 'https://www.youtube.com/watch?v=wjYnzkAhcNk', companies: ['Amazon'], tags: ['Fast-Slow Pointers'] },
+            { id: 'nc-43', title: 'LRU Cache', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/lru-cache/', youtubeUrl: 'https://www.youtube.com/watch?v=7ABFKPK2hD4', companies: ['Amazon', 'Google', 'Microsoft'], tags: ['Hashmap', 'Doubly Linked List'] },
+            { id: 'nc-44', title: 'Merge k Sorted Lists', difficulty: 'Hard', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/merge-k-sorted-lists/', youtubeUrl: 'https://www.youtube.com/watch?v=q5a5OiGbT6Q', companies: ['Amazon', 'Google'], tags: ['Heap', 'Linked List'] },
+            { id: 'nc-45', title: 'Reverse Nodes in k-Group', difficulty: 'Hard', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/reverse-nodes-in-k-group/', youtubeUrl: 'https://www.youtube.com/watch?v=1UOPsfP85V4', companies: ['Microsoft', 'Amazon'], tags: ['Linked List'] },
+          ],
+        },
+      ],
+    },
+    {
+      id: 'nc-trees',
+      title: 'Trees (15 Problems)',
+      lectures: [
+        {
+          id: 'nc-tr-1',
+          title: 'Binary Tree Traversals & Recursion',
+          problems: [
 ];
