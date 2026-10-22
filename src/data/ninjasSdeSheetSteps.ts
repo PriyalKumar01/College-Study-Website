@@ -1330,4 +1330,40 @@ export const NINJAS_SDE_STEPS: DsaStep[] = [
             problemUrl: 'https://www.naukri.com/code360/problems/ninja-and-the-eggs_981198',
             youtubeUrl: 'https://www.youtube.com/results?search_query=egg+dropping+code360',
             companies: ['Google', 'Meta'],
+            tags: ['Dynamic Programming', 'Binary Search'],
+          },
+          {
+            id: 'c360-122',
+            title: 'Palindrome Partitioning II (Minimum Cuts)',
+            difficulty: 'Hard',
+            platform: 'Code360',
+            problemUrl: 'https://www.naukri.com/code360/problems/palindrome-partitioning-ll_873248',
+            youtubeUrl: 'https://www.youtube.com/results?search_query=palindrome+partitioning+ii+code360',
+            companies: ['Amazon', 'Google'],
+            tags: ['Dynamic Programming', 'Partition DP'],
+          },
+          {
+            id: 'c360-123',
+            title: 'Maximum Profit in Job Scheduling',
+            difficulty: 'Hard',
+            platform: 'Code360',
+            problemUrl: 'https://www.naukri.com/code360/problems/weighted-job-scheduling_1094885',
+            youtubeUrl: 'https://www.youtube.com/results?search_query=weighted+job+scheduling+code360',
+            companies: ['Google', 'Meta'],
+            tags: ['Dynamic Programming', 'Binary Search'],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'code360-step-11',
+    title: 'Chapter 11: Tries & Bit Manipulation (8 Problems)',
+    lectures: [
+      {
+        id: 'code360-l11-1',
+        title: 'Prefix Trees, Bitmasks & XOR Optimization',
+        problems: [
+          {
+            id: 'c360-124',
 ];
