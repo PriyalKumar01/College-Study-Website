@@ -198,4 +198,54 @@ export const NEETCODE_150_SHEET: DsaSheet = {
             { id: 'nc-69', title: 'Design Twitter', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/design-twitter/', youtubeUrl: 'https://www.youtube.com/watch?v=pNichitDD2E', companies: ['Twitter', 'Amazon'], tags: ['Heap', 'Design'] },
             { id: 'nc-70', title: 'Find Median from Data Stream', difficulty: 'Hard', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/find-median-from-data-stream/', youtubeUrl: 'https://www.youtube.com/watch?v=itmhHWaHupI', companies: ['Google', 'Amazon'], tags: ['Heap', 'Two Heaps'] },
           ],
+        },
+      ],
+    },
+    {
+      id: 'nc-backtracking',
+      title: 'Backtracking (9 Problems)',
+      lectures: [
+        {
+          id: 'nc-bt-1',
+          title: 'Permutations, Subsets & Pruning',
+          problems: [
+            { id: 'nc-71', title: 'Subsets', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/subsets/', youtubeUrl: 'https://www.youtube.com/watch?v=REOH22Xwdkk', companies: ['Meta', 'Amazon'], tags: ['Backtracking'] },
+            { id: 'nc-72', title: 'Combination Sum', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/combination-sum/', youtubeUrl: 'https://www.youtube.com/watch?v=GBKI9VSKdGg', companies: ['Google', 'Amazon'], tags: ['Backtracking'] },
+            { id: 'nc-73', title: 'Permutations', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/permutations/', youtubeUrl: 'https://www.youtube.com/watch?v=s7AvT7cGdSo', companies: ['Microsoft', 'Google'], tags: ['Backtracking'] },
+            { id: 'nc-74', title: 'Subsets II', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/subsets-ii/', youtubeUrl: 'https://www.youtube.com/watch?v=Vn2v6ajA7U0', tags: ['Backtracking'] },
+            { id: 'nc-75', title: 'Combination Sum II', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/combination-sum-ii/', youtubeUrl: 'https://www.youtube.com/watch?v=rSA3t6BDDwg', tags: ['Backtracking'] },
+            { id: 'nc-76', title: 'Word Search', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/word-search/', youtubeUrl: 'https://www.youtube.com/watch?v=pfiQ_PS1g8E', companies: ['Amazon', 'Microsoft'], tags: ['Backtracking'] },
+            { id: 'nc-77', title: 'Palindrome Partitioning', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/palindrome-partitioning/', youtubeUrl: 'https://www.youtube.com/watch?v=3jvWodd7ht0', tags: ['Backtracking'] },
+            { id: 'nc-78', title: 'Letter Combinations of a Phone Number', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/letter-combinations-of-a-phone-number/', youtubeUrl: 'https://www.youtube.com/watch?v=0snEunUacZY', companies: ['Amazon', 'Meta'], tags: ['Backtracking'] },
+            { id: 'nc-79', title: 'N-Queens', difficulty: 'Hard', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/n-queens/', youtubeUrl: 'https://www.youtube.com/watch?v=Ph95IHmRp5M', companies: ['Google', 'Microsoft'], tags: ['Backtracking'] },
+          ],
+        },
+      ],
+    },
+    {
+      id: 'nc-graphs',
+      title: 'Graphs (13 Problems)',
+      lectures: [
+        {
+          id: 'nc-gr-1',
+          title: 'BFS, DFS & Topological Sort',
+          problems: [
+            { id: 'nc-80', title: 'Number of Islands', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/number-of-islands/', youtubeUrl: 'https://www.youtube.com/watch?v=pV2kpPD66nE', companies: ['Amazon', 'Google', 'Microsoft'], tags: ['Graph', 'BFS', 'DFS'] },
+            { id: 'nc-81', title: 'Max Area of Island', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/max-area-of-island/', youtubeUrl: 'https://www.youtube.com/watch?v=iJGr1OtmH0c', tags: ['Graph', 'DFS'] },
+            { id: 'nc-82', title: 'Clone Graph', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/clone-graph/', youtubeUrl: 'https://www.youtube.com/watch?v=mQeF6bN8hMk', companies: ['Meta', 'Amazon'], tags: ['Graph'] },
+            { id: 'nc-83', title: 'Walls and Gates', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/walls-and-gates/', youtubeUrl: 'https://www.youtube.com/watch?v=e69C6xhiSQE', tags: ['Graph', 'BFS'] },
+            { id: 'nc-84', title: 'Rotting Oranges', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/rotting-oranges/', youtubeUrl: 'https://www.youtube.com/watch?v=y704cgRxPQA', companies: ['Amazon', 'Microsoft'], tags: ['Graph', 'BFS'] },
+            { id: 'nc-85', title: 'Pacific Atlantic Water Flow', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/pacific-atlantic-water-flow/', youtubeUrl: 'https://www.youtube.com/watch?v=s-VkcjHqkGI', tags: ['Graph', 'DFS'] },
+            { id: 'nc-86', title: 'Surrounded Regions', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/surrounded-regions/', youtubeUrl: 'https://www.youtube.com/watch?v=9z2BunfoZ5Y', tags: ['Graph', 'DFS'] },
+            { id: 'nc-87', title: 'Course Schedule', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/course-schedule/', youtubeUrl: 'https://www.youtube.com/watch?v=EgI5nU9etnU', companies: ['Google', 'Amazon'], tags: ['Graph', 'Topological Sort'] },
+            { id: 'nc-88', title: 'Course Schedule II', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/course-schedule-ii/', youtubeUrl: 'https://www.youtube.com/watch?v=Akt3glAwyfY', companies: ['Google', 'Amazon'], tags: ['Graph', 'Topological Sort'] },
+            { id: 'nc-89', title: 'Graph Valid Tree', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/graph-valid-tree/', youtubeUrl: 'https://www.youtube.com/watch?v=bXsUuownnoQ', tags: ['Graph', 'Union-Find'] },
+            { id: 'nc-90', title: 'Number of Connected Components in an Undirected Graph', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/number-of-connected-components-in-an-undirected-graph/', youtubeUrl: 'https://www.youtube.com/watch?v=8f1XPm4WOUc', tags: ['Graph', 'Union-Find'] },
+            { id: 'nc-91', title: 'Redundant Connection', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/redundant-connection/', youtubeUrl: 'https://www.youtube.com/watch?v=FXWRE67PLL0', tags: ['Graph', 'Union-Find'] },
+            { id: 'nc-92', title: 'Word Ladder', difficulty: 'Hard', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/word-ladder/', youtubeUrl: 'https://www.youtube.com/watch?v=h9iTnkgv05E', companies: ['Google', 'Amazon'], tags: ['Graph', 'BFS'] },
+          ],
+        },
+      ],
+    },
+    {
 ];
