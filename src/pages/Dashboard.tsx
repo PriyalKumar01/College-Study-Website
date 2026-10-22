@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { FileText, Briefcase, BookOpen, PlusCircle, Calculator, Bot, Trophy, Sparkles, Calendar, TrendingUp, Lock, Users, ChevronLeft, ChevronRight } from 'lucide-react';
+import { FileText, Briefcase, BookOpen, PlusCircle, Calculator, Bot, Trophy, Sparkles, Calendar, TrendingUp, Lock, Users, ChevronLeft, ChevronRight, GraduationCap, Code, ArrowRight } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { supabase } from '@/integrations/supabase/client';
@@ -130,9 +130,68 @@ const Dashboard = () => {
           setUserCount('3,000+'); // Fallback estimate if table/rpc missing
         }
       }
+
+      // Fetch Opportunities Count
+      try {
+        const cachedOpp = getCachedData<number>('sidebar_opp_count', DEFAULT_CACHE_TTL_MS);
+        if (cachedOpp !== null) {
+          setOppCount(cachedOpp);
+        } else {
+          const { count, error } = await supabase
+            .from('opportunities')
+            .select('id', { count: 'exact', head: true });
+          if (!error && count !== null) {
+            setOppCount(count);
+            setCachedData('sidebar_opp_count', count);
+          }
+        }
+      } catch (err) {
+        console.error('Error fetching opp count in dashboard:', err);
+      }
+
+      // Fetch Scholarships Count
+      try {
+        const cachedSc = getCachedData<number>('dash_sc_count', DEFAULT_CACHE_TTL_MS);
+        if (cachedSc !== null) {
+          setScholarshipCount(cachedSc);
+        } else {
+          const { count, error } = await supabase
+            .from('scholarships')
+            .select('id', { count: 'exact', head: true })
+            .eq('approval_status', 'approved');
+          if (!error && count !== null) {
+            setScholarshipCount(count);
+            setCachedData('dash_sc_count', count);
+          }
+        }
+      } catch (err) {
+        console.error('Error fetching scholarships count in dashboard:', err);
+      }
     };
     fetchCounts();
   }, []);
+
+  const [oppCount, setOppCount] = useState<number | null>(() => {
+    try {
+      const cached = sessionStorage.getItem('cached_opp_count');
+      const time = sessionStorage.getItem('cached_opp_count_time');
+      if (cached && time && Date.now() - Number(time) < 15 * 60 * 1000) {
+        return Number(cached);
+      }
+    } catch {}
+    return null;
+  });
+
+  const [scholarshipCount, setScholarshipCount] = useState<number | null>(() => {
+    try {
+      const cached = sessionStorage.getItem('cached_sc_count');
+      const time = sessionStorage.getItem('cached_sc_count_time');
+      if (cached && time && Date.now() - Number(time) < 15 * 60 * 1000) {
+        return Number(cached);
+      }
+    } catch {}
+    return null;
+  });
 
   // Get user's first name from metadata or email
   const getDisplayName = () => {
@@ -144,53 +203,85 @@ const Dashboard = () => {
 
   const quickActions = [
     {
-      title: 'Browse Notes',
+      title: 'Curated Notes',
       description: 'Semester study materials, notes, official PYQs, syllabus & YouTube links for BTech, BS-MS, BBA, and MBA.',
-      icon: <BookOpen className="h-6 w-6" />,
+      icon: <BookOpen className="h-4 w-4" />,
       href: '/notes',
       color: 'bg-blue-600',
+      image: '/csh_feature_curated_notes.jpg',
+      badge: 'All Courses',
+    },
+    {
+      title: 'Gate Study',
+      description: 'Comprehensive GATE CSE & Engineering preparation materials, subject-wise syllabus, PYQs, and topic roadmaps.',
+      icon: <GraduationCap className="h-4 w-4" />,
+      href: '/gate-study',
+      color: 'bg-indigo-600',
+      image: '/csh_feature_gate_exam.jpg',
+      badge: 'NEW',
+    },
+    {
+      title: 'Coding Space',
+      description: 'Competitive programming contest calendar, verified coding sheets (Striver A2Z, NeetCode 150), and interview kits.',
+      icon: <Code className="h-4 w-4" />,
+      href: '/coding-space',
+      color: 'bg-emerald-600',
+      image: '/csh_feature_coding_calendar.jpg',
+      badge: 'LIVE',
     },
     {
       title: 'CGPA Calculator',
       description: 'Calculate semester SGPA and overall CGPA accurately according to university grading standards.',
-      icon: <Calculator className="h-6 w-6" />,
+      icon: <Calculator className="h-4 w-4" />,
       href: '/cgpa-calculator',
-      color: 'bg-indigo-600',
+      color: 'bg-sky-600',
+      image: '/csh_feature_cgpa_calc.jpg',
+      badge: 'Calculator',
+    },
+    {
+      title: '500+ AI Tools',
+      description: 'Curated 500+ AI tools to boost study productivity, research writing, academic summaries, and coding assistance.',
+      icon: <Bot className="h-4 w-4" />,
+      href: '/useful-ai-tools',
+      color: 'bg-orange-500',
+      image: '/csh_feature_ai_suite.jpg',
+      badge: '500+ AI',
+    },
+    {
+      title: oppCount !== null ? `Opportunities (${oppCount})` : 'Opportunities Hub',
+      description: 'Explore off-campus job openings, tech internships, coding challenges, hackathons, and hiring events.',
+      icon: <Briefcase className="h-4 w-4" />,
+      href: '/opportunities',
+      color: 'bg-teal-600',
+      image: '/csh_feature_scholarships_jobs.jpg',
+      badge: oppCount !== null ? `${oppCount} LIVE` : 'HIRING',
+    },
+    {
+      title: scholarshipCount !== null ? `Scholarships (${scholarshipCount})` : 'Scholarships Portal',
+      description: 'Discover and apply for national, state-wise, corporate, and international financial aid opportunities.',
+      icon: <Sparkles className="h-4 w-4" />,
+      href: '/scholarship-portal',
+      color: 'bg-purple-600',
+      image: '/csh_feature_scholarship_portal.jpg',
+      badge: scholarshipCount !== null ? `${scholarshipCount} OPEN` : 'SCHOLARSHIPS',
     },
     {
       title: 'Premium Content',
       description: 'Unlock 3 premium packages: MNC Career Pages (jobs/internships platforms), 1800+ HR Emails list, and ATS Resume Guide.',
-      icon: <Lock className="h-6 w-6" />,
+      icon: <Lock className="h-4 w-4" />,
       href: '/premium-content',
       color: 'bg-amber-500',
-    },
-    {
-      title: 'AI Tools',
-      description: 'Curated AI tools to boost study productivity, research writing, academic summaries, and coding assistance.',
-      icon: <Bot className="h-6 w-6" />,
-      href: '/useful-ai-tools',
-      color: 'bg-orange-500',
+      image: '/csh_feature_premium_content.jpg',
+      badge: 'PRO',
     },
     {
       title: 'Contributor List',
       description: 'Meet the dedicated students who shared their study resources and helped build this platform.',
-      icon: <Users className="h-6 w-6" />,
+      icon: <Users className="h-4 w-4" />,
       href: '/notes-contributors',
-      color: 'bg-teal-600',
-    },
-    {
-      title: 'Scholarships Portal',
-      description: 'Discover and apply for national, state-wise, corporate, and international financial aid opportunities.',
-      icon: <Sparkles className="h-6 w-6" />,
-      href: '/scholarship-portal',
-      color: 'bg-purple-600',
-    },
-    {
-      title: 'Opportunities Hub',
-      description: 'Explore off-campus job openings, tech internships, coding challenges, hackathons, and hiring events.',
-      icon: <Briefcase className="h-6 w-6" />,
-      href: '/opportunities',
-      color: 'bg-emerald-600',
+      color: 'bg-rose-600',
+      image: '/csh_feature_contributor_list.jpg',
+      badge: 'HEROES',
     },
   ];
 
@@ -420,21 +511,54 @@ const Dashboard = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.05 * index, duration: 0.3 }}
-                className={index === quickActions.length - 1 ? "col-span-2 md:col-span-3" : ""}
+                className={index === quickActions.length - 1 && quickActions.length % 2 !== 0 ? "col-span-2 md:col-span-1" : ""}
               >
                 <Link to={action.href} className="block h-full">
-                  <Card className="h-full border border-border/60 hover:border-primary/50 bg-white dark:bg-card hover:bg-slate-50 dark:hover:bg-card/80 transition-all duration-300 shadow-sm hover:shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:hover:shadow-[0_8px_30px_rgba(255,255,255,0.02)] hover:-translate-y-1.5 group rounded-2xl overflow-hidden relative">
-                    {/* Nice subtle gradient glow on hover */}
-                    <div className="absolute inset-0 bg-gradient-to-br from-primary/0 via-primary/0 to-primary/0 group-hover:from-primary/5 group-hover:to-transparent transition-all duration-500"></div>
-
-                    <CardHeader className="p-5 md:p-6 text-center relative z-10 flex flex-col items-center">
-                      <div className={`w-14 h-14 md:w-16 md:h-16 rounded-2xl ${action.color} shadow-lg shadow-${action.color.split('-')[1]}-500/30 flex items-center justify-center text-white mb-5 group-hover:scale-110 group-hover:-rotate-3 transition-all duration-300`}>
-                        {action.icon}
+                  <div className="h-full rounded-2xl bg-white dark:bg-card border border-border/70 hover:border-primary/50 shadow-sm hover:shadow-xl dark:hover:shadow-primary/5 transition-all duration-300 overflow-hidden flex flex-col group relative">
+                    {/* Visual Card Image Banner */}
+                    <div className="h-44 sm:h-52 overflow-hidden bg-slate-100 dark:bg-slate-800/50 relative">
+                      <img
+                        src={action.image}
+                        alt={action.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/30 to-transparent flex items-end p-4">
+                        <h3 className="text-base sm:text-lg font-bold text-white drop-shadow-md">
+                          {action.title}
+                        </h3>
                       </div>
-                      <CardTitle className="text-base md:text-lg font-bold mb-1.5 text-slate-800 dark:text-slate-100 group-hover:text-primary transition-colors">{action.title}</CardTitle>
-                      <CardDescription className="text-xs md:text-sm leading-relaxed">{action.description}</CardDescription>
-                    </CardHeader>
-                  </Card>
+
+                      {action.badge && (
+                        <span className={`absolute top-3.5 right-3.5 text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full border shadow-sm z-20 ${
+                          action.badge === 'NEW' || action.badge === 'LIVE'
+                            ? 'bg-emerald-500 text-white border-emerald-400'
+                            : action.badge === 'PRO'
+                            ? 'bg-amber-500 text-slate-950 font-black border-amber-400'
+                            : 'bg-slate-900/80 text-white border-white/20 backdrop-blur-xs'
+                        }`}>
+                          {action.badge}
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Card Body */}
+                    <div className="flex flex-col flex-1 p-4 sm:p-5 gap-2">
+                      <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed flex-1">
+                        {action.description}
+                      </p>
+
+                      <div className="flex items-center justify-between pt-3 border-t border-border/50">
+                        <div className="flex items-center gap-1.5 text-xs text-slate-400 dark:text-slate-500 font-medium">
+                          <Sparkles className="h-3.5 w-3.5 text-primary" />
+                          <span>Curated Resource</span>
+                        </div>
+                        <div className="flex items-center gap-1 text-xs font-bold text-primary group-hover:translate-x-1 transition-transform duration-300">
+                          <span>Explore</span>
+                          <ArrowRight className="h-3.5 w-3.5" />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </Link>
               </motion.div>
             ))}
