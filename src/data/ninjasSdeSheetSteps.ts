@@ -1078,4 +1078,40 @@ export const NINJAS_SDE_STEPS: DsaStep[] = [
     lectures: [
       {
         id: 'code360-l9-1',
+        title: 'Traversals, DAGs & Shortest Paths',
+        problems: [
+          {
+            id: 'c360-98',
+            title: 'Clone Graph',
+            difficulty: 'Medium',
+            platform: 'Code360',
+            problemUrl: 'https://www.naukri.com/code360/problems/clone-graph_1103394',
+            youtubeUrl: 'https://www.youtube.com/results?search_query=clone+graph+code360',
+            companies: ['Google', 'Meta', 'Amazon'],
+            tags: ['Graph', 'DFS', 'BFS'],
+          },
+          {
+            id: 'c360-99',
+            title: 'Depth First Search (DFS)',
+            difficulty: 'Easy',
+            platform: 'Code360',
+            problemUrl: 'https://www.naukri.com/code360/problems/dfs-traversal_630462',
+            youtubeUrl: 'https://www.youtube.com/results?search_query=dfs+traversal+code360',
+            companies: ['Amazon'],
+            tags: ['Graph', 'DFS'],
+          },
+          {
+            id: 'c360-100',
+            title: 'Breadth First Search (BFS)',
+            difficulty: 'Easy',
+            platform: 'Code360',
+            problemUrl: 'https://www.naukri.com/code360/problems/bfs-in-graph_974000',
+            youtubeUrl: 'https://www.youtube.com/results?search_query=bfs+in+graph+code360',
+            companies: ['Amazon'],
+            tags: ['Graph', 'BFS'],
+          },
+          {
+            id: 'c360-101',
+            title: 'Detect Cycle in Undirected Graph',
+            difficulty: 'Medium',
 ];
