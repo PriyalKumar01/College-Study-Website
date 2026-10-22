@@ -398,4 +398,54 @@ export const STRIVER_A2Z_SHEET: DsaSheet = {
   title: 'Strivers A2Z DSA Sheet',
   creator: 'Striver (Take U Forward)',
   description: 'This course is made for people who want to learn DSA from A to Z for free in a well-structured and comprehensive way.',
+  category: ['All', 'Popular', 'Complete DSA'],
+  totalQuestions: 455,
+  followersCount: 39729,
+  steps: STRIVER_A2Z_FULL_STEPS,
+};
+
+export const STRIVER_SDE_SHEET: DsaSheet = {
+  id: 'striver-sde-sheet',
+  slug: 'striver-sde-sheet',
+  title: 'Striver SDE Sheet',
+  creator: 'Striver',
+  description: 'Striver SDE Sheet contains very handily crafted and picked top coding interview problems asked in FAANG and Tier-1 MNCs.',
+  category: ['All', 'Popular', 'Quick Revision'],
+  totalQuestions: 191,
+  followersCount: 14689,
+  steps: [
+    {
+      id: 'sde-day-1',
+      title: 'Day 1: Arrays',
+      lectures: [
+        {
+          id: 'sde-d1-l1',
+          title: 'Core Array Foundations',
+          problems: [
+            { id: 'sde-1', title: 'Set Matrix Zeroes', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/set-matrix-zeroes/', youtubeUrl: 'https://www.youtube.com/watch?v=N0MgLvLSXMM', companies: ['Microsoft', 'Amazon'], tags: ['Arrays'] },
+            { id: 'sde-2', title: 'Pascal\'s Triangle', difficulty: 'Easy', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/pascals-triangle/', youtubeUrl: 'https://www.youtube.com/watch?v=bR7mQgwQ_o8', companies: ['Google', 'Amazon'], tags: ['Arrays'] },
+            { id: 'sde-3', title: 'Next Permutation', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/next-permutation/', youtubeUrl: 'https://www.youtube.com/watch?v=JDOXKqF60RQ', companies: ['Google', 'Uber'], tags: ['Arrays'] },
+            { id: 'sde-4', title: 'Kadane\'s Algorithm (Max Subarray Sum)', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/maximum-subarray/', youtubeUrl: 'https://www.youtube.com/watch?v=AHZpyENo7k4', companies: ['Amazon', 'Microsoft'], tags: ['Arrays'] },
+            { id: 'sde-5', title: 'Sort an array of 0\'s, 1\'s and 2\'s', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/sort-colors/', youtubeUrl: 'https://www.youtube.com/watch?v=tp8JIu4BcUg', companies: ['Amazon', 'Microsoft'], tags: ['Arrays'] },
+            { id: 'sde-6', title: 'Stock Buy and Sell', difficulty: 'Easy', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/best-time-to-buy-and-sell-stock/', youtubeUrl: 'https://www.youtube.com/watch?v=excAOvwF_Wk', companies: ['Meta', 'Amazon'], tags: ['Arrays'] },
+          ],
+        },
+      ],
+    },
+    {
+      id: 'sde-day-2',
+      title: 'Day 2: Arrays Part-II',
+      lectures: [
+        {
+          id: 'sde-d2-l1',
+          title: 'Advanced In-place Transformations',
+          problems: [
+            { id: 'sde-7', title: 'Rotate Matrix by 90 Degrees', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/rotate-image/', youtubeUrl: 'https://www.youtube.com/watch?v=Z0w2Z3loSwt', companies: ['Microsoft', 'Amazon'], tags: ['Arrays'] },
+            { id: 'sde-8', title: 'Merge Overlapping Subintervals', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/merge-intervals/', youtubeUrl: 'https://www.youtube.com/watch?v=IexN60k62jo', companies: ['Google', 'Meta'], tags: ['Intervals'] },
+            { id: 'sde-9', title: 'Merge Two Sorted Arrays Without Extra Space', difficulty: 'Hard', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/merge-sorted-array/', youtubeUrl: 'https://www.youtube.com/watch?v=n7uwj04E0I4', companies: ['Amazon'], tags: ['Two Pointers'] },
+            { id: 'sde-10', title: 'Find the Duplicate in an Array of N+1 Integers', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/find-the-duplicate-number/', youtubeUrl: 'https://www.youtube.com/watch?v=32Ll35mhWg0', companies: ['Amazon', 'Google'], tags: ['Floyd Tortoise'] },
+            { id: 'sde-11', title: 'Repeat and Missing Number', difficulty: 'Medium', platform: 'GeeksforGeeks', problemUrl: 'https://practice.geeksforgeeks.org/problems/find-missing-and-repeating2512/1', youtubeUrl: 'https://www.youtube.com/watch?v=2D0D8HE6Ano', companies: ['Amazon'], tags: ['Math'] },
+            { id: 'sde-12', title: 'Inversion of Array', difficulty: 'Hard', platform: 'GeeksforGeeks', problemUrl: 'https://practice.geeksforgeeks.org/problems/inversion-of-array-1587115620/1', youtubeUrl: 'https://www.youtube.com/watch?v=AseUmwVNaoY', companies: ['Google'], tags: ['Divide and Conquer'] },
+          ],
+        },
 ];
