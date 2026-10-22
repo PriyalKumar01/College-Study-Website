@@ -658,4 +658,34 @@ export const RISING_BRAIN_STEPS: DsaStep[] = [
           },
           {
             id: 'rb-52',
+            title: 'Clone Graph',
+            difficulty: 'Medium',
+            platform: 'LeetCode',
+            problemUrl: 'https://leetcode.com/problems/clone-graph/',
+            youtubeUrl: 'https://www.youtube.com/results?search_query=rising+brain+clone+graph+java',
+            companies: ['Meta', 'Amazon'],
+            tags: ['Graph', 'DFS', 'BFS'],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'rb-step-13',
+    title: 'Pattern 13: Graph Shortest Paths & Disjoint Sets (DSU)',
+    lectures: [
+      {
+        id: 'rb-l13-1',
+        title: 'Dijkstra & Union-Find Mechanics',
+        problems: [
+          {
+            id: 'rb-53',
+            title: 'Network Delay Time',
+            difficulty: 'Medium',
+            platform: 'LeetCode',
+            problemUrl: 'https://leetcode.com/problems/network-delay-time/',
+            youtubeUrl: 'https://www.youtube.com/results?search_query=rising+brain+network+delay+time+java',
+            companies: ['Google', 'Amazon'],
+            tags: ['Graph', 'Dijkstra'],
+          },
 ];
