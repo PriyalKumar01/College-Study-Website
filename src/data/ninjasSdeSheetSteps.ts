@@ -322,4 +322,40 @@ export const NINJAS_SDE_STEPS: DsaStep[] = [
             difficulty: 'Medium',
             platform: 'Code360',
             problemUrl: 'https://www.naukri.com/code360/problems/flatten-a-linked-list_1112655',
+            youtubeUrl: 'https://www.youtube.com/results?search_query=flatten+a+linked+list+code360',
+            companies: ['Amazon', 'Flipkart'],
+            tags: ['Linked List', 'Recursion'],
+          },
+          {
+            id: 'c360-31',
+            title: 'Rotate Linked List Right by K Places',
+            difficulty: 'Medium',
+            platform: 'Code360',
+            problemUrl: 'https://www.naukri.com/code360/problems/rotate-linked-list_920454',
+            youtubeUrl: 'https://www.youtube.com/results?search_query=rotate+linked+list+code360',
+            companies: ['Amazon', 'Microsoft'],
+            tags: ['Linked List'],
+          },
+          {
+            id: 'c360-32',
+            title: 'Copy List with Random Pointer',
+            difficulty: 'Hard',
+            platform: 'Code360',
+            problemUrl: 'https://www.naukri.com/code360/problems/clone-a-linked-list-with-random-pointers_983604',
+            youtubeUrl: 'https://www.youtube.com/results?search_query=clone+linked+list+random+pointer+code360',
+            companies: ['Amazon', 'Google', 'Meta'],
+            tags: ['Linked List', 'Hashmap'],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'code360-step-3',
+    title: 'Chapter 3: Greedy Algorithms (6 Problems)',
+    lectures: [
+      {
+        id: 'code360-l3-1',
+        title: 'Optimal Substructure & Greedy Choices',
+        problems: [
 ];
