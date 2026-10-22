@@ -790,4 +790,40 @@ export const NINJAS_SDE_STEPS: DsaStep[] = [
   },
   {
     id: 'code360-step-7',
+    title: 'Chapter 7: Binary Trees (16 Problems)',
+    lectures: [
+      {
+        id: 'code360-l7-1',
+        title: 'Traversals, Structural Views & Path Problems',
+        problems: [
+          {
+            id: 'c360-72',
+            title: 'Inorder Traversal of Binary Tree',
+            difficulty: 'Easy',
+            platform: 'Code360',
+            problemUrl: 'https://www.naukri.com/code360/problems/inorder-traversal_3839605',
+            youtubeUrl: 'https://www.youtube.com/results?search_query=inorder+traversal+code360',
+            companies: ['Amazon', 'Microsoft'],
+            tags: ['Binary Tree', 'DFS'],
+          },
+          {
+            id: 'c360-73',
+            title: 'Preorder Traversal of Binary Tree',
+            difficulty: 'Easy',
+            platform: 'Code360',
+            problemUrl: 'https://www.naukri.com/code360/problems/preorder-traversal_3838888',
+            youtubeUrl: 'https://www.youtube.com/results?search_query=preorder+traversal+code360',
+            companies: ['Amazon'],
+            tags: ['Binary Tree', 'DFS'],
+          },
+          {
+            id: 'c360-74',
+            title: 'Postorder Traversal of Binary Tree',
+            difficulty: 'Easy',
+            platform: 'Code360',
+            problemUrl: 'https://www.naukri.com/code360/problems/postorder-traversal_2035933',
+            youtubeUrl: 'https://www.youtube.com/results?search_query=postorder+traversal+code360',
+            companies: ['Amazon'],
+            tags: ['Binary Tree', 'DFS'],
+          },
 ];
