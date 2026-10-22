@@ -808,4 +808,34 @@ export const RISING_BRAIN_STEPS: DsaStep[] = [
   },
   {
     id: 'rb-step-16',
+    title: 'Pattern 16: Dynamic Programming (Subsequences & LIS/LCS)',
+    lectures: [
+      {
+        id: 'rb-l16-1',
+        title: 'Subsequence Matching Patterns',
+        problems: [
+          {
+            id: 'rb-63',
+            title: 'Longest Increasing Subsequence',
+            difficulty: 'Medium',
+            platform: 'LeetCode',
+            problemUrl: 'https://leetcode.com/problems/longest-increasing-subsequence/',
+            youtubeUrl: 'https://www.youtube.com/results?search_query=rising+brain+longest+increasing+subsequence+java',
+            companies: ['Google', 'Amazon', 'Microsoft'],
+            tags: ['DP', 'Binary Search'],
+          },
+          {
+            id: 'rb-64',
+            title: 'Longest Common Subsequence',
+            difficulty: 'Medium',
+            platform: 'LeetCode',
+            problemUrl: 'https://leetcode.com/problems/longest-common-subsequence/',
+            youtubeUrl: 'https://www.youtube.com/results?search_query=rising+brain+longest+common+subsequence+java',
+            companies: ['Amazon', 'Microsoft'],
+            tags: ['2D DP', 'Strings'],
+          },
+          {
+            id: 'rb-65',
+            title: 'Edit Distance',
+            difficulty: 'Hard',
 ];
