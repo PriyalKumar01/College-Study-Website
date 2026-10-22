@@ -58,4 +58,34 @@ export const RISING_BRAIN_STEPS: DsaStep[] = [
             id: 'rb-5',
             title: 'Trapping Rain Water',
             difficulty: 'Hard',
+            platform: 'LeetCode',
+            problemUrl: 'https://leetcode.com/problems/trapping-rain-water/',
+            youtubeUrl: 'https://www.youtube.com/results?search_query=rising+brain+trapping+rain+water+java',
+            companies: ['Google', 'Amazon', 'Goldman Sachs'],
+            tags: ['Two Pointers', 'Array'],
+          },
+          {
+            id: 'rb-6',
+            title: 'Remove Duplicates from Sorted Array',
+            difficulty: 'Easy',
+            platform: 'LeetCode',
+            problemUrl: 'https://leetcode.com/problems/remove-duplicates-from-sorted-array/',
+            youtubeUrl: 'https://www.youtube.com/results?search_query=rising+brain+remove+duplicates+java',
+            companies: ['Microsoft', 'TCS', 'Infosys'],
+            tags: ['Two Pointers', 'Array'],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'rb-step-2',
+    title: 'Pattern 2: Sliding Window (Fixed & Dynamic Window)',
+    lectures: [
+      {
+        id: 'rb-l2-1',
+        title: 'Sliding Window Core Templates',
+        problems: [
+          {
+            id: 'rb-7',
 ];
