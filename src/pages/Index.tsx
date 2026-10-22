@@ -24,99 +24,67 @@ import { useLiveStudentCount } from '@/hooks/useLiveStudentCount';
 const HOME_CAROUSEL_SLIDES = [
   {
     id: 1,
-    bgImage: "https://images.unsplash.com/photo-1506784983877-45594efa4cbe?auto=format&fit=crop&q=80&w=1200",
-    header: "COMPREHENSIVE STUDY RESOURCES",
-    title: "Premium Handwritten & Reference Notes",
-    subtitle: "Access high-quality class notes, reference books, syllabus sheets, and previous year papers for B.Tech, BS-MS, BBA, and MBA.",
-    ctaText: "Browse Notes",
-    badgeColor: "bg-blue-500/10 text-blue-400 border-blue-500/20",
-    ctaBg: "bg-blue-600 hover:bg-blue-500",
-    tags: ["B.Tech", "BS-MS", "BBA", "MBA", "Syllabus", "Class Notes"],
-    href: "/notes"
+    bgImage: "/csh_banner_coding_calendar.jpg",
+    title: "Coding Space & CP Contest Calendar",
+    badge: "Contest Hub",
+    ctaText: "Open Coding Calendar",
+    href: "/coding-space"
   },
   {
     id: 2,
-    bgImage: "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&q=80&w=1200",
-    header: "100% FREE MOCK TESTS & QUIZZES",
-    title: "GATE Preparation Portal",
-    subtitle: "Practice chapter-wise quizzes, attempt full-length mock tests with live timers, and analyze your performance. Available for CSE, DA, ME, CE, ECE, EE, IN.",
-    ctaText: "Start Prep Now",
-    badgeColor: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20",
-    ctaBg: "bg-emerald-600 hover:bg-emerald-500",
-    tags: ["GATE CSE", "GATE DA", "Core Subjects", "General Aptitude", "Mock Tests"],
-    href: "/gate-study"
+    bgImage: "/csh_banner_curated_notes.jpg",
+    title: "Curated Notes, Official PYQs & Syllabus",
+    badge: "All Semesters",
+    ctaText: "Browse Notes",
+    href: "/notes"
   },
   {
     id: 3,
-    bgImage: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&q=80&w=1200",
-    header: "PLACEMENT PREPARATION KIT",
-    title: "Premium Placement Resources",
-    subtitle: "Unlock exclusive resources, company-specific preparation guides, HR contact lists, active hiring directories, and resume templates.",
-    ctaText: "Access Premium",
-    badgeColor: "bg-amber-500/10 text-amber-400 border-amber-500/20",
-    ctaBg: "bg-amber-600 hover:bg-amber-500",
-    tags: ["Companies Directory", "HR Email list", "Resume Templates", "Roadmaps"],
-    href: "/premium-content"
+    bgImage: "/csh_banner_cgpa_calculator.jpg",
+    title: "Precision CGPA & SGPA Calculator",
+    badge: "GPA Tracker",
+    ctaText: "Calculate CGPA",
+    href: "/cgpa-calculator"
   },
   {
     id: 4,
-    bgImage: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&q=80&w=1200",
-    header: "EDUCATION FUNDING & SCHOLARSHIPS",
-    title: "Active Scholarships Portal",
-    subtitle: "Never miss out on financial aid. Browse actively updated scholarship programs, eligibility criteria, and direct application links.",
-    ctaText: "Find Scholarships",
-    badgeColor: "bg-purple-500/10 text-purple-400 border-purple-500/20",
-    ctaBg: "bg-purple-600 hover:bg-purple-500",
-    tags: ["Sarkari Scholarships", "Private Grants", "International Internships"],
-    href: "/scholarship-portal"
+    bgImage: "/csh_banner_gate_prep.jpg",
+    title: "GATE Preparation Portal & Quizzes",
+    badge: "100% Free",
+    ctaText: "Start Prep Now",
+    href: "/gate-study"
   },
   {
     id: 5,
-    bgImage: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&q=80&w=1200",
-    header: "CODING & SYSTEM DESIGN NOTES",
-    title: "Master DSA and Development",
-    subtitle: "Get step-by-step programming notes, comprehensive DSA sheets, and complete guides for web development and software engineering.",
-    ctaText: "Learn Coding",
-    badgeColor: "bg-sky-500/10 text-sky-400 border-sky-500/20",
-    ctaBg: "bg-sky-600 hover:bg-sky-500",
-    tags: ["DSA", "Web Dev", "Coding Notes", "Roadmaps", "Practice Sets"],
-    href: "/coding-study-material"
+    bgImage: "/csh_feature_scholarship_portal.jpg",
+    title: "Scholarships & Financial Aid Portal",
+    badge: "Grants & Aid",
+    ctaText: "Find Scholarships",
+    href: "/scholarship-portal"
   },
   {
     id: 6,
-    bgImage: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=1200",
-    header: "BOOST PRODUCTIVITY",
+    bgImage: "/csh_feature_ai_suite.jpg",
     title: "500+ Curated AI Tools Directory",
-    subtitle: "Leverage artificial intelligence to automate research, write cleaner code, generate stunning designs, and speed up study workflows.",
+    badge: "500+ AI Tools",
     ctaText: "Explore AI Tools",
-    badgeColor: "bg-indigo-500/10 text-indigo-400 border-indigo-500/20",
-    ctaBg: "bg-indigo-600 hover:bg-indigo-500",
-    tags: ["AI Coding Helpers", "Writing Assistants", "Design Tools", "Study Aids"],
     href: "/useful-ai-tools"
   },
   {
     id: 7,
-    bgImage: "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&q=80&w=1200",
-    header: "ACADEMIC UTILITIES",
-    title: "Precision CGPA Calculator",
-    subtitle: "Instantly estimate your GPA and CGPA using precise university grading systems. Share and track your academic progression online.",
-    ctaText: "Calculate CGPA",
-    badgeColor: "bg-rose-500/10 text-rose-400 border-rose-500/20",
-    ctaBg: "bg-rose-600 hover:bg-rose-500",
-    tags: ["Semester CGPA", "SGPA Calculator", "Target Grades"],
-    href: "/cgpa-calculator"
+    bgImage: "/csh_feature_premium_content.jpg",
+    title: "Placement Vault & HR Contacts",
+    badge: "Career Kits",
+    ctaText: "Access Placement Vault",
+    href: "/premium-content"
   },
   {
     id: 8,
-    bgImage: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80&w=1200",
-    header: "CAREER LAUNCHPAD",
-    title: "Jobs & Internship Opportunities",
-    subtitle: "Direct portal to active job postings, off-campus hiring drives, and internship vacancies updated daily to kickstart your career.",
-    ctaText: "Find Jobs",
-    badgeColor: "bg-orange-500/10 text-orange-400 border-orange-500/20",
-    ctaBg: "bg-orange-600 hover:bg-orange-500",
-    tags: ["Software Internships", "Off-Campus Drives", "HR Contacts", "Daily Openings"],
-    href: "/opportunities"
+    bgImage: "/csh_feature_contributor_list.jpg",
+    title: "Contributors & Student Heroes",
+    badge: "Community",
+    ctaText: "View Contributors",
+    href: "/notes-contributors"
   }
 ];
 
@@ -219,36 +187,52 @@ const Index = () => {
 
   const features = [
     {
-      icon: <LibraryBig className="h-8 w-8 text-white" />,
-      title: 'Premium Notes',
-      description: 'Access thousands of quality notes for 1st-4th semester.',
+      title: 'Curated Academic Notes',
+      description: 'Semester-wise notes, past papers (PYQs), official syllabus & faculty materials for B.Tech, BS-MS, BBA, MBA & Pharmacy.',
       href: '/notes',
-      gradient: 'bg-gradient-to-br from-blue-500 to-indigo-600',
-      shadow: 'shadow-blue-500/30' // Custom shadow color
+      image: '/csh_feature_curated_notes.jpg',
+      badge: 'All University Courses',
+      tags: ['B.Tech Engineering', 'BS-MS Science', 'BBA & MBA', 'PYQs Included'],
     },
     {
-      icon: <Rocket className="h-8 w-8 text-white" />,
-      title: 'Opportunities',
-      description: 'Explore internships, jobs, scholarships, and hackathons.',
-      href: '/opportunities',
-      gradient: 'bg-gradient-to-br from-orange-500 to-pink-600',
-      shadow: 'shadow-orange-500/30'
+      title: 'Coding Space & Contest Hub',
+      description: 'Live contest calendars for LeetCode, Codeforces & CodeChef, structured DSA sheets (Striver A2Z, NeetCode 150) & company kits.',
+      href: '/coding-space',
+      image: '/csh_feature_coding_calendar.jpg',
+      badge: 'Live CP & DSA',
+      tags: ['Contest Calendar', 'Striver A2Z', 'NeetCode 150', 'Company Kits'],
     },
     {
-      icon: <PieChart className="h-8 w-8 text-white" />,
-      title: 'CGPA Calculator',
-      description: 'Calculate your semester and overall CGPA easily.',
-      href: '/cgpa-calculator',
-      gradient: 'bg-gradient-to-br from-emerald-500 to-teal-600',
-      shadow: 'shadow-emerald-500/30'
+      title: 'GATE Exam Study Portal',
+      description: 'Free comprehensive GATE preparation materials, chapter-wise quizzes with live timers, full mock tests & performance analysis.',
+      href: '/gate-study',
+      image: '/csh_feature_gate_exam.jpg',
+      badge: '100% Free Mock Tests',
+      tags: ['GATE CSE', 'Engineering Core', 'PYQs Quizzes', 'Timed Mocks'],
     },
     {
-      icon: <BrainCircuit className="h-8 w-8 text-white" />,
-      title: 'AI Tools',
-      description: 'Access useful AI tools to enhance learning.',
+      title: '500+ Curated AI Tools',
+      description: 'Handpicked artificial intelligence tools to turbocharge research writing, code generation, summarization & project workflows.',
       href: '/useful-ai-tools',
-      gradient: 'bg-gradient-to-br from-violet-500 to-purple-600',
-      shadow: 'shadow-violet-500/30'
+      image: '/csh_feature_ai_suite.jpg',
+      badge: '500+ AI Directory',
+      tags: ['Coding Assistants', 'Research Tools', 'Study Boosters', 'Automation'],
+    },
+    {
+      title: 'Opportunities & Tech Jobs',
+      description: 'Explore verified off-campus job openings, tech internships, hackathons, and company-specific hiring challenges in real-time.',
+      href: '/opportunities',
+      image: '/csh_feature_scholarships_jobs.jpg',
+      badge: 'Jobs & Internships',
+      tags: ['Off-Campus Jobs', 'Tech Internships', 'Hackathons', 'Hiring Events'],
+    },
+    {
+      title: 'Scholarships & Financial Aid',
+      description: 'Directly discover and apply for national, state-wise, corporate, and international financial aid opportunities with deadlines.',
+      href: '/scholarship-portal',
+      image: '/csh_feature_scholarship_portal.jpg',
+      badge: 'Education Funding',
+      tags: ['Sarkari Scholarships', 'Corporate Grants', 'Financial Aid', 'Active Deadlines'],
     },
   ];
 
@@ -411,82 +395,69 @@ const Index = () => {
       </section>
 
 
-      {/* Beautiful Auto-Scrolling Features Banner Carousel */}
-      <section className="py-10 bg-slate-50 dark:bg-slate-950/40">
+      {/* Beautiful Auto-Scrolling Features Banner Carousel (Full 16:9 Visuals with Zero Cut & Zero Overlap) */}
+      <section className="py-8 sm:py-12 bg-slate-50 dark:bg-slate-950/40">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="w-full relative h-[280px] md:h-[230px] rounded-3xl overflow-hidden border border-slate-200 dark:border-slate-800 shadow-lg bg-slate-900 select-none">
+          <div className="w-full rounded-2xl sm:rounded-3xl overflow-hidden border border-slate-200 dark:border-slate-800 shadow-2xl bg-white dark:bg-slate-900 select-none">
+            {/* 16:9 Aspect Ratio Display Container - Shows full height & width without cut */}
             <div 
-              className="w-full h-full flex transition-transform duration-700 ease-in-out"
-              style={{ transform: `translateX(-${currentHomeSlide * 100}%)` }}
+              onClick={() => handleNavigation(HOME_CAROUSEL_SLIDES[currentHomeSlide].href)}
+              className="w-full aspect-[16/9] relative overflow-hidden cursor-pointer bg-slate-950 group"
             >
-              {HOME_CAROUSEL_SLIDES.map((slide) => (
-                <div 
-                  key={slide.id}
-                  className="w-full h-full shrink-0 relative flex flex-col justify-center p-6 md:p-8 text-white"
-                  style={{
-                    backgroundImage: `url(${slide.bgImage})`,
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'center',
-                  }}
-                >
-                  {/* Backdrop overlay with modern deep dark glass effect */}
-                  <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/85 to-transparent z-0" />
-                  
-                  {/* Content */}
-                  <div className="relative z-10 flex flex-col justify-between h-full">
-                    {/* Header */}
-                    <div className="space-y-1.5 md:space-y-2">
-                      <span className="text-[10px] md:text-xs font-extrabold uppercase tracking-widest text-blue-400 dark:text-blue-300">
-                        {slide.header}
-                      </span>
-                      <h2 className="text-xl md:text-3xl font-serif font-extrabold leading-tight tracking-tight max-w-2xl text-white">
-                        {slide.title}
-                      </h2>
-                      <p className="text-xs md:text-sm text-slate-300 max-w-xl font-medium leading-relaxed hidden sm:block">
-                        {slide.subtitle}
-                      </p>
-                    </div>
-
-                    {/* Footer Info & CTA */}
-                    <div className="flex flex-wrap items-end justify-between gap-4 pt-2">
-                      <div className="space-y-1.5">
-                        {/* Tags / Features List */}
-                        <div className="flex flex-wrap gap-1.5">
-                          {slide.tags.map((tag) => (
-                            <span 
-                              key={tag} 
-                              className={`text-[9px] font-extrabold tracking-wider uppercase px-2 py-0.5 rounded-md border ${slide.badgeColor}`}
-                            >
-                              {tag}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-
-                      <Button
-                        onClick={() => handleNavigation(slide.href)}
-                        className={`h-9 px-6 text-xs md:text-sm font-bold rounded-xl shadow-lg transition-transform hover:scale-105 active:scale-95 text-white ${slide.ctaBg}`}
-                      >
-                        {slide.ctaText}
-                      </Button>
-                    </div>
+              <div 
+                className="w-full h-full flex transition-transform duration-700 ease-in-out"
+                style={{ transform: `translateX(-${currentHomeSlide * 100}%)` }}
+              >
+                {HOME_CAROUSEL_SLIDES.map((slide) => (
+                  <div 
+                    key={slide.id}
+                    className="w-full h-full shrink-0 relative flex items-center justify-center bg-slate-950"
+                  >
+                    <img
+                      src={slide.bgImage}
+                      alt={slide.title}
+                      className="w-full h-full object-cover object-center group-hover:scale-[1.01] transition-transform duration-500"
+                      loading="lazy"
+                    />
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
 
-            {/* Navigation Dots */}
-            <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-1.5 z-20">
-              {HOME_CAROUSEL_SLIDES.map((_, idx) => (
-                <button
-                  key={idx}
-                  onClick={() => setCurrentHomeSlide(idx)}
-                  className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                    currentHomeSlide === idx ? 'bg-white w-6' : 'bg-white/40 hover:bg-white/60'
-                  }`}
-                  aria-label={`Go to slide ${idx + 1}`}
-                />
-              ))}
+            {/* Dedicated Non-Overlapping Control Bar (Below the image, completely unobstructed) */}
+            <div className="h-14 sm:h-16 px-4 sm:px-6 border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 flex items-center justify-between gap-3 sm:gap-4">
+              {/* Left: Active Slide Info */}
+              <div className="flex items-center gap-2 sm:gap-2.5 min-w-0">
+                <span className="text-[10px] sm:text-xs font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-primary/10 text-primary border border-primary/20 shrink-0">
+                  {HOME_CAROUSEL_SLIDES[currentHomeSlide].badge}
+                </span>
+                <span className="text-xs sm:text-sm font-bold text-foreground truncate">
+                  {HOME_CAROUSEL_SLIDES[currentHomeSlide].title}
+                </span>
+              </div>
+
+              {/* Center: Interactive Dot Indicators */}
+              <div className="hidden sm:flex items-center gap-1.5 shrink-0">
+                {HOME_CAROUSEL_SLIDES.map((_, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => setCurrentHomeSlide(idx)}
+                    className={`h-2 rounded-full transition-all duration-300 cursor-pointer ${
+                      currentHomeSlide === idx ? 'bg-primary w-7 shadow-xs' : 'bg-slate-300 dark:bg-slate-700 hover:bg-slate-400 w-2'
+                    }`}
+                    aria-label={`Go to slide ${idx + 1}`}
+                  />
+                ))}
+              </div>
+
+              {/* Right: CTA Button */}
+              <Button
+                onClick={() => handleNavigation(HOME_CAROUSEL_SLIDES[currentHomeSlide].href)}
+                className="h-9 sm:h-10 px-4 sm:px-6 text-xs sm:text-sm font-bold rounded-xl shadow-md bg-slate-900 hover:bg-black text-white dark:bg-emerald-600 dark:hover:bg-emerald-700 shrink-0 transition-transform active:scale-95"
+              >
+                <span>{HOME_CAROUSEL_SLIDES[currentHomeSlide].ctaText}</span>
+                <ArrowRight className="ml-1.5 h-3.5 w-3.5" />
+              </Button>
             </div>
           </div>
         </div>
@@ -521,31 +492,64 @@ const Index = () => {
               </p>
             </motion.div>
 
-            <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-8 relative z-10">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 relative z-10">
               {features.map((feature, index) => (
                 <motion.div
                   key={index}
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.4, delay: index * 0.1 }}
+                  transition={{ duration: 0.4, delay: index * 0.08 }}
                   viewport={{ once: true }}
                 >
                   <div
                     onClick={() => handleNavigation(feature.href)}
                     className="cursor-pointer group h-full"
                   >
-                    <div className="h-full p-3 md:p-6 rounded-2xl bg-gray-50 dark:bg-gray-800/50 hover:bg-white dark:hover:bg-gray-800 border border-transparent hover:border-gray-200 dark:hover:border-gray-700 hover:shadow-xl transition-all duration-300">
-                      <div className={`w-10 h-10 md:w-14 md:h-14 rounded-xl md:rounded-2xl flex items-center justify-center mb-3 md:mb-6 ${feature.gradient} shadow-lg ring-2 md:ring-4 ring-white dark:ring-gray-900`}>
-                        {/* Clone element to modify className for mobile size if needed, or rely on parent size */}
-                        <div className="scale-75 md:scale-100 origin-center">{feature.icon}</div>
+                    <div className="h-full rounded-2xl bg-white dark:bg-card border border-border/80 hover:border-primary/50 hover:shadow-2xl dark:hover:shadow-primary/5 transition-all duration-300 overflow-hidden flex flex-col">
+                      {/* Large Wide AI Visual Image Banner */}
+                      <div className="h-48 sm:h-56 overflow-hidden bg-slate-100 dark:bg-slate-800 relative">
+                        <img
+                          src={feature.image}
+                          alt={feature.title}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/20 to-transparent"></div>
+                        <span className="absolute top-3 right-3 text-[10px] font-extrabold uppercase px-2.5 py-1 rounded-full bg-slate-900/90 text-white border border-white/20 backdrop-blur-xs shadow-md">
+                          {feature.badge}
+                        </span>
                       </div>
-                      <h3 className="text-sm md:text-xl font-bold mb-2 md:mb-3 group-hover:text-primary transition-colors">{feature.title}</h3>
-                      <p className="text-muted-foreground text-sm leading-relaxed mb-4">
-                        {feature.description}
-                      </p>
-                      <div className="flex items-center text-primary font-semibold text-xs md:text-sm group-hover:translate-x-1 transition-transform duration-300">
-                        Explore
-                        <ArrowRight className="ml-1 h-4 w-4" />
+
+                      {/* Card Body */}
+                      <div className="p-5 sm:p-6 flex flex-col flex-1 gap-2">
+                        <h3 className="text-lg sm:text-xl font-bold group-hover:text-primary transition-colors text-foreground">
+                          {feature.title}
+                        </h3>
+
+                        <p className="text-muted-foreground text-xs sm:text-sm leading-relaxed flex-1">
+                          {feature.description}
+                        </p>
+
+                        {/* Feature Tags */}
+                        <div className="flex flex-wrap gap-1.5 pt-2">
+                          {feature.tags?.map((tag, tIdx) => (
+                            <span
+                              key={tIdx}
+                              className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-muted/60 text-muted-foreground border border-border/50"
+                            >
+                              {tag}
+                            </span>
+                          ))}
+                        </div>
+
+                        <div className="flex items-center justify-between pt-4 border-t border-border/60 mt-2">
+                          <span className="text-xs font-semibold text-muted-foreground">
+                            Free Access
+                          </span>
+                          <div className="flex items-center text-primary font-bold text-xs sm:text-sm group-hover:translate-x-1.5 transition-transform duration-300">
+                            Explore Platform
+                            <ArrowRight className="ml-1.5 h-4 w-4" />
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
