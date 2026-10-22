@@ -148,4 +148,34 @@ export const RISING_BRAIN_STEPS: DsaStep[] = [
           },
         ],
       },
+    ],
+  },
+  {
+    id: 'rb-step-3',
+    title: 'Pattern 3: Prefix Sum & Hash Table Range Queries',
+    lectures: [
+      {
+        id: 'rb-l3-1',
+        title: 'Prefix Map Matching',
+        problems: [
+          {
+            id: 'rb-13',
+            title: 'Subarray Sum Equals K',
+            difficulty: 'Medium',
+            platform: 'LeetCode',
+            problemUrl: 'https://leetcode.com/problems/subarray-sum-equals-k/',
+            youtubeUrl: 'https://www.youtube.com/results?search_query=rising+brain+subarray+sum+equals+k+java',
+            companies: ['Meta', 'Amazon', 'Google'],
+            tags: ['Prefix Sum', 'Hash Table'],
+          },
+          {
+            id: 'rb-14',
+            title: 'Continuous Subarray Sum',
+            difficulty: 'Medium',
+            platform: 'LeetCode',
+            problemUrl: 'https://leetcode.com/problems/continuous-subarray-sum/',
+            youtubeUrl: 'https://www.youtube.com/results?search_query=rising+brain+continuous+subarray+sum+java',
+            companies: ['Meta', 'Amazon'],
+            tags: ['Prefix Sum', 'Math'],
+          },
 ];
