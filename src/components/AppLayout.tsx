@@ -1,28 +1,18 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
-import AppSidebar from "./AppSidebar";
 import { useAuth } from "@/contexts/AuthContext";
-import { useSidebar } from "@/contexts/SidebarContext";
 import { ProfileCompletionModal } from "./ProfileCompletionModal";
 import { LayoutDashboard, BookOpen, Award, Briefcase } from "lucide-react";
 
 const AppLayout = () => {
   const { user, approvalStatus } = useAuth();
-  const { isSidebarVisible } = useSidebar();
   const location = useLocation();
   const navigate = useNavigate();
-  const [mobileOpen, setMobileOpen] = useState(false);
-
-  // Close mobile sidebar on route change
-  useEffect(() => {
-    setMobileOpen(false);
-  }, [location.pathname]);
 
   const isApproved = !!user && approvalStatus === 'approved';
   const isPending = !!user && approvalStatus === 'pending';
 
   const isQuizExam = location.pathname.includes('/gate-study/quiz') && new URLSearchParams(location.search).get('mode') === 'exam';
-  const showSidebar = isApproved && !isQuizExam;
 
   const isActiveTab = (path: string) => {
     if (path === '/notes') {
@@ -33,40 +23,8 @@ const AppLayout = () => {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      <div className="flex bg-background h-screen overflow-hidden">
-
-        {/* ── Desktop Sidebar (smooth slide in/out transition) ── */}
-        {showSidebar && (
-          <aside 
-            className={`hidden md:block h-full flex-shrink-0 z-40 bg-background transition-all duration-500 ease-in-out overflow-hidden ${
-              isSidebarVisible 
-                ? "w-auto max-w-[300px] opacity-100 translate-x-0 border-r border-border" 
-                : "w-0 max-w-0 opacity-0 -translate-x-full border-r-0 pointer-events-none"
-            }`}
-          >
-            <AppSidebar className="h-full" />
-          </aside>
-        )}
-
-        {/* ── Mobile Sidebar Overlay ── */}
-        {showSidebar && mobileOpen && (
-          <div
-            className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm md:hidden"
-            onClick={() => setMobileOpen(false)}
-          />
-        )}
-
-        {/* ── Mobile Sidebar Drawer ── */}
-        {showSidebar && (
-          <aside
-            className={`fixed top-0 left-0 h-full z-50 w-[280px] transition-transform duration-300 md:hidden
-              ${mobileOpen ? "translate-x-0" : "-translate-x-full"}`}
-          >
-            <AppSidebar className="h-full" />
-          </aside>
-        )}
-
-        {/* ── Main Content ── */}
+      <div className="flex bg-background h-screen overflow-hidden w-full">
+        {/* ── Main Content (Full Width Without Sidebar) ── */}
         <main className={`flex-1 overflow-y-auto overflow-x-hidden relative scroll-smooth w-full flex flex-col ${isApproved ? 'pb-28 md:pb-0' : 'pb-12 md:pb-0'}`}>
           {/* Top Notice for Pending Review Users on Public Pages */}
           {isPending && (
