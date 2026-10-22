@@ -7918,4 +7918,137 @@ export const STRIVER_A2Z_FULL_STEPS: DsaStep[] = [
             "difficulty": "Medium",
             "platform": "LeetCode",
             "problemUrl": "https://leetcode.com/problems/minimum-add-to-make-parentheses-valid/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Strings",
+              "Hard Problems"
+            ]
+          },
+          {
+            "id": "a2z-s18-l1-p2",
+            "title": "Count and say",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/count-and-say/",
+            "companies": [
+              "Amazon"
+            ],
+            "tags": [
+              "Strings",
+              "Hard Problems"
+            ]
+          },
+          {
+            "id": "a2z-s18-l1-p3",
+            "title": "Hashing In Strings | Theory",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problemset/all/?search=Hashing%20In%20Strings%20%7C%20Theory",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Strings",
+              "Hard Problems"
+            ]
+          },
+          {
+            "id": "a2z-s18-l1-p4",
+            "title": "Rabin Karp",
+            "difficulty": "Hard",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/repeated-string-match/discuss/416144/Rabin-Karp-algorithm-C%2B%2B-implementation",
+            "companies": [
+              "Amazon",
+              "Google"
+            ],
+            "tags": [
+              "Strings",
+              "Hard Problems"
+            ]
+          },
+          {
+            "id": "a2z-s18-l1-p5",
+            "title": "Z-Function",
+            "difficulty": "Easy",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/implement-strstr/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Strings",
+              "Hard Problems"
+            ]
+          },
+          {
+            "id": "a2z-s18-l1-p6",
+            "title": "KMP algo / LPS(pi) array",
+            "difficulty": "Hard",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/implement-strstr/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Strings",
+              "Hard Problems"
+            ]
+          },
+          {
+            "id": "a2z-s18-l1-p7",
+            "title": "Shortest Palindrome",
+            "difficulty": "Hard",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/shortest-palindrome/",
+            "companies": [
+              "Amazon",
+              "Microsoft",
+              "Meta"
+            ],
+            "tags": [
+              "Strings",
+              "Hard Problems"
+            ]
+          },
+          {
+            "id": "a2z-s18-l1-p8",
+            "title": "Longest happy prefix",
+            "difficulty": "Hard",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/longest-happy-prefix/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Strings",
+              "Hard Problems"
+            ]
+          },
+          {
+            "id": "a2z-s18-l1-p9",
+            "title": "Count palindromic subsequence in given string",
+            "difficulty": "Hard",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/count-palindromic-subsequences",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Strings",
+              "Hard Problems"
+            ]
+          }
+        ]
+      }
+    ]
+  }
 ];
