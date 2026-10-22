@@ -394,4 +394,40 @@ export const NINJAS_SDE_STEPS: DsaStep[] = [
             difficulty: 'Medium',
             platform: 'Code360',
             problemUrl: 'https://www.naukri.com/code360/problems/fractional-knapsack_975286',
+            youtubeUrl: 'https://www.youtube.com/results?search_query=fractional+knapsack+code360',
+            companies: ['Microsoft', 'Amazon'],
+            tags: ['Greedy', 'Sorting'],
+          },
+          {
+            id: 'c360-37',
+            title: 'Greedy Minimum Number of Coins',
+            difficulty: 'Easy',
+            platform: 'Code360',
+            problemUrl: 'https://www.naukri.com/code360/problems/find-minimum-number-of-coins_975277',
+            youtubeUrl: 'https://www.youtube.com/results?search_query=find+minimum+coins+code360',
+            companies: ['Google', 'Amazon'],
+            tags: ['Greedy'],
+          },
+          {
+            id: 'c360-38',
+            title: 'Maximum Activities Selection',
+            difficulty: 'Easy',
+            platform: 'Code360',
+            problemUrl: 'https://www.naukri.com/code360/problems/maximum-activities_1062712',
+            youtubeUrl: 'https://www.youtube.com/results?search_query=maximum+activities+code360',
+            companies: ['Amazon', 'Microsoft'],
+            tags: ['Greedy'],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'code360-step-4',
+    title: 'Chapter 4: Recursion & Backtracking (11 Problems)',
+    lectures: [
+      {
+        id: 'code360-l4-1',
+        title: 'Decision Trees, Subsets & Permutations',
+        problems: [
 ];
