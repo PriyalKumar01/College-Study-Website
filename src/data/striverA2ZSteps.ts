@@ -7838,4 +7838,84 @@ export const STRIVER_A2Z_FULL_STEPS: DsaStep[] = [
             "title": "Number of Distinct Substrings in a String",
             "difficulty": "Hard",
             "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/number-of-distinct-substrings-in-a-string",
+            "youtubeUrl": "https://www.youtube.com/watch?v=RV0QeTyHZxo&list=PLgUwDviBIf0pcIDCZnxhv0LkHf5KzG9zp&index=4",
+            "articleUrl": "https://takeuforward.org/data-structure/number-of-distinct-substrings-in-a-string-using-trie/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Tries",
+              "Problems"
+            ]
+          },
+          {
+            "id": "a2z-s17-l2-p4",
+            "title": "Bit PreRequisites for TRIE Problems",
+            "difficulty": "Hard",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problemset/all/?search=Bit%20PreRequisites%20for%20TRIE%20Problems",
+            "youtubeUrl": "https://youtu.be/5iyuU4hQFrw",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Tries",
+              "Problems"
+            ]
+          },
+          {
+            "id": "a2z-s17-l2-p5",
+            "title": "Maximum XOR of two numbers in an array",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/maximum-xor-of-two-numbers-in-an-array/",
+            "youtubeUrl": "https://www.youtube.com/watch?v=EIhAwfHubE8&list=PLgUwDviBIf0pcIDCZnxhv0LkHf5KzG9zp&index=6",
+            "articleUrl": "https://takeuforward.org/data-structure/maximum-xor-of-two-numbers-in-an-array/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Tries",
+              "Problems"
+            ]
+          },
+          {
+            "id": "a2z-s17-l2-p6",
+            "title": "Maximum XOR With an Element From Array",
+            "difficulty": "Hard",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/maximum-xor-with-an-element-from-array/",
+            "youtubeUrl": "https://www.youtube.com/watch?v=Q8LhG9Pi5KM&list=PLgUwDviBIf0pcIDCZnxhv0LkHf5KzG9zp&index=7",
+            "articleUrl": "https://takeuforward.org/trie/maximum-xor-queries-trie/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Tries",
+              "Problems"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "a2z-step-18",
+    "title": "Step 18: Strings",
+    "lectures": [
+      {
+        "id": "a2z-step-18-sub-1",
+        "title": "Hard Problems",
+        "problems": [
+          {
+            "id": "a2z-s18-l1-p1",
+            "title": "Minimum number of bracket reversals needed to make an expression balanced",
+            "difficulty": "Medium",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/minimum-add-to-make-parentheses-valid/",
 ];
