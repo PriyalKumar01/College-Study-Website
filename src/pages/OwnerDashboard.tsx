@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { ResponsiveContainer, PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ComposedChart, Line, AreaChart, Area } from 'recharts';
 import { useAuth } from '@/contexts/AuthContext';
 import { motion } from 'framer-motion';
@@ -18,7 +18,7 @@ import {
 } from '@/components/ui/select';
 import {
   CheckCircle, XCircle, User, Calendar, BookOpen, ShieldAlert,
-  Eye, Trash2, Crown, UserPlus, UserMinus, Search, Loader2, FileText, Download, GraduationCap, ExternalLink, Bell, Send, Pencil, Trophy, Coins, Link, Lock, Sparkles, Clock, RefreshCw, RotateCcw
+  Eye, Trash2, Crown, UserPlus, UserMinus, Search, Loader2, FileText, Download, GraduationCap, ExternalLink, Bell, Send, Pencil, Trophy, Coins, Link, Lock, Sparkles, Clock, RefreshCw, RotateCcw, Code2, AlertTriangle
 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
@@ -29,6 +29,7 @@ import MassEmailDashboard from '@/components/admin/MassEmailDashboard';
 import SubmitScholarshipForm from '@/components/admin/SubmitScholarshipForm';
 import { clearCachePrefix, removeCachedData } from '@/lib/cacheUtils';
 import { syncContributorCount } from '@/lib/contributorSync';
+import { fetchAllReportedIssues, markIssueAsFixed, deleteReportedIssue, ReportedIssue } from '@/lib/reportedIssuesService';
 
 // ── Complete list of branches for Contributor management (15 B.Tech branches + core) ─────────
 const ALL_BRANCHES = [
@@ -842,6 +843,135 @@ const GateEnrolledSection = ({ items, onRevoke, revokingId }: any) => {
   );
 };
 
+const CodingEnrolledSection = ({ items, onRevoke, revokingId }: any) => {
+  const [page, setPage] = useState(1);
+  const CODING_ITEMS_PER_PAGE = 50;
+  const totalPages = Math.ceil(items.length / CODING_ITEMS_PER_PAGE) || 1;
+  const paginated = items.slice((page - 1) * CODING_ITEMS_PER_PAGE, page * CODING_ITEMS_PER_PAGE);
+
+  return (
+    <Card className="gradient-card border border-border/80 shadow-md overflow-hidden">
+      <CardHeader className="border-b pb-3.5 pt-4 bg-muted/20">
+        <div className="flex items-center justify-between flex-wrap gap-2">
+          <CardTitle className="flex items-center gap-2.5 text-base font-bold text-foreground">
+            <div className="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
+              <Code2 className="h-4 w-4" />
+            </div>
+            <span>Coding Space Approved Students</span>
+            <Badge variant="secondary" className="bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 font-bold text-xs">
+              {items.length} Total
+            </Badge>
+          </CardTitle>
+          <span className="text-xs text-muted-foreground font-medium bg-background/80 px-2.5 py-1 rounded-md border border-border">
+            50 per page
+          </span>
+        </div>
+      </CardHeader>
+      <CardContent className="p-0">
+        {items.length === 0 ? (
+          <div className="text-center py-10 text-muted-foreground">
+            <UserMinus className="h-8 w-8 mx-auto mb-2 opacity-30" />
+            <p className="text-sm">No students currently enrolled in Coding Space.</p>
+          </div>
+        ) : (
+          <div className="divide-y divide-border/60">
+            {paginated.map((item: any, idx: number) => {
+              const fullName = `${item.first_name || ''} ${item.last_name || ''}`.trim() || 'Anonymous Student';
+              const pur = item.purchases.find((p: any) => p.plan === 'coding_space' || p.plan?.includes('coding')) || item.purchases[0];
+              const globalIndex = (page - 1) * CODING_ITEMS_PER_PAGE + idx + 1;
+              const isRevoking = revokingId === `${item.user_id}-${pur?.plan}`;
+
+              return (
+                <div
+                  key={item.user_id}
+                  className="flex items-center justify-between px-4 py-2 hover:bg-muted/30 transition-colors text-xs gap-3 w-full"
+                >
+                  <div className="flex items-center gap-3 min-w-0 flex-1">
+                    <span className="w-8 text-muted-foreground font-mono text-[11px] shrink-0 text-right">
+                      #{globalIndex}
+                    </span>
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className="font-semibold text-foreground truncate max-w-[200px] sm:max-w-[280px]">
+                          {fullName}
+                        </span>
+                        {item.branch && (
+                          <span className="px-1.5 py-0.5 rounded text-[10px] font-medium bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 shrink-0">
+                            {item.branch}
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-muted-foreground text-[11px] truncate">{item.email}</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-3 shrink-0">
+                    <span className="text-[11px] text-muted-foreground hidden md:inline">
+                      {pur?.purchased_at
+                        ? new Date(pur.purchased_at).toLocaleDateString('en-IN', {
+                            day: '2-digit',
+                            month: 'short',
+                            year: 'numeric'
+                          })
+                        : 'Enrolled'}
+                    </span>
+                    <Badge variant="outline" className="text-[10px] font-semibold text-emerald-600 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800/60 hidden sm:inline-flex">
+                      Coding Space
+                    </Badge>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => onRevoke(item.user_id, pur?.plan || 'coding_space', fullName)}
+                      disabled={revokingId !== null}
+                      className="h-7 px-2.5 text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-950/40 text-xs gap-1 font-medium"
+                      title="Revoke Coding Space Access"
+                    >
+                      {isRevoking ? (
+                        <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                      ) : (
+                        <Trash2 className="w-3.5 h-3.5" />
+                      )}
+                      <span>Revoke</span>
+                    </Button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+
+        {totalPages > 1 && (
+          <div className="flex items-center justify-between px-4 py-3 border-t bg-muted/20">
+            <span className="text-xs text-muted-foreground">
+              Showing {(page - 1) * CODING_ITEMS_PER_PAGE + 1}–{Math.min(page * CODING_ITEMS_PER_PAGE, items.length)} of {items.length} students (Page {page} of {totalPages})
+            </span>
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                className="h-8 text-xs"
+                onClick={() => setPage(p => Math.max(1, p - 1))}
+                disabled={page === 1}
+              >
+                ← Prev
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                className="h-8 text-xs"
+                onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+                disabled={page === totalPages}
+              >
+                Next →
+              </Button>
+            </div>
+          </div>
+        )}
+      </CardContent>
+    </Card>
+  );
+};
+
 const OwnerDashboard = () => {
   const { user, isOwner, loading: authLoading } = useAuth();
   const { theme } = useTheme();
@@ -900,10 +1030,42 @@ const OwnerDashboard = () => {
   const [allSwiping, setAllSwiping] = useState(false);
 
   // Clickable Modal Section view state (default null so no section is expanded on page load)
-  const [activeModalSection, setActiveModalSection] = useState<'pending' | 'scholarships' | 'premium' | 'notifications' | 'contributors' | 'admins' | 'emails' | 'all' | 'account_approvals' | 'gate_requests' | null>(null);
+  const [activeModalSection, setActiveModalSection] = useState<'pending' | 'scholarships' | 'premium' | 'gate_access' | 'coding_access' | 'notifications' | 'contributors' | 'admins' | 'emails' | 'all' | 'account_approvals' | 'gate_requests' | 'reported_issues' | null>(null);
   const [pendingApprovals, setPendingApprovals] = useState<any[]>([]);
   const [isProcessingApproval, setIsProcessingApproval] = useState<string | null>(null);
   const [contribSearch, setContribSearch] = useState('');
+
+  // Reported Issues support tickets state
+  const [reportedIssues, setReportedIssues] = useState<ReportedIssue[]>([]);
+  const [isLoadingIssues, setIsLoadingIssues] = useState(false);
+  const [issueFilter, setIssueFilter] = useState<'all' | 'pending' | 'fixed'>('all');
+  const [fixingIssueId, setFixingIssueId] = useState<string | null>(null);
+
+  const loadReportedIssues = useCallback(async () => {
+    setIsLoadingIssues(true);
+    try {
+      const data = await fetchAllReportedIssues();
+      setReportedIssues(data);
+    } catch (e) {
+      console.error('Failed to load reported issues:', e);
+    } finally {
+      setIsLoadingIssues(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    loadReportedIssues();
+  }, [loadReportedIssues]);
+
+  const filteredReportedIssues = useMemo(() => {
+    if (issueFilter === 'pending') {
+      return reportedIssues.filter((i) => i.status === 'pending');
+    }
+    if (issueFilter === 'fixed') {
+      return reportedIssues.filter((i) => i.status === 'fixed');
+    }
+    return reportedIssues;
+  }, [reportedIssues, issueFilter]);
 
   // ─── Computed variables (must be before useEffect hooks) ─────────────────────
   
@@ -987,8 +1149,9 @@ const OwnerDashboard = () => {
     );
   });
 
-  const gateEnrolledCount = premiumPurchases.filter(p => p.plan === 'gate_study').length;
-  const premiumAccessCount = premiumPurchases.filter(p => p.plan !== 'gate_study').length;
+  const gateEnrolledCount = premiumPurchases.filter(p => p.plan === 'gate_study' || p.plan?.includes('gate')).length;
+  const codingAccessCount = premiumPurchases.filter(p => p.plan === 'coding_space' || p.plan?.includes('coding')).length;
+  const premiumAccessCount = premiumPurchases.filter(p => p.plan !== 'gate_study' && !p.plan?.includes('gate') && p.plan !== 'coding_space' && !p.plan?.includes('coding')).length;
 
   const textColor = isDark ? '#94a3b8' : '#475569';
   const tooltipBg = isDark ? '#0f172a' : '#ffffff';
@@ -1280,7 +1443,7 @@ const OwnerDashboard = () => {
       const { data, error } = await (supabase as any)
         .from('premium_purchases')
         .select('*')
-        .eq('plan', 'gate_study')
+        .in('plan', ['gate_study', 'coding_calendar'])
         .eq('payment_status', 'pending')
         .order('purchased_at', { ascending: false });
 
@@ -1330,9 +1493,10 @@ const OwnerDashboard = () => {
       if (error) throw error;
 
       clearCachePrefix(`gate_access_${userId}`);
+      clearCachePrefix(`coding_access_${userId}`);
 
       toast({
-        title: 'GATE Access Approved! ✅',
+        title: 'Access Approved! ✅',
         description: `Approved access for ${userName}.`
       });
 
@@ -1360,6 +1524,7 @@ const OwnerDashboard = () => {
       if (error) throw error;
 
       clearCachePrefix(`gate_access_${userId}`);
+      clearCachePrefix(`coding_access_${userId}`);
 
       toast({
         title: 'Request Declined',
@@ -1557,9 +1722,10 @@ const OwnerDashboard = () => {
     }
   };
 
-  const handleGrantPremiumAccess = async () => {
+  const handleGrantPremiumAccess = async (planOverride?: string) => {
     if (!grantEmail.trim()) return;
     setIsGranting(true);
+    const targetPlan = planOverride || grantPlan;
     try {
       const emailLower = grantEmail.trim().toLowerCase();
       const { data: profile, error: profileErr } = await supabase
@@ -1583,14 +1749,14 @@ const OwnerDashboard = () => {
         .from('premium_purchases')
         .select('id')
         .eq('user_id', profile.user_id)
-        .eq('plan', grantPlan)
+        .eq('plan', targetPlan)
         .in('payment_status', ['completed', 'free'])
         .maybeSingle();
 
       if (existing) {
         toast({
           title: 'Access Already Granted',
-          description: 'This user already has access to this premium plan.',
+          description: 'This user already has access to this plan.',
           variant: 'destructive',
         });
         setIsGranting(false);
@@ -1602,7 +1768,7 @@ const OwnerDashboard = () => {
         .insert({
           user_id: profile.user_id,
           user_email: emailLower,
-          plan: grantPlan,
+          plan: targetPlan,
           amount_paid: 0,
           original_amount: 0,
           payment_status: 'free',
@@ -2200,7 +2366,7 @@ const OwnerDashboard = () => {
             </div>
           </div>
 
-          {/* 2. Dedicated Pending GATE Access Requests Box */}
+          {/* 2. Dedicated Pending GATE & Coding Space Access Requests Box */}
           <div 
             onClick={() => setActiveModalSection('gate_requests')}
             className={`group cursor-pointer rounded-2xl p-4 sm:p-5 flex flex-col justify-between transition-all duration-200 border shadow-xs hover:shadow-md hover:-translate-y-0.5 ${
@@ -2221,7 +2387,7 @@ const OwnerDashboard = () => {
             </div>
             <div>
               <p className="text-2xl font-bold tracking-tight text-foreground">{pendingGateRequests.length}</p>
-              <p className="text-[11px] text-muted-foreground uppercase tracking-wider font-semibold mt-0.5">GATE Requests</p>
+              <p className="text-[11px] text-muted-foreground uppercase tracking-wider font-semibold mt-0.5">GATE / Coding Space Approvals</p>
             </div>
           </div>
 
@@ -2300,13 +2466,53 @@ const OwnerDashboard = () => {
             }`}
           >
             <div className="flex items-center justify-between mb-3">
-              <div className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200/80 dark:border-slate-700/80 flex items-center justify-center group-hover:bg-sky-100/70 dark:group-hover:bg-sky-900/40 group-hover:text-sky-600 dark:group-hover:text-sky-400 group-hover:border-sky-300 dark:group-hover:border-sky-700 transition-colors">
-                <Lock className="h-5 w-5" />
+              <div className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 text-amber-600 dark:text-amber-400 border border-slate-200/80 dark:border-slate-700/80 flex items-center justify-center group-hover:bg-amber-100/70 dark:group-hover:bg-amber-900/40 group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">
+                <Crown className="h-5 w-5" />
               </div>
             </div>
             <div>
               <p className="text-2xl font-bold tracking-tight text-foreground">{premiumAccessCount}</p>
               <p className="text-[11px] text-muted-foreground uppercase tracking-wider font-semibold mt-0.5">Premium Access</p>
+            </div>
+          </div>
+
+          {/* 6b. GATE Access */}
+          <div 
+            onClick={() => setActiveModalSection('gate_access')}
+            className={`group cursor-pointer rounded-2xl p-4 sm:p-5 flex flex-col justify-between transition-all duration-200 border shadow-xs hover:shadow-md hover:-translate-y-0.5 ${
+              activeModalSection === 'gate_access'
+                ? 'bg-sky-50 dark:bg-sky-950/40 border-sky-500 ring-2 ring-sky-500/30 text-foreground'
+                : 'bg-card border-border/80 hover:bg-sky-50/50 dark:hover:bg-sky-950/20 hover:border-sky-300 dark:hover:border-sky-700 text-foreground'
+            }`}
+          >
+            <div className="flex items-center justify-between mb-3">
+              <div className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 text-indigo-600 dark:text-indigo-400 border border-slate-200/80 dark:border-slate-700/80 flex items-center justify-center group-hover:bg-indigo-100/70 dark:group-hover:bg-indigo-900/40 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+                <GraduationCap className="h-5 w-5" />
+              </div>
+            </div>
+            <div>
+              <p className="text-2xl font-bold tracking-tight text-foreground">{gateEnrolledCount}</p>
+              <p className="text-[11px] text-muted-foreground uppercase tracking-wider font-semibold mt-0.5">GATE Access</p>
+            </div>
+          </div>
+
+          {/* 6c. Coding Space Access */}
+          <div 
+            onClick={() => setActiveModalSection('coding_access')}
+            className={`group cursor-pointer rounded-2xl p-4 sm:p-5 flex flex-col justify-between transition-all duration-200 border shadow-xs hover:shadow-md hover:-translate-y-0.5 ${
+              activeModalSection === 'coding_access'
+                ? 'bg-sky-50 dark:bg-sky-950/40 border-sky-500 ring-2 ring-sky-500/30 text-foreground'
+                : 'bg-card border-border/80 hover:bg-sky-50/50 dark:hover:bg-sky-950/20 hover:border-sky-300 dark:hover:border-sky-700 text-foreground'
+            }`}
+          >
+            <div className="flex items-center justify-between mb-3">
+              <div className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 text-emerald-600 dark:text-emerald-400 border border-slate-200/80 dark:border-slate-700/80 flex items-center justify-center group-hover:bg-emerald-100/70 dark:group-hover:bg-emerald-900/40 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
+                <Code2 className="h-5 w-5" />
+              </div>
+            </div>
+            <div>
+              <p className="text-2xl font-bold tracking-tight text-foreground">{codingAccessCount}</p>
+              <p className="text-[11px] text-muted-foreground uppercase tracking-wider font-semibold mt-0.5">Coding Space Access</p>
             </div>
           </div>
 
@@ -2387,6 +2593,31 @@ const OwnerDashboard = () => {
             <div>
               <p className="text-2xl font-bold tracking-tight text-foreground">{notifications.length}</p>
               <p className="text-[11px] text-muted-foreground uppercase tracking-wider font-semibold mt-0.5">Notifications</p>
+            </div>
+          </div>
+
+          {/* 11. Reported Issues */}
+          <div 
+            onClick={() => { setActiveModalSection('reported_issues'); loadReportedIssues(); }}
+            className={`group cursor-pointer rounded-2xl p-4 sm:p-5 flex flex-col justify-between transition-all duration-200 border shadow-xs hover:shadow-md hover:-translate-y-0.5 ${
+              activeModalSection === 'reported_issues'
+                ? 'bg-rose-50 dark:bg-rose-950/40 border-rose-500 ring-2 ring-rose-500/30 text-foreground'
+                : 'bg-card border-border/80 hover:bg-rose-50/50 dark:hover:bg-rose-950/20 hover:border-rose-300 dark:hover:border-rose-700 text-foreground'
+            }`}
+          >
+            <div className="flex items-center justify-between mb-3">
+              <div className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200/80 dark:border-slate-700/80 flex items-center justify-center group-hover:bg-rose-100/70 dark:group-hover:bg-rose-900/40 group-hover:text-rose-600 dark:group-hover:text-rose-400 group-hover:border-rose-300 dark:group-hover:border-rose-700 transition-colors">
+                <AlertTriangle className="h-5 w-5" />
+              </div>
+              {reportedIssues.filter(i => i.status === 'pending').length > 0 && (
+                <Badge className="bg-rose-500/10 text-rose-700 dark:text-rose-400 border border-rose-500/30 text-[10px] px-2 py-0.5 font-bold rounded-full animate-pulse">
+                  {reportedIssues.filter(i => i.status === 'pending').length} PENDING
+                </Badge>
+              )}
+            </div>
+            <div>
+              <p className="text-2xl font-bold tracking-tight text-foreground">{reportedIssues.length}</p>
+              <p className="text-[11px] text-muted-foreground uppercase tracking-wider font-semibold mt-0.5">Reported Issues</p>
             </div>
           </div>
         </div>
@@ -2630,133 +2861,220 @@ const OwnerDashboard = () => {
           </TabsContent>
 
           {/* TAB: Premium Access Management */}
-                    <TabsContent value="premium" className="space-y-6">
-              {/* Grant Access */}
-              <Card className="gradient-card">
-                <CardHeader className="border-b pb-4">
-                  <CardTitle className="flex items-center gap-2 text-lg font-bold">
-                    <UserPlus className="h-5 w-5 text-primary" /> Grant Premium Access
-                  </CardTitle>
-                  <CardDescription>Grant a user access to a premium package.</CardDescription>
-                </CardHeader>
-                <CardContent className="pt-4">
-                  <div className="flex flex-col sm:flex-row gap-4">
-                    <div className="flex-1 space-y-2">
-                      <Label className="text-xs font-bold uppercase text-muted-foreground">User Email</Label>
-                      <Input
-                        type="email"
-                        placeholder="student@example.com"
-                        value={grantEmail}
-                        onChange={(e) => setGrantEmail(e.target.value)}
-                        className="bg-background"
-                      />
-                    </div>
-                    <div className="w-full sm:w-48 space-y-2">
-                      <Label className="text-xs font-bold uppercase text-muted-foreground">Package</Label>
-                      <select
-                        value={grantPlan}
-                        onChange={(e) => setGrantPlan(e.target.value)}
-                        className="w-full h-10 px-3 rounded-md border border-input bg-background text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                      >
-                        <option value="companies">Companies Page</option>
-                        <option value="hr_emails">HR Emails</option>
-                        <option value="resume">Resume Guide</option>
-                        <option value="roadmaps">Roadmap Guide</option>
-                        <option value="gate_study">GATE Study</option>
-                      </select>
-                    </div>
-                    <div className="flex items-end">
-                      <Button onClick={handleGrantPremiumAccess} disabled={isGranting || !grantEmail.trim()} className="w-full sm:w-auto font-bold bg-slate-900 hover:bg-slate-800 text-white dark:bg-slate-100 dark:text-slate-900 dark:hover:bg-slate-200 border border-slate-700 shadow-md h-10 px-5 rounded-xl">
-                        {isGranting ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Sparkles className="w-4 h-4 mr-2" />}
-                        Grant Access
-                      </Button>
-                    </div>
+          <TabsContent value="premium" className="space-y-6">
+            {/* Grant Access */}
+            <Card className="gradient-card">
+              <CardHeader className="border-b pb-4">
+                <CardTitle className="flex items-center gap-2 text-lg font-bold">
+                  <Crown className="h-5 w-5 text-amber-500" /> Grant Premium Access
+                </CardTitle>
+                <CardDescription>Grant a user access to a premium package.</CardDescription>
+              </CardHeader>
+              <CardContent className="pt-4">
+                <div className="flex flex-col sm:flex-row gap-4">
+                  <div className="flex-1 space-y-2">
+                    <Label className="text-xs font-bold uppercase text-muted-foreground">User Email</Label>
+                    <Input
+                      type="email"
+                      placeholder="student@example.com"
+                      value={grantEmail}
+                      onChange={(e) => setGrantEmail(e.target.value)}
+                      className="bg-background"
+                    />
                   </div>
-                </CardContent>
-              </Card>
+                  <div className="w-full sm:w-48 space-y-2">
+                    <Label className="text-xs font-bold uppercase text-muted-foreground">Package</Label>
+                    <select
+                      value={grantPlan}
+                      onChange={(e) => setGrantPlan(e.target.value)}
+                      className="w-full h-10 px-3 rounded-md border border-input bg-background text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                    >
+                      <option value="companies">Companies Page</option>
+                      <option value="hr_emails">HR Emails</option>
+                      <option value="resume">Resume Guide</option>
+                      <option value="roadmaps">Roadmap Guide</option>
+                      <option value="gate_study">GATE Study</option>
+                      <option value="coding_space">Coding Space</option>
+                    </select>
+                  </div>
+                  <div className="flex items-end">
+                    <Button onClick={() => handleGrantPremiumAccess()} disabled={isGranting || !grantEmail.trim()} className="w-full sm:w-auto font-bold bg-slate-900 hover:bg-slate-800 text-white dark:bg-slate-100 dark:text-slate-900 dark:hover:bg-slate-200 border border-slate-700 shadow-md h-10 px-5 rounded-xl">
+                      {isGranting ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Sparkles className="w-4 h-4 mr-2" />}
+                      Grant Access
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
 
-              {/* Search */}
-              <div className="relative">
-                <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
-                <Input placeholder="Search by name, email or branch..." value={searchPremiumQuery} onChange={(e) => setSearchPremiumQuery(e.target.value)} className="pl-9" />
-              </div>
+            {/* Search */}
+            <div className="relative">
+              <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+              <Input placeholder="Search by name, email or branch..." value={searchPremiumQuery} onChange={(e) => setSearchPremiumQuery(e.target.value)} className="pl-9" />
+            </div>
 
-              {/* Stats row */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <Card className="gradient-card"><CardContent className="pt-4"><p className="text-xs text-muted-foreground uppercase font-semibold mb-1">GATE Enrolled</p><p className="text-2xl font-bold">{filteredGroupedList.filter(item => item.purchases.some((p:any) => p.plan === 'gate_study')).length}</p></CardContent></Card>
-                <Card className="gradient-card"><CardContent className="pt-4"><p className="text-xs text-muted-foreground uppercase font-semibold mb-1">Premium Packages</p><p className="text-2xl font-bold">{filteredGroupedList.filter(item => item.purchases.some((p:any) => p.plan !== 'gate_study')).length}</p></CardContent></Card>
-                <Card className="gradient-card"><CardContent className="pt-4"><p className="text-xs text-muted-foreground uppercase font-semibold mb-1">Both Plans</p><p className="text-2xl font-bold">{filteredGroupedList.filter(i => i.purchases.some((p:any) => p.plan === 'gate_study') && i.purchases.some((p:any) => p.plan !== 'gate_study')).length}</p></CardContent></Card>
-              </div>
+            {/* Stats row */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <Card className="gradient-card"><CardContent className="pt-4"><p className="text-xs text-muted-foreground uppercase font-semibold mb-1">Premium Packages</p><p className="text-2xl font-bold">{filteredGroupedList.filter(item => item.purchases.some((p:any) => p.plan !== 'gate_study' && !p.plan?.includes('gate') && p.plan !== 'coding_space' && !p.plan?.includes('coding'))).length}</p></CardContent></Card>
+              <Card className="gradient-card"><CardContent className="pt-4"><p className="text-xs text-muted-foreground uppercase font-semibold mb-1">GATE Enrolled</p><p className="text-2xl font-bold">{filteredGroupedList.filter(item => item.purchases.some((p:any) => p.plan === 'gate_study' || p.plan?.includes('gate'))).length}</p></CardContent></Card>
+              <Card className="gradient-card"><CardContent className="pt-4"><p className="text-xs text-muted-foreground uppercase font-semibold mb-1">Coding Space Enrolled</p><p className="text-2xl font-bold">{filteredGroupedList.filter(item => item.purchases.some((p:any) => p.plan === 'coding_space' || p.plan?.includes('coding'))).length}</p></CardContent></Card>
+            </div>
 
-              {/* Premium Packages Section (Only shows users with premium package access, including mutual/both) */}
-              <PremiumSection
-                title="Premium Packages Access"
-                icon={Crown}
-                color="purple"
-                items={filteredGroupedList.filter(item => item.purchases.some((p: any) => p.plan !== 'gate_study'))}
-                onRevoke={handleRevokeAccess}
-                onRevokeAll={handleRevokeAllAccess}
-                revokingId={revokingId}
-              />
+            {/* Premium Packages Section (Only shows users with premium package access) */}
+            <PremiumSection
+              title="Premium Packages Access"
+              icon={Crown}
+              color="purple"
+              items={filteredGroupedList.filter(item => item.purchases.some((p: any) => p.plan !== 'gate_study' && !p.plan?.includes('gate') && p.plan !== 'coding_space' && !p.plan?.includes('coding')))}
+              onRevoke={handleRevokeAccess}
+              onRevokeAll={handleRevokeAllAccess}
+              revokingId={revokingId}
+            />
+          </TabsContent>
 
-              {/* Dedicated GATE Enrolled Card with 50-per-page slim data rows */}
-              <GateEnrolledSection
-                items={filteredGroupedList.filter(item => item.purchases.some((p: any) => p.plan === 'gate_study'))}
-                onRevoke={handleRevokeAccess}
-                revokingId={revokingId}
-              />
-            </TabsContent>
+          {/* TAB: GATE Access Management */}
+          <TabsContent value="gate_access" className="space-y-6">
+            <Card className="gradient-card">
+              <CardHeader className="border-b pb-4">
+                <CardTitle className="flex items-center gap-2 text-lg font-bold">
+                  <GraduationCap className="h-5 w-5 text-indigo-500" /> Grant GATE Access
+                </CardTitle>
+                <CardDescription>Directly grant a user access to GATE Study preparation materials.</CardDescription>
+              </CardHeader>
+              <CardContent className="pt-4">
+                <div className="flex flex-col sm:flex-row gap-4">
+                  <div className="flex-1 space-y-2">
+                    <Label className="text-xs font-bold uppercase text-muted-foreground">User Email</Label>
+                    <Input
+                      type="email"
+                      placeholder="student@example.com"
+                      value={grantEmail}
+                      onChange={(e) => setGrantEmail(e.target.value)}
+                      className="bg-background"
+                    />
+                  </div>
+                  <div className="flex items-end">
+                    <Button onClick={() => handleGrantPremiumAccess('gate_study')} disabled={isGranting || !grantEmail.trim()} className="w-full sm:w-auto font-bold bg-indigo-600 hover:bg-indigo-700 text-white shadow-md h-10 px-5 rounded-xl">
+                      {isGranting ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Sparkles className="w-4 h-4 mr-2" />}
+                      Grant GATE Access
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
 
-          {/* TAB: Dedicated Pending GATE Access Requests */}
+            <div className="relative">
+              <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+              <Input placeholder="Search GATE students by name, email or branch..." value={searchPremiumQuery} onChange={(e) => setSearchPremiumQuery(e.target.value)} className="pl-9" />
+            </div>
+
+            <GateEnrolledSection
+              items={filteredGroupedList.filter(item => item.purchases.some((p: any) => p.plan === 'gate_study' || p.plan?.includes('gate')))}
+              onRevoke={handleRevokeAccess}
+              revokingId={revokingId}
+            />
+          </TabsContent>
+
+          {/* TAB: Coding Space Access Management */}
+          <TabsContent value="coding_access" className="space-y-6">
+            <Card className="gradient-card">
+              <CardHeader className="border-b pb-4">
+                <CardTitle className="flex items-center gap-2 text-lg font-bold">
+                  <Code2 className="h-5 w-5 text-emerald-500" /> Grant Coding Space Access
+                </CardTitle>
+                <CardDescription>Directly grant a user access to Coding Space (Contests, DSA Sheets, Interview Kits).</CardDescription>
+              </CardHeader>
+              <CardContent className="pt-4">
+                <div className="flex flex-col sm:flex-row gap-4">
+                  <div className="flex-1 space-y-2">
+                    <Label className="text-xs font-bold uppercase text-muted-foreground">User Email</Label>
+                    <Input
+                      type="email"
+                      placeholder="student@example.com"
+                      value={grantEmail}
+                      onChange={(e) => setGrantEmail(e.target.value)}
+                      className="bg-background"
+                    />
+                  </div>
+                  <div className="flex items-end">
+                    <Button onClick={() => handleGrantPremiumAccess('coding_space')} disabled={isGranting || !grantEmail.trim()} className="w-full sm:w-auto font-bold bg-emerald-600 hover:bg-emerald-700 text-white shadow-md h-10 px-5 rounded-xl">
+                      {isGranting ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Sparkles className="w-4 h-4 mr-2" />}
+                      Grant Coding Space Access
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <div className="relative">
+              <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+              <Input placeholder="Search Coding Space students by name, email or branch..." value={searchPremiumQuery} onChange={(e) => setSearchPremiumQuery(e.target.value)} className="pl-9" />
+            </div>
+
+            <CodingEnrolledSection
+              items={filteredGroupedList.filter(item => item.purchases.some((p: any) => p.plan === 'coding_space' || p.plan?.includes('coding')))}
+              onRevoke={handleRevokeAccess}
+              revokingId={revokingId}
+            />
+          </TabsContent>
+
+          {/* TAB: Dedicated Pending GATE & Coding Access Requests */}
           <TabsContent value="gate_requests" className="space-y-6">
-            <Card className="border border-border bg-card">
+            {/* 1. Dedicated Pending GATE Access Requests */}
+            <Card className="border border-border bg-card rounded-sm shadow-xs">
               <CardHeader className="border-b pb-4">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                   <div>
                     <CardTitle className="text-lg font-bold flex items-center gap-2 text-foreground">
                       <GraduationCap className="h-5 w-5 text-indigo-500" />
-                      Pending GATE Access Requests ({pendingGateRequests.length})
+                      Pending GATE Access Requests ({pendingGateRequests.filter((r: any) => r.plan !== 'coding_calendar').length})
                     </CardTitle>
                     <CardDescription className="text-xs text-muted-foreground mt-1">
-                      Students who submitted a request for GATE Study access and are awaiting verification.
+                      GATE aspirants awaiting access verification.
                     </CardDescription>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Badge variant="outline" className="border-amber-500/40 text-amber-600 dark:text-amber-400 bg-amber-500/10 px-2.5 py-1">
-                      {pendingGateRequests.length} Pending
+                    <Badge variant="outline" className="border-amber-500/40 text-amber-600 dark:text-amber-400 bg-amber-500/10 px-2.5 py-1 rounded-sm text-xs">
+                      {pendingGateRequests.filter((r: any) => r.plan !== 'coding_calendar').length} Pending
                     </Badge>
-                    <Button variant="outline" size="sm" onClick={fetchPremiumPurchases} className="h-8 text-xs">
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      onClick={fetchPendingGateRequests} 
+                      className="h-8 text-xs rounded-sm border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800"
+                    >
+                      <RefreshCw className="h-3.5 w-3.5 mr-1" />
                       Refresh
                     </Button>
                   </div>
                 </div>
               </CardHeader>
               <CardContent className="pt-4">
-                {pendingGateRequests.length === 0 ? (
-                  <div className="text-center py-12">
-                    <CheckCircle className="h-12 w-12 text-emerald-500 mx-auto mb-3" />
-                    <p className="text-base font-bold text-foreground">All Clear!</p>
-                    <p className="text-xs text-muted-foreground mt-1">No pending GATE approval requests right now. All requests are processed! 🎉</p>
+                {pendingGateRequests.filter((r: any) => r.plan !== 'coding_calendar').length === 0 ? (
+                  <div className="text-center py-10">
+                    <CheckCircle className="h-10 w-10 text-emerald-500 mx-auto mb-2" />
+                    <p className="text-sm font-bold text-foreground">All GATE Requests Cleared!</p>
+                    <p className="text-xs text-muted-foreground mt-1">No pending GATE approval requests right now.</p>
                   </div>
                 ) : (
                   <div className="space-y-3">
-                    {pendingGateRequests.map((req: any) => {
+                    {pendingGateRequests.filter((r: any) => r.plan !== 'coding_calendar').map((req: any) => {
                       const fullName = [req.first_name, req.last_name].filter(Boolean).join(' ') || 'Student';
                       const isProcessing = isApprovingGate === req.id;
                       return (
                         <div
                           key={req.id}
-                          className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 rounded-xl border border-border/80 bg-background/70 hover:bg-background transition-all shadow-xs"
+                          className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 rounded-sm border border-border/80 bg-background/70 hover:bg-background transition-all shadow-xs"
                         >
-                          <div className="space-y-1.5">
+                          <div className="space-y-1">
                             <div className="flex items-center gap-2 flex-wrap">
                               <span className="font-bold text-sm text-foreground">{fullName}</span>
-                              <Badge variant="secondary" className="text-xs font-semibold bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20">
+                              <Badge variant="secondary" className="text-xs font-semibold bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20 rounded-sm">
                                 GATE Target: {req.target_branch || req.branch || 'CSE'}
                               </Badge>
                               {req.college_branch && (
-                                <Badge variant="outline" className="text-xs text-muted-foreground">
-                                  College: {req.college_branch}
+                                <Badge variant="outline" className="text-xs text-muted-foreground rounded-sm">
+                                  College Branch: {req.college_branch}
                                 </Badge>
                               )}
                               {req.college && (
@@ -2781,7 +3099,7 @@ const OwnerDashboard = () => {
                           <div className="flex items-center gap-2 shrink-0">
                             <Button
                               size="sm"
-                              className="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold gap-1.5 h-8 text-xs shadow-xs"
+                              className="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold gap-1.5 h-8 text-xs shadow-xs rounded-sm"
                               disabled={isProcessing}
                               onClick={() => handleApproveGateRequest(req.id, req.user_id, fullName)}
                             >
@@ -2795,7 +3113,116 @@ const OwnerDashboard = () => {
                             <Button
                               size="sm"
                               variant="outline"
-                              className="border-red-500/30 text-red-600 hover:bg-red-500/10 dark:hover:bg-red-950/30 font-semibold gap-1.5 h-8 text-xs"
+                              className="border-red-500/30 text-red-600 hover:bg-red-500/10 dark:hover:bg-red-950/30 font-semibold gap-1.5 h-8 text-xs rounded-sm"
+                              disabled={isProcessing}
+                              onClick={() => handleRejectGateRequest(req.id, req.user_id, fullName)}
+                            >
+                              <XCircle className="h-3.5 w-3.5" />
+                              Decline
+                            </Button>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* 2. Dedicated Pending Coding Space Approval Requests */}
+            <Card className="border border-border bg-card rounded-sm shadow-xs">
+              <CardHeader className="border-b pb-4">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                  <div>
+                    <CardTitle className="text-lg font-bold flex items-center gap-2 text-foreground">
+                      <Code2 className="h-5 w-5 text-emerald-500" />
+                      Pending Coding Space Approval Requests ({pendingGateRequests.filter((r: any) => r.plan === 'coding_calendar').length})
+                    </CardTitle>
+                    <CardDescription className="text-xs text-muted-foreground mt-1">
+                      Students who completed Coding Space onboarding and are awaiting verification.
+                    </CardDescription>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Badge variant="outline" className="border-emerald-500/40 text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-sm text-xs">
+                      {pendingGateRequests.filter((r: any) => r.plan === 'coding_calendar').length} Pending
+                    </Badge>
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      onClick={fetchPendingGateRequests} 
+                      className="h-8 text-xs rounded-sm border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800"
+                    >
+                      <RefreshCw className="h-3.5 w-3.5 mr-1" />
+                      Refresh
+                    </Button>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent className="pt-4">
+                {pendingGateRequests.filter((r: any) => r.plan === 'coding_calendar').length === 0 ? (
+                  <div className="text-center py-10">
+                    <CheckCircle className="h-10 w-10 text-emerald-500 mx-auto mb-2" />
+                    <p className="text-sm font-bold text-foreground">All Coding Space Requests Cleared!</p>
+                    <p className="text-xs text-muted-foreground mt-1">No pending Coding Space approval requests right now.</p>
+                  </div>
+                ) : (
+                  <div className="space-y-3">
+                    {pendingGateRequests.filter((r: any) => r.plan === 'coding_calendar').map((req: any) => {
+                      const fullName = [req.first_name, req.last_name].filter(Boolean).join(' ') || 'Student';
+                      const isProcessing = isApprovingGate === req.id;
+                      return (
+                        <div
+                          key={req.id}
+                          className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 rounded-sm border border-emerald-500/20 bg-emerald-500/[0.02] hover:bg-emerald-500/[0.05] transition-all shadow-xs"
+                        >
+                          <div className="space-y-1">
+                            <div className="flex items-center gap-2 flex-wrap">
+                              <span className="font-bold text-sm text-foreground">{fullName}</span>
+                              <Badge variant="secondary" className="text-xs font-semibold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 rounded-sm">
+                                Coding Space Access
+                              </Badge>
+                              {req.college_branch && (
+                                <Badge variant="outline" className="text-xs text-muted-foreground rounded-sm">
+                                  Branch: {req.college_branch}
+                                </Badge>
+                              )}
+                              {req.college && (
+                                <span className="text-xs text-muted-foreground font-medium">({req.college})</span>
+                              )}
+                            </div>
+                            <p className="text-xs text-muted-foreground flex items-center gap-2">
+                              <span className="font-mono">{req.email}</span>
+                              {req.phone && <span>• {req.phone}</span>}
+                            </p>
+                            <p className="text-[11px] text-muted-foreground/80 flex items-center gap-1">
+                              <Calendar className="h-3 w-3 text-emerald-400" />
+                              Requested on {new Date(req.purchased_at).toLocaleString('en-IN', {
+                                day: 'numeric',
+                                month: 'short',
+                                year: 'numeric',
+                                hour: '2-digit',
+                                minute: '2-digit'
+                              })}
+                            </p>
+                          </div>
+                          <div className="flex items-center gap-2 shrink-0">
+                            <Button
+                              size="sm"
+                              className="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold gap-1.5 h-8 text-xs shadow-xs rounded-sm"
+                              disabled={isProcessing}
+                              onClick={() => handleApproveGateRequest(req.id, req.user_id, fullName)}
+                            >
+                              {isProcessing ? (
+                                <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                              ) : (
+                                <CheckCircle className="h-3.5 w-3.5" />
+                              )}
+                              Approve Access
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              className="border-red-500/30 text-red-600 hover:bg-red-500/10 dark:hover:bg-red-950/30 font-semibold gap-1.5 h-8 text-xs rounded-sm"
                               disabled={isProcessing}
                               onClick={() => handleRejectGateRequest(req.id, req.user_id, fullName)}
                             >
@@ -3423,6 +3850,221 @@ const OwnerDashboard = () => {
                             className="font-bold text-xs h-8 px-3 gap-1 shadow-sm"
                           >
                             <XCircle className="h-3.5 w-3.5" /> Reject
+                          </Button>
+                        </div>
+                      </div>
+                    </Card>
+                  );
+                })}
+              </div>
+            )}
+          </TabsContent>
+
+          {/* ========================================================
+              REPORTED ISSUES TAB
+             ======================================================== */}
+          <TabsContent value="reported_issues" className="space-y-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-border">
+              <div>
+                <h3 className="text-xl font-bold text-foreground flex items-center gap-2">
+                  <AlertTriangle className="h-5 w-5 text-rose-500" />
+                  Reported Issues & Student Support Tickets
+                </h3>
+                <p className="text-sm text-muted-foreground mt-0.5">
+                  Review student-reported bugs, notes issues, broken links, or feature feedback. Mark as fixed to update the student's status.
+                </p>
+              </div>
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={loadReportedIssues}
+                  disabled={isLoadingIssues}
+                  className="gap-1.5 text-xs font-semibold"
+                >
+                  <RefreshCw className={`h-3.5 w-3.5 ${isLoadingIssues ? 'animate-spin' : ''}`} />
+                  Refresh
+                </Button>
+              </div>
+            </div>
+
+            {/* Filter Pills */}
+            <div className="flex flex-wrap items-center gap-2">
+              <button
+                onClick={() => setIssueFilter('all')}
+                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
+                  issueFilter === 'all'
+                    ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-sm'
+                    : 'bg-muted/70 text-muted-foreground hover:bg-muted hover:text-foreground'
+                }`}
+              >
+                All Tickets ({reportedIssues.length})
+              </button>
+              <button
+                onClick={() => setIssueFilter('pending')}
+                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 ${
+                  issueFilter === 'pending'
+                    ? 'bg-amber-500 text-white shadow-sm'
+                    : 'bg-amber-500/10 text-amber-700 dark:text-amber-400 hover:bg-amber-500/20'
+                }`}
+              >
+                Pending Review ({reportedIssues.filter(i => i.status === 'pending').length})
+              </button>
+              <button
+                onClick={() => setIssueFilter('fixed')}
+                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 ${
+                  issueFilter === 'fixed'
+                    ? 'bg-emerald-600 text-white shadow-sm'
+                    : 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 hover:bg-emerald-500/20'
+                }`}
+              >
+                Resolved / Fixed 🎉 ({reportedIssues.filter(i => i.status === 'fixed').length})
+              </button>
+            </div>
+
+            {/* List */}
+            {isLoadingIssues ? (
+              <div className="py-16 text-center text-muted-foreground flex flex-col items-center justify-center gap-3">
+                <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                <p className="text-sm">Fetching student support tickets from database...</p>
+              </div>
+            ) : filteredReportedIssues.length === 0 ? (
+              <div className="py-16 text-center border-2 border-dashed border-border/80 rounded-2xl bg-muted/20">
+                <CheckCircle className="h-10 w-10 text-emerald-500 mx-auto mb-2 opacity-80" />
+                <h4 className="font-bold text-foreground">No Tickets Found</h4>
+                <p className="text-xs text-muted-foreground max-w-sm mx-auto mt-1">
+                  {issueFilter === 'pending'
+                    ? 'All reported issues have been addressed and marked as fixed! Great job.'
+                    : 'There are no student issue reports in this category yet.'}
+                </p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 gap-4">
+                {filteredReportedIssues.map((issue) => {
+                  const isFixed = issue.status === 'fixed';
+                  return (
+                    <Card
+                      key={issue.id}
+                      className={`border transition-all p-5 rounded-2xl ${
+                        isFixed
+                          ? 'border-emerald-500/30 bg-emerald-500/[0.02] dark:bg-emerald-950/10'
+                          : 'border-amber-500/40 bg-amber-500/[0.03] dark:bg-amber-950/15 shadow-xs'
+                      }`}
+                    >
+                      <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
+                        <div className="space-y-2 flex-1 min-w-0">
+                          <div className="flex flex-wrap items-center gap-2">
+                            <Badge
+                              className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                                isFixed
+                                  ? 'bg-emerald-500/15 text-emerald-700 dark:text-emerald-400 border-emerald-500/30'
+                                  : 'bg-amber-500/15 text-amber-700 dark:text-amber-400 border-amber-500/30 animate-pulse'
+                              }`}
+                            >
+                              {isFixed ? 'RESOLVED / FIXED 🎉' : 'PENDING REVIEW'}
+                            </Badge>
+                            <Badge variant="outline" className="text-[10px] font-semibold">
+                              {issue.category}
+                            </Badge>
+                            <span className="text-[11px] text-muted-foreground">
+                              {issue.createdAt ? new Date(issue.createdAt).toLocaleString('en-IN', {
+                                dateStyle: 'medium',
+                                timeStyle: 'short'
+                              }) : ''}
+                            </span>
+                          </div>
+
+                          <h4 className="text-base font-bold text-foreground break-words">
+                            {issue.subject}
+                          </h4>
+
+                          <p className="text-sm text-foreground/80 whitespace-pre-wrap leading-relaxed bg-background/60 p-3 rounded-xl border border-border/60">
+                            {issue.description}
+                          </p>
+
+                          <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted-foreground pt-1">
+                            <span>
+                              <strong>Reported by:</strong> {issue.userEmail || 'Anonymous Student'}
+                            </span>
+                            {issue.userName && (
+                              <span>
+                                <strong>Name:</strong> {issue.userName}
+                              </span>
+                            )}
+                            {issue.college && (
+                              <span>
+                                <strong>College:</strong> {issue.college}
+                              </span>
+                            )}
+                            {issue.branch && (
+                              <span>
+                                <strong>Branch:</strong> {issue.branch}
+                              </span>
+                            )}
+                            {issue.year && (
+                              <span>
+                                <strong>Year:</strong> {issue.year}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+
+                        {/* Actions */}
+                        <div className="flex sm:flex-col items-center gap-2 shrink-0">
+                          {!isFixed ? (
+                            <Button
+                              size="sm"
+                              onClick={async () => {
+                                setFixingIssueId(issue.id);
+                                const res = await markIssueAsFixed(issue.id, issue);
+                                setFixingIssueId(null);
+                                if (res.success) {
+                                  toast({
+                                    title: 'Issue Marked as Fixed 🎉',
+                                    description: `Ticket #${issue.id.slice(0, 8)} marked resolved. Student status updated!`,
+                                  });
+                                  loadReportedIssues();
+                                } else {
+                                  toast({
+                                    title: 'Failed to update issue',
+                                    description: 'Check connection and try again.',
+                                    variant: 'destructive',
+                                  });
+                                }
+                              }}
+                              disabled={fixingIssueId === issue.id}
+                              className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs h-9 px-3 gap-1.5 shadow-sm"
+                            >
+                              {fixingIssueId === issue.id ? (
+                                <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                              ) : (
+                                <CheckCircle className="h-3.5 w-3.5" />
+                              )}
+                              Mark as Fixed
+                            </Button>
+                          ) : (
+                            <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-1 py-1">
+                              <CheckCircle className="h-3.5 w-3.5" /> Resolved
+                            </span>
+                          )}
+
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={async () => {
+                              if (!window.confirm('Delete this reported issue ticket permanently?')) return;
+                              const res = await deleteReportedIssue(issue.id);
+                              if (res.success) {
+                                toast({
+                                  title: 'Ticket deleted',
+                                  description: 'Issue removed from database.',
+                                });
+                                loadReportedIssues();
+                              }
+                            }}
+                            className="text-xs text-muted-foreground hover:text-rose-600 h-8 px-2.5"
+                          >
+                            <Trash2 className="h-3.5 w-3.5 mr-1" /> Delete
                           </Button>
                         </div>
                       </div>
