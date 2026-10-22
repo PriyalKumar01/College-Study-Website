@@ -99,11 +99,14 @@ const EighthSemesterCSENotes = lazy(() => import("./pages/EighthSemesterCSENotes
 const RoadmapGuide = lazy(() => import("./pages/RoadmapGuide"));
 const GateStudy = lazy(() => import("./pages/GateStudy"));
 const GateStudyQuiz = lazy(() => import("./pages/GateStudyQuiz"));
+const CodingCalendar = lazy(() => import("./pages/CodingCalendar"));
 
 export const navItems = [
   { to: "/", page: <Index /> },
   { to: "/about", page: <About /> },
   { to: "/profile", page: <Profile /> },
+  { to: "/coding-space", page: <CodingCalendar /> },
+  { to: "/coding-calendar", page: <CodingCalendar /> },
   { to: "/btech-notes", page: <BTechYears /> },
   { to: "/btech-notes/first-year", page: <FirstYearNotes /> },
   { to: "/btech-notes/:year", page: <BTechSemesters /> },
