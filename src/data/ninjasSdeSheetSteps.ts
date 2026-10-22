@@ -538,4 +538,40 @@ export const NINJAS_SDE_STEPS: DsaStep[] = [
             problemUrl: 'https://www.naukri.com/code360/problems/word-break-ii_983635',
             youtubeUrl: 'https://www.youtube.com/results?search_query=word+break+code360',
             companies: ['Google', 'Amazon', 'Meta'],
+            tags: ['Backtracking', 'Trie'],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'code360-step-5',
+    title: 'Chapter 5: Binary Search & Divide and Conquer (8 Problems)',
+    lectures: [
+      {
+        id: 'code360-l5-1',
+        title: 'Search Space Reduction & Answer Range Predicates',
+        problems: [
+          {
+            id: 'c360-50',
+            title: 'The N-th Root of an Integer',
+            difficulty: 'Easy',
+            platform: 'Code360',
+            problemUrl: 'https://www.naukri.com/code360/problems/nth-root-of-m_1062679',
+            youtubeUrl: 'https://www.youtube.com/results?search_query=nth+root+of+m+code360',
+            companies: ['Google', 'Microsoft'],
+            tags: ['Binary Search'],
+          },
+          {
+            id: 'c360-51',
+            title: 'Search In Rotated Sorted Array',
+            difficulty: 'Medium',
+            platform: 'Code360',
+            problemUrl: 'https://www.naukri.com/code360/problems/search-in-rotated-sorted-array_1082554',
+            youtubeUrl: 'https://www.youtube.com/results?search_query=search+in+rotated+sorted+array+code360',
+            companies: ['Amazon', 'Google', 'Meta'],
+            tags: ['Binary Search'],
+          },
+          {
+            id: 'c360-52',
 ];
