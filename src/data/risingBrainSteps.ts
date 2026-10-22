@@ -448,4 +448,34 @@ export const RISING_BRAIN_STEPS: DsaStep[] = [
     lectures: [
       {
         id: 'rb-l9-1',
+        title: 'Next Greater & Span Problems',
+        problems: [
+          {
+            id: 'rb-35',
+            title: 'Next Greater Element I',
+            difficulty: 'Easy',
+            platform: 'LeetCode',
+            problemUrl: 'https://leetcode.com/problems/next-greater-element-i/',
+            youtubeUrl: 'https://www.youtube.com/results?search_query=rising+brain+next+greater+element+java',
+            companies: ['Amazon', 'Google'],
+            tags: ['Monotonic Stack'],
+          },
+          {
+            id: 'rb-36',
+            title: 'Daily Temperatures',
+            difficulty: 'Medium',
+            platform: 'LeetCode',
+            problemUrl: 'https://leetcode.com/problems/daily-temperatures/',
+            youtubeUrl: 'https://www.youtube.com/results?search_query=rising+brain+daily+temperatures+java',
+            companies: ['Meta', 'Amazon'],
+            tags: ['Monotonic Stack'],
+          },
+          {
+            id: 'rb-37',
+            title: 'Online Stock Span',
+            difficulty: 'Medium',
+            platform: 'LeetCode',
+            problemUrl: 'https://leetcode.com/problems/online-stock-span/',
+            youtubeUrl: 'https://www.youtube.com/results?search_query=rising+brain+online+stock+span+java',
+            companies: ['Amazon', 'Microsoft'],
 ];
