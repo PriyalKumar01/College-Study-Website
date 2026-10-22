@@ -208,4 +208,34 @@ export const RISING_BRAIN_STEPS: DsaStep[] = [
     lectures: [
       {
         id: 'rb-l4-1',
+        title: "Dynamic Subarray Windows",
+        problems: [
+          {
+            id: 'rb-17',
+            title: 'Maximum Subarray',
+            difficulty: 'Medium',
+            platform: 'LeetCode',
+            problemUrl: 'https://leetcode.com/problems/maximum-subarray/',
+            youtubeUrl: 'https://www.youtube.com/results?search_query=rising+brain+maximum+subarray+java',
+            companies: ['Amazon', 'Google', 'Microsoft'],
+            tags: ["Kadane's", 'Divide and Conquer'],
+          },
+          {
+            id: 'rb-18',
+            title: 'Maximum Product Subarray',
+            difficulty: 'Medium',
+            platform: 'LeetCode',
+            problemUrl: 'https://leetcode.com/problems/maximum-product-subarray/',
+            youtubeUrl: 'https://www.youtube.com/results?search_query=rising+brain+maximum+product+subarray+java',
+            companies: ['Amazon', 'Google', 'Uber'],
+            tags: ['Dynamic Programming', 'Array'],
+          },
+          {
+            id: 'rb-19',
+            title: 'Maximum Sum Circular Subarray',
+            difficulty: 'Medium',
+            platform: 'LeetCode',
+            problemUrl: 'https://leetcode.com/problems/maximum-sum-circular-subarray/',
+            youtubeUrl: 'https://www.youtube.com/results?search_query=rising+brain+circular+subarray+java',
+            companies: ['Amazon', 'Microsoft'],
 ];
