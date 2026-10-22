@@ -328,4 +328,34 @@ export const RISING_BRAIN_STEPS: DsaStep[] = [
             id: 'rb-26',
             title: 'Find Peak Element',
             difficulty: 'Medium',
+            platform: 'LeetCode',
+            problemUrl: 'https://leetcode.com/problems/find-peak-element/',
+            youtubeUrl: 'https://www.youtube.com/results?search_query=rising+brain+find+peak+element+java',
+            companies: ['Meta', 'Google'],
+            tags: ['Binary Search'],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'rb-step-7',
+    title: 'Pattern 7: Fast & Slow Pointers (Linked List Cycles)',
+    lectures: [
+      {
+        id: 'rb-l7-1',
+        title: 'Floyd Cycle Detection',
+        problems: [
+          {
+            id: 'rb-27',
+            title: 'Middle of the Linked List',
+            difficulty: 'Easy',
+            platform: 'LeetCode',
+            problemUrl: 'https://leetcode.com/problems/middle-of-the-linked-list/',
+            youtubeUrl: 'https://www.youtube.com/results?search_query=rising+brain+middle+of+linked+list+java',
+            companies: ['Amazon', 'Microsoft'],
+            tags: ['Linked List', 'Fast & Slow'],
+          },
+          {
+            id: 'rb-28',
 ];
