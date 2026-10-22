@@ -838,4 +838,34 @@ export const RISING_BRAIN_STEPS: DsaStep[] = [
             id: 'rb-65',
             title: 'Edit Distance',
             difficulty: 'Hard',
+            platform: 'LeetCode',
+            problemUrl: 'https://leetcode.com/problems/edit-distance/',
+            youtubeUrl: 'https://www.youtube.com/results?search_query=rising+brain+edit+distance+java',
+            companies: ['Google', 'Amazon'],
+            tags: ['2D DP', 'Strings'],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'rb-step-17',
+    title: 'Pattern 17: Backtracking & Recursion Search',
+    lectures: [
+      {
+        id: 'rb-l17-1',
+        title: 'Decision Tree Exploration',
+        problems: [
+          {
+            id: 'rb-66',
+            title: 'Subsets',
+            difficulty: 'Medium',
+            platform: 'LeetCode',
+            problemUrl: 'https://leetcode.com/problems/subsets/',
+            youtubeUrl: 'https://www.youtube.com/results?search_query=rising+brain+subsets+java',
+            companies: ['Meta', 'Amazon', 'Google'],
+            tags: ['Backtracking'],
+          },
+          {
+            id: 'rb-67',
 ];
