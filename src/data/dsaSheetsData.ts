@@ -648,4 +648,54 @@ export const MICROSOFT_SDE_KIT: DsaSheet = {
             { id: 'ms-5', title: 'Sign of the Product of an Array', difficulty: 'Easy', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/sign-of-the-product-of-an-array/', companies: ['Microsoft'], tags: ['Arrays'] },
             { id: 'ms-6', title: 'Find All Anagrams in a String', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/find-all-anagrams-in-a-string/', companies: ['Microsoft', 'Amazon'], tags: ['Sliding Window'] },
           ],
+        },
+      ],
+    },
+  ],
+};
+
+export const UBER_HIGH_FREQUENCY_KIT: DsaSheet = {
+  id: 'uber-high-frequency-kit',
+  slug: 'uber-high-frequency-kit',
+  title: 'Uber High-Frequency Interview Kit 🎁',
+  creator: 'College Study Curated',
+  description: 'Uber-specific graph, routing, sliding window, and interval scheduling interview challenges.',
+  category: ['Company Wise', 'All', 'Competitive'],
+  totalQuestions: 50,
+  followersCount: 7320,
+  isCompanyWise: true,
+  featuredCompany: 'Uber',
+  steps: [
+    {
+      id: 'uber-routing',
+      title: 'Uber Graph & System Simulation Problems',
+      lectures: [
+        {
+          id: 'ub-l1',
+          title: 'Top Problems',
+          problems: [
+            { id: 'ub-1', title: 'Bus Routes', difficulty: 'Hard', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/bus-routes/', companies: ['Uber', 'Google'], tags: ['BFS', 'Graph'] },
+            { id: 'ub-2', title: 'Evaluate Division', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/evaluate-division/', companies: ['Uber', 'Amazon'], tags: ['DFS', 'Graph'] },
+            { id: 'ub-3', title: 'Reconstruct Itinerary', difficulty: 'Hard', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/reconstruct-itinerary/', companies: ['Uber'], tags: ['Graph'] },
+            { id: 'ub-4', title: 'Sliding Window Maximum', difficulty: 'Hard', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/sliding-window-maximum/', companies: ['Uber', 'Amazon', 'Google'], tags: ['Monotonic Queue'] },
+            { id: 'ub-5', title: 'Word Search II', difficulty: 'Hard', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/word-search-ii/', companies: ['Uber', 'Microsoft'], tags: ['Trie'] },
+          ],
+        },
+      ],
+    },
+  ],
+};
+
+export const META_HIGH_FREQUENCY_KIT: DsaSheet = {
+  id: 'meta-facebook-kit',
+  slug: 'meta-facebook-kit',
+  title: 'Meta / Facebook High-Frequency Kit 🎁',
+  creator: 'College Study Curated',
+  description: 'Meta technical screen questions focusing on clean code, bug-free speed, and optimal time complexity.',
+  category: ['Company Wise', 'All', 'Popular'],
+  totalQuestions: 55,
+  followersCount: 9110,
+  isCompanyWise: true,
+  featuredCompany: 'Meta',
+  steps: [
 ];
