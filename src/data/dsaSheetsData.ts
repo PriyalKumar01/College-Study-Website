@@ -548,4 +548,54 @@ export const GOOGLE_SDE_KIT: DsaSheet = {
   followersCount: 12340,
   isCompanyWise: true,
   featuredCompany: 'Google',
+  steps: [
+    {
+      id: 'goog-round-1',
+      title: 'Google Round 1: Strings, Trees & Advanced Binary Search',
+      lectures: [
+        {
+          id: 'goog-r1-l1',
+          title: 'High-Frequency Round 1 Problems',
+          problems: [
+            { id: 'goog-1', title: 'Median of Two Sorted Arrays', difficulty: 'Hard', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/median-of-two-sorted-arrays/', companies: ['Google', 'Amazon', 'Microsoft'], tags: ['Binary Search'] },
+            { id: 'goog-2', title: 'Word Ladder II', difficulty: 'Hard', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/word-ladder-ii/', companies: ['Google', 'Amazon'], tags: ['BFS', 'Backtracking'] },
+            { id: 'goog-3', title: 'Trapping Rain Water', difficulty: 'Hard', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/trapping-rain-water/', companies: ['Google', 'Amazon', 'Microsoft'], tags: ['Two Pointers', 'Stack'] },
+            { id: 'goog-4', title: 'Course Schedule II', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/course-schedule-ii/', companies: ['Google', 'Amazon'], tags: ['Topological Sort', 'Graph'] },
+            { id: 'goog-5', title: 'Alien Dictionary', difficulty: 'Hard', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/alien-dictionary/', companies: ['Google', 'Meta'], tags: ['Graph', 'Topological Sort'] },
+            { id: 'goog-6', title: 'Employee Free Time', difficulty: 'Hard', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/employee-free-time/', companies: ['Google', 'Amazon'], tags: ['Intervals', 'Heap'] },
+          ],
+        },
+      ],
+    },
+    {
+      id: 'goog-round-2',
+      title: 'Google Round 2: Dynamic Programming & Graph Models',
+      lectures: [
+        {
+          id: 'goog-r2-l1',
+          title: 'Deep Logic & Optimization',
+          problems: [
+            { id: 'goog-7', title: 'Robot Room Cleaner', difficulty: 'Hard', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/robot-room-cleaner/', companies: ['Google'], tags: ['Backtracking', 'DFS'] },
+            { id: 'goog-8', title: 'Bus Routes', difficulty: 'Hard', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/bus-routes/', companies: ['Google', 'Uber'], tags: ['BFS', 'Graph'] },
+            { id: 'goog-9', title: 'Russian Doll Envelopes', difficulty: 'Hard', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/russian-doll-envelopes/', companies: ['Google'], tags: ['Binary Search', 'DP'] },
+            { id: 'goog-10', title: 'Minimum Area Rectangle', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/minimum-area-rectangle/', companies: ['Google', 'Amazon'], tags: ['Hashmap', 'Geometry'] },
+            { id: 'goog-11', title: 'Number of Good Paths', difficulty: 'Hard', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/number-of-good-paths/', companies: ['Google'], tags: ['Disjoint Set', 'Tree'] },
+          ],
+        },
+      ],
+    },
+  ],
+};
+
+export const AMAZON_SDE_KIT: DsaSheet = {
+  id: 'amazon-sde-kit',
+  slug: 'amazon-sde-kit',
+  title: 'Amazon SDE High-Frequency Interview Kit 🎁',
+  creator: 'College Study Curated',
+  description: 'Core Amazon Bar-Raiser and technical interview problems asked repeatedly across SDE 1, 2 and intern interviews.',
+  category: ['Company Wise', 'All', 'Popular'],
+  totalQuestions: 80,
+  followersCount: 15820,
+  isCompanyWise: true,
+  featuredCompany: 'Amazon',
 ];
