@@ -348,4 +348,54 @@ export const NEETCODE_150_SHEET: DsaSheet = {
             { id: 'nc-135', title: 'Minimum Interval to Include Each Query', difficulty: 'Hard', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/minimum-interval-to-include-each-query/', youtubeUrl: 'https://www.youtube.com/watch?v=5hQ5WWW5awQ', tags: ['Intervals', 'Heap'] },
           ],
         },
+      ],
+    },
+    {
+      id: 'nc-math-geometry',
+      title: 'Math & Geometry (8 Problems)',
+      lectures: [
+        {
+          id: 'nc-mg-1',
+          title: 'Coordinate & Number Theory',
+          problems: [
+            { id: 'nc-136', title: 'Rotate Image', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/rotate-image/', youtubeUrl: 'https://www.youtube.com/watch?v=fMSJSS7eO1w', companies: ['Microsoft', 'Amazon'], tags: ['Matrix', 'Math'] },
+            { id: 'nc-137', title: 'Spiral Matrix', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/spiral-matrix/', youtubeUrl: 'https://www.youtube.com/watch?v=BJnMZNwUk1M', companies: ['Microsoft', 'Google'], tags: ['Matrix'] },
+            { id: 'nc-138', title: 'Set Matrix Zeroes', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/set-matrix-zeroes/', youtubeUrl: 'https://www.youtube.com/watch?v=T41rL0L3Pnw', companies: ['Microsoft', 'Amazon'], tags: ['Matrix'] },
+            { id: 'nc-139', title: 'Happy Number', difficulty: 'Easy', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/happy-number/', youtubeUrl: 'https://www.youtube.com/watch?v=ljz85bxOYJ0', tags: ['Math'] },
+            { id: 'nc-140', title: 'Plus One', difficulty: 'Easy', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/plus-one/', youtubeUrl: 'https://www.youtube.com/watch?v=jIaA8boiG1s', tags: ['Math'] },
+            { id: 'nc-141', title: 'Pow(x, n)', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/powx-n/', youtubeUrl: 'https://www.youtube.com/watch?v=g9YQyYi4IQQ', companies: ['Meta', 'Google'], tags: ['Math'] },
+            { id: 'nc-142', title: 'Multiply Strings', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/multiply-strings/', youtubeUrl: 'https://www.youtube.com/watch?v=1vZswirL8Y8', tags: ['Math', 'Strings'] },
+            { id: 'nc-143', title: 'Detect Squares', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/detect-squares/', youtubeUrl: 'https://www.youtube.com/watch?v=bahebearrDc', tags: ['Geometry', 'Hashmap'] },
+          ],
+        },
+      ],
+    },
+    {
+      id: 'nc-bit-manipulation',
+      title: 'Bit Manipulation (7 Problems)',
+      lectures: [
+        {
+          id: 'nc-bm-1',
+          title: 'Bitwise Operators & Masks',
+          problems: [
+            { id: 'nc-144', title: 'Single Number', difficulty: 'Easy', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/single-number/', youtubeUrl: 'https://www.youtube.com/watch?v=qMPX1AOa83k', companies: ['Amazon'], tags: ['Bit Manipulation'] },
+            { id: 'nc-145', title: 'Number of 1 Bits', difficulty: 'Easy', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/number-of-1-bits/', youtubeUrl: 'https://www.youtube.com/watch?v=5Km3utixwZs', tags: ['Bit Manipulation'] },
+            { id: 'nc-146', title: 'Counting Bits', difficulty: 'Easy', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/counting-bits/', youtubeUrl: 'https://www.youtube.com/watch?v=RyBM56P6QR8', tags: ['Bit Manipulation', 'DP'] },
+            { id: 'nc-147', title: 'Reverse Bits', difficulty: 'Easy', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/reverse-bits/', youtubeUrl: 'https://www.youtube.com/watch?v=UcoN6UjAI64', tags: ['Bit Manipulation'] },
+            { id: 'nc-148', title: 'Missing Number', difficulty: 'Easy', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/missing-number/', youtubeUrl: 'https://www.youtube.com/watch?v=WnPLSRLSANE', companies: ['Amazon'], tags: ['Bit Manipulation'] },
+            { id: 'nc-149', title: 'Sum of Two Integers', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/sum-of-two-integers/', youtubeUrl: 'https://www.youtube.com/watch?v=gVUrDV4tZfY', tags: ['Bit Manipulation'] },
+            { id: 'nc-150', title: 'Reverse Integer', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/reverse-integer/', youtubeUrl: 'https://www.youtube.com/watch?v=HAgLH58IgJQ', companies: ['Google', 'Amazon'], tags: ['Math', 'Bit Manipulation'] },
+          ],
+        },
+      ],
+    },
+  ],
+};
+
+export const STRIVER_A2Z_SHEET: DsaSheet = {
+  id: 'strivers-a2z-dsa-sheet',
+  slug: 'strivers-a2z-dsa-sheet',
+  title: 'Strivers A2Z DSA Sheet',
+  creator: 'Striver (Take U Forward)',
+  description: 'This course is made for people who want to learn DSA from A to Z for free in a well-structured and comprehensive way.',
 ];
