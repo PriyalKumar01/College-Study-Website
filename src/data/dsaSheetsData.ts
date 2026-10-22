@@ -498,4 +498,54 @@ export const DSA_PATTERNS_KUSHAL_SHEET: DsaSheet = {
   totalQuestions: 80,
   followersCount: 8920,
   steps: [
+    {
+      id: 'pat-1',
+      title: 'Pattern 1: Two Pointers',
+      lectures: [
+        {
+          id: 'p1-l1',
+          title: 'Opposite & Same Direction Pointers',
+          problems: [
+            { id: 'pat-1-1', title: 'Valid Palindrome', difficulty: 'Easy', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/valid-palindrome/', tags: ['Two Pointers'] },
+            { id: 'pat-1-2', title: '3Sum', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/3sum/', companies: ['Amazon', 'Google'], tags: ['Two Pointers'] },
+            { id: 'pat-1-3', title: 'Trapping Rain Water', difficulty: 'Hard', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/trapping-rain-water/', companies: ['Google', 'Amazon', 'Microsoft'], tags: ['Two Pointers'] },
+            { id: 'pat-1-4', title: 'Boats to Save People', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/boats-to-save-people/', tags: ['Two Pointers', 'Greedy'] },
+          ],
+        },
+      ],
+    },
+    {
+      id: 'pat-2',
+      title: 'Pattern 2: Fast & Slow Pointers',
+      lectures: [
+        {
+          id: 'p2-l1',
+          title: 'Floyd\'s Cycle Finding',
+          problems: [
+            { id: 'pat-2-1', title: 'Linked List Cycle', difficulty: 'Easy', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/linked-list-cycle/', companies: ['Amazon', 'Microsoft'], tags: ['Fast-Slow Pointers'] },
+            { id: 'pat-2-2', title: 'Middle of the Linked List', difficulty: 'Easy', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/middle-of-the-linked-list/', tags: ['Fast-Slow Pointers'] },
+            { id: 'pat-2-3', title: 'Find the Duplicate Number', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/find-the-duplicate-number/', companies: ['Amazon'], tags: ['Fast-Slow Pointers'] },
+            { id: 'pat-2-4', title: 'Happy Number', difficulty: 'Easy', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/happy-number/', tags: ['Fast-Slow Pointers'] },
+          ],
+        },
+      ],
+    },
+  ],
+};
+
+// -------------------------------------------------------------
+// Company Wise Free Interview Kits (College Study Curated)
+// -------------------------------------------------------------
+
+export const GOOGLE_SDE_KIT: DsaSheet = {
+  id: 'google-sde-kit',
+  slug: 'google-sde-kit',
+  title: 'Google SDE High-Frequency Interview Kit 🎁',
+  creator: 'College Study Curated',
+  description: 'Cherry-picked, high-frequency questions directly asked in Google L3/L4/L5 coding rounds over the past 6-12 months. Free & unlocked.',
+  category: ['Company Wise', 'All', 'Popular'],
+  totalQuestions: 65,
+  followersCount: 12340,
+  isCompanyWise: true,
+  featuredCompany: 'Google',
 ];
