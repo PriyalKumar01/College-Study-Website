@@ -202,3 +202,20 @@ export async function fetchLiveCodeforcesContests(): Promise<ContestEvent[]> {
     if (!res.ok) return getCachedCodeforcesContests();
 
     const data = await res.json();
+    if (data.status !== 'OK' || !Array.isArray(data.result)) {
+      return getCachedCodeforcesContests();
+    }
+
+    const nowSec = Math.floor(Date.now() / 1000);
+    const windowPastSec = nowSec - 30 * 24 * 3600; // Past 30 days
+    const windowFutureSec = nowSec + 35 * 24 * 3600; // Next 35 days
+
+    const cfContests: ContestEvent[] = data.result
+      .filter((c: any) => {
+        if (!c.startTimeSeconds) return false;
+        return c.startTimeSeconds >= windowPastSec && c.startTimeSeconds <= windowFutureSec;
+      })
+      .map((c: any) => {
+        const startMs = c.startTimeSeconds * 1000;
+        const durMinutes = Math.round((c.durationSeconds || 7200) / 60);
+        const endMs = startMs + durMinutes * 60 * 1000;
