@@ -418,4 +418,34 @@ export const RISING_BRAIN_STEPS: DsaStep[] = [
             companies: ['Meta', 'Amazon'],
             tags: ['Linked List'],
           },
+          {
+            id: 'rb-33',
+            title: 'Reverse Nodes in k-Group',
+            difficulty: 'Hard',
+            platform: 'LeetCode',
+            problemUrl: 'https://leetcode.com/problems/reverse-nodes-in-k-group/',
+            youtubeUrl: 'https://www.youtube.com/results?search_query=rising+brain+reverse+nodes+k+group+java',
+            companies: ['Google', 'Microsoft', 'Amazon'],
+            tags: ['Linked List'],
+          },
+          {
+            id: 'rb-34',
+            title: 'Palindrome Linked List',
+            difficulty: 'Easy',
+            platform: 'LeetCode',
+            problemUrl: 'https://leetcode.com/problems/palindrome-linked-list/',
+            youtubeUrl: 'https://www.youtube.com/results?search_query=rising+brain+palindrome+linked+list+java',
+            companies: ['Amazon', 'Microsoft'],
+            tags: ['Linked List', 'Two Pointers'],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'rb-step-9',
+    title: 'Pattern 9: Monotonic Stack & Queue',
+    lectures: [
+      {
+        id: 'rb-l9-1',
 ];
