@@ -988,4 +988,34 @@ export const RISING_BRAIN_STEPS: DsaStep[] = [
             problemUrl: 'https://leetcode.com/problems/non-overlapping-intervals/',
             youtubeUrl: 'https://www.youtube.com/results?search_query=rising+brain+non+overlapping+intervals+java',
             companies: ['Meta', 'Amazon'],
+            tags: ['Greedy', 'Intervals'],
+          },
+          {
+            id: 'rb-77',
+            title: 'Jump Game',
+            difficulty: 'Medium',
+            platform: 'LeetCode',
+            problemUrl: 'https://leetcode.com/problems/jump-game/',
+            youtubeUrl: 'https://www.youtube.com/results?search_query=rising+brain+jump+game+java',
+            companies: ['Amazon', 'Microsoft'],
+            tags: ['Greedy', 'Array'],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'rb-step-20',
+    title: 'Pattern 20: Service-Based Company (SBC) Specials',
+    lectures: [
+      {
+        id: 'rb-l20-1',
+        title: 'TCS, Infosys, Accenture & Wipro Core Patterns',
+        problems: [
+          {
+            id: 'rb-78',
+            title: 'Rotate Array',
+            difficulty: 'Medium',
+            platform: 'LeetCode',
+            problemUrl: 'https://leetcode.com/problems/rotate-array/',
 ];
