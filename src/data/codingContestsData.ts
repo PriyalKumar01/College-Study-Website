@@ -185,3 +185,20 @@ export function getContestSchedule(baseDate: Date = new Date()): ContestEvent[] 
  */
 export async function fetchLiveCodeforcesContests(): Promise<ContestEvent[]> {
   try {
+    // Check 12-hour cache freshness
+    try {
+      const raw = localStorage.getItem('csh_codeforces_contests');
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (parsed.timestamp && Date.now() - parsed.timestamp < 12 * 3600 * 1000 && Array.isArray(parsed.contests)) {
+          return parsed.contests;
+        }
+      }
+    } catch {
+      // Proceed to fetch
+    }
+
+    const res = await fetch('https://codeforces.com/api/contest.list?gym=false');
+    if (!res.ok) return getCachedCodeforcesContests();
+
+    const data = await res.json();
