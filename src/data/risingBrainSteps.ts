@@ -898,4 +898,34 @@ export const RISING_BRAIN_STEPS: DsaStep[] = [
           },
         ],
       },
+    ],
+  },
+  {
+    id: 'rb-step-18',
+    title: 'Pattern 18: Heaps & Priority Queues (Top K & Merges)',
+    lectures: [
+      {
+        id: 'rb-l18-1',
+        title: 'Min/Max Heap Extraction',
+        problems: [
+          {
+            id: 'rb-70',
+            title: 'Kth Largest Element in an Array',
+            difficulty: 'Medium',
+            platform: 'LeetCode',
+            problemUrl: 'https://leetcode.com/problems/kth-largest-element-in-an-array/',
+            youtubeUrl: 'https://www.youtube.com/results?search_query=rising+brain+kth+largest+element+java',
+            companies: ['Meta', 'Amazon'],
+            tags: ['Heap', 'Quickselect'],
+          },
+          {
+            id: 'rb-71',
+            title: 'Top K Frequent Elements',
+            difficulty: 'Medium',
+            platform: 'LeetCode',
+            problemUrl: 'https://leetcode.com/problems/top-k-frequent-elements/',
+            youtubeUrl: 'https://www.youtube.com/results?search_query=rising+brain+top+k+frequent+elements+java',
+            companies: ['Amazon', 'Google'],
+            tags: ['Heap', 'Bucket Sort'],
+          },
 ];
