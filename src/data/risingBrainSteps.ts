@@ -688,4 +688,34 @@ export const RISING_BRAIN_STEPS: DsaStep[] = [
             companies: ['Google', 'Amazon'],
             tags: ['Graph', 'Dijkstra'],
           },
+          {
+            id: 'rb-54',
+            title: 'Number of Provinces',
+            difficulty: 'Medium',
+            platform: 'LeetCode',
+            problemUrl: 'https://leetcode.com/problems/number-of-provinces/',
+            youtubeUrl: 'https://www.youtube.com/results?search_query=rising+brain+number+of+provinces+java',
+            companies: ['Amazon', 'Microsoft'],
+            tags: ['Graph', 'Union Find'],
+          },
+          {
+            id: 'rb-55',
+            title: 'Redundant Connection',
+            difficulty: 'Medium',
+            platform: 'LeetCode',
+            problemUrl: 'https://leetcode.com/problems/redundant-connection/',
+            youtubeUrl: 'https://www.youtube.com/results?search_query=rising+brain+redundant+connection+java',
+            companies: ['Google', 'Meta'],
+            tags: ['Graph', 'Union Find'],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'rb-step-14',
+    title: 'Pattern 14: Dynamic Programming (1D Subproblems)',
+    lectures: [
+      {
+        id: 'rb-l14-1',
 ];
