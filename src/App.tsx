@@ -78,9 +78,6 @@ const AppContent = () => {
                       } />
                       <Route path="/terms" element={<TermsOfService />} />
                       <Route path="/privacy" element={<PrivacyPolicy />} />
-                      {/* Public deep-link for shared URLs */}
-                      <Route path="/scholarship/:slug" element={<ScholarshipDeepLink />} />
-                      <Route path="/opportunity/:id" element={<OpportunityDeepLink />} />
 
                       {/* Main Layout routes */}
                       <Route element={<AppLayout />}>
@@ -92,6 +89,9 @@ const AppContent = () => {
 
                         {/* Protected Routes (Require Login / Signup) */}
                         <Route element={<ProtectedRoute />}>
+                          {/* Protected deep-link for shared URLs */}
+                          <Route path="/scholarship/:slug" element={<ScholarshipDeepLink />} />
+                          <Route path="/opportunity/:id" element={<OpportunityDeepLink />} />
                           {navItems
                             .filter(({ to }) => !['/', '/about', '/terms-of-service', '/privacy-policy'].includes(to))
                             .map(({ to, page }) => (
