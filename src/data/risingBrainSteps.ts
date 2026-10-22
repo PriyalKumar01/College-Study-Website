@@ -508,4 +508,34 @@ export const RISING_BRAIN_STEPS: DsaStep[] = [
     id: 'rb-step-10',
     title: 'Pattern 10: Binary Tree Traversals, Views & LCA',
     lectures: [
+      {
+        id: 'rb-l10-1',
+        title: 'Tree DFS, BFS & Perspective Views',
+        problems: [
+          {
+            id: 'rb-40',
+            title: 'Binary Tree Level Order Traversal',
+            difficulty: 'Medium',
+            platform: 'LeetCode',
+            problemUrl: 'https://leetcode.com/problems/binary-tree-level-order-traversal/',
+            youtubeUrl: 'https://www.youtube.com/results?search_query=rising+brain+level+order+traversal+java',
+            companies: ['Amazon', 'Meta', 'Microsoft'],
+            tags: ['Tree', 'BFS'],
+          },
+          {
+            id: 'rb-41',
+            title: 'Binary Tree Zigzag Level Order Traversal',
+            difficulty: 'Medium',
+            platform: 'LeetCode',
+            problemUrl: 'https://leetcode.com/problems/binary-tree-zigzag-level-order-traversal/',
+            youtubeUrl: 'https://www.youtube.com/results?search_query=rising+brain+zigzag+level+order+java',
+            companies: ['Amazon', 'Microsoft'],
+            tags: ['Tree', 'BFS'],
+          },
+          {
+            id: 'rb-42',
+            title: 'Binary Tree Right Side View',
+            difficulty: 'Medium',
+            platform: 'LeetCode',
+            problemUrl: 'https://leetcode.com/problems/binary-tree-right-side-view/',
 ];
