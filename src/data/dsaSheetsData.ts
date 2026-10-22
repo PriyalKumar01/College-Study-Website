@@ -598,4 +598,54 @@ export const AMAZON_SDE_KIT: DsaSheet = {
   followersCount: 15820,
   isCompanyWise: true,
   featuredCompany: 'Amazon',
+  steps: [
+    {
+      id: 'amz-round-1',
+      title: 'Amazon Core Bar-Raiser Favorites',
+      lectures: [
+        {
+          id: 'amz-r1-l1',
+          title: 'Top Frequency Amazon Problems',
+          problems: [
+            { id: 'amz-1', title: 'Number of Islands', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/number-of-islands/', companies: ['Amazon', 'Google', 'Microsoft'], tags: ['DFS', 'BFS'] },
+            { id: 'amz-2', title: 'Merge K Sorted Lists', difficulty: 'Hard', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/merge-k-sorted-lists/', companies: ['Amazon', 'Google'], tags: ['Heap'] },
+            { id: 'amz-3', title: 'LRU Cache', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/lru-cache/', companies: ['Amazon', 'Microsoft', 'Google'], tags: ['Hashmap', 'Doubly Linked List'] },
+            { id: 'amz-4', title: 'Rotting Oranges', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/rotting-oranges/', companies: ['Amazon', 'Microsoft'], tags: ['BFS'] },
+            { id: 'amz-5', title: 'K Closest Points to Origin', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/k-closest-points-to-origin/', companies: ['Amazon', 'Meta'], tags: ['Heap'] },
+            { id: 'amz-6', title: 'Critical Connections in a Network (Tarjan\'s)', difficulty: 'Hard', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/critical-connections-in-a-network/', companies: ['Amazon'], tags: ['Graph', 'Bridges'] },
+            { id: 'amz-7', title: 'Reorder Data in Log Files', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/reorder-data-in-log-files/', companies: ['Amazon'], tags: ['Custom Sorting', 'Strings'] },
+          ],
+        },
+      ],
+    },
+  ],
+};
+
+export const MICROSOFT_SDE_KIT: DsaSheet = {
+  id: 'microsoft-sde-kit',
+  slug: 'microsoft-sde-kit',
+  title: 'Microsoft SDE High-Frequency Interview Kit 🎁',
+  creator: 'College Study Curated',
+  description: 'Frequently tested interview questions for Microsoft Software Engineer roles across campus and off-campus drives.',
+  category: ['Company Wise', 'All', 'Quick Revision'],
+  totalQuestions: 60,
+  followersCount: 11400,
+  isCompanyWise: true,
+  featuredCompany: 'Microsoft',
+  steps: [
+    {
+      id: 'ms-core',
+      title: 'Microsoft Core Algorithm Questions',
+      lectures: [
+        {
+          id: 'ms-c1',
+          title: 'High-Frequency Problems',
+          problems: [
+            { id: 'ms-1', title: 'Spiral Matrix', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/spiral-matrix/', companies: ['Microsoft', 'Google'], tags: ['Matrix'] },
+            { id: 'ms-2', title: 'Copy List with Random Pointer', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/copy-list-with-random-pointer/', companies: ['Microsoft', 'Amazon'], tags: ['Linked List'] },
+            { id: 'ms-3', title: 'Binary Tree Zigzag Level Order Traversal', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/binary-tree-zigzag-level-order-traversal/', companies: ['Microsoft', 'Amazon'], tags: ['BFS', 'Tree'] },
+            { id: 'ms-4', title: 'Reverse Nodes in k-Group', difficulty: 'Hard', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/reverse-nodes-in-k-group/', companies: ['Microsoft', 'Amazon'], tags: ['Linked List'] },
+            { id: 'ms-5', title: 'Sign of the Product of an Array', difficulty: 'Easy', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/sign-of-the-product-of-an-array/', companies: ['Microsoft'], tags: ['Arrays'] },
+            { id: 'ms-6', title: 'Find All Anagrams in a String', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/find-all-anagrams-in-a-string/', companies: ['Microsoft', 'Amazon'], tags: ['Sliding Window'] },
+          ],
 ];
