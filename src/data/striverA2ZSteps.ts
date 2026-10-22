@@ -7518,4 +7518,84 @@ export const STRIVER_A2Z_FULL_STEPS: DsaStep[] = [
             "articleUrl": "https://takeuforward.org/data-structure/longest-increasing-subsequence-binary-search-dp-43/",
             "companies": [
               "Google",
+              "Amazon",
+              "Microsoft",
+              "Meta"
+            ],
+            "tags": [
+              "Dynamic Programming",
+              "DP on LIS"
+            ]
+          },
+          {
+            "id": "a2z-s16-l7-p4",
+            "title": "Largest Divisible Subset|(DP-44)",
+            "difficulty": "Hard",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/largest-divisible-subset/",
+            "youtubeUrl": "https://youtu.be/gDuZwBW9VvM",
+            "articleUrl": "https://takeuforward.org/data-structure/longest-divisible-subset-dp-44/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Dynamic Programming",
+              "DP on LIS"
+            ]
+          },
+          {
+            "id": "a2z-s16-l7-p5",
+            "title": "Longest String Chain|(DP-45)",
+            "difficulty": "Hard",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/longest-string-chain/",
+            "youtubeUrl": "https://youtu.be/YY8iBaYcc4g",
+            "articleUrl": "https://takeuforward.org/data-structure/longest-string-chain-dp-45/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Dynamic Programming",
+              "DP on LIS"
+            ]
+          },
+          {
+            "id": "a2z-s16-l7-p6",
+            "title": "Longest Bitonic Subsequence |(DP-46)",
+            "difficulty": "Hard",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/longest-bitonic-subsequence",
+            "youtubeUrl": "https://youtu.be/y4vN0WNdrlg",
+            "articleUrl": "https://takeuforward.org/data-structure/longest-bitonic-subsequence-dp-46/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Dynamic Programming",
+              "DP on LIS"
+            ]
+          },
+          {
+            "id": "a2z-s16-l7-p7",
+            "title": "Number of Longest Increasing Subsequences|(DP-47)",
+            "difficulty": "Hard",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/number-of-longest-increasing-subsequence/",
+            "youtubeUrl": "https://youtu.be/cKVl1TFdNXg",
+            "articleUrl": "https://takeuforward.org/data-structure/number-of-longest-increasing-subsequences-dp-47/",
+            "companies": [
+              "Google",
+              "Amazon",
+              "Microsoft",
+              "Meta"
+            ],
+            "tags": [
+              "Dynamic Programming",
+              "DP on LIS"
+            ]
+          }
+        ]
 ];
