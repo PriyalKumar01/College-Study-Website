@@ -178,4 +178,40 @@ export const NINJAS_SDE_STEPS: DsaStep[] = [
             id: 'c360-17',
             title: 'Grid Unique Paths',
             difficulty: 'Medium',
+            platform: 'Code360',
+            problemUrl: 'https://www.naukri.com/code360/problems/total-unique-paths_1081470',
+            youtubeUrl: 'https://www.youtube.com/results?search_query=total+unique+paths+code360',
+            companies: ['Google', 'Amazon', 'Microsoft'],
+            tags: ['Dynamic Programming', 'Combinatorics'],
+          },
+          {
+            id: 'c360-18',
+            title: 'Reverse Pairs',
+            difficulty: 'Hard',
+            platform: 'Code360',
+            problemUrl: 'https://www.naukri.com/code360/problems/reverse-pairs_1112652',
+            youtubeUrl: 'https://www.youtube.com/results?search_query=reverse+pairs+code360',
+            companies: ['Google', 'Amazon', 'Uber'],
+            tags: ['Merge Sort', 'Binary Search'],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'code360-step-2',
+    title: 'Chapter 2: Linked Lists (14 Problems)',
+    lectures: [
+      {
+        id: 'code360-l2-1',
+        title: 'Singly, Doubly & Pointer Manipulation',
+        problems: [
+          {
+            id: 'c360-19',
+            title: 'Reverse a Linked List',
+            difficulty: 'Easy',
+            platform: 'Code360',
+            problemUrl: 'https://www.naukri.com/code360/problems/reverse-the-singly-linked-list_799897',
+            youtubeUrl: 'https://www.youtube.com/results?search_query=reverse+linked+list+code360',
+            companies: ['Amazon', 'Microsoft', 'Google'],
 ];
