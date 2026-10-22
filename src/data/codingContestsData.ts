@@ -15,3 +15,20 @@ export function deduplicateContests(contests: ContestEvent[]): ContestEvent[] {
     const key = c.id || `${c.platform}-${c.title}-${c.startTime}`;
     if (!map.has(key)) {
       map.set(key, c);
+    }
+  }
+  return Array.from(map.values()).sort(
+    (a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime()
+  );
+}
+
+/**
+ * Predictable recurring contests with mathematically exact contest numbering & direct links:
+ * - LeetCode Weekly: Every Sunday 08:00 AM – 09:30 AM IST -> https://leetcode.com/contest/weekly-contest-{n}/
+ * - LeetCode Biweekly: Every alternate Saturday 08:00 PM – 09:30 PM IST -> https://leetcode.com/contest/biweekly-contest-{n}/
+ * - CodeChef Starters: Every Wednesday 08:00 PM – 10:00 PM IST -> https://www.codechef.com/START{n}
+ * - AtCoder ABC: Every Saturday 05:30 PM – 07:10 PM IST -> https://atcoder.jp/contests/abc{n}
+ * - Code360 Weekly: Every Thursday 08:31 PM – 10:01 PM IST -> https://www.naukri.com/code360/contests/weekly-contest-{n}
+ */
+export function getPredictableContests(baseDate: Date = new Date()): ContestEvent[] {
+  const contests: ContestEvent[] = [];
