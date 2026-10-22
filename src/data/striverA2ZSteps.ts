@@ -7678,4 +7678,84 @@ export const STRIVER_A2Z_FULL_STEPS: DsaStep[] = [
             "title": "Evaluate Boolean Expression to True|(DP-52)",
             "difficulty": "Hard",
             "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/parsing-a-boolean-expression/",
+            "youtubeUrl": "https://youtu.be/MM7fXopgyjw",
+            "articleUrl": "https://takeuforward.org/data-structure/evaluate-boolean-expression-to-true-partition-dp-dp-52/",
+            "companies": [
+              "Amazon"
+            ],
+            "tags": [
+              "Dynamic Programming",
+              "MCM DP | Partition DP"
+            ]
+          },
+          {
+            "id": "a2z-s16-l8-p6",
+            "title": "Palindrome Partitioning - II|(DP-53)",
+            "difficulty": "Hard",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/palindrome-partitioning-ii/",
+            "youtubeUrl": "https://youtu.be/_H8V5hJUGd0",
+            "articleUrl": "https://takeuforward.org/data-structure/palindrome-partitioning-ii-front-partition-dp-53/",
+            "companies": [
+              "Amazon",
+              "Microsoft",
+              "Meta"
+            ],
+            "tags": [
+              "Dynamic Programming",
+              "MCM DP | Partition DP"
+            ]
+          },
+          {
+            "id": "a2z-s16-l8-p7",
+            "title": "Partition Array for Maximum Sum|(DP-54)",
+            "difficulty": "Hard",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/partition-array-for-maximum-sum/",
+            "youtubeUrl": "https://youtu.be/PhWWJmaKfMc",
+            "articleUrl": "https://takeuforward.org/data-structure/partition-array-for-maximum-sum-front-partition-dp-54/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Dynamic Programming",
+              "MCM DP | Partition DP"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "a2z-step-16-sub-9",
+        "title": "DP on Squares",
+        "problems": [
+          {
+            "id": "a2z-s16-l9-p1",
+            "title": "Maximum Rectangle Area with all 1's|(DP-55)",
+            "difficulty": "Hard",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/maximal-rectangle/",
+            "youtubeUrl": "https://youtu.be/tOylVCugy9k",
+            "articleUrl": "https://takeuforward.org/data-structure/maximum-rectangle-area-with-all-1s-dp-on-rectangles-dp-55/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Dynamic Programming",
+              "DP on Squares"
+            ]
+          },
+          {
+            "id": "a2z-s16-l9-p2",
+            "title": "Count Square Submatrices with All Ones|(DP-56)",
+            "difficulty": "Hard",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/count-square-submatrices-with-all-ones/",
+            "youtubeUrl": "https://youtu.be/auS1fynpnjo",
+            "articleUrl": "https://takeuforward.org/data-structure/count-square-submatrices-with-all-1s-dp-on-rectangles-dp-56/",
+            "companies": [
+              "Google",
+              "Amazon"
 ];
