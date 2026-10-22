@@ -83,3 +83,20 @@ export function getPredictableContests(baseDate: Date = new Date()): ContestEven
           subscribersCount: 18400,
         });
       }
+
+      // 3. Code360 Weekly Contest by Naukri / Coding Ninjas (Every Thursday 08:31 PM - 10:01 PM IST)
+      if (dayOfWeek === 4) {
+        const start = new Date(year, targetMonth, day, 20, 31, 0);
+        const end = new Date(year, targetMonth, day, 22, 1, 0);
+        const diffWeeks = Math.round((start.getTime() - CODE360_WEEKLY_ANCHOR.getTime()) / (7 * 24 * 3600 * 1000));
+        const code360Num = 254 + diffWeeks;
+
+        contests.push({
+          id: `code360-weekly-${year}-${targetMonth + 1}-${day}`,
+          title: `Code360 Weekly Contest ${code360Num}`,
+          platform: 'Code360',
+          startTime: start.toISOString(),
+          endTime: end.toISOString(),
+          durationMinutes: 90,
+          url: `https://www.naukri.com/code360/contests/weekly-contest-${code360Num}`,
+          difficulty: 'All Levels (Beginner to Advanced)',
