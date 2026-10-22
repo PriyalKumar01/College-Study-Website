@@ -7758,4 +7758,84 @@ export const STRIVER_A2Z_FULL_STEPS: DsaStep[] = [
             "companies": [
               "Google",
               "Amazon"
+            ],
+            "tags": [
+              "Dynamic Programming",
+              "DP on Squares"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "a2z-step-17",
+    "title": "Step 17: Tries",
+    "lectures": [
+      {
+        "id": "a2z-step-17-sub-1",
+        "title": "Theory",
+        "problems": [
+          {
+            "id": "a2z-s17-l1-p1",
+            "title": "Implement TRIE | INSERT | SEARCH | STARTSWITH",
+            "difficulty": "Hard",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/implement-trie-prefix-tree/",
+            "youtubeUrl": "https://www.youtube.com/watch?v=dBGUmUQhjaM&list=PLgUwDviBIf0pcIDCZnxhv0LkHf5KzG9zp",
+            "articleUrl": "https://takeuforward.org/data-structure/implement-trie-1/",
+            "companies": [
+              "Google",
+              "Amazon",
+              "Microsoft"
+            ],
+            "tags": [
+              "Tries",
+              "Theory"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "a2z-step-17-sub-2",
+        "title": "Problems",
+        "problems": [
+          {
+            "id": "a2z-s17-l2-p1",
+            "title": "Implement Trie - 2 (Prefix Tree)",
+            "difficulty": "Hard",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/trie-implementation-and-advanced-operations",
+            "articleUrl": "https://takeuforward.org/data-structure/implement-trie-ii/",
+            "companies": [
+              "Google",
+              "Amazon",
+              "Microsoft"
+            ],
+            "tags": [
+              "Tries",
+              "Problems"
+            ]
+          },
+          {
+            "id": "a2z-s17-l2-p2",
+            "title": "Longest String with All Prefixes",
+            "difficulty": "Medium",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/longest-word-with-all-prefixes",
+            "youtubeUrl": "https://www.youtube.com/watch?v=AWnBa91lThI&list=PLgUwDviBIf0pcIDCZnxhv0LkHf5KzG9zp&index=3",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Tries",
+              "Problems"
+            ]
+          },
+          {
+            "id": "a2z-s17-l2-p3",
+            "title": "Number of Distinct Substrings in a String",
+            "difficulty": "Hard",
+            "platform": "Other",
 ];
