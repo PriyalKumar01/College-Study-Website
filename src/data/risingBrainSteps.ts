@@ -748,4 +748,34 @@ export const RISING_BRAIN_STEPS: DsaStep[] = [
             problemUrl: 'https://leetcode.com/problems/coin-change/',
             youtubeUrl: 'https://www.youtube.com/results?search_query=rising+brain+coin+change+java',
             companies: ['Amazon', 'Google', 'Microsoft'],
+            tags: ['Dynamic Programming', 'Knapsack'],
+          },
+          {
+            id: 'rb-59',
+            title: 'Word Break',
+            difficulty: 'Medium',
+            platform: 'LeetCode',
+            problemUrl: 'https://leetcode.com/problems/word-break/',
+            youtubeUrl: 'https://www.youtube.com/results?search_query=rising+brain+word+break+java',
+            companies: ['Amazon', 'Meta', 'Google'],
+            tags: ['Dynamic Programming', 'Trie'],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'rb-step-15',
+    title: 'Pattern 15: Dynamic Programming (2D Grids & Knapsack)',
+    lectures: [
+      {
+        id: 'rb-l15-1',
+        title: 'Matrix State Transitions',
+        problems: [
+          {
+            id: 'rb-60',
+            title: 'Unique Paths',
+            difficulty: 'Medium',
+            platform: 'LeetCode',
+            problemUrl: 'https://leetcode.com/problems/unique-paths/',
 ];
