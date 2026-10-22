@@ -958,4 +958,34 @@ export const RISING_BRAIN_STEPS: DsaStep[] = [
     lectures: [
       {
         id: 'rb-l19-1',
+        title: 'Overlapping Intervals & Decisions',
+        problems: [
+          {
+            id: 'rb-74',
+            title: 'Merge Intervals',
+            difficulty: 'Medium',
+            platform: 'LeetCode',
+            problemUrl: 'https://leetcode.com/problems/merge-intervals/',
+            youtubeUrl: 'https://www.youtube.com/results?search_query=rising+brain+merge+intervals+java',
+            companies: ['Amazon', 'Google', 'Microsoft'],
+            tags: ['Intervals', 'Sorting'],
+          },
+          {
+            id: 'rb-75',
+            title: 'Insert Interval',
+            difficulty: 'Medium',
+            platform: 'LeetCode',
+            problemUrl: 'https://leetcode.com/problems/insert-interval/',
+            youtubeUrl: 'https://www.youtube.com/results?search_query=rising+brain+insert+interval+java',
+            companies: ['Google', 'Meta'],
+            tags: ['Intervals'],
+          },
+          {
+            id: 'rb-76',
+            title: 'Non-overlapping Intervals',
+            difficulty: 'Medium',
+            platform: 'LeetCode',
+            problemUrl: 'https://leetcode.com/problems/non-overlapping-intervals/',
+            youtubeUrl: 'https://www.youtube.com/results?search_query=rising+brain+non+overlapping+intervals+java',
+            companies: ['Meta', 'Amazon'],
 ];
