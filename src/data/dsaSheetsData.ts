@@ -698,4 +698,61 @@ export const META_HIGH_FREQUENCY_KIT: DsaSheet = {
   isCompanyWise: true,
   featuredCompany: 'Meta',
   steps: [
+    {
+      id: 'meta-speed',
+      title: 'Meta Core Coding Screen Problems',
+      lectures: [
+        {
+          id: 'meta-l1',
+          title: 'Top Problems',
+          problems: [
+            { id: 'meta-1', title: 'Minimum Remove to Make Valid Parentheses', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/minimum-remove-to-make-valid-parentheses/', companies: ['Meta'], tags: ['Stack'] },
+            { id: 'meta-2', title: 'Dot Product of Two Sparse Vectors', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/dot-product-of-two-sparse-vectors/', companies: ['Meta'], tags: ['Two Pointers'] },
+            { id: 'meta-3', title: 'Subarray Sum Equals K', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/subarray-sum-equals-k/', companies: ['Meta', 'Google'], tags: ['Prefix Sum'] },
+            { id: 'meta-4', title: 'Lowest Common Ancestor of a Binary Tree III', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-tree-iii/', companies: ['Meta'], tags: ['Tree'] },
+            { id: 'meta-5', title: 'Buildings With an Ocean View', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/buildings-with-an-ocean-view/', companies: ['Meta'], tags: ['Monotonic Stack'] },
+          ],
+        },
+      ],
+    },
+  ],
+};
+
+export const RISING_BRAIN_DSA_SHEET: DsaSheet = {
+  id: 'rising-brain-sheet',
+  slug: 'rising-brain-sheet',
+  title: 'Rising Brain Pattern-Wise DSA Sheet',
+  creator: 'Anjali Kumari (Rising Brain)',
+  description: 'Pattern-first curriculum with Java-oriented solutions by Anjali Kumari. Master logic-building across 20 high-frequency pattern families from TCS to FAANG.',
+  category: ['All', 'Popular', 'Complete DSA', 'Topic Specific'],
+  totalQuestions: 81,
+  followersCount: 14210,
+  steps: RISING_BRAIN_STEPS,
+};
+
+export const NINJAS_SDE_SHEET: DsaSheet = {
+  id: 'ninjas-sde-sheet',
+  slug: 'ninjas-sde-sheet',
+  title: "Ninja's SDE Sheet (Code360)",
+  creator: 'Naukri Code360 / Coding Ninjas',
+  description: "The authoritative Ninja's SDE problem list covering essential DSA questions asked in technical interviews at top-tier product companies like Amazon, Google, Microsoft, and Flipkart.",
+  category: ['All', 'Popular', 'Complete DSA', 'Quick Revision'],
+  totalQuestions: 131,
+  followersCount: 18450,
+  steps: NINJAS_SDE_STEPS,
+};
+
+export const ALL_DSA_SHEETS: DsaSheet[] = [
+  NEETCODE_150_SHEET,
+  STRIVER_A2Z_SHEET,
+  STRIVER_SDE_SHEET,
+  NINJAS_SDE_SHEET,
+  RISING_BRAIN_DSA_SHEET,
+  BLIND_75_SHEET,
+  DSA_PATTERNS_KUSHAL_SHEET,
+  GOOGLE_SDE_KIT,
+  AMAZON_SDE_KIT,
+  MICROSOFT_SDE_KIT,
+  UBER_HIGH_FREQUENCY_KIT,
+  META_HIGH_FREQUENCY_KIT,
 ];
