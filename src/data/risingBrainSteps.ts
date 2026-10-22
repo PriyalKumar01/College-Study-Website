@@ -178,4 +178,34 @@ export const RISING_BRAIN_STEPS: DsaStep[] = [
             companies: ['Meta', 'Amazon'],
             tags: ['Prefix Sum', 'Math'],
           },
+          {
+            id: 'rb-15',
+            title: 'Product of Array Except Self',
+            difficulty: 'Medium',
+            platform: 'LeetCode',
+            problemUrl: 'https://leetcode.com/problems/product-of-array-except-self/',
+            youtubeUrl: 'https://www.youtube.com/results?search_query=rising+brain+product+of+array+except+self+java',
+            companies: ['Amazon', 'Apple', 'Meta'],
+            tags: ['Prefix Product', 'Array'],
+          },
+          {
+            id: 'rb-16',
+            title: 'Find Pivot Index',
+            difficulty: 'Easy',
+            platform: 'LeetCode',
+            problemUrl: 'https://leetcode.com/problems/find-pivot-index/',
+            youtubeUrl: 'https://www.youtube.com/results?search_query=rising+brain+find+pivot+index+java',
+            companies: ['TCS', 'Infosys', 'Wipro'],
+            tags: ['Prefix Sum', 'Array'],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'rb-step-4',
+    title: "Pattern 4: Kadane's Algorithm & Subarray Optimization",
+    lectures: [
+      {
+        id: 'rb-l4-1',
 ];
