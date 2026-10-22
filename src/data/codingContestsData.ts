@@ -49,3 +49,20 @@ export function getPredictableContests(baseDate: Date = new Date()): ContestEven
         const start = new Date(year, targetMonth, day, 8, 0, 0);
         const end = new Date(year, targetMonth, day, 9, 30, 0);
         const diffWeeks = Math.round((start.getTime() - LC_WEEKLY_ANCHOR.getTime()) / (7 * 24 * 3600 * 1000));
+        const weekNum = 400 + diffWeeks;
+
+        contests.push({
+          id: `lc-weekly-${year}-${targetMonth + 1}-${day}`,
+          title: `LeetCode Weekly Contest ${weekNum}`,
+          platform: 'LeetCode',
+          startTime: start.toISOString(),
+          endTime: end.toISOString(),
+          durationMinutes: 90,
+          url: `https://leetcode.com/contest/weekly-contest-${weekNum}/`,
+          difficulty: 'Rated for All',
+          subscribersCount: 24500,
+        });
+      }
+
+      // 2. CodeChef Starters (Every Wednesday 08:00 PM - 10:00 PM IST)
+      if (dayOfWeek === 3) {
