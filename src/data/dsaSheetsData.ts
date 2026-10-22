@@ -148,4 +148,54 @@ export const NEETCODE_150_SHEET: DsaSheet = {
           id: 'nc-tr-1',
           title: 'Binary Tree Traversals & Recursion',
           problems: [
+            { id: 'nc-46', title: 'Invert Binary Tree', difficulty: 'Easy', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/invert-binary-tree/', youtubeUrl: 'https://www.youtube.com/watch?v=OnSn2XEQ4MY', companies: ['Google'], tags: ['Tree'] },
+            { id: 'nc-47', title: 'Maximum Depth of Binary Tree', difficulty: 'Easy', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/maximum-depth-of-binary-tree/', youtubeUrl: 'https://www.youtube.com/watch?v=hTM3phVI6YQ', tags: ['Tree', 'DFS'] },
+            { id: 'nc-48', title: 'Diameter of Binary Tree', difficulty: 'Easy', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/diameter-of-binary-tree/', youtubeUrl: 'https://www.youtube.com/watch?v=bkxqA8Rfo04', companies: ['Meta', 'Amazon'], tags: ['Tree'] },
+            { id: 'nc-49', title: 'Balanced Binary Tree', difficulty: 'Easy', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/balanced-binary-tree/', youtubeUrl: 'https://www.youtube.com/watch?v=QfJsau0ItOY', tags: ['Tree'] },
+            { id: 'nc-50', title: 'Same Tree', difficulty: 'Easy', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/same-tree/', youtubeUrl: 'https://www.youtube.com/watch?v=vRbbcKXCxOw', tags: ['Tree'] },
+            { id: 'nc-51', title: 'Subtree of Another Tree', difficulty: 'Easy', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/subtree-of-another-tree/', youtubeUrl: 'https://www.youtube.com/watch?v=E36O5SWp-LE', companies: ['Amazon'], tags: ['Tree'] },
+            { id: 'nc-52', title: 'Lowest Common Ancestor of a BST', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-search-tree/', youtubeUrl: 'https://www.youtube.com/watch?v=gs2LMfuOR9k', companies: ['Amazon'], tags: ['BST'] },
+            { id: 'nc-53', title: 'Binary Tree Level Order Traversal', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/binary-tree-level-order-traversal/', youtubeUrl: 'https://www.youtube.com/watch?v=6ZnyEApgFYg', companies: ['Amazon', 'Microsoft'], tags: ['BFS', 'Tree'] },
+            { id: 'nc-54', title: 'Binary Tree Right Side View', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/binary-tree-right-side-view/', youtubeUrl: 'https://www.youtube.com/watch?v=d4zLyf32e3I', companies: ['Meta'], tags: ['BFS', 'DFS'] },
+            { id: 'nc-55', title: 'Count Good Nodes in Binary Tree', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/count-good-nodes-in-binary-tree/', youtubeUrl: 'https://www.youtube.com/watch?v=7cp5imvDzl4', tags: ['Tree', 'DFS'] },
+            { id: 'nc-56', title: 'Validate Binary Search Tree', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/validate-binary-search-tree/', youtubeUrl: 'https://www.youtube.com/watch?v=s6ATEkipzow', companies: ['Amazon', 'Microsoft'], tags: ['BST'] },
+            { id: 'nc-57', title: 'Kth Smallest Element in a BST', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/kth-smallest-element-in-a-bst/', youtubeUrl: 'https://www.youtube.com/watch?v=5LUXSvKTGCg', companies: ['Amazon', 'Uber'], tags: ['BST'] },
+            { id: 'nc-58', title: 'Construct Binary Tree from Preorder and Inorder Traversal', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/construct-binary-tree-from-preorder-and-inorder-traversal/', youtubeUrl: 'https://www.youtube.com/watch?v=ihj4IQGZ2zc', companies: ['Amazon', 'Microsoft'], tags: ['Tree'] },
+            { id: 'nc-59', title: 'Binary Tree Maximum Path Sum', difficulty: 'Hard', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/binary-tree-maximum-path-sum/', youtubeUrl: 'https://www.youtube.com/watch?v=Hr5cWUld4vU', companies: ['Meta', 'Google'], tags: ['Tree', 'DFS'] },
+            { id: 'nc-60', title: 'Serialize and Deserialize Binary Tree', difficulty: 'Hard', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/serialize-and-deserialize-binary-tree/', youtubeUrl: 'https://www.youtube.com/watch?v=u4JAi2JJhIg', companies: ['Google', 'Meta'], tags: ['Tree', 'Design'] },
+          ],
+        },
+      ],
+    },
+    {
+      id: 'nc-tries',
+      title: 'Tries (3 Problems)',
+      lectures: [
+        {
+          id: 'nc-tr-tries',
+          title: 'Prefix Tree Implementations',
+          problems: [
+            { id: 'nc-61', title: 'Implement Trie (Prefix Tree)', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/implement-trie-prefix-tree/', youtubeUrl: 'https://www.youtube.com/watch?v=oobqoCJlHA0', companies: ['Google', 'Amazon'], tags: ['Trie'] },
+            { id: 'nc-62', title: 'Design Add and Search Words Data Structure', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/design-add-and-search-words-data-structure/', youtubeUrl: 'https://www.youtube.com/watch?v=BTf05gs_8iU', companies: ['Meta'], tags: ['Trie'] },
+            { id: 'nc-63', title: 'Word Search II', difficulty: 'Hard', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/word-search-ii/', youtubeUrl: 'https://www.youtube.com/watch?v=asbcE9mZz_U', companies: ['Uber', 'Microsoft'], tags: ['Trie', 'Backtracking'] },
+          ],
+        },
+      ],
+    },
+    {
+      id: 'nc-heap',
+      title: 'Heap / Priority Queue (7 Problems)',
+      lectures: [
+        {
+          id: 'nc-hp-1',
+          title: 'Min-Heap & Stream Processing',
+          problems: [
+            { id: 'nc-64', title: 'Kth Largest Element in a Stream', difficulty: 'Easy', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/kth-largest-element-in-a-stream/', youtubeUrl: 'https://www.youtube.com/watch?v=hOjcdrqMoQ8', tags: ['Heap'] },
+            { id: 'nc-65', title: 'Last Stone Weight', difficulty: 'Easy', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/last-stone-weight/', youtubeUrl: 'https://www.youtube.com/watch?v=B-QCq79-Vfw', tags: ['Heap'] },
+            { id: 'nc-66', title: 'K Closest Points to Origin', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/k-closest-points-to-origin/', youtubeUrl: 'https://www.youtube.com/watch?v=rI2EBUEMfTk', companies: ['Amazon', 'Meta'], tags: ['Heap'] },
+            { id: 'nc-67', title: 'Kth Largest Element in an Array', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/kth-largest-element-in-an-array/', youtubeUrl: 'https://www.youtube.com/watch?v=XEmy138QB9Q', companies: ['Amazon', 'Google'], tags: ['Heap', 'QuickSelect'] },
+            { id: 'nc-68', title: 'Task Scheduler', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/task-scheduler/', youtubeUrl: 'https://www.youtube.com/watch?v=s8p8ukTyA2I', companies: ['Meta', 'Amazon'], tags: ['Heap', 'Greedy'] },
+            { id: 'nc-69', title: 'Design Twitter', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/design-twitter/', youtubeUrl: 'https://www.youtube.com/watch?v=pNichitDD2E', companies: ['Twitter', 'Amazon'], tags: ['Heap', 'Design'] },
+            { id: 'nc-70', title: 'Find Median from Data Stream', difficulty: 'Hard', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/find-median-from-data-stream/', youtubeUrl: 'https://www.youtube.com/watch?v=itmhHWaHupI', companies: ['Google', 'Amazon'], tags: ['Heap', 'Two Heaps'] },
+          ],
 ];
