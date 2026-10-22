@@ -48,4 +48,54 @@ export const NEETCODE_150_SHEET: DsaSheet = {
       id: 'nc-two-pointers',
       title: 'Two Pointers (5 Problems)',
       lectures: [
+        {
+          id: 'nc-tp-1',
+          title: 'Opposite & Dynamic Two Pointers',
+          problems: [
+            { id: 'nc-10', title: 'Valid Palindrome', difficulty: 'Easy', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/valid-palindrome/', youtubeUrl: 'https://www.youtube.com/watch?v=0h3j2v5z42E', tags: ['Two Pointers'] },
+            { id: 'nc-11', title: 'Two Sum II - Input Array Is Sorted', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/two-sum-ii-input-array-is-sorted/', youtubeUrl: 'https://www.youtube.com/watch?v=cQ1Oz4ckcMM', tags: ['Two Pointers'] },
+            { id: 'nc-12', title: '3Sum', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/3sum/', youtubeUrl: 'https://www.youtube.com/watch?v=jzZsG8n2R9A', companies: ['Meta', 'Amazon'], tags: ['Two Pointers'] },
+            { id: 'nc-13', title: 'Container With Most Water', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/container-with-most-water/', youtubeUrl: 'https://www.youtube.com/watch?v=UuiTKBwPgAo', companies: ['Google', 'Amazon'], tags: ['Two Pointers'] },
+            { id: 'nc-14', title: 'Trapping Rain Water', difficulty: 'Hard', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/trapping-rain-water/', youtubeUrl: 'https://www.youtube.com/watch?v=ZI2z5pq0TqA', companies: ['Google', 'Amazon', 'Microsoft'], tags: ['Two Pointers', 'Stack'] },
+          ],
+        },
+      ],
+    },
+    {
+      id: 'nc-sliding-window',
+      title: 'Sliding Window (6 Problems)',
+      lectures: [
+        {
+          id: 'nc-sw-1',
+          title: 'Fixed & Variable Window Sequences',
+          problems: [
+            { id: 'nc-15', title: 'Best Time to Buy and Sell Stock', difficulty: 'Easy', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/best-time-to-buy-and-sell-stock/', youtubeUrl: 'https://www.youtube.com/watch?v=1pkOGxDNx5M', tags: ['Sliding Window'] },
+            { id: 'nc-16', title: 'Longest Substring Without Repeating Characters', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/longest-substring-without-repeating-characters/', youtubeUrl: 'https://www.youtube.com/watch?v=wiGpQwVHdE0', companies: ['Amazon', 'Google', 'Meta'], tags: ['Sliding Window', 'Hashmap'] },
+            { id: 'nc-17', title: 'Longest Repeating Character Replacement', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/longest-repeating-character-replacement/', youtubeUrl: 'https://www.youtube.com/watch?v=gqXU1UyA8pk', companies: ['Google'], tags: ['Sliding Window'] },
+            { id: 'nc-18', title: 'Permutation in String', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/permutation-in-string/', youtubeUrl: 'https://www.youtube.com/watch?v=UbyhOgBN834', companies: ['Microsoft'], tags: ['Sliding Window'] },
+            { id: 'nc-19', title: 'Minimum Window Substring', difficulty: 'Hard', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/minimum-window-substring/', youtubeUrl: 'https://www.youtube.com/watch?v=jSto0O4AJbM', companies: ['Meta', 'Uber', 'Google'], tags: ['Sliding Window'] },
+            { id: 'nc-20', title: 'Sliding Window Maximum', difficulty: 'Hard', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/sliding-window-maximum/', youtubeUrl: 'https://www.youtube.com/watch?v=DfljaUwZsOk', companies: ['Amazon', 'Google'], tags: ['Monotonic Queue'] },
+          ],
+        },
+      ],
+    },
+    {
+      id: 'nc-stack',
+      title: 'Stack (7 Problems)',
+      lectures: [
+        {
+          id: 'nc-st-1',
+          title: 'LIFO & Monotonic Stack Patterns',
+          problems: [
+            { id: 'nc-21', title: 'Valid Parentheses', difficulty: 'Easy', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/valid-parentheses/', youtubeUrl: 'https://www.youtube.com/watch?v=WTzjTskDFMg', companies: ['Google', 'Meta', 'Amazon'], tags: ['Stack'] },
+            { id: 'nc-22', title: 'Min Stack', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/min-stack/', youtubeUrl: 'https://www.youtube.com/watch?v=qkLl7nAwDPo', companies: ['Amazon', 'Microsoft'], tags: ['Stack', 'Design'] },
+            { id: 'nc-23', title: 'Evaluate Reverse Polish Notation', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/evaluate-reverse-polish-notation/', youtubeUrl: 'https://www.youtube.com/watch?v=iu0082c4H_g', tags: ['Stack'] },
+            { id: 'nc-24', title: 'Generate Parentheses', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/generate-parentheses/', youtubeUrl: 'https://www.youtube.com/watch?v=s9fokUqJ76A', companies: ['Amazon', 'Google'], tags: ['Stack', 'Backtracking'] },
+            { id: 'nc-25', title: 'Daily Temperatures', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/daily-temperatures/', youtubeUrl: 'https://www.youtube.com/watch?v=cTBiBSnjO3c', companies: ['Google', 'Meta'], tags: ['Monotonic Stack'] },
+            { id: 'nc-26', title: 'Car Fleet', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/car-fleet/', youtubeUrl: 'https://www.youtube.com/watch?v=Pr6T-3yB9RM', tags: ['Monotonic Stack', 'Sorting'] },
+            { id: 'nc-27', title: 'Largest Rectangle in Histogram', difficulty: 'Hard', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/largest-rectangle-in-histogram/', youtubeUrl: 'https://www.youtube.com/watch?v=zx5Sw9130L0', companies: ['Amazon', 'Google'], tags: ['Monotonic Stack'] },
+          ],
+        },
+      ],
+    },
 ];
