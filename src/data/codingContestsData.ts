@@ -32,3 +32,20 @@ export function deduplicateContests(contests: ContestEvent[]): ContestEvent[] {
  */
 export function getPredictableContests(baseDate: Date = new Date()): ContestEvent[] {
   const contests: ContestEvent[] = [];
+  const year = baseDate.getFullYear();
+  const month = baseDate.getMonth();
+
+  // Generate for past month (-1), current month (0), and active upcoming window (+1 up to 21 days)
+  for (let mOffset = -1; mOffset <= 1; mOffset++) {
+    const targetMonth = month + mOffset;
+    const maxDays = mOffset === 1 ? 21 : new Date(year, targetMonth + 1, 0).getDate();
+
+    for (let day = 1; day <= maxDays; day++) {
+      const date = new Date(year, targetMonth, day);
+      const dayOfWeek = date.getDay(); // 0 = Sun, 3 = Wed, 4 = Thu, 6 = Sat
+
+      // 1. LeetCode Weekly Contest (Every Sunday 08:00 AM - 09:30 AM IST)
+      if (dayOfWeek === 0) {
+        const start = new Date(year, targetMonth, day, 8, 0, 0);
+        const end = new Date(year, targetMonth, day, 9, 30, 0);
+        const diffWeeks = Math.round((start.getTime() - LC_WEEKLY_ANCHOR.getTime()) / (7 * 24 * 3600 * 1000));
