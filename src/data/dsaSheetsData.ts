@@ -298,4 +298,54 @@ export const NEETCODE_150_SHEET: DsaSheet = {
           title: 'Grids & String Subsequences',
           problems: [
             { id: 'nc-111', title: 'Unique Paths', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/unique-paths/', youtubeUrl: 'https://www.youtube.com/watch?v=IlEsdxuD4lY', companies: ['Amazon', 'Google'], tags: ['DP'] },
+            { id: 'nc-112', title: 'Longest Common Subsequence', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/longest-common-subsequence/', youtubeUrl: 'https://www.youtube.com/watch?v=Ua0GhsJSlWM', companies: ['Amazon'], tags: ['DP'] },
+            { id: 'nc-113', title: 'Best Time to Buy and Sell Stock with Cooldown', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/best-time-to-buy-and-sell-stock-with-cooldown/', youtubeUrl: 'https://www.youtube.com/watch?v=I7j0F7AHpb8', tags: ['DP'] },
+            { id: 'nc-114', title: 'Coin Change II', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/coin-change-ii/', youtubeUrl: 'https://www.youtube.com/watch?v=Mjy4hd2xgrs', tags: ['DP'] },
+            { id: 'nc-115', title: 'Target Sum', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/target-sum/', youtubeUrl: 'https://www.youtube.com/watch?v=g0npyaQtAQM', tags: ['DP'] },
+            { id: 'nc-116', title: 'Interleaving String', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/interleaving-string/', youtubeUrl: 'https://www.youtube.com/watch?v=3Rw3p9LrgvE', tags: ['DP'] },
+            { id: 'nc-117', title: 'Longest Increasing Path in a Matrix', difficulty: 'Hard', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/longest-increasing-path-in-a-matrix/', youtubeUrl: 'https://www.youtube.com/watch?v=wCc_nd-GiEc', companies: ['Google'], tags: ['DP', 'DFS'] },
+            { id: 'nc-118', title: 'Distinct Subsequences', difficulty: 'Hard', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/distinct-subsequences/', youtubeUrl: 'https://www.youtube.com/watch?v=-RDzMJ33nx8', tags: ['DP'] },
+            { id: 'nc-119', title: 'Edit Distance', difficulty: 'Hard', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/edit-distance/', youtubeUrl: 'https://www.youtube.com/watch?v=XYi2-LPrv4A', companies: ['Google', 'Amazon'], tags: ['DP'] },
+            { id: 'nc-120', title: 'Burst Balloons', difficulty: 'Hard', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/burst-balloons/', youtubeUrl: 'https://www.youtube.com/watch?v=VFskby7lUbw', tags: ['DP'] },
+            { id: 'nc-121', title: 'Regular Expression Matching', difficulty: 'Hard', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/regular-expression-matching/', youtubeUrl: 'https://www.youtube.com/watch?v=HAA8mgxlov8', companies: ['Google', 'Meta'], tags: ['DP'] },
+          ],
+        },
+      ],
+    },
+    {
+      id: 'nc-greedy',
+      title: 'Greedy (8 Problems)',
+      lectures: [
+        {
+          id: 'nc-grd-1',
+          title: 'Local Optimal Decisions',
+          problems: [
+            { id: 'nc-122', title: 'Maximum Subarray', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/maximum-subarray/', youtubeUrl: 'https://www.youtube.com/watch?v=5WZl3MMT0Eg', companies: ['Amazon', 'Microsoft'], tags: ['Greedy', 'Kadane'] },
+            { id: 'nc-123', title: 'Jump Game', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/jump-game/', youtubeUrl: 'https://www.youtube.com/watch?v=Yan0cv2cLy8', companies: ['Amazon'], tags: ['Greedy'] },
+            { id: 'nc-124', title: 'Jump Game II', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/jump-game-ii/', youtubeUrl: 'https://www.youtube.com/watch?v=dJ7sWiOoK7g', companies: ['Amazon', 'Google'], tags: ['Greedy'] },
+            { id: 'nc-125', title: 'Gas Station', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/gas-station/', youtubeUrl: 'https://www.youtube.com/watch?v=lJwbPZGo05A', tags: ['Greedy'] },
+            { id: 'nc-126', title: 'Hand of Straights', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/hand-of-straights/', youtubeUrl: 'https://www.youtube.com/watch?v=amnrMCVd2YI', tags: ['Greedy'] },
+            { id: 'nc-127', title: 'Merge Triplets to Form Target Triplet', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/merge-triplets-to-form-target-triplet/', youtubeUrl: 'https://www.youtube.com/watch?v=kKAO_D1r7yA', tags: ['Greedy'] },
+            { id: 'nc-128', title: 'Partition Labels', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/partition-labels/', youtubeUrl: 'https://www.youtube.com/watch?v=B7m8UmZE-vw', companies: ['Amazon'], tags: ['Greedy'] },
+            { id: 'nc-129', title: 'Valid Parenthesis String', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/valid-parenthesis-string/', youtubeUrl: 'https://www.youtube.com/watch?v=QhPdNS143Rs', tags: ['Greedy'] },
+          ],
+        },
+      ],
+    },
+    {
+      id: 'nc-intervals',
+      title: 'Intervals (6 Problems)',
+      lectures: [
+        {
+          id: 'nc-int-1',
+          title: 'Range Merging & Scheduling',
+          problems: [
+            { id: 'nc-130', title: 'Insert Interval', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/insert-interval/', youtubeUrl: 'https://www.youtube.com/watch?v=A8NUOmlwOlM', companies: ['Google'], tags: ['Intervals'] },
+            { id: 'nc-131', title: 'Merge Intervals', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/merge-intervals/', youtubeUrl: 'https://www.youtube.com/watch?v=44H3cEC2fFM', companies: ['Google', 'Amazon', 'Meta'], tags: ['Intervals'] },
+            { id: 'nc-132', title: 'Non-overlapping Intervals', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/non-overlapping-intervals/', youtubeUrl: 'https://www.youtube.com/watch?v=nONCGxWoUfM', tags: ['Intervals'] },
+            { id: 'nc-133', title: 'Meeting Rooms', difficulty: 'Easy', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/meeting-rooms/', youtubeUrl: 'https://www.youtube.com/watch?v=PaJxqZVPhkq', tags: ['Intervals'] },
+            { id: 'nc-134', title: 'Meeting Rooms II', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/meeting-rooms-ii/', youtubeUrl: 'https://www.youtube.com/watch?v=FdzJmTCVyJU', companies: ['Google', 'Amazon'], tags: ['Intervals', 'Heap'] },
+            { id: 'nc-135', title: 'Minimum Interval to Include Each Query', difficulty: 'Hard', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/minimum-interval-to-include-each-query/', youtubeUrl: 'https://www.youtube.com/watch?v=5hQ5WWW5awQ', tags: ['Intervals', 'Heap'] },
+          ],
+        },
 ];
