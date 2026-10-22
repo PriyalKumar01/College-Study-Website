@@ -568,4 +568,34 @@ export const RISING_BRAIN_STEPS: DsaStep[] = [
   },
   {
     id: 'rb-step-11',
+    title: 'Pattern 11: Binary Search Tree (Validation & Search)',
+    lectures: [
+      {
+        id: 'rb-l11-1',
+        title: 'BST Invariant Tracking',
+        problems: [
+          {
+            id: 'rb-45',
+            title: 'Validate Binary Search Tree',
+            difficulty: 'Medium',
+            platform: 'LeetCode',
+            problemUrl: 'https://leetcode.com/problems/validate-binary-search-tree/',
+            youtubeUrl: 'https://www.youtube.com/results?search_query=rising+brain+validate+bst+java',
+            companies: ['Amazon', 'Microsoft', 'Meta'],
+            tags: ['BST', 'DFS'],
+          },
+          {
+            id: 'rb-46',
+            title: 'Kth Smallest Element in a BST',
+            difficulty: 'Medium',
+            platform: 'LeetCode',
+            problemUrl: 'https://leetcode.com/problems/kth-smallest-element-in-a-bst/',
+            youtubeUrl: 'https://www.youtube.com/results?search_query=rising+brain+kth+smallest+element+bst+java',
+            companies: ['Amazon', 'Google'],
+            tags: ['BST', 'DFS'],
+          },
+          {
+            id: 'rb-47',
+            title: 'Lowest Common Ancestor of a Binary Search Tree',
+            difficulty: 'Medium',
 ];
