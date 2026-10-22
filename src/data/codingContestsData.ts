@@ -219,3 +219,20 @@ export async function fetchLiveCodeforcesContests(): Promise<ContestEvent[]> {
         const startMs = c.startTimeSeconds * 1000;
         const durMinutes = Math.round((c.durationSeconds || 7200) / 60);
         const endMs = startMs + durMinutes * 60 * 1000;
+
+        return {
+          id: `cf-official-${c.id}`,
+          title: c.name,
+          platform: 'Codeforces',
+          startTime: new Date(startMs).toISOString(),
+          endTime: new Date(endMs).toISOString(),
+          durationMinutes: durMinutes,
+          url: `https://codeforces.com/contest/${c.id}`,
+          difficulty: c.type || 'Rated Round',
+          subscribersCount: 16500,
+        };
+      });
+
+    const deduplicatedCF = deduplicateContests(cfContests);
+
+    // Save to localStorage
