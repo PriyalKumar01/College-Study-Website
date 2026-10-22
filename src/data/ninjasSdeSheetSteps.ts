@@ -1186,4 +1186,40 @@ export const NINJAS_SDE_STEPS: DsaStep[] = [
             difficulty: 'Medium',
             platform: 'Code360',
             problemUrl: 'https://www.naukri.com/code360/problems/bellman-ford_2041977',
+            youtubeUrl: 'https://www.youtube.com/results?search_query=bellman+ford+code360',
+            companies: ['Google', 'Amazon'],
+            tags: ['Graph', 'Dynamic Programming'],
+          },
+          {
+            id: 'c360-109',
+            title: "Kruskal's Minimum Spanning Tree (Disjoint Set Union)",
+            difficulty: 'Medium',
+            platform: 'Code360',
+            problemUrl: 'https://www.naukri.com/code360/problems/kruskal-s-minimum-spanning-tree_1082553',
+            youtubeUrl: 'https://www.youtube.com/results?search_query=kruskals+minimum+spanning+tree+code360',
+            companies: ['Amazon', 'Microsoft'],
+            tags: ['Graph', 'Disjoint Set'],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'code360-step-10',
+    title: 'Chapter 10: Dynamic Programming (14 Problems)',
+    lectures: [
+      {
+        id: 'code360-l10-1',
+        title: 'Optimal Substructure, Knapsack & Matrix DP',
+        problems: [
+          {
+            id: 'c360-110',
+            title: 'Maximum Product Subarray',
+            difficulty: 'Medium',
+            platform: 'Code360',
+            problemUrl: 'https://www.naukri.com/code360/problems/maximum-product-subarray_1115474',
+            youtubeUrl: 'https://www.youtube.com/results?search_query=maximum+product+subarray+code360',
+            companies: ['Google', 'Amazon', 'Microsoft'],
+            tags: ['Dynamic Programming'],
+          },
 ];
