@@ -168,3 +168,20 @@ function getCachedCodeforcesContests(): ContestEvent[] {
 }
 
 /**
+ * Returns merged contest schedule (deterministic schedules + real cached Codeforces contests).
+ * Deduplicated strictly so no duplicate events exist!
+ */
+export function getContestSchedule(baseDate: Date = new Date()): ContestEvent[] {
+  const predictable = getPredictableContests(baseDate);
+  const codeforces = getCachedCodeforcesContests();
+
+  const combined = [...predictable, ...codeforces];
+  return deduplicateContests(combined);
+}
+
+/**
+ * Fetches real Codeforces contests from official Codeforces API and updates cache.
+ * Filters upcoming and recently finished rounds.
+ */
+export async function fetchLiveCodeforcesContests(): Promise<ContestEvent[]> {
+  try {
