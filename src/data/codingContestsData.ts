@@ -151,3 +151,20 @@ export function getPredictableContests(baseDate: Date = new Date()): ContestEven
 }
 
 /**
+ * Parses cached Codeforces contests from localStorage or returns empty array.
+ */
+function getCachedCodeforcesContests(): ContestEvent[] {
+  try {
+    const raw = localStorage.getItem('csh_codeforces_contests');
+    if (!raw) return [];
+    const parsed = JSON.parse(raw);
+    if (Array.isArray(parsed.contests)) {
+      return parsed.contests;
+    }
+  } catch {
+    // Ignore cache parse errors
+  }
+  return [];
+}
+
+/**
