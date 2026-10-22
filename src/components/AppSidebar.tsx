@@ -5,13 +5,11 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@/contexts/AuthContext';
 import { useTheme } from '@/providers/ThemeProvider';
-import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
   ChevronLeft,
   ChevronRight,
   Calculator,
-  Users,
   Award,
   Briefcase,
   BookOpen,
@@ -21,18 +19,16 @@ import {
   LogOut,
   Moon,
   Sun,
-  Edit,
   GraduationCap,
   FileText,
   Laptop,
   Home,
-  BadgeCheck,
   Shield,
   Crown,
   Lock,
   Trophy,
-  Globe,
-  ExternalLink
+  ExternalLink,
+  ChevronDown
 } from 'lucide-react';
 
 interface AppSidebarProps {
@@ -43,7 +39,17 @@ interface NavItem {
   icon: React.ReactNode;
   label: string;
   href: string;
+  badge?: {
+    text: string;
+    className: string;
+  };
+  openInNewTab?: boolean;
   children?: NavItem[];
+}
+
+interface NavSection {
+  title: string;
+  items: NavItem[];
 }
 
 const AppSidebar = ({ className }: AppSidebarProps) => {
@@ -54,7 +60,6 @@ const AppSidebar = ({ className }: AppSidebarProps) => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Local state for profile avatar to override metadata if available
   const [profileAvatar, setProfileAvatar] = useState<string | null>(() => {
     try {
       return user?.id ? sessionStorage.getItem(`cached_avatar_${user.id}`) : null;
@@ -62,6 +67,7 @@ const AppSidebar = ({ className }: AppSidebarProps) => {
       return null;
     }
   });
+
   const [oppCount, setOppCount] = useState<number | null>(() => {
     try {
       const cached = sessionStorage.getItem('cached_opp_count');
@@ -73,7 +79,7 @@ const AppSidebar = ({ className }: AppSidebarProps) => {
     return null;
   });
 
-  const PREMIUM_PLANS = ['companies', 'hr_emails', 'resume', 'roadmaps'];
+  const PREMIUM_PLANS_COUNT = 4;
 
   useEffect(() => {
     if (user?.id && !profileAvatar) {
@@ -93,7 +99,6 @@ const AppSidebar = ({ className }: AppSidebarProps) => {
           console.error("Error fetching avatar:", e);
         }
       };
-
       fetchProfileAvatar();
     }
   }, [user?.id, profileAvatar]);
@@ -123,10 +128,8 @@ const AppSidebar = ({ className }: AppSidebarProps) => {
 
   const userEmail = user?.email || '';
   const userMetadata = user?.user_metadata || {};
-
   const firstName = userMetadata.first_name || userEmail.split('@')[0];
   const lastName = userMetadata.last_name || '';
-  // Prioritize locally fetched profile avatar (DB) over auth metadata (Google picture fallback)
   const avatarUrl = profileAvatar?.trim() || userMetadata.avatar_url?.trim() || userMetadata.picture?.trim() || '';
 
   const getInitials = () => {
@@ -136,195 +139,111 @@ const AppSidebar = ({ className }: AppSidebarProps) => {
     return firstName ? firstName[0].toUpperCase() : 'U';
   };
 
-  const navItems: NavItem[] = [
-    { icon: <Home className="h-4 w-4" />, label: 'Home', href: '/' },
+  // Structured Sections (Codolio Professional Architecture)
+  const navSections: NavSection[] = [
     {
-      icon: <BookOpen className="h-4 w-4" />,
-      label: 'Notes',
-      href: '/notes',
-      children: [
-        { icon: <GraduationCap className="h-4 w-4" />, label: 'BTech Notes', href: '/btech-notes' },
-        { icon: <GraduationCap className="h-4 w-4" />, label: 'BS-MS Notes', href: '/bsms-notes' },
-        { icon: <FileText className="h-4 w-4" />, label: 'BBA Notes', href: '/bba-notes' },
-        { icon: <FileText className="h-4 w-4" />, label: 'MBA Notes', href: '/mba-notes' },
-        { icon: <Code className="h-4 w-4" />, label: 'DSA', href: '/dsa-notes' },
-        { icon: <Laptop className="h-4 w-4" />, label: 'Development', href: '/web-development-notes' },
-        { icon: <Code className="h-4 w-4" />, label: 'Coding Notes', href: '/coding-study-material' },
-      ]
+      title: 'Overview',
+      items: [
+        { icon: <Home className="h-4 w-4" />, label: 'Home', href: '/' },
+      ],
     },
-    { icon: <Trophy className="h-4 w-4" />, label: 'Gate Study', href: '/gate-study' },
-    { icon: <Calculator className="h-4 w-4" />, label: 'CGPA Calculator', href: '/cgpa-calculator' },
-    { icon: <Lock className="h-4 w-4" />, label: `Premium Content (${PREMIUM_PLANS.length})`, href: '/premium-content' },
-    { icon: <Award className="h-4 w-4" />, label: 'Scholarships', href: '/scholarship-portal' },
-    { icon: <Briefcase className="h-4 w-4" />, label: `Opportunities${oppCount !== null ? ` (${oppCount})` : ''}`, href: '/opportunities' },
-    { icon: <Brain className="h-4 w-4" />, label: '500+ AI Tools', href: '/useful-ai-tools' },
-    { icon: <Award className="h-4 w-4" />, label: 'Contributors', href: '/notes-contributors' },
-    { icon: <Info className="h-4 w-4" />, label: 'About', href: '/about' },
-    // Conditional admin/owner items
-    ...(isAdmin ? [{ icon: <Shield className="h-4 w-4" />, label: 'Admin Portal', href: '/admin-portal' }] : []),
-    ...(isOwner ? [{ icon: <Crown className="h-4 w-4" />, label: 'Owner Dashboard', href: '/owner-dashboard' }] : []),
+    {
+      title: 'Academics',
+      items: [
+        {
+          icon: <BookOpen className="h-4 w-4" />,
+          label: 'Notes',
+          href: '/notes',
+          children: [
+            { icon: <GraduationCap className="h-3.5 w-3.5" />, label: 'BTech Notes', href: '/btech-notes' },
+            { icon: <GraduationCap className="h-3.5 w-3.5" />, label: 'BS-MS Notes', href: '/bsms-notes' },
+            { icon: <FileText className="h-3.5 w-3.5" />, label: 'BBA Notes', href: '/bba-notes' },
+            { icon: <FileText className="h-3.5 w-3.5" />, label: 'MBA Notes', href: '/mba-notes' },
+            { icon: <Code className="h-3.5 w-3.5" />, label: 'DSA', href: '/dsa-notes' },
+            { icon: <Laptop className="h-3.5 w-3.5" />, label: 'Development', href: '/web-development-notes' },
+            { icon: <Code className="h-3.5 w-3.5" />, label: 'Coding Notes', href: '/coding-study-material' },
+          ],
+        },
+        {
+          icon: <Trophy className="h-4 w-4 text-emerald-400" />,
+          label: 'Gate Study',
+          href: '/gate-study',
+          badge: { text: 'NEW', className: 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/25' },
+        },
+        {
+          icon: <Calculator className="h-4 w-4" />,
+          label: 'CGPA Calculator',
+          href: '/cgpa-calculator',
+        },
+      ],
+    },
+    {
+      title: 'Career & Coding',
+      items: [
+        {
+          icon: <Code className="h-4 w-4 text-emerald-400" />,
+          label: 'Coding Space',
+          href: '/coding-space',
+          badge: { text: 'NEW', className: 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/25' },
+        },
+        {
+          icon: <Lock className="h-4 w-4 text-amber-400" />,
+          label: `Premium Content (${PREMIUM_PLANS_COUNT})`,
+          href: '/premium-content',
+          badge: { text: 'PRO', className: 'bg-amber-500/10 text-amber-400 border border-amber-500/25' },
+        },
+        {
+          icon: <Briefcase className="h-4 w-4" />,
+          label: `Opportunities${oppCount !== null ? ` (${oppCount})` : ''}`,
+          href: '/opportunities',
+          badge: oppCount ? { text: `${oppCount}`, className: 'bg-blue-500/10 text-blue-400 border border-blue-500/20' } : undefined,
+        },
+        {
+          icon: <Award className="h-4 w-4" />,
+          label: 'Scholarships',
+          href: '/scholarship-portal',
+        },
+      ],
+    },
+    {
+      title: 'Tools & Community',
+      items: [
+        { icon: <Brain className="h-4 w-4" />, label: '500+ AI Tools', href: '/useful-ai-tools' },
+        { icon: <Award className="h-4 w-4" />, label: 'Contributors', href: '/notes-contributors' },
+        { icon: <Info className="h-4 w-4" />, label: 'About', href: '/about' },
+      ],
+    },
+    ...(isAdmin || isOwner
+      ? [
+          {
+            title: 'Administration',
+            items: [
+              ...(isAdmin ? [{ icon: <Shield className="h-4 w-4 text-rose-400" />, label: 'Admin Portal', href: '/admin-portal', badge: { text: 'ADMIN', className: 'bg-rose-500/10 text-rose-400 border border-rose-500/25' } }] : []),
+              ...(isOwner ? [{ icon: <Crown className="h-4 w-4 text-amber-400" />, label: 'Owner Dashboard', href: '/owner-dashboard', badge: { text: 'OWNER', className: 'bg-amber-500/10 text-amber-400 border border-amber-500/25' } }] : []),
+            ],
+          },
+        ]
+      : []),
   ];
 
   useEffect(() => {
-    navItems.forEach(item => {
-      if (item.children && item.children.some(child => location.pathname === child.href)) {
-        const groupLabel = item.label.toLowerCase();
-        if (!expandedGroups.includes(groupLabel)) {
-          setExpandedGroups(prev => [...prev, groupLabel]);
+    navSections.forEach((section) => {
+      section.items.forEach((item) => {
+        if (item.children && item.children.some((child) => location.pathname === child.href)) {
+          const groupLabel = item.label.toLowerCase();
+          if (!expandedGroups.includes(groupLabel)) {
+            setExpandedGroups((prev) => [...prev, groupLabel]);
+          }
         }
-      }
+      });
     });
   }, [location.pathname]);
 
   const isActive = (href: string) => location.pathname === href;
 
-  const getItemStyles = (label: string, href: string) => {
-    const isAct = isActive(href);
-    
-    // Normalize label for comparison (handling dynamic opportunity count and premium plans)
-    const normalizedLabel = label.split(' (')[0].split('(')[0].trim().toLowerCase();
-
-    if (normalizedLabel.startsWith('premium content')) {
-      return {
-        container: isAct
-          ? 'bg-amber-500/15 border border-amber-500/40 text-amber-400 shadow-[0_0_12px_rgba(245,158,11,0.15)] font-semibold'
-          : 'bg-amber-500/5 hover:bg-amber-500/10 border border-amber-500/20 hover:border-amber-500/40 text-amber-400/90 hover:text-amber-400',
-        iconContainer: 'bg-gradient-to-br from-amber-400 to-yellow-600 text-slate-900 font-bold',
-        text: 'text-amber-400 font-semibold',
-        badge: { text: 'EXCLUSIVE', className: 'bg-amber-500/10 text-amber-400 border border-amber-500/20' }
-      };
-    }
-    if (normalizedLabel === 'gate study') {
-      return {
-        container: isAct
-          ? 'bg-emerald-500/15 border border-emerald-500/40 text-emerald-400 shadow-[0_0_12px_rgba(16,185,129,0.15)] font-semibold'
-          : 'bg-emerald-500/5 hover:bg-emerald-500/10 border border-emerald-500/20 hover:border-emerald-500/40 text-emerald-400/90 hover:text-emerald-400',
-        iconContainer: 'bg-gradient-to-br from-emerald-400 to-green-600 text-slate-900 font-bold',
-        text: 'text-emerald-400 font-semibold',
-        badge: { text: 'NEW', className: 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' }
-      };
-    }
-    if (normalizedLabel === 'notes') {
-      return {
-        container: isAct || expandedGroups.includes('notes')
-          ? 'bg-sky-500/15 border border-sky-500/40 text-sky-400 shadow-[0_0_12px_rgba(56,189,248,0.15)] font-semibold'
-          : 'bg-sky-500/5 hover:bg-sky-500/10 border border-sky-500/20 hover:border-sky-500/40 text-sky-400/90 hover:text-sky-400',
-        iconContainer: 'bg-gradient-to-br from-sky-400 to-blue-600 text-white',
-        text: 'text-sky-400 font-semibold',
-        badge: { text: 'MOST POPULAR', className: 'bg-sky-500/10 text-sky-400 border border-sky-500/20' }
-      };
-    }
-    if (normalizedLabel === 'scholarships') {
-      return {
-        container: isAct
-          ? 'bg-purple-500/15 border border-purple-500/40 text-purple-400 shadow-[0_0_12px_rgba(168,85,247,0.15)] font-semibold'
-          : 'bg-purple-500/5 hover:bg-purple-500/10 border border-purple-500/20 hover:border-purple-500/40 text-purple-400/90 hover:text-purple-400',
-        iconContainer: 'bg-gradient-to-br from-purple-400 to-indigo-600 text-white',
-        text: 'text-purple-400 font-semibold',
-        badge: { text: 'APPLY NOW', className: 'bg-purple-500/10 text-purple-400 border border-purple-500/20 animate-pulse' }
-      };
-    }
-    if (normalizedLabel === 'cgpa calculator') {
-      return {
-        container: isAct
-          ? 'bg-rose-500/15 border border-rose-500/40 text-rose-400 shadow-[0_0_12px_rgba(244,63,94,0.15)] font-semibold'
-          : 'bg-rose-500/5 hover:bg-rose-500/10 border border-rose-500/20 hover:border-rose-500/40 text-rose-400/90 hover:text-rose-400',
-        iconContainer: 'bg-gradient-to-br from-rose-400 to-pink-600 text-white',
-        text: 'text-rose-400 font-semibold',
-        badge: { text: 'QUICK', className: 'bg-rose-500/10 text-rose-400 border border-rose-500/20' }
-      };
-    }
-    if (normalizedLabel.startsWith('opportunities')) {
-      return {
-        container: isAct
-          ? 'bg-orange-500/15 border border-orange-500/40 text-orange-400 shadow-[0_0_12px_rgba(249,115,22,0.15)] font-semibold'
-          : 'bg-orange-500/5 hover:bg-orange-500/10 border border-orange-500/20 hover:border-orange-500/40 text-orange-400/90 hover:text-orange-400',
-        iconContainer: 'bg-gradient-to-br from-orange-400 to-red-600 text-white',
-        text: 'text-orange-400 font-semibold',
-        badge: { text: 'HIRING', className: 'bg-orange-500/10 text-orange-400 border border-orange-500/20' }
-      };
-    }
-    if (normalizedLabel.includes('ai tools')) {
-      return {
-        container: isAct
-          ? 'bg-violet-500/15 border border-violet-500/40 text-violet-400 shadow-[0_0_12px_rgba(139,92,246,0.15)] font-semibold'
-          : 'bg-violet-500/5 hover:bg-violet-500/10 border border-violet-500/20 hover:border-violet-500/40 text-violet-400/90 hover:text-violet-400',
-        iconContainer: 'bg-gradient-to-br from-violet-400 to-indigo-600 text-white',
-        text: 'text-violet-400 font-semibold',
-        badge: { text: 'SMART', className: 'bg-violet-500/10 text-violet-400 border border-violet-500/20' }
-      };
-    }
-    if (normalizedLabel === 'contributor list') {
-      return {
-        container: isAct
-          ? 'bg-teal-500/15 border border-teal-500/40 text-teal-400 shadow-[0_0_12px_rgba(20,184,166,0.15)] font-semibold'
-          : 'bg-teal-500/5 hover:bg-teal-500/10 border border-teal-500/20 hover:border-teal-500/40 text-teal-400/90 hover:text-teal-400',
-        iconContainer: 'bg-gradient-to-br from-teal-400 to-emerald-600 text-white',
-        text: 'text-teal-400 font-semibold',
-        badge: { text: 'HEROES', className: 'bg-teal-500/10 text-teal-400 border border-teal-500/20' }
-      };
-    }
-    if (normalizedLabel === 'home') {
-      return {
-        container: isAct
-          ? 'bg-blue-500/15 border border-blue-500/40 text-blue-400 shadow-[0_0_12px_rgba(59,130,246,0.15)] font-semibold'
-          : 'bg-slate-800/10 hover:bg-slate-800/30 border border-slate-800/60 hover:border-slate-700/50 text-slate-300 hover:text-white',
-        iconContainer: isAct
-          ? 'bg-gradient-to-br from-blue-400 to-indigo-600 text-white'
-          : 'bg-gradient-to-br from-slate-600 to-slate-800 text-slate-300 group-hover:from-blue-600 group-hover:to-indigo-700 group-hover:text-white',
-        text: isAct ? 'text-blue-400 font-semibold' : 'text-slate-300 group-hover:text-white',
-        badge: { text: 'EXPLORE', className: 'bg-slate-700/30 text-slate-400 border border-slate-700/50' }
-      };
-    }
-    if (normalizedLabel === 'about') {
-      return {
-        container: isAct
-          ? 'bg-slate-700 border border-slate-500 text-white font-semibold shadow-md'
-          : 'bg-slate-800/10 hover:bg-slate-800/30 border border-slate-800/60 hover:border-slate-700/50 text-slate-300 hover:text-white',
-        iconContainer: 'bg-gradient-to-br from-slate-500 to-slate-700 text-white',
-        text: isAct ? 'text-white font-semibold' : 'text-slate-300 group-hover:text-white',
-        badge: { text: 'INFO', className: 'bg-slate-700/30 text-slate-400 border border-slate-700/50' }
-      };
-    }
-    if (normalizedLabel === 'admin portal') {
-      return {
-        container: isAct
-          ? 'bg-red-500/15 border border-red-500/40 text-red-400 shadow-[0_0_12px_rgba(239,68,68,0.15)] font-semibold'
-          : 'bg-red-500/5 hover:bg-red-500/10 border border-red-500/20 hover:border-red-500/40 text-red-400/90 hover:text-red-400',
-        iconContainer: 'bg-gradient-to-br from-red-500 to-rose-700 text-white',
-        text: 'text-red-400 font-semibold',
-        badge: { text: 'ADMIN', className: 'bg-red-500/10 text-red-400 border border-red-500/20' }
-      };
-    }
-    if (normalizedLabel === 'owner dashboard') {
-      return {
-        container: isAct
-          ? 'bg-yellow-500/15 border border-yellow-500/40 text-yellow-400 shadow-[0_0_12px_rgba(234,179,8,0.15)] font-semibold'
-          : 'bg-yellow-500/5 hover:bg-yellow-500/10 border border-yellow-500/20 hover:border-yellow-500/40 text-yellow-400/90 hover:text-yellow-400',
-        iconContainer: 'bg-gradient-to-br from-yellow-400 to-amber-600 text-slate-900 font-bold',
-        text: 'text-yellow-400 font-semibold',
-        badge: { text: 'OWNER', className: 'bg-yellow-500/10 text-yellow-400 border border-yellow-500/20' }
-      };
-    }
-
-    // Default fallback
-    return {
-      container: isAct
-        ? 'bg-slate-800 border border-slate-700 text-white font-semibold'
-        : 'bg-slate-800/10 hover:bg-slate-800/30 border border-slate-800/60 hover:border-slate-700/50 text-slate-300 hover:text-white',
-      iconContainer: isAct
-        ? 'bg-gradient-to-br from-blue-500 to-indigo-600 text-white shadow-blue-500/20'
-        : 'bg-gradient-to-br from-slate-700 to-slate-800 text-slate-300 group-hover:from-blue-600 group-hover:to-indigo-700 group-hover:text-white',
-      text: isAct ? 'text-white' : 'text-slate-300 group-hover:text-white',
-      badge: null
-    };
-  };
-
   const toggleGroup = (label: string) => {
-    setExpandedGroups(prev =>
-      prev.includes(label)
-        ? prev.filter(g => g !== label)
-        : [...prev, label]
+    setExpandedGroups((prev) =>
+      prev.includes(label) ? prev.filter((g) => g !== label) : [...prev, label]
     );
   };
 
@@ -338,25 +257,27 @@ const AppSidebar = ({ className }: AppSidebarProps) => {
   return (
     <motion.aside
       initial={false}
-      animate={{ width: isCollapsed ? 80 : 280 }}
-      transition={{ duration: 0.3, type: "spring", stiffness: 100, damping: 20 }}
-      className={`h-full bg-slate-900/95 border-r border-slate-800 flex flex-col text-slate-100 ${className}`}
+      animate={{ width: isCollapsed ? 76 : 270 }}
+      transition={{ duration: 0.35, ease: [0.25, 0.1, 0.25, 1.0] }}
+      className={`h-full bg-slate-900 border-r border-slate-800 flex flex-col text-slate-100 select-none ${className}`}
     >
-      {/* Profile Section */}
-      <div className="p-4 mb-2">
+      {/* Top Header & User Profile */}
+      <div className="p-3 border-b border-slate-800/80 flex items-center justify-between gap-2">
         <div
           onClick={() => navigate('/profile')}
-          className={`flex ${isCollapsed ? 'justify-center' : 'items-center gap-3'} p-2 rounded-xl cursor-pointer hover:bg-slate-800/50 transition-all border border-transparent hover:border-slate-700 group`}
+          className={`flex items-center gap-2.5 p-1.5 rounded-sm cursor-pointer hover:bg-slate-800/60 transition-colors flex-1 min-w-0 ${
+            isCollapsed ? 'justify-center' : ''
+          }`}
           title="View Profile"
         >
-          <div className="relative">
-            <Avatar className="h-10 w-10 border-2 border-slate-700 group-hover:border-blue-500 transition-colors">
+          <div className="relative shrink-0">
+            <Avatar className="h-8 w-8 border border-slate-700">
               <AvatarImage src={avatarUrl} />
-              <AvatarFallback className="bg-slate-800 text-slate-300 font-bold">
+              <AvatarFallback className="bg-slate-800 text-slate-300 font-bold text-xs">
                 {getInitials()}
               </AvatarFallback>
             </Avatar>
-            <div className="absolute -bottom-1 -right-1 bg-green-500 w-3 h-3 rounded-full border-2 border-slate-900"></div>
+            <div className="absolute -bottom-0.5 -right-0.5 bg-emerald-500 w-2.5 h-2.5 rounded-full border border-slate-900"></div>
           </div>
 
           <AnimatePresence>
@@ -365,189 +286,198 @@ const AppSidebar = ({ className }: AppSidebarProps) => {
                 initial={{ opacity: 0, width: 0 }}
                 animate={{ opacity: 1, width: 'auto' }}
                 exit={{ opacity: 0, width: 0 }}
-                className="flex-1 min-w-0"
+                transition={{ duration: 0.2 }}
+                className="min-w-0 flex-1 overflow-hidden"
               >
-                <p className="font-bold text-sm truncate text-white group-hover:text-blue-400 transition-colors">
+                <p className="font-bold text-xs truncate text-white">
                   {firstName} {lastName}
                 </p>
-                <p className="text-xs text-slate-400 truncate">
+                <p className="text-[10px] text-slate-400 truncate">
                   {userEmail}
                 </p>
               </motion.div>
             )}
           </AnimatePresence>
         </div>
-      </div>
 
-      {/* Sidebar Toggle Button (Hidden on mobile) */}
-      <div className={`px-4 mb-4 hidden md:flex ${isCollapsed ? 'justify-center' : 'justify-end'}`}>
+        {/* Smooth Collapse / Expand Toggle Button */}
         <button
           onClick={() => setIsCollapsed(!isCollapsed)}
-          className="p-1.5 rounded-lg bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700 transition-all shadow-sm border border-slate-700"
+          className="p-1.5 rounded-sm bg-slate-800/80 text-slate-400 hover:text-white hover:bg-slate-700 transition-colors border border-slate-700/60 shrink-0"
+          title={isCollapsed ? 'Expand Sidebar' : 'Collapse Sidebar'}
         >
-          {isCollapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
+          {isCollapsed ? <ChevronRight className="h-3.5 w-3.5" /> : <ChevronLeft className="h-3.5 w-3.5" />}
         </button>
       </div>
 
-      {/* Navigation */}
-      <nav className="flex-1 overflow-y-auto px-3 py-2 space-y-1">
-        {navItems.map((item) => {
-          const styles = getItemStyles(item.label, item.href);
-          return (
-            <div key={item.label}>
-              {item.children ? (
-                <>
-                  <button
-                    onClick={() => toggleGroup(item.label.toLowerCase())}
-                    className={`w-full flex items-center gap-3 p-2 rounded-xl transition-all group ${styles.container} ${isCollapsed ? 'justify-center' : ''}`}
-                  >
-                    {/* 3D Icon Container */}
-                    <div className="relative flex-shrink-0 group-hover:scale-110 transition-transform duration-200">
-                      <div className={`flex items-center justify-center w-9 h-9 rounded-lg shadow-lg border border-white/10 ${styles.iconContainer}`}>
-                        {item.icon}
-                      </div>
-                      {isCollapsed && styles.badge && (
-                        <span className="absolute -top-1 -right-1 flex h-2 w-2">
-                          <span className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${
-                            styles.badge.text === 'EXCLUSIVE' || styles.badge.text === 'NEW' ? 'bg-emerald-400' :
-                            styles.badge.text === 'PRO' ? 'bg-amber-400' :
-                            styles.badge.text === 'MOST POPULAR' || styles.badge.text === 'POPULAR' ? 'bg-sky-400' : 'bg-purple-400'
-                          }`}></span>
-                          <span className={`relative inline-flex rounded-full h-2 w-2 ${
-                            styles.badge.text === 'EXCLUSIVE' || styles.badge.text === 'NEW' ? 'bg-emerald-500' :
-                            styles.badge.text === 'PRO' ? 'bg-amber-500' :
-                            styles.badge.text === 'MOST POPULAR' || styles.badge.text === 'POPULAR' ? 'bg-sky-500' : 'bg-purple-500'
-                          }`}></span>
-                        </span>
-                      )}
+      {/* Navigation Groups (Codolio Professional Layout) */}
+      <nav className="flex-1 overflow-y-auto px-2 py-2 space-y-4 scrollbar-none">
+        {navSections.map((section) => (
+          <div key={section.title} className="space-y-0.5">
+            {/* Section Header */}
+            {!isCollapsed && (
+              <div className="px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-slate-500">
+                {section.title}
+              </div>
+            )}
+
+            {/* Section Items */}
+            <div className="space-y-0.5">
+              {section.items.map((item) => {
+                const isAct = isActive(item.href);
+                const hasChildren = Boolean(item.children && item.children.length > 0);
+                const isGroupExpanded = expandedGroups.includes(item.label.toLowerCase());
+
+                if (hasChildren) {
+                  return (
+                    <div key={item.label}>
+                      <button
+                        onClick={() => toggleGroup(item.label.toLowerCase())}
+                        className={`w-full flex items-center gap-2.5 px-2.5 py-2 rounded-sm text-xs font-medium transition-all group ${
+                          isGroupExpanded || isAct
+                            ? 'bg-slate-800 text-white font-semibold'
+                            : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/40'
+                        } ${isCollapsed ? 'justify-center px-1' : ''}`}
+                        title={isCollapsed ? item.label : undefined}
+                      >
+                        <div className="shrink-0 text-slate-400 group-hover:text-slate-200">
+                          {item.icon}
+                        </div>
+
+                        {!isCollapsed && (
+                          <>
+                            <span className="flex-1 text-left truncate">
+                              {item.label}
+                            </span>
+                            {item.badge && (
+                              <span className={`text-[9px] px-1.5 py-0.5 rounded-sm font-bold uppercase tracking-wider ${item.badge.className}`}>
+                                {item.badge.text}
+                              </span>
+                            )}
+                            <ChevronDown
+                              className={`h-3.5 w-3.5 text-slate-500 transition-transform duration-200 ${
+                                isGroupExpanded ? 'rotate-180 text-slate-300' : ''
+                              }`}
+                            />
+                          </>
+                        )}
+                      </button>
+
+                      {/* Sub-items (Child links) */}
+                      <AnimatePresence>
+                        {!isCollapsed && isGroupExpanded && item.children && (
+                          <motion.div
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: 'auto' }}
+                            exit={{ opacity: 0, height: 0 }}
+                            transition={{ duration: 0.2 }}
+                            className="ml-3 mt-0.5 space-y-0.5 border-l border-slate-800 pl-2"
+                          >
+                            {item.children.map((child) => {
+                              const isChildAct = isActive(child.href);
+                              const isExt = child.href.startsWith('http');
+                              return (
+                                <button
+                                  key={child.label}
+                                  onClick={() => {
+                                    if (isExt) {
+                                      window.open(child.href, '_blank', 'noopener,noreferrer');
+                                    } else {
+                                      navigate(child.href);
+                                    }
+                                  }}
+                                  className={`w-full flex items-center justify-between gap-2 px-2 py-1.5 rounded-sm text-[11px] transition-colors ${
+                                    isChildAct
+                                      ? 'text-emerald-400 bg-emerald-500/10 font-bold border-l-2 border-emerald-500'
+                                      : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/40'
+                                  }`}
+                                >
+                                  <div className="flex items-center gap-2 truncate">
+                                    <div className="shrink-0 text-slate-400">{child.icon}</div>
+                                    <span className="truncate">{child.label}</span>
+                                  </div>
+                                  {isExt && <ExternalLink className="h-3 w-3 text-slate-500 shrink-0" />}
+                                </button>
+                              );
+                            })}
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
                     </div>
- 
+                  );
+                }
+
+                return (
+                  <button
+                    key={item.label}
+                    onClick={() => {
+                      if (item.openInNewTab) {
+                        window.open(item.href, '_blank', 'noopener,noreferrer');
+                      } else {
+                        navigate(item.href);
+                      }
+                    }}
+                    className={`w-full flex items-center gap-2.5 px-2.5 py-2 rounded-sm text-xs font-medium transition-all group ${
+                      isAct
+                        ? 'bg-slate-800 text-white font-semibold border-l-2 border-emerald-500 shadow-xs'
+                        : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/40'
+                    } ${isCollapsed ? 'justify-center px-1' : ''}`}
+                    title={isCollapsed ? item.label : undefined}
+                  >
+                    <div className={`shrink-0 ${isAct ? 'text-emerald-400' : 'text-slate-400 group-hover:text-slate-200'}`}>
+                      {item.icon}
+                    </div>
+
                     {!isCollapsed && (
                       <>
-                        <span className={`flex-1 text-left text-sm font-medium transition-colors ${styles.text}`}>
+                        <span className="flex-1 text-left truncate">
                           {item.label}
                         </span>
-                        {styles.badge && (
-                          <span className={`text-[9px] px-1.5 py-0.5 rounded-full font-bold uppercase tracking-wider ${styles.badge.className}`}>
-                            {styles.badge.text}
+                        {item.badge && (
+                          <span className={`text-[9px] px-1.5 py-0.2 rounded-sm font-bold uppercase tracking-wider ${item.badge.className}`}>
+                            {item.badge.text}
                           </span>
                         )}
-                        <ChevronRight
-                          className={`h-4 w-4 text-slate-500 transition-transform duration-200 ${expandedGroups.includes(item.label.toLowerCase()) ? 'rotate-90' : ''
-                            }`}
-                        />
                       </>
                     )}
                   </button>
- 
-                  <AnimatePresence>
-                    {!isCollapsed && expandedGroups.includes(item.label.toLowerCase()) && (
-                      <motion.div
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: 'auto' }}
-                        exit={{ opacity: 0, height: 0 }}
-                        className="ml-4 mt-1 space-y-1 border-l-2 border-slate-800 pl-3"
-                      >
-                        {item.children.map((child) => {
-                          const isExt = child.href.startsWith('http');
-                          return (
-                            <button
-                              key={child.label}
-                              onClick={() => {
-                                if (isExt) {
-                                  window.open(child.href, '_blank', 'noopener,noreferrer');
-                                } else {
-                                  navigate(child.href);
-                                }
-                              }}
-                              className={`w-full flex items-center justify-between gap-2 px-3 py-2 rounded-lg text-sm transition-all ${isActive(child.href)
-                                ? 'text-blue-400 bg-blue-500/10 font-semibold'
-                                : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
-                                }`}
-                            >
-                              <div className="flex items-center gap-3 min-w-0">
-                                {/* Smaller 3D Icon for Sub-items */}
-                                <div className={`p-1 rounded-md shrink-0 ${isActive(child.href) ? 'bg-blue-500/20' : 'bg-slate-800'}`}>
-                                  {child.icon}
-                                </div>
-                                <span className="truncate">{child.label}</span>
-                              </div>
-                              {isExt && <ExternalLink className="h-3 w-3 text-slate-500 shrink-0 opacity-70" />}
-                            </button>
-                          );
-                        })}
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </>
-              ) : (
-                <button
-                  onClick={() => navigate(item.href)}
-                  className={`w-full flex items-center gap-3 p-2 rounded-xl transition-all group ${styles.container} ${isCollapsed ? 'justify-center' : ''}`}
-                  title={isCollapsed ? item.label : undefined}
-                >
-                  {/* 3D Icon Container */}
-                  <div className="relative flex-shrink-0 group-hover:scale-110 transition-transform duration-200">
-                    <div className={`flex items-center justify-center w-9 h-9 rounded-lg shadow-lg border border-white/10 ${styles.iconContainer}`}>
-                      {item.icon}
-                    </div>
-                    {isCollapsed && styles.badge && (
-                      <span className="absolute -top-1 -right-1 flex h-2 w-2">
-                        <span className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${
-                          styles.badge.text === 'EXCLUSIVE' || styles.badge.text === 'NEW' ? 'bg-emerald-400' :
-                          styles.badge.text === 'PRO' ? 'bg-amber-400' :
-                          styles.badge.text === 'MOST POPULAR' || styles.badge.text === 'POPULAR' ? 'bg-sky-400' : 'bg-purple-400'
-                        }`}></span>
-                        <span className={`relative inline-flex rounded-full h-2 w-2 ${
-                          styles.badge.text === 'EXCLUSIVE' || styles.badge.text === 'NEW' ? 'bg-emerald-500' :
-                          styles.badge.text === 'PRO' ? 'bg-amber-500' :
-                          styles.badge.text === 'MOST POPULAR' || styles.badge.text === 'POPULAR' ? 'bg-sky-500' : 'bg-purple-500'
-                        }`}></span>
-                      </span>
-                    )}
-                  </div>
- 
-                  {!isCollapsed && (
-                    <>
-                      <span className={`flex-1 text-left text-sm font-medium transition-colors ${styles.text}`}>
-                        {item.label}
-                      </span>
-                      {styles.badge && (
-                        <span className={`text-[9px] px-1.5 py-0.5 rounded-full font-bold uppercase tracking-wider ${styles.badge.className}`}>
-                          {styles.badge.text}
-                        </span>
-                      )}
-                    </>
-                  )}
-                </button>
-              )}
+                );
+              })}
             </div>
-          );
-        })}
+          </div>
+        ))}
       </nav>
 
-      {/* Bottom Actions */}
-      <div className="p-4 border-t border-slate-800 space-y-2">
+      {/* Bottom Actions: Theme Toggle & Sign Out */}
+      <div className="p-2.5 border-t border-slate-800 space-y-1">
         <button
           onClick={toggleTheme}
-          className={`w-full flex items-center gap-3 p-2 rounded-xl transition-all hover:bg-slate-800/50 group ${isCollapsed ? 'justify-center' : ''}`}
+          className={`w-full flex items-center gap-2.5 px-2.5 py-1.5 rounded-sm text-xs text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 transition-colors ${
+            isCollapsed ? 'justify-center' : ''
+          }`}
           title={isCollapsed ? (theme === 'dark' ? 'Light Mode' : 'Dark Mode') : undefined}
         >
-          <div className="flex-shrink-0 flex items-center justify-center w-8 h-8 rounded-lg bg-slate-800 text-yellow-400 border border-slate-700 group-hover:bg-slate-700 transition-colors">
+          <div className="shrink-0 text-yellow-400">
             {theme === 'dark' ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
           </div>
-          {!isCollapsed && <span className="text-sm font-medium text-slate-300 group-hover:text-white">{theme === 'dark' ? 'Light Mode' : 'Dark Mode'}</span>}
+          {!isCollapsed && (
+            <span>{theme === 'dark' ? 'Light Mode' : 'Dark Mode'}</span>
+          )}
         </button>
 
         <button
           onClick={handleSignOut}
-          className={`w-full flex items-center gap-3 p-2 rounded-xl transition-all hover:bg-red-500/10 group ${isCollapsed ? 'justify-center' : ''}`}
+          className={`w-full flex items-center gap-2.5 px-2.5 py-1.5 rounded-sm text-xs text-rose-400/80 hover:text-rose-400 hover:bg-rose-500/10 transition-colors ${
+            isCollapsed ? 'justify-center' : ''
+          }`}
           title={isCollapsed ? 'Sign Out' : undefined}
         >
-          <div className="flex-shrink-0 flex items-center justify-center w-8 h-8 rounded-lg bg-slate-800 text-red-500 border border-slate-700 group-hover:bg-red-500 group-hover:text-white transition-colors">
+          <div className="shrink-0 text-rose-400">
             <LogOut className="h-4 w-4" />
           </div>
-          {!isCollapsed && <span className="text-sm font-medium text-slate-300 group-hover:text-red-400">Sign Out</span>}
+          {!isCollapsed && (
+            <span>Sign Out</span>
+          )}
         </button>
       </div>
     </motion.aside>
