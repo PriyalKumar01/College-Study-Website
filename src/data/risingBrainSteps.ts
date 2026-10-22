@@ -298,4 +298,34 @@ export const RISING_BRAIN_STEPS: DsaStep[] = [
   },
   {
     id: 'rb-step-6',
+    title: 'Pattern 6: Binary Search on Answer Space',
+    lectures: [
+      {
+        id: 'rb-l6-1',
+        title: 'Monotonic Predicate Matching',
+        problems: [
+          {
+            id: 'rb-24',
+            title: 'Koko Eating Bananas',
+            difficulty: 'Medium',
+            platform: 'LeetCode',
+            problemUrl: 'https://leetcode.com/problems/koko-eating-bananas/',
+            youtubeUrl: 'https://www.youtube.com/results?search_query=rising+brain+koko+eating+bananas+java',
+            companies: ['Google', 'Amazon'],
+            tags: ['Binary Search on Answer'],
+          },
+          {
+            id: 'rb-25',
+            title: 'Capacity To Ship Packages Within D Days',
+            difficulty: 'Medium',
+            platform: 'LeetCode',
+            problemUrl: 'https://leetcode.com/problems/capacity-to-ship-packages-within-d-days/',
+            youtubeUrl: 'https://www.youtube.com/results?search_query=rising+brain+capacity+ship+packages+java',
+            companies: ['Google', 'Meta'],
+            tags: ['Binary Search on Answer'],
+          },
+          {
+            id: 'rb-26',
+            title: 'Find Peak Element',
+            difficulty: 'Medium',
 ];
