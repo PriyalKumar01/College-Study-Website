@@ -238,4 +238,34 @@ export const RISING_BRAIN_STEPS: DsaStep[] = [
             problemUrl: 'https://leetcode.com/problems/maximum-sum-circular-subarray/',
             youtubeUrl: 'https://www.youtube.com/results?search_query=rising+brain+circular+subarray+java',
             companies: ['Amazon', 'Microsoft'],
+            tags: ["Kadane's", 'Array'],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'rb-step-5',
+    title: 'Pattern 5: Binary Search (Sorted & Rotated Arrays)',
+    lectures: [
+      {
+        id: 'rb-l5-1',
+        title: 'Search Space Reduction Patterns',
+        problems: [
+          {
+            id: 'rb-20',
+            title: 'Binary Search',
+            difficulty: 'Easy',
+            platform: 'LeetCode',
+            problemUrl: 'https://leetcode.com/problems/binary-search/',
+            youtubeUrl: 'https://www.youtube.com/results?search_query=rising+brain+binary+search+java',
+            companies: ['Apple', 'Microsoft'],
+            tags: ['Binary Search'],
+          },
+          {
+            id: 'rb-21',
+            title: 'Search in Rotated Sorted Array',
+            difficulty: 'Medium',
+            platform: 'LeetCode',
+            problemUrl: 'https://leetcode.com/problems/search-in-rotated-sorted-array/',
 ];
