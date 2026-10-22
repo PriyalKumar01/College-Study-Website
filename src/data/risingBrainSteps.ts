@@ -598,4 +598,34 @@ export const RISING_BRAIN_STEPS: DsaStep[] = [
             id: 'rb-47',
             title: 'Lowest Common Ancestor of a Binary Search Tree',
             difficulty: 'Medium',
+            platform: 'LeetCode',
+            problemUrl: 'https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-search-tree/',
+            youtubeUrl: 'https://www.youtube.com/results?search_query=rising+brain+lca+bst+java',
+            companies: ['Amazon', 'Microsoft'],
+            tags: ['BST'],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'rb-step-12',
+    title: 'Pattern 12: Graphs (BFS, DFS & Topological Sort)',
+    lectures: [
+      {
+        id: 'rb-l12-1',
+        title: 'Graph Traversal & Dependency Resolution',
+        problems: [
+          {
+            id: 'rb-48',
+            title: 'Number of Islands',
+            difficulty: 'Medium',
+            platform: 'LeetCode',
+            problemUrl: 'https://leetcode.com/problems/number-of-islands/',
+            youtubeUrl: 'https://www.youtube.com/results?search_query=rising+brain+number+of+islands+java',
+            companies: ['Amazon', 'Google', 'Microsoft', 'Meta'],
+            tags: ['Graph', 'BFS', 'DFS'],
+          },
+          {
+            id: 'rb-49',
 ];
