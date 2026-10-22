@@ -934,4 +934,40 @@ export const NINJAS_SDE_STEPS: DsaStep[] = [
             problemUrl: 'https://www.naukri.com/code360/problems/zigzag-binary-tree-traversal_920532',
             youtubeUrl: 'https://www.youtube.com/results?search_query=zigzag+binary+tree+traversal+code360',
             companies: ['Amazon', 'Microsoft'],
+            tags: ['Binary Tree', 'BFS'],
+          },
+          {
+            id: 'c360-86',
+            title: 'Boundary Traversal of Binary Tree',
+            difficulty: 'Medium',
+            platform: 'Code360',
+            problemUrl: 'https://www.naukri.com/code360/problems/boundary-traversal-of-binary-tree_981275',
+            youtubeUrl: 'https://www.youtube.com/results?search_query=boundary+traversal+binary+tree+code360',
+            companies: ['Amazon', 'Flipkart'],
+            tags: ['Binary Tree', 'DFS'],
+          },
+          {
+            id: 'c360-87',
+            title: 'Maximum Path Sum Between Two Leaves',
+            difficulty: 'Hard',
+            platform: 'Code360',
+            problemUrl: 'https://www.naukri.com/code360/problems/maximum-sum-path-of-a-binary-tree._1214191',
+            youtubeUrl: 'https://www.youtube.com/results?search_query=maximum+path+sum+binary+tree+code360',
+            companies: ['Google', 'Meta', 'Amazon'],
+            tags: ['Binary Tree', 'DFS'],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'code360-step-8',
+    title: 'Chapter 8: Binary Search Trees (10 Problems)',
+    lectures: [
+      {
+        id: 'code360-l8-1',
+        title: 'BST Properties, Verification & Iterators',
+        problems: [
+          {
+            id: 'c360-88',
 ];
