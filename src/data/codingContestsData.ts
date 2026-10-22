@@ -236,3 +236,21 @@ export async function fetchLiveCodeforcesContests(): Promise<ContestEvent[]> {
     const deduplicatedCF = deduplicateContests(cfContests);
 
     // Save to localStorage
+    try {
+      localStorage.setItem(
+        'csh_codeforces_contests',
+        JSON.stringify({
+          timestamp: Date.now(),
+          contests: deduplicatedCF,
+        })
+      );
+    } catch {
+      // Storage quota or private mode
+    }
+
+    return deduplicatedCF;
+  } catch (err) {
+    console.warn('Could not fetch Codeforces live contests:', err);
+    return getCachedCodeforcesContests();
+  }
+}
