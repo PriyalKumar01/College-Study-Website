@@ -11,7 +11,7 @@ const noteCategories = [
     route: '/btech-notes',
     image: '/card_btech.png',
     badge: 'All 1st to 4th Years Notes',
-    badgeColor: 'bg-blue-100 text-blue-700',
+    badgeColor: 'bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-800',
     accentColor: 'from-blue-500 to-blue-700',
   },
   {
@@ -21,7 +21,7 @@ const noteCategories = [
     route: '/bsms-notes',
     image: '/card_bsms.png',
     badge: 'Complete BS-MS Notes',
-    badgeColor: 'bg-violet-100 text-violet-700',
+    badgeColor: 'bg-violet-100 dark:bg-violet-900/50 text-violet-700 dark:text-violet-300 border-violet-200 dark:border-violet-800',
     accentColor: 'from-violet-500 to-violet-700',
   },
   {
@@ -31,7 +31,7 @@ const noteCategories = [
     route: '/mba-notes',
     image: '/card_mba.png',
     badge: '1st – 4th Sem',
-    badgeColor: 'bg-indigo-100 text-indigo-700',
+    badgeColor: 'bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 border-indigo-200 dark:border-indigo-800',
     accentColor: 'from-indigo-500 to-indigo-700',
   },
   {
@@ -41,7 +41,7 @@ const noteCategories = [
     route: '/bpharma-notes',
     image: '/card_bpharma.png',
     badge: '1st – 8th Sem',
-    badgeColor: 'bg-emerald-100 text-emerald-700',
+    badgeColor: 'bg-emerald-100 dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800',
     accentColor: 'from-emerald-500 to-teal-700',
   },
   {
@@ -51,7 +51,7 @@ const noteCategories = [
     route: '/bba-notes',
     image: '/card_bba.png',
     badge: '1st – 6th Sem',
-    badgeColor: 'bg-pink-100 text-pink-700',
+    badgeColor: 'bg-pink-100 dark:bg-pink-900/50 text-pink-700 dark:text-pink-300 border-pink-200 dark:border-pink-800',
     accentColor: 'from-pink-500 to-rose-600',
   },
   {
@@ -61,7 +61,7 @@ const noteCategories = [
     route: '/dsa-notes',
     image: '/card_dsa.png',
     badge: '50+ Topics',
-    badgeColor: 'bg-emerald-100 text-emerald-700',
+    badgeColor: 'bg-emerald-100 dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800',
     accentColor: 'from-emerald-500 to-green-600',
   },
   {
@@ -71,7 +71,7 @@ const noteCategories = [
     route: '/coding-study-material',
     image: '/card_coding.png',
     badge: 'Multi Language',
-    badgeColor: 'bg-purple-100 text-purple-700',
+    badgeColor: 'bg-purple-100 dark:bg-purple-900/50 text-purple-700 dark:text-purple-300 border-purple-200 dark:border-purple-800',
     accentColor: 'from-purple-500 to-purple-700',
   },
   {
@@ -81,7 +81,7 @@ const noteCategories = [
     route: '/web-development-notes',
     image: '/card_webdev.png',
     badge: 'Full Stack',
-    badgeColor: 'bg-orange-100 text-orange-700',
+    badgeColor: 'bg-orange-100 dark:bg-orange-900/50 text-orange-700 dark:text-orange-300 border-orange-200 dark:border-orange-800',
     accentColor: 'from-orange-500 to-orange-600',
   },
   {
@@ -91,7 +91,7 @@ const noteCategories = [
     route: '/placement-preparation',
     image: '/card_placement.png',
     badge: 'Career Guide',
-    badgeColor: 'bg-teal-100 text-teal-700',
+    badgeColor: 'bg-teal-100 dark:bg-teal-900/50 text-teal-700 dark:text-teal-300 border-teal-200 dark:border-teal-800',
     accentColor: 'from-teal-500 to-cyan-600',
   },
   {
@@ -101,14 +101,14 @@ const noteCategories = [
     route: '/gate-study',
     image: '/card_gate.png',
     badge: 'PYQs Quiz Included',
-    badgeColor: 'bg-red-100 text-red-700',
+    badgeColor: 'bg-rose-100 dark:bg-rose-900/50 text-rose-700 dark:text-rose-300 border-rose-200 dark:border-rose-800',
     accentColor: 'from-purple-600 to-indigo-600',
   },
 ];
 
 const NotesCategories = () => {
   return (
-    <div className="min-h-screen" style={{ background: 'linear-gradient(135deg, #eef2ff 0%, #e8f0fe 40%, #f0f4ff 100%)' }}>
+    <div className="min-h-screen bg-slate-50 dark:bg-background transition-colors duration-300">
       <Navbar />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10">
@@ -118,25 +118,28 @@ const NotesCategories = () => {
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.55 }}
-          className="relative rounded-3xl overflow-hidden shadow-xl"
-          style={{ background: 'linear-gradient(135deg, #ffffff 0%, #f0f4ff 100%)' }}
+          className="relative rounded-3xl overflow-hidden shadow-xl border border-blue-100 dark:border-blue-900/30 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-indigo-950/20 dark:to-blue-900/20"
         >
-          <div className="flex flex-col md:flex-row items-center gap-6 p-8 md:p-12">
+          {/* Decorative shapes */}
+          <div className="absolute top-0 right-0 -translate-y-12 translate-x-1/3 w-96 h-96 bg-blue-100/25 dark:bg-blue-950/10 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute bottom-0 right-1/4 translate-y-1/2 w-80 h-80 bg-indigo-200/20 dark:bg-indigo-950/20 rounded-full blur-3xl pointer-events-none" />
+
+          <div className="relative z-10 flex flex-col md:flex-row items-center gap-6 p-8 md:p-12">
             {/* Left content */}
             <div className="flex-1 space-y-5">
-              <span className="inline-flex items-center gap-2 text-xs font-bold tracking-widest text-blue-600 bg-blue-50 border border-blue-200 rounded-full px-4 py-1.5 uppercase">
+              <span className="inline-flex items-center gap-2 text-xs font-bold tracking-widest text-blue-700 dark:text-blue-300 bg-blue-100/60 dark:bg-blue-900/50 border border-blue-200 dark:border-blue-800 rounded-full px-4 py-1.5 uppercase shadow-xs">
                 <Sparkles className="h-3.5 w-3.5" />
                 College Study Community
               </span>
 
-              <h1 className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-gray-900 leading-tight">
+              <h1 className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-slate-900 dark:text-white leading-tight">
                 Study Better With{' '}
-                <span className="text-transparent bg-clip-text" style={{ backgroundImage: 'linear-gradient(135deg, #4f46e5, #2563eb)' }}>
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400">
                   Curated Notes
                 </span>
               </h1>
 
-              <div className="space-y-3 text-sm md:text-base text-gray-600">
+              <div className="space-y-3 text-sm md:text-base text-slate-650 dark:text-slate-300 font-medium">
                 <p>
                   ✨ <strong>Structured Notes + PYQs:</strong> Score well using curated notes and AI Tools to reinforce learning.
                 </p>
@@ -151,53 +154,43 @@ const NotesCategories = () => {
                 </p>
               </div>
 
-              <div className="grid grid-cols-2 gap-3 sm:flex sm:flex-wrap">
+              <div className="grid grid-cols-2 gap-3 sm:flex sm:flex-wrap pt-2">
                 <Link
                   to="/cgpa-calculator"
-                  className="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-2xl text-white font-semibold text-xs whitespace-nowrap shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300"
-                  style={{ background: 'linear-gradient(135deg, #4f46e5, #2563eb)' }}
+                  className="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-2xl text-white font-semibold text-xs whitespace-nowrap shadow-lg shadow-blue-500/20 hover:shadow-xl hover:scale-105 transition-all duration-300 bg-gradient-to-r from-blue-600 to-indigo-600"
                 >
                   🎓 CGPA Calculator
                 </Link>
                 <Link
                   to="/scholarship-portal"
-                  className="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-2xl text-white font-semibold text-xs whitespace-nowrap shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300"
-                  style={{ background: 'linear-gradient(135deg, #059669, #10b981)' }}
+                  className="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-2xl text-white font-semibold text-xs whitespace-nowrap shadow-lg shadow-emerald-500/20 hover:shadow-xl hover:scale-105 transition-all duration-300 bg-gradient-to-r from-emerald-600 to-teal-600"
                 >
                   🏆 Scholarships
                 </Link>
                 <Link
                   to="/opportunities"
-                  className="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-2xl text-white font-semibold text-xs whitespace-nowrap shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300"
-                  style={{ background: 'linear-gradient(135deg, #d97706, #f59e0b)' }}
+                  className="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-2xl text-white font-semibold text-xs whitespace-nowrap shadow-lg shadow-amber-500/20 hover:shadow-xl hover:scale-105 transition-all duration-300 bg-gradient-to-r from-amber-600 to-orange-600"
                 >
                   💼 Opportunities
                 </Link>
                 <Link
-                  to="/ats-friendly-resume"
-                  className="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-2xl text-white font-semibold text-xs whitespace-nowrap shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300"
-                  style={{ background: 'linear-gradient(135deg, #db2777, #9333ea)' }}
+                  to="/premium-content"
+                  className="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-2xl text-white font-semibold text-xs whitespace-nowrap shadow-lg shadow-purple-500/20 hover:shadow-xl hover:scale-105 transition-all duration-300 bg-gradient-to-r from-purple-600 to-pink-600"
                 >
-                  📄 ATS Resume
+                  📄 Premium Content
                 </Link>
               </div>
             </div>
 
             {/* Right image */}
-            <div className="flex-shrink-0 w-full md:w-80 lg:w-96">
+            <div className="flex-shrink-0 w-full md:w-80 lg:w-96 flex items-center justify-center">
               <img
-                src="/notes_hero_students.png"
+                src="/images/study/GirlsBoysGroupOf4.png"
                 alt="College students studying"
-                className="w-full h-64 md:h-72 object-contain drop-shadow-lg"
+                className="w-full h-64 md:h-72 object-contain drop-shadow-xl"
               />
             </div>
           </div>
-
-          {/* Decorative blob */}
-          <div
-            className="absolute -top-16 -right-16 w-64 h-64 rounded-full opacity-10 pointer-events-none"
-            style={{ background: 'radial-gradient(circle, #4f46e5, transparent)' }}
-          />
         </motion.div>
 
         {/* ── Section Heading ── */}
@@ -207,10 +200,10 @@ const NotesCategories = () => {
           transition={{ delay: 0.2, duration: 0.5 }}
           className="text-center"
         >
-          <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
+          <h2 className="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white mb-2">
             📚 Choose Your Notes Category
           </h2>
-          <p className="text-gray-500 text-base">
+          <p className="text-slate-500 dark:text-slate-400 text-base">
             Access comprehensive, well-organised study materials for every course
           </p>
         </motion.div>
@@ -227,10 +220,10 @@ const NotesCategories = () => {
               className="group"
             >
               <Link to={cat.route} className="block h-full">
-                <div className="h-full rounded-2xl bg-white shadow-md hover:shadow-2xl transition-all duration-300 overflow-hidden flex flex-col">
+                <div className="h-full rounded-2xl bg-white dark:bg-card border border-border/70 hover:border-primary/50 shadow-sm hover:shadow-xl dark:hover:shadow-primary/5 transition-all duration-300 overflow-hidden flex flex-col">
 
                   {/* Card image — tall enough to show full image */}
-                  <div className="h-56 overflow-hidden">
+                  <div className="h-56 overflow-hidden bg-slate-100 dark:bg-slate-800/50">
                     <img
                       src={cat.image}
                       alt={cat.title}
@@ -242,7 +235,7 @@ const NotesCategories = () => {
                   <div className="flex flex-col flex-1 p-5 gap-2">
                     {/* Title + badge row */}
                     <div className="flex items-start justify-between gap-2">
-                      <h3 className="text-lg font-bold text-gray-900 group-hover:text-blue-600 transition-colors leading-tight">
+                      <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100 group-hover:text-primary transition-colors leading-tight">
                         {cat.title}
                       </h3>
                       <span className={`shrink-0 text-[11px] font-semibold px-2.5 py-0.5 rounded-full border whitespace-nowrap ${cat.badgeColor}`}>
@@ -250,18 +243,18 @@ const NotesCategories = () => {
                       </span>
                     </div>
 
-                    <p className="text-sm text-gray-500 leading-relaxed flex-1">
+                    <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed flex-1">
                       {cat.description}
                     </p>
 
-                    <div className="flex items-center justify-between pt-3 border-t border-gray-100">
-                      <div className="flex items-center gap-1.5 text-sm text-gray-400">
+                    <div className="flex items-center justify-between pt-3 border-t border-border/50">
+                      <div className="flex items-center gap-1.5 text-sm text-slate-400 dark:text-slate-500">
                         <Sparkles className="h-4 w-4" />
                         <span>High Quality Content</span>
                       </div>
                       <div className={`flex items-center gap-1.5 text-sm font-semibold text-transparent bg-clip-text bg-gradient-to-r ${cat.accentColor} group-hover:translate-x-1 transition-transform duration-300`}>
                         <span>Explore</span>
-                        <ArrowRight className="h-4 w-4 text-blue-600" />
+                        <ArrowRight className="h-4 w-4 text-primary" />
                       </div>
                     </div>
                   </div>
@@ -276,8 +269,7 @@ const NotesCategories = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5, duration: 0.5 }}
-          className="rounded-3xl overflow-hidden shadow-lg"
-          style={{ background: 'linear-gradient(135deg, #4f46e5 0%, #2563eb 100%)' }}
+          className="rounded-3xl overflow-hidden shadow-lg bg-gradient-to-r from-blue-700 via-indigo-700 to-blue-800 text-white"
         >
           <div className="flex flex-col md:flex-row items-center justify-between gap-6 px-8 py-8">
             <div className="text-center md:text-left">
