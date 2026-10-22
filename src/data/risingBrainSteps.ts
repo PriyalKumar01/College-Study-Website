@@ -88,4 +88,34 @@ export const RISING_BRAIN_STEPS: DsaStep[] = [
         problems: [
           {
             id: 'rb-7',
+            title: 'Best Time to Buy and Sell Stock',
+            difficulty: 'Easy',
+            platform: 'LeetCode',
+            problemUrl: 'https://leetcode.com/problems/best-time-to-buy-and-sell-stock/',
+            youtubeUrl: 'https://www.youtube.com/results?search_query=rising+brain+buy+and+sell+stock+java',
+            companies: ['Amazon', 'Google', 'Microsoft'],
+            tags: ['Sliding Window', 'Dynamic Programming'],
+          },
+          {
+            id: 'rb-8',
+            title: 'Longest Substring Without Repeating Characters',
+            difficulty: 'Medium',
+            platform: 'LeetCode',
+            problemUrl: 'https://leetcode.com/problems/longest-substring-without-repeating-characters/',
+            youtubeUrl: 'https://www.youtube.com/results?search_query=rising+brain+longest+substring+without+repeating+characters',
+            companies: ['Amazon', 'Google', 'Meta'],
+            tags: ['Sliding Window', 'Hash Table'],
+          },
+          {
+            id: 'rb-9',
+            title: 'Longest Repeating Character Replacement',
+            difficulty: 'Medium',
+            platform: 'LeetCode',
+            problemUrl: 'https://leetcode.com/problems/longest-repeating-character-replacement/',
+            youtubeUrl: 'https://www.youtube.com/results?search_query=rising+brain+character+replacement+java',
+            companies: ['Google', 'Uber'],
+            tags: ['Sliding Window', 'Hash Table'],
+          },
+          {
+            id: 'rb-10',
 ];
