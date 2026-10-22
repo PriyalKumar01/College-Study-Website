@@ -388,4 +388,34 @@ export const RISING_BRAIN_STEPS: DsaStep[] = [
           },
         ],
       },
+    ],
+  },
+  {
+    id: 'rb-step-8',
+    title: 'Pattern 8: In-Place Reversal of Linked List',
+    lectures: [
+      {
+        id: 'rb-l8-1',
+        title: 'Pointer Redirection Logic',
+        problems: [
+          {
+            id: 'rb-31',
+            title: 'Reverse Linked List',
+            difficulty: 'Easy',
+            platform: 'LeetCode',
+            problemUrl: 'https://leetcode.com/problems/reverse-linked-list/',
+            youtubeUrl: 'https://www.youtube.com/results?search_query=rising+brain+reverse+linked+list+java',
+            companies: ['Amazon', 'Google', 'Microsoft', 'Meta'],
+            tags: ['Linked List'],
+          },
+          {
+            id: 'rb-32',
+            title: 'Reverse Linked List II',
+            difficulty: 'Medium',
+            platform: 'LeetCode',
+            problemUrl: 'https://leetcode.com/problems/reverse-linked-list-ii/',
+            youtubeUrl: 'https://www.youtube.com/results?search_query=rising+brain+reverse+linked+list+ii+java',
+            companies: ['Meta', 'Amazon'],
+            tags: ['Linked List'],
+          },
 ];
