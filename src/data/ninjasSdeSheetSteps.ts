@@ -610,4 +610,40 @@ export const NINJAS_SDE_STEPS: DsaStep[] = [
             problemUrl: 'https://www.naukri.com/code360/problems/allocate-books_1090540',
             youtubeUrl: 'https://www.youtube.com/results?search_query=allocate-books+code360',
             companies: ['Google', 'Amazon', 'Flipkart'],
+            tags: ['Binary Search', 'Search on Answer'],
+          },
+          {
+            id: 'c360-56',
+            title: 'Aggressive Cows (Distance Optimization)',
+            difficulty: 'Hard',
+            platform: 'Code360',
+            problemUrl: 'https://www.naukri.com/code360/problems/aggressive-cows_1082559',
+            youtubeUrl: 'https://www.youtube.com/results?search_query=aggressive+cows+code360',
+            companies: ['Amazon', 'Google'],
+            tags: ['Binary Search', 'Search on Answer'],
+          },
+          {
+            id: 'c360-57',
+            title: 'Chess Tournament Room Allocation',
+            difficulty: 'Medium',
+            platform: 'Code360',
+            problemUrl: 'https://www.naukri.com/code360/problems/chess-tournament_981279',
+            youtubeUrl: 'https://www.youtube.com/results?search_query=chess+tournament+code360',
+            companies: ['Amazon', 'Google'],
+            tags: ['Binary Search'],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'code360-step-6',
+    title: 'Chapter 6: Stacks & Queues (14 Problems)',
+    lectures: [
+      {
+        id: 'code360-l6-1',
+        title: 'Monotonic Stacks, Deques & Caching Systems',
+        problems: [
+          {
+            id: 'c360-58',
 ];
