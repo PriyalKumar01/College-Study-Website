@@ -718,4 +718,34 @@ export const RISING_BRAIN_STEPS: DsaStep[] = [
     lectures: [
       {
         id: 'rb-l14-1',
+        title: 'Memoization to Tabulation Steps',
+        problems: [
+          {
+            id: 'rb-56',
+            title: 'Climbing Stairs',
+            difficulty: 'Easy',
+            platform: 'LeetCode',
+            problemUrl: 'https://leetcode.com/problems/climbing-stairs/',
+            youtubeUrl: 'https://www.youtube.com/results?search_query=rising+brain+climbing+stairs+java',
+            companies: ['Amazon', 'Google'],
+            tags: ['Dynamic Programming'],
+          },
+          {
+            id: 'rb-57',
+            title: 'House Robber',
+            difficulty: 'Medium',
+            platform: 'LeetCode',
+            problemUrl: 'https://leetcode.com/problems/house-robber/',
+            youtubeUrl: 'https://www.youtube.com/results?search_query=rising+brain+house+robber+java',
+            companies: ['Google', 'Amazon', 'Microsoft'],
+            tags: ['Dynamic Programming'],
+          },
+          {
+            id: 'rb-58',
+            title: 'Coin Change',
+            difficulty: 'Medium',
+            platform: 'LeetCode',
+            problemUrl: 'https://leetcode.com/problems/coin-change/',
+            youtubeUrl: 'https://www.youtube.com/results?search_query=rising+brain+coin+change+java',
+            companies: ['Amazon', 'Google', 'Microsoft'],
 ];
