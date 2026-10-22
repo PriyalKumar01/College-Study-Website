@@ -928,4 +928,34 @@ export const RISING_BRAIN_STEPS: DsaStep[] = [
             companies: ['Amazon', 'Google'],
             tags: ['Heap', 'Bucket Sort'],
           },
+          {
+            id: 'rb-72',
+            title: 'Find Median from Data Stream',
+            difficulty: 'Hard',
+            platform: 'LeetCode',
+            problemUrl: 'https://leetcode.com/problems/find-median-from-data-stream/',
+            youtubeUrl: 'https://www.youtube.com/results?search_query=rising+brain+find+median+data+stream+java',
+            companies: ['Google', 'Amazon', 'Microsoft'],
+            tags: ['Two Heaps'],
+          },
+          {
+            id: 'rb-73',
+            title: 'Merge k Sorted Lists',
+            difficulty: 'Hard',
+            platform: 'LeetCode',
+            problemUrl: 'https://leetcode.com/problems/merge-k-sorted-lists/',
+            youtubeUrl: 'https://www.youtube.com/results?search_query=rising+brain+merge+k+sorted+lists+java',
+            companies: ['Amazon', 'Google', 'Meta'],
+            tags: ['Heap', 'Linked List'],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'rb-step-19',
+    title: 'Pattern 19: Greedy & Interval Merges',
+    lectures: [
+      {
+        id: 'rb-l19-1',
 ];
