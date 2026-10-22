@@ -134,3 +134,20 @@ export function getPredictableContests(baseDate: Date = new Date()): ContestEven
           contests.push({
             id: `lc-biweekly-${year}-${targetMonth + 1}-${day}`,
             title: `LeetCode Biweekly Contest ${biweekNum}`,
+            platform: 'LeetCode',
+            startTime: lcBiStart.toISOString(),
+            endTime: lcBiEnd.toISOString(),
+            durationMinutes: 90,
+            url: `https://leetcode.com/contest/biweekly-contest-${biweekNum}/`,
+            difficulty: 'Rated for All',
+            subscribersCount: 20100,
+          });
+        }
+      }
+    }
+  }
+
+  return contests;
+}
+
+/**
