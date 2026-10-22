@@ -7598,4 +7598,84 @@ export const STRIVER_A2Z_FULL_STEPS: DsaStep[] = [
             ]
           }
         ]
+      },
+      {
+        "id": "a2z-step-16-sub-8",
+        "title": "MCM DP | Partition DP",
+        "problems": [
+          {
+            "id": "a2z-s16-l8-p1",
+            "title": "Matrix Chain Multiplication|(DP-48)",
+            "difficulty": "Hard",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/matrix-chain-multiplication",
+            "youtubeUrl": "https://youtu.be/vRVfmbCFW7Y",
+            "articleUrl": "https://takeuforward.org/dynamic-programming/matrix-chain-multiplication-dp-48/",
+            "companies": [
+              "Amazon",
+              "Google",
+              "Microsoft"
+            ],
+            "tags": [
+              "Dynamic Programming",
+              "MCM DP | Partition DP"
+            ]
+          },
+          {
+            "id": "a2z-s16-l8-p2",
+            "title": "Matrix Chain Multiplication | Bottom-Up|(DP-49)",
+            "difficulty": "Hard",
+            "platform": "Other",
+            "problemUrl": "https://takeuforward.org/plus/dsa/problems/matrix-chain-multiplication",
+            "youtubeUrl": "https://youtu.be/pDCXsbAw5Cg",
+            "articleUrl": "https://takeuforward.org/data-structure/matrix-chain-multiplication-tabulation-method-dp-49/",
+            "companies": [
+              "Amazon",
+              "Google",
+              "Microsoft"
+            ],
+            "tags": [
+              "Dynamic Programming",
+              "MCM DP | Partition DP"
+            ]
+          },
+          {
+            "id": "a2z-s16-l8-p3",
+            "title": "Minimum Cost to Cut the Stick|(DP-50)",
+            "difficulty": "Hard",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/minimum-cost-to-cut-a-stick/",
+            "youtubeUrl": "https://youtu.be/xwomavsC86c",
+            "articleUrl": "https://takeuforward.org/data-structure/minimum-cost-to-cut-the-stick-dp-50/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Dynamic Programming",
+              "MCM DP | Partition DP"
+            ]
+          },
+          {
+            "id": "a2z-s16-l8-p4",
+            "title": "Burst Balloons|(DP-51)",
+            "difficulty": "Hard",
+            "platform": "LeetCode",
+            "problemUrl": "https://leetcode.com/problems/burst-balloons/",
+            "youtubeUrl": "https://youtu.be/Yz4LlDSlkns",
+            "articleUrl": "https://takeuforward.org/data-structure/burst-balloons-partition-dp-dp-51/",
+            "companies": [
+              "Google",
+              "Amazon"
+            ],
+            "tags": [
+              "Dynamic Programming",
+              "MCM DP | Partition DP"
+            ]
+          },
+          {
+            "id": "a2z-s16-l8-p5",
+            "title": "Evaluate Boolean Expression to True|(DP-52)",
+            "difficulty": "Hard",
+            "platform": "LeetCode",
 ];
