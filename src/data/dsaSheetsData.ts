@@ -448,4 +448,54 @@ export const STRIVER_SDE_SHEET: DsaSheet = {
             { id: 'sde-12', title: 'Inversion of Array', difficulty: 'Hard', platform: 'GeeksforGeeks', problemUrl: 'https://practice.geeksforgeeks.org/problems/inversion-of-array-1587115620/1', youtubeUrl: 'https://www.youtube.com/watch?v=AseUmwVNaoY', companies: ['Google'], tags: ['Divide and Conquer'] },
           ],
         },
+      ],
+    },
+  ],
+};
+
+export const BLIND_75_SHEET: DsaSheet = {
+  id: 'blind-75',
+  slug: 'blind-75',
+  title: 'Blind 75',
+  creator: 'Yangshun Tay',
+  description: 'The Blind 75 sheet includes a curated list of 75 most essential LeetCode questions to prepare for technical interviews in minimum time.',
+  category: ['All', 'Popular', 'Quick Revision'],
+  totalQuestions: 75,
+  followersCount: 4630,
+  steps: [
+    {
+      id: 'b75-array',
+      title: 'Array & Matrix',
+      lectures: [
+        {
+          id: 'b75-arr-1',
+          title: 'Top Essential Array Problems',
+          problems: [
+            { id: 'b75-1', title: 'Two Sum', difficulty: 'Easy', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/two-sum/', companies: ['Google', 'Amazon', 'Meta'], tags: ['Hashmap'] },
+            { id: 'b75-2', title: 'Best Time to Buy and Sell Stock', difficulty: 'Easy', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/best-time-to-buy-and-sell-stock/', companies: ['Amazon', 'Microsoft'], tags: ['Greedy'] },
+            { id: 'b75-3', title: 'Contains Duplicate', difficulty: 'Easy', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/contains-duplicate/', tags: ['Hashmap'] },
+            { id: 'b75-4', title: 'Product of Array Except Self', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/product-of-array-except-self/', companies: ['Amazon', 'Meta'], tags: ['Arrays'] },
+            { id: 'b75-5', title: 'Maximum Subarray', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/maximum-subarray/', companies: ['Amazon', 'Microsoft'], tags: ['Kadane'] },
+            { id: 'b75-6', title: 'Maximum Product Subarray', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/maximum-product-subarray/', companies: ['Google', 'Microsoft'], tags: ['DP'] },
+            { id: 'b75-7', title: 'Find Minimum in Rotated Sorted Array', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/find-minimum-in-rotated-sorted-array/', companies: ['Microsoft', 'Uber'], tags: ['Binary Search'] },
+            { id: 'b75-8', title: 'Search in Rotated Sorted Array', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/search-in-rotated-sorted-array/', companies: ['Google', 'Amazon'], tags: ['Binary Search'] },
+            { id: 'b75-9', title: '3Sum', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/3sum/', companies: ['Meta', 'Amazon'], tags: ['Two Pointers'] },
+            { id: 'b75-10', title: 'Container With Most Water', difficulty: 'Medium', platform: 'LeetCode', problemUrl: 'https://leetcode.com/problems/container-with-most-water/', companies: ['Google', 'Amazon'], tags: ['Two Pointers'] },
+          ],
+        },
+      ],
+    },
+  ],
+};
+
+export const DSA_PATTERNS_KUSHAL_SHEET: DsaSheet = {
+  id: '20-essential-dsa-patterns-by-kushal',
+  slug: '20-essential-dsa-patterns-by-kushal',
+  title: '20 Essential DSA Patterns by Kushal',
+  creator: 'Kushal (Codolio / FAANG Mentor)',
+  description: 'Master the 20 fundamental patterns that solve 90% of coding interview problems. Learn how to identify underlying templates.',
+  category: ['All', 'Popular', 'Topic Specific'],
+  totalQuestions: 80,
+  followersCount: 8920,
+  steps: [
 ];
