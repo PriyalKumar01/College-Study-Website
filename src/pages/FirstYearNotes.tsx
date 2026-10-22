@@ -5,12 +5,29 @@ import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from '@/components/ui/dialog';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import {
   Download,
   ArrowLeft,
   FileText,
   Play,
   ChevronDown,
   ChevronRight,
+  ChevronUp,
   Trash2,
   ExternalLink,
   Search,
@@ -19,7 +36,12 @@ import {
   Info,
   GraduationCap,
   MessageCircle,
-  Share2
+  Share2,
+  CheckCircle2,
+  Target,
+  PenTool,
+  Compass,
+  Award
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
@@ -86,6 +108,18 @@ const FirstYearNotes = () => {
   const [expandedSubjects, setExpandedSubjects] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState<string>('all');
+
+  // Major UX overhaul states: Tabs, Guidance Modal, Subject Filter, and PYQ Year Collapsibles
+  const [mainTab, setMainTab] = useState<'notes' | 'assignments' | 'pyqs'>('notes');
+  const [showGuidanceModal, setShowGuidanceModal] = useState(false);
+  const [selectedSubjectFilter, setSelectedSubjectFilter] = useState<string>('all');
+  const [expandedPyqYears, setExpandedPyqYears] = useState<string[]>(['2026-27', '2025-26']);
+
+  const togglePyqYear = (yearKey: string) => {
+    setExpandedPyqYears(prev =>
+      prev.includes(yearKey) ? prev.filter(y => y !== yearKey) : [...prev, yearKey]
+    );
+  };
 
   // Fetch community notes for all 1st year semester tags so no uploads are missed
   const { data: communityNotes, refetch: refreshNotes } = useCommunityNotes('btech', FIRST_YEAR_SEMESTER_TAGS);
@@ -662,14 +696,14 @@ const FirstYearNotes = () => {
       description: 'Year-wise organized exam question papers (2025-26, 2024-25, 2023-24, 2022-23) for Mid Sem 1, Mid Sem 2, and End Sem.',
       playlists: { detailed: [], oneshot: [] },
       notes: [
-        // ── 2025-26 ACADEMIC SESSION (LATEST) ──
-        { title: '[2025-26] Mid Sem-1 PYQs (Odd Semester)', url: 'https://drive.google.com/file/d/1UHEYh3ykfe1QtYE_VfOF09nLwfWkjx5Z/view?usp=drivesdk', recommended: true },
-        { title: '[2025-26] Mid Sem-2 PYQs (Odd Semester)', url: 'https://drive.google.com/file/d/1VzarRmsgnrELjL9fsGKFy31Ba1G9nZZi/view?usp=drivesdk', recommended: true },
-        { title: '[2025-26] End Sem PYQs (Odd Semester)', url: 'https://drive.google.com/file/d/1RvGVTwQiqsc2AcodFj8g7P76_Dy75B_8/view?usp=drivesdk', recommended: true },
-        { title: '[2025-26] Mid Sem-1 PYQs (Even Semester / 2nd Sem)', url: 'https://drive.google.com/file/d/18k4F_9KcyfRkEt-rjsDIMA2wN4BvZj_1/view', recommended: true },
-        { title: '[2025-26] Mid Sem-2 PYQs (Even Semester / 2nd Sem)', url: 'https://drive.google.com/file/d/1wty3ubMfR4Vyt6ClzFfi0gKi-jNH0EmY/view?usp=drivesdk' },
-        { title: '[2025-26] End Sem PYQs (Even Semester / 2nd Sem)', url: 'https://drive.google.com/file/d/1S41rOchlw2VV0JUqd-NA2-lJSv9MvaJM/view?usp=drivesdk' },
-        { title: '[2025-26] Mid Sem-1 Alternate Branch PYQs (2nd Sem)', url: 'https://drive.google.com/file/d/135yNwTL1_MdXO9IgaRWO3f8CHTq33bDY/view' },
+        // ── 2025-26 ACADEMIC SESSION ──
+        { title: '[2025-26] Mid Sem-1 PYQs (Odd Semester - Engineering Branches)', url: 'https://drive.google.com/file/d/1UHEYh3ykfe1QtYE_VfOF09nLwfWkjx5Z/view?usp=drivesdk', recommended: true },
+        { title: '[2025-26] Mid Sem-2 PYQs (Odd Semester - All Branches)', url: 'https://drive.google.com/file/d/1VzarRmsgnrELjL9fsGKFy31Ba1G9nZZi/view?usp=drivesdk', recommended: true },
+        { title: '[2025-26] End Sem (ESE) PYQs (Odd Semester - Engineering Branches)', url: 'https://drive.google.com/file/d/1RvGVTwQiqsc2AcodFj8g7P76_Dy75B_8/view?usp=drivesdk', recommended: true },
+        { title: '[2025-26] Mid Sem-1 PYQs (Even Semester / 2nd Sem - Technology Branches)', url: 'https://drive.google.com/file/d/18k4F_9KcyfRkEt-rjsDIMA2wN4BvZj_1/view', recommended: true },
+        { title: '[2025-26] Mid Sem-2 PYQs (Even Semester / 2nd Sem - All Branches)', url: 'https://drive.google.com/file/d/1wty3ubMfR4Vyt6ClzFfi0gKi-jNH0EmY/view?usp=drivesdk' },
+        { title: '[2025-26] End Sem (ESE) PYQs (Odd Semester - Technology Branches)', url: 'https://drive.google.com/file/d/1S41rOchlw2VV0JUqd-NA2-lJSv9MvaJM/view?usp=drivesdk' },
+        { title: '[2025-26] Mid Sem-1 PYQs (Even Semester / 2nd Sem - Engineering Branches)', url: 'https://drive.google.com/file/d/135yNwTL1_MdXO9IgaRWO3f8CHTq33bDY/view' },
 
         // ── 2024-25 ACADEMIC SESSION ──
         { title: '[2024-25] Complete All PYQs Bundle (1st & 2nd Sem)', url: 'https://drive.google.com/file/d/1Fc0AwAU84kbiYuOYfDScpiYCx9vfbV_I/view?usp=drive_link', recommended: true },
@@ -751,6 +785,180 @@ const FirstYearNotes = () => {
       };
     });
   }, [allCommunityNotes]);
+
+  const regularSubjects = useMemo(() => {
+    return subjects.filter(s => s.id !== 'assignments' && s.id !== 'pyqs');
+  }, [subjects]);
+
+  const assignmentSubject = useMemo(() => {
+    return subjects.find(s => s.id === 'assignments');
+  }, [subjects]);
+
+  const pyqSubject = useMemo(() => {
+    return subjects.find(s => s.id === 'pyqs');
+  }, [subjects]);
+
+  const assignmentNotes = useMemo(() => {
+    return assignmentSubject?.notes || [];
+  }, [assignmentSubject]);
+
+  const allPyqNotes = useMemo(() => {
+    return pyqSubject?.notes || [];
+  }, [pyqSubject]);
+
+  const filteredRegularSubjects = useMemo(() => {
+    return regularSubjects.filter(sub => {
+      if (selectedSubjectFilter !== 'all' && sub.id !== selectedSubjectFilter) {
+        return false;
+      }
+      const q = searchQuery.trim().toLowerCase();
+      if (!q) return true;
+      return (
+        sub.name.toLowerCase().includes(q) ||
+        (sub.fullName && sub.fullName.toLowerCase().includes(q)) ||
+        (sub.code && sub.code.toLowerCase().includes(q)) ||
+        sub.notes.some(n => n.title.toLowerCase().includes(q))
+      );
+    });
+  }, [regularSubjects, selectedSubjectFilter, searchQuery]);
+
+  const filteredAssignmentNotes = useMemo(() => {
+    const q = searchQuery.trim().toLowerCase();
+    if (!q) return assignmentNotes;
+    return assignmentNotes.filter(n => n.title.toLowerCase().includes(q));
+  }, [assignmentNotes, searchQuery]);
+
+  const pyqGroups = useMemo(() => {
+    const q = searchQuery.trim().toLowerCase();
+    const notesToGroup = q 
+      ? allPyqNotes.filter(n => n.title.toLowerCase().includes(q))
+      : allPyqNotes;
+
+    const groups: { [key: string]: { key: string; label: string; badge: string; color: string; items: NoteItem[] } } = {
+      '2026-27': {
+        key: '2026-27',
+        label: '2026–2027 Academic Session (Current Session)',
+        badge: 'Current / Ongoing',
+        color: 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/30',
+        items: []
+      },
+      '2025-26': {
+        key: '2025-26',
+        label: '2025–2026 Academic Session',
+        badge: 'Recent Past Session',
+        color: 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/30',
+        items: []
+      },
+      '2024-25': {
+        key: '2024-25',
+        label: '2024–2025 Academic Session',
+        badge: 'Previous Year',
+        color: 'bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border-indigo-500/30',
+        items: []
+      },
+      '2023-24': {
+        key: '2023-24',
+        label: '2023–2024 Academic Session',
+        badge: 'Past Exam Papers',
+        color: 'bg-violet-500/10 text-violet-600 dark:text-violet-400 border-violet-500/30',
+        items: []
+      },
+      '2022-23': {
+        key: '2022-23',
+        label: '2022–2023 & Earlier Archives',
+        badge: 'Archived Collection',
+        color: 'bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-500/30',
+        items: []
+      },
+    };
+
+    notesToGroup.forEach(note => {
+      // Dynamic title disambiguation for client cache resilience
+      let enrichedTitle = note.title;
+      const fn = (note.fileName || '').toLowerCase();
+      const t = note.title.toLowerCase();
+
+      // Fix any cached generic 2026-27 titles
+      if (
+        t === "mid sem-1 pyq's (2026-27)" ||
+        t === "mid sem-1 pyqs (2026-27)" ||
+        t === "mid sem-1 pyq's" ||
+        t === "mid sem-1 pyqs"
+      ) {
+        if (fn.includes('physics') || fn.includes('engg physics')) {
+          enrichedTitle = "Engineering Physics Mid Sem-1 PYQ'S (2026-27)";
+        } else if (fn.includes('math') || fn.includes('engg maths')) {
+          enrichedTitle = "Engineering Mathematics-I Mid Sem-1 PYQ'S (2026-27)";
+        } else if (fn.includes('chemical')) {
+          enrichedTitle = "Introduction to Chemical Engineering Mid Sem-1 PYQ'S (2026-27)";
+        } else if (fn.includes('etw')) {
+          enrichedTitle = "English for Technical Writing (ETW) Mid Sem-1 PYQ'S (2026-27)";
+        } else if (fn.includes('uhv')) {
+          enrichedTitle = "Universal Human Values (UHV) Mid Sem-1 PYQ'S (2026-27)";
+        } else if (fn.includes('bee')) {
+          enrichedTitle = "Basic Electrical Engineering (BEE) Mid Sem-1 PYQ'S (2026-27)";
+        } else if (fn.includes('bet')) {
+          enrichedTitle = "Basic Electronics Engineering (BET / IET) Mid Sem-1 PYQ'S (2026-27)";
+        } else if (fn.includes('bem')) {
+          enrichedTitle = "Basic Engineering Mechanics (BEM) Mid Sem-1 PYQ'S (2026-27)";
+        } else if (fn.includes('graphics')) {
+          enrichedTitle = "Engineering Graphics & Design Mid Sem-1 PYQ'S (2026-27)";
+        }
+      } else if (
+        t === "mid sem-1 pyq's (2025-26)" ||
+        t === "mid sem-1 pyqs (2025-26)"
+      ) {
+        if (fn.includes('physics')) {
+          enrichedTitle = "Engineering Physics Mid Sem-1 PYQ'S (2025-26)";
+        } else if (fn.includes('math')) {
+          enrichedTitle = "Engineering Mathematics-I Mid Sem-1 PYQ'S (2025-26)";
+        } else if (fn.includes('pc') || fn.includes('communication')) {
+          enrichedTitle = "Professional Communication (PC) Mid Sem-1 PYQ'S (2025-26)";
+        }
+      } else if (
+        t === "end sem pyq's (2025-26)" ||
+        t === "end sem pyqs (2025-26)"
+      ) {
+        if (fn.includes('em-1') || fn.includes('math')) {
+          enrichedTitle = "Engineering Mathematics-I End Sem PYQ'S (2025-26)";
+        } else if (fn.includes('iee') || fn.includes('bee')) {
+          enrichedTitle = "Basic Electrical Engineering (BEE) End Sem PYQ'S (2025-26)";
+        } else if (fn.includes('im') || fn.includes('mechanics')) {
+          enrichedTitle = "Engineering Mechanics End Sem PYQ'S (2025-26)";
+        }
+      }
+
+      const itemToPush = { ...note, title: enrichedTitle };
+
+      // Strictly route 2026-27 first before 2025-26
+      if (
+        t.includes('2026-27') ||
+        t.includes('2026-2027') ||
+        t.includes('26-27') ||
+        fn.includes('26-27') ||
+        fn.includes('2026-27') ||
+        (t.includes('2026') && !t.includes('2025-26'))
+      ) {
+        groups['2026-27'].items.push(itemToPush);
+      } else if (
+        t.includes('2025-26') ||
+        t.includes('2025-2026') ||
+        t.includes('25-26') ||
+        t.includes('2025') ||
+        fn.includes('2025')
+      ) {
+        groups['2025-26'].items.push(itemToPush);
+      } else if (t.includes('2024-25') || t.includes('2024')) {
+        groups['2024-25'].items.push(itemToPush);
+      } else if (t.includes('2023-24') || t.includes('2023')) {
+        groups['2023-24'].items.push(itemToPush);
+      } else {
+        groups['2022-23'].items.push(itemToPush);
+      }
+    });
+
+    return [groups['2026-27'], groups['2025-26'], groups['2024-25'], groups['2023-24'], groups['2022-23']];
+  }, [allPyqNotes, searchQuery]);
 
   const filteredSubjects = useMemo(() => {
     return subjects.filter(sub => {
@@ -956,39 +1164,40 @@ const FirstYearNotes = () => {
     <div className="min-h-screen bg-background text-foreground flex flex-col font-sans">
       <Navbar />
 
-      {/* ══════════ CLEAN HERO HEADER (NO CLIPPING, NO OVERFLOW) ══════════ */}
-      <div className="bg-slate-900 text-white pt-10 pb-8 px-4 sm:px-8 border-b border-slate-800">
-        <div className="max-w-6xl mx-auto">
-          <button
-            onClick={() => navigate("/btech-notes")}
-            className="inline-flex items-center gap-2 text-xs font-semibold tracking-wider uppercase text-slate-400 hover:text-white transition-colors mb-4"
-          >
-            <ArrowLeft className="h-3.5 w-3.5" /> Back to Years
-          </button>
-          <div className="flex items-center gap-2 mb-2 flex-wrap">
-            <span className="text-xs font-bold tracking-wider uppercase text-slate-400">B.Tech • First Year</span>
-            <span className="text-[10px] font-extrabold uppercase bg-amber-500/20 text-amber-300 border border-amber-500/40 px-2.5 py-0.5 rounded-full">
-              New Revised Scheme (2026)
-            </span>
+      {/* ══════════ CLEAN HERO HEADER ══════════ */}
+      <div className="bg-slate-900 text-white pt-8 pb-8 px-4 sm:px-8 border-b border-slate-800">
+        <div className="max-w-6xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <button
+              onClick={() => navigate("/btech-notes")}
+              className="inline-flex items-center gap-2 text-xs font-semibold tracking-wider uppercase text-slate-400 hover:text-white transition-colors mb-2"
+            >
+              <ArrowLeft className="h-3.5 w-3.5" /> Back to Years
+            </button>
+            <h1 className="text-2xl sm:text-4xl font-extrabold tracking-tight text-white flex items-center gap-3">
+              <span>1st year Notes & PYQ's</span>
+            </h1>
+            <p className="text-xs text-slate-400 mt-1">
+              Curated study materials, semester assignments, and previous year exam papers.
+            </p>
           </div>
-          <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight mb-2">
-            1st Year Notes & Resources
-          </h1>
-          <p className="text-xs md:text-sm text-slate-300 max-w-2xl leading-relaxed mb-4">
-            Unified foundation portal for Engineering & Technology cycles. Includes core sciences, PPS, Python, engineering fundamentals, tech branches, and previous year papers.
-          </p>
 
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="text-xs font-semibold tracking-wider uppercase bg-slate-800 text-slate-300 border border-slate-700 px-3 py-1.5 rounded-lg">
-              📚 {subjects.length} Subjects & Modules
-            </span>
+          <div className="flex items-center gap-2.5 flex-wrap">
+            <button
+              onClick={() => setShowGuidanceModal(true)}
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg shadow-indigo-950/40 border border-indigo-400/30 transition-all hover:scale-105 active:scale-95 cursor-pointer"
+            >
+              <Sparkles className="h-4 w-4 text-amber-300" />
+              <span>Important Instructions & Guidance</span>
+            </button>
+
             <a
               href="https://drive.google.com/file/d/14W4ah2ZTGgUeYKefVthmq7MZBJCLkiuJ/view?usp=drivesdk"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 text-xs font-bold tracking-wider uppercase bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-1.5 rounded-lg transition-colors shadow-sm"
+              className="inline-flex items-center gap-1.5 text-xs font-bold tracking-wider uppercase bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 px-3.5 py-2.5 rounded-xl transition-colors shadow-sm"
             >
-              <ExternalLink className="h-3.5 w-3.5" /> 1st Year Syllabus PDF
+              <ExternalLink className="h-3.5 w-3.5 text-indigo-400" /> 1st Year Syllabus
             </a>
           </div>
         </div>
@@ -996,244 +1205,409 @@ const FirstYearNotes = () => {
 
       <div className="max-w-6xl mx-auto px-4 sm:px-8 py-6 flex-1 w-full space-y-6">
 
-        {/* ══════════ OFFICIAL STUDENT INSTRUCTION & STUDY GUIDE BANNER ══════════ */}
-        <div className="rounded-2xl border border-slate-800 bg-slate-900 text-slate-100 p-5 md:p-6 shadow-md relative overflow-hidden">
-          <div className="space-y-3">
-            <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-lg bg-slate-800 text-indigo-400 flex items-center justify-center flex-shrink-0 border border-slate-700 shadow-sm">
-                <Info className="h-4 w-4" />
-              </div>
-              <h3 className="font-bold text-white text-base md:text-lg tracking-tight">
-                Important Guidance for 1st Year Students
-              </h3>
-            </div>
-
-            <p className="text-xs md:text-sm text-slate-300 leading-relaxed">
-              <strong>Combined Semester View:</strong> Both 1st and 2nd-semester subjects are unified here so students from all branches (Engineering & Technology cycles) can access their respective subjects in one place.
-            </p>
-
-            {/* Structured Subject Guide Points — Full Width Space Utilization */}
-            <div className="text-xs text-slate-300/90 leading-relaxed space-y-2 pt-2 border-t border-slate-800">
-              <div className="flex items-start gap-2">
-                <span className="text-indigo-400 font-bold">💻</span>
-                <p>
-                  <strong>Programming (PPS DCS101 & Python DCS201):</strong> Practice coding on an IDE. Focus on loops, arrays, pointers & file handling in C; lists, dictionaries, OOP & functions in Python. Check out the authentic <strong>CSE-curated Python handwritten notes</strong> added below.
-                </p>
-              </div>
-              <div className="flex items-start gap-2">
-                <span className="text-indigo-400 font-bold">📐</span>
-                <p>
-                  <strong>Graphics (DCE101) & Mechanics (DME101/201):</strong> Practice manual drawing sheets with standard instruments for projections and isometric views. In Mechanics, draw clear Free-Body Diagrams (FBDs) and solve numericals on equilibrium, friction, centroids, and trusses.
-                </p>
-              </div>
-              <div className="flex items-start gap-2">
-                <span className="text-indigo-400 font-bold">🔬</span>
-                <p>
-                  <strong>Core Sciences & Electrical (Maths, Physics, Chemistry, BEE):</strong> Master key derivations, formula sheets, and tutorial questions. Use the recommended detailed and one-shot playlists for rapid conceptual revision.
-                </p>
-              </div>
-              <div className="flex items-start gap-2">
-                <span className="text-indigo-400 font-bold">📖</span>
-                <p>
-                  <strong>For Newly Introduced Courses (without online notes yet):</strong> Attend professor lectures attentively and maintain clean handwritten notes directly from class. Don't rely solely on last-minute shortcuts.
-                </p>
-              </div>
-              <div className="flex items-start gap-2">
-                <span className="text-emerald-400 font-bold">🤝</span>
-                <p>
-                  <strong>Contribute & Become a Verified Contributor:</strong> At the end of the semester, scan your handwritten notes or files and message Priyal Sir. You will be awarded <strong>Admin / Contributor privileges</strong> to upload directly and get featured on the Contributors Leaderboard!
-                </p>
-              </div>
-            </div>
-
-            {/* Compact Green Professional Button at bottom (like Dashboard) */}
-            <div className="pt-3 border-t border-slate-800/80 flex items-center justify-between flex-wrap gap-3">
-              <p className="text-[11px] text-slate-400">
-                Want to contribute softcopies or need guidance for any subject? Contact directly:
-              </p>
-              <button
-                onClick={() => window.open(
-                  "https://wa.me/918957221543?text=" + encodeURIComponent("Hello Priyal Sir (CSE'27 HBTU), I am a 1st Year student and would like to contribute notes / need guidance for the new syllabus."),
-                  "_blank"
-                )}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider bg-emerald-600 hover:bg-emerald-500 text-white shadow-md shadow-emerald-950/30 transition-all hover:scale-105 active:scale-95 border-none"
-              >
-                <MessageCircle className="h-3.5 w-3.5 fill-white" />
-                <span>Message Priyal Sir (CSE'27 HBTU)</span>
-              </button>
-            </div>
-          </div>
-        </div>
-
-        {/* ══════════ SEARCH & EXACT 3 FILTER TABS (NO HORIZONTAL OVERFLOW) ══════════ */}
-        <div className="space-y-3">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
-            {/* Search Input */}
-            <div className="relative w-full sm:max-w-md">
-              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={e => setSearchQuery(e.target.value)}
-                placeholder="Search subjects, codes (e.g. DCS101), topics..."
-                className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-border bg-card text-foreground text-xs placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 transition-all"
-              />
-            </div>
-
-            {/* Subject count indicator */}
-            <div className="text-xs text-muted-foreground font-semibold flex items-center gap-2 self-start sm:self-auto">
-              <span>Showing {filteredSubjects.length} of {subjects.length} subjects</span>
-            </div>
-          </div>
-
-          {/* EXACT 3 FILTER PILLS AS SPECIFIED BY USER */}
-          <div className="flex items-center gap-2 flex-wrap">
-            {categories.map(tab => (
+        {/* ══════════ NAVIGATION TABS ══════════ */}
+        <div className="flex items-center border-b border-border gap-2 pb-px overflow-x-auto">
+          {[
+            { id: 'notes', label: 'Notes', icon: BookOpen, count: regularSubjects.length },
+            { id: 'assignments', label: 'Assignments', icon: FileText, count: assignmentNotes.length },
+            { id: 'pyqs', label: "PYQs", icon: GraduationCap, count: allPyqNotes.length },
+          ].map(tab => {
+            const Icon = tab.icon;
+            const isActive = mainTab === tab.id;
+            return (
               <button
                 key={tab.id}
-                onClick={() => setActiveCategory(tab.id as 'all' | 'computing' | 'pyq_assign')}
-                className={`px-4 py-2 rounded-xl text-xs font-bold tracking-wider uppercase transition-all ${
-                  activeCategory === tab.id
-                    ? 'bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900 shadow-sm'
-                    : 'bg-muted text-muted-foreground hover:text-foreground hover:bg-muted/80 border border-border'
+                onClick={() => setMainTab(tab.id as 'notes' | 'assignments' | 'pyqs')}
+                className={`flex items-center gap-2 px-5 py-3 text-xs sm:text-sm font-bold tracking-wide uppercase transition-all border-b-2 -mb-px whitespace-nowrap cursor-pointer ${
+                  isActive
+                    ? 'border-indigo-600 text-indigo-600 dark:border-indigo-400 dark:text-indigo-400 bg-indigo-50/50 dark:bg-indigo-950/30 rounded-t-xl'
+                    : 'border-transparent text-muted-foreground hover:text-foreground hover:bg-muted/50 rounded-t-xl'
                 }`}
               >
-                {tab.label}
+                <Icon className="h-4 w-4" />
+                <span>{tab.label}</span>
+                <span className={`text-[10px] px-2 py-0.5 rounded-full font-extrabold ${
+                  isActive
+                    ? 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/60 dark:text-indigo-300'
+                    : 'bg-muted text-muted-foreground'
+                }`}>
+                  {tab.count}
+                </span>
               </button>
-            ))}
-          </div>
-        </div>
-
-        {/* ══════════ SUBJECTS GRID ══════════ */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {filteredSubjects.map((subject, index) => {
-            const playlists = getSubjectPlaylists(subject.id);
-            const hasDetailed = playlists.detailed && playlists.detailed.length > 0;
-            const hasOneshot = playlists.oneshot && playlists.oneshot.length > 0;
-            const hasWorkshop = playlists.workshop && playlists.workshop.length > 0;
-            const hasAnyPlaylist = hasDetailed || hasOneshot || hasWorkshop;
-
-            return (
-              <motion.div
-                key={subject.id}
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.02, duration: 0.25 }}
-              >
-                <div className="group border border-border bg-card hover:border-sky-300/80 hover:bg-sky-50/40 dark:hover:border-sky-800/80 dark:hover:bg-sky-950/20 rounded-xl p-4 sm:p-5 transition-all duration-200 hover:shadow-md hover:shadow-sky-500/5 h-full flex flex-col justify-between">
-                  <div>
-                    {/* Top Row: Icon + Badges + File Count */}
-                    <div className="flex items-start justify-between gap-2 mb-3">
-                      <span className="text-2xl p-2 rounded-lg bg-muted/60">{subject.icon}</span>
-                      <div className="flex items-center gap-1.5 flex-wrap justify-end">
-                        {subject.code && (
-                          <span className="text-[10px] font-mono font-bold bg-muted px-2 py-0.5 rounded text-muted-foreground">
-                            {subject.code}
-                          </span>
-                        )}
-                        {subject.badge && (
-                          <span className="text-[10px] font-extrabold uppercase bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/30 px-2 py-0.5 rounded-full">
-                            {subject.badge}
-                          </span>
-                        )}
-                        {/* File count indicator: Shows 0 files gracefully if empty */}
-                        <span className={`text-[10px] font-extrabold px-2 py-0.5 rounded-full ${
-                          subject.notes.length > 0 
-                            ? "bg-emerald-600 text-white" 
-                            : "bg-muted text-muted-foreground border border-border"
-                        }`}>
-                          {subject.notes.length} files
-                        </span>
-                      </div>
-                    </div>
-
-                    {/* Title & Description */}
-                    <h3 className="font-bold text-foreground text-base leading-snug mb-1.5 group-hover:text-primary transition-colors">
-                      {subject.name}
-                    </h3>
-                    {subject.description && (
-                      <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed mb-3">
-                        {subject.description}
-                      </p>
-                    )}
-                  </div>
-
-                  {/* Playlists Accordion & View Action */}
-                  <div>
-                    {hasAnyPlaylist && (
-                      <div className="mt-2 pt-3 border-t border-border">
-                        <button
-                          className="flex items-center justify-between w-full text-xs font-semibold text-muted-foreground hover:text-foreground transition-colors"
-                          onClick={() => toggleSubjectExpansion(subject.id)}
-                        >
-                          <span className="flex items-center gap-1.5">
-                            <Play className="h-3 w-3 text-indigo-500" /> Curated Playlists
-                          </span>
-                          {expandedSubjects.includes(subject.id) ? (
-                            <ChevronDown className="h-3.5 w-3.5" />
-                          ) : (
-                            <ChevronRight className="h-3.5 w-3.5" />
-                          )}
-                        </button>
-
-                        {expandedSubjects.includes(subject.id) && (
-                          <div className="mt-2 space-y-1">
-                            {hasDetailed && (
-                              <button
-                                className="w-full text-left text-xs py-1.5 px-2 rounded-lg hover:bg-muted transition-colors text-muted-foreground hover:text-foreground flex items-center justify-between"
-                                onClick={() => handlePlaylistClick(subject.id, 'detailed')}
-                              >
-                                <span>📚 Detailed Topics</span>
-                                <span className="text-[10px] font-mono font-bold bg-muted px-1.5 py-0.5 rounded">
-                                  {playlists.detailed!.length}
-                                </span>
-                              </button>
-                            )}
-                            {hasOneshot && (
-                              <button
-                                className="w-full text-left text-xs py-1.5 px-2 rounded-lg hover:bg-muted transition-colors text-muted-foreground hover:text-foreground flex items-center justify-between"
-                                onClick={() => handlePlaylistClick(subject.id, 'oneshot')}
-                              >
-                                <span>⚡ One Shot</span>
-                                <span className="text-[10px] font-mono font-bold bg-muted px-1.5 py-0.5 rounded">
-                                  {playlists.oneshot!.length}
-                                </span>
-                              </button>
-                            )}
-                            {hasWorkshop && (
-                              <button
-                                className="w-full text-left text-xs py-1.5 px-2 rounded-lg hover:bg-muted transition-colors text-muted-foreground hover:text-foreground flex items-center justify-between"
-                                onClick={() => handlePlaylistClick(subject.id, 'workshop')}
-                              >
-                                <span>🔨 Workshop Practicals</span>
-                                <span className="text-[10px] font-mono font-bold bg-muted px-1.5 py-0.5 rounded">
-                                  {playlists.workshop!.length}
-                                </span>
-                              </button>
-                            )}
-                          </div>
-                        )}
-                      </div>
-                    )}
-
-                    {/* View Notes Action Button */}
-                    <div className="mt-4">
-                      <button
-                        onClick={() => setSelectedSubject(subject.id)}
-                        className="w-full text-xs font-bold tracking-wider uppercase py-2.5 px-4 rounded-xl border border-border hover:bg-foreground hover:text-background transition-all duration-200 flex items-center justify-center gap-1.5"
-                      >
-                        <BookOpen className="h-3.5 w-3.5" />
-                        {subject.notes.length === 0 ? "View Subject / Contribute" : "View Notes & PDFs"}
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
             );
           })}
         </div>
 
-        {/* ══════════ CONTRIBUTION CALLOUT CARD (AMPLE BOTTOM SPACING) ══════════ */}
+        {/* ══════════ 1. NOTES TAB CONTENT ══════════ */}
+        {mainTab === 'notes' && (
+          <div className="space-y-6">
+            {/* Subject filter dropdown & search input bar */}
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-card border border-border p-3.5 rounded-2xl shadow-xs">
+              <div className="flex items-center gap-2 flex-1 max-w-md">
+                <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground whitespace-nowrap">
+                  Subject:
+                </label>
+                <Select value={selectedSubjectFilter} onValueChange={setSelectedSubjectFilter}>
+                  <SelectTrigger className="w-full text-xs h-9 bg-background">
+                    <SelectValue placeholder="All Subjects" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Subjects ({regularSubjects.length})</SelectItem>
+                    {regularSubjects.map(sub => (
+                      <SelectItem key={sub.id} value={sub.id}>{sub.name}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="relative flex-1 max-w-md">
+                <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={e => setSearchQuery(e.target.value)}
+                  placeholder="Search subjects, codes, or notes..."
+                  className="w-full pl-9 pr-4 py-2 rounded-xl border border-border bg-background text-foreground text-xs placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-indigo-500/40"
+                />
+              </div>
+
+              <div className="text-xs text-muted-foreground font-semibold flex items-center gap-1.5 self-start sm:self-auto shrink-0">
+                <span>Showing {filteredRegularSubjects.length} of {regularSubjects.length}</span>
+              </div>
+            </div>
+
+            {/* Subjects Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {filteredRegularSubjects.map((subject, index) => {
+                const playlists = getSubjectPlaylists(subject.id);
+                const hasDetailed = playlists.detailed && playlists.detailed.length > 0;
+                const hasOneshot = playlists.oneshot && playlists.oneshot.length > 0;
+                const hasWorkshop = playlists.workshop && playlists.workshop.length > 0;
+                const hasAnyPlaylist = hasDetailed || hasOneshot || hasWorkshop;
+
+                return (
+                  <motion.div
+                    key={subject.id}
+                    initial={{ opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: index * 0.02, duration: 0.25 }}
+                  >
+                    <div className="group border border-border bg-card hover:border-indigo-400/80 hover:bg-indigo-50/20 dark:hover:border-indigo-800/80 dark:hover:bg-indigo-950/20 rounded-xl p-4 sm:p-5 transition-all duration-200 hover:shadow-md hover:shadow-indigo-500/5 h-full flex flex-col justify-between">
+                      <div>
+                        {/* Top Row: Icon + Badges + File Count */}
+                        <div className="flex items-start justify-between gap-2 mb-3">
+                          <span className="text-2xl p-2 rounded-lg bg-muted/60">{subject.icon}</span>
+                          <div className="flex items-center gap-1.5 flex-wrap justify-end">
+                            {subject.code && (
+                              <span className="text-[10px] font-mono font-bold bg-muted px-2 py-0.5 rounded text-muted-foreground">
+                                {subject.code}
+                              </span>
+                            )}
+                            {subject.badge && (
+                              <span className="text-[10px] font-extrabold uppercase bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/30 px-2 py-0.5 rounded-full">
+                                {subject.badge}
+                              </span>
+                            )}
+                            <span className={`text-[10px] font-extrabold px-2 py-0.5 rounded-full ${
+                              subject.notes.length > 0 
+                                ? "bg-emerald-600 text-white" 
+                                : "bg-muted text-muted-foreground border border-border"
+                            }`}>
+                              {subject.notes.length} files
+                            </span>
+                          </div>
+                        </div>
+
+                        {/* Title & Description */}
+                        <h3 className="font-bold text-foreground text-base leading-snug mb-1.5 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+                          {subject.name}
+                        </h3>
+                        {subject.description && (
+                          <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed mb-3">
+                            {subject.description}
+                          </p>
+                        )}
+                      </div>
+
+                      {/* Playlists Accordion & View Action */}
+                      <div>
+                        {hasAnyPlaylist && (
+                          <div className="mt-2 pt-3 border-t border-border">
+                            <button
+                              className="flex items-center justify-between w-full text-xs font-semibold text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+                              onClick={() => toggleSubjectExpansion(subject.id)}
+                            >
+                              <span className="flex items-center gap-1.5">
+                                <Play className="h-3 w-3 text-indigo-500" /> Curated Playlists
+                              </span>
+                              {expandedSubjects.includes(subject.id) ? (
+                                <ChevronDown className="h-3.5 w-3.5" />
+                              ) : (
+                                <ChevronRight className="h-3.5 w-3.5" />
+                              )}
+                            </button>
+
+                            {expandedSubjects.includes(subject.id) && (
+                              <div className="mt-2 space-y-1">
+                                {hasDetailed && (
+                                  <button
+                                    className="w-full text-left text-xs py-1.5 px-2 rounded-lg hover:bg-muted transition-colors text-muted-foreground hover:text-foreground flex items-center justify-between cursor-pointer"
+                                    onClick={() => handlePlaylistClick(subject.id, 'detailed')}
+                                  >
+                                    <span>📚 Detailed Topics</span>
+                                    <span className="text-[10px] font-mono font-bold bg-muted px-1.5 py-0.5 rounded">
+                                      {playlists.detailed!.length}
+                                    </span>
+                                  </button>
+                                )}
+                                {hasOneshot && (
+                                  <button
+                                    className="w-full text-left text-xs py-1.5 px-2 rounded-lg hover:bg-muted transition-colors text-muted-foreground hover:text-foreground flex items-center justify-between cursor-pointer"
+                                    onClick={() => handlePlaylistClick(subject.id, 'oneshot')}
+                                  >
+                                    <span>⚡ One Shot</span>
+                                    <span className="text-[10px] font-mono font-bold bg-muted px-1.5 py-0.5 rounded">
+                                      {playlists.oneshot!.length}
+                                    </span>
+                                  </button>
+                                )}
+                                {hasWorkshop && (
+                                  <button
+                                    className="w-full text-left text-xs py-1.5 px-2 rounded-lg hover:bg-muted transition-colors text-muted-foreground hover:text-foreground flex items-center justify-between cursor-pointer"
+                                    onClick={() => handlePlaylistClick(subject.id, 'workshop')}
+                                  >
+                                    <span>🔨 Workshop Practicals</span>
+                                    <span className="text-[10px] font-mono font-bold bg-muted px-1.5 py-0.5 rounded">
+                                      {playlists.workshop!.length}
+                                    </span>
+                                  </button>
+                                )}
+                              </div>
+                            )}
+                          </div>
+                        )}
+
+                        {/* View Notes Action Button */}
+                        <div className="mt-4">
+                          <button
+                            onClick={() => setSelectedSubject(subject.id)}
+                            className="w-full text-xs font-bold tracking-wider uppercase py-2.5 px-4 rounded-xl border border-border hover:bg-foreground hover:text-background transition-all duration-200 flex items-center justify-center gap-1.5 cursor-pointer"
+                          >
+                            <BookOpen className="h-3.5 w-3.5" />
+                            {subject.notes.length === 0 ? "View Subject / Contribute" : "View Notes & PDFs"}
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </motion.div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {/* ══════════ 2. ASSIGNMENTS TAB CONTENT ══════════ */}
+        {mainTab === 'assignments' && (
+          <div className="space-y-6">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-card border border-border p-3.5 rounded-2xl shadow-xs">
+              <div className="relative flex-1 max-w-md">
+                <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={e => setSearchQuery(e.target.value)}
+                  placeholder="Search assignments by subject or title..."
+                  className="w-full pl-9 pr-4 py-2 rounded-xl border border-border bg-background text-foreground text-xs placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-indigo-500/40"
+                />
+              </div>
+              <div className="text-xs text-muted-foreground font-semibold">
+                <span>{filteredAssignmentNotes.length} Assignment Sheets Available</span>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {filteredAssignmentNotes.map((note, index) => (
+                <motion.div
+                  key={note.id || index}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.02, duration: 0.25 }}
+                >
+                  <div className="border border-border bg-card hover:border-amber-400/80 rounded-xl p-4 transition-all duration-200 hover:shadow-md flex flex-col h-full relative">
+                    {note.recommended && (
+                      <div className="absolute top-3 right-3 z-10 pointer-events-none">
+                        <span className="inline-flex items-center gap-1 text-[10px] font-extrabold tracking-wider uppercase bg-amber-500 text-white px-2 py-0.5 rounded-full shadow-sm">
+                          ⭐ Recommended
+                        </span>
+                      </div>
+                    )}
+                    <div className="flex items-center gap-2 mb-3">
+                      <div className="w-8 h-8 rounded-lg bg-orange-500 text-white flex items-center justify-center text-xs shadow-sm">
+                        <FileText className="h-4 w-4" />
+                      </div>
+                      <span className="text-[10px] font-bold tracking-wider uppercase bg-muted text-muted-foreground px-2 py-0.5 rounded">
+                        Assignment 📝
+                      </span>
+                    </div>
+
+                    <h3 className="font-semibold text-foreground text-sm leading-snug flex-1 mb-3">
+                      {note.title}
+                    </h3>
+
+                    <div className="flex gap-2 pt-2 border-t border-border/50">
+                      <button
+                        onClick={() => handleDownload(note.url, note.title)}
+                        className="flex-1 inline-flex items-center justify-center gap-1.5 text-xs font-bold tracking-wider uppercase py-2 px-3 rounded-lg bg-foreground text-background hover:opacity-85 transition-opacity cursor-pointer"
+                        disabled={note.url === '#'}
+                      >
+                        <Download className="h-3.5 w-3.5" /> Download
+                      </button>
+                      <button
+                        onClick={() => viewInBrowser(note.url)}
+                        className="inline-flex items-center justify-center p-2 rounded-lg border border-border hover:bg-muted transition-colors cursor-pointer"
+                        disabled={note.url === '#'}
+                        title="View in Browser"
+                      >
+                        <ExternalLink className="h-3.5 w-3.5 text-foreground" />
+                      </button>
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* ══════════ 3. PYQS TAB CONTENT (YEAR-WISE COLLAPSIBLE ACCORDIONS) ══════════ */}
+        {mainTab === 'pyqs' && (
+          <div className="space-y-6">
+            {/* Search Bar */}
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-card border border-border p-3.5 rounded-2xl shadow-xs">
+              <div className="relative flex-1 max-w-md">
+                <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={e => setSearchQuery(e.target.value)}
+                  placeholder="Search exam papers by session, Mid Sem, End Sem..."
+                  className="w-full pl-9 pr-4 py-2 rounded-xl border border-border bg-background text-foreground text-xs placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-indigo-500/40"
+                />
+              </div>
+              <div className="text-xs text-muted-foreground font-semibold flex items-center gap-2">
+                <span>{allPyqNotes.length} Exam Question Papers</span>
+              </div>
+            </div>
+
+            {/* Year-wise Accordions: Sorted descending (latest session first) */}
+            <div className="space-y-4">
+              {pyqGroups.map((group) => {
+                const isOpen = expandedPyqYears.includes(group.key);
+                return (
+                  <div 
+                    key={group.key}
+                    className="border border-border/80 bg-card rounded-2xl overflow-hidden shadow-xs transition-all"
+                  >
+                    {/* Collapsible Accordion Header Trigger */}
+                    <button
+                      onClick={() => togglePyqYear(group.key)}
+                      className="w-full flex items-center justify-between p-4 sm:p-5 text-left hover:bg-muted/40 transition-colors cursor-pointer select-none"
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-xl bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 flex items-center justify-center font-bold shrink-0">
+                          <GraduationCap className="h-5 w-5" />
+                        </div>
+                        <div>
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <h3 className="font-extrabold text-base sm:text-lg text-foreground tracking-tight">
+                              {group.label}
+                            </h3>
+                            <span className={`text-[10px] font-bold uppercase px-2.5 py-0.5 rounded-full border ${group.color}`}>
+                              {group.badge}
+                            </span>
+                          </div>
+                          <p className="text-xs text-muted-foreground mt-0.5">
+                            {group.items.length} question papers available
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-2 text-muted-foreground shrink-0">
+                        <span className="text-xs font-semibold hidden sm:inline">
+                          {isOpen ? 'Collapse' : 'Expand'}
+                        </span>
+                        <div className="w-8 h-8 rounded-lg bg-muted/60 flex items-center justify-center">
+                          {isOpen ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+                        </div>
+                      </div>
+                    </button>
+
+                    {/* Collapsible Content */}
+                    {isOpen && (
+                      <div className="p-4 sm:p-5 pt-0 border-t border-border/50 bg-muted/10">
+                        {group.items.length === 0 ? (
+                          <div className="text-center py-8 text-muted-foreground text-xs">
+                            No question papers match the current search query for this session.
+                          </div>
+                        ) : (
+                          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5 pt-4">
+                            {group.items.map((note, idx) => (
+                              <motion.div
+                                key={note.id || idx}
+                                initial={{ opacity: 0, y: 8 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: idx * 0.02, duration: 0.2 }}
+                              >
+                                <div className="border border-border bg-card hover:border-indigo-400/80 rounded-xl p-4 transition-all duration-200 hover:shadow-md flex flex-col h-full relative">
+                                  {note.recommended && (
+                                    <div className="absolute top-3 right-3 z-10 pointer-events-none">
+                                      <span className="inline-flex items-center gap-1 text-[10px] font-extrabold tracking-wider uppercase bg-amber-500 text-white px-2 py-0.5 rounded-full shadow-sm">
+                                        ⭐ Recommended
+                                      </span>
+                                    </div>
+                                  )}
+                                  
+                                  <div className="flex items-center gap-2 mb-2.5">
+                                    <span className="text-[10px] font-bold tracking-wider uppercase bg-red-500/10 text-red-600 dark:text-red-400 px-2 py-0.5 rounded border border-red-500/20">
+                                      PYQ Paper ❓
+                                    </span>
+                                  </div>
+
+                                  <h4 className="font-semibold text-foreground text-sm leading-snug flex-1 mb-3">
+                                    {note.title}
+                                  </h4>
+
+                                  <div className="flex gap-2 pt-2 border-t border-border/50">
+                                    <button
+                                      onClick={() => handleDownload(note.url, note.title)}
+                                      className="flex-1 inline-flex items-center justify-center gap-1.5 text-xs font-bold tracking-wider uppercase py-2 px-3 rounded-lg bg-foreground text-background hover:opacity-85 transition-opacity cursor-pointer"
+                                      disabled={note.url === '#'}
+                                    >
+                                      <Download className="h-3.5 w-3.5" /> Download
+                                    </button>
+                                    <button
+                                      onClick={() => viewInBrowser(note.url)}
+                                      className="inline-flex items-center justify-center p-2 rounded-lg border border-border hover:bg-muted transition-colors cursor-pointer"
+                                      disabled={note.url === '#'}
+                                      title="View in Browser"
+                                    >
+                                      <ExternalLink className="h-3.5 w-3.5 text-foreground" />
+                                    </button>
+                                  </div>
+                                </div>
+                              </motion.div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {/* ══════════ CONTRIBUTION CALLOUT CARD ══════════ */}
         <div className="rounded-2xl border border-slate-800 bg-slate-900 text-slate-100 p-6 text-center space-y-3 pb-8 mb-8">
           <GraduationCap className="h-9 w-9 text-indigo-400 mx-auto opacity-80" />
           <h3 className="font-bold text-white text-lg">Have Class Notes or Slides for 1st Year?</h3>
@@ -1245,7 +1619,7 @@ const FirstYearNotes = () => {
               "https://wa.me/918957221543?text=" + encodeURIComponent("Hello Priyal Sir (CSE'27 HBTU), I want to share my 1st Year lecture notes to help other students on CollegeStudy Hub."),
               "_blank"
             )}
-            className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider bg-emerald-600 hover:bg-emerald-500 text-white px-5 py-2.5 rounded-xl shadow-md transition-all active:scale-95"
+            className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider bg-emerald-600 hover:bg-emerald-500 text-white px-5 py-2.5 rounded-xl shadow-md transition-all active:scale-95 cursor-pointer"
           >
             <MessageCircle className="h-4 w-4 fill-white" /> Start Contributing on WhatsApp
           </button>
@@ -1254,6 +1628,285 @@ const FirstYearNotes = () => {
       </div>
 
       <Footer />
+
+      {/* ══════════ DETAILED GUIDANCE & STRATEGY POPUP MODAL ══════════ */}
+      <Dialog open={showGuidanceModal} onOpenChange={setShowGuidanceModal}>
+        <DialogContent className="max-w-3xl w-[95vw] max-h-[85vh] overflow-y-auto p-6 sm:p-8 bg-card text-foreground border border-border rounded-2xl shadow-2xl space-y-6">
+          <DialogHeader className="border-b pb-4">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 flex items-center justify-center shrink-0 border border-indigo-500/20 shadow-sm">
+                <Sparkles className="h-5 w-5 text-amber-500" />
+              </div>
+              <div>
+                <DialogTitle className="text-xl sm:text-2xl font-extrabold tracking-tight text-foreground">
+                  Important Instructions & Guidance
+                </DialogTitle>
+                <DialogDescription className="text-xs text-muted-foreground mt-0.5">
+                  Essential preparation strategy, study methodology, and examination tips for 1st Year students.
+                </DialogDescription>
+              </div>
+            </div>
+          </DialogHeader>
+
+          {/* Student Guidance Body */}
+          <div className="space-y-6 text-sm text-foreground/90 leading-relaxed">
+            
+            {/* Opening Intro Callout */}
+            <div className="p-4 rounded-xl bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-800/60 text-xs sm:text-sm leading-relaxed space-y-2">
+              <p className="font-semibold text-indigo-950 dark:text-indigo-200">
+                It's time to plan your preparation, stay consistent, and make the most of the time you have.
+              </p>
+              <p className="text-indigo-900/80 dark:text-indigo-300">
+                At College Study, we believe that the right resources, a clear strategy, and consistent effort can make a huge difference in your academic performance. Here are some practical tips and resources that can help you prepare better and score well in your exams.
+              </p>
+            </div>
+
+            {/* 1. Take Your First-Year CGPA Seriously */}
+            <div className="p-5 rounded-2xl border border-border/80 bg-background/50 space-y-3">
+              <div className="flex items-center gap-2.5">
+                <div className="w-7 h-7 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0 font-bold text-xs">
+                  1
+                </div>
+                <h3 className="font-extrabold text-base text-foreground tracking-tight">
+                  Take Your First-Year CGPA Seriously!
+                </h3>
+              </div>
+              <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
+                Your first-year CGPA is an important foundation for your overall academic journey. Building a strong CGPA early can make it easier to maintain a good academic record throughout college.
+              </p>
+              <ul className="space-y-2 text-xs sm:text-sm text-foreground/80 pl-2">
+                <li className="flex items-start gap-2">
+                  <span className="text-emerald-500 font-bold">•</span>
+                  <span>Set a target CGPA and prepare accordingly instead of studying without a clear goal.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-emerald-500 font-bold">•</span>
+                  <span>If you're aiming for a branch upgrade, remember that a good academic performance can improve your chances.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-emerald-500 font-bold">•</span>
+                  <span>Don't lose motivation if your current branch isn't your first preference. Keep working hard, focus on your academics, and make the most of every opportunity.</span>
+                </li>
+              </ul>
+              <p className="text-xs font-semibold text-emerald-600 dark:text-emerald-400 pt-1">
+                Your first year is a great opportunity to build a strong academic foundation. Make it count!
+              </p>
+            </div>
+
+            {/* 2. Not Understanding Everything in Class? Don't Worry! */}
+            <div className="p-5 rounded-2xl border border-border/80 bg-background/50 space-y-4">
+              <div className="flex items-center gap-2.5">
+                <div className="w-7 h-7 rounded-lg bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0 font-bold text-xs">
+                  2
+                </div>
+                <h3 className="font-extrabold text-base text-foreground tracking-tight">
+                  Not Understanding Everything in Class? Don't Worry!
+                </h3>
+              </div>
+              <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
+                Many students find certain professors' teaching styles difficult to follow. That's completely okay! Everyone learns differently.
+              </p>
+              <p className="text-xs sm:text-sm text-foreground/85 leading-relaxed">
+                You don't have to depend on classroom lectures alone. You can combine your class notes with well-structured YouTube playlists, previous-year questions (PYQs), and AI tools to understand concepts at your own pace.
+              </p>
+
+              <div className="space-y-3 pt-2">
+                <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                  Follow this simple preparation strategy:
+                </p>
+                <div className="space-y-2.5">
+                  {[
+                    {
+                      num: '1',
+                      title: 'Print your syllabus first.',
+                      desc: 'Keep it in front of you and underline or tick off every topic as you complete it. This ensures you don\'t miss anything important.'
+                    },
+                    {
+                      num: '2',
+                      title: 'Understand the concepts.',
+                      desc: 'Follow college study website\'s curated YouTube playlist provided and use GFG Articles, ChatGPT or Gemini to clarify doubts, understand difficult topics, and get simple explanations.'
+                    },
+                    {
+                      num: '3',
+                      title: 'Go through class notes.',
+                      desc: 'Review your own notes or, if needed, ask a classmate for lecture notes. Use them to understand what was covered in class and what your professor emphasizes and after that for better understanding use notes available on our college study website.'
+                    },
+                    {
+                      num: '4',
+                      title: 'Practice PYQs.',
+                      desc: 'Solve at least 2–3 years available PYQs to identify recurring topics, understand the question pattern, and practice writing exam-oriented long answers.'
+                    },
+                    {
+                      num: '5',
+                      title: 'Make a realistic target.',
+                      desc: 'No need to study every day in college, just start studying a week before exams. Divide the syllabus unit-wise and set daily goals. Track your progress instead of waiting until the last days.'
+                    }
+                  ].map(step => (
+                    <div key={step.num} className="flex items-start gap-3 p-3 rounded-xl bg-card border border-border/60">
+                      <span className="w-5 h-5 rounded-full bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 text-xs font-bold flex items-center justify-center shrink-0">
+                        {step.num}
+                      </span>
+                      <p className="text-xs sm:text-sm leading-relaxed">
+                        <strong className="text-foreground">{step.title}</strong>{' '}
+                        <span className="text-muted-foreground">{step.desc}</span>
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 text-xs sm:text-sm text-amber-900 dark:text-amber-200 font-medium">
+                Remember, you don't need to collect endless resources. You need to use the right resources consistently and almost everything is available for you on a single platform called <strong>"COLLEGE STUDY"</strong>.
+              </div>
+            </div>
+
+            {/* 3. Presentation and Answer Writing Matter! */}
+            <div className="p-5 rounded-2xl border border-border/80 bg-background/50 space-y-3">
+              <div className="flex items-center gap-2.5">
+                <div className="w-7 h-7 rounded-lg bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center shrink-0 font-bold text-xs">
+                  3
+                </div>
+                <h3 className="font-extrabold text-base text-foreground tracking-tight">
+                  Presentation and Answer Writing Matter!
+                </h3>
+              </div>
+              <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
+                Knowing the answer is important, but presenting it properly also matters.
+              </p>
+              <ul className="space-y-2 text-xs sm:text-sm text-foreground/80 pl-2">
+                <li className="flex items-start gap-2">
+                  <span className="text-purple-500 font-bold">•</span>
+                  <span>Write clear, relevant, and sufficiently detailed long answers.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-purple-500 font-bold">•</span>
+                  <span>Use headings, subheadings, bullet points, diagrams, flowcharts, and examples wherever appropriate.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-purple-500 font-bold">•</span>
+                  <span>Underline important keywords to make your answers easier to evaluate.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-purple-500 font-bold">•</span>
+                  <span>Manage your time in the exam hall from start to finish so you can attempt all questions you know well. Never leave early just to show off in front of others, especially in exams; try to utilize every single minute of the exam hall.</span>
+                </li>
+              </ul>
+              <div className="p-3.5 rounded-xl bg-muted/40 border border-border text-xs sm:text-sm leading-relaxed text-muted-foreground">
+                For example, if you get a 12-page answer booklet, aim to use the available space effectively by writing complete, relevant answers. You might target 9–11 pages when the questions and your knowledge justify it. Accuracy, relevance, presentation, and completeness matter.
+              </div>
+            </div>
+
+            {/* 4. Explore College Study — Your Academic Resources Hub! */}
+            <div className="p-5 rounded-2xl border border-border/80 bg-background/50 space-y-3">
+              <div className="flex items-center gap-2.5">
+                <div className="w-7 h-7 rounded-lg bg-teal-500/10 text-teal-600 dark:text-teal-400 flex items-center justify-center shrink-0 font-bold text-xs">
+                  4
+                </div>
+                <h3 className="font-extrabold text-base text-foreground tracking-tight">
+                  Explore College Study — Your Academic Resources Hub!
+                </h3>
+              </div>
+              <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
+                College Study has already helped your seniors and super-seniors throughout their academic journey by providing useful study materials, resources, and opportunities on a single platform. Now, it's your turn to make the most of it! Explore the platform, utilize the available resources wisely, and make your college journey a little easier.
+              </p>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+                {[
+                  {
+                    title: 'B.Tech Notes & Study Materials',
+                    desc: 'Find notes and study resources to support your semester preparation.',
+                    link: '/btech-notes',
+                    icon: BookOpen
+                  },
+                  {
+                    title: 'CGPA Calculator',
+                    desc: 'Calculate your expected CGPA in advance by entering anticipated grades and credits.',
+                    link: '/cgpa-calculator',
+                    icon: Target
+                  },
+                  {
+                    title: '500+ Curated AI Tools',
+                    desc: 'Explore AI tools for studying, research, productivity, coding, writing, and more.',
+                    link: '/useful-ai-tools',
+                    icon: Sparkles
+                  },
+                  {
+                    title: 'Premium Career Opportunities',
+                    desc: 'Explore curated career resources including 130+ MNCs, PSUs, and career roadmaps.',
+                    link: '/premium-content',
+                    icon: Award
+                  }
+                ].map(item => {
+                  const ItemIcon = item.icon;
+                  return (
+                    <div 
+                      key={item.title}
+                      onClick={() => { setShowGuidanceModal(false); navigate(item.link); }}
+                      className="p-3.5 rounded-xl border border-border/70 hover:border-indigo-400 dark:hover:border-indigo-600 bg-card hover:bg-indigo-50/20 dark:hover:bg-indigo-950/20 transition-all cursor-pointer group flex flex-col justify-between"
+                    >
+                      <div>
+                        <div className="flex items-center gap-2 text-indigo-600 dark:text-indigo-400 mb-1">
+                          <ItemIcon className="h-4 w-4" />
+                          <h4 className="font-bold text-xs sm:text-sm text-foreground group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+                            {item.title}
+                          </h4>
+                        </div>
+                        <p className="text-xs text-muted-foreground leading-relaxed">
+                          {item.desc}
+                        </p>
+                      </div>
+                      <span className="text-[11px] font-semibold text-indigo-600 dark:text-indigo-400 flex items-center gap-1 mt-2.5">
+                        Open Page <ExternalLink className="h-3 w-3" />
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
+
+              <p className="text-xs text-muted-foreground pt-1 italic">
+                Our goal is simple: help students study smarter, discover opportunities, and make college life easier.
+              </p>
+            </div>
+
+            {/* A Final Reminder */}
+            <div className="p-5 rounded-2xl bg-gradient-to-br from-indigo-500/10 via-purple-500/5 to-transparent border border-indigo-500/20 space-y-3">
+              <h3 className="font-extrabold text-base text-foreground tracking-tight flex items-center gap-2">
+                <span>🌟</span>
+                <span>A Final Reminder</span>
+              </h3>
+              <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
+                Don't compare your preparation with everyone else's. Focus on your own progress, stay consistent, and use your time wisely.
+              </p>
+              <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
+                Study sincerely, take breaks when needed, enjoy your college life, and make memories along the way. You can work hard without giving up everything that makes college life special!
+              </p>
+              <div className="pt-2 border-t border-border/60">
+                <p className="text-xs font-bold text-foreground">
+                  Wishing you all the very best for your semester examinations!
+                </p>
+                <p className="text-xs text-muted-foreground mt-0.5">
+                  Prepare well, stay confident, and give it your best.
+                </p>
+                <p className="text-xs font-semibold text-indigo-600 dark:text-indigo-400 mt-2">
+                  Warm regards,<br />
+                  Team College Study<br />
+                  <span className="text-muted-foreground font-normal">Your companion in academics, opportunities, and growth.</span>
+                </p>
+              </div>
+            </div>
+
+          </div>
+
+          <div className="pt-4 border-t flex justify-end">
+            <Button 
+              onClick={() => setShowGuidanceModal(false)}
+              className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs px-6 rounded-xl"
+            >
+              Close Guidance
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       {/* Playlists Modal */}
       <PlaylistModal
