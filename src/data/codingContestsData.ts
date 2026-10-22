@@ -100,3 +100,20 @@ export function getPredictableContests(baseDate: Date = new Date()): ContestEven
           durationMinutes: 90,
           url: `https://www.naukri.com/code360/contests/weekly-contest-${code360Num}`,
           difficulty: 'All Levels (Beginner to Advanced)',
+          subscribersCount: 12200,
+        });
+      }
+
+      // 4. Saturdays: AtCoder ABC + Alternate LeetCode Biweekly
+      if (dayOfWeek === 6) {
+        // AtCoder Beginner Contest (Every Saturday 05:30 PM - 07:10 PM IST)
+        const acStart = new Date(year, targetMonth, day, 17, 30, 0);
+        const acEnd = new Date(year, targetMonth, day, 19, 10, 0);
+        const acDiffWeeks = Math.round((acStart.getTime() - AC_ABC_ANCHOR.getTime()) / (7 * 24 * 3600 * 1000));
+        const abcNum = 356 + acDiffWeeks;
+
+        contests.push({
+          id: `ac-abc-${year}-${targetMonth + 1}-${day}`,
+          title: `AtCoder Beginner Contest ${abcNum} (ABC)`,
+          platform: 'AtCoder',
+          startTime: acStart.toISOString(),
