@@ -424,4 +424,109 @@ serve(async (req) => {
       const isValid = accessCode?.trim() === ACCESS_CODE;
       if (!isValid) {
         return new Response(
-// [rag-build-step 4/5]: feat(ai-assistant): add fallback to GPT-4o-mini for legacy assistant queries
+          JSON.stringify({ valid: false, error: "Invalid access code. Contact Priyal Kumar sir for access." }),
+          { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+
+      const rawToken = crypto.randomUUID();
+      const tokenHash = await hashToken(rawToken);
+      const expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString();
+
+      try {
+        await supabaseAdmin.from("ai_sessions").insert({
+          token_hash: tokenHash,
+          identifier: email,
+          expires_at: expiresAt,
+        });
+      } catch (sessionErr) {
+        console.warn("Session table insert notice:", sessionErr);
+      }
+
+      return new Response(
+        JSON.stringify({ success: true, valid: true, sessionToken: rawToken }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    // ── Access Validation for All Other Requests ───────────────
+    const hasValidAccess = await validateAccess(accessCode, sessionToken);
+    if (!hasValidAccess) {
+      return new Response(
+        JSON.stringify({ error: "Invalid or expired access" }),
+        { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    // Rate limit check
+    if (type !== "cache_hit") {
+      const { allowed, count } = await checkRateLimit(email);
+      if (!allowed) {
+        return new Response(
+          JSON.stringify({
+            error: "rate_limit_exceeded",
+            message: `Aapne aaj ke ${MAX_QUERIES_PER_DAY} queries use kar liye hain. Kal phir milte hain! 🌙`,
+            queriesUsed: count,
+          }),
+          { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+    }
+
+    let response = "";
+
+    switch (type) {
+      case "chat": {
+        const { query, systemPrompt, conversationHistory = [] } = body;
+        if (!query) throw new Error("Query is required");
+
+        const messages = [
+          ...conversationHistory,
+          { role: "user", content: query },
+        ];
+
+        const aiResult = await callAI(systemPrompt, messages);
+        response = aiResult.text;
+        await logQuery(email, "chat", query);
+        break;
+      }
+
+      case "pdf_analyze": {
+        const { fileBase64, fileName, userQuery } = body;
+        if (!fileBase64) throw new Error("File data required");
+
+        response = await extractAndAnalyzePDF(fileBase64, userQuery, fileName ?? "document.pdf");
+        await logQuery(email, "pdf_analyze", `PDF: ${fileName}`);
+        break;
+      }
+
+      case "ats_score": {
+        const { resumeText, jobDescription, fileBase64, fileName } = body;
+        if ((!resumeText && !fileBase64) || !jobDescription) {
+          throw new Error("Both Resume (PDF file or plain text) and Job Description are required");
+        }
+
+        response = await scoreResume(resumeText, jobDescription, fileBase64, fileName);
+        await logQuery(email, "ats_score", `ATS: ${fileName || "Text"}`);
+        break;
+      }
+
+      default:
+        throw new Error(`Unknown request type: ${type}`);
+    }
+
+    return new Response(
+      JSON.stringify({ response, success: true }),
+      { headers: { ...corsHeaders, "Content-Type": "application/json" } }
+    );
+
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : "Internal server error";
+    console.error("AI Assistant Edge Function Error:", message);
+
+    return new Response(
+      JSON.stringify({ error: message, success: false }),
+      { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+    );
+  }
+});
