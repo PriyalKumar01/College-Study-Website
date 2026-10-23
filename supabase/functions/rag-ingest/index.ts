@@ -163,4 +163,20 @@ Output strictly in this format with no introduction or conclusion:
               if (pContent) {
                 ocrPages.push({ pageNumber: pNum, text: pContent, isOcr: true });
               }
-// [rag-build-step 10/40]: feat(rag-ingest): extract text content page-by-page from PDF buffer
+            }
+          }
+
+          if (ocrPages.length > 0) {
+            return { pages: ocrPages, usedOcr: true };
+          }
+        }
+      }
+    } catch (ocrErr) {
+      console.error("Gemini OCR error:", ocrErr);
+    }
+  }
+
+  return { pages, usedOcr: false };
+}
+
+// [rag-build-step 11/40]: feat(rag-ingest): implement DOCX text extraction using mammoth
