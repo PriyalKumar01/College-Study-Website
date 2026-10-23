@@ -214,4 +214,41 @@ To contribute notes to College Study Hub, **Admin Access** is required.
   {
     keywords: ["admin kaise bane", "admin access", "admin banana", "admin banna", "admin chahiye"],
     response: `🔐 **How to Become an Admin:**
-// [rag-build-step 6/25]: refactor(knowledge-base): update cached responses to professional English tone
+
+Admin access is granted on a selective basis to active student contributors.
+
+📱 **WhatsApp:** +91 89572 21543
+🌐 Or click the floating WhatsApp button on the website.
+
+**Admin Capabilities:**
+- ✅ Upload, review, and approve study notes
+- ✅ Post job, internship, and hackathon opportunities  
+- ✅ Manage scholarship announcements and listings`,
+  },
+  {
+    keywords: ["premium kaise lein", "premium access", "premium kaise milega", "premium unlock", "premium buy", "premium kharidna"],
+    response: `💎 **How to Get Premium Access:**
+
+Access premium resources through the **Premium** section on our platform or visit directly:
+- 🗂️ [Company Directory & HR Emails](/premium-directory)
+- 🎯 [Career Roadmaps](/premium-content)
+- 📚 [GATE Study Hub](/gate-study)
+- 📄 [ATS Resume Builder](/ats-resume)
+
+**Payment:** Secure checkout powered by Razorpay (UPI, Credit/Debit Cards, NetBanking).
+
+🎁 **Student Discount:** HBTU students are eligible for exclusive discounts. Contact Founder [Priyal Kumar](/about) via WhatsApp (+91 89572 21543) for discount codes! 🎉`,
+  },
+  {
+    keywords: ["cgpa calculator", "cgpa calculate", "cgpa kaise calculate", "sgpa calculator", "cgpa kahan", "cgpa tool"],
+    response: `📊 **CGPA & SGPA Calculator:**
+
+Direct link: [CGPA Calculator](/cgpa-calculator)
+
+**Features:**
+- ✅ Calibrated strictly to the HBTU Kanpur 10-point relative grading scale
+- ✅ Semester-wise SGPA calculation
+- ✅ Cumulative CGPA computation across all semesters
+- ✅ Accessible anytime from the sidebar navigation 🎓`,
+  },
+// [rag-build-step 7/25]: refactor(knowledge-base): update HBTU campus guidelines in knowledge base
