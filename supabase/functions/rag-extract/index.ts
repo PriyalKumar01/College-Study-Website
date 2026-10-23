@@ -36,4 +36,23 @@ serve(async (req) => {
 
     const binaryStr = atob(fileBase64);
     const bytes = new Uint8Array(binaryStr.length);
-// [rag-build-step 2/10]: feat(rag-extract): support base64 file payloads for chat attachment parsing
+    for (let i = 0; i < binaryStr.length; i++) {
+      bytes[i] = binaryStr.charCodeAt(i);
+    }
+
+    if (bytes.length > 10 * 1024 * 1024) {
+      return new Response(
+        JSON.stringify({ error: "File exceeds 10MB limit" }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    const geminiKey = Deno.env.get("GEMINI_API_KEY");
+    const lowerName = fileName.toLowerCase();
+    let extractedText = "";
+    let pageCount = 1;
+    let usedOcr = false;
+
+    // 1. PDF
+    if (lowerName.endsWith(".pdf") || mimeType === "application/pdf") {
+// [rag-build-step 3/10]: feat(rag-extract): extract text from uploaded PDF attachments in memory
