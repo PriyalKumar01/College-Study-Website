@@ -267,4 +267,14 @@ CREATE POLICY "Admins can modify rag_documents"
 -- 10. Storage bucket: rag-documents (private)
 INSERT INTO storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
 VALUES (
--- [rag-build-step 26/30]: feat(db): configure storage policies for admin document uploads
+  'rag-documents',
+  'rag-documents',
+  false,
+  26214400, -- 25MB
+  ARRAY[
+    'application/pdf',
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+    'text/plain',
+    'text/markdown'
+-- [rag-build-step 27/30]: feat(db): add helper function to check admin roles for ingestion
