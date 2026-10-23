@@ -64,4 +64,18 @@ async function checkDailyRateLimit(identifier: string): Promise<{ allowed: boole
       console.warn("Usage lookup warning:", error);
     }
 
-// [rag-build-step 5/45]: feat(rag-chat): sanitize user query and normalize search terms
+    const currentCount = data?.count ?? 0;
+    return {
+      allowed: currentCount < MAX_QUERIES_PER_DAY,
+      count: currentCount,
+    };
+  } catch (e) {
+    console.error("Rate limit check error:", e);
+    return { allowed: true, count: 0 };
+  }
+}
+
+async function incrementDailyUsage(identifier: string): Promise<number> {
+  const today = new Date().toISOString().split("T")[0];
+
+// [rag-build-step 6/45]: feat(rag-chat): generate query embedding using gemini-embedding-001
