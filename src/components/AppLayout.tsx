@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { ProfileCompletionModal } from "./ProfileCompletionModal";
-import { LayoutDashboard, BookOpen, Award, Briefcase } from "lucide-react";
+import { LayoutDashboard, BookOpen, Briefcase, Calendar } from "lucide-react";
 
 const AppLayout = () => {
   const { user, approvalStatus } = useAuth();
@@ -17,6 +17,9 @@ const AppLayout = () => {
   const isActiveTab = (path: string) => {
     if (path === '/notes') {
       return location.pathname.startsWith('/notes') || location.pathname.includes('-notes') || location.pathname.startsWith('/bsms') || location.pathname.startsWith('/first-semester') || location.pathname.startsWith('/second-semester') || location.pathname.startsWith('/third-semester') || location.pathname.startsWith('/fourth-semester') || location.pathname.startsWith('/fifth-semester') || location.pathname.startsWith('/sixth-semester') || location.pathname.startsWith('/seventh-semester') || location.pathname.startsWith('/eighth-semester');
+    }
+    if (path === '/coding-calendar') {
+      return location.pathname.startsWith('/coding-calendar') || location.pathname.startsWith('/coding-space');
     }
     return location.pathname.startsWith(path);
   };
@@ -62,7 +65,7 @@ const AppLayout = () => {
             {[
               { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
               { label: "Notes", href: "/notes", icon: BookOpen },
-              { label: "Scholarships", href: "/scholarship-portal", icon: Award },
+              { label: "Coding Calendar", href: "/coding-calendar", icon: Calendar },
               { label: "Opportunities", href: "/opportunities", icon: Briefcase }
             ].map((item) => {
               const active = isActiveTab(item.href);
