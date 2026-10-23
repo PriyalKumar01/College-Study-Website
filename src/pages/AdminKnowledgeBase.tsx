@@ -766,4 +766,28 @@ const AdminKnowledgeBase = () => {
                             >
                               <RefreshCw className="w-3.5 h-3.5" />
                             </Button>
-// [rag-build-step 30/31]: style(admin-kb): update empty state illustration when no documents exist
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => handleDelete(doc)}
+                              title="Delete Document & Chunks"
+                              className="h-7 w-7 text-slate-500 hover:text-rose-600"
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </Button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </CardContent>
+        </Card>
+      </main>
+    </div>
+  );
+};
+
+export default AdminKnowledgeBase;
