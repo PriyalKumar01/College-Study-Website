@@ -257,4 +257,14 @@ CREATE POLICY "Admins can modify rag_documents"
       SELECT 1 FROM public.admin_roles ar
       WHERE ar.user_email = auth.jwt() ->> 'email'
       AND ar.role IN ('owner', 'super_admin', 'admin')
--- [rag-build-step 25/30]: feat(db): create storage bucket rag-documents for academic files
+    )
+    OR (auth.jwt() ->> 'email' = 'priyalkumar06@gmail.com')
+  );
+
+-- rag_chunks, ai_usage, ai_sessions, ai_query_logs have NO public policies.
+-- They are accessed strictly via Service Role inside Supabase Edge Functions.
+
+-- 10. Storage bucket: rag-documents (private)
+INSERT INTO storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+VALUES (
+-- [rag-build-step 26/30]: feat(db): configure storage policies for admin document uploads
