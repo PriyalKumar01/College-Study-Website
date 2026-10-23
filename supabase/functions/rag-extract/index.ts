@@ -93,4 +93,23 @@ serve(async (req) => {
             const data = await resp.json();
             extractedText = data.candidates?.[0]?.content?.parts?.[0]?.text || "";
           }
-// [rag-build-step 5/10]: feat(rag-extract): truncate attachment text to safe LLM context budget
+        } catch (ocrErr) {
+          console.error("Gemini OCR error in rag-extract:", ocrErr);
+        }
+      } else {
+        extractedText = pages.map((p, idx) => `[Page ${idx + 1}]\n${p}`).join("\n\n");
+      }
+    }
+    // 2. DOCX
+    else if (lowerName.endsWith(".docx")) {
+      try {
+        const zip = await JSZip.loadAsync(bytes);
+        const docXml = await zip.file("word/document.xml")?.async("string");
+        if (docXml) {
+          const raw = docXml.replace(/<\/w:p>/gi, "\n\n").replace(/<[^>]+>/g, " ");
+          extractedText = cleanText(raw);
+        }
+      } catch (docxErr) {
+        console.error("DOCX extraction error in rag-extract:", docxErr);
+      }
+// [rag-build-step 6/10]: feat(rag-extract): return cleaned attachment text without database storage
