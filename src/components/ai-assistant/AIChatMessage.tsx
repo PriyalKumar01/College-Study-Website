@@ -154,4 +154,30 @@ const formatMessage = (content: string) => {
       return;
     }
 
-// [rag-build-step 6/15]: feat(chat-message): format markdown tables, math, and code blocks cleanly
+    // List items
+    if (/^[-•*]\s/.test(line) || /^\d+\.\s/.test(line)) {
+      inList = true;
+      listItems.push(line);
+      return;
+    }
+
+    flushList();
+    elements.push(
+      <p key={i} className="leading-relaxed text-xs">
+        {renderMarkdown(line)}
+      </p>
+    );
+  });
+
+  flushList();
+  return elements;
+};
+
+// Typing indicator
+export const TypingIndicator = () => (
+  <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="flex gap-2 items-start">
+    <div className="w-7 h-7 rounded-lg bg-slate-900 dark:bg-slate-800 border border-slate-700 flex items-center justify-center flex-shrink-0 shadow-sm mt-0.5 text-emerald-400">
+      <Bot className="w-4 h-4" />
+    </div>
+    <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl rounded-tl-sm px-4 py-3 shadow-sm">
+// [rag-build-step 7/15]: feat(chat-message): display fallback indicator badge when GPT was used
