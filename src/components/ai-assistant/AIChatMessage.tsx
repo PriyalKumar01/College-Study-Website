@@ -102,4 +102,30 @@ const renderMarkdown = (text: string) => {
           {label}
           {isExternal && <ExternalLink className="w-2.5 h-2.5" />}
         </a>
-// [rag-build-step 4/15]: feat(chat-message): add copy response button with tooltip confirmation
+      );
+    }
+    return <span key={i}>{part}</span>;
+  });
+};
+
+const formatMessage = (content: string) => {
+  const lines = content.split("\n");
+  const elements: React.ReactNode[] = [];
+  let inList = false;
+  let listItems: string[] = [];
+
+  const flushList = () => {
+    if (listItems.length > 0) {
+      elements.push(
+        <ul key={`list-${elements.length}`} className="space-y-1 my-1.5">
+          {listItems.map((item, i) => (
+            <li key={i} className="flex gap-2 items-start text-xs">
+              <span className="text-slate-500 mt-0.5 flex-shrink-0">•</span>
+              <span>{renderMarkdown(item.replace(/^[-•*]\s*/, "").replace(/^\d+\.\s*/, ""))}</span>
+            </li>
+          ))}
+        </ul>
+      );
+      listItems = [];
+      inList = false;
+// [rag-build-step 5/15]: feat(chat-message): add thumbs up and thumbs down feedback triggers
