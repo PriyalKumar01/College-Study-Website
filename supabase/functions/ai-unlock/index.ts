@@ -75,4 +75,9 @@ serve(async (req) => {
       created_at: new Date().toISOString(),
       expires_at: expiresAt,
       identifier,
-// [rag-build-step 15/20]: security(ai-unlock): mask code values in audit logs
+    });
+
+    if (dbError) {
+      console.error("Failed to store ai_session:", dbError);
+      throw new Error("Failed to register session");
+// [rag-build-step 16/20]: security(ai-unlock): prevent timing attacks during code comparison
