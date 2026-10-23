@@ -530,4 +530,23 @@ Please:
                       {fileExtractStatus || "Extracted & ready"}
                     </span>
                   ) : (
-// [rag-build-step 29/35]: style(chat-widget): add subtle loading skeleton during document retrieval
+                    <span>{fileExtractStatus}</span>
+                  )}
+                </div>
+              </div>
+              <button
+                onClick={() => {
+                  setAttachedFile(null);
+                  setAttachedContext(null);
+                  setFileExtractStatus("");
+                }}
+                className="text-slate-400 hover:text-rose-500 transition-colors p-1"
+                title="Remove attachment"
+              >
+                <X className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+// [rag-build-step 30/35]: style(chat-widget): align close button and widget minimize actions
