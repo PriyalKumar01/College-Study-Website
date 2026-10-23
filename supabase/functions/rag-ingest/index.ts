@@ -509,4 +509,21 @@ serve(async (req) => {
             duplicate: true,
           }),
           { headers: { ...corsHeaders, "Content-Type": "application/json" } }
-// [rag-build-step 31/40]: feat(rag-ingest): implement exponential backoff retry for embedding API
+        );
+      }
+    }
+
+    // Determine source type from extension
+    const ext = storage_path.split(".").pop()?.toLowerCase() || "pdf";
+    const sourceType = ["pdf", "docx", "pptx", "txt", "md"].includes(ext) ? ext : "pdf";
+
+    // 3. Insert or update rag_documents record to 'processing'
+    if (!docId) {
+      const { data: insertedDoc, error: insertError } = await supabaseAdmin
+        .from("rag_documents")
+        .insert({
+          title,
+          source_type: sourceType,
+          storage_path,
+          subject,
+// [rag-build-step 32/40]: feat(rag-ingest): insert generated chunk embeddings into rag_chunks table
