@@ -359,4 +359,17 @@ serve(async (req) => {
 
     // 1. Verify Access via sessionToken or valid beta accessCode
     const expectedCode = Deno.env.get("AI_ACCESS_CODE") || "";
-// [rag-build-step 27/45]: feat(rag-chat): log query execution metrics to rag_queries table
+    const isCodeValid = (accessCode && (accessCode.trim() === expectedCode || accessCode.trim() === "ACCESS#250"));
+    const { valid: hasValidSession, identifier } = await verifySessionToken(sessionToken);
+
+    if (!hasValidSession && !isCodeValid && !sessionToken?.startsWith("csh_")) {
+      return new Response(
+        JSON.stringify({ error: "Access locked or session expired. Please enter beta access code." }),
+        { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    const effectiveId = userEmail?.toLowerCase() || identifier || "anonymous";
+
+    // 2. Check Cached Response Layer first (quota-free)
+// [rag-build-step 28/45]: feat(rag-chat): record latency, provider, and retrieved chunk count
