@@ -459,4 +459,29 @@ const AdminKnowledgeBase = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Upload Card */}
           <Card className="lg:col-span-2 shadow-sm border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
-// [rag-build-step 18/31]: feat(admin-kb): implement search and filter by subject, branch, and status
+            <CardHeader className="pb-4">
+              <CardTitle className="text-base font-bold flex items-center gap-2">
+                <Upload className="w-4 h-4 text-indigo-600" />
+                Ingest New Academic Documents
+              </CardTitle>
+              <CardDescription className="text-xs">
+                Supports PDF (text & scanned OCR), DOCX, PPTX, TXT, and Markdown up to 25MB.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <form onSubmit={handleUploadAndIngest} className="space-y-4">
+                {/* Drag and Drop Zone */}
+                <div
+                  onClick={() => fileInputRef.current?.click()}
+                  onDragOver={(e) => e.preventDefault()}
+                  onDrop={(e) => {
+                    e.preventDefault();
+                    handleFileSelect(e.dataTransfer.files);
+                  }}
+                  className="border-2 border-dashed border-slate-300 dark:border-slate-700 hover:border-indigo-500 dark:hover:border-indigo-500 rounded-xl p-6 text-center cursor-pointer transition-colors bg-slate-50/50 dark:bg-slate-950/50"
+                >
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    multiple
+// [rag-build-step 19/31]: style(admin-kb): style knowledge base page with Shadcn UI components
