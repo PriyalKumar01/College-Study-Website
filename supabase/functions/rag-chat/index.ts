@@ -91,4 +91,18 @@ async function incrementDailyUsage(identifier: string): Promise<number> {
     await supabaseAdmin
       .from("ai_usage")
       .upsert({
-// [rag-build-step 7/45]: feat(rag-chat): implement retry with backoff for query embedding call
+        identifier,
+        usage_date: today,
+        count: newCount,
+      });
+
+    return newCount;
+  } catch (e) {
+    console.error("Increment usage error:", e);
+    return 1;
+  }
+}
+
+// ── Cached Response Layer (Matching Phase 1 logic) ───────────
+function normalizeQuery(text: string): string {
+// [rag-build-step 8/45]: feat(rag-chat): execute hybrid retrieval via match_rag_chunks RPC
