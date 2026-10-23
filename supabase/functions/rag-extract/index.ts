@@ -131,4 +131,23 @@ serve(async (req) => {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
               contents: [
-// [rag-build-step 7/10]: feat(rag-extract): add CORS and error handling for chat uploads
+                {
+                  role: "user",
+                  parts: [
+                    { inlineData: { mimeType: imgMime, data: fileBase64 } },
+                    { text: "Transcribe all text, notes, equations, and tables in this image accurately." },
+                  ],
+                },
+              ],
+              generationConfig: { maxOutputTokens: 2500, temperature: 0.1 },
+            }),
+          }
+        );
+        if (resp.ok) {
+          const data = await resp.json();
+          extractedText = data.candidates?.[0]?.content?.parts?.[0]?.text || "";
+        }
+      }
+    }
+    // 4. Plain Text
+// [rag-build-step 8/10]: refactor(rag-extract): reuse text cleaning logic from ingestion pipeline
