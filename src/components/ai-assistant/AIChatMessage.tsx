@@ -362,4 +362,29 @@ const AIChatMessage = ({ message, onFeedbackChange }: AIChatMessageProps) => {
           {!isUser && (
             <div className="flex items-center gap-1 text-slate-400">
               <button
-// [rag-build-step 14/15]: chore(chat-message): clean up unused imports and types
+                onClick={() => handleFeedback(1)}
+                className={`p-1 rounded hover:text-emerald-600 transition-colors ${
+                  userFeedback === 1 ? "text-emerald-600 font-bold" : ""
+                }`}
+                title="Helpful answer"
+              >
+                <ThumbsUp className="w-3 h-3" />
+              </button>
+              <button
+                onClick={() => handleFeedback(-1)}
+                className={`p-1 rounded hover:text-rose-500 transition-colors ${
+                  userFeedback === -1 ? "text-rose-500 font-bold" : ""
+                }`}
+                title="Not helpful"
+              >
+                <ThumbsDown className="w-3 h-3" />
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
+    </motion.div>
+  );
+};
+
+export default AIChatMessage;
