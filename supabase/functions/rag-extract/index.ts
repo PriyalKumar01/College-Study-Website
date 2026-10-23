@@ -17,4 +17,23 @@ function cleanText(text: string): string {
     .replace(/\n{3,}/g, "\n\n")
     .trim();
 }
-// [rag-build-step 1/10]: feat(rag-extract): create ephemeral document text extraction endpoint
+
+serve(async (req) => {
+  if (req.method === "OPTIONS") {
+    return new Response("ok", { headers: corsHeaders });
+  }
+
+  try {
+    const body = await req.json();
+    const { fileBase64, fileName = "file.pdf", mimeType } = body;
+
+    if (!fileBase64) {
+      return new Response(
+        JSON.stringify({ error: "fileBase64 is required" }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    const binaryStr = atob(fileBase64);
+    const bytes = new Uint8Array(binaryStr.length);
+// [rag-build-step 2/10]: feat(rag-extract): support base64 file payloads for chat attachment parsing
