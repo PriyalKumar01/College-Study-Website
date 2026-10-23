@@ -542,4 +542,21 @@ serve(async (req) => {
     } else {
       await supabaseAdmin
         .from("rag_documents")
-// [rag-build-step 33/40]: feat(rag-ingest): batch database inserts to avoid timeout on large docs
+        .update({ status: "processing", error: null })
+        .eq("id", docId);
+      // Remove previous chunks on re-process
+      await supabaseAdmin.from("rag_chunks").delete().eq("document_id", docId);
+    }
+
+    // 4. Extract pages by file type
+    let extractedPages: PageContent[] = [];
+    let usedOcr = false;
+
+    if (sourceType === "pdf") {
+      const result = await extractPdfPages(fileBytes, geminiKey);
+      extractedPages = result.pages;
+      usedOcr = result.usedOcr;
+    } else if (sourceType === "docx") {
+      const result = await extractDocxPages(fileBytes);
+      extractedPages = result.pages;
+// [rag-build-step 34/40]: feat(rag-ingest): update rag_documents record with chunk_count and page_count
