@@ -317,4 +317,111 @@ async function scoreResume(
   fileName?: string
 ): Promise<string> {
   const geminiKey = Deno.env.get("GEMINI_API_KEY");
-// [rag-build-step 3/5]: refactor(ai-assistant): remove hardcoded access code fallback
+
+  const systemPrompt = `You are a Senior Technical Recruiter and ATS (Applicant Tracking System) Algorithm Specialist.
+Analyze the candidate's resume against the Job Description with extreme precision.
+
+Provide the response in the following exact format:
+
+**ATS Score: [Calculate a precise score from 0 to 100 based on keyword match, relevance, formatting, and metrics]**
+
+### 🎯 Matched Keywords:
+(Comma-separated list of keywords and skills from the JD found in the resume)
+
+### ⚠️ Missing Keywords:
+(Comma-separated list of high-priority technical skills, frameworks, tools, or concepts from the JD NOT found in the resume)
+
+### 📋 Section-by-Section Review:
+- **Contact & Links**: Review contact details, LinkedIn, GitHub/Portfolio presence.
+- **Education & Academics**: Degree, Branch, College (HBTU or similar), CGPA.
+- **Technical Skills**: Relevance to the JD, categorization.
+- **Projects & Experience**: Action verbs, quantifiable metrics, complexity.
+- **ATS Formatting**: Single-column readability, standard fonts, no graphical tables.
+
+### 💡 Top 5 Actionable Improvements:
+1. ...
+2. ...
+3. ...
+4. ...
+5. ...
+
+### ✍️ Tailored Sentences to Add:
+(Provide 2-3 impact-driven bullet points in the format: [Action Verb] + [What was built/optimized] using [Technologies] resulting in [Quantifiable Impact %/Number] matching the JD)
+
+Use articulate, professional English suitable for engineering students. Be constructive and actionable.`;
+
+  // 1. If PDF base64 is provided, pass directly to Gemini Multimodal
+  if (fileBase64 && geminiKey) {
+    try {
+      const response = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent?key=${geminiKey}`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            systemInstruction: { parts: [{ text: systemPrompt }] },
+            contents: [{
+              role: "user",
+              parts: [
+                {
+                  inlineData: {
+                    mimeType: "application/pdf",
+                    data: fileBase64,
+                  }
+                },
+                {
+                  text: `**Target Job Description:**
+${jobDescription || "General Software Development Engineer / Tech Fresher role (DSA, OOPs, Web/Backend, Databases, Problem Solving)"}
+
+Please perform full ATS evaluation by scanning every word, project, skill, and formatting element in this PDF resume.`
+                }
+              ]
+            }],
+            generationConfig: {
+              maxOutputTokens: 1800,
+              temperature: 0.3,
+            }
+          })
+        }
+      );
+
+      if (response.ok) {
+        const data = await response.json();
+        const result = data.candidates?.[0]?.content?.parts?.[0]?.text;
+        if (result) return result;
+      }
+    } catch (e) {
+      console.warn("Gemini multimodal ATS scoring failed, falling back to text:", e);
+    }
+  }
+
+  // 2. Fallback to text-based evaluation
+  const userMessage = `**Resume Content / Name:**
+${resumeText || fileName || "Uploaded Resume"}
+
+**Target Job Description:**
+${jobDescription}
+
+Please provide full ATS score and detailed analysis.`;
+
+  const aiResult = await callAI(systemPrompt, [{ role: "user", content: userMessage }]);
+  return aiResult.text;
+}
+
+// ── Main Handler ─────────────────────────────────────────────
+serve(async (req) => {
+  if (req.method === "OPTIONS") {
+    return new Response("ok", { headers: corsHeaders });
+  }
+
+  try {
+    const body = await req.json();
+    const { type, userEmail, accessCode, sessionToken } = body;
+    const email = userEmail || "anonymous";
+
+    // ── Verify Access endpoint ──────────────────────────────────
+    if (type === "verify_access") {
+      const isValid = accessCode?.trim() === ACCESS_CODE;
+      if (!isValid) {
+        return new Response(
+// [rag-build-step 4/5]: feat(ai-assistant): add fallback to GPT-4o-mini for legacy assistant queries
