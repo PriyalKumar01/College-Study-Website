@@ -95,4 +95,8 @@ serve(async (req) => {
     const msg = err instanceof Error ? err.message : "Unlock failed";
     console.error("ai-unlock error:", msg);
     return new Response(
-// [rag-build-step 19/20]: test(ai-unlock): validate rejection of invalid access code
+      JSON.stringify({ success: false, error: msg }),
+      { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+    );
+  }
+});
