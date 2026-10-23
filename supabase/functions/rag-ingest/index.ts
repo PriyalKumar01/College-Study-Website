@@ -311,4 +311,21 @@ export function chunkDocument(
           chunks.push({
             chunkIndex: chunkIndex++,
             pageStart: page.pageNumber,
-// [rag-build-step 19/40]: feat(rag-ingest): flag chunk metadata with ocr true when fallback triggers
+            pageEnd: page.pageNumber,
+            content,
+            embedText,
+            tokenCount: Math.ceil(content.length / 4),
+            metadata: {
+              heading: currentHeading,
+              ocr: page.isOcr ?? false,
+              subject: docMeta.subject,
+              branch: docMeta.branch,
+              semester: docMeta.semester,
+              doc_type: docMeta.doc_type,
+            },
+          });
+        }
+
+        // Handle paragraphs larger than targetSize: split by sentence
+        if (paragraph.length > targetSize) {
+// [rag-build-step 20/40]: feat(rag-ingest): implement text cleaning pipeline for extracted pages
