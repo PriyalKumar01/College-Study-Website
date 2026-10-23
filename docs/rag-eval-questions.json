@@ -33,5 +33,32 @@
       "coupon"
     ],
     "description": "Tests mechanical/fluid dynamics derivation query"
+  },
+  {
+    "id": "acad-04",
+    "category": "academic",
+    "query": "What is the difference between TCP and UDP in computer networks?",
+    "expected_type": "rag",
+    "must_contain_citations": true,
+    "forbidden_patterns": [],
+    "description": "Tests networking comparison"
+  },
+  {
+    "id": "acad-05",
+    "category": "academic",
+    "query": "Explain normalization forms: 1NF, 2NF, 3NF, and BCNF with functional dependencies.",
+    "expected_type": "rag",
+    "must_contain_citations": true,
+    "forbidden_patterns": [],
+    "description": "Tests DBMS normalization concepts"
+  },
+  {
+    "id": "acad-06",
+    "category": "academic",
+    "query": "How does Dijkstra's shortest path algorithm work and what is its time complexity?",
+    "expected_type": "rag",
+    "must_contain_citations": true,
+    "forbidden_patterns": [],
+    "description": "Tests data structures & algorithms analysis"
   }
 ]
