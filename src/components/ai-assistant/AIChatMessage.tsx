@@ -258,4 +258,30 @@ const AIChatMessage = ({ message, onFeedbackChange }: AIChatMessageProps) => {
             )}
             {message.fallback_used && isDev && (
               <span className="inline-flex items-center gap-1 text-[9px] font-bold text-amber-600 bg-amber-100 dark:bg-amber-950 px-1.5 py-0.5 rounded-full">
-// [rag-build-step 10/15]: perf(chat-message): memoize rendered markdown to prevent re-render jank
+                <AlertCircle className="w-2.5 h-2.5" /> backup model used
+              </span>
+            )}
+          </div>
+        )}
+
+        {/* Message Bubble */}
+        <div
+          className={`px-3.5 py-2.5 shadow-sm text-xs leading-relaxed ${
+            isUser
+              ? "bg-slate-900 text-white dark:bg-slate-800 dark:text-slate-100 dark:border dark:border-slate-700 rounded-2xl rounded-tr-sm font-medium"
+              : "bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-100 rounded-2xl rounded-tl-sm"
+          }`}
+        >
+          {isUser ? (
+            <div className="flex items-start gap-2">
+              {message.type === "pdf_result" && <FileText className="w-3.5 h-3.5 mt-0.5 flex-shrink-0 opacity-80" />}
+              <span className="whitespace-pre-wrap">{message.content}</span>
+            </div>
+          ) : (
+            <div className="space-y-1">{formatMessage(message.content)}</div>
+          )}
+        </div>
+
+        {/* Citations / Source Chips (for assistant messages with sources) */}
+        {!isUser && message.sources && message.sources.length > 0 && (
+// [rag-build-step 11/15]: refactor(chat-message): refine citation pill click handler and focus state
