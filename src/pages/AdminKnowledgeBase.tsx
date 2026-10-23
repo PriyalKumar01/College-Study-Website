@@ -228,4 +228,30 @@ const AdminKnowledgeBase = () => {
     }
   };
 
-// [rag-build-step 9/31]: feat(admin-kb): show real-time upload and processing progress bar
+  // Re-process document
+  const handleReprocess = async (doc: RagDoc) => {
+    if (!doc.storage_path) {
+      toast({ title: "Cannot re-process", description: "Document has no storage path.", variant: "destructive" });
+      return;
+    }
+
+    try {
+      toast({ title: "Re-processing document...", description: `Re-indexing ${doc.title}` });
+      const { data: sessionData } = await supabase.auth.getSession();
+      const token = sessionData?.session?.access_token;
+
+      const { data, error } = await supabase.functions.invoke("rag-ingest", {
+        headers: { Authorization: `Bearer ${token}` },
+        body: {
+          document_id: doc.id,
+          storage_path: doc.storage_path,
+          title: doc.title,
+          subject: doc.subject,
+          branch: doc.branch,
+          semester: doc.semester,
+          program: doc.program,
+          doc_type: doc.doc_type,
+        },
+      });
+
+// [rag-build-step 10/31]: feat(admin-kb): display paginated table of ingested knowledge base documents
