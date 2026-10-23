@@ -130,4 +130,20 @@ Output strictly in this format with no introduction or conclusion:
             contents: [
               {
                 role: "user",
-// [rag-build-step 8/40]: feat(rag-ingest): update document status to processing on ingestion start
+                parts: [
+                  {
+                    inlineData: {
+                      mimeType: "application/pdf",
+                      data: base64,
+                    },
+                  },
+                  { text: ocrPrompt },
+                ],
+              },
+            ],
+            generationConfig: {
+              maxOutputTokens: 4000,
+              temperature: 0.1,
+            },
+          }),
+// [rag-build-step 9/40]: feat(rag-ingest): implement PDF text extraction using unpdf parser
