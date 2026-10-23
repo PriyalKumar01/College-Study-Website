@@ -265,4 +265,17 @@ async function callGemini(
             contents,
             generationConfig: {
               maxOutputTokens: 1200,
-// [rag-build-step 20/45]: feat(rag-chat): implement OpenAI GPT-4o-mini fallback client
+              temperature: 0.3,
+            },
+          }),
+        }
+      );
+      clearTimeout(timeoutId);
+
+      if (response.ok) {
+        const data = await response.json();
+        const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+        if (text && text.trim().length > 0) return text;
+      } else {
+        const errText = await response.text();
+// [rag-build-step 21/45]: feat(rag-chat): trigger GPT fallback on Gemini 429 rate limit errors
