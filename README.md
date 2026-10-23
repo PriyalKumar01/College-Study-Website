@@ -112,4 +112,61 @@ flowchart TD
 
 7. **One-Off Chat File Analysis (`rag-extract`)**:
    - Any student can attach a document directly in the chat interface.
-# [rag-build-step 2/7]: docs(readme): update README with Gemini 3.5 Flash and GPT-4o-mini details
+   - Text is extracted transiently in memory for immediate question-answering without permanently saving the file to the shared knowledge base.
+
+---
+
+## ✨ Key Features & Platform Modules
+
+### 📚 Academic Notes Repository
+- **B.Tech 11 Branches (Semesters 1 to 8)**: Computer Science & Engineering (CSE), Information Technology (IT), Electronics Engineering (ET), Electrical Engineering (EE), Mechanical Engineering (ME), Civil Engineering (CE), Chemical Engineering (CHE), Biochemical Engineering (BE), Food Technology (FT), Oil Technology (OT), Paint Technology (PT), Plastic Technology (PL), and Leather Technology (LFT).
+- **Other Programs**: Complete curriculum materials for BS-MS Integrated, BBA, and MBA.
+- **Dedicated Foundations**: Curated modules for Data Structures & Algorithms (DSA), Modern Web Development, and Competitive Programming.
+
+### 💻 In-Browser Coding Space & Online Compiler
+- Integrated online code execution playground supporting **C**, **C++**, **Java**, **Python**, and **JavaScript**.
+- Real-time syntax highlighting, custom test case input, and execution output console.
+
+### 🎓 GATE Study Hub & Practice Arena
+- Subject-wise GATE syllabus roadmaps, previous year question analyses, and core engineering modules.
+- **Interactive GATE Quiz**: Free, branch-wise, and year-wise practice quiz engine with real-time scoring.
+
+### 📄 AI ATS-Friendly Resume Builder & Scorer
+- Industry-tested, single-column LaTeX/Overleaf resume templates engineered for high Applicant Tracking System (ATS) parsing rates.
+- **Multimodal AI ATS Scorer**: Upload a resume PDF alongside a target Job Description to receive a 0–100 compatibility rating, missing technical keywords, and impact-driven bullet point recommendations.
+
+### 📊 Academic Utility Suite
+- **HBTU CGPA & SGPA Calculator**: Fully calibrated to HBTU Kanpur's 10-point relative grading scale ($O=10, A^+=9, A=8, B^+=7, B=6, C=5, P=4, F=0$).
+- Real-time grade forecasting and semester-wise credit-weighted SGPA calculation.
+
+### 💼 Career Opportunities & Scholarships Portal
+- **Opportunities Board**: Actively updated off-campus hiring drives, tech internships, hackathons, and national coding competitions.
+- **Scholarships Directory**: Comprehensive tracking for UP Post-Matric Fee Reimbursement, Buddy4Study corporate grants, and private CSR scholarships with deadline notifications.
+
+### 🏆 Gamified Contributor Hall of Fame
+- Peer-driven contribution mechanism: students submit verified notes to earn **StudyCoins**.
+- Dynamic leaderboard showcasing top student contributors with Gold, Silver, and Bronze community badges.
+
+### 💎 Premium Services & Verified HR Directory
+- **2,500+ Verified HR Emails**: Direct recruiter contacts and talent acquisition email addresses for top tech enterprises.
+- **Fresher Career Roadmaps**: Domain-specific interview prep guides (SDE, Data Science, DevOps, Cloud).
+- **Payment Processing**: Integrated with Razorpay for secure Indian payments (UPI, Cards, NetBanking) with automated student coupon validation.
+
+---
+
+## 🗄️ Database Architecture & Schema
+
+All tables reside within Supabase PostgreSQL, protected by **Row Level Security (RLS)** policies ensuring zero unauthorized reads or writes.
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                            SUPABASE POSTGRESQL                              │
+├──────────────────────────────────────────┬──────────────────────────────────┤
+│ Core Platform Tables                     │ RAG & AI Vector Tables           │
+├──────────────────────────────────────────┼──────────────────────────────────┤
+│ • profiles (user info, branch, coins)    │ • rag_documents (source docs)    │
+│ • admin_roles (owner / admin / member)   │ • rag_chunks (embeddings, HNSW)  │
+│ • premium_purchases (Razorpay orders)    │ • ai_sessions (hashed tokens)    │
+│ • coupon_codes (premium discounts)       │ • ai_usage (daily rate limits)   │
+│ • opportunities (jobs, internships)      │ • ai_query_logs (telemetry)      │
+# [rag-build-step 3/7]: docs(readme): update README with edge functions reference table
