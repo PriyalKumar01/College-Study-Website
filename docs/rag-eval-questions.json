@@ -60,5 +60,32 @@
     "must_contain_citations": true,
     "forbidden_patterns": [],
     "description": "Tests data structures & algorithms analysis"
+  },
+  {
+    "id": "acad-07",
+    "category": "academic",
+    "query": "Explain the working principle of a 3-phase induction motor and slip equation.",
+    "expected_type": "rag",
+    "must_contain_citations": true,
+    "forbidden_patterns": [],
+    "description": "Tests electrical engineering fundamentals"
+  },
+  {
+    "id": "acad-08",
+    "category": "academic",
+    "query": "What is the Carnot cycle and what is its maximum theoretical thermal efficiency formula?",
+    "expected_type": "rag",
+    "must_contain_citations": true,
+    "forbidden_patterns": [],
+    "description": "Tests thermodynamics principles"
+  },
+  {
+    "id": "syl-01",
+    "category": "syllabus_structure",
+    "query": "CSE 5th sem subjects kya hain?",
+    "expected_type": "rag",
+    "must_contain_citations": true,
+    "forbidden_patterns": [],
+    "description": "Tests branch semester curriculum extraction from site curriculum knowledge"
   }
 ]
