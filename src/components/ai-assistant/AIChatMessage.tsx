@@ -50,4 +50,30 @@ interface AIChatMessageProps {
 // Simple markdown-like renderer with clickable links and citation highlights
 const renderMarkdown = (text: string) => {
   const parts = text.split(/(\[.*?\]\(.*?\)|\*\*.*?\*\*|`.*?`|\[\d+\])/g);
-// [rag-build-step 2/15]: feat(chat-message): render interactive citation pills for RAG sources
+
+  return parts.map((part, i) => {
+    // Bold: **text**
+    if (/^\*\*(.+)\*\*$/.test(part)) {
+      return <strong key={i} className="font-bold">{part.slice(2, -2)}</strong>;
+    }
+    // Inline code: `code`
+    if (/^`(.+)`$/.test(part)) {
+      return (
+        <code
+          key={i}
+          className="bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 px-1 py-0.5 rounded text-[11px] font-mono"
+        >
+          {part.slice(1, -1)}
+        </code>
+      );
+    }
+    // Citation tag: [1], [2]
+    if (/^\[\d+\]$/.test(part)) {
+      return (
+        <span
+          key={i}
+          className="inline-flex items-center justify-center font-mono text-[9px] font-black text-slate-900 dark:text-slate-100 bg-slate-200 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 px-1.5 py-0.2 rounded-md mx-0.5 align-baseline"
+        >
+          {part}
+        </span>
+// [rag-build-step 3/15]: feat(chat-message): add citation popover preview with snippet and page number
