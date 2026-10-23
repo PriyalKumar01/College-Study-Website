@@ -177,4 +177,29 @@ const AdminKnowledgeBase = () => {
         const { error: storageError } = await supabase.storage
           .from("rag-documents")
           .upload(storagePath, file, {
-// [rag-build-step 7/31]: feat(admin-kb): upload academic documents to rag-documents storage bucket
+            contentType: file.type || "application/octet-stream",
+            upsert: false,
+          });
+
+        if (storageError) throw storageError;
+
+        // 2. Call Edge Function rag-ingest
+        setUploadProgress(`Extracting text, chunking & generating vector embeddings for ${file.name}...`);
+        const { data: ingestData, error: ingestError } = await supabase.functions.invoke("rag-ingest", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          body: {
+            storage_path: storagePath,
+            title: selectedFiles.length === 1 ? title : file.name.replace(/\.[^/.]+$/, ""),
+            subject: subject.trim() || undefined,
+            branch,
+            semester,
+            program,
+            doc_type: docType,
+          },
+        });
+
+        if (ingestError || ingestData?.error) {
+          throw new Error(ingestData?.error || ingestError?.message || "Ingestion error");
+// [rag-build-step 8/31]: feat(admin-kb): trigger rag-ingest edge function on successful upload
