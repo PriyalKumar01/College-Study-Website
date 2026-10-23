@@ -865,4 +865,39 @@ export const findCachedResponse = (query: string): string | null => {
       if (pattern.test(normalizedQuery)) {
         // If query is long (> 8 words) and matched keyword represents only a minor fraction (< 35%),
         // pass through to RAG/LLM for comprehensive answering instead of returning a short FAQ stub.
-// [rag-build-step 24/25]: chore(knowledge-base): synchronize site navigation routes with router
+        if (wordCount > 8 && (keywordWords.length / wordCount) < 0.35) {
+          continue;
+        }
+
+        // Specificity score: multi-word phrases and longer keywords get higher weight
+        const score = (keywordWords.length * 15) + (normalizedKeyword.length * 2);
+        if (score > entryBestScore) {
+          entryBestScore = score;
+        }
+      }
+    }
+
+    if (entryBestScore > 0) {
+      if (!bestMatch || entryBestScore > bestMatch.score) {
+        bestMatch = { response: item.response, score: entryBestScore };
+      }
+    }
+  }
+
+  // Minimum threshold score
+  const MATCH_THRESHOLD = 5;
+  if (bestMatch && bestMatch.score >= MATCH_THRESHOLD) {
+    return bestMatch.response;
+  }
+
+  return null;
+};
+
+// ── Rate limit config ────────────────────────────────────────
+export const RATE_LIMIT_CONFIG = {
+  maxQueriesPerDay: 10,
+  localStorageKey: "ai_access_granted",
+  rateLimitStorageKey: "ai_daily_count",
+  rateLimitDateKey: "ai_last_date",
+};
+
