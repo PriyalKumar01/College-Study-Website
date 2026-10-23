@@ -71,4 +71,19 @@ Major Fests: Incord (Technical Fest), Adhyayan (Literary Fest), Zenith (Sports F
 - Official University Website: https://hbtu.ac.in/ (Circulars, tenders, academic notices, syllabus, and faculty directories).
 - Student ERP Portal: https://erp.hbtu.ac.in/NewIndex.html (Semester registration, downloadable fee receipts, semester grade cards, and admit cards).
 - Live Attendance Portal: https://erp.hbtu.ac.in/StudentAttendance.aspx (Subject-wise & aggregate real-time attendance percentage).
-// [rag-build-step 5/15]: feat(site-ingest): extract OTHER_PROGRAM_NOTES directory into chunks
+Attendance Rules:
+- Minimum 75% attendance is strictly mandatory to appear in Mid-Semester and End-Semester examinations.
+- Medical certificates must be submitted timely to the Office of Dean of Academic Affairs.
+- Relative grading scale on a 10-point basis: O (10), A+ (9), A (8), B+ (7), B (6), C (5), P (4), F (0).`,
+  },
+  {
+    heading: "Scholarships (UP Scholarship, Buddy4Study, Digi Shakti)",
+    subject: "Scholarships",
+    content: `State & National Scholarship Schemes:
+1. UP Scholarship & Fee Reimbursement: Official portal at https://scholarship.up.gov.in/index.aspx. Engineering and management students apply under "Post-Matric Other Than Inter". Key requirements include Income, Caste, and Domicile certificates, College Fee Receipts, and Aadhaar-seeded bank account. Hard copies must be submitted to the college scholarship section.
+2. Buddy4Study Scholarships: https://www.buddy4study.com/scholarships features CSR merit-cum-means awards from corporate partners (Tata, Reliance, Infosys, HDFC, Kotak) ranging from ₹50,000 to ₹2,00,000 per annum, including special STEM initiatives for female students.
+3. Digi Shakti Free Tablet/Smartphone Scheme: https://digishakti.up.gov.in/. Student details are uploaded by the university; students only need to complete online eKYC when notified. Distribution is arranged on campus.`,
+  },
+  {
+    heading: "BTech 1st and 2nd Semester Notes (Common to All Branches)",
+// [rag-build-step 6/15]: feat(site-ingest): extract HBTU university facts and admissions info
