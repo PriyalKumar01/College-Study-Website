@@ -79,4 +79,30 @@ const AIAssistantButton = ({ isOpen, onClick }: AIAssistantButtonProps) => {
             ) : (
               <motion.div
                 key="bot"
-// [rag-build-step 3/4]: feat(assistant-button): update tooltip text to English
+                initial={{ opacity: 0, scale: 0.5 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.5 }}
+                transition={{ duration: 0.2 }}
+              >
+                <Bot className="w-8 h-8 text-white drop-shadow-sm" />
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* Beta Badge */}
+          <span className="absolute -top-1 -right-1 bg-rose-600 text-white text-[9px] font-black
+            px-2 py-0.5 rounded-full leading-none tracking-wide shadow-md border-2 border-white dark:border-slate-900">
+            BETA
+          </span>
+
+          {/* Pulse Ring */}
+          {pulseVisible && !isOpen && (
+            <span className="absolute inset-0 rounded-full bg-slate-500 opacity-20 animate-ping" />
+          )}
+        </motion.button>
+      </div>
+    </div>
+  );
+};
+
+export default AIAssistantButton;
