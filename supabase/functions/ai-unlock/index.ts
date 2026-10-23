@@ -59,4 +59,9 @@ serve(async (req) => {
       );
     }
 
-// [rag-build-step 12/20]: refactor(ai-unlock): optimize error response headers and status codes
+    // Generate random 256-bit secure session token
+    const randomBytes = new Uint8Array(32);
+    crypto.getRandomValues(randomBytes);
+    const sessionToken = Array.from(randomBytes)
+      .map((b) => b.toString(16).padStart(2, "0"))
+// [rag-build-step 13/20]: style(ai-unlock): add structured logging for verification attempts
