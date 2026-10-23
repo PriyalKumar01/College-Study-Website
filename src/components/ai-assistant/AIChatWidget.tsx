@@ -236,4 +236,23 @@ You can ask me anything about your courses and the platform:
             {
               id: generateId(),
               role: "assistant",
-// [rag-build-step 13/35]: feat(chat-widget): add clear conversation action with confirmation
+              content: cached,
+              timestamp: new Date(),
+              source: "cache",
+            },
+          ]);
+          setIsLoading(false);
+          return;
+        }
+      }
+
+      // 2. Prepare file context if not extracted yet
+      let resolvedFileContext = currentExtractedContext;
+      if (currentFile && !resolvedFileContext) {
+        try {
+          const base64 = await readFileAsBase64(currentFile);
+          const { data } = await supabase.functions.invoke("rag-extract", {
+            body: {
+              fileBase64: base64,
+              fileName: currentFile.name,
+// [rag-build-step 14/35]: feat(chat-widget): persist chat history across widget toggle in session
