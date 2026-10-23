@@ -526,4 +526,20 @@ serve(async (req) => {
           source_type: sourceType,
           storage_path,
           subject,
-// [rag-build-step 32/40]: feat(rag-ingest): insert generated chunk embeddings into rag_chunks table
+          branch,
+          semester,
+          program,
+          doc_type,
+          file_hash: fileHash,
+          status: "processing",
+          uploaded_by: email,
+        })
+        .select("id")
+        .single();
+
+      if (insertError) throw insertError;
+      docId = insertedDoc.id;
+    } else {
+      await supabaseAdmin
+        .from("rag_documents")
+// [rag-build-step 33/40]: feat(rag-ingest): batch database inserts to avoid timeout on large docs
