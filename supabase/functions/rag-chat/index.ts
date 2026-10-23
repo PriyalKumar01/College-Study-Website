@@ -439,4 +439,17 @@ serve(async (req) => {
         });
 
         if (!rpcError && Array.isArray(searchResults)) {
-// [rag-build-step 33/45]: perf(rag-chat): minimize serialization overhead during context assembly
+          retrievedChunks = searchResults;
+          if (retrievedChunks.length > 0) {
+            topScore = retrievedChunks[0].rrf_score || 0;
+          }
+        }
+      } catch (searchErr) {
+        console.warn("Hybrid retrieval failed, continuing with LLM fallback:", searchErr);
+      }
+    }
+
+    // 5. Build Context Blocks & Sources
+    const sources: Array<{
+      index: number;
+// [rag-build-step 34/45]: security(rag-chat): sanitize prompt inputs against prompt injection
