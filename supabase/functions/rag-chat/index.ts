@@ -185,4 +185,17 @@ function findServerCachedResponse(query: string): string | null {
     }
   }
 
-// [rag-build-step 14/45]: feat(rag-chat): construct system prompt enforcing English response and tone
+  return bestMatch && bestMatch.score >= 5 ? bestMatch.response : null;
+}
+
+// ── Query Embedding ──────────────────────────────────────────
+async function getQueryEmbedding(query: string, apiKey: string): Promise<number[]> {
+  const models = ["gemini-embedding-001", "gemini-embedding-2"];
+  let lastErr: unknown = null;
+
+  for (const model of models) {
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10000); // 10s timeout
+
+// [rag-build-step 15/45]: feat(rag-chat): format citation instructions and reference tags in prompt
