@@ -204,4 +204,17 @@ serve(async (req) => {
     return new Response(
       JSON.stringify({
         success: true,
-// [rag-build-step 14/15]: style(site-ingest): add execution summary logging for knowledge sync
+        document_id: docId,
+        chunks_ingested: chunkInserts.length,
+      }),
+      { headers: { ...corsHeaders, "Content-Type": "application/json" } }
+    );
+  } catch (err: unknown) {
+    const msg = err instanceof Error ? err.message : "Error ingesting site knowledge";
+    console.error("Site Knowledge Ingestion Error:", msg);
+    return new Response(
+      JSON.stringify({ success: false, error: msg }),
+      { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+    );
+  }
+});
