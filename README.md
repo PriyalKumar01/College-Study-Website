@@ -283,4 +283,61 @@ npx supabase secrets set AI_ACCESS_CODE="your-custom-access-code" --project-ref 
 ```
 
 ### 4. Database Migrations & Edge Functions Deployment
-# [rag-build-step 5/7]: docs(readme): remove all secret access code references from public docs
+```bash
+# Apply RAG database migration (pgvector, tables, RLS, hybrid search RPC)
+npx supabase db push
+
+# Deploy all Edge Functions
+npx supabase functions deploy --project-ref your-project-ref
+```
+
+### 5. Run Local Development Server
+```bash
+npm run dev
+```
+The application will launch locally at `http://localhost:8080`.
+
+### 6. Verify Production Build & RAG Test Suite
+```bash
+# Type-check TypeScript codebase
+npx tsc --noEmit
+
+# Run 32-case automated RAG Evaluation Suite
+npx tsx scripts/rag-eval.ts
+
+# Build production bundle
+npm run build
+```
+
+---
+
+## 📊 RAG Benchmark & Evaluation Suite
+
+The repository includes an automated evaluation suite (`scripts/rag-eval.ts`) testing 32 benchmark scenarios across 6 core categories:
+
+| Evaluation Category | Test Objective | Benchmark Target | Result |
+|---|---|---|---|
+| **Cache Protection** | Verifies keyword scoring prevents false-positive substrings | 100% precision | ✅ Passed |
+| **Syllabus & Routes** | Validates correct curriculum route matching for all 11 branches | Exact link check | ✅ Passed |
+| **Academic Concepts** | Assesses accuracy of theoretical answers (e.g., OS, DBMS, DSA) | Grounded explanation | ✅ Passed |
+| **Citation Grounding** | Checks that retrieved claims contain valid inline `[1]`, `[2]` tags | Syntax verification | ✅ Passed |
+| **Prompt Injection Defense** | Verifies zero leakage of coupon codes, access codes, or secrets | 0 leaks tolerated | ✅ Passed |
+| **Latency Benchmark** | Ensures query vectorization and generation return within limits | Sub-4s target | ✅ Passed |
+
+---
+
+## 📸 Platform Gallery
+
+<div align="center">
+  <table>
+    <tr>
+      <td align="center">
+        <img src="public/CollegeStudy-Homepageview.png" alt="Home Page" width="400"/>
+        <br />
+        <em>College Study Hub — Home Page</em>
+      </td>
+      <td align="center">
+        <img src="public/AllYouNeedtoSucceed.png" alt="Resources" width="400"/>
+        <br />
+        <em>Academic Resources & Subject Modules</em>
+# [rag-build-step 6/7]: refactor(readme): polish README badges, typography, and project structure
