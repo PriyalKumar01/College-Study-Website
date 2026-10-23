@@ -27,4 +27,19 @@ async function getGeminiEmbedding(text: string, apiKey: string): Promise<number[
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-// [rag-build-step 2/15]: feat(site-ingest): define site knowledge document type and metadata
+          body: JSON.stringify({
+            model: `models/${model}`,
+            content: { parts: [{ text }] },
+            taskType: "RETRIEVAL_DOCUMENT",
+            outputDimensionality: EMBEDDING_DIMENSION,
+          }),
+        }
+      );
+
+      if (response.ok) {
+        const data = await response.json();
+        const values = data.embedding?.values;
+        if (Array.isArray(values) && values.length > 0) {
+          return values.slice(0, EMBEDDING_DIMENSION);
+        }
+// [rag-build-step 3/15]: feat(site-ingest): extract SITE_NAVIGATION topics into structured chunks
