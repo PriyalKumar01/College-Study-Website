@@ -228,4 +228,21 @@ async function extractPptxPages(fileBytes: Uint8Array): Promise<{ pages: PageCon
         let slideText = slideXml.replace(/<\/a:p>/gi, "\n");
         slideText = slideText.replace(/<[^>]+>/g, " ");
         const clean = cleanDocumentText(slideText);
-// [rag-build-step 14/40]: feat(rag-ingest): detect scanned or low-text PDF pages for OCR fallback
+        if (clean) {
+          pages.push({ pageNumber: i + 1, text: clean });
+        }
+      }
+    }
+
+    if (pages.length === 0) {
+      pages.push({ pageNumber: 1, text: "Empty presentation or unreadable slides." });
+    }
+
+    return { pages, usedOcr: false };
+  } catch (err) {
+    console.error("PPTX extraction error:", err);
+    throw new Error("Failed to extract PPTX text: " + (err instanceof Error ? err.message : String(err)));
+  }
+}
+
+// [rag-build-step 15/40]: feat(rag-ingest): configure Gemini 3.5 Flash multimodal call for OCR
