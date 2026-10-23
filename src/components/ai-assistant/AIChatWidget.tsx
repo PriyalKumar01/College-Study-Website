@@ -457,4 +457,22 @@ Please:
           </button>
           <button
             onClick={onClose}
-// [rag-build-step 25/35]: refactor(chat-widget): handle offline internet connection states gracefully
+            className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+            title="Close"
+          >
+            <X className="w-3.5 h-3.5" />
+          </button>
+        </div>
+      </div>
+
+      {/* ── Messages Area ─────────────────────────────────────── */}
+      <div className="flex-1 overflow-y-auto bg-slate-50 dark:bg-slate-950 px-3.5 py-3.5 space-y-3 min-h-0 scroll-smooth custom-scrollbar">
+        {messages.map((msg) =>
+          msg.isLoading ? (
+            <TypingIndicator key={msg.id} />
+          ) : (
+            <AIChatMessage key={msg.id} message={msg} />
+          )
+        )}
+
+// [rag-build-step 26/35]: test(chat-widget): verify attachment file type validation
