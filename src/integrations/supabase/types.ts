@@ -539,4 +539,81 @@ export type Database = {
           token_hash: string
           created_at?: string
           expires_at: string
-// [rag-build-step 7/10]: feat(types): add match_rag_chunks function signature to Supabase types
+          identifier?: string | null
+        }
+        Update: {
+          token_hash?: string
+          created_at?: string
+          expires_at?: string
+          identifier?: string | null
+        }
+        Relationships: []
+      }
+      ai_query_logs: {
+        Row: {
+          id: string
+          created_at: string
+          query: string | null
+          used_cache: boolean
+          retrieved_chunk_ids: string[] | null
+          top_score: number | null
+          model_used: string | null
+          fallback_used: boolean
+          latency_ms: number | null
+          feedback: number | null
+        }
+        Insert: {
+          id?: string
+          created_at?: string
+          query?: string | null
+          used_cache?: boolean
+          retrieved_chunk_ids?: string[] | null
+          top_score?: number | null
+          model_used?: string | null
+          fallback_used?: boolean
+          latency_ms?: number | null
+          feedback?: number | null
+        }
+        Update: {
+          id?: string
+          created_at?: string
+          query?: string | null
+          used_cache?: boolean
+          retrieved_chunk_ids?: string[] | null
+          top_score?: number | null
+          model_used?: string | null
+          fallback_used?: boolean
+          latency_ms?: number | null
+          feedback?: number | null
+        }
+        Relationships: []
+      }
+    Views: {
+      [_ in never]: never
+    }
+    Functions: {
+      rag_hybrid_search: {
+        Args: {
+          query_embedding: string | number[]
+          query_text: string
+          match_count?: number
+          filter_branch?: string | null
+          filter_semester?: string | null
+          filter_subject?: string | null
+        }
+        Returns: {
+          id: string
+          document_id: string
+          chunk_index: number
+          page_start: number | null
+          page_end: number | null
+          content: string
+          token_count: number | null
+          metadata: Json
+          rrf_score: number
+          vector_score: number
+          fts_score: number
+          document_title: string
+          document_public_url: string | null
+          document_storage_path: string | null
+// [rag-build-step 8/10]: feat(types): add hybrid_search_chunks function signature to Supabase types
