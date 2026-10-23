@@ -208,7 +208,6 @@ const AppSidebar = ({ className }: AppSidebarProps) => {
     {
       title: 'Tools & Community',
       items: [
-        { icon: <Brain className="h-4 w-4" />, label: '500+ AI Tools', href: '/useful-ai-tools' },
         { icon: <Award className="h-4 w-4" />, label: 'Contributors', href: '/notes-contributors' },
         { icon: <Info className="h-4 w-4" />, label: 'About', href: '/about' },
       ],
@@ -448,23 +447,8 @@ const AppSidebar = ({ className }: AppSidebarProps) => {
         ))}
       </nav>
 
-      {/* Bottom Actions: Theme Toggle & Sign Out */}
+      {/* Bottom Actions: Sign Out (Theme toggle already at top navbar) */}
       <div className="p-2.5 border-t border-slate-800 space-y-1">
-        <button
-          onClick={toggleTheme}
-          className={`w-full flex items-center gap-2.5 px-2.5 py-1.5 rounded-sm text-xs text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 transition-colors ${
-            isCollapsed ? 'justify-center' : ''
-          }`}
-          title={isCollapsed ? (theme === 'dark' ? 'Light Mode' : 'Dark Mode') : undefined}
-        >
-          <div className="shrink-0 text-yellow-400">
-            {theme === 'dark' ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
-          </div>
-          {!isCollapsed && (
-            <span>{theme === 'dark' ? 'Light Mode' : 'Dark Mode'}</span>
-          )}
-        </button>
-
         <button
           onClick={handleSignOut}
           className={`w-full flex items-center gap-2.5 px-2.5 py-1.5 rounded-sm text-xs text-rose-400/80 hover:text-rose-400 hover:bg-rose-500/10 transition-colors ${
