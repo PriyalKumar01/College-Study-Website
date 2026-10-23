@@ -426,4 +426,17 @@ serve(async (req) => {
     let retrievedChunks: any[] = [];
     let topScore = 0;
 
-// [rag-build-step 32/45]: refactor(rag-chat): decouple LLM provider adapters for easier extension
+    if (geminiKey) {
+      try {
+        const queryVector = await getQueryEmbedding(query, geminiKey);
+        const { data: searchResults, error: rpcError } = await supabaseAdmin.rpc("rag_hybrid_search", {
+          query_embedding: queryVector,
+          query_text: query,
+          match_count: 6,
+          filter_branch: filterBranch || null,
+          filter_semester: filterSemester || null,
+          filter_subject: filterSubject || null,
+        });
+
+        if (!rpcError && Array.isArray(searchResults)) {
+// [rag-build-step 33/45]: perf(rag-chat): minimize serialization overhead during context assembly
