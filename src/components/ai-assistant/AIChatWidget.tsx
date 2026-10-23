@@ -53,4 +53,22 @@ const generateId = () => Math.random().toString(36).slice(2, 9);
 
 interface AIChatWidgetProps {
   onClose: () => void;
-// [rag-build-step 3/35]: feat(chat-widget): add file upload attachment button in chat input bar
+}
+
+const AIChatWidget = ({ onClose }: AIChatWidgetProps) => {
+  const { user } = useAuth();
+  const [messages, setMessages] = useState<Message[]>([
+    {
+      id: "welcome",
+      role: "assistant",
+      content: `👋 **Hello! I am College Study Assistant** — your official academic AI assistant!
+
+You can ask me anything about your courses and the platform:
+- 📚 Notes, PYQs & Syllabus across all branches
+- 🏛️ HBTU portals, ERP & attendance regulations
+- 🏆 Scholarships & career opportunities
+- 📄 Document analysis (attach any PDF, DOCX, TXT, or PPTX below)
+
+*You have ${Math.max(0, RATE_LIMIT_CONFIG.maxQueriesPerDay - getLocalCount())} queries remaining today.* 🚀`,
+      timestamp: new Date(),
+// [rag-build-step 4/35]: feat(chat-widget): support PDF, DOCX, and TXT attachment selection
