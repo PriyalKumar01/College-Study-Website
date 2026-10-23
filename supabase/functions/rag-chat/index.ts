@@ -492,4 +492,18 @@ serve(async (req) => {
         score: chunk.rrf_score,
       });
       contextIndex++;
-// [rag-build-step 37/45]: fix(rag-chat): handle null citation metadata gracefully
+    }
+
+    // 6. Build Grounded Prompt
+    const hasContext = contextBlocks.length > 0;
+    const systemPrompt = `You are College Study Assistant, the official AI academic assistant for College Study Hub (college-study.netlify.app), built specifically for Harcourt Butler Technical University (HBTU Kanpur) students.
+
+PERSONALITY & LANGUAGE:
+- Highly articulate, professional, friendly, and encouraging.
+- Communicate EXCLUSIVELY and fluently in English. Do NOT use Hindi or Hinglish words under any circumstance.
+- Keep explanations structured, concise, and clear with clean Markdown and bullet points.
+
+GROUNDING & CITATION RULES:
+${hasContext ? `1. Use the numbered context blocks below to ground your answer. When referencing information from them, include inline citations like [1], [2].
+2. If the user asks for academic concepts (e.g. Operating Systems, Data Structures, Engineering Mathematics, Physics, Chemistry, etc.):
+// [rag-build-step 38/45]: fix(rag-chat): adjust similarity threshold for cross-domain academic queries
