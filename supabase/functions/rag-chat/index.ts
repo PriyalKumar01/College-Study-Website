@@ -225,4 +225,17 @@ async function getQueryEmbedding(query: string, apiKey: string): Promise<number[
         console.warn(`Embedding model ${model} status ${resp.status}:`, errBody);
         lastErr = new Error(`Embedding status: ${resp.status}`);
       }
-// [rag-build-step 17/45]: feat(rag-chat): configure Gemini 3.5 Flash client as primary LLM
+    } catch (e) {
+      console.warn(`Embedding ${model} fetch exception:`, e);
+      lastErr = e;
+    }
+  }
+
+  throw lastErr ?? new Error("Failed to embed query");
+}
+
+// ── LLM Calls (Gemini primary -> OpenAI fallback) ────────────
+async function callGemini(
+  systemInstruction: string,
+  messages: Array<{ role: string; content: string }>,
+// [rag-build-step 18/45]: feat(rag-chat): invoke Gemini 3.5 Flash with structured system instructions
