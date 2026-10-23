@@ -226,4 +226,61 @@ Built on the **Deno** runtime and deployed globally on Supabase Edge Network:
 | **Backend & Serverless** | Supabase Edge Functions (Deno runtime), PostgreSQL RLS, PL/pgSQL RPCs |
 | **Payments & Auth** | Razorpay Indian Gateway, Supabase Auth (Email OTP + Google OAuth) |
 | **Hosting & PWA** | Netlify Global CDN, `vite-plugin-pwa` (Workbox Service Worker) |
-# [rag-build-step 4/7]: docs(readme): update README with admin knowledge base guide
+
+</div>
+
+---
+
+## 🔐 Security, Privacy & Confidentiality Protocols
+
+1. **Zero Client Secrets**:
+   - Neither Gemini nor OpenAI API keys are exposed to client-side bundles.
+   - All AI interactions proxy through Supabase Edge Functions where secrets are injected via encrypted environment variables.
+2. **Access Gatekeeper Protocol**:
+   - Access to the AI Assistant is guarded by server-side verification (`ai-unlock`).
+   - Successful unlocks receive a cryptographic SHA-256 session token stored in PostgreSQL (`ai_sessions`) with expiration controls.
+3. **Strict Confidentiality Enforcement**:
+   - Built-in prompt guardrails strictly prevent disclosing discount coupons, access codes, or private system keys under any prompt injection attempt.
+4. **PostgreSQL Row Level Security (RLS)**:
+   - Vector chunks (`rag_chunks`) and document binaries are accessible strictly by the Supabase Service Role.
+   - User profile and purchase records are isolated per authenticated user ID (`auth.uid() = id`).
+
+---
+
+## 🚀 Getting Started & Local Development
+
+### Prerequisites
+- **Node.js**: v18.0.0 or higher
+- **npm** or **yarn**
+- **Supabase CLI**: `npm install -g supabase`
+
+### 1. Clone & Install Dependencies
+```bash
+git clone https://github.com/PriyalKumar01/studyhub-unlocked-nexus.git
+cd studyhub-unlocked-nexus
+npm install
+```
+
+### 2. Environment Configuration
+Create a `.env` file in the project root (refer to `.env.example`):
+```env
+# Client-Side Public Variables (Vite)
+VITE_SUPABASE_URL=https://your-project.supabase.co
+VITE_SUPABASE_ANON_KEY=your-supabase-anon-key
+VITE_BREVO_API_KEY=your-brevo-api-key
+```
+
+### 3. Supabase Edge Function Secrets
+Set your server-side API keys in your Supabase project (never commit these to git):
+```bash
+# Login to Supabase CLI
+npx supabase login
+
+# Set Secrets
+npx supabase secrets set GEMINI_API_KEY="your-gemini-api-key" --project-ref your-project-ref
+npx supabase secrets set OPENAI_API_KEY="your-openai-api-key" --project-ref your-project-ref
+npx supabase secrets set AI_ACCESS_CODE="your-custom-access-code" --project-ref your-project-ref
+```
+
+### 4. Database Migrations & Edge Functions Deployment
+# [rag-build-step 5/7]: docs(readme): remove all secret access code references from public docs
