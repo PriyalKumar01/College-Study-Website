@@ -336,4 +336,30 @@ const AIChatMessage = ({ message, onFeedbackChange }: AIChatMessageProps) => {
                               target="_blank"
                               rel="noreferrer"
                               className="inline-flex items-center gap-0.5 text-xs text-slate-900 dark:text-slate-100 underline font-semibold"
-// [rag-build-step 13/15]: refactor(chat-message): handle rendering of empty or error messages gracefully
+                            >
+                              Open Source <ExternalLink className="w-3 h-3" />
+                            </a>
+                          )}
+                        </div>
+                        <p className="italic text-slate-700 dark:text-slate-300 leading-relaxed bg-white/80 dark:bg-slate-950/80 p-2 rounded border border-slate-200 dark:border-slate-800">
+                          &ldquo;{activeSrc.snippet}&rdquo;
+                        </p>
+                      </>
+                    );
+                  })()}
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        )}
+
+        {/* Footer: Timestamp & Feedback */}
+        <div className="flex items-center justify-between w-full px-1 text-[10px] text-slate-400">
+          <span>
+            {message.timestamp.toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" })}
+          </span>
+
+          {!isUser && (
+            <div className="flex items-center gap-1 text-slate-400">
+              <button
+// [rag-build-step 14/15]: chore(chat-message): clean up unused imports and types
