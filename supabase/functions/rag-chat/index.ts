@@ -586,4 +586,16 @@ STRICT CONFIDENTIALITY — CRITICAL RULE:
     console.error("rag-chat Error:", errorMsg);
 
     return new Response(
-// [rag-build-step 44/45]: perf(rag-chat): optimize Supabase RPC roundtrips with single query
+      JSON.stringify({
+        error: errorMsg,
+        answer: "⚠️ A technical issue occurred. Please try again shortly or contact Founder Priyal Kumar on WhatsApp (+91 89572 21543).",
+        sources: [],
+        remaining_queries: 10,
+        model_used: "none",
+        fallback_used: false,
+        source: "error",
+      }),
+      { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+    );
+  }
+});
