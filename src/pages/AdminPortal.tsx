@@ -60,4 +60,65 @@ const AdminPortal = () => {
           className="mb-8 p-6 rounded-2xl border border-border bg-card shadow-lg flex flex-col md:flex-row md:items-center justify-between gap-4"
         >
           <div className="flex items-start gap-4">
-// [rag-build-step 1/2]: feat(admin-portal): add Knowledge Base management tile to Admin Portal
+            <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-600 dark:text-emerald-400 shrink-0 shadow-sm mt-1">
+              <ShieldCheck className="h-6 w-6" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2 mb-1.5">
+                <span className="bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 text-[11px] font-extrabold uppercase tracking-wider px-3 py-0.5 rounded-full flex items-center gap-1.5">
+                  <ShieldCheck className="h-3.5 w-3.5" /> AUTHORIZED ADMIN CONSOLE
+                </span>
+              </div>
+              <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-foreground">
+                Admin Management Portal
+              </h1>
+              <p className="text-muted-foreground text-sm sm:text-base mt-1 max-w-2xl leading-relaxed">
+                Upload study materials, submit scholarship entries, or manage your active content. All submissions undergo owner review prior to publishing.
+              </p>
+            </div>
+          </div>
+          <div className="flex items-center gap-2 shrink-0">
+            <Button
+              onClick={() => navigate('/admin/knowledge-base')}
+              className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs gap-2 py-2 px-3 shadow-md"
+            >
+              <Database className="w-4 h-4" />
+              RAG Knowledge Base
+            </Button>
+          </div>
+        </motion.div>
+
+        <Tabs defaultValue="upload" className="space-y-6">
+          <TabsList className="grid w-full grid-cols-3 bg-muted/80 p-1.5 rounded-xl border border-border shadow-sm h-auto">
+            <TabsTrigger value="upload" className="flex items-center justify-center gap-2 py-3 font-bold rounded-lg transition-all data-[state=active]:bg-card data-[state=active]:text-primary data-[state=active]:shadow-md">
+              <Upload className="h-4 w-4" />
+              <span>Upload Material</span>
+            </TabsTrigger>
+            <TabsTrigger value="scholarship" className="flex items-center justify-center gap-2 py-3 font-bold rounded-lg transition-all data-[state=active]:bg-card data-[state=active]:text-primary data-[state=active]:shadow-md">
+              <GraduationCap className="h-4 w-4" />
+              <span>Add Scholarship</span>
+            </TabsTrigger>
+            <TabsTrigger value="submissions" className="flex items-center justify-center gap-2 py-3 font-bold rounded-lg transition-all data-[state=active]:bg-card data-[state=active]:text-primary data-[state=active]:shadow-md">
+              <FileText className="h-4 w-4" />
+              <span>My Submissions</span>
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="upload">
+            <UploadMaterialForm onUploadSuccess={() => setRefreshTrigger(prev => prev + 1)} />
+          </TabsContent>
+
+          <TabsContent value="scholarship">
+            <SubmitScholarshipForm onSuccess={() => setRefreshTrigger(prev => prev + 1)} />
+          </TabsContent>
+
+          <TabsContent value="submissions">
+            <MySubmissions refreshTrigger={refreshTrigger} />
+          </TabsContent>
+        </Tabs>
+      </div>
+    </div>
+  );
+};
+
+export default AdminPortal;
