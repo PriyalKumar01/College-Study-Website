@@ -252,4 +252,17 @@ async function callGemini(
   for (const model of models) {
     try {
       const controller = new AbortController();
-// [rag-build-step 19/45]: feat(rag-chat): handle Gemini API timeout and HTTP error codes
+      const timeoutId = setTimeout(() => controller.abort(), 18000); // 18s timeout
+
+      const response = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          signal: controller.signal,
+          body: JSON.stringify({
+            systemInstruction: { parts: [{ text: systemInstruction }] },
+            contents,
+            generationConfig: {
+              maxOutputTokens: 1200,
+// [rag-build-step 20/45]: feat(rag-chat): implement OpenAI GPT-4o-mini fallback client
