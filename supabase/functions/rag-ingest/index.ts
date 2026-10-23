@@ -410,4 +410,21 @@ async function getGeminiEmbedding(text: string, apiKey: string): Promise<number[
           body: JSON.stringify({
             model: `models/${model}`,
             content: { parts: [{ text }] },
-// [rag-build-step 25/40]: feat(rag-ingest): configure 150 character chunk overlap for context continuity
+            taskType: "RETRIEVAL_DOCUMENT",
+            outputDimensionality: EMBEDDING_DIMENSION,
+          }),
+        }
+      );
+
+      if (response.ok) {
+        const data = await response.json();
+        const values = data.embedding?.values;
+        if (Array.isArray(values) && values.length > 0) {
+          return values.slice(0, EMBEDDING_DIMENSION);
+        }
+      } else {
+        const errText = await response.text();
+        lastError = new Error(`Embedding model ${model} error ${response.status}: ${errText}`);
+      }
+    } catch (e) {
+// [rag-build-step 26/40]: feat(rag-ingest): prioritize splitting on paragraph and heading boundaries
