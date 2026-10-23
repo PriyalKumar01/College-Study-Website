@@ -131,4 +131,18 @@ const CACHED_ENTRIES = [
     keywords: ["cgpa calculator", "sgpa calculator", "calculate cgpa"],
     response: `📊 **CGPA / SGPA Calculator:**\nDirect link: [CGPA Calculator](/cgpa-calculator)\nFeatures: Calibrated to HBTU Kanpur's 10-point relative grading scale for semester-wise SGPA and cumulative CGPA.`,
   },
-// [rag-build-step 10/45]: feat(rag-chat): fall back to trigram keyword search if vector matches are sparse
+  {
+    keywords: ["scholarship", "scholarship portal", "scholarship list", "scholarship kahan"],
+    response: `🏆 **Scholarships Portal:**\nDirect link: [Scholarships Portal](/scholarship-portal)\nBrowse UP Post-Matric scholarships, corporate CSR grants, and Buddy4Study scholarship opportunities with upcoming deadlines.`,
+  },
+  {
+    keywords: ["up scholarship", "scholarship up", "scholarship.up.gov.in"],
+    response: `🏛️ **UP Scholarship & Fee Reimbursement:**\nOfficial portal: [scholarship.up.gov.in](https://scholarship.up.gov.in/index.aspx)\nCategory: Post-Matric Other Than Inter for engineering and management programs. Mandatory hard copy submission is required in the university scholarship office.`,
+  },
+  {
+    keywords: ["digi shakti", "tablet portal", "tablet yojana", "digishakti", "ekyc tablet"],
+    response: `📱 **Digi Shakti UP Free Tablet / Smartphone Scheme:**\nPortal: [digishakti.up.gov.in](https://digishakti.up.gov.in/). Once your data is uploaded by the university, verify your records on the portal and complete eKYC.`,
+  },
+  {
+    keywords: ["hello", "hi", "hey", "namaste", "hii", "helo"],
+// [rag-build-step 11/45]: feat(rag-chat): deduplicate retrieved chunks and sort by relevance score
