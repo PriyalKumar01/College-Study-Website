@@ -126,4 +126,29 @@ const AdminKnowledgeBase = () => {
   }, [isAdmin, isOwner]);
 
   const handleFileSelect = (files: FileList | null) => {
-// [rag-build-step 5/31]: feat(admin-kb): validate file extensions and size limit (max 25MB)
+    if (!files) return;
+    const allowed = Array.from(files).filter((f) => {
+      const ext = f.name.split(".").pop()?.toLowerCase();
+      return ["pdf", "docx", "pptx", "txt", "md"].includes(ext || "");
+    });
+
+    if (allowed.length === 0) {
+      toast({
+        title: "Invalid file type",
+        description: "Please upload PDF, DOCX, PPTX, TXT, or MD files (max 25MB each).",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setSelectedFiles(allowed);
+    if (!title && allowed[0]) {
+      setTitle(allowed[0].name.replace(/\.[^/.]+$/, ""));
+    }
+  };
+
+  // Upload & Trigger Ingest
+  const handleUploadAndIngest = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (selectedFiles.length === 0) {
+// [rag-build-step 6/31]: feat(admin-kb): add document metadata form for subject, branch, semester
