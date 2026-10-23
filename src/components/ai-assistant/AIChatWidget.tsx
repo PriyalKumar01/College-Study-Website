@@ -347,4 +347,22 @@ You can ask me anything about your courses and the platform:
           sources: data.sources || [],
           source: data.source || "rag",
           model_used: data.model_used,
-// [rag-build-step 19/35]: style(chat-widget): enhance input textarea auto-resize on multi-line text
+          fallback_used: data.fallback_used,
+          queryLogId: data.session_id,
+        },
+      ]);
+
+    } catch (err: unknown) {
+      const errMsg = err instanceof Error ? err.message : "Unknown error";
+      console.error("AI Assistant error:", errMsg);
+
+      setMessages(prev => [
+        ...prev.filter(m => m.id !== loadingId),
+        {
+          id: generateId(),
+          role: "assistant",
+          content: `⚠️ **Connection Issue**
+
+${errMsg}
+
+// [rag-build-step 20/35]: style(chat-widget): adjust modal drawer dimensions for mobile screens
