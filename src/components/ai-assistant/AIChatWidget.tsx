@@ -494,4 +494,22 @@ Please:
                       text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 hover:border-slate-300 dark:hover:border-slate-700 transition-all font-medium shadow-sm"
                   >
                     {suggestion}
-// [rag-build-step 27/35]: test(chat-widget): verify message queue handling on rapid user submissions
+                  </button>
+                ))}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        <div ref={messagesEndRef} />
+      </div>
+
+      {/* ── File attachment preview ───────────────────────────── */}
+      <AnimatePresence>
+        {attachedFile && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            className="bg-slate-100/90 dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 px-3.5 py-2.5"
+// [rag-build-step 28/35]: refactor(chat-widget): streamline state management with custom hook
