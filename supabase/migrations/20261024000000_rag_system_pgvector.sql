@@ -49,4 +49,15 @@ CREATE TABLE IF NOT EXISTS public.rag_chunks (
 -- HNSW Cosine Index for Fast Approximate Nearest Neighbor vector search
 CREATE INDEX IF NOT EXISTS idx_rag_chunks_embedding 
   ON public.rag_chunks 
--- [rag-build-step 5/30]: feat(db): add metadata jsonb column to rag_documents
+  USING hnsw (embedding vector_cosine_ops);
+
+-- GIN Index for full-text search
+CREATE INDEX IF NOT EXISTS idx_rag_chunks_tsv 
+  ON public.rag_chunks 
+  USING gin (content_tsv);
+
+-- B-Tree Index on document_id for cascading and joins
+CREATE INDEX IF NOT EXISTS idx_rag_chunks_document_id 
+  ON public.rag_chunks (document_id);
+
+-- [rag-build-step 6/30]: feat(db): add doc_type and file status constraints to rag_documents
