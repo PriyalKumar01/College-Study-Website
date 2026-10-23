@@ -28,4 +28,34 @@ flowchart TD
         ChunkTable["rag_chunks (768-dim Vectors & tsvector)"]
         Sessions["ai_sessions (Hashed 30-day Sessions)"]
         Usage["ai_usage (Daily Quota: 10/day)"]
-# [rag-build-step 1/8]: docs(rag): create comprehensive RAG architecture documentation
+        Logs["ai_query_logs (Telemetry & Latency)"]
+        Storage["rag-documents (Private Storage Bucket)"]
+        RRF["rag_hybrid_search() SQL Function (Reciprocal Rank Fusion)"]
+    end
+
+    subgraph LLMServices["External LLM & Embedding Providers"]
+        GeminiEmbed["Gemini Embedding (gemini-embedding-001, 768-dim)"]
+        GeminiFlash["Primary: Google Gemini 3.5 Flash (gemini-3.5-flash)"]
+        OpenAI["Fallback: OpenAI (gpt-4o-mini)"]
+    end
+
+    %% Client flows
+    Gate -->|Submit Access Code| Unlock
+    Unlock -->|Hash & Save Session| Sessions
+    Unlock -->|Return Session Token| Gate
+
+    UI -->|Quick FAQ Check| CacheCheck
+    CacheCheck -->|Cache Hit: <15ms, 0 Quota| UI
+
+    UI -->|Attach File: PDF/DOCX/TXT/Image| Extract
+    Extract -->|Return Extracted Text| UI
+
+    UI -->|Query + Session Token + History| Chat
+    AdminUI -->|Upload Document + Metadata| Storage
+    AdminUI -->|Trigger Ingestion| Ingest
+
+    %% Ingest flow
+    Storage --> Ingest
+    Ingest -->|OCR Fallback| GeminiFlash
+    Ingest -->|Batch Embeddings| GeminiEmbed
+# [rag-build-step 2/8]: docs(rag): illustrate document ingestion pipeline in Mermaid diagram
