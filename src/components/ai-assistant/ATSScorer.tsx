@@ -103,4 +103,57 @@ const ATSScorer = ({ userEmail }: ATSScorerProps) => {
   const [result, setResult] = useState<{ score: number; matched: string[]; missing: string[]; fullResponse: string } | null>(null);
   const [error, setError] = useState("");
   const [showFullResponse, setShowFullResponse] = useState(true);
-// [rag-build-step 2/9]: refactor(ats-scorer): replace blue accent styling with sleek slate and emerald palette
+  const [inputMode, setInputMode] = useState<"file" | "paste">("file");
+  const [copied, setCopied] = useState(false);
+
+  const fileRef = useRef<HTMLInputElement>(null);
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!["application/pdf", "text/plain", "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document"].includes(file.type) && !file.name.endsWith('.pdf')) {
+      setError("Please upload a PDF or TXT file");
+      return;
+    }
+    if (file.size > 8 * 1024 * 1024) {
+      setError("File size exceeds 8MB limit");
+      return;
+    }
+    setResumeFile(file);
+    setError("");
+    e.target.value = "";
+  };
+
+  const handleScore = async () => {
+    if ((!resumeFile && !resumeText.trim()) || !jobDescription.trim()) {
+      setError("Resume (PDF file ya text) aur Job Description dono required hain!");
+      return;
+    }
+    if (jobDescription.trim().length < 30) {
+      setError("Job description thodi detail mein paste karein taaki ATS score accurate mile.");
+      return;
+    }
+
+    setIsLoading(true);
+    setError("");
+    setResult(null);
+
+    try {
+      let base64 = "";
+      let fileName = "resume.pdf";
+
+      if (resumeFile) {
+        fileName = resumeFile.name;
+        base64 = await new Promise<string>((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            try {
+              const arrayBuffer = e.target?.result as ArrayBuffer;
+              const bytes = new Uint8Array(arrayBuffer);
+              let binary = "";
+              for (let i = 0; i < bytes.byteLength; i++) {
+                binary += String.fromCharCode(bytes[i]);
+              }
+              resolve(btoa(binary));
+// [rag-build-step 3/9]: feat(ats-scorer): add drag and drop resume file uploader with validation
