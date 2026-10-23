@@ -238,4 +238,18 @@ async function getQueryEmbedding(query: string, apiKey: string): Promise<number[
 async function callGemini(
   systemInstruction: string,
   messages: Array<{ role: string; content: string }>,
-// [rag-build-step 18/45]: feat(rag-chat): invoke Gemini 3.5 Flash with structured system instructions
+  apiKey: string
+): Promise<string> {
+  const contents = messages.map((m) => ({
+    role: m.role === "assistant" ? "model" : "user",
+    parts: [{ text: m.content }],
+  }));
+
+  // Active working Gemini models verified for this API key
+  const models = ["gemini-3.5-flash", "gemini-3.5-flash-lite", "gemini-3.1-flash-lite"];
+  let lastErr: unknown = null;
+
+  for (const model of models) {
+    try {
+      const controller = new AbortController();
+// [rag-build-step 19/45]: feat(rag-chat): handle Gemini API timeout and HTTP error codes
