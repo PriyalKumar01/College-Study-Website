@@ -86,4 +86,19 @@ Attendance Rules:
   },
   {
     heading: "BTech 1st and 2nd Semester Notes (Common to All Branches)",
-// [rag-build-step 6/15]: feat(site-ingest): extract HBTU university facts and admissions info
+    subject: "BTech Foundation",
+    content: `1st and 2nd Semester BTech engineering courses are common across all 11 branches at HBTU Kanpur.
+- 1st Semester (/first-semester-notes): Basic Electrical Engineering (BEE), Engineering Mathematics-I, Engineering Physics, Engineering Chemistry, Professional Communication, Engineering Graphics, and Workshop Practice.
+- 2nd Semester (/second-semester-notes): Engineering Mathematics-II, Engineering Mechanics, Basic Electronics Engineering, Programming for Problem Solving (C Language), Environmental Science, and Engineering Drawing.`,
+  },
+  {
+    heading: "BTech CSE Core Semesters (3rd to 6th Sem)",
+    subject: "Computer Science",
+    content: `BTech Computer Science & Engineering Curriculum at College Study Hub:
+- 3rd Semester (/third-semester-cse-notes): Data Structures, Digital Electronics, Discrete Mathematics, Object-Oriented Programming (OOP with Java/C++), Mathematics-III, Analog Electronics.
+- 4th Semester (/fourth-semester-cse-notes): Database Management Systems (DBMS), Computer Organization & Architecture (COA), Operating Systems (OS), Theory of Computation (TOC), Mathematics-IV (Probability & Statistics), Software Engineering.
+- 5th Semester (/fifth-semester-cse-notes): Computer Networks (CN), Compiler Design, Microprocessors & Interfaces, Web Technologies, Artificial Intelligence (AI), and Open Electives (/fifth-semester-open-electives).
+- 6th Semester (/sixth-semester-cse-notes): Machine Learning (ML), Information Security, Cloud Computing, Software Testing, and Open Electives (/sixth-semester-open-electives).
+- 7th & 8th Semesters: Distributed Systems, Big Data Analytics, IoT, Deep Learning, and Major Capstone Projects.`,
+  },
+// [rag-build-step 7/15]: feat(site-ingest): extract USEFUL_EXTERNAL_LINKS into knowledge chunks
