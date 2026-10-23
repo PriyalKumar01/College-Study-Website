@@ -174,4 +174,14 @@ BEGIN
       AND (filter_semester IS NULL OR d.semester ILIKE filter_semester)
       AND (filter_subject IS NULL OR d.subject ILIKE '%' || filter_subject || '%')
     ORDER BY ts_rank_cd(c.content_tsv, v_parsed_query) DESC
--- [rag-build-step 17/30]: feat(db): implement hybrid_search_chunks RPC combining vector and text search
+    LIMIT v_candidate_limit
+  ),
+
+  -- 3. Combined Candidates with Reciprocal Rank Fusion
+  combined AS (
+    SELECT
+      COALESCE(v.chunk_id, f.chunk_id) AS chunk_id,
+      COALESCE(v.vec_similarity, 0.0) AS vec_score,
+      COALESCE(f.text_score, 0.0) AS f_score,
+      (
+-- [rag-build-step 18/30]: feat(db): add reciprocal rank fusion scoring to hybrid search function
