@@ -394,4 +394,20 @@ export function chunkDocument(
 
   return chunks;
 }
-// [rag-build-step 24/40]: feat(rag-ingest): implement sliding window chunker with 1000 char target
+
+// ── Gemini Batch Embeddings Generator ────────────────────────
+async function getGeminiEmbedding(text: string, apiKey: string): Promise<number[]> {
+  const models = [EMBEDDING_MODEL, FALLBACK_EMBEDDING_MODEL];
+  let lastError: unknown = null;
+
+  for (const model of models) {
+    try {
+      const response = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/${model}:embedContent?key=${apiKey}`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            model: `models/${model}`,
+            content: { parts: [{ text }] },
+// [rag-build-step 25/40]: feat(rag-ingest): configure 150 character chunk overlap for context continuity
