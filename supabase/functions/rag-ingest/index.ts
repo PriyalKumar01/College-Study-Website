@@ -559,4 +559,20 @@ serve(async (req) => {
     } else if (sourceType === "docx") {
       const result = await extractDocxPages(fileBytes);
       extractedPages = result.pages;
-// [rag-build-step 34/40]: feat(rag-ingest): update rag_documents record with chunk_count and page_count
+    } else if (sourceType === "pptx") {
+      const result = await extractPptxPages(fileBytes);
+      extractedPages = result.pages;
+    } else {
+      const result = extractPlainPages(fileBytes);
+      extractedPages = result.pages;
+    }
+
+    const pageCount = extractedPages.length;
+
+    // 5. Chunk the document
+    const chunks = chunkDocument(
+      extractedPages,
+      { title, subject, branch, semester, doc_type },
+      900,
+      150
+// [rag-build-step 35/40]: feat(rag-ingest): update rag_documents status to ready on success
