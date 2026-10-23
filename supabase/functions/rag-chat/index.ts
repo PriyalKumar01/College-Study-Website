@@ -212,4 +212,17 @@ async function getQueryEmbedding(query: string, apiKey: string): Promise<number[
           }),
         }
       );
-// [rag-build-step 16/45]: feat(rag-chat): include conversation history for multi-turn dialogue context
+      clearTimeout(timeoutId);
+
+      if (resp.ok) {
+        const data = await resp.json();
+        const vals = data.embedding?.values;
+        if (Array.isArray(vals) && vals.length > 0) {
+          return vals.slice(0, EMBEDDING_DIMENSION);
+        }
+      } else {
+        const errBody = await resp.text();
+        console.warn(`Embedding model ${model} status ${resp.status}:`, errBody);
+        lastErr = new Error(`Embedding status: ${resp.status}`);
+      }
+// [rag-build-step 17/45]: feat(rag-chat): configure Gemini 3.5 Flash client as primary LLM
