@@ -254,4 +254,29 @@ const AdminKnowledgeBase = () => {
         },
       });
 
-// [rag-build-step 10/31]: feat(admin-kb): display paginated table of ingested knowledge base documents
+      if (error || data?.error) throw new Error(data?.error || error?.message);
+
+      toast({ title: "Document re-processed!", description: `${doc.title} is now ready with fresh embeddings.` });
+      fetchDocuments();
+    } catch (err: unknown) {
+      toast({
+        title: "Re-process failed",
+        description: err instanceof Error ? err.message : "Unknown error",
+        variant: "destructive",
+      });
+    }
+  };
+
+  // Delete document
+  const handleDelete = async (doc: RagDoc) => {
+    if (!confirm(`Are you sure you want to delete "${doc.title}" and all its embeddings?`)) return;
+
+    try {
+      if (doc.storage_path) {
+        await supabase.storage.from("rag-documents").remove([doc.storage_path]).catch(() => {});
+      }
+
+      const { error } = await supabase.from("rag_documents").delete().eq("id", doc.id);
+      if (error) throw error;
+
+// [rag-build-step 11/31]: feat(admin-kb): display document status badge with ready, processing, failed states
