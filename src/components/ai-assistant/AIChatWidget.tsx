@@ -549,4 +549,22 @@ Please:
           </motion.div>
         )}
       </AnimatePresence>
-// [rag-build-step 30/35]: style(chat-widget): align close button and widget minimize actions
+
+      {/* ── Input Area ────────────────────────────────────────── */}
+      <div className="bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 px-3.5 py-3 flex-shrink-0">
+        {queriesLeft <= 2 && queriesLeft > 0 && (
+          <div className="flex items-center gap-1.5 text-[10px] text-amber-700 dark:text-amber-400 mb-2 bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-900/50 rounded-xl px-2.5 py-1">
+            <AlertTriangle className="w-3 h-3 flex-shrink-0" />
+            Sirf {queriesLeft} queries baaki hain aaj ke liye!
+          </div>
+        )}
+        {queriesLeft === 0 && (
+          <div className="flex items-center gap-1.5 text-[10px] text-rose-700 dark:text-rose-400 mb-2 bg-rose-50 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-900/50 rounded-xl px-2.5 py-1">
+            <AlertTriangle className="w-3 h-3 flex-shrink-0" />
+            Aaj ki limit khatam ho gayi. Kal phir milte hain! 🌙
+          </div>
+        )}
+
+        <div className="flex items-end gap-2">
+          {/* File attach button */}
+// [rag-build-step 31/35]: refactor(chat-widget): cleanup unused state variables
