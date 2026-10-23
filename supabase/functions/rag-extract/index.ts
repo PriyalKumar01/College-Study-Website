@@ -112,4 +112,23 @@ serve(async (req) => {
       } catch (docxErr) {
         console.error("DOCX extraction error in rag-extract:", docxErr);
       }
-// [rag-build-step 6/10]: feat(rag-extract): return cleaned attachment text without database storage
+    }
+    // 3. Image OCR
+    else if (
+      lowerName.endsWith(".png") ||
+      lowerName.endsWith(".jpg") ||
+      lowerName.endsWith(".jpeg") ||
+      lowerName.endsWith(".webp") ||
+      mimeType?.startsWith("image/")
+    ) {
+      if (geminiKey) {
+        usedOcr = true;
+        const imgMime = mimeType || (lowerName.endsWith(".png") ? "image/png" : "image/jpeg");
+        const resp = await fetch(
+          `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent?key=${geminiKey}`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              contents: [
+// [rag-build-step 7/10]: feat(rag-extract): add CORS and error handling for chat uploads
