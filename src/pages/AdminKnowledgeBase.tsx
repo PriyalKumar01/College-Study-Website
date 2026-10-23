@@ -484,4 +484,30 @@ const AdminKnowledgeBase = () => {
                     ref={fileInputRef}
                     type="file"
                     multiple
-// [rag-build-step 19/31]: style(admin-kb): style knowledge base page with Shadcn UI components
+                    accept=".pdf,.docx,.pptx,.txt,.md"
+                    className="hidden"
+                    onChange={(e) => handleFileSelect(e.target.files)}
+                  />
+                  <div className="w-12 h-12 rounded-full bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 mx-auto mb-3 flex items-center justify-center">
+                    <FileText className="w-6 h-6" />
+                  </div>
+                  {selectedFiles.length > 0 ? (
+                    <div>
+                      <p className="text-sm font-bold text-indigo-600 dark:text-indigo-400">
+                        {selectedFiles.length} file(s) selected
+                      </p>
+                      <p className="text-xs text-slate-500 truncate max-w-sm mx-auto">
+                        {selectedFiles.map((f) => f.name).join(", ")}
+                      </p>
+                    </div>
+                  ) : (
+                    <div>
+                      <p className="text-xs sm:text-sm font-semibold text-slate-700 dark:text-slate-300">
+                        Click to browse or drag and drop files here
+                      </p>
+                      <p className="text-[11px] text-slate-400 mt-1">
+                        Files are automatically deduplicated via SHA-256
+                      </p>
+                    </div>
+                  )}
+// [rag-build-step 20/31]: style(admin-kb): apply slate theme consistent with main admin portal
