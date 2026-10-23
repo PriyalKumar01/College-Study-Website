@@ -87,5 +87,32 @@
     "must_contain_citations": true,
     "forbidden_patterns": [],
     "description": "Tests branch semester curriculum extraction from site curriculum knowledge"
+  },
+  {
+    "id": "syl-02",
+    "category": "syllabus_structure",
+    "query": "HBTU grading system aur SGPA to percentage formula kya hai?",
+    "expected_type": "rag",
+    "must_contain_citations": true,
+    "forbidden_patterns": [],
+    "description": "Tests university academic evaluation policy and formulas"
+  },
+  {
+    "id": "syl-03",
+    "category": "syllabus_structure",
+    "query": "HBTU minimum attendance criteria kya hai exam baithne ke liye?",
+    "expected_type": "rag",
+    "must_contain_citations": true,
+    "forbidden_patterns": [],
+    "description": "Tests university attendance threshold (75%) retrieval"
+  },
+  {
+    "id": "syl-04",
+    "category": "syllabus_structure",
+    "query": "Mechanical Engineering 3rd semester subjects list karo.",
+    "expected_type": "rag",
+    "must_contain_citations": true,
+    "forbidden_patterns": [],
+    "description": "Tests branch specific semester course list"
   }
 ]
