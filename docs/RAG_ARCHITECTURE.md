@@ -58,4 +58,35 @@ flowchart TD
     Storage --> Ingest
     Ingest -->|OCR Fallback| GeminiFlash
     Ingest -->|Batch Embeddings| GeminiEmbed
-# [rag-build-step 2/8]: docs(rag): illustrate document ingestion pipeline in Mermaid diagram
+    Ingest -->|Store Vectors & Chunks| ChunkTable
+    Ingest -->|Record Status| DocTable
+
+    %% Query flow
+    Chat -->|Verify Session Token| Sessions
+    Chat -->|Enforce 10 queries/day limit| Usage
+    Chat -->|Embed Query| GeminiEmbed
+    Chat -->|Hybrid Search| RRF
+    RRF --> ChunkTable
+    RRF -->|Top Ranked Chunks| Chat
+
+    Chat -->|Prompt + Numbered Context| GeminiFlash
+    GeminiFlash -.->|On 429 / 5xx / Timeout| OpenAI
+    Chat -->|Increment Daily Count| Usage
+    Chat -->|Log Telemetry| Logs
+    Chat -->|Structured Answer with Citations [1], [2]| UI
+```
+
+---
+
+## 2. Ingestion Pipeline & Chunking Strategy
+
+### Ingestion Flow (`rag-ingest`)
+1. **Document Upload**: Authorized admins upload academic files (`.pdf`, `.docx`, `.pptx`, `.txt`, `.md`, up to 25MB) to the private `rag-documents` Supabase Storage bucket.
+2. **SHA-256 Deduplication**: Calculates the cryptographic hash of the file payload. If an identical file exists in `rag_documents`, the system reuses or updates the existing document record instead of creating duplicates.
+3. **Multi-Format Extraction**:
+   - **PDF**: Extracted page by page using `unpdf` in Deno. Page boundaries are strictly preserved.
+   - **Gemini Multimodal OCR Fallback**: If a page or scanned document yields $< 50$ characters of text, the page is sent directly as an inline PDF/image part to Gemini Flash with the instruction: *"Transcribe all text exactly, preserve formulas, tables, and headings without commentary."*
+   - **DOCX / PPTX**: Unpacked using zip parsing to extract raw text and slide numbers.
+   - **TXT / Markdown**: Parsed directly with heading preservation.
+4. **Text Cleaning**:
+# [rag-build-step 3/8]: docs(rag): illustrate hybrid retrieval and dual-LLM orchestration flow
