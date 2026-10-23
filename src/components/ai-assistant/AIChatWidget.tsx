@@ -16,4 +16,22 @@ import {
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
-// [rag-build-step 1/35]: refactor(chat-widget): update assistant name to College Study Assistant
+import AIChatMessage, { Message, TypingIndicator } from "./AIChatMessage";
+import { findCachedResponse, RATE_LIMIT_CONFIG, buildSystemPrompt } from "@/data/ai-knowledge-base";
+
+// ── Rate limit helpers (client-side fallback) ────────────────
+const getTodayStr = () => new Date().toISOString().split("T")[0];
+
+const getLocalCount = (): number => {
+  const savedDate = localStorage.getItem(RATE_LIMIT_CONFIG.rateLimitDateKey);
+  const today = getTodayStr();
+  if (savedDate !== today) {
+    localStorage.setItem(RATE_LIMIT_CONFIG.rateLimitDateKey, today);
+    localStorage.setItem(RATE_LIMIT_CONFIG.rateLimitStorageKey, "0");
+    return 0;
+  }
+  return parseInt(localStorage.getItem(RATE_LIMIT_CONFIG.rateLimitStorageKey) || "0", 10);
+};
+
+const incrementLocalCount = () => {
+// [rag-build-step 2/35]: refactor(chat-widget): update welcome message to professional English
