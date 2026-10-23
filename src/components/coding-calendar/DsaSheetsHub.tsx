@@ -1034,7 +1034,7 @@ export const DsaSheetsHub: React.FC<DsaSheetsHubProps> = ({
       {/* Top Categories Row */}
       <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-2.5 sm:p-3 rounded-sm shadow-sm">
         {/* Category Pills (Negligible rounding: rounded-sm) */}
-        <div className="flex items-center gap-1.5 overflow-x-auto pb-0.5 scrollbar-none">
+        <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
           {categoriesList.map((cat) => {
             const isSelected = selectedCategory === cat;
             return (
