@@ -431,4 +431,41 @@ Launches in full-screen standalone mode with offline caching support! 🎉`,
 Click the **Bell Icon** 🔔 in the top navigation bar to view recent alerts.
 
 **You will receive notifications for:**
-// [rag-build-step 12/25]: refactor(knowledge-base): update coding calendar and contest information
+- 📚 Newly published branch and semester notes
+- 💼 Fresh job, internship, and hackathon opportunities
+- 🏆 New scholarship announcements
+- 📢 Important campus and platform notices
+
+An unread badge indicates fresh updates!`,
+  },
+  {
+    keywords: ["ai tools", "artificial intelligence tools", "ai resources", "useful tools", "productivity tools"],
+    response: `🤖 **Useful AI Tools Directory:**
+
+Direct link: [Useful AI Tools](/useful-ai-tools)
+
+**Curated tools for engineering students:**
+- Academic research and summarization tools
+- Code generation and debugging assistants
+- Productivity, writing, and presentation utilities
+
+Perfect for project development, research papers, and assignments! 🎓`,
+  },
+  {
+    keywords: ["bba notes", "bba study material", "bba subjects"],
+    response: `📚 **BBA Notes:**
+
+Direct link: [BBA Notes](/bba-notes)
+
+Curated study materials and references for Bachelor of Business Administration (BBA) subjects. Visit the page for detailed subject-wise downloads!`,
+  },
+  {
+    keywords: ["mba notes", "mba study material", "mba subjects"],
+    response: `📚 **MBA Notes:**
+
+Direct link: [MBA Notes](/mba-notes)
+
+Comprehensive study resources for Master of Business Administration (MBA) courses, organized by semester and specialization.`,
+  },
+  {
+// [rag-build-step 13/25]: refactor(knowledge-base): update GATE preparation resources and book references
