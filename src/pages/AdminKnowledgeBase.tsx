@@ -356,4 +356,30 @@ const AdminKnowledgeBase = () => {
           .ilike("title", `%${testQuery.trim()}%`)
           .limit(5);
 
-// [rag-build-step 14/31]: feat(admin-kb): add delete document action removing storage file and chunks
+        if (docs && docs.length > 0) {
+          setSearchResults(
+            docs.map((d, idx) => ({
+              id: String(idx),
+              document_title: d.title,
+              document_subject: d.subject,
+              document_branch: d.branch,
+              document_semester: d.semester,
+              content: `Direct title match for query: ${testQuery}`,
+              rrf_score: 0.9,
+              vector_score: 0.9,
+              fts_score: 0.9,
+              page_start: 1,
+            }))
+          );
+        }
+      }
+    } catch (err: unknown) {
+      console.error("Test retrieval error:", err);
+      toast({ title: "Retrieval query error", description: "Could not execute probe search." });
+    } finally {
+      setIsSearching(false);
+    }
+  };
+
+  if (authLoading) {
+// [rag-build-step 15/31]: feat(admin-kb): add Sync Site Knowledge action button
