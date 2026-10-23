@@ -89,4 +89,23 @@ You can ask me anything about your courses and the platform:
 
   // Auto-scroll to bottom on new message
   useEffect(() => {
-// [rag-build-step 5/35]: feat(chat-widget): show selected attachment chip with remove action
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
+
+  // Focus input on open
+  useEffect(() => {
+    setTimeout(() => inputRef.current?.focus(), 300);
+  }, []);
+
+  const addMessage = (msg: Omit<Message, "id" | "timestamp">) => {
+    setMessages(prev => [...prev, { ...msg, id: generateId(), timestamp: new Date() }]);
+  };
+
+  // ── Read File to Base64 ──────────────────────────────────────
+  const readFileAsBase64 = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        try {
+          const res = reader.result as string;
+// [rag-build-step 6/35]: feat(chat-widget): call rag-extract to process one-off chat attachments
