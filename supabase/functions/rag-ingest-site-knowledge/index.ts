@@ -42,4 +42,18 @@ async function getGeminiEmbedding(text: string, apiKey: string): Promise<number[
         if (Array.isArray(values) && values.length > 0) {
           return values.slice(0, EMBEDDING_DIMENSION);
         }
-// [rag-build-step 3/15]: feat(site-ingest): extract SITE_NAVIGATION topics into structured chunks
+      } else {
+        lastError = new Error(`Embedding error: ${response.status}`);
+      }
+    } catch (e) {
+      lastError = e;
+    }
+  }
+
+  throw lastError ?? new Error("Gemini embedding failed");
+}
+
+// ── Verified Knowledge Chunks (Sanitized: NO secrets/coupons) ─
+const SITE_KNOWLEDGE_CHUNKS = [
+  {
+// [rag-build-step 4/15]: feat(site-ingest): extract BTECH_NOTES curriculum structure into chunks
