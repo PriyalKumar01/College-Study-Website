@@ -198,4 +198,18 @@ async function getQueryEmbedding(query: string, apiKey: string): Promise<number[
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 10000); // 10s timeout
 
-// [rag-build-step 15/45]: feat(rag-chat): format citation instructions and reference tags in prompt
+      const resp = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/${model}:embedContent?key=${apiKey}`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          signal: controller.signal,
+          body: JSON.stringify({
+            model: `models/${model}`,
+            content: { parts: [{ text: query }] },
+            taskType: "RETRIEVAL_QUERY",
+            outputDimensionality: EMBEDDING_DIMENSION,
+          }),
+        }
+      );
+// [rag-build-step 16/45]: feat(rag-chat): include conversation history for multi-turn dialogue context
