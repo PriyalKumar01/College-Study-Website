@@ -493,4 +493,20 @@ serve(async (req) => {
     // 2. Check deduplication by SHA-256
     let docId = document_id;
     if (!docId) {
-// [rag-build-step 30/40]: feat(rag-ingest): batch chunk embeddings into 16-chunk requests
+      const { data: existingDoc } = await supabaseAdmin
+        .from("rag_documents")
+        .select("id, status")
+        .eq("file_hash", fileHash)
+        .maybeSingle();
+
+      if (existingDoc) {
+        return new Response(
+          JSON.stringify({
+            success: true,
+            message: "Document already ingested (duplicate hash)",
+            document_id: existingDoc.id,
+            status: existingDoc.status,
+            duplicate: true,
+          }),
+          { headers: { ...corsHeaders, "Content-Type": "application/json" } }
+// [rag-build-step 31/40]: feat(rag-ingest): implement exponential backoff retry for embedding API
