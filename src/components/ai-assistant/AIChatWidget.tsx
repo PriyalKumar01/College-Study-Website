@@ -200,4 +200,22 @@ You can ask me anything about your courses and the platform:
     const currentFile = attachedFile;
     const currentExtractedContext = attachedContext;
 
-// [rag-build-step 11/35]: feat(chat-widget): smooth scrolling to latest message during streaming
+    // Show user message
+    const userMsgContent = currentFile
+      ? `📎 ${currentFile.name}\n${currentInput || "Is document ko analyze karo aur key points explain karo."}`
+      : currentInput;
+
+    addMessage({
+      role: "user",
+      content: userMsgContent,
+      type: currentFile ? "pdf_result" : "text",
+    });
+
+    setInput("");
+    setAttachedFile(null);
+    setAttachedContext(null);
+    setFileExtractStatus("");
+    setIsLoading(true);
+
+    const loadingId = generateId();
+// [rag-build-step 12/35]: feat(chat-widget): add stop generating button during active LLM stream
