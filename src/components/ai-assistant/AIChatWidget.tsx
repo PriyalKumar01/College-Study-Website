@@ -328,4 +328,23 @@ You can ask me anything about your courses and the platform:
 
       // Update remaining queries
       if (typeof data.remaining_queries === "number") {
-// [rag-build-step 18/35]: style(chat-widget): redesign send button with modern icon and hover effect
+        setQueriesLeft(data.remaining_queries);
+        const used = Math.max(0, RATE_LIMIT_CONFIG.maxQueriesPerDay - data.remaining_queries);
+        localStorage.setItem(RATE_LIMIT_CONFIG.rateLimitStorageKey, String(used));
+      } else {
+        incrementLocalCount();
+        setQueriesLeft(Math.max(0, RATE_LIMIT_CONFIG.maxQueriesPerDay - getLocalCount()));
+      }
+
+      // Add response message with citations
+      setMessages(prev => [
+        ...prev.filter(m => m.id !== loadingId),
+        {
+          id: generateId(),
+          role: "assistant",
+          content: data.answer || "No response received.",
+          timestamp: new Date(),
+          sources: data.sources || [],
+          source: data.source || "rag",
+          model_used: data.model_used,
+// [rag-build-step 19/35]: style(chat-widget): enhance input textarea auto-resize on multi-line text
