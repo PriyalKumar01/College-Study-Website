@@ -163,4 +163,22 @@ You can ask me anything about your courses and the platform:
 
       if (!error && data?.text) {
         setAttachedContext({ fileName: file.name, text: data.text });
-// [rag-build-step 9/35]: feat(chat-widget): pass verified access token with RAG chat requests
+        setFileExtractStatus(
+          `Extracted ${data.text.length} chars${data.ocrUsed ? " (Gemini OCR)" : ""}`
+        );
+      } else {
+        setFileExtractStatus("Attached (will analyze on submit)");
+      }
+    } catch {
+      setFileExtractStatus("Attached (ready)");
+    } finally {
+      setIsExtractingFile(false);
+      e.target.value = "";
+    }
+  };
+
+  // ── Send Message ─────────────────────────────────────────────
+  const handleSend = useCallback(async (queryText?: string) => {
+    const text = (queryText ?? input).trim();
+    if (!text && !attachedFile) return;
+// [rag-build-step 10/35]: feat(chat-widget): handle streaming tokens from rag-chat endpoint
