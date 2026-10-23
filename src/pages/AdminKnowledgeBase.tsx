@@ -433,4 +433,30 @@ const AdminKnowledgeBase = () => {
             </p>
           </div>
 
-// [rag-build-step 17/31]: feat(admin-kb): display site knowledge sync status and chunk summary
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              onClick={handleIngestSiteKnowledge}
+              disabled={isIngestingSite}
+              className="text-xs font-semibold gap-1.5"
+            >
+              {isIngestingSite ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <Sparkles className="w-3.5 h-3.5 text-amber-500" />}
+              Sync Site Knowledge
+            </Button>
+            <Button
+              variant="outline"
+              onClick={fetchDocuments}
+              disabled={isLoadingDocs}
+              className="text-xs font-semibold gap-1.5"
+            >
+              <RefreshCw className={`w-3.5 h-3.5 ${isLoadingDocs ? "animate-spin" : ""}`} />
+              Refresh
+            </Button>
+          </div>
+        </div>
+
+        {/* Upload & Ingestion Section */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Upload Card */}
+          <Card className="lg:col-span-2 shadow-sm border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
+// [rag-build-step 18/31]: feat(admin-kb): implement search and filter by subject, branch, and status
