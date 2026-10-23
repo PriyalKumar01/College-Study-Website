@@ -178,4 +178,40 @@ export const PREMIUM_INFO = {
 // ── Contribution & Admin Info ────────────────────────────────
 export const CONTRIBUTION_INFO = {
   howToContribute: "To contribute notes, you need to become an admin first. Contact Founder Priyal Kumar sir for admin access.",
-// [rag-build-step 5/25]: feat(knowledge-base): add threshold score to prevent irrelevant cache hits
+  adminContact: "WhatsApp: +91 89572 21543 | Reach out via the WhatsApp button on the website",
+  founderName: "Priyal Kumar",
+  adminProcess: "Once you become an admin, you can submit notes through the Admin Portal. Notes go through an approval workflow before being published.",
+  communityNotes: "Community members can also view student-submitted notes at /notes/community",
+};
+
+// ── Useful External Links & Portals ──────────────────────────
+export const USEFUL_EXTERNAL_LINKS = {
+  hbtuOfficial: { label: "HBTU Official Website", url: "https://hbtu.ac.in/", description: "Circulars, tenders, notices, syllabus & university updates" },
+  hbtuErp: { label: "HBTU ERP Portal", url: "https://erp.hbtu.ac.in/NewIndex.html", description: "Student login, semester registration, fee receipts & results" },
+  hbtuAttendance: { label: "HBTU Attendance Portal", url: "https://erp.hbtu.ac.in/StudentAttendance.aspx", description: "Live subject-wise & daily attendance tracking" },
+  upScholarship: { label: "UP Scholarship Portal", url: "https://scholarship.up.gov.in/index.aspx", description: "State post-matric scholarship & fee reimbursement" },
+  buddy4Study: { label: "Buddy4Study Scholarships", url: "https://www.buddy4study.com/scholarships", description: "Pan-India private, CSR & merit-cum-means scholarship opportunities" },
+  digiShakti: { label: "Digi Shakti Portal (Tablet/Smartphone)", url: "https://digishakti.up.gov.in/", description: "UP Govt Free Tablet/Smartphone Scheme — eKYC check & status" },
+};
+
+// ── Pre-Cached Common Responses (no API needed) ──────────────
+// Fuzzy-match these before calling any AI API to save API quota
+export const CACHED_RESPONSES: Array<{ keywords: string[]; response: string }> = [
+  {
+    keywords: ["notes contribute", "contribute notes", "notes submit", "notes add karna", "notes upload", "notes dena", "notes bhejne"],
+    response: `📝 **Notes Contribution Process:**
+
+To contribute notes to College Study Hub, **Admin Access** is required.
+
+**Steps:**
+1. 📞 **Contact Founder Priyal Kumar** via WhatsApp: *+91 89572 21543* (or click the floating WhatsApp button on the platform).
+2. Provide your name, branch, and semester.
+3. You will receive **Admin Portal access** to upload notes.
+4. Submitted notes are reviewed and published live on the platform.
+
+🏆 **Perks:** Contributors earn *StudyCoins* and are featured on our **Hall of Fame**! Check out [Notes Contributors](/notes-contributors).`,
+  },
+  {
+    keywords: ["admin kaise bane", "admin access", "admin banana", "admin banna", "admin chahiye"],
+    response: `🔐 **How to Become an Admin:**
+// [rag-build-step 6/25]: refactor(knowledge-base): update cached responses to professional English tone
