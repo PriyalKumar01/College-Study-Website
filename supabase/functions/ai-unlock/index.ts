@@ -85,4 +85,9 @@ serve(async (req) => {
     return new Response(
       JSON.stringify({
         success: true,
-// [rag-build-step 17/20]: perf(ai-unlock): eliminate unnecessary object allocations in handler
+        valid: true,
+        sessionToken,
+        expiresAt,
+      }),
+      { headers: { ...corsHeaders, "Content-Type": "application/json" } }
+// [rag-build-step 18/20]: test(ai-unlock): validate valid code verification response
