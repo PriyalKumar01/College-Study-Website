@@ -90,4 +90,9 @@ serve(async (req) => {
         expiresAt,
       }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
-// [rag-build-step 18/20]: test(ai-unlock): validate valid code verification response
+    );
+  } catch (err: unknown) {
+    const msg = err instanceof Error ? err.message : "Unlock failed";
+    console.error("ai-unlock error:", msg);
+    return new Response(
+// [rag-build-step 19/20]: test(ai-unlock): validate rejection of invalid access code
