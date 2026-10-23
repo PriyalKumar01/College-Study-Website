@@ -80,4 +80,15 @@ CREATE INDEX IF NOT EXISTS idx_ai_sessions_expires_at
   ON public.ai_sessions (expires_at);
 
 -- 6. ai_query_logs: Query evaluation & telemetry
--- [rag-build-step 8/30]: feat(db): add 768-dimension vector column to rag_chunks
+CREATE TABLE IF NOT EXISTS public.ai_query_logs (
+  id                  UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  created_at          TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  query               TEXT,
+  used_cache          BOOLEAN NOT NULL DEFAULT FALSE,
+  retrieved_chunk_ids UUID[],
+  top_score           FLOAT,
+  model_used          TEXT,
+  fallback_used       BOOLEAN NOT NULL DEFAULT FALSE,
+  latency_ms          INTEGER,
+  feedback            SMALLINT
+-- [rag-build-step 9/30]: feat(db): add page number and chunk sequence indexes to rag_chunks
