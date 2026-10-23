@@ -512,4 +512,22 @@ Please:
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
             className="bg-slate-100/90 dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 px-3.5 py-2.5"
-// [rag-build-step 28/35]: refactor(chat-widget): streamline state management with custom hook
+          >
+            <div className="flex items-center gap-2">
+              <FileText className="w-4 h-4 text-slate-700 dark:text-slate-300 flex-shrink-0" />
+              <div className="flex-1 min-w-0">
+                <p className="text-xs text-slate-800 dark:text-slate-200 truncate font-medium">{attachedFile.name}</p>
+                <div className="flex items-center gap-1.5 text-[10px] text-slate-500">
+                  <span>{(attachedFile.size / 1024).toFixed(0)} KB</span>
+                  {isExtractingFile ? (
+                    <span className="flex items-center gap-1 text-slate-700 dark:text-slate-300 font-medium">
+                      <Loader2 className="w-2.5 h-2.5 animate-spin" />
+                      {fileExtractStatus}
+                    </span>
+                  ) : attachedContext ? (
+                    <span className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400 font-medium">
+                      <CheckCircle2 className="w-2.5 h-2.5" />
+                      {fileExtractStatus || "Extracted & ready"}
+                    </span>
+                  ) : (
+// [rag-build-step 29/35]: style(chat-widget): add subtle loading skeleton during document retrieval
