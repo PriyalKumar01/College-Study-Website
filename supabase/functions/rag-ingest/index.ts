@@ -377,4 +377,21 @@ export function chunkDocument(
         chunkIndex: chunkIndex++,
         pageStart: page.pageNumber,
         pageEnd: page.pageNumber,
-// [rag-build-step 23/40]: feat(rag-ingest): collapse redundant whitespace and empty lines
+        content,
+        embedText,
+        tokenCount: Math.ceil(content.length / 4),
+        metadata: {
+          heading: currentHeading,
+          ocr: page.isOcr ?? false,
+          subject: docMeta.subject,
+          branch: docMeta.branch,
+          semester: docMeta.semester,
+          doc_type: docMeta.doc_type,
+        },
+      });
+    }
+  }
+
+  return chunks;
+}
+// [rag-build-step 24/40]: feat(rag-ingest): implement sliding window chunker with 1000 char target
