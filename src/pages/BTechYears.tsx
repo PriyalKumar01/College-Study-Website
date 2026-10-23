@@ -65,11 +65,9 @@ const BTechYears = () => {
 
           {/* Badges row */}
           <div className="flex items-center gap-3 flex-wrap mb-4">
-            <div className="w-10 h-10 rounded-xl bg-background/10 border border-background/20 flex items-center justify-center text-primary shadow-inner">
-              <GraduationCap className="h-5 w-5 text-current" />
-            </div>
-            <span className="bg-blue-600 text-white font-extrabold text-[11px] uppercase tracking-wider px-3.5 py-1 rounded-full shadow-sm flex items-center gap-1.5">
-              + OFFICIAL HBTU CURRICULUM
+            <span className="bg-emerald-600 text-white font-extrabold text-[11px] uppercase tracking-wider px-3.5 py-1.5 rounded-full shadow-sm border border-emerald-400/30 flex items-center gap-1.5">
+              <BookOpen className="w-3.5 h-3.5 text-emerald-100" />
+              OFFICIAL HBTU CURRICULUM
             </span>
             <span className="bg-emerald-600 text-white font-extrabold text-[11px] uppercase tracking-wider px-3.5 py-1 rounded-full shadow-sm flex items-center gap-1.5">
               <CheckCircle2 className="w-3.5 h-3.5" /> ALL 4 YEARS ACTIVE
