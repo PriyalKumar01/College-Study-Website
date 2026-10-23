@@ -459,4 +459,21 @@ serve(async (req) => {
       branch,
       semester,
       program = "btech",
-// [rag-build-step 28/40]: feat(rag-ingest): format embedding input with subject, title, and heading
+      doc_type = "notes",
+      document_id, // optional: re-process existing doc
+    } = body;
+
+    if (!storage_path || !title) {
+      return new Response(
+        JSON.stringify({ error: "storage_path and title are required" }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    const geminiKey = Deno.env.get("GEMINI_API_KEY");
+    if (!geminiKey) {
+      return new Response(
+        JSON.stringify({ error: "GEMINI_API_KEY not configured in Supabase secrets" }),
+        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+// [rag-build-step 29/40]: feat(rag-ingest): implement Gemini gemini-embedding-001 client
