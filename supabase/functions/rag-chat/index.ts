@@ -305,4 +305,18 @@ async function callOpenAI(
       "Content-Type": "application/json",
     },
     signal: controller.signal,
-// [rag-build-step 23/45]: feat(rag-chat): trigger GPT fallback on empty Gemini responses
+    body: JSON.stringify({
+      model: "gpt-4o-mini",
+      messages: [
+        { role: "system", content: systemInstruction },
+        ...messages,
+      ],
+      max_tokens: 1000,
+      temperature: 0.3,
+    }),
+  });
+  clearTimeout(timeoutId);
+
+  if (!response.ok) {
+    throw new Error(`OpenAI status: ${response.status}`);
+// [rag-build-step 24/45]: feat(rag-chat): parse raw model output and extract inline citation keys
