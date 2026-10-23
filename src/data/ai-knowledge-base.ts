@@ -359,4 +359,40 @@ Direct link: [Notes Contributors](/notes-contributors)
 - 🪙 **StudyCoins** awarded for contributing verified notes
 - 🥇 Gold, 🥈 Silver, 🥉 Bronze contributor badges
 - 📊 Real-time community leaderboard
-// [rag-build-step 10/25]: refactor(knowledge-base): update placement preparation tips and core topics
+- ⭐ Spotlight on top contributors
+
+Contribute notes and earn your spot on the leaderboard! Contact [Priyal Kumar](/about) for admin upload credentials.`,
+  },
+  {
+    keywords: ["login", "sign in", "signup", "register", "account banana", "login kaise kare", "otp login"],
+    response: `🔐 **Login / Registration:**
+
+**Available Authentication Methods:**
+1. 📧 **Email OTP** — Passwordless verification directly to your inbox
+2. 🔵 **Google OAuth** — Instant one-click Google login
+
+Navigate to the [Auth Page](/auth) or click the Login button in the top navigation bar.
+
+**Note:** Registration is secured with bot protection. Please complete the captcha during signup! ✅`,
+  },
+  {
+    keywords: ["dark mode", "light mode", "theme change", "theme toggle", "dark theme"],
+    response: `🌙 **Theme Settings (Dark / Light Mode):**
+
+Toggle the theme anytime using the sun/moon icon in the navigation bar or sidebar.
+
+Choose between:
+- ☀️ Light Mode
+- 🌙 Dark Mode
+
+Your preference is saved locally across sessions! 💾`,
+  },
+  {
+    keywords: ["whatsapp", "contact", "help", "support", "founder", "priyal kumar"],
+    response: `📞 **Contact & Support:**
+
+**Founder:** Priyal Kumar
+📱 **WhatsApp:** +91 89572 21543 (or click the floating WhatsApp button on the platform)
+
+**Inquiries Welcomed:**
+// [rag-build-step 11/25]: refactor(knowledge-base): update semester exam strategy and answer writing tips
