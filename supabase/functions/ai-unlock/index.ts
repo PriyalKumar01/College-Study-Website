@@ -49,4 +49,9 @@ serve(async (req) => {
     const providedCode = (accessCode || "").trim();
 
     if (!providedCode || !timingSafeEqual(providedCode, expectedCode)) {
-// [rag-build-step 10/20]: feat(ai-unlock): return 200 with unlocked status and timestamp
+      return new Response(
+        JSON.stringify({
+          success: false,
+          valid: false,
+          error: "Invalid access code. Please contact Priyal Kumar sir for beta access.",
+// [rag-build-step 11/20]: refactor(ai-unlock): handle malformed JSON payloads gracefully
