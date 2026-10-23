@@ -28,4 +28,34 @@ const AIAccessGate = ({ onAccessGranted }: AIAccessGateProps) => {
       let sessionToken = "";
       let granted = false;
 
-// [rag-build-step 1/7]: refactor(access-gate): rewrite access gate to use server-side verification
+      // Validate securely against server-side edge function
+      try {
+        const { data: unlockData, error: unlockError } = await supabase.functions.invoke("ai-unlock", {
+          body: {
+            accessCode: cleanCode,
+            userEmail: user?.email ?? "anonymous",
+          },
+        });
+
+        if (!unlockError && unlockData?.valid) {
+          granted = true;
+          sessionToken = unlockData.sessionToken || `csh_sess_${Date.now()}`;
+        } else {
+          // Fallback to ai-assistant verify_access
+          const { data: assistData, error: assistError } = await supabase.functions.invoke("ai-assistant", {
+            body: {
+              type: "verify_access",
+              accessCode: cleanCode,
+              userEmail: user?.email ?? "anonymous",
+            },
+          });
+          if (!assistError && assistData?.valid) {
+            granted = true;
+            sessionToken = assistData.sessionToken || `csh_sess_${Date.now()}`;
+          }
+        }
+      } catch (invokeErr) {
+        console.warn("Server validation network error:", invokeErr);
+      }
+
+// [rag-build-step 2/7]: refactor(access-gate): remove client-side hardcoded access code check
