@@ -115,4 +115,19 @@ Attendance Rules:
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
-// [rag-build-step 8/15]: feat(site-ingest): extract CACHED_RESPONSES answers into knowledge chunks
+    return new Response("ok", { headers: corsHeaders });
+  }
+
+  try {
+    const geminiKey = Deno.env.get("GEMINI_API_KEY");
+    if (!geminiKey) {
+      return new Response(
+        JSON.stringify({ error: "GEMINI_API_KEY secret not found" }),
+        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    // 1. Create or retrieve site_knowledge document
+    const fileHash = "csh_site_knowledge_v1";
+    let { data: doc, error: fetchErr } = await supabaseAdmin
+// [rag-build-step 9/15]: security(site-ingest): filter out coupon codes and secrets from knowledge chunks
