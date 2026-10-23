@@ -273,4 +273,22 @@ You can ask me anything about your courses and the platform:
         .slice(-6)
         .map(m => ({ role: m.role, content: m.content }));
 
-// [rag-build-step 15/35]: feat(chat-widget): display retry button on network or server error
+      const queryToSend = currentInput || (currentFile ? `Analyze ${currentFile.name} and provide summary and top questions.` : "Hello");
+
+      const storedCode = sessionStorage.getItem("csh_ai_code") || undefined;
+
+      const { data, error } = await supabase.functions.invoke("rag-chat", {
+        body: {
+          query: queryToSend,
+          sessionToken,
+          accessCode: storedCode,
+          attachedFileContext: resolvedFileContext,
+          conversationHistory: historyToSend,
+        },
+      });
+
+      if (error || data?.error) {
+        // Fallback to legacy ai-assistant endpoint if rag-chat fails or encounters remote session issue
+        console.warn("rag-chat notice, attempting ai-assistant fallback:", error || data?.error);
+        let fallbackData: { response?: string } | null = null;
+// [rag-build-step 16/35]: feat(chat-widget): add quick suggestion chips for popular academic topics
