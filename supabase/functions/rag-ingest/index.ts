@@ -592,4 +592,20 @@ serve(async (req) => {
       while (retries < 3) {
         try {
           embedding = await getGeminiEmbedding(chunk.embedText, geminiKey);
-// [rag-build-step 36/40]: feat(rag-ingest): catch extraction errors and set document status to failed
+          break;
+        } catch (embErr) {
+          retries++;
+          if (retries >= 3) throw embErr;
+          await new Promise((r) => setTimeout(r, 1000 * Math.pow(2, retries)));
+        }
+      }
+
+      chunkInserts.push({
+        document_id: docId,
+        chunk_index: chunk.chunkIndex,
+        page_start: chunk.pageStart,
+        page_end: chunk.pageEnd,
+        content: chunk.content,
+        token_count: chunk.tokenCount,
+        embedding,
+// [rag-build-step 37/40]: feat(rag-ingest): log granular error details to document error column
