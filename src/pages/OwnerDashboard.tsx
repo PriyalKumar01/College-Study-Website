@@ -716,8 +716,8 @@ const GateEnrolledSection = ({ items, onRevoke, revokingId }: any) => {
     <Card className="gradient-card border border-border/80 shadow-md overflow-hidden">
       <CardHeader className="border-b pb-3.5 pt-4 bg-muted/20">
         <div className="flex items-center justify-between flex-wrap gap-2">
-          <CardTitle className="flex items-center gap-2.5 text-base font-bold text-foreground">
-            <div className="w-8 h-8 rounded-lg bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 flex items-center justify-center">
+          <CardTitle className="flex items-center gap-2 text-sm sm:text-base font-bold text-foreground flex-wrap">
+            <div className="w-8 h-8 rounded-lg bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 flex items-center justify-center shrink-0">
               <BookOpen className="h-4 w-4" />
             </div>
             <span>GATE Study Enrolled Students</span>
@@ -748,16 +748,16 @@ const GateEnrolledSection = ({ items, onRevoke, revokingId }: any) => {
               return (
                 <div
                   key={item.user_id}
-                  className="flex items-center justify-between px-4 py-2 hover:bg-muted/30 transition-colors text-xs gap-3 w-full"
+                  className="flex flex-col sm:flex-row sm:items-center justify-between p-3 sm:px-4 sm:py-2.5 hover:bg-muted/30 transition-colors text-xs gap-2 sm:gap-3 w-full"
                 >
                   {/* Left: Index + Name & Email */}
-                  <div className="flex items-center gap-3 min-w-0 flex-1">
-                    <span className="w-8 text-muted-foreground font-mono text-[11px] shrink-0 text-right">
+                  <div className="flex items-start sm:items-center gap-2.5 min-w-0 flex-1">
+                    <span className="w-6 sm:w-8 text-muted-foreground font-mono text-[11px] shrink-0 text-right pt-0.5 sm:pt-0">
                       #{globalIndex}
                     </span>
                     <div className="min-w-0 flex-1">
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <span className="font-semibold text-foreground truncate max-w-[200px] sm:max-w-[280px]">
+                      <div className="flex items-center gap-1.5 flex-wrap">
+                        <span className="font-semibold text-foreground truncate max-w-[170px] sm:max-w-[280px]">
                           {fullName}
                         </span>
                         {item.branch && (
@@ -767,16 +767,16 @@ const GateEnrolledSection = ({ items, onRevoke, revokingId }: any) => {
                         )}
                         {isBoth && (
                           <span className="text-[10px] font-bold text-amber-700 bg-amber-100 dark:bg-amber-950 dark:text-amber-300 px-1.5 py-0.2 rounded border border-amber-300 dark:border-amber-800 shrink-0">
-                            ⭐ Mutual (Both)
+                            ⭐ Mutual
                           </span>
                         )}
                       </div>
-                      <p className="text-muted-foreground text-[11px] truncate">{item.email}</p>
+                      <p className="text-muted-foreground text-[11px] truncate break-all">{item.email}</p>
                     </div>
                   </div>
 
                   {/* Right: Enrolled info & Revoke Button */}
-                  <div className="flex items-center gap-3 shrink-0">
+                  <div className="flex items-center justify-between sm:justify-end gap-2 shrink-0 pl-8 sm:pl-0">
                     <span className="text-[11px] text-muted-foreground hidden md:inline">
                       {pur?.purchased_at
                         ? new Date(pur.purchased_at).toLocaleDateString('en-IN', {
@@ -812,8 +812,8 @@ const GateEnrolledSection = ({ items, onRevoke, revokingId }: any) => {
         )}
 
         {totalPages > 1 && (
-          <div className="flex items-center justify-between px-4 py-3 border-t bg-muted/20">
-            <span className="text-xs text-muted-foreground">
+          <div className="flex flex-col sm:flex-row items-center justify-between px-4 py-3 border-t bg-muted/20 gap-2">
+            <span className="text-xs text-muted-foreground text-center sm:text-left">
               Showing {(page - 1) * GATE_ITEMS_PER_PAGE + 1}–{Math.min(page * GATE_ITEMS_PER_PAGE, items.length)} of {items.length} students (Page {page} of {totalPages})
             </span>
             <div className="flex gap-2">
@@ -2624,11 +2624,11 @@ const OwnerDashboard = () => {
 
         {/* ── Control Panel Full Workspace Pop-up Modal ── */}
         <Dialog open={activeModalSection !== null} onOpenChange={(open) => { if (!open) setActiveModalSection(null); }}>
-          <DialogContent className="max-w-6xl w-[95vw] max-h-[90vh] overflow-y-auto bg-card text-foreground border border-border p-6 sm:p-8 rounded-2xl shadow-2xl space-y-6">
+          <DialogContent className="max-w-6xl w-[96vw] sm:w-[90vw] max-h-[92vh] overflow-y-auto overflow-x-hidden bg-card text-foreground border border-border p-3 sm:p-6 md:p-8 rounded-2xl shadow-2xl space-y-4 sm:space-y-6">
             <DialogTitle className="sr-only">Owner Control Panel</DialogTitle>
             <DialogDescription className="sr-only">Owner dashboard control workspace pop-up modal</DialogDescription>
             {activeModalSection && (
-              <Tabs value={activeModalSection} className="space-y-6">
+              <Tabs value={activeModalSection} className="space-y-6 max-w-full overflow-x-hidden">
           <TabsContent value="pending" className="space-y-6">
             {pendingMaterials.length === 0 ? (
               <Card className={`border text-center py-16 ${
