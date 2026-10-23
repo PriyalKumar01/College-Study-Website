@@ -215,4 +215,15 @@ BEGIN
     d.program AS document_program
   FROM combined comb
   JOIN public.rag_chunks c ON comb.chunk_id = c.id
--- [rag-build-step 21/30]: feat(db): enable Row Level Security on rag_queries table
+  JOIN public.rag_documents d ON c.document_id = d.id
+  ORDER BY comb.fused_score DESC
+  LIMIT match_count;
+END;
+$$;
+
+-- 8. Row Level Security (RLS) Configuration
+ALTER TABLE public.rag_documents ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.rag_chunks ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.ai_usage ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.ai_sessions ENABLE ROW LEVEL SECURITY;
+-- [rag-build-step 22/30]: feat(db): add RLS policy allowing public read of ready documents
