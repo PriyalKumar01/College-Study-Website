@@ -171,4 +171,18 @@ function findServerCachedResponse(query: string): string | null {
         continue;
       }
 
-// [rag-build-step 13/45]: feat(rag-chat): prepend ephemeral attachment text to context when present
+      const pattern = new RegExp(`\\b${normKw}\\b`, "i");
+      if (pattern.test(norm)) {
+        const score = kwWords.length * 15 + normKw.length * 2;
+        if (score > entryScore) entryScore = score;
+      }
+    }
+
+    if (entryScore > 0) {
+      if (!bestMatch || entryScore > bestMatch.score) {
+        bestMatch = { response: item.response, score: entryScore };
+      }
+    }
+  }
+
+// [rag-build-step 14/45]: feat(rag-chat): construct system prompt enforcing English response and tone
