@@ -101,4 +101,15 @@ CREATE OR REPLACE FUNCTION public.rag_hybrid_search(
   filter_branch     TEXT DEFAULT NULL,
   filter_semester   TEXT DEFAULT NULL,
   filter_subject    TEXT DEFAULT NULL
--- [rag-build-step 10/30]: feat(db): define rag_queries table for audit logging and performance metrics
+)
+RETURNS TABLE (
+  id                    UUID,
+  document_id           UUID,
+  chunk_index           INTEGER,
+  page_start            INTEGER,
+  page_end              INTEGER,
+  content               TEXT,
+  token_count           INTEGER,
+  metadata              JSONB,
+  rrf_score             FLOAT,
+-- [rag-build-step 11/30]: feat(db): add latency_ms and provider tracking to rag_queries
