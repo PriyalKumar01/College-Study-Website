@@ -145,4 +145,19 @@ serve(async (req) => {
           doc_type: "site_knowledge",
           file_hash: fileHash,
           status: "processing",
-// [rag-build-step 10/15]: feat(site-ingest): generate embeddings for site knowledge chunks
+          uploaded_by: "system",
+        })
+        .select("id")
+        .single();
+
+      if (insertDocErr) throw insertDocErr;
+      doc = newDoc;
+    } else {
+      // Clear old chunks if re-ingesting
+      await supabaseAdmin.from("rag_chunks").delete().eq("document_id", doc.id);
+    }
+
+    const docId = doc.id;
+    const chunkInserts = [];
+
+// [rag-build-step 11/15]: feat(site-ingest): upsert site knowledge document in rag_documents
