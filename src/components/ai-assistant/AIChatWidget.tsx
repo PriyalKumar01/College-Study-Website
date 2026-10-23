@@ -402,4 +402,22 @@ Please:
   const widgetHeightClass = isExpanded
     ? "max-h-[min(680px,calc(100dvh-120px))]"
     : "max-h-[min(580px,calc(100dvh-120px))]";
-// [rag-build-step 22/35]: perf(chat-widget): debounce input events and memoize suggestion list
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20, scale: 0.95 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      exit={{ opacity: 0, y: 20, scale: 0.95 }}
+      transition={{ type: "spring", stiffness: 300, damping: 25 }}
+      className={`fixed z-[162] flex flex-col rounded-2xl overflow-hidden
+        shadow-2xl border border-slate-200 dark:border-slate-800
+        bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100
+        ${widgetWidthClass}
+        left-3 right-3 bottom-20
+        max-w-[calc(100vw-24px)]
+        sm:left-auto sm:right-6 sm:bottom-24
+        ${widgetHeightClass}
+      `}
+    >
+      {/* ── Header ───────────────────────────────────────────── */}
+// [rag-build-step 23/35]: security(chat-widget): remove hardcoded access code fallbacks from component
