@@ -559,4 +559,18 @@ STRICT CONFIDENTIALITY — CRITICAL RULE:
     const remainingQueries = Math.max(0, MAX_QUERIES_PER_DAY - updatedCount);
     const latencyMs = Date.now() - startTime;
 
-// [rag-build-step 42/45]: chore(rag-chat): update default temperature and top_p hyperparameters
+    // 9. Telemetry Log
+    supabaseAdmin.from("ai_query_logs").insert({
+      query: query.slice(0, 500),
+      used_cache: false,
+      retrieved_chunk_ids: retrievedChunks.map((c) => c.id),
+      top_score: topScore,
+      model_used: modelUsed,
+      fallback_used: fallbackUsed,
+      latency_ms: latencyMs,
+    }).then(() => {});
+
+    return new Response(
+      JSON.stringify({
+        answer,
+// [rag-build-step 43/45]: chore(rag-chat): update max_tokens allocation for detailed study guides
