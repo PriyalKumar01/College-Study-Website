@@ -74,4 +74,23 @@ serve(async (req) => {
             `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent?key=${geminiKey}`,
             {
               method: "POST",
-// [rag-build-step 4/10]: feat(rag-extract): extract text from DOCX and TXT chat attachments
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                contents: [
+                  {
+                    role: "user",
+                    parts: [
+                      { inlineData: { mimeType: "application/pdf", data: fileBase64 } },
+                      { text: "Transcribe all text from this document accurately, preserving headings, questions, and formulas. No commentary." },
+                    ],
+                  },
+                ],
+                generationConfig: { maxOutputTokens: 3000, temperature: 0.1 },
+              }),
+            }
+          );
+          if (resp.ok) {
+            const data = await resp.json();
+            extractedText = data.candidates?.[0]?.content?.parts?.[0]?.text || "";
+          }
+// [rag-build-step 5/10]: feat(rag-extract): truncate attachment text to safe LLM context budget
