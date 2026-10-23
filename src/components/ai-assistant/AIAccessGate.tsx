@@ -58,4 +58,34 @@ const AIAccessGate = ({ onAccessGranted }: AIAccessGateProps) => {
         console.warn("Server validation network error:", invokeErr);
       }
 
-// [rag-build-step 2/7]: refactor(access-gate): remove client-side hardcoded access code check
+      if (!granted) {
+        setIsShaking(true);
+        setError("Invalid access code. Please contact Founder Priyal Kumar for beta access.");
+        setTimeout(() => setIsShaking(false), 500);
+      } else {
+        localStorage.setItem(RATE_LIMIT_CONFIG.localStorageKey, "true");
+        localStorage.setItem("csh_ai_session_token", sessionToken);
+        sessionStorage.setItem("csh_ai_code", cleanCode);
+        onAccessGranted();
+      }
+    } catch {
+      setIsShaking(true);
+      setError("Verification failed. Please check your internet connection.");
+      setTimeout(() => setIsShaking(false), 500);
+    } finally {
+      setIsChecking(false);
+    }
+  };
+
+  return (
+    <div className="flex flex-col items-center justify-center px-4 py-4 text-center bg-white dark:bg-slate-900">
+      {/* Lock Icon */}
+      <motion.div
+        initial={{ scale: 0, rotate: -20 }}
+        animate={{ scale: 1, rotate: 0 }}
+        transition={{ type: "spring", stiffness: 200, damping: 15 }}
+        className="w-10 h-10 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 flex items-center justify-center mb-2 shadow-sm text-slate-800 dark:text-slate-100"
+      >
+        <Lock className="w-5 h-5" />
+      </motion.div>
+// [rag-build-step 3/7]: feat(access-gate): call ai-unlock edge function on code submit
