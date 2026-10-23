@@ -7,4 +7,8 @@ verify_jwt = false
 verify_jwt = false
 
 [functions.ai-unlock]
-# [rag-build-step 2/5]: chore(config): register rag-ingest edge function in config.toml
+verify_jwt = false
+
+[functions.rag-chat]
+verify_jwt = false
+# [rag-build-step 3/5]: chore(config): register rag-chat edge function in config.toml
