@@ -148,4 +148,34 @@ const AIAccessGate = ({ onAccessGranted }: AIAccessGateProps) => {
             type="text"
             value={code}
             onChange={(e) => {
-// [rag-build-step 5/7]: feat(access-gate): add shake animation on invalid access code
+              setCode(e.target.value.toUpperCase());
+              setError("");
+            }}
+            placeholder="ENTER ACCESS CODE"
+            maxLength={12}
+            className="w-full px-3 py-2 text-center font-mono text-xs font-bold tracking-widest
+              rounded-lg border transition-all duration-200 outline-none
+              bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white
+              placeholder:text-slate-400 dark:placeholder:text-slate-600
+              border-slate-300 dark:border-slate-700
+              focus:bg-white dark:focus:bg-slate-950
+              focus:border-slate-900 dark:focus:border-slate-100
+              focus:ring-2 focus:ring-slate-400/20"
+          />
+        </motion.div>
+
+        {/* Error message */}
+        {error && (
+          <motion.p
+            initial={{ opacity: 0, y: -4 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="flex items-center gap-1 text-[11px] text-rose-500 mb-2 justify-center font-medium"
+          >
+            <AlertCircle className="w-3 h-3 flex-shrink-0" />
+            {error}
+          </motion.p>
+        )}
+
+        <button
+          type="submit"
+// [rag-build-step 6/7]: feat(access-gate): display helpful English error message on failed unlock
