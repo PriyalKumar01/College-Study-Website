@@ -277,4 +277,15 @@ VALUES (
     'application/vnd.openxmlformats-officedocument.presentationml.presentation',
     'text/plain',
     'text/markdown'
--- [rag-build-step 27/30]: feat(db): add helper function to check admin roles for ingestion
+  ]
+)
+ON CONFLICT (id) DO UPDATE SET
+  public = false,
+  file_size_limit = 26214400;
+
+-- Admins and owner can manage files in rag-documents bucket
+DROP POLICY IF EXISTS "Admins can manage rag-documents bucket" ON storage.objects;
+CREATE POLICY "Admins can manage rag-documents bucket"
+  ON storage.objects FOR ALL
+  USING (
+-- [rag-build-step 28/30]: refactor(db): optimize IVFFlat index lists parameter for dataset scaling
