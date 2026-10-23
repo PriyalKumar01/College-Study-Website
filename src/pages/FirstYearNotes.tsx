@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useCommunityNotes } from '@/hooks/useCommunityNotes';
 import { useAuth } from '@/contexts/AuthContext';
@@ -38,6 +38,7 @@ import {
   MessageCircle,
   Share2,
   CheckCircle2,
+  Check,
   Target,
   PenTool,
   Compass,
@@ -113,7 +114,64 @@ const FirstYearNotes = () => {
   const [mainTab, setMainTab] = useState<'notes' | 'assignments' | 'pyqs'>('notes');
   const [showGuidanceModal, setShowGuidanceModal] = useState(false);
   const [selectedSubjectFilter, setSelectedSubjectFilter] = useState<string>('all');
-  const [expandedPyqYears, setExpandedPyqYears] = useState<string[]>(['2026-27', '2025-26']);
+
+  // My Subjects multi-select filter (persisted in browser localStorage)
+  const [selectedSubjects, setSelectedSubjects] = useState<string[]>(() => {
+    try {
+      const saved = localStorage.getItem('csh_my_selected_first_year_subjects');
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
+  const [isSubjectDropdownOpen, setIsSubjectDropdownOpen] = useState(false);
+  const subjectDropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (subjectDropdownRef.current && !subjectDropdownRef.current.contains(e.target as Node)) {
+        setIsSubjectDropdownOpen(false);
+      }
+    };
+    if (isSubjectDropdownOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [isSubjectDropdownOpen]);
+
+  const toggleSubject = (subId: string) => {
+    setSelectedSubjects(prev => {
+      const updated = prev.includes(subId)
+        ? prev.filter(id => id !== subId)
+        : [...prev, subId];
+      try {
+        localStorage.setItem('csh_my_selected_first_year_subjects', JSON.stringify(updated));
+      } catch (err) {
+        console.error(err);
+      }
+      return updated;
+    });
+  };
+
+  const clearAllSelectedSubjects = () => {
+    setSelectedSubjects([]);
+    try {
+      localStorage.removeItem('csh_my_selected_first_year_subjects');
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const selectAllMySubjects = () => {
+    const allIds = regularSubjects.map(s => s.id);
+    setSelectedSubjects(allIds);
+    try {
+      localStorage.setItem('csh_my_selected_first_year_subjects', JSON.stringify(allIds));
+    } catch (err) {
+      console.error(err);
+    }
+  };
+  const [expandedPyqYears, setExpandedPyqYears] = useState<string[]>([]);
 
   const togglePyqYear = (yearKey: string) => {
     setExpandedPyqYears(prev =>
@@ -808,7 +866,7 @@ const FirstYearNotes = () => {
 
   const filteredRegularSubjects = useMemo(() => {
     return regularSubjects.filter(sub => {
-      if (selectedSubjectFilter !== 'all' && sub.id !== selectedSubjectFilter) {
+      if (selectedSubjects.length > 0 && !selectedSubjects.includes(sub.id)) {
         return false;
       }
       const q = searchQuery.trim().toLowerCase();
@@ -820,7 +878,7 @@ const FirstYearNotes = () => {
         sub.notes.some(n => n.title.toLowerCase().includes(q))
       );
     });
-  }, [regularSubjects, selectedSubjectFilter, searchQuery]);
+  }, [regularSubjects, selectedSubjects, searchQuery]);
 
   const filteredAssignmentNotes = useMemo(() => {
     const q = searchQuery.trim().toLowerCase();
@@ -1182,22 +1240,50 @@ const FirstYearNotes = () => {
             </p>
           </div>
 
-          <div className="flex items-center gap-2.5 flex-wrap">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:max-w-md md:max-w-lg lg:max-w-xl">
+            {/* Row 1, Col 1 */}
             <button
               onClick={() => setShowGuidanceModal(true)}
-              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg shadow-indigo-950/40 border border-indigo-400/30 transition-all hover:scale-105 active:scale-95 cursor-pointer"
+              className="inline-flex items-center justify-center gap-2 px-3 py-2 rounded-xl text-xs font-bold uppercase tracking-wider bg-emerald-600 hover:bg-emerald-500 text-white shadow-md shadow-emerald-950/30 border border-emerald-400/30 transition-all hover:scale-[1.01] active:scale-95 cursor-pointer text-center w-full"
             >
-              <Sparkles className="h-4 w-4 text-amber-300" />
-              <span>Important Instructions & Guidance</span>
+              <Sparkles className="h-4 w-4 text-amber-300 shrink-0" />
+              <span className="truncate">Instructions & Guidance</span>
             </button>
 
+            {/* Row 1, Col 2 */}
+            <a
+              href="https://hbtu.ac.in/naac/CS/B.Tech.%201st%20Year%20Course%20C-06222026063347.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center gap-1.5 text-xs font-bold tracking-wider uppercase bg-slate-800 hover:bg-slate-700 text-emerald-300 border border-emerald-500/30 px-3 py-2 rounded-xl transition-colors shadow-sm text-center w-full"
+              title="PPS & Python Syllabus for All Branches"
+            >
+              <ExternalLink className="h-3.5 w-3.5 text-emerald-400 shrink-0" />
+              <span className="truncate">PPS & Python Syllabus</span>
+            </a>
+
+            {/* Row 2, Col 1 */}
+            <a
+              href="https://hbtu.ac.in/syllabus/First%20year%202026-27_%20MED_syllabus_structure.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center gap-1.5 text-xs font-bold tracking-wider uppercase bg-slate-800 hover:bg-slate-700 text-emerald-300 border border-emerald-500/30 px-3 py-2 rounded-xl transition-colors shadow-sm text-center w-full"
+              title="First Year ME Course Structure, Syllabus & Evaluation Scheme"
+            >
+              <ExternalLink className="h-3.5 w-3.5 text-emerald-400 shrink-0" />
+              <span className="truncate">ME Syllabus (2026-27)</span>
+            </a>
+
+            {/* Row 2, Col 2 */}
             <a
               href="https://drive.google.com/file/d/14W4ah2ZTGgUeYKefVthmq7MZBJCLkiuJ/view?usp=drivesdk"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 text-xs font-bold tracking-wider uppercase bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 px-3.5 py-2.5 rounded-xl transition-colors shadow-sm"
+              className="inline-flex items-center justify-center gap-1.5 text-xs font-bold tracking-wider uppercase bg-slate-800/80 hover:bg-slate-700 text-slate-300 border border-slate-700 px-3 py-2 rounded-xl transition-colors shadow-sm text-center w-full"
+              title="General 1st Year Syllabus (As per 2022-23)"
             >
-              <ExternalLink className="h-3.5 w-3.5 text-indigo-400" /> 1st Year Syllabus
+              <ExternalLink className="h-3.5 w-3.5 text-slate-400 shrink-0" />
+              <span className="truncate">Syllabus (2022-23)</span>
             </a>
           </div>
         </div>
@@ -1206,7 +1292,7 @@ const FirstYearNotes = () => {
       <div className="max-w-6xl mx-auto px-4 sm:px-8 py-6 flex-1 w-full space-y-6">
 
         {/* ══════════ NAVIGATION TABS ══════════ */}
-        <div className="flex items-center border-b border-border gap-2 pb-px overflow-x-auto">
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 pb-2 border-b border-border">
           {[
             { id: 'notes', label: 'Notes', icon: BookOpen, count: regularSubjects.length },
             { id: 'assignments', label: 'Assignments', icon: FileText, count: assignmentNotes.length },
@@ -1218,17 +1304,19 @@ const FirstYearNotes = () => {
               <button
                 key={tab.id}
                 onClick={() => setMainTab(tab.id as 'notes' | 'assignments' | 'pyqs')}
-                className={`flex items-center gap-2 px-5 py-3 text-xs sm:text-sm font-bold tracking-wide uppercase transition-all border-b-2 -mb-px whitespace-nowrap cursor-pointer ${
+                className={`flex items-center justify-center gap-2 px-3 sm:px-5 py-2.5 sm:py-3 text-xs sm:text-sm font-bold tracking-wide uppercase transition-all rounded-xl border cursor-pointer ${
+                  tab.id === 'pyqs' ? 'col-span-2 sm:col-span-1' : ''
+                } ${
                   isActive
-                    ? 'border-indigo-600 text-indigo-600 dark:border-indigo-400 dark:text-indigo-400 bg-indigo-50/50 dark:bg-indigo-950/30 rounded-t-xl'
-                    : 'border-transparent text-muted-foreground hover:text-foreground hover:bg-muted/50 rounded-t-xl'
+                    ? 'border-emerald-600 bg-emerald-50 text-emerald-700 dark:border-emerald-500/60 dark:bg-emerald-950/40 dark:text-emerald-300 shadow-sm'
+                    : 'border-border/70 text-muted-foreground hover:text-foreground hover:bg-muted/50'
                 }`}
               >
                 <Icon className="h-4 w-4" />
                 <span>{tab.label}</span>
                 <span className={`text-[10px] px-2 py-0.5 rounded-full font-extrabold ${
                   isActive
-                    ? 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/60 dark:text-indigo-300'
+                    ? 'bg-emerald-200/70 text-emerald-900 dark:bg-emerald-900/60 dark:text-emerald-200'
                     : 'bg-muted text-muted-foreground'
                 }`}>
                   {tab.count}
@@ -1241,23 +1329,93 @@ const FirstYearNotes = () => {
         {/* ══════════ 1. NOTES TAB CONTENT ══════════ */}
         {mainTab === 'notes' && (
           <div className="space-y-6">
-            {/* Subject filter dropdown & search input bar */}
+            {/* My Subjects multi-select filter dropdown & search input bar */}
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-card border border-border p-3.5 rounded-2xl shadow-xs">
-              <div className="flex items-center gap-2 flex-1 max-w-md">
-                <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground whitespace-nowrap">
-                  Subject:
-                </label>
-                <Select value={selectedSubjectFilter} onValueChange={setSelectedSubjectFilter}>
-                  <SelectTrigger className="w-full text-xs h-9 bg-background">
-                    <SelectValue placeholder="All Subjects" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Subjects ({regularSubjects.length})</SelectItem>
-                    {regularSubjects.map(sub => (
-                      <SelectItem key={sub.id} value={sub.id}>{sub.name}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+              <div className="relative flex-1 max-w-md" ref={subjectDropdownRef}>
+                <div className="flex items-center gap-2">
+                  <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground whitespace-nowrap">
+                    My Subjects:
+                  </label>
+                  <button
+                    type="button"
+                    onClick={() => setIsSubjectDropdownOpen(!isSubjectDropdownOpen)}
+                    className="w-full flex items-center justify-between text-xs h-9 px-3 rounded-xl border border-border bg-background hover:bg-muted/40 transition-colors font-medium text-foreground cursor-pointer"
+                  >
+                    <span className="truncate">
+                      {selectedSubjects.length === 0
+                        ? `All Subjects (${regularSubjects.length})`
+                        : `${selectedSubjects.length} of ${regularSubjects.length} Selected`}
+                    </span>
+                    <div className="flex items-center gap-1.5 shrink-0 ml-2">
+                      {selectedSubjects.length > 0 && (
+                        <span className="bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 text-[10px] font-extrabold px-1.5 py-0.2 rounded-full border border-emerald-500/30">
+                          Filtered
+                        </span>
+                      )}
+                      <ChevronDown className={`h-3.5 w-3.5 text-muted-foreground transition-transform ${isSubjectDropdownOpen ? 'rotate-180' : ''}`} />
+                    </div>
+                  </button>
+                </div>
+
+                {/* Multi-Select Subject Dropdown Menu with Green Ticks */}
+                {isSubjectDropdownOpen && (
+                  <div className="absolute left-0 top-11 z-50 w-full sm:w-80 bg-popover border border-border rounded-xl shadow-xl p-2.5 space-y-2 text-popover-foreground animate-in fade-in zoom-in-95 duration-150">
+                    <div className="flex items-center justify-between border-b border-border pb-2 px-1">
+                      <span className="text-xs font-bold text-foreground">Filter My Subjects</span>
+                      <div className="flex items-center gap-2">
+                        {selectedSubjects.length < regularSubjects.length && (
+                          <button
+                            type="button"
+                            onClick={selectAllMySubjects}
+                            className="text-[10px] font-bold text-emerald-600 hover:underline cursor-pointer"
+                          >
+                            Select All
+                          </button>
+                        )}
+                        {selectedSubjects.length > 0 && (
+                          <button
+                            type="button"
+                            onClick={clearAllSelectedSubjects}
+                            className="text-[10px] font-bold text-rose-500 hover:underline cursor-pointer"
+                          >
+                            Reset
+                          </button>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="max-h-60 overflow-y-auto space-y-1 pr-1 custom-scrollbar">
+                      {regularSubjects.map((sub) => {
+                        const isChecked = selectedSubjects.includes(sub.id);
+                        return (
+                          <div
+                            key={sub.id}
+                            onClick={() => toggleSubject(sub.id)}
+                            className={`flex items-center justify-between gap-2 p-2 rounded-lg text-xs cursor-pointer select-none transition-colors ${
+                              isChecked
+                                ? 'bg-emerald-50/60 dark:bg-emerald-950/40 text-foreground font-semibold'
+                                : 'hover:bg-muted text-muted-foreground hover:text-foreground'
+                            }`}
+                          >
+                            <div className="flex items-center gap-2 min-w-0">
+                              <span className="text-sm shrink-0">{sub.icon}</span>
+                              <span className="truncate">{sub.name}</span>
+                            </div>
+                            <div
+                              className={`w-4 h-4 rounded border flex items-center justify-center shrink-0 transition-colors ${
+                                isChecked
+                                  ? 'bg-emerald-600 border-emerald-600 text-white'
+                                  : 'border-muted-foreground/40 bg-background'
+                              }`}
+                            >
+                              {isChecked && <Check className="w-3 h-3 stroke-[3]" />}
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
               </div>
 
               <div className="relative flex-1 max-w-md">
@@ -1267,7 +1425,7 @@ const FirstYearNotes = () => {
                   value={searchQuery}
                   onChange={e => setSearchQuery(e.target.value)}
                   placeholder="Search subjects, codes, or notes..."
-                  className="w-full pl-9 pr-4 py-2 rounded-xl border border-border bg-background text-foreground text-xs placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-indigo-500/40"
+                  className="w-full pl-9 pr-4 py-2 rounded-xl border border-border bg-background text-foreground text-xs placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-emerald-500/40"
                 />
               </div>
 
@@ -1334,16 +1492,20 @@ const FirstYearNotes = () => {
                         {hasAnyPlaylist && (
                           <div className="mt-2 pt-3 border-t border-border">
                             <button
-                              className="flex items-center justify-between w-full text-xs font-semibold text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+                              className={`flex items-center justify-between w-full text-xs font-bold px-3 py-2 rounded-xl border transition-all duration-200 cursor-pointer shadow-2xs ${
+                                expandedSubjects.includes(subject.id)
+                                  ? 'bg-emerald-500/15 text-emerald-800 dark:text-emerald-200 border-emerald-500/40 shadow-xs'
+                                  : 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border-emerald-500/25 hover:bg-emerald-500/20 hover:border-emerald-500/40'
+                              }`}
                               onClick={() => toggleSubjectExpansion(subject.id)}
                             >
                               <span className="flex items-center gap-1.5">
-                                <Play className="h-3 w-3 text-indigo-500" /> Curated Playlists
+                                <Play className="h-3 w-3 fill-emerald-600/30 text-emerald-600 dark:text-emerald-400" /> Curated Playlists
                               </span>
                               {expandedSubjects.includes(subject.id) ? (
-                                <ChevronDown className="h-3.5 w-3.5" />
+                                <ChevronDown className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" />
                               ) : (
-                                <ChevronRight className="h-3.5 w-3.5" />
+                                <ChevronRight className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" />
                               )}
                             </button>
 
@@ -1351,33 +1513,33 @@ const FirstYearNotes = () => {
                               <div className="mt-2 space-y-1">
                                 {hasDetailed && (
                                   <button
-                                    className="w-full text-left text-xs py-1.5 px-2 rounded-lg hover:bg-muted transition-colors text-muted-foreground hover:text-foreground flex items-center justify-between cursor-pointer"
+                                    className="w-full text-left text-xs py-2 px-2.5 rounded-lg border border-border/70 bg-card hover:bg-emerald-500/10 hover:text-emerald-700 dark:hover:text-emerald-300 hover:border-emerald-500/30 transition-all text-foreground flex items-center justify-between cursor-pointer font-medium group/pl shadow-2xs"
                                     onClick={() => handlePlaylistClick(subject.id, 'detailed')}
                                   >
-                                    <span>📚 Detailed Topics</span>
-                                    <span className="text-[10px] font-mono font-bold bg-muted px-1.5 py-0.5 rounded">
+                                    <span className="flex items-center gap-1.5">📚 Detailed Topics</span>
+                                    <span className="text-[10px] font-mono font-bold bg-muted group-hover/pl:bg-emerald-500/20 group-hover/pl:text-emerald-700 dark:group-hover/pl:text-emerald-300 px-1.5 py-0.5 rounded">
                                       {playlists.detailed!.length}
                                     </span>
                                   </button>
                                 )}
                                 {hasOneshot && (
                                   <button
-                                    className="w-full text-left text-xs py-1.5 px-2 rounded-lg hover:bg-muted transition-colors text-muted-foreground hover:text-foreground flex items-center justify-between cursor-pointer"
+                                    className="w-full text-left text-xs py-2 px-2.5 rounded-lg border border-border/70 bg-card hover:bg-emerald-500/10 hover:text-emerald-700 dark:hover:text-emerald-300 hover:border-emerald-500/30 transition-all text-foreground flex items-center justify-between cursor-pointer font-medium group/pl shadow-2xs"
                                     onClick={() => handlePlaylistClick(subject.id, 'oneshot')}
                                   >
-                                    <span>⚡ One Shot</span>
-                                    <span className="text-[10px] font-mono font-bold bg-muted px-1.5 py-0.5 rounded">
+                                    <span className="flex items-center gap-1.5">⚡ One Shot</span>
+                                    <span className="text-[10px] font-mono font-bold bg-muted group-hover/pl:bg-emerald-500/20 group-hover/pl:text-emerald-700 dark:group-hover/pl:text-emerald-300 px-1.5 py-0.5 rounded">
                                       {playlists.oneshot!.length}
                                     </span>
                                   </button>
                                 )}
                                 {hasWorkshop && (
                                   <button
-                                    className="w-full text-left text-xs py-1.5 px-2 rounded-lg hover:bg-muted transition-colors text-muted-foreground hover:text-foreground flex items-center justify-between cursor-pointer"
+                                    className="w-full text-left text-xs py-2 px-2.5 rounded-lg border border-border/70 bg-card hover:bg-emerald-500/10 hover:text-emerald-700 dark:hover:text-emerald-300 hover:border-emerald-500/30 transition-all text-foreground flex items-center justify-between cursor-pointer font-medium group/pl shadow-2xs"
                                     onClick={() => handlePlaylistClick(subject.id, 'workshop')}
                                   >
-                                    <span>🔨 Workshop Practicals</span>
-                                    <span className="text-[10px] font-mono font-bold bg-muted px-1.5 py-0.5 rounded">
+                                    <span className="flex items-center gap-1.5">🔨 Workshop Practicals</span>
+                                    <span className="text-[10px] font-mono font-bold bg-muted group-hover/pl:bg-emerald-500/20 group-hover/pl:text-emerald-700 dark:group-hover/pl:text-emerald-300 px-1.5 py-0.5 rounded">
                                       {playlists.workshop!.length}
                                     </span>
                                   </button>
@@ -1388,7 +1550,7 @@ const FirstYearNotes = () => {
                         )}
 
                         {/* View Notes Action Button */}
-                        <div className="mt-4">
+                        <div className="mt-3">
                           <button
                             onClick={() => setSelectedSubject(subject.id)}
                             className="w-full text-xs font-bold tracking-wider uppercase py-2.5 px-4 rounded-xl border border-border hover:bg-foreground hover:text-background transition-all duration-200 flex items-center justify-center gap-1.5 cursor-pointer"
