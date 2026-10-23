@@ -47,4 +47,21 @@ async function verifyAdminCaller(authHeader?: string | null): Promise<{ isAdmin:
       .select("role")
       .eq("user_email", email)
       .neq("role", "removed")
-// [rag-build-step 3/40]: feat(rag-ingest): parse document metadata from ingestion request payload
+      .maybeSingle();
+
+    const role = roleData?.role;
+    const isAdmin = role === "owner" || role === "super_admin" || role === "admin";
+    return { isAdmin, email };
+  } catch (err) {
+    console.error("Admin verification error:", err);
+    return { isAdmin: false };
+  }
+}
+
+// ── Text Cleaning ────────────────────────────────────────────
+export function cleanDocumentText(text: string): string {
+  return text
+    .replace(/\r\n/g, "\n")
+    // Fix hyphenated words broken across lines: e.g. "algo-\nrithm" -> "algorithm"
+    .replace(/(\b[A-Za-z]{2,})-\n([A-Za-z]{2,}\b)/g, "$1$2")
+// [rag-build-step 4/40]: feat(rag-ingest): validate required metadata fields for incoming document
