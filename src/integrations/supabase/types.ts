@@ -307,4 +307,81 @@ export type Database = {
         Relationships: []
       }
       resume_analyses: {
-// [rag-build-step 4/10]: feat(types): declare Database type definitions for rag_chunks
+        Row: {
+          analysis_result: Json | null
+          created_at: string
+          file_name: string | null
+          file_path: string | null
+          id: string
+          overall_score: number | null
+          user_id: string | null
+        }
+        Insert: {
+          analysis_result?: Json | null
+          created_at?: string
+          file_name?: string | null
+          file_path?: string | null
+          id?: string
+          overall_score?: number | null
+          user_id?: string | null
+        }
+        Update: {
+          analysis_result?: Json | null
+          created_at?: string
+          file_name?: string | null
+          file_path?: string | null
+          id?: string
+          overall_score?: number | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      scholarships: {
+        Row: {
+          amount: string
+          amount_num: number
+          apply_url: string
+          approval_status: string
+          created_at: string | null
+          deadline: string
+          description: string
+          id: string
+          income: string
+          level: string
+          marks: string
+          name: string
+          org: string
+          status: string
+          streams: string[]
+          submitted_by: string | null
+          submitted_by_email: string | null
+          tags: string[]
+          type: string
+          who: string[]
+        }
+        Insert: {
+          amount: string
+          amount_num?: number
+          apply_url: string
+          approval_status?: string
+          created_at?: string | null
+          deadline: string
+          description: string
+          id?: string
+          income?: string
+          level?: string
+          marks?: string
+          name: string
+          org: string
+          status?: string
+          streams?: string[]
+          submitted_by?: string | null
+          submitted_by_email?: string | null
+          tags?: string[]
+          type?: string
+          who?: string[]
+        }
+        Update: {
+          amount?: string
+          amount_num?: number
+// [rag-build-step 5/10]: feat(types): add embedding vector representation in TypeScript types
