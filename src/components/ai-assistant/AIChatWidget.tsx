@@ -365,4 +365,22 @@ You can ask me anything about your courses and the platform:
 
 ${errMsg}
 
-// [rag-build-step 20/35]: style(chat-widget): adjust modal drawer dimensions for mobile screens
+Please:
+1. Check your internet connection
+2. Try again in a few moments
+3. If the issue persists, contact Founder Priyal Kumar on WhatsApp (+91 89572 21543) 🙏`,
+          timestamp: new Date(),
+        },
+      ]);
+    } finally {
+      setIsLoading(false);
+      setIsExtractingFile(false);
+    }
+  }, [input, attachedFile, attachedContext, isLoading, messages, user]);
+
+  // Handle keyboard submit
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleSend();
+// [rag-build-step 21/35]: style(chat-widget): polish dark mode background and borders
