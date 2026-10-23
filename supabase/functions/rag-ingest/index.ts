@@ -64,4 +64,20 @@ export function cleanDocumentText(text: string): string {
     .replace(/\r\n/g, "\n")
     // Fix hyphenated words broken across lines: e.g. "algo-\nrithm" -> "algorithm"
     .replace(/(\b[A-Za-z]{2,})-\n([A-Za-z]{2,}\b)/g, "$1$2")
-// [rag-build-step 4/40]: feat(rag-ingest): validate required metadata fields for incoming document
+    // Remove repeated page numbers / headers / footers
+    .replace(/^\s*(page\s*\d+(\s*of\s*\d+)?|\d+\s*\|\s*page)\s*$/gim, "")
+    // Collapse excess horizontal whitespace
+    .replace(/[ \t]+/g, " ")
+    // Collapse more than two consecutive newlines
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
+}
+
+// ── Page-by-page Extraction ──────────────────────────────────
+interface PageContent {
+  pageNumber: number;
+  text: string;
+  isOcr?: boolean;
+}
+
+// [rag-build-step 5/40]: feat(rag-ingest): download uploaded document buffer from Supabase storage
