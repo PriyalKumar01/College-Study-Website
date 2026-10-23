@@ -262,4 +262,57 @@ const ATSScorer = ({ userEmail }: ATSScorerProps) => {
                 {resumeFile ? (
                   <div className="flex flex-col items-center gap-2 w-full max-w-xs">
                     <div className="p-3 rounded-2xl bg-blue-500/10 text-blue-500">
-// [rag-build-step 5/9]: feat(ats-scorer): score resume on keywords, format, and section completeness
+                      <FileText className="w-8 h-8" />
+                    </div>
+                    <p className="text-xs sm:text-sm font-bold text-slate-800 dark:text-slate-100 truncate w-full">{resumeFile.name}</p>
+                    <span className="text-[10px] font-semibold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
+                      ✓ PDF Ready for Direct AI Word Scan ({(resumeFile.size / 1024).toFixed(0)} KB)
+                    </span>
+                    <button
+                      onClick={(e) => { e.stopPropagation(); setResumeFile(null); }}
+                      className="text-xs text-rose-500 hover:underline mt-1 font-semibold"
+                    >
+                      Change File
+                    </button>
+                  </div>
+                ) : (
+                  <div className="flex flex-col items-center gap-2">
+                    <div className="p-3 rounded-2xl bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-300 shadow-sm">
+                      <Upload className="w-6 h-6" />
+                    </div>
+                    <p className="text-xs sm:text-sm font-bold text-slate-700 dark:text-slate-300">Click to upload your Resume PDF</p>
+                    <p className="text-[11px] text-muted-foreground">Scans words, skills & formatting automatically (max 8MB)</p>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <textarea
+                value={resumeText}
+                onChange={(e) => setResumeText(e.target.value)}
+                placeholder="Paste your plain text resume content here..."
+                rows={8}
+                className="w-full text-xs rounded-2xl border border-slate-200 dark:border-slate-800 
+                  bg-slate-50/50 dark:bg-slate-950/60 text-slate-800 dark:text-slate-200
+                  placeholder:text-slate-400 dark:placeholder:text-slate-600
+                  p-3.5 outline-none focus:border-blue-500 dark:focus:border-blue-500
+                  focus:ring-2 focus:ring-blue-500/20 transition-all resize-none min-h-[190px]"
+              />
+            )}
+          </div>
+
+          {/* JD Input */}
+          <div className="space-y-2">
+            <label className="text-xs sm:text-sm font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2">
+              <Briefcase className="w-4 h-4 text-purple-500" />
+              2. Job Description (Target Role)
+            </label>
+            <textarea
+              value={jobDescription}
+              onChange={(e) => setJobDescription(e.target.value)}
+              placeholder="Paste target job description or requirements (e.g. SDE-1, Full Stack Developer, Data Analyst requirements, tech stack, required skills)..."
+              rows={8}
+              className="w-full text-xs rounded-2xl border border-slate-200 dark:border-slate-800 
+                bg-slate-50/50 dark:bg-slate-950/60 text-slate-800 dark:text-slate-200
+                placeholder:text-slate-400 dark:placeholder:text-slate-600
+                p-3.5 outline-none focus:border-purple-500 dark:focus:border-purple-500
+// [rag-build-step 6/9]: feat(ats-scorer): display categorized feedback with action items
