@@ -100,4 +100,30 @@ const AdminKnowledgeBase = () => {
         (data || []).map(async (doc: RagDoc) => {
           const { count } = await supabase
             .from("rag_chunks")
-// [rag-build-step 4/31]: feat(admin-kb): implement drag-and-drop document upload dropzone
+            .select("*", { count: "exact", head: true })
+            .eq("document_id", doc.id);
+          return { ...doc, chunk_count: count ?? 0 };
+        })
+      );
+
+      setDocuments(docsWithChunks);
+    } catch (err: unknown) {
+      console.error("Error loading RAG documents:", err);
+      toast({
+        title: "Error loading documents",
+        description: err instanceof Error ? err.message : "Failed to load knowledge base.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoadingDocs(false);
+    }
+  };
+
+  useEffect(() => {
+    if (isAdmin || isOwner) {
+      fetchDocuments();
+    }
+  }, [isAdmin, isOwner]);
+
+  const handleFileSelect = (files: FileList | null) => {
+// [rag-build-step 5/31]: feat(admin-kb): validate file extensions and size limit (max 25MB)
