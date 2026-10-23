@@ -345,4 +345,18 @@ serve(async (req) => {
       attachedFileContext,
       filterBranch,
       filterSemester,
-// [rag-build-step 26/45]: feat(rag-chat): build structured citations array for client-side rendering
+      filterSubject,
+    } = body;
+
+    const query = (body.query || body.message || "").trim();
+
+    if (!query) {
+      return new Response(
+        JSON.stringify({ error: "query is required" }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    // 1. Verify Access via sessionToken or valid beta accessCode
+    const expectedCode = Deno.env.get("AI_ACCESS_CODE") || "";
+// [rag-build-step 27/45]: feat(rag-chat): log query execution metrics to rag_queries table
