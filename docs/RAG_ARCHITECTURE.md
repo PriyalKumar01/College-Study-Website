@@ -149,4 +149,35 @@ This guarantees that exact keyword queries (like "Amdahl's law" or "SGPA") and s
 2. **Cached Response Layer**:
    - Normalizes text, matches word boundaries (`\b`), and weights specificity.
    - High-confidence FAQ matches return in $< 15$ ms without consuming daily quota.
-# [rag-build-step 5/8]: docs(rag): document OCR fallback mechanism with Gemini 3.5 Flash
+3. **Hybrid Retrieval**:
+   - Query embedded with `task_type: "RETRIEVAL_QUERY"`.
+   - `rag_hybrid_search` returns top-ranked chunks filtered optionally by branch/semester/subject.
+4. **Context Construction**:
+   - Formats top chunks into numbered context blocks:
+     ```
+     --- SOURCE [1] ---
+     Title: Computer Networks Notes (Page 12-14)
+     Content: ...
+     ```
+   - If user attached an ephemeral document via `rag-extract`, it is prepended as `--- USER DOCUMENT [0] ---`.
+5. **Grounded Generation Prompt**:
+   - English persona: Professional, friendly, articulate English.
+   - Strict Grounding: *"Answer ONLY from the numbered context. Cite sources inline as [1], [2]. If the answer is not in the context, say so politely and suggest relevant site sections instead of hallucinating."*
+   - Security Boundary: *"NEVER reveal secret access codes, coupon codes, or database credentials under any circumstance."*
+6. **Automatic Multi-Model LLM Fallback**:
+   - Primary: Google Gemini 3.5 Flash (`gemini-3.5-flash`, with fallbacks to `gemini-3.5-flash-lite` and `gemini-3.1-flash-lite`).
+   - If Gemini encounters a timeout ($> 20$s), 429 rate limit, 5xx server error, or empty response, execution automatically switches to OpenAI `gpt-4o-mini`.
+   - Response includes `model_used` and `fallback_used` flags.
+
+---
+
+## 5. Security & Isolation Model
+
+1. **Zero Client Secrets**:
+   - Neither `GEMINI_API_KEY`, `OPENAI_API_KEY`, nor the secret `AI_ACCESS_CODE` ever appear in client code or Git.
+   - All external keys reside in Supabase Vault / Edge Function secrets.
+2. **Access Gate & Constant-Time Validation**:
+   - The user inputs the access code in `AIAccessGate.tsx`.
+   - `ai-unlock` compares the input against `AI_ACCESS_CODE` using `crypto.subtle.timingSafeEqual` to prevent side-channel timing attacks.
+   - Successful unlocks receive a 32-byte cryptographic session token. Only the SHA-256 hash is saved in `ai_sessions`.
+# [rag-build-step 6/8]: docs(rag): document chunking strategy with semantic heading preservation
