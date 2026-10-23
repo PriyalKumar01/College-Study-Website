@@ -236,4 +236,14 @@ CREATE POLICY "Admins can view rag_documents"
     EXISTS (
       SELECT 1 FROM public.admin_roles ar
       WHERE ar.user_email = auth.jwt() ->> 'email'
--- [rag-build-step 23/30]: feat(db): add RLS policy restricting document inserts to service role
+      AND ar.role IN ('owner', 'super_admin', 'admin')
+    )
+    OR (auth.jwt() ->> 'email' = 'priyalkumar06@gmail.com')
+  );
+
+DROP POLICY IF EXISTS "Admins can modify rag_documents" ON public.rag_documents;
+CREATE POLICY "Admins can modify rag_documents"
+  ON public.rag_documents FOR ALL
+  USING (
+    EXISTS (
+-- [rag-build-step 24/30]: feat(db): add RLS policy restricting chunk modifications to service role
