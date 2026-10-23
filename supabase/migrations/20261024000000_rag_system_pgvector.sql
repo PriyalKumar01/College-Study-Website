@@ -143,4 +143,14 @@ BEGIN
   RETURN QUERY
   WITH
   -- 1. Vector Search Candidates
--- [rag-build-step 14/30]: feat(db): add btree index on document status and file_hash
+  vector_candidates AS (
+    SELECT
+      c.id AS chunk_id,
+      (1.0 - (c.embedding <=> query_embedding))::FLOAT AS vec_similarity,
+      ROW_NUMBER() OVER (ORDER BY c.embedding <=> query_embedding) AS rank
+    FROM public.rag_chunks c
+    JOIN public.rag_documents d ON c.document_id = d.id
+    WHERE d.status = 'ready'
+      AND c.embedding IS NOT NULL
+      AND (filter_branch IS NULL OR d.branch ILIKE filter_branch OR d.branch = 'all' OR d.branch = 'common')
+-- [rag-build-step 15/30]: feat(db): implement match_rag_chunks RPC function for vector similarity
