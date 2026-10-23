@@ -284,4 +284,30 @@ const AIChatMessage = ({ message, onFeedbackChange }: AIChatMessageProps) => {
 
         {/* Citations / Source Chips (for assistant messages with sources) */}
         {!isUser && message.sources && message.sources.length > 0 && (
-// [rag-build-step 11/15]: refactor(chat-message): refine citation pill click handler and focus state
+          <div className="w-full space-y-1.5 mt-1 px-1">
+            <p className="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider flex items-center gap-1">
+              <BookOpen className="w-3 h-3 text-slate-700 dark:text-slate-300" /> Sources & Citations:
+            </p>
+            <div className="flex flex-wrap gap-1.5">
+              {message.sources.map((src) => {
+                const isExpanded = expandedSource === src.index;
+                return (
+                  <button
+                    key={src.index}
+                    onClick={() => setExpandedSource(isExpanded ? null : src.index)}
+                    className={`inline-flex items-center gap-1 px-2 py-1 rounded-lg border text-[11px] font-medium transition-all ${
+                      isExpanded
+                        ? "bg-slate-200 dark:bg-slate-800 border-slate-400 dark:border-slate-600 text-slate-900 dark:text-white"
+                        : "bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:border-slate-400"
+                    }`}
+                  >
+                    <span className="font-mono text-[9px] font-bold px-1 py-0.2 rounded bg-slate-200 dark:bg-slate-800 text-slate-800 dark:text-slate-200">
+                      [{src.index}]
+                    </span>
+                    <span className="truncate max-w-[130px] font-semibold">{src.title}</span>
+                    {src.page_start && <span className="text-[10px] text-slate-400 font-mono">p.{src.page_start}</span>}
+                    {isExpanded ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3 text-slate-400" />}
+                  </button>
+                );
+              })}
+// [rag-build-step 12/15]: style(chat-message): adjust padding and border radius for chat bubbles
