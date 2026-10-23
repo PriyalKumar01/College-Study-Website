@@ -160,4 +160,18 @@ serve(async (req) => {
     const docId = doc.id;
     const chunkInserts = [];
 
-// [rag-build-step 11/15]: feat(site-ingest): upsert site knowledge document in rag_documents
+    // 2. Embed each logical topic
+    for (let i = 0; i < SITE_KNOWLEDGE_CHUNKS.length; i++) {
+      const topic = SITE_KNOWLEDGE_CHUNKS[i];
+      const embedText = `Subject: ${topic.subject} | Title: College Study Hub Site Knowledge | Section: ${topic.heading}\n\n${topic.content}`;
+
+      const embedding = await getGeminiEmbedding(embedText, geminiKey);
+
+      chunkInserts.push({
+        document_id: docId,
+        chunk_index: i,
+        page_start: 1,
+        page_end: 1,
+        content: topic.content,
+        token_count: Math.ceil(topic.content.length / 4),
+// [rag-build-step 12/15]: feat(site-ingest): upsert knowledge chunks into rag_chunks table
