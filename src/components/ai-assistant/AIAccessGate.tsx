@@ -88,4 +88,34 @@ const AIAccessGate = ({ onAccessGranted }: AIAccessGateProps) => {
       >
         <Lock className="w-5 h-5" />
       </motion.div>
-// [rag-build-step 3/7]: feat(access-gate): call ai-unlock edge function on code submit
+
+      {/* Title */}
+      <motion.h3
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.15 }}
+        className="text-sm font-bold text-slate-900 dark:text-white mb-0.5"
+      >
+        College Study Assistant
+      </motion.h3>
+
+      <motion.p
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2 }}
+        className="text-[11px] text-slate-500 dark:text-slate-400 mb-3"
+      >
+        Enter your beta code to unlock assistant.
+      </motion.p>
+
+      {/* Features preview */}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.25 }}
+        className="w-full bg-slate-50 dark:bg-slate-950/70 border border-slate-200 dark:border-slate-800 rounded-lg p-2.5 mb-3 text-left"
+      >
+        <p className="text-[11px] font-bold text-slate-800 dark:text-slate-200 mb-1.5 flex items-center gap-1.5">
+          <Sparkles className="w-3 h-3 text-slate-700 dark:text-slate-300" />
+          Key Features:
+// [rag-build-step 4/7]: feat(access-gate): store verified session token in localStorage
