@@ -436,7 +436,7 @@ const CodingCalendar: React.FC = () => {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id as ActiveCodingTab)}
-                className={`flex items-center justify-center gap-2 py-2 px-3 font-bold text-xs rounded-sm transition-all text-center ${
+                className={`flex items-center justify-start gap-2 py-2 px-3 font-bold text-xs rounded-sm transition-all text-left ${
                   isActive
                     ? 'bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900 shadow-sm'
                     : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
