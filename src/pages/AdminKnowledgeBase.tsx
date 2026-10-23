@@ -535,4 +535,30 @@ const AdminKnowledgeBase = () => {
                   </div>
                 </div>
 
-// [rag-build-step 21/31]: style(admin-kb): add responsive layout for mobile and tablet administration
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                  <div>
+                    <Label className="text-xs font-semibold">Program</Label>
+                    <select
+                      value={program}
+                      onChange={(e) => setProgram(e.target.value as any)}
+                      className="w-full text-xs mt-1 px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950"
+                    >
+                      <option value="btech">B.Tech</option>
+                      <option value="bsms">BS-MS</option>
+                      <option value="bba">BBA</option>
+                      <option value="mba">MBA</option>
+                      <option value="general">General</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <Label className="text-xs font-semibold">Branch</Label>
+                    <select
+                      value={branch}
+                      onChange={(e) => setBranch(e.target.value)}
+                      className="w-full text-xs mt-1 px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950"
+                    >
+                      <option value="all">Common / All Branches</option>
+                      {BTECH_BRANCHES.map((b) => (
+                        <option key={b.id} value={b.code}>
+// [rag-build-step 22/31]: refactor(admin-kb): extract document table into dedicated sub-component
