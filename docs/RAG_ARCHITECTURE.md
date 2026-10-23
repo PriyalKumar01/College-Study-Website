@@ -180,4 +180,34 @@ This guarantees that exact keyword queries (like "Amdahl's law" or "SGPA") and s
    - The user inputs the access code in `AIAccessGate.tsx`.
    - `ai-unlock` compares the input against `AI_ACCESS_CODE` using `crypto.subtle.timingSafeEqual` to prevent side-channel timing attacks.
    - Successful unlocks receive a 32-byte cryptographic session token. Only the SHA-256 hash is saved in `ai_sessions`.
-# [rag-build-step 6/8]: docs(rag): document chunking strategy with semantic heading preservation
+3. **Row-Level Security (RLS)**:
+   - All RAG tables (`rag_documents`, `rag_chunks`, `ai_usage`, `ai_sessions`, `ai_query_logs`) have RLS enabled.
+   - `rag_chunks` and telemetry logs have no public read/write policies and are accessible exclusively via the Postgres `service_role` inside Edge Functions.
+4. **Preservation of Premium Systems**:
+   - The existing coupon and premium verification systems (`coupon_codes` table) are completely untouched.
+
+---
+
+## 6. Local Setup & Deployment Guide
+
+### 1. Apply Supabase Migration
+```bash
+# Push migration to remote Supabase project
+supabase db push
+# Or apply migration directly in Supabase SQL Editor:
+# supabase/migrations/20261024000000_rag_system_pgvector.sql
+```
+
+### 2. Set Supabase Secrets
+```bash
+supabase secrets set GEMINI_API_KEY="AIzaSy..."
+supabase secrets set OPENAI_API_KEY="sk-proj-..."
+supabase secrets set AI_ACCESS_CODE="your_secret_access_code_here"
+```
+
+### 3. Deploy Edge Functions
+```bash
+supabase functions deploy ai-unlock
+supabase functions deploy rag-chat
+supabase functions deploy rag-ingest
+# [rag-build-step 7/8]: docs(rag): document citation generation and grounded verification
