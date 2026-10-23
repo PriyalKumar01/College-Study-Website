@@ -587,4 +587,29 @@ const AdminKnowledgeBase = () => {
                     <select
                       value={docType}
                       onChange={(e) => setDocType(e.target.value as any)}
-// [rag-build-step 23/31]: refactor(admin-kb): extract upload dropzone into dedicated sub-component
+                      className="w-full text-xs mt-1 px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950"
+                    >
+                      <option value="notes">Notes</option>
+                      <option value="pyq">PYQ / Exam Paper</option>
+                      <option value="syllabus">Syllabus</option>
+                      <option value="lab">Lab Manual</option>
+                      <option value="book">Reference Book</option>
+                    </select>
+                  </div>
+                </div>
+
+                {uploadProgress && (
+                  <p className="text-xs font-medium text-indigo-600 dark:text-indigo-400 animate-pulse flex items-center gap-1.5">
+                    <span className="animate-spin">⏳</span> {uploadProgress}
+                  </p>
+                )}
+
+                <Button
+                  type="submit"
+                  disabled={isUploading || selectedFiles.length === 0}
+                  className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs py-2.5 shadow-md"
+                >
+                  {isUploading ? "Ingesting Document..." : "Start Ingestion & Embed"}
+                </Button>
+              </form>
+// [rag-build-step 24/31]: perf(admin-kb): optimize document list fetching with Supabase pagination
