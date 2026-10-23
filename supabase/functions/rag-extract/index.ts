@@ -169,4 +169,21 @@ serve(async (req) => {
 
     return new Response(
       JSON.stringify({
-// [rag-build-step 9/10]: perf(rag-extract): optimize in-memory buffer handling for fast response
+        success: true,
+        fileName,
+        pageCount,
+        usedOcr,
+        text: safeText,
+        characterCount: safeText.length,
+      }),
+      { headers: { ...corsHeaders, "Content-Type": "application/json" } }
+    );
+  } catch (err: unknown) {
+    const msg = err instanceof Error ? err.message : "Extraction error";
+    console.error("rag-extract exception:", msg);
+    return new Response(
+      JSON.stringify({ success: false, error: msg }),
+      { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+    );
+  }
+});
