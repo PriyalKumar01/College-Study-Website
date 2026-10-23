@@ -209,4 +209,57 @@ const ATSScorer = ({ userEmail }: ATSScorerProps) => {
       <div className="bg-slate-900 dark:bg-slate-950 px-5 sm:px-7 py-5 flex items-center justify-between border-b border-slate-800">
         <div className="flex items-center gap-3.5">
           <div className="w-10 h-10 rounded-2xl bg-slate-800 border border-slate-700 flex items-center justify-center shadow-inner">
-// [rag-build-step 4/9]: feat(ats-scorer): extract text from uploaded resume PDF for score analysis
+            <Sparkles className="w-5 h-5 text-emerald-400" />
+          </div>
+          <div>
+            <div className="flex items-center gap-2">
+              <h3 className="text-white font-bold text-base sm:text-lg">AI ATS Resume Scorer & Analyzer</h3>
+              <span className="bg-rose-600 text-white text-[9px] font-black px-2 py-0.5 rounded-full uppercase tracking-wider">
+                BETA
+              </span>
+            </div>
+            <p className="text-slate-300 text-xs mt-0.5">Upload PDF resume + Job Description → Instant ATS score, missing skills & tailored points</p>
+          </div>
+        </div>
+      </div>
+
+      <div className="p-5 sm:p-7 space-y-6">
+        {/* Input Mode Toggle */}
+        <div className="flex gap-1.5 p-1 bg-slate-100 dark:bg-slate-800/80 rounded-2xl w-fit border border-slate-200 dark:border-slate-700/60">
+          {(["file", "paste"] as const).map((mode) => (
+            <button
+              key={mode}
+              onClick={() => setInputMode(mode)}
+              className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all ${
+                inputMode === mode
+                  ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-sm border border-slate-200/50 dark:border-slate-700"
+                  : "text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200"
+              }`}
+            >
+              {mode === "file" ? "📎 Upload PDF Resume" : "📋 Paste Resume Text"}
+            </button>
+          ))}
+        </div>
+
+        <div className="grid md:grid-cols-2 gap-5">
+          {/* Resume Input */}
+          <div className="space-y-2">
+            <label className="text-xs sm:text-sm font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2">
+              <FileText className="w-4 h-4 text-blue-500" />
+              1. Your Resume (PDF Scan)
+            </label>
+
+            {inputMode === "file" ? (
+              <div
+                onClick={() => fileRef.current?.click()}
+                className={`border-2 border-dashed rounded-2xl p-6 text-center cursor-pointer transition-all flex flex-col items-center justify-center min-h-[190px]
+                  ${resumeFile
+                    ? "border-blue-500/50 bg-blue-50/50 dark:bg-blue-950/20"
+                    : "border-slate-200 dark:border-slate-800 hover:border-blue-400 dark:hover:border-blue-600 bg-slate-50/50 dark:bg-slate-950/40"
+                  }`}
+              >
+                <input ref={fileRef} type="file" accept=".pdf,.txt,.doc,.docx" className="hidden" onChange={handleFileChange} />
+                {resumeFile ? (
+                  <div className="flex flex-col items-center gap-2 w-full max-w-xs">
+                    <div className="p-3 rounded-2xl bg-blue-500/10 text-blue-500">
+// [rag-build-step 5/9]: feat(ats-scorer): score resume on keywords, format, and section completeness
