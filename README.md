@@ -340,4 +340,60 @@ The repository includes an automated evaluation suite (`scripts/rag-eval.ts`) te
         <img src="public/AllYouNeedtoSucceed.png" alt="Resources" width="400"/>
         <br />
         <em>Academic Resources & Subject Modules</em>
-# [rag-build-step 6/7]: refactor(readme): polish README badges, typography, and project structure
+      </td>
+    </tr>
+    <tr>
+      <td align="center">
+        <img src="public/CollegeStudy UserProfile.png" alt="User Profile" width="400"/>
+        <br />
+        <em>User Profile, Academic Branch & StudyCoins</em>
+      </td>
+      <td align="center">
+        <img src="public/CollegeStudy_TopContributor.png" alt="Top Contributors" width="400"/>
+        <br />
+        <em>Gamified Contributor Hall of Fame</em>
+      </td>
+    </tr>
+    <tr>
+      <td align="center">
+        <img src="public/CollegeStudy-academicAchieversPage.png" alt="Achievers" width="400"/>
+        <br />
+        <em>HBTU Academic Achievers & Placements</em>
+      </td>
+      <td align="center">
+        <img src="public/collegeStudyAboutpage.png" alt="About Page" width="400"/>
+        <br />
+        <em>About the Platform & Mission</em>
+      </td>
+    </tr>
+  </table>
+</div>
+
+---
+
+## 👨‍💻 Founder & Maintainer
+
+<div align="center">
+  <h3>Priyal Kumar</h3>
+  <p><strong>Founder & Lead Engineer — College Study Hub</strong></p>
+  <p>Final Year B.Tech Computer Science & Engineering • HBTU Kanpur</p>
+  
+  <br/>
+
+  <a href="https://github.com/PriyalKumar01" target="_blank">
+    <img src="https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white" alt="GitHub"/>
+  </a>
+  <a href="https://linkedin.com/in/priyal-kumar-374282324" target="_blank">
+    <img src="https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white" alt="LinkedIn"/>
+  </a>
+  <a href="https://wa.me/918957221543" target="_blank">
+    <img src="https://img.shields.io/badge/WhatsApp-25D366?style=for-the-badge&logo=whatsapp&logoColor=white" alt="WhatsApp"/>
+  </a>
+</div>
+
+---
+
+<div align="center">
+  <p><em>© 2026 College Study Hub. All rights reserved.</em></p>
+  <p>Crafted with ❤️ for the student community of Harcourt Butler Technical University (HBTU Kanpur).</p>
+</div>
