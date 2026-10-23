@@ -540,4 +540,40 @@ Direct link: [5th Semester CSE Notes](/fifth-semester-cse-notes)
   },
   {
     keywords: ["cse 6th semester", "sixth semester cse", "sem 6 cse", "6th sem cse", "machine learning notes", "ml notes", "cloud computing notes", "information security notes"],
-// [rag-build-step 15/25]: refactor(knowledge-base): update buildSystemPrompt to enforce English answers
+    response: `📚 **6th Semester CSE Notes:**
+
+Direct link: [6th Semester CSE Notes](/sixth-semester-cse-notes)
+
+**Subjects:**
+- 🤖 Machine Learning (ML)
+- 🔒 Information Security
+- ☁️ Cloud Computing
+- 🧪 Software Testing
+- 📖 [Open Electives](/sixth-semester-open-electives)`,
+  },
+  {
+    keywords: ["cse 7th semester", "seventh semester cse", "sem 7 cse", "7th sem cse"],
+    response: `📚 **7th Semester CSE Notes:**
+
+Direct link: [7th Semester CSE Notes](/seventh-semester-cse-notes)
+
+**Subjects:**
+- Distributed Systems
+- Big Data Analytics
+- Internet of Things (IoT)
+- Deep Learning & Electives`,
+  },
+  {
+    keywords: ["cse 8th semester", "eighth semester cse", "sem 8 cse", "8th sem cse", "final semester"],
+    response: `📚 **8th Semester CSE Notes:**
+
+Direct link: [8th Semester CSE Notes](/eighth-semester-cse-notes)
+
+**Includes:**
+- Final Year Capstone Project guidance
+- Technical Seminar resources
+- Industrial Training reports & Electives`,
+  },
+  {
+    keywords: ["bsms notes", "bs ms", "bs-ms", "bsms semester", "integrated program"],
+// [rag-build-step 16/25]: refactor(knowledge-base): add strict instructions to refuse coupon disclosure
