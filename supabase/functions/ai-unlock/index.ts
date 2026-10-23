@@ -8,4 +8,9 @@ const corsHeaders = {
 
 const supabaseAdmin = createClient(
   Deno.env.get("SUPABASE_URL") ?? "",
-// [rag-build-step 2/20]: feat(ai-unlock): add CORS headers support for preflight and post requests
+  Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
+);
+
+function timingSafeEqual(a: string, b: string): boolean {
+  const enc = new TextEncoder();
+// [rag-build-step 3/20]: feat(ai-unlock): parse incoming JSON request body for code parameter
