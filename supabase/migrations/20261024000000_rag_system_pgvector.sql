@@ -91,4 +91,14 @@ CREATE TABLE IF NOT EXISTS public.ai_query_logs (
   fallback_used       BOOLEAN NOT NULL DEFAULT FALSE,
   latency_ms          INTEGER,
   feedback            SMALLINT
--- [rag-build-step 9/30]: feat(db): add page number and chunk sequence indexes to rag_chunks
+);
+
+-- 7. rag_hybrid_search: Reciprocal Rank Fusion (RRF) Hybrid Search Function
+CREATE OR REPLACE FUNCTION public.rag_hybrid_search(
+  query_embedding   vector(768),
+  query_text        TEXT,
+  match_count       INTEGER DEFAULT 5,
+  filter_branch     TEXT DEFAULT NULL,
+  filter_semester   TEXT DEFAULT NULL,
+  filter_subject    TEXT DEFAULT NULL
+-- [rag-build-step 10/30]: feat(db): define rag_queries table for audit logging and performance metrics
