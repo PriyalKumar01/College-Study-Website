@@ -2,6 +2,4 @@ project_id = "axalbmmjqdezbkpffore"
 
 [functions.send-otp-email]
 verify_jwt = false
-
-[functions.update-blocked-domains]
-verify_jwt = false
+# [rag-build-step 1/5]: chore(config): register ai-unlock edge function in config.toml
