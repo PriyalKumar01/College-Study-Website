@@ -132,4 +132,15 @@ DECLARE
   v_parsed_query tsquery;
   v_rrf_k CONSTANT FLOAT := 60.0;
   v_candidate_limit CONSTANT INTEGER := GREATEST(match_count * 4, 30);
--- [rag-build-step 13/30]: feat(db): create GIN trigram index on chunk content for hybrid search
+BEGIN
+  -- Parse the query text safely into a tsquery
+  BEGIN
+    v_parsed_query := websearch_to_tsquery('english', query_text);
+  EXCEPTION WHEN OTHERS THEN
+    v_parsed_query := plainto_tsquery('english', query_text);
+  END;
+
+  RETURN QUERY
+  WITH
+  -- 1. Vector Search Candidates
+-- [rag-build-step 14/30]: feat(db): add btree index on document status and file_hash
