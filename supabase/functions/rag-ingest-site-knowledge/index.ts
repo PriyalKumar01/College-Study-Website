@@ -56,4 +56,19 @@ async function getGeminiEmbedding(text: string, apiKey: string): Promise<number[
 // ── Verified Knowledge Chunks (Sanitized: NO secrets/coupons) ─
 const SITE_KNOWLEDGE_CHUNKS = [
   {
-// [rag-build-step 4/15]: feat(site-ingest): extract BTECH_NOTES curriculum structure into chunks
+    heading: "HBTU Kanpur University Overview & Campuses",
+    subject: "HBTU Knowledge",
+    content: `Harcourt Butler Technical University (HBTU Kanpur) was established in 1921 as Government Technological Institute, became HBTI in 1965, and was upgraded to a premier State Technical University in 2016 in Kanpur, Uttar Pradesh.
+Campuses:
+1. East Campus (Main Campus, Nawabganj): Academic departments, Central Library, CSE, IT, EE, ET, ME, CE, CHE, Administrative building, Cafeteria, and Sports Ground.
+2. West Campus: Hostels (DBRA, Visvesvaraya, Raman, Ramanujan, WCH), Food Technology, Paint Technology, Plastic Technology, Leather Technology, Biochemical Engineering, and Oil Technology departments.
+Major Fests: Incord (Technical Fest), Adhyayan (Literary Fest), Zenith (Sports Fest), and Spandan/Aagaz (Cultural Fest). Active societies include E-Cell, IEEE Student Branch, and Rotaract Club.`,
+  },
+  {
+    heading: "Official Portals & Attendance Regulations",
+    subject: "HBTU Portals",
+    content: `HBTU Official Web Portals:
+- Official University Website: https://hbtu.ac.in/ (Circulars, tenders, academic notices, syllabus, and faculty directories).
+- Student ERP Portal: https://erp.hbtu.ac.in/NewIndex.html (Semester registration, downloadable fee receipts, semester grade cards, and admit cards).
+- Live Attendance Portal: https://erp.hbtu.ac.in/StudentAttendance.aspx (Subject-wise & aggregate real-time attendance percentage).
+// [rag-build-step 5/15]: feat(site-ingest): extract OTHER_PROGRAM_NOTES directory into chunks
