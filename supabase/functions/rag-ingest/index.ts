@@ -245,4 +245,21 @@ async function extractPptxPages(fileBytes: Uint8Array): Promise<{ pages: PageCon
   }
 }
 
-// [rag-build-step 15/40]: feat(rag-ingest): configure Gemini 3.5 Flash multimodal call for OCR
+// 4. Plain Text & Markdown
+function extractPlainPages(fileBytes: Uint8Array): { pages: PageContent[]; usedOcr: boolean } {
+  const text = new TextDecoder("utf-8").decode(fileBytes);
+  const clean = cleanDocumentText(text);
+  return {
+    pages: [{ pageNumber: 1, text: clean }],
+    usedOcr: false,
+  };
+}
+
+// ── Chunking Engine ──────────────────────────────────────────
+export interface ChunkData {
+  chunkIndex: number;
+  pageStart: number;
+  pageEnd: number;
+  content: string;
+  embedText: string;
+// [rag-build-step 16/40]: feat(rag-ingest): format OCR system prompt to preserve formulas and headings
