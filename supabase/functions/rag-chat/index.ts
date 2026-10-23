@@ -319,4 +319,17 @@ async function callOpenAI(
 
   if (!response.ok) {
     throw new Error(`OpenAI status: ${response.status}`);
-// [rag-build-step 24/45]: feat(rag-chat): parse raw model output and extract inline citation keys
+  }
+
+  const data = await response.json();
+  const text = data.choices?.[0]?.message?.content;
+  if (!text) throw new Error("Empty OpenAI response");
+  return text;
+}
+
+// ── Main Server ──────────────────────────────────────────────
+serve(async (req) => {
+  if (req.method === "OPTIONS") {
+    return new Response("ok", { headers: corsHeaders });
+  }
+// [rag-build-step 25/45]: feat(rag-chat): resolve citation keys to document title, page, and chunk id
