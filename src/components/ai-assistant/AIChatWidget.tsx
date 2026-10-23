@@ -34,4 +34,23 @@ const getLocalCount = (): number => {
 };
 
 const incrementLocalCount = () => {
-// [rag-build-step 2/35]: refactor(chat-widget): update welcome message to professional English
+  const count = getLocalCount() + 1;
+  localStorage.setItem(RATE_LIMIT_CONFIG.rateLimitStorageKey, String(count));
+  return count;
+};
+
+// ── Quick suggestion chips ────────────────────────────────────
+const QUICK_SUGGESTIONS = [
+  "Where can I find CSE 5th sem notes?",
+  "Explain Operating Systems deadlock recovery",
+  "Where is the CGPA calculator?",
+  "How can I contribute notes?",
+  "Show scholarships portal",
+];
+
+// ── Helpers ────────────────────────────────────────────────────
+const generateId = () => Math.random().toString(36).slice(2, 9);
+
+interface AIChatWidgetProps {
+  onClose: () => void;
+// [rag-build-step 3/35]: feat(chat-widget): add file upload attachment button in chat input bar
