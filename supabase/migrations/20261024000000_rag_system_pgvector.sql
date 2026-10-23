@@ -18,4 +18,15 @@ CREATE TABLE IF NOT EXISTS public.rag_documents (
   semester      TEXT,
   program       TEXT CHECK (program IN ('btech', 'bsms', 'bba', 'mba', 'general')),
   doc_type      TEXT CHECK (doc_type IN ('notes', 'pyq', 'syllabus', 'lab', 'book', 'site_knowledge')),
--- [rag-build-step 2/30]: feat(db): enable pgvector extension for high-dimensional embeddings
+  file_hash     TEXT UNIQUE, -- SHA-256 for deduplication
+  page_count    INTEGER,
+  status        TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'processing', 'ready', 'failed')),
+  error         TEXT,
+  uploaded_by   TEXT,
+  created_at    TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+-- Indexes for rag_documents
+CREATE INDEX IF NOT EXISTS idx_rag_documents_status ON public.rag_documents (status);
+CREATE INDEX IF NOT EXISTS idx_rag_documents_subject ON public.rag_documents (subject);
+-- [rag-build-step 3/30]: feat(db): enable pg_trgm extension for fuzzy keyword matching
