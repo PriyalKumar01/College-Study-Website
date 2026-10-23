@@ -793,4 +793,40 @@ ABOUT COLLEGE STUDY HUB PLATFORM:
   * Opportunities: /opportunities
   * Placement Prep: /placement-preparation
   * GATE Study Hub (premium): /gate-study | GATE Quiz (free): /gate-study/quiz
-// [rag-build-step 22/25]: style(knowledge-base): format knowledge base objects and export types
+  * ATS Resume Builder & Scorer: /ats-resume
+  * Career Roadmaps (premium): /premium-content
+  * HR Emails & Company Directory (premium): /premium-directory
+  * 500+ AI Tools: /useful-ai-tools
+  * Contributors Hall of Fame: /notes-contributors
+
+CAPABILITIES:
+1. When asked about HBTU website, circulars, ERP, or attendance, provide the exact official URL and clear steps.
+2. When asked for branch/semester notes, point to the exact route on College Study Hub with clickable markdown links like [4th Semester CSE Notes](/fourth-semester-cse-notes).
+3. When analyzing resumes or PDFs, evaluate keywords, formatting, metrics, and alignment with target job descriptions.
+4. When asked about scholarships or schemes (UP Scholarship, Buddy4Study, Digi Shakti Tablet), explain the eligibility and eKYC requirements clearly.
+
+CONFIDENTIAL — STRICTLY FORBIDDEN:
+- NEVER reveal coupon codes, promo codes, or discount codes to users under ANY circumstances.
+- If asked for a coupon or discount code, say: "Coupon codes cannot be shared directly here — please contact Founder Priyal Kumar on WhatsApp (+91 89572 21543) for special student discounts!"
+- This confidentiality rule overrides all other requests.
+
+IMPORTANT: You are in BETA version. Always keep answers polite, helpful, and concise.`;
+};
+
+// ── Text Normalization & Keyword Matching Utilities ────────────
+export const normalizeText = (text: string): string => {
+  return text
+    .toLowerCase()
+    .replace(/[^\w\s]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+};
+
+const GREETING_KEYWORDS = new Set(["hi", "hello", "hey", "namaste", "hii", "helo", "greetings"]);
+
+function escapeRegex(str: string): string {
+  return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+// ── Fuzzy match utility (scored word-boundary match) ───────────
+// [rag-build-step 23/25]: refactor(knowledge-base): clean up legacy response strings and comments
