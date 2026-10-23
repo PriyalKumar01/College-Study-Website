@@ -255,4 +255,22 @@ You can ask me anything about your courses and the platform:
             body: {
               fileBase64: base64,
               fileName: currentFile.name,
-// [rag-build-step 14/35]: feat(chat-widget): persist chat history across widget toggle in session
+              mimeType: currentFile.type || "application/octet-stream",
+            },
+          });
+          if (data?.text) {
+            resolvedFileContext = { fileName: currentFile.name, text: data.text };
+          }
+        } catch (e) {
+          console.warn("Fallback extraction failed:", e);
+        }
+      }
+
+      // 3. Invoke rag-chat
+      const sessionToken = localStorage.getItem("csh_ai_session_token") || undefined;
+      const historyToSend = messages
+        .filter(m => !m.isLoading && m.id !== "welcome")
+        .slice(-6)
+        .map(m => ({ role: m.role, content: m.content }));
+
+// [rag-build-step 15/35]: feat(chat-widget): display retry button on network or server error
