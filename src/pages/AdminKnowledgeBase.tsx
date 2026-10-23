@@ -715,4 +715,29 @@ const AdminKnowledgeBase = () => {
                     documents.map((doc) => (
                       <tr key={doc.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-950/40 transition-colors">
                         <td className="px-4 py-3">
-// [rag-build-step 28/31]: chore(admin-kb): format types and interfaces for admin document models
+                          <p className="font-bold truncate max-w-xs">{doc.title}</p>
+                          <p className="text-[10px] text-slate-400 truncate max-w-xs">{doc.subject || "No subject"}</p>
+                        </td>
+                        <td className="px-4 py-3">
+                          <span className="font-mono text-[11px]">
+                            {doc.branch || "All"} · {doc.semester || "-"}
+                          </span>
+                        </td>
+                        <td className="px-4 py-3">
+                          <Badge variant="outline" className="text-[10px] capitalize">
+                            {doc.doc_type || doc.source_type}
+                          </Badge>
+                        </td>
+                        <td className="px-4 py-3">
+                          <span className="text-[11px] font-mono">
+                            {doc.page_count ?? 1} pgs / {doc.chunk_count ?? 0} chunks
+                          </span>
+                        </td>
+                        <td className="px-4 py-3">
+                          {doc.status === "ready" && (
+                            <Badge className="bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 gap-1 text-[10px]">
+                              <CheckCircle2 className="w-3 h-3" /> Ready
+                            </Badge>
+                          )}
+                          {doc.status === "processing" && (
+// [rag-build-step 29/31]: refactor(admin-kb): remove redundant state listeners
