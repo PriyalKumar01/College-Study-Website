@@ -24,4 +24,30 @@ export interface SourceCitation {
   page_end?: number;
   url?: string;
   snippet?: string;
-// [rag-build-step 1/15]: refactor(chat-message): update message bubble layout and typography
+  score?: number;
+}
+
+export interface Message {
+  id: string;
+  role: "user" | "assistant";
+  content: string;
+  timestamp: Date;
+  type?: "text" | "pdf_result" | "ats_result";
+  source?: "rag" | "cache" | "llm_only";
+  sources?: SourceCitation[];
+  model_used?: string;
+  fallback_used?: boolean;
+  isLoading?: boolean;
+  queryLogId?: string;
+  feedback?: 1 | -1 | null;
+}
+
+interface AIChatMessageProps {
+  message: Message;
+  onFeedbackChange?: (messageId: string, feedback: 1 | -1) => void;
+}
+
+// Simple markdown-like renderer with clickable links and citation highlights
+const renderMarkdown = (text: string) => {
+  const parts = text.split(/(\[.*?\]\(.*?\)|\*\*.*?\*\*|`.*?`|\[\d+\])/g);
+// [rag-build-step 2/15]: feat(chat-message): render interactive citation pills for RAG sources
