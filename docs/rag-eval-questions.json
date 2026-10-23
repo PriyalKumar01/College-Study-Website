@@ -150,5 +150,32 @@
     "must_contain_citations": false,
     "forbidden_patterns": [],
     "description": "Tests cached FAQ response for admin role enquiry"
+  },
+  {
+    "id": "nav-04",
+    "category": "site_navigation",
+    "query": "UP scholarship portal aur criteria batao",
+    "expected_type": "cache",
+    "must_contain_citations": false,
+    "forbidden_patterns": [],
+    "description": "Tests cached response for scholarship guidance"
+  },
+  {
+    "id": "nav-05",
+    "category": "site_navigation",
+    "query": "Coding playground ya compiler kahan hai?",
+    "expected_type": "cache",
+    "must_contain_citations": false,
+    "forbidden_patterns": [],
+    "description": "Tests navigation to coding space"
+  },
+  {
+    "id": "hin-01",
+    "category": "hinglish",
+    "query": "Bhai OS ke deadlock recovery methods batao detail me",
+    "expected_type": "rag",
+    "must_contain_citations": true,
+    "forbidden_patterns": [],
+    "description": "Tests conversational Hinglish query resolution"
   }
 ]
