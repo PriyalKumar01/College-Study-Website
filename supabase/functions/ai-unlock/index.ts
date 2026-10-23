@@ -13,4 +13,9 @@ const supabaseAdmin = createClient(
 
 function timingSafeEqual(a: string, b: string): boolean {
   const enc = new TextEncoder();
-// [rag-build-step 3/20]: feat(ai-unlock): parse incoming JSON request body for code parameter
+  const aBuf = enc.encode(a);
+  const bBuf = enc.encode(b);
+  if (aBuf.byteLength !== bBuf.byteLength) {
+    let diff = 1;
+    for (let i = 0; i < aBuf.byteLength; i++) {
+// [rag-build-step 4/20]: feat(ai-unlock): sanitize and trim candidate access code
