@@ -740,4 +740,30 @@ const AdminKnowledgeBase = () => {
                             </Badge>
                           )}
                           {doc.status === "processing" && (
-// [rag-build-step 29/31]: refactor(admin-kb): remove redundant state listeners
+                            <Badge className="bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/30 gap-1 text-[10px]">
+                              <Clock className="w-3 h-3 animate-spin" /> Ingesting
+                            </Badge>
+                          )}
+                          {doc.status === "failed" && (
+                            <Badge className="bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/30 gap-1 text-[10px]">
+                              <AlertTriangle className="w-3 h-3" /> Failed
+                            </Badge>
+                          )}
+                          {doc.error && (
+                            <p className="text-[9px] text-rose-500 truncate max-w-[140px] mt-0.5" title={doc.error}>
+                              {doc.error}
+                            </p>
+                          )}
+                        </td>
+                        <td className="px-4 py-3 text-right">
+                          <div className="flex items-center justify-end gap-1.5">
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => handleReprocess(doc)}
+                              title="Re-process Document"
+                              className="h-7 w-7 text-slate-500 hover:text-indigo-600"
+                            >
+                              <RefreshCw className="w-3.5 h-3.5" />
+                            </Button>
+// [rag-build-step 30/31]: style(admin-kb): update empty state illustration when no documents exist
