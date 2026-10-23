@@ -546,4 +546,17 @@ STRICT CONFIDENTIALITY — CRITICAL RULE:
           }
         } else {
           throw geminiErr;
-// [rag-build-step 41/45]: refactor(rag-chat): streamline error response messages for end users
+        }
+      }
+    } else if (openAiKey) {
+      answer = await callOpenAI(systemPrompt, chatMessages, openAiKey);
+      modelUsed = "gpt-4o-mini";
+      fallbackUsed = true;
+    }
+
+    // 8. Increment Daily Usage
+    const updatedCount = await incrementDailyUsage(effectiveId);
+    const remainingQueries = Math.max(0, MAX_QUERIES_PER_DAY - updatedCount);
+    const latencyMs = Date.now() - startTime;
+
+// [rag-build-step 42/45]: chore(rag-chat): update default temperature and top_p hyperparameters
