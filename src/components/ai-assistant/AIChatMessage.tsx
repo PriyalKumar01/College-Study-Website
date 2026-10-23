@@ -76,4 +76,30 @@ const renderMarkdown = (text: string) => {
         >
           {part}
         </span>
-// [rag-build-step 3/15]: feat(chat-message): add citation popover preview with snippet and page number
+      );
+    }
+    // Link: [text](url)
+    const linkMatch = part.match(/^\[(.+?)\]\((.+?)\)$/);
+    if (linkMatch) {
+      const [, label, href] = linkMatch;
+      const isExternal = href.startsWith("http");
+      return (
+        <a
+          key={i}
+          href={href}
+          target={isExternal ? "_blank" : undefined}
+          rel={isExternal ? "noopener noreferrer" : undefined}
+          className="inline-flex items-center gap-0.5 text-slate-900 dark:text-slate-100 hover:text-slate-600 dark:hover:text-slate-300 underline underline-offset-2 font-semibold transition-colors"
+          onClick={
+            !isExternal
+              ? (e) => {
+                  e.preventDefault();
+                  window.location.href = href;
+                }
+              : undefined
+          }
+        >
+          {label}
+          {isExternal && <ExternalLink className="w-2.5 h-2.5" />}
+        </a>
+// [rag-build-step 4/15]: feat(chat-message): add copy response button with tooltip confirmation
