@@ -55,4 +55,23 @@ serve(async (req) => {
 
     // 1. PDF
     if (lowerName.endsWith(".pdf") || mimeType === "application/pdf") {
-// [rag-build-step 3/10]: feat(rag-extract): extract text from uploaded PDF attachments in memory
+      let pages: string[] = [];
+      try {
+        const pdf = await getDocumentProxy(bytes);
+        const res = await extractText(pdf, { mergePages: false });
+        pageCount = res.totalPages;
+        pages = res.text.map((t) => cleanText(t || ""));
+      } catch (pdfErr) {
+        console.warn("Direct PDF extract warning in rag-extract:", pdfErr);
+      }
+
+      const totalChars = pages.join("").length;
+      if (totalChars < 60 && geminiKey) {
+        // Scanned PDF fallback via Gemini
+        usedOcr = true;
+        try {
+          const resp = await fetch(
+            `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent?key=${geminiKey}`,
+            {
+              method: "POST",
+// [rag-build-step 4/10]: feat(rag-extract): extract text from DOCX and TXT chat attachments
