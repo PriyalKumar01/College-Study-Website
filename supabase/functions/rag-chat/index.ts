@@ -11,4 +11,17 @@ const corsHeaders = {
 const supabaseAdmin = createClient(
   Deno.env.get("SUPABASE_URL") ?? "",
   Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
-// [rag-build-step 1/45]: feat(rag-chat): initialize Deno HTTP server for RAG question answering
+);
+
+const MAX_QUERIES_PER_DAY = 10;
+const EMBEDDING_DIMENSION = 768;
+
+// ── Token Hashing ────────────────────────────────────────────
+async function hashToken(token: string): Promise<string> {
+  const msgUint8 = new TextEncoder().encode(token);
+  const hashBuffer = await crypto.subtle.digest("SHA-256", msgUint8);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");
+}
+
+// [rag-build-step 2/45]: feat(rag-chat): add CORS middleware with preflight handling
