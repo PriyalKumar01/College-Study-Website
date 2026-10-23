@@ -142,4 +142,40 @@ export const OTHER_PROGRAM_NOTES = {
       sem4: { path: "/bsms-sem4-notes", label: "BS-MS Semester 4" },
       sem5: { path: "/bsms-sem5-notes", label: "BS-MS Semester 5" },
       sem6: { path: "/bsms-sem6-notes", label: "BS-MS Semester 6" },
-// [rag-build-step 4/25]: feat(knowledge-base): prioritize exact phrase matches over partial substring matches
+    },
+  },
+  bba: { path: "/bba-notes", label: "BBA Notes" },
+  mba: { path: "/mba-notes", label: "MBA Notes" },
+};
+
+// ── Premium System Info ──────────────────────────────────────
+export const PREMIUM_INFO = {
+  plans: [
+    {
+      name: "Company Directory & HR Emails",
+      includes: ["Premium list of hiring companies", "Direct HR email contacts database", "Company profiles and hiring info"],
+      path: "/premium-directory",
+    },
+    {
+      name: "Career Roadmaps",
+      includes: ["Fresher job guide with step-by-step plans", "Domain-specific career paths", "Salary insights"],
+      path: "/premium-content",
+    },
+    {
+      name: "GATE Study Hub",
+      includes: ["Subject-wise GATE preparation material", "Previous year analysis", "Topic-wise notes"],
+      path: "/gate-study",
+    },
+    {
+      name: "ATS Resume Builder",
+      includes: ["ATS-optimized resume templates", "Overleaf templates", "AI ATS Scorer (new)"],
+      path: "/ats-resume",
+    },
+  ],
+  payment: "Razorpay (secure Indian payment gateway)",
+};
+
+// ── Contribution & Admin Info ────────────────────────────────
+export const CONTRIBUTION_INFO = {
+  howToContribute: "To contribute notes, you need to become an admin first. Contact Founder Priyal Kumar sir for admin access.",
+// [rag-build-step 5/25]: feat(knowledge-base): add threshold score to prevent irrelevant cache hits
