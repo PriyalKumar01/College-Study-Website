@@ -186,7 +186,7 @@ export const CodingNotesView: React.FC = () => {
       {/* Top Filter Bar */}
       <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-3 sm:p-4 rounded-xl shadow-sm">
         {/* Categories */}
-        <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
+        <div className="flex flex-wrap items-center gap-2">
           {categories.map((cat) => {
             const isSelected = activeCategory === cat;
             return (
