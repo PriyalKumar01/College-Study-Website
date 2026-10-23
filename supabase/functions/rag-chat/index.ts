@@ -118,4 +118,17 @@ const CACHED_ENTRIES = [
   {
     keywords: ["notes contribute", "contribute notes", "notes submit", "notes upload"],
     response: `📝 **Notes Contribution Process:**\n\nTo contribute notes, **Admin Access** is required.\n1. Contact Founder Priyal Kumar on WhatsApp (+91 89572 21543).\n2. Share your name, branch, and semester so Admin Portal access can be granted.\n3. After review, your notes will go live and you'll earn **StudyCoins** on the [Notes Contributors](/notes-contributors) leaderboard!`,
-// [rag-build-step 9/45]: feat(rag-chat): apply similarity threshold filtering to candidate chunks
+  },
+  {
+    keywords: ["admin kaise bane", "admin access", "admin banana", "admin banna"],
+    response: `🔐 **Admin Access:**\nFor Admin Access, contact Founder Priyal Kumar directly on WhatsApp (+91 89572 21543). As an admin, you can review and upload notes, manage opportunities, and publish scholarships.`,
+  },
+  {
+    keywords: ["premium kaise lein", "premium access", "premium buy", "premium plans"],
+    response: `💎 **College Study Hub Premium:**\n- [Company Directory & HR Emails](/premium-directory)\n- [Career Roadmaps](/premium-content)\n- [GATE Study Hub](/gate-study)\n- [ATS Resume Builder](/ats-resume)\nCheckout via secure Razorpay. For special student discounts, contact Founder Priyal Kumar (+91 89572 21543).`,
+  },
+  {
+    keywords: ["cgpa calculator", "sgpa calculator", "calculate cgpa"],
+    response: `📊 **CGPA / SGPA Calculator:**\nDirect link: [CGPA Calculator](/cgpa-calculator)\nFeatures: Calibrated to HBTU Kanpur's 10-point relative grading scale for semester-wise SGPA and cumulative CGPA.`,
+  },
+// [rag-build-step 10/45]: feat(rag-chat): fall back to trigram keyword search if vector matches are sparse
