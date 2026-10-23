@@ -229,4 +229,82 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "opportunities"
             referencedColumns: ["id"]
-// [rag-build-step 3/10]: feat(types): add Update interface for rag_documents status
+          },
+        ]
+      }
+      opportunity_likes: {
+        Row: {
+          created_at: string | null
+          id: string
+          opportunity_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          opportunity_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          opportunity_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "opportunity_likes_opportunity_id_fkey"
+            columns: ["opportunity_id"]
+            isOneToOne: false
+            referencedRelation: "opportunities"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          branch: string | null
+          college: string | null
+          created_at: string
+          email: string
+          first_name: string | null
+          id: string
+          last_name: string | null
+          mobile_number: string | null
+          updated_at: string
+          user_id: string
+          year: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          branch?: string | null
+          college?: string | null
+          created_at?: string
+          email: string
+          first_name?: string | null
+          id?: string
+          last_name?: string | null
+          mobile_number?: string | null
+          updated_at?: string
+          user_id: string
+          year?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          branch?: string | null
+          college?: string | null
+          created_at?: string
+          email?: string
+          first_name?: string | null
+          id?: string
+          last_name?: string | null
+          mobile_number?: string | null
+          updated_at?: string
+          user_id?: string
+          year?: string | null
+        }
+        Relationships: []
+      }
+      resume_analyses: {
+// [rag-build-step 4/10]: feat(types): declare Database type definitions for rag_chunks
