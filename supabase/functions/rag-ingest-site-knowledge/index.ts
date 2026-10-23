@@ -101,4 +101,18 @@ Attendance Rules:
 - 6th Semester (/sixth-semester-cse-notes): Machine Learning (ML), Information Security, Cloud Computing, Software Testing, and Open Electives (/sixth-semester-open-electives).
 - 7th & 8th Semesters: Distributed Systems, Big Data Analytics, IoT, Deep Learning, and Major Capstone Projects.`,
   },
-// [rag-build-step 7/15]: feat(site-ingest): extract USEFUL_EXTERNAL_LINKS into knowledge chunks
+  {
+    heading: "Academic Tools & Services (CGPA Calculator, ATS Resume, GATE)",
+    subject: "Platform Tools",
+    content: `Core features on College Study Hub (college-study.netlify.app):
+- CGPA & SGPA Calculator (/cgpa-calculator): Calibrated to HBTU relative grading formula across all semesters and branches.
+- ATS Resume Builder & Scorer (/ats-resume): Single-column, ATS-optimized Overleaf/LaTeX templates and AI resume analysis against tech job descriptions.
+- GATE Study Hub (/gate-study): Subject-wise notes, previous year question (PYQ) pattern analysis, and free branch-wise mock quizzes (/gate-study/quiz).
+- Opportunities Portal (/opportunities): Curated freshers jobs, engineering internships, and national hackathons with notification alerts.
+- Notes Contributors Hall of Fame (/notes-contributors): Gamified student contributor recognition featuring StudyCoins and tiered badges.`,
+  },
+];
+
+serve(async (req) => {
+  if (req.method === "OPTIONS") {
+// [rag-build-step 8/15]: feat(site-ingest): extract CACHED_RESPONSES answers into knowledge chunks
