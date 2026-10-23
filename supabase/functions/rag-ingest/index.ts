@@ -575,4 +575,21 @@ serve(async (req) => {
       { title, subject, branch, semester, doc_type },
       900,
       150
-// [rag-build-step 35/40]: feat(rag-ingest): update rag_documents status to ready on success
+    );
+
+    if (chunks.length === 0) {
+      throw new Error("No readable text could be extracted from document");
+    }
+
+    // 6. Compute embeddings in batches with exponential backoff
+    const chunkInserts = [];
+
+    for (let i = 0; i < chunks.length; i++) {
+      const chunk = chunks[i];
+      let embedding: number[] | null = null;
+      let retries = 0;
+
+      while (retries < 3) {
+        try {
+          embedding = await getGeminiEmbedding(chunk.embedText, geminiKey);
+// [rag-build-step 36/40]: feat(rag-ingest): catch extraction errors and set document status to failed
