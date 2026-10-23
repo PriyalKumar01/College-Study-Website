@@ -251,4 +251,40 @@ Direct link: [CGPA Calculator](/cgpa-calculator)
 - ✅ Cumulative CGPA computation across all semesters
 - ✅ Accessible anytime from the sidebar navigation 🎓`,
   },
-// [rag-build-step 7/25]: refactor(knowledge-base): update HBTU campus guidelines in knowledge base
+  {
+    keywords: ["scholarship", "scholarship kahan", "scholarship portal", "scholarship list", "scholarship kaise milega"],
+    response: `🏆 **Scholarships Portal:**
+
+Direct link: [Scholarships Portal](/scholarship-portal)
+
+**Features:**
+- 🔍 State (UP Scholarship) and national corporate/CSR scholarships
+- ⏰ Real-time application deadlines & eligibility criteria
+- 🔗 Direct application links and shareable cards
+
+*Also explore [Useful Websites](/dashboard) in the navigation bar for external scholarship links!* 🎁`,
+  },
+  {
+    keywords: ["gate preparation", "gate study", "gate material", "gate notes", "gate kaise prepare", "gate hub"],
+    response: `📚 **GATE Study Hub:**
+
+Direct link: [GATE Study Hub](/gate-study) *(Premium Feature)*
+
+**Includes:**
+- 📖 Subject-wise GATE preparation material
+- 📝 Previous year question analysis
+- 🧩 Topic-wise notes organized by branch
+
+**GATE Quiz (Free):** [GATE Quiz](/gate-study/quiz) — branch and year-wise practice questions
+
+**Access:** Premium plan required. Contact Founder Priyal Kumar (WhatsApp +91 89572 21543) for special student discounts! 🎁`,
+  },
+  {
+    keywords: ["opportunities", "jobs", "internship", "hackathon", "competition", "job kahan", "internship kahan"],
+    response: `💼 **Opportunities Portal:**
+
+Direct link: [Opportunities](/opportunities)
+
+**What's available:**
+- 🏢 Job openings for fresh graduates and experienced alumni
+// [rag-build-step 8/25]: refactor(knowledge-base): update B.Tech curriculum mapping and syllabus links
