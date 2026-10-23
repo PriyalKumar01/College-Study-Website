@@ -641,4 +641,19 @@ serve(async (req) => {
         success: true,
         document_id: docId,
         status: "ready",
-// [rag-build-step 39/40]: perf(rag-ingest): parallelize non-dependent page processing routines
+        page_count: pageCount,
+        chunk_count: chunks.length,
+        used_ocr: usedOcr,
+      }),
+      { headers: { ...corsHeaders, "Content-Type": "application/json" } }
+    );
+  } catch (err: unknown) {
+    const errorMsg = err instanceof Error ? err.message : "Internal ingestion error";
+    console.error("RAG Ingestion Error:", errorMsg);
+
+    return new Response(
+      JSON.stringify({ success: false, error: errorMsg }),
+      { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+    );
+  }
+});
