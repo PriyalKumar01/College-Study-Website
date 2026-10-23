@@ -4,6 +4,7 @@ import {
   Bookmark, BookmarkCheck, Clock, TrendingUp, GraduationCap, Loader2, Trash2, ChevronUp, Pencil
 } from 'lucide-react';
 import Navbar from '@/components/Navbar';
+import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
@@ -879,8 +880,8 @@ export default function ScholarshipsPortal() {
             </div>
           </div>
 
-          {/* Footer */}
-          <div className="mt-10 p-4 sm:p-5 rounded-xl bg-muted/50 border border-border">
+          {/* Footer Disclaimer */}
+          <div className="mt-10 mb-8 p-4 sm:p-5 rounded-xl bg-muted/50 border border-border">
             <p className="text-xs sm:text-[12.5px] text-muted-foreground m-0 leading-relaxed">
               <strong className="text-foreground">⚠ Disclaimer:</strong> Always verify deadlines and eligibility on official portals before applying.
               Sources: scholarships.gov.in · scholarship.up.gov.in · buddy4study.com · official scholarship websites.
@@ -888,6 +889,7 @@ export default function ScholarshipsPortal() {
           </div>
         </div>
       </div>
+      <Footer />
 
       {/* Edit Scholarship Modal */}
       {editingScholarship && (
