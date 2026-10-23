@@ -328,4 +328,20 @@ export function chunkDocument(
 
         // Handle paragraphs larger than targetSize: split by sentence
         if (paragraph.length > targetSize) {
-// [rag-build-step 20/40]: feat(rag-ingest): implement text cleaning pipeline for extracted pages
+          const sentences = paragraph.split(/(?<=[.!?])\s+/);
+          let sentBuffer = "";
+
+          for (const sentence of sentences) {
+            if (sentBuffer.length + sentence.length <= targetSize) {
+              sentBuffer += (sentBuffer ? " " : "") + sentence;
+            } else {
+              if (sentBuffer.trim()) {
+                const content = sentBuffer.trim();
+                const embedText = `Subject: ${docMeta.subject || "General"} | Title: ${docMeta.title} | Section: ${currentHeading}\n\n${content}`;
+                chunks.push({
+                  chunkIndex: chunkIndex++,
+                  pageStart: page.pageNumber,
+                  pageEnd: page.pageNumber,
+                  content,
+                  embedText,
+// [rag-build-step 21/40]: feat(rag-ingest): strip recurring running headers and page numbers
