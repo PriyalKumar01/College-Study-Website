@@ -330,4 +330,30 @@ const AdminKnowledgeBase = () => {
           query: testQuery.trim(),
           sessionToken: localStorage.getItem("csh_ai_session_token") || "test_token",
           userEmail: user?.email,
-// [rag-build-step 13/31]: feat(admin-kb): add re-process action for failed or updated documents
+        },
+      });
+
+      if (!error && Array.isArray(data?.sources)) {
+        setSearchResults(
+          data.sources.map((s: any) => ({
+            id: s.index,
+            document_title: s.title,
+            document_subject: "",
+            document_branch: "",
+            document_semester: "",
+            content: s.snippet,
+            rrf_score: s.score,
+            vector_score: s.score,
+            fts_score: s.score,
+            page_start: s.page_start || null,
+          }))
+        );
+      } else {
+        // Direct fallback query to rag_documents
+        const { data: docs } = await supabase
+          .from("rag_documents")
+          .select("title, subject, branch, semester")
+          .ilike("title", `%${testQuery.trim()}%`)
+          .limit(5);
+
+// [rag-build-step 14/31]: feat(admin-kb): add delete document action removing storage file and chunks
