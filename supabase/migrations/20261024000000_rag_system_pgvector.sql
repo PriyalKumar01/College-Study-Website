@@ -60,4 +60,14 @@ CREATE INDEX IF NOT EXISTS idx_rag_chunks_tsv
 CREATE INDEX IF NOT EXISTS idx_rag_chunks_document_id 
   ON public.rag_chunks (document_id);
 
--- [rag-build-step 6/30]: feat(db): add doc_type and file status constraints to rag_documents
+-- 4. ai_usage: Server-side daily rate limit tracking
+CREATE TABLE IF NOT EXISTS public.ai_usage (
+  identifier    TEXT NOT NULL,
+  usage_date    DATE NOT NULL,
+  count         INTEGER NOT NULL DEFAULT 1,
+  PRIMARY KEY (identifier, usage_date)
+);
+
+-- 5. ai_sessions: Unlocked sessions from valid access codes
+CREATE TABLE IF NOT EXISTS public.ai_sessions (
+-- [rag-build-step 7/30]: feat(db): define rag_chunks table schema with foreign key reference
