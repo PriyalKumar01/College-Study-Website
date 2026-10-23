@@ -638,4 +638,29 @@ const AdminKnowledgeBase = () => {
                 <Button
                   onClick={handleTestRetrieval}
                   disabled={isSearching || !testQuery.trim()}
-// [rag-build-step 25/31]: refactor(admin-kb): handle edge function errors with toast notifications
+                  size="sm"
+                  className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs shrink-0"
+                >
+                  {isSearching ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : "Probe"}
+                </Button>
+              </div>
+
+              {/* Retrieval Results List */}
+              <div className="flex-1 overflow-y-auto max-h-[300px] space-y-2 border border-slate-100 dark:border-slate-800 rounded-lg p-2 bg-slate-50/50 dark:bg-slate-950/50 custom-scrollbar">
+                {searchResults.length === 0 ? (
+                  <div className="text-center py-8 text-xs text-slate-400">
+                    No retrieval test run yet. Enter a query to inspect matched chunks.
+                  </div>
+                ) : (
+                  searchResults.map((res, i) => (
+                    <div
+                      key={i}
+                      className="text-xs p-2.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 space-y-1"
+                    >
+                      <div className="flex items-center justify-between">
+                        <span className="font-bold text-indigo-600 dark:text-indigo-400 truncate max-w-[200px]">
+                          [{i + 1}] {res.document_title}
+                        </span>
+                        <Badge variant="secondary" className="text-[9px] px-1.5 py-0 font-mono">
+                          RRF: {(res.rrf_score * 100).toFixed(1)}
+// [rag-build-step 26/31]: security(admin-kb): verify role authorization before initiating ingestion
