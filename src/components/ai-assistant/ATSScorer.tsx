@@ -368,4 +368,57 @@ const ATSScorer = ({ userEmail }: ATSScorerProps) => {
                 <div className="text-center sm:text-left flex-1">
                   <div className="flex items-center justify-center sm:justify-start gap-2 mb-1">
                     <h4 className="font-extrabold text-slate-900 dark:text-white text-lg">ATS Match Score: {result.score}/100</h4>
-// [rag-build-step 7/9]: style(ats-scorer): update score meter animation and score badge styling
+                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${
+                      result.score >= 75 ? "bg-emerald-500/10 text-emerald-600 border-emerald-500/30" :
+                      result.score >= 50 ? "bg-amber-500/10 text-amber-600 border-amber-500/30" :
+                      "bg-rose-500/10 text-rose-600 border-rose-500/30"
+                    }`}>
+                      {result.score >= 75 ? "STRONG PASS" : result.score >= 50 ? "MODERATE" : "NEEDS WORK"}
+                    </span>
+                  </div>
+                  <p className={`text-xs sm:text-sm font-semibold ${
+                    result.score >= 75 ? "text-emerald-600 dark:text-emerald-400" :
+                    result.score >= 50 ? "text-amber-600 dark:text-amber-400" :
+                    "text-rose-600 dark:text-rose-400"
+                  }`}>
+                    {result.score >= 75 ? "✅ Excellent! High probability of clearing automated ATS filters." :
+                     result.score >= 50 ? "⚠️ Average Match. Incorporate the missing keywords and metrics below." :
+                     "❌ Low Match. Significant alignment needed with target JD."}
+                  </p>
+                  <p className="text-[11px] text-muted-foreground mt-1">
+                    Industry standard target: <strong>75+ for top tech and product companies</strong>
+                  </p>
+                </div>
+              </div>
+
+              {/* Matched & Missing Keywords Grid */}
+              <div className="grid sm:grid-cols-2 gap-4">
+                {/* Matched */}
+                <div className="p-4 sm:p-5 bg-emerald-50/50 dark:bg-emerald-950/20 rounded-2xl border border-emerald-200/60 dark:border-emerald-900/40 space-y-3">
+                  <h5 className="text-xs sm:text-sm font-bold text-emerald-700 dark:text-emerald-300 flex items-center gap-1.5">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+                    Matched Keywords ({result.matched.length})
+                  </h5>
+                  <div className="flex flex-wrap gap-1.5">
+                    {result.matched.length > 0
+                      ? result.matched.map(w => <KeywordChip key={w} word={w} type="matched" />)
+                      : <span className="text-xs text-muted-foreground">Keywords matching target job requirements.</span>
+                    }
+                  </div>
+                </div>
+
+                {/* Missing */}
+                <div className="p-4 sm:p-5 bg-rose-50/50 dark:bg-rose-950/20 rounded-2xl border border-rose-200/60 dark:border-rose-900/40 space-y-3">
+                  <h5 className="text-xs sm:text-sm font-bold text-rose-700 dark:text-rose-300 flex items-center gap-1.5">
+                    <XCircle className="w-4 h-4 text-rose-500" />
+                    Missing Keywords ({result.missing.length})
+                  </h5>
+                  <div className="flex flex-wrap gap-1.5">
+                    {result.missing.length > 0
+                      ? result.missing.map(w => <KeywordChip key={w} word={w} type="missing" />)
+                      : <span className="text-xs text-emerald-500 font-semibold">No critical missing keywords! 🎉</span>
+                    }
+                  </div>
+                </div>
+              </div>
+// [rag-build-step 8/9]: style(ats-scorer): modernize card shadows and dark mode borders
