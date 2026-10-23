@@ -919,7 +919,7 @@ Click below to check out the details, themes, and registration links.`,
   }, [bodyText]);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 max-w-full overflow-x-hidden">
       {/* 4-Step Wizard Navigation Header */}
       <div className="bg-card border border-border rounded-2xl p-4 shadow-sm">
         <div className="flex flex-col md:flex-row items-center justify-between gap-3">
@@ -1407,7 +1407,7 @@ Click below to check out the details, themes, and registration links.`,
             
             <CardContent className="p-4">
               <div className="bg-[#f0f9ff] dark:bg-slate-950 p-3 rounded-xl border border-sky-100 dark:border-slate-800 text-slate-950 max-h-[420px] overflow-y-auto">
-                <div className="bg-white dark:bg-slate-900 border border-[#e0f2fe] dark:border-slate-800 rounded-xl overflow-hidden shadow-sm max-w-[400px] mx-auto text-slate-900 dark:text-slate-100">
+                <div className="bg-white dark:bg-slate-900 border border-[#e0f2fe] dark:border-slate-800 rounded-xl overflow-hidden shadow-sm w-full max-w-[400px] mx-auto text-slate-900 dark:text-slate-100">
                   {/* Logo Header */}
                   <div className="p-4 text-center border-b border-[#f0f9ff] dark:border-slate-800">
                     {logoUrl && <img src={logoUrl} alt="Logo" className="h-7 mx-auto mb-1" />}
