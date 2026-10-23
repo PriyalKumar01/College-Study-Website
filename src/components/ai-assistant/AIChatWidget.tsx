@@ -475,4 +475,23 @@ Please:
           )
         )}
 
-// [rag-build-step 26/35]: test(chat-widget): verify attachment file type validation
+        {/* Quick suggestion chips */}
+        <AnimatePresence>
+          {showSuggestions && !isLoading && (
+            <motion.div
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 8 }}
+              className="pt-1"
+            >
+              <p className="text-[10px] font-bold text-slate-500 dark:text-slate-400 mb-2 px-1 uppercase tracking-wider">Quick questions:</p>
+              <div className="flex flex-wrap gap-1.5">
+                {QUICK_SUGGESTIONS.map((suggestion) => (
+                  <button
+                    key={suggestion}
+                    onClick={() => handleSend(suggestion)}
+                    className="text-[11px] px-2.5 py-1.5 rounded-lg border border-slate-200 dark:border-slate-800
+                      text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 hover:border-slate-300 dark:hover:border-slate-700 transition-all font-medium shadow-sm"
+                  >
+                    {suggestion}
+// [rag-build-step 27/35]: test(chat-widget): verify message queue handling on rapid user submissions
