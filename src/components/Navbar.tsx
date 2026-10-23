@@ -51,7 +51,6 @@ const Navbar = ({ onOpenAuth }: NavbarProps) => {
     { href: '/gate-study', label: 'Gate Study', icon: Trophy },
     { href: '/cgpa-calculator', label: 'CGPA Calculator', icon: Calculator },
     { href: '/premium-content', label: 'Premium Content', icon: Lock },
-    { href: '/useful-ai-tools', label: '500+ AI Tools', icon: Brain },
     { href: '/notes-contributors', label: 'Contributors & Admins', icon: Users },
     { href: '/about', label: 'About', icon: Info },
     ...(isAdmin ? [{ href: '/admin-portal', label: 'Admin Portal', icon: Shield }] : []),
@@ -269,7 +268,7 @@ const Navbar = ({ onOpenAuth }: NavbarProps) => {
                         </Link>
                       )}
 
-                      <div className="flex flex-col space-y-1 max-h-[50vh] overflow-y-auto pb-4 custom-scrollbar">
+                      <div className="flex flex-col space-y-1 overflow-y-auto pb-2">
                         {mobileNavItems.map((item) => (
                           <Link
                             key={item.href}
@@ -309,18 +308,8 @@ const Navbar = ({ onOpenAuth }: NavbarProps) => {
                         )}
                       </div>
 
-                      {/* Drawer Bottom Footer: Theme Mode Button + Sign Out / Login */}
-                      <div className="mt-auto border-t border-slate-100 dark:border-slate-800 pt-3 space-y-2">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={toggleTheme}
-                          className="w-full justify-start gap-2.5 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-sm"
-                        >
-                          {theme === 'dark' ? <Sun className="h-4 w-4 text-amber-500" /> : <Moon className="h-4 w-4 text-slate-600 dark:text-slate-300" />}
-                          <span className="font-medium text-xs">{theme === 'dark' ? 'Light Mode' : 'Dark Mode'}</span>
-                        </Button>
-
+                      {/* Drawer Bottom Footer: Sign Out / Login only (Dark mode is already at top navbar) */}
+                      <div className="mt-auto border-t border-slate-100 dark:border-slate-800 pt-3">
                         {user ? (
                           <Button
                             variant="ghost"
