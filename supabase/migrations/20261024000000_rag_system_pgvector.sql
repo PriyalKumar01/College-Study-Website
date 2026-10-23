@@ -163,4 +163,15 @@ BEGIN
   fts_candidates AS (
     SELECT
       c.id AS chunk_id,
--- [rag-build-step 16/30]: feat(db): add similarity threshold parameter to match_rag_chunks
+      ts_rank_cd(c.content_tsv, v_parsed_query)::FLOAT AS text_score,
+      ROW_NUMBER() OVER (ORDER BY ts_rank_cd(c.content_tsv, v_parsed_query) DESC) AS rank
+    FROM public.rag_chunks c
+    JOIN public.rag_documents d ON c.document_id = d.id
+    WHERE d.status = 'ready'
+      AND v_parsed_query IS NOT NULL
+      AND c.content_tsv @@ v_parsed_query
+      AND (filter_branch IS NULL OR d.branch ILIKE filter_branch OR d.branch = 'all' OR d.branch = 'common')
+      AND (filter_semester IS NULL OR d.semester ILIKE filter_semester)
+      AND (filter_subject IS NULL OR d.subject ILIKE '%' || filter_subject || '%')
+    ORDER BY ts_rank_cd(c.content_tsv, v_parsed_query) DESC
+-- [rag-build-step 17/30]: feat(db): implement hybrid_search_chunks RPC combining vector and text search
