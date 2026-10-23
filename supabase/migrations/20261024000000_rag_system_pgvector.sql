@@ -184,4 +184,14 @@ BEGIN
       COALESCE(v.vec_similarity, 0.0) AS vec_score,
       COALESCE(f.text_score, 0.0) AS f_score,
       (
--- [rag-build-step 18/30]: feat(db): add reciprocal rank fusion scoring to hybrid search function
+        COALESCE(1.0 / (v_rrf_k + v.rank), 0.0) +
+        COALESCE(1.0 / (v_rrf_k + f.rank), 0.0)
+      )::FLOAT AS fused_score
+    FROM vector_candidates v
+    FULL OUTER JOIN fts_candidates f ON v.chunk_id = f.chunk_id
+  )
+
+  -- 4. Final retrieval joined with document metadata
+  SELECT
+    c.id,
+-- [rag-build-step 19/30]: feat(db): enable Row Level Security on rag_documents table
