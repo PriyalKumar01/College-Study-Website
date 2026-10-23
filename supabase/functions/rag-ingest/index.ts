@@ -295,4 +295,20 @@ export function chunkDocument(
       // Check for headings: Markdown (# Heading) or short capitalized line
       const firstLine = paragraph.trim().split("\n")[0].trim();
       if (
-// [rag-build-step 18/40]: feat(rag-ingest): handle OCR response and merge transcribed page text
+        firstLine.startsWith("#") ||
+        (firstLine.length < 80 && /^[A-Z0-9\s:.-]{4,}$/.test(firstLine) && !firstLine.endsWith("."))
+      ) {
+        currentHeading = firstLine.replace(/^#+\s*/, "").slice(0, 100);
+      }
+
+      if (buffer.length + paragraph.length <= targetSize) {
+        buffer += (buffer ? "\n\n" : "") + paragraph;
+      } else {
+        // If buffer has content, push chunk
+        if (buffer.trim()) {
+          const content = buffer.trim();
+          const embedText = `Subject: ${docMeta.subject || "General"} | Title: ${docMeta.title} | Section: ${currentHeading}\n\n${content}`;
+          chunks.push({
+            chunkIndex: chunkIndex++,
+            pageStart: page.pageNumber,
+// [rag-build-step 19/40]: feat(rag-ingest): flag chunk metadata with ocr true when fallback triggers
