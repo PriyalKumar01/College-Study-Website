@@ -177,5 +177,32 @@
     "must_contain_citations": true,
     "forbidden_patterns": [],
     "description": "Tests conversational Hinglish query resolution"
+  },
+  {
+    "id": "hin-02",
+    "category": "hinglish",
+    "query": "Compiler design me LL(1) parsing table kaise banate hain?",
+    "expected_type": "rag",
+    "must_contain_citations": true,
+    "forbidden_patterns": [],
+    "description": "Tests technical Hindi-English mixed query"
+  },
+  {
+    "id": "hin-03",
+    "category": "hinglish",
+    "query": "DBMS me ACID properties ka real life example do",
+    "expected_type": "rag",
+    "must_contain_citations": true,
+    "forbidden_patterns": [],
+    "description": "Tests Hinglish explanatory query"
+  },
+  {
+    "id": "hin-04",
+    "category": "hinglish",
+    "query": "Computer network me 3-way handshaking process samjhao",
+    "expected_type": "rag",
+    "must_contain_citations": true,
+    "forbidden_patterns": [],
+    "description": "Tests protocol flow in Hinglish"
   }
 ]
