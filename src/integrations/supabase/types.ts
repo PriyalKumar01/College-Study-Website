@@ -384,4 +384,81 @@ export type Database = {
         Update: {
           amount?: string
           amount_num?: number
-// [rag-build-step 5/10]: feat(types): add embedding vector representation in TypeScript types
+          apply_url?: string
+          approval_status?: string
+          created_at?: string | null
+          deadline?: string
+          description?: string
+          id?: string
+          income?: string
+          level?: string
+          marks?: string
+          name?: string
+          org?: string
+          status?: string
+          streams?: string[]
+          submitted_by?: string | null
+          submitted_by_email?: string | null
+          tags?: string[]
+          type?: string
+          who?: string[]
+        }
+        Relationships: []
+      }
+    }
+      rag_documents: {
+        Row: {
+          id: string
+          title: string
+          source_type: 'pdf' | 'docx' | 'pptx' | 'txt' | 'md' | 'site'
+          storage_path: string | null
+          public_url: string | null
+          subject: string | null
+          branch: string | null
+          semester: string | null
+          program: 'btech' | 'bsms' | 'bba' | 'mba' | 'general' | null
+          doc_type: 'notes' | 'pyq' | 'syllabus' | 'lab' | 'book' | 'site_knowledge' | null
+          file_hash: string | null
+          page_count: number | null
+          status: 'pending' | 'processing' | 'ready' | 'failed'
+          error: string | null
+          uploaded_by: string | null
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          title: string
+          source_type: 'pdf' | 'docx' | 'pptx' | 'txt' | 'md' | 'site'
+          storage_path?: string | null
+          public_url?: string | null
+          subject?: string | null
+          branch?: string | null
+          semester?: string | null
+          program?: 'btech' | 'bsms' | 'bba' | 'mba' | 'general' | null
+          doc_type?: 'notes' | 'pyq' | 'syllabus' | 'lab' | 'book' | 'site_knowledge' | null
+          file_hash?: string | null
+          page_count?: number | null
+          status?: 'pending' | 'processing' | 'ready' | 'failed'
+          error?: string | null
+          uploaded_by?: string | null
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          title?: string
+          source_type?: 'pdf' | 'docx' | 'pptx' | 'txt' | 'md' | 'site'
+          storage_path?: string | null
+          public_url?: string | null
+          subject?: string | null
+          branch?: string | null
+          semester?: string | null
+          program?: 'btech' | 'bsms' | 'bba' | 'mba' | 'general' | null
+          doc_type?: 'notes' | 'pyq' | 'syllabus' | 'lab' | 'book' | 'site_knowledge' | null
+          file_hash?: string | null
+          page_count?: number | null
+          status?: 'pending' | 'processing' | 'ready' | 'failed'
+          error?: string | null
+          uploaded_by?: string | null
+          created_at?: string
+        }
+// [rag-build-step 6/10]: feat(types): declare Database type definitions for rag_queries
