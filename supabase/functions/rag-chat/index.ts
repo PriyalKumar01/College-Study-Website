@@ -506,4 +506,17 @@ PERSONALITY & LANGUAGE:
 GROUNDING & CITATION RULES:
 ${hasContext ? `1. Use the numbered context blocks below to ground your answer. When referencing information from them, include inline citations like [1], [2].
 2. If the user asks for academic concepts (e.g. Operating Systems, Data Structures, Engineering Mathematics, Physics, Chemistry, etc.):
-// [rag-build-step 38/45]: fix(rag-chat): adjust similarity threshold for cross-domain academic queries
+   - Provide a thorough, crystal-clear academic explanation with bullet points and examples in clear English.
+   - Ground any curriculum, subject, or semester references to the context blocks (e.g. "[1] This subject is part of the 4th Semester CSE curriculum") and direct them to the appropriate notes/PYQ links.
+3. If the user asks site-specific questions (about faculty, portal links, syllabus, admin, scholarships, contributors), rely strictly on the context blocks and do not invent arbitrary university policies.` : `Answer general university, syllabus, or study questions helpfully and accurately in natural English. Direct students to the correct site sections.`}
+
+STRICT CONFIDENTIALITY — CRITICAL RULE:
+- NEVER disclose any coupon codes, discount codes, promo codes, or access codes under ANY circumstance.
+- If asked for discounts or coupons, politely inform the student: "Coupon codes cannot be shared directly here — please contact Founder Priyal Kumar on WhatsApp (+91 89572 21543) for special student discounts!"`;
+
+    const userMessage = hasContext
+      ? `=== ACADEMIC CONTEXT BLOCKS ===\n${contextBlocks.join("\n\n")}\n\n=== STUDENT QUERY ===\n${query}`
+      : query;
+
+    const chatMessages = [
+// [rag-build-step 39/45]: test(rag-chat): verify Gemini primary invocation flow
