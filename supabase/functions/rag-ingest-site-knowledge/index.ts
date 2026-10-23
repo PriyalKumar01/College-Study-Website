@@ -12,4 +12,19 @@ const supabaseAdmin = createClient(
 );
 
 const EMBEDDING_DIMENSION = 768;
-// [rag-build-step 1/15]: feat(site-ingest): create rag-ingest-site-knowledge edge function
+const EMBEDDING_MODEL = "gemini-embedding-001";
+const FALLBACK_EMBEDDING_MODEL = "gemini-embedding-2";
+
+// ── Embed helper ─────────────────────────────────────────────
+async function getGeminiEmbedding(text: string, apiKey: string): Promise<number[]> {
+  const models = [EMBEDDING_MODEL, FALLBACK_EMBEDDING_MODEL];
+  let lastError: unknown = null;
+
+  for (const model of models) {
+    try {
+      const response = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/${model}:embedContent?key=${apiKey}`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+// [rag-build-step 2/15]: feat(site-ingest): define site knowledge document type and metadata
