@@ -567,4 +567,22 @@ Please:
 
         <div className="flex items-end gap-2">
           {/* File attach button */}
-// [rag-build-step 31/35]: refactor(chat-widget): cleanup unused state variables
+          <button
+            onClick={() => fileInputRef.current?.click()}
+            disabled={!!attachedFile || isLoading}
+            className="p-2.5 rounded-xl text-slate-500 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800
+              disabled:opacity-40 disabled:cursor-not-allowed transition-all flex-shrink-0"
+            title="Attach Document (PDF, DOCX, TXT, PPTX, Image)"
+          >
+            <Paperclip className="w-4 h-4" />
+          </button>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept=".pdf,.docx,.pptx,.txt,.md,image/*"
+            className="hidden"
+            onChange={handleFileChange}
+          />
+
+          {/* Text input */}
+// [rag-build-step 32/35]: chore(chat-widget): format imports and component prop types
