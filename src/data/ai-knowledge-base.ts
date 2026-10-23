@@ -829,4 +829,40 @@ function escapeRegex(str: string): string {
 }
 
 // ── Fuzzy match utility (scored word-boundary match) ───────────
-// [rag-build-step 23/25]: refactor(knowledge-base): clean up legacy response strings and comments
+export const findCachedResponse = (query: string): string | null => {
+  const normalizedQuery = normalizeText(query);
+  if (!normalizedQuery) return null;
+
+  const queryWords = normalizedQuery.split(/\s+/).filter(Boolean);
+  const wordCount = queryWords.length;
+
+  let bestMatch: { response: string; score: number } | null = null;
+
+  for (const item of CACHED_RESPONSES) {
+    let entryBestScore = 0;
+
+    for (const rawKeyword of item.keywords) {
+      const normalizedKeyword = normalizeText(rawKeyword);
+      if (!normalizedKeyword) continue;
+
+      const keywordWords = normalizedKeyword.split(/\s+/).filter(Boolean);
+      const isGreeting = keywordWords.every(w => GREETING_KEYWORDS.has(w));
+
+      // Rule: Short greetings should only match when the whole message is basically a greeting (<= 3 words).
+      if (isGreeting && wordCount > 3) {
+        continue;
+      }
+
+      // Exact match of full query gets highest priority
+      if (normalizedQuery === normalizedKeyword) {
+        const score = 100 + normalizedKeyword.length * 2;
+        if (score > entryBestScore) entryBestScore = score;
+        continue;
+      }
+
+      // Match on word boundaries (for single words or multi-word phrases)
+      const pattern = new RegExp(`\\b${escapeRegex(normalizedKeyword)}\\b`, "i");
+      if (pattern.test(normalizedQuery)) {
+        // If query is long (> 8 words) and matched keyword represents only a minor fraction (< 35%),
+        // pass through to RAG/LLM for comprehensive answering instead of returning a short FAQ stub.
+// [rag-build-step 24/25]: chore(knowledge-base): synchronize site navigation routes with router
