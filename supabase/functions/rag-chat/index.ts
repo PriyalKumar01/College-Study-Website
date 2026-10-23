@@ -278,4 +278,18 @@ async function callGemini(
         if (text && text.trim().length > 0) return text;
       } else {
         const errText = await response.text();
-// [rag-build-step 21/45]: feat(rag-chat): trigger GPT fallback on Gemini 429 rate limit errors
+        console.warn(`Gemini ${model} ${response.status}:`, errText);
+        lastErr = new Error(`Gemini ${model} ${response.status}: ${errText}`);
+      }
+    } catch (e) {
+      console.warn(`Gemini ${model} fetch error:`, e);
+      lastErr = e;
+    }
+  }
+
+  throw lastErr ?? new Error("Gemini generation failed");
+}
+
+async function callOpenAI(
+  systemInstruction: string,
+// [rag-build-step 22/45]: feat(rag-chat): trigger GPT fallback on Gemini 5xx server errors
