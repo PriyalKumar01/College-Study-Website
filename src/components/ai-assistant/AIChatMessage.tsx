@@ -128,4 +128,30 @@ const formatMessage = (content: string) => {
       );
       listItems = [];
       inList = false;
-// [rag-build-step 5/15]: feat(chat-message): add thumbs up and thumbs down feedback triggers
+    }
+  };
+
+  lines.forEach((line, i) => {
+    if (!line.trim()) {
+      flushList();
+      return;
+    }
+
+    // Heading: # ## ###
+    if (/^#{1,3}\s/.test(line)) {
+      flushList();
+      const level = line.match(/^(#{1,3})/)?.[1].length || 1;
+      const text = line.replace(/^#{1,3}\s/, "");
+      const cls =
+        level === 1
+          ? "text-xs sm:text-sm font-bold text-slate-900 dark:text-white mt-2 mb-1"
+          : "text-xs font-bold text-slate-800 dark:text-slate-100 mt-1.5 mb-0.5";
+      elements.push(
+        <p key={i} className={cls}>
+          {renderMarkdown(text)}
+        </p>
+      );
+      return;
+    }
+
+// [rag-build-step 6/15]: feat(chat-message): format markdown tables, math, and code blocks cleanly
