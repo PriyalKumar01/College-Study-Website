@@ -39,4 +39,9 @@ async function hashToken(token: string): Promise<string> {
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: corsHeaders });
-// [rag-build-step 8/20]: feat(ai-unlock): return 401 when provided access code does not match
+  }
+
+  try {
+    const body = await req.json();
+    const { accessCode, userEmail } = body;
+// [rag-build-step 9/20]: feat(ai-unlock): generate signed session verification payload on success
