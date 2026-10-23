@@ -49,4 +49,29 @@ interface RetrievedChunk {
   id: string;
   document_title: string;
   document_subject: string | null;
-// [rag-build-step 2/31]: feat(admin-kb): enforce admin role authentication on knowledge base page
+  document_branch: string | null;
+  document_semester: string | null;
+  content: string;
+  rrf_score: number;
+  vector_score: number;
+  fts_score: number;
+  page_start: number | null;
+}
+
+const AdminKnowledgeBase = () => {
+  const { user, isAdmin, isOwner, loading: authLoading } = useAuth();
+  const { toast } = useToast();
+
+  const [documents, setDocuments] = useState<RagDoc[]>([]);
+  const [isLoadingDocs, setIsLoadingDocs] = useState(true);
+
+  // Upload Form state
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+  const [title, setTitle] = useState("");
+  const [subject, setSubject] = useState("");
+  const [branch, setBranch] = useState("CSE");
+  const [semester, setSemester] = useState("4th Semester");
+  const [program, setProgram] = useState<"btech" | "bsms" | "bba" | "mba" | "general">("btech");
+  const [docType, setDocType] = useState<"notes" | "pyq" | "syllabus" | "lab" | "book" | "site_knowledge">("notes");
+  const [isUploading, setIsUploading] = useState(false);
+// [rag-build-step 3/31]: feat(admin-kb): implement document stats header with total counts
