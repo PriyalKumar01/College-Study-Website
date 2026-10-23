@@ -279,4 +279,30 @@ const AdminKnowledgeBase = () => {
       const { error } = await supabase.from("rag_documents").delete().eq("id", doc.id);
       if (error) throw error;
 
-// [rag-build-step 11/31]: feat(admin-kb): display document status badge with ready, processing, failed states
+      toast({ title: "Document deleted", description: `Removed ${doc.title} and all associated chunks.` });
+      setDocuments((prev) => prev.filter((d) => d.id !== doc.id));
+    } catch (err: unknown) {
+      toast({
+        title: "Delete failed",
+        description: err instanceof Error ? err.message : "Error deleting doc",
+        variant: "destructive",
+      });
+    }
+  };
+
+  // Ingest Site Knowledge base button
+  const handleIngestSiteKnowledge = async () => {
+    setIsIngestingSite(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("rag-ingest-site-knowledge");
+      if (error || data?.error) throw new Error(data?.error || error?.message);
+
+      toast({
+        title: "Site Knowledge Ingested!",
+        description: `Ingested ${data.chunks_ingested || 6} core university knowledge chunks into RAG.`,
+      });
+      fetchDocuments();
+    } catch (err: unknown) {
+      toast({
+        title: "Site Ingest Failed",
+// [rag-build-step 12/31]: feat(admin-kb): show chunk count, page count, and file size in document table
