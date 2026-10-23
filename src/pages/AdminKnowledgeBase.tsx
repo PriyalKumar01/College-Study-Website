@@ -151,4 +151,30 @@ const AdminKnowledgeBase = () => {
   const handleUploadAndIngest = async (e: React.FormEvent) => {
     e.preventDefault();
     if (selectedFiles.length === 0) {
-// [rag-build-step 6/31]: feat(admin-kb): add document metadata form for subject, branch, semester
+      toast({ title: "No file selected", description: "Please choose at least one file.", variant: "destructive" });
+      return;
+    }
+    if (!title.trim()) {
+      toast({ title: "Title required", description: "Please provide a document title.", variant: "destructive" });
+      return;
+    }
+
+    setIsUploading(true);
+
+    try {
+      const { data: sessionData } = await supabase.auth.getSession();
+      const token = sessionData?.session?.access_token;
+
+      for (let i = 0; i < selectedFiles.length; i++) {
+        const file = selectedFiles[i];
+        setUploadProgress(`Uploading ${file.name} (${i + 1}/${selectedFiles.length})...`);
+
+        const fileExt = file.name.split(".").pop();
+        const safeName = `${Date.now()}_${Math.random().toString(36).slice(2, 7)}.${fileExt}`;
+        const storagePath = `${program}/${branch}/${safeName}`;
+
+        // 1. Upload to Supabase Storage bucket 'rag-documents'
+        const { error: storageError } = await supabase.storage
+          .from("rag-documents")
+          .upload(storagePath, file, {
+// [rag-build-step 7/31]: feat(admin-kb): upload academic documents to rag-documents storage bucket
