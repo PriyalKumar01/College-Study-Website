@@ -54,4 +54,9 @@ serve(async (req) => {
           success: false,
           valid: false,
           error: "Invalid access code. Please contact Priyal Kumar sir for beta access.",
-// [rag-build-step 11/20]: refactor(ai-unlock): handle malformed JSON payloads gracefully
+        }),
+        { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+// [rag-build-step 12/20]: refactor(ai-unlock): optimize error response headers and status codes
