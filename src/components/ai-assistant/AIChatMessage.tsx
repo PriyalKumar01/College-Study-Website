@@ -206,4 +206,30 @@ const AIChatMessage = ({ message, onFeedbackChange }: AIChatMessageProps) => {
     if (message.queryLogId) {
       await supabase
         .from("ai_query_logs")
-// [rag-build-step 8/15]: style(chat-message): replace blue user bubble with modern slate theme
+        .update({ feedback: score })
+        .eq("id", message.queryLogId)
+        .catch(() => {});
+    }
+  };
+
+  if (message.isLoading) {
+    return <TypingIndicator />;
+  }
+
+  const isDev = import.meta.env.DEV;
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 10, scale: 0.98 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      transition={{ duration: 0.2 }}
+      className={`flex gap-2 items-start ${isUser ? "flex-row-reverse" : "flex-row"}`}
+    >
+      {/* Avatar */}
+      <div
+        className={`w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 shadow-sm mt-0.5 ${
+          isUser
+            ? "bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300"
+            : "bg-slate-900 dark:bg-slate-800 border border-slate-700 text-emerald-400"
+        }`}
+// [rag-build-step 9/15]: style(chat-message): improve dark mode readability for AI answers
