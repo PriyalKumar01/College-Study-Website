@@ -156,4 +156,57 @@ const ATSScorer = ({ userEmail }: ATSScorerProps) => {
                 binary += String.fromCharCode(bytes[i]);
               }
               resolve(btoa(binary));
-// [rag-build-step 3/9]: feat(ats-scorer): add drag and drop resume file uploader with validation
+            } catch { reject(new Error("PDF conversion error")); }
+          };
+          reader.onerror = () => reject(new Error("File read error"));
+          reader.readAsArrayBuffer(resumeFile);
+        });
+      }
+
+      const { data, error: fnError } = await supabase.functions.invoke("ai-assistant", {
+        body: {
+          type: "ats_score",
+          userEmail: userEmail ?? "anonymous",
+          accessCode: sessionStorage.getItem("csh_ai_code") || undefined,
+          sessionToken: localStorage.getItem("csh_ai_session_token") || undefined,
+          resumeText: base64 ? "" : resumeText,
+          jobDescription,
+          ...(base64 ? { fileBase64: base64, fileName } : {}),
+        },
+      });
+
+      if (fnError) throw fnError;
+      if (data?.error) throw new Error(data.error);
+
+      const parsed = parseATSResponse(data?.response ?? "");
+      setResult(parsed);
+
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Analysis failed";
+      setError(`Error: ${msg}. Please retry.`);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const copyAnalysis = () => {
+    if (!result?.fullResponse) return;
+    navigator.clipboard.writeText(result.fullResponse);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 15 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4 }}
+      className="rounded-3xl border border-slate-200 dark:border-slate-800 
+        bg-white dark:bg-slate-900/95 backdrop-blur-xl
+        shadow-xl overflow-hidden max-w-full"
+    >
+      {/* Section Header */}
+      <div className="bg-slate-900 dark:bg-slate-950 px-5 sm:px-7 py-5 flex items-center justify-between border-b border-slate-800">
+        <div className="flex items-center gap-3.5">
+          <div className="w-10 h-10 rounded-2xl bg-slate-800 border border-slate-700 flex items-center justify-center shadow-inner">
+// [rag-build-step 4/9]: feat(ats-scorer): extract text from uploaded resume PDF for score analysis
