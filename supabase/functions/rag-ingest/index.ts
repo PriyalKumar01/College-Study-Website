@@ -262,4 +262,20 @@ export interface ChunkData {
   pageEnd: number;
   content: string;
   embedText: string;
-// [rag-build-step 16/40]: feat(rag-ingest): format OCR system prompt to preserve formulas and headings
+  tokenCount: number;
+  metadata: {
+    heading?: string;
+    ocr?: boolean;
+    subject?: string;
+    branch?: string;
+    semester?: string;
+    doc_type?: string;
+  };
+}
+
+export function chunkDocument(
+  pages: PageContent[],
+  docMeta: { title: string; subject?: string; branch?: string; semester?: string; doc_type?: string },
+  targetSize = 900,
+  overlap = 150
+// [rag-build-step 17/40]: feat(rag-ingest): convert PDF pages to inline data parts for Gemini API
