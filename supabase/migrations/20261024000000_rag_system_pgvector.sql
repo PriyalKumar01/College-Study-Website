@@ -112,4 +112,14 @@ RETURNS TABLE (
   token_count           INTEGER,
   metadata              JSONB,
   rrf_score             FLOAT,
--- [rag-build-step 11/30]: feat(db): add latency_ms and provider tracking to rag_queries
+  vector_score          FLOAT,
+  fts_score             FLOAT,
+  document_title        TEXT,
+  document_public_url   TEXT,
+  document_storage_path TEXT,
+  document_source_type  TEXT,
+  document_doc_type     TEXT,
+  document_subject      TEXT,
+  document_branch       TEXT,
+  document_semester     TEXT,
+-- [rag-build-step 12/30]: feat(db): create IVFFlat cosine similarity index on chunk embeddings
