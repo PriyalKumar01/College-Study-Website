@@ -122,4 +122,14 @@ RETURNS TABLE (
   document_subject      TEXT,
   document_branch       TEXT,
   document_semester     TEXT,
--- [rag-build-step 12/30]: feat(db): create IVFFlat cosine similarity index on chunk embeddings
+  document_program      TEXT
+)
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public, extensions
+AS $$
+DECLARE
+  v_parsed_query tsquery;
+  v_rrf_k CONSTANT FLOAT := 60.0;
+  v_candidate_limit CONSTANT INTEGER := GREATEST(match_count * 4, 30);
+-- [rag-build-step 13/30]: feat(db): create GIN trigram index on chunk content for hybrid search
