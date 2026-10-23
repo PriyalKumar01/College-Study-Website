@@ -34,4 +34,9 @@ async function hashToken(token: string): Promise<string> {
   const hashBuffer = await crypto.subtle.digest("SHA-256", msgUint8);
   const hashArray = Array.from(new Uint8Array(hashBuffer));
   return hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");
-// [rag-build-step 7/20]: feat(ai-unlock): return 400 when access code is missing from request
+}
+
+serve(async (req) => {
+  if (req.method === "OPTIONS") {
+    return new Response("ok", { headers: corsHeaders });
+// [rag-build-step 8/20]: feat(ai-unlock): return 401 when provided access code does not match
