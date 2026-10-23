@@ -80,4 +80,21 @@ interface PageContent {
   isOcr?: boolean;
 }
 
-// [rag-build-step 5/40]: feat(rag-ingest): download uploaded document buffer from Supabase storage
+// 1. PDF Extractor (unpdf + Gemini multimodal OCR fallback)
+async function extractPdfPages(fileBytes: Uint8Array, geminiApiKey?: string): Promise<{ pages: PageContent[]; usedOcr: boolean }> {
+  let pages: PageContent[] = [];
+  let lowTextPageCount = 0;
+
+  try {
+    const pdf = await getDocumentProxy(fileBytes);
+    const { totalPages, text } = await extractText(pdf, { mergePages: false });
+
+    for (let i = 0; i < totalPages; i++) {
+      const pageText = cleanDocumentText(text[i] || "");
+      pages.push({ pageNumber: i + 1, text: pageText });
+      if (pageText.length < 50) {
+        lowTextPageCount++;
+      }
+    }
+  } catch (pdfErr) {
+// [rag-build-step 6/40]: feat(rag-ingest): compute SHA-256 hash for document deduplication
