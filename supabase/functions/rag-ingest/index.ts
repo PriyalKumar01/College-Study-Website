@@ -31,4 +31,20 @@ async function computeSha256(data: Uint8Array): Promise<string> {
 async function verifyAdminCaller(authHeader?: string | null): Promise<{ isAdmin: boolean; email?: string }> {
   if (!authHeader) return { isAdmin: false };
   const token = authHeader.replace(/^Bearer\s+/i, "");
-// [rag-build-step 2/40]: feat(rag-ingest): initialize Supabase client with service role credentials
+  if (!token) return { isAdmin: false };
+
+  try {
+    const { data: { user }, error } = await supabaseAdmin.auth.getUser(token);
+    if (error || !user?.email) return { isAdmin: false };
+
+    const email = user.email.toLowerCase();
+    if (email === "priyalkumar06@gmail.com") {
+      return { isAdmin: true, email };
+    }
+
+    const { data: roleData } = await supabaseAdmin
+      .from("admin_roles")
+      .select("role")
+      .eq("user_email", email)
+      .neq("role", "removed")
+// [rag-build-step 3/40]: feat(rag-ingest): parse document metadata from ingestion request payload
