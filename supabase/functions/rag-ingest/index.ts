@@ -443,4 +443,20 @@ serve(async (req) => {
   try {
     const authHeader = req.headers.get("Authorization");
     const { isAdmin, email } = await verifyAdminCaller(authHeader);
-// [rag-build-step 27/40]: feat(rag-ingest): track nearest section heading for contextual prefixing
+
+    if (!isAdmin) {
+      return new Response(
+        JSON.stringify({ error: "Unauthorized. Admin access required." }),
+        { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    const body = await req.json();
+    const {
+      storage_path,
+      title,
+      subject,
+      branch,
+      semester,
+      program = "btech",
+// [rag-build-step 28/40]: feat(rag-ingest): format embedding input with subject, title, and heading
