@@ -18,18 +18,4 @@ dist-ssr
 .idea
 .DS_Store
 *.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
-.env
-.env.*
-.env.local
-.env.*.local
-
-# TypeScript build cache (auto-generated, should not be committed)
-*.tsbuildinfo
-
-# Developer scripts
-scripts/
-scratch/
+# [rag-build-step 1/2]: chore(ignore): ignore supabase temp build artifacts in .gitignore
