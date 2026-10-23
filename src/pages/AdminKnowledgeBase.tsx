@@ -689,4 +689,30 @@ const AdminKnowledgeBase = () => {
                   Active documents embedded in pgvector for RAG responses.
                 </CardDescription>
               </div>
-// [rag-build-step 27/31]: style(admin-kb): polish loading spinners and action button hover states
+            </div>
+          </CardHeader>
+          <CardContent className="p-0">
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-xs">
+                <thead className="bg-slate-50 dark:bg-slate-950 border-b border-slate-200 dark:border-slate-800 text-slate-500 font-semibold uppercase tracking-wider text-[10px]">
+                  <tr>
+                    <th className="px-4 py-3">Document</th>
+                    <th className="px-4 py-3">Branch & Sem</th>
+                    <th className="px-4 py-3">Type</th>
+                    <th className="px-4 py-3">Pages / Chunks</th>
+                    <th className="px-4 py-3">Status</th>
+                    <th className="px-4 py-3 text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100 dark:divide-slate-800 font-medium text-slate-800 dark:text-slate-200">
+                  {documents.length === 0 ? (
+                    <tr>
+                      <td colSpan={6} className="px-4 py-8 text-center text-slate-400">
+                        {isLoadingDocs ? "Loading catalog..." : "No documents ingested yet. Upload your first document above!"}
+                      </td>
+                    </tr>
+                  ) : (
+                    documents.map((doc) => (
+                      <tr key={doc.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-950/40 transition-colors">
+                        <td className="px-4 py-3">
+// [rag-build-step 28/31]: chore(admin-kb): format types and interfaces for admin document models
