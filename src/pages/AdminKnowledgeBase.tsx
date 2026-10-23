@@ -663,4 +663,30 @@ const AdminKnowledgeBase = () => {
                         </span>
                         <Badge variant="secondary" className="text-[9px] px-1.5 py-0 font-mono">
                           RRF: {(res.rrf_score * 100).toFixed(1)}
-// [rag-build-step 26/31]: security(admin-kb): verify role authorization before initiating ingestion
+                        </Badge>
+                      </div>
+                      <p className="text-slate-600 dark:text-slate-300 text-[11px] leading-relaxed line-clamp-3">
+                        {res.content}
+                      </p>
+                    </div>
+                  ))
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Ingested Documents Catalog Table */}
+        <Card className="shadow-sm border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-hidden">
+          <CardHeader className="pb-3 border-b border-slate-100 dark:border-slate-800">
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle className="text-base font-bold flex items-center gap-2">
+                  <BookOpen className="w-4 h-4 text-indigo-600" />
+                  Ingested Knowledge Catalog ({documents.length})
+                </CardTitle>
+                <CardDescription className="text-xs">
+                  Active documents embedded in pgvector for RAG responses.
+                </CardDescription>
+              </div>
+// [rag-build-step 27/31]: style(admin-kb): polish loading spinners and action button hover states
