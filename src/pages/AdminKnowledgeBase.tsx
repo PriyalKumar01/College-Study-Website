@@ -305,4 +305,29 @@ const AdminKnowledgeBase = () => {
     } catch (err: unknown) {
       toast({
         title: "Site Ingest Failed",
-// [rag-build-step 12/31]: feat(admin-kb): show chunk count, page count, and file size in document table
+        description: err instanceof Error ? err.message : "Error ingesting site",
+        variant: "destructive",
+      });
+    } finally {
+      setIsIngestingSite(false);
+    }
+  };
+
+  // Test Retrieval Search
+  const handleTestRetrieval = async () => {
+    if (!testQuery.trim()) return;
+    setIsSearching(true);
+    setSearchResults([]);
+
+    try {
+      const { data: sessionData } = await supabase.auth.getSession();
+      const token = sessionData?.session?.access_token;
+
+      // Call rag-chat with a test probe or invoke RPC
+      // First try calling rag-chat with temporary session
+      const { data, error } = await supabase.functions.invoke("rag-chat", {
+        body: {
+          query: testQuery.trim(),
+          sessionToken: localStorage.getItem("csh_ai_session_token") || "test_token",
+          userEmail: user?.email,
+// [rag-build-step 13/31]: feat(admin-kb): add re-process action for failed or updated documents
