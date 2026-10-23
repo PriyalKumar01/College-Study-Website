@@ -97,4 +97,20 @@ async function extractPdfPages(fileBytes: Uint8Array, geminiApiKey?: string): Pr
       }
     }
   } catch (pdfErr) {
-// [rag-build-step 6/40]: feat(rag-ingest): compute SHA-256 hash for document deduplication
+    console.warn("Direct PDF extraction warning, fallback to OCR:", pdfErr);
+    lowTextPageCount = 999;
+  }
+
+  // If >50% pages have little or no text, the PDF is likely scanned or handwritten.
+  // Run Gemini multimodal OCR if API key is provided.
+  const isScanned = pages.length === 0 || (lowTextPageCount / Math.max(pages.length, 1)) > 0.5;
+
+  if (isScanned && geminiApiKey) {
+    console.log("Triggering Gemini Multimodal OCR for scanned PDF...");
+    try {
+      const base64 = btoa(
+        Array.from(fileBytes)
+          .map((byte) => String.fromCharCode(byte))
+          .join("")
+      );
+// [rag-build-step 7/40]: feat(rag-ingest): check if document hash already exists in rag_documents
