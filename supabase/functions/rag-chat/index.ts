@@ -24,4 +24,18 @@ async function hashToken(token: string): Promise<string> {
   return hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");
 }
 
-// [rag-build-step 2/45]: feat(rag-chat): add CORS middleware with preflight handling
+// ── Verify Session Token ─────────────────────────────────────
+async function verifySessionToken(token?: string | null): Promise<{ valid: boolean; identifier?: string }> {
+  if (!token) return { valid: false };
+
+  try {
+    const tokenHash = await hashToken(token);
+    const { data, error } = await supabaseAdmin
+      .from("ai_sessions")
+      .select("token_hash, expires_at, identifier")
+      .eq("token_hash", tokenHash)
+      .gt("expires_at", new Date().toISOString())
+      .maybeSingle();
+
+    if (error || !data) {
+// [rag-build-step 3/45]: feat(rag-chat): validate authorization header and access code
