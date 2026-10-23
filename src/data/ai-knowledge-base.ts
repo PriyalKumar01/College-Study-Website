@@ -106,4 +106,40 @@ export const BTECH_NOTES = {
       cse: { path: "/sixth-semester-cse-notes", subjects: ["Machine Learning (ML)", "Information Security", "Cloud Computing", "Software Testing", "Open Electives"] },
       me: { path: "/sixth-semester-me-notes" },
       ce: { path: "/sixth-semester-ce-notes" },
-// [rag-build-step 3/25]: feat(knowledge-base): normalize search strings by stripping punctuation
+      ch: { path: "/sixth-semester-ch-notes" },
+      lft: { path: "/sixth-semester-lft-notes" },
+      et: { path: "/sixth-semester-et-notes" },
+      pt: { path: "/sixth-semester-pt-notes" },
+      be: { path: "/sixth-semester-be-notes" },
+      ft: { path: "/sixth-semester-ft-notes" },
+      ot: { path: "/sixth-semester-ot-notes" },
+      ee: { path: "/sixth-semester-ee-notes" },
+      openElectives: { path: "/sixth-semester-open-electives" },
+    },
+    sem7: {
+      path: "/seventh-semester-cse-notes",
+      label: "7th Semester (CSE)",
+      cse: { path: "/seventh-semester-cse-notes", subjects: ["Distributed Systems", "Big Data Analytics", "Internet of Things (IoT)", "Deep Learning", "Electives"] },
+    },
+    sem8: {
+      path: "/eighth-semester-cse-notes",
+      label: "8th Semester (CSE)",
+      cse: { path: "/eighth-semester-cse-notes", subjects: ["Project Work", "Seminar", "Industrial Training", "Electives"] },
+    },
+  },
+};
+
+// ── BSMS / BBA / MBA Notes ───────────────────────────────────
+export const OTHER_PROGRAM_NOTES = {
+  bsms: {
+    base: { path: "/notes/bsms", label: "BS-MS Notes" },
+    years: {
+      second: { path: "/bsms-second-year-notes" },
+      third: { path: "/bsms-third-year-notes" },
+    },
+    semesters: {
+      sem3: { path: "/bsms-sem3-notes", label: "BS-MS Semester 3" },
+      sem4: { path: "/bsms-sem4-notes", label: "BS-MS Semester 4" },
+      sem5: { path: "/bsms-sem5-notes", label: "BS-MS Semester 5" },
+      sem6: { path: "/bsms-sem6-notes", label: "BS-MS Semester 6" },
+// [rag-build-step 4/25]: feat(knowledge-base): prioritize exact phrase matches over partial substring matches
