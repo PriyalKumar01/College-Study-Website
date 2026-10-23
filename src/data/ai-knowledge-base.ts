@@ -576,4 +576,40 @@ Direct link: [8th Semester CSE Notes](/eighth-semester-cse-notes)
   },
   {
     keywords: ["bsms notes", "bs ms", "bs-ms", "bsms semester", "integrated program"],
-// [rag-build-step 16/25]: refactor(knowledge-base): add strict instructions to refuse coupon disclosure
+    response: `📚 **BS-MS Integrated Program Notes:**
+
+Available semester pages:
+- [BS-MS Semester 3 Notes](/bsms-sem3-notes)
+- [BS-MS Semester 4 Notes](/bsms-sem4-notes)
+- [BS-MS Semester 5 Notes](/bsms-sem5-notes)
+- [BS-MS Semester 6 Notes](/bsms-sem6-notes)
+
+Year-wise: [2nd Year](/bsms-second-year-notes) | [3rd Year](/bsms-third-year-notes)`,
+  },
+  {
+    keywords: ["hr contacts", "hr emails", "company contacts", "hr directory", "recruiter contacts"],
+    response: `💼 **HR Contacts & Company Directory:**
+
+Direct link: [Premium Directory](/premium-directory) *(Premium Feature)*
+
+**Includes:**
+- Verified HR email addresses for 2500+ technology and engineering firms
+- Direct recruiter contacts and company hiring portals
+- Streamlined off-campus outreach resources`,
+  },
+  {
+    keywords: ["hbtu website", "hbtu official", "hbtu site", "hbtu link", "hbtu.ac.in", "hbtu portal"],
+    response: `🌐 **HBTU Kanpur Official Portals & Direct Links:**
+
+1. 🏛️ **Official University Website:** [hbtu.ac.in](https://hbtu.ac.in/)
+   - Academic circulars, exam notices, syllabus, tenders, and faculty directory.
+2. 💻 **ERP Portal (Student Login):** [erp.hbtu.ac.in](https://erp.hbtu.ac.in/NewIndex.html)
+   - Semester registration, fee payment receipts, grade cards, and admit cards.
+3. 📊 **Attendance Portal:** [erp.hbtu.ac.in/StudentAttendance.aspx](https://erp.hbtu.ac.in/StudentAttendance.aspx)
+   - Real-time subject-wise and aggregate attendance tracking (75% mandatory rule).
+4. 🎓 **UP Scholarship Portal:** [scholarship.up.gov.in](https://scholarship.up.gov.in/index.aspx)
+5. 📱 **Digi Shakti Portal (Tablet Scheme):** [digishakti.up.gov.in](https://digishakti.up.gov.in/)
+
+*All links are also organized under the **Useful Websites** dropdown in the top navbar!* 🚀`,
+  },
+// [rag-build-step 17/25]: refactor(knowledge-base): add citation formatting directives to system prompt
