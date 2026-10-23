@@ -466,4 +466,17 @@ serve(async (req) => {
     // If an attached file is sent, place it first in context
     if (attachedFileContext?.text) {
       contextBlocks.push(
-// [rag-build-step 35/45]: security(rag-chat): scrub sensitive system tokens from outgoing responses
+        `[${contextIndex}] User Attached File: "${attachedFileContext.fileName || "uploaded_file"}"\n${attachedFileContext.text.slice(0, 8000)}`
+      );
+      sources.push({
+        index: contextIndex,
+        title: attachedFileContext.fileName || "Uploaded File",
+        snippet: attachedFileContext.text.slice(0, 150) + "...",
+        score: 1.0,
+      });
+      contextIndex++;
+    }
+
+    for (const chunk of retrievedChunks) {
+      const pageInfo = chunk.page_start ? `p. ${chunk.page_start}` : "";
+// [rag-build-step 36/45]: style(rag-chat): add colored debug traces for retrieval diagnostics
