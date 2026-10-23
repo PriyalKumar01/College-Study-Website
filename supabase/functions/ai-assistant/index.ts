@@ -211,4 +211,110 @@ async function callAI(
       if (text && text.trim().length > 0) {
         return { text, modelUsed: "gpt-4o-mini", fallbackUsed: true };
       }
-// [rag-build-step 2/5]: refactor(ai-assistant): enforce strict English response in system prompt
+    } catch (openaiErr) {
+      console.error("OpenAI fallback failed:", openaiErr);
+      lastError = openaiErr;
+    }
+  }
+
+  throw new Error(`AI services are currently unavailable. Please try again shortly. (${lastError instanceof Error ? lastError.message : "No LLM responded"})`);
+}
+
+// ── PDF Text Extraction & Analysis via Gemini Multimodal ────
+async function extractAndAnalyzePDF(
+  base64PDF: string,
+  userQuery: string,
+  fileName: string
+): Promise<string> {
+  const geminiKey = Deno.env.get("GEMINI_API_KEY");
+  const isResume = fileName.toLowerCase().includes("resume") || 
+                   fileName.toLowerCase().includes("cv") || 
+                   userQuery.toLowerCase().includes("ats") || 
+                   userQuery.toLowerCase().includes("resume");
+  
+  if (geminiKey) {
+    try {
+      const systemInstruction = isResume
+        ? `You are an expert ATS (Applicant Tracking System) reviewer and hiring coach for college students and freshers.
+Analyze the uploaded resume PDF in detail:
+1. Scan all text, sections, technical skills, projects, work experience, education, and links (GitHub/LinkedIn).
+2. Calculate an **ATS Score (0-100)** based on formatting, keyword density, and action-verb usage.
+3. List **Matched Strengths** and **Missing Keywords/Skills** for modern tech roles.
+4. Provide **Top 5 Actionable Improvements** and **2-3 High-Impact Bullet Points** the student can directly use.
+Format cleanly in articulate English with appropriate emojis. Never disclose any coupon codes.`
+        : `You are an expert academic assistant for HBTU Kanpur students. 
+You analyze exam question papers (PYQs), syllabus copies, and academic notes PDFs.
+When given a PDF, identify:
+1. Subject name and exam year (if visible)
+2. Topic-wise distribution of questions
+3. Most frequently repeated concepts
+4. Top probable exam questions based on pattern analysis
+Format your response clearly with numbered lists and sections in articulate English. Never disclose any coupon codes.`;
+
+      const promptText = isResume
+        ? (userQuery || `Is resume PDF ko scan karo aur:
+1. 🎯 **ATS Score: [0-100]** do
+2. 💡 Key strengths & formatting review
+3. ⚠️ Missing tech skills & keywords
+4. 🚀 Top 5 specific improvement suggestions
+5. ✍️ 2-3 ready-to-use resume bullet points do`)
+        : (userQuery || `Is PDF ko analyze karo aur:
+1. 📚 Subject aur topic identify karo
+2. 🔄 Most repeated concepts nikalo  
+3. ⭐ Top 10 most probable exam questions do (numbered list mein)
+4. 💡 Preparation tips do`);
+
+      const response = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent?key=${geminiKey}`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            systemInstruction: { parts: [{ text: systemInstruction }] },
+            contents: [{
+              role: "user",
+              parts: [
+                {
+                  inlineData: {
+                    mimeType: "application/pdf",
+                    data: base64PDF,
+                  }
+                },
+                { text: promptText }
+              ]
+            }],
+            generationConfig: {
+              maxOutputTokens: 1500,
+              temperature: 0.4,
+            }
+          })
+        }
+      );
+
+      if (response.ok) {
+        const data = await response.json();
+        const result = data.candidates?.[0]?.content?.parts?.[0]?.text;
+        if (result) return result;
+      }
+    } catch (e) {
+      console.error("Gemini PDF error:", e);
+    }
+  }
+
+  // Fallback
+  const aiResult = await callAI(
+    "You are an academic assistant. The user has uploaded an academic/resume document. Provide a comprehensive structured evaluation.",
+    [{ role: "user", content: `Document "${fileName}" uploaded. ${userQuery}` }]
+  );
+  return aiResult.text;
+}
+
+// ── ATS Resume Scoring (Direct PDF Scan or Text) ─────────────
+async function scoreResume(
+  resumeText: string,
+  jobDescription: string,
+  fileBase64?: string,
+  fileName?: string
+): Promise<string> {
+  const geminiKey = Deno.env.get("GEMINI_API_KEY");
+// [rag-build-step 3/5]: refactor(ai-assistant): remove hardcoded access code fallback
