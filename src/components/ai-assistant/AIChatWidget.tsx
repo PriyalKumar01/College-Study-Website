@@ -144,4 +144,23 @@ You can ask me anything about your courses and the platform:
       });
       e.target.value = "";
       return;
-// [rag-build-step 8/35]: feat(chat-widget): check local cache before dispatching RAG network request
+    }
+
+    setAttachedFile(file);
+    setAttachedContext(null);
+    setIsExtractingFile(true);
+    setFileExtractStatus("AI scanning & text extraction...");
+
+    try {
+      const base64 = await readFileAsBase64(file);
+      const { data, error } = await supabase.functions.invoke("rag-extract", {
+        body: {
+          fileBase64: base64,
+          fileName: file.name,
+          mimeType: file.type || "application/octet-stream",
+        },
+      });
+
+      if (!error && data?.text) {
+        setAttachedContext({ fileName: file.name, text: data.text });
+// [rag-build-step 9/35]: feat(chat-widget): pass verified access token with RAG chat requests
