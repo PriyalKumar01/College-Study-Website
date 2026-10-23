@@ -519,4 +519,18 @@ STRICT CONFIDENTIALITY — CRITICAL RULE:
       : query;
 
     const chatMessages = [
-// [rag-build-step 39/45]: test(rag-chat): verify Gemini primary invocation flow
+      ...conversationHistory.slice(-6).map((m: any) => ({
+        role: m.role === "assistant" ? "assistant" : "user",
+        content: m.content,
+      })),
+      { role: "user", content: userMessage },
+    ];
+
+    // 7. Generation (Gemini primary -> OpenAI fallback)
+    let answer = "";
+    let modelUsed = "gemini-flash";
+    let fallbackUsed = false;
+
+    if (geminiKey) {
+      try {
+// [rag-build-step 40/45]: test(rag-chat): verify GPT-4o-mini fallback triggers on simulated failure
