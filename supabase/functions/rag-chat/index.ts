@@ -412,4 +412,18 @@ serve(async (req) => {
       );
     }
 
-// [rag-build-step 31/45]: refactor(rag-chat): extract prompt formatting into reusable builder
+    const geminiKey = Deno.env.get("GEMINI_API_KEY");
+    const openAiKey = Deno.env.get("OPENAI_API_KEY");
+
+    if (!geminiKey && !openAiKey) {
+      return new Response(
+        JSON.stringify({ error: "AI service keys are not configured" }),
+        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    // 4. Hybrid Retrieval
+    let retrievedChunks: any[] = [];
+    let topScore = 0;
+
+// [rag-build-step 32/45]: refactor(rag-chat): decouple LLM provider adapters for easier extension
