@@ -622,4 +622,21 @@ Please:
               <Send className="w-4 h-4" />
             )}
           </button>
-// [rag-build-step 34/35]: style(chat-widget): polish typography and spacing throughout widget
+        </div>
+
+        {/* Footer */}
+        <div className="flex items-center justify-between mt-2 px-1">
+          <p className="text-[9px] text-slate-400 dark:text-slate-500 flex items-center gap-1 font-medium">
+            <Sparkles className="w-2.5 h-2.5 text-emerald-500" />
+            College Study Assistant · Grounded RAG
+          </p>
+          <p className="text-[9px] text-slate-400 dark:text-slate-500">
+            Enter to send · Shift+Enter for newline
+          </p>
+        </div>
+      </div>
+    </motion.div>
+  );
+};
+
+export default AIChatWidget;
