@@ -218,4 +218,22 @@ You can ask me anything about your courses and the platform:
     setIsLoading(true);
 
     const loadingId = generateId();
-// [rag-build-step 12/35]: feat(chat-widget): add stop generating button during active LLM stream
+    setMessages(prev => [...prev, {
+      id: loadingId,
+      role: "assistant",
+      content: "",
+      timestamp: new Date(),
+      isLoading: true,
+    }]);
+
+    try {
+      // 1. Instant cached response if no file attached
+      if (!currentFile) {
+        const cached = findCachedResponse(currentInput);
+        if (cached) {
+          setMessages(prev => [
+            ...prev.filter(m => m.id !== loadingId),
+            {
+              id: generateId(),
+              role: "assistant",
+// [rag-build-step 13/35]: feat(chat-widget): add clear conversation action with confirmation
