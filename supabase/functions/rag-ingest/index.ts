@@ -361,4 +361,20 @@ export function chunkDocument(
               }
             }
           }
-// [rag-build-step 22/40]: feat(rag-ingest): repair hyphenated words broken across line wraps
+          buffer = sentBuffer;
+        } else {
+          // Carry overlap from previous paragraph
+          const carryOver = buffer.slice(-overlap);
+          buffer = carryOver ? carryOver + "\n\n" + paragraph : paragraph;
+        }
+      }
+    }
+
+    if (buffer.trim()) {
+      const content = buffer.trim();
+      const embedText = `Subject: ${docMeta.subject || "General"} | Title: ${docMeta.title} | Section: ${currentHeading}\n\n${content}`;
+      chunks.push({
+        chunkIndex: chunkIndex++,
+        pageStart: page.pageNumber,
+        pageEnd: page.pageNumber,
+// [rag-build-step 23/40]: feat(rag-ingest): collapse redundant whitespace and empty lines
