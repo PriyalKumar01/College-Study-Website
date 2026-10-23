@@ -196,4 +196,20 @@ async function extractDocxPages(fileBytes: Uint8Array): Promise<{ pages: PageCon
       pages: [{ pageNumber: 1, text: clean }],
       usedOcr: false,
     };
-// [rag-build-step 12/40]: feat(rag-ingest): implement PPTX slide extraction and slide-number tracking
+  } catch (err) {
+    console.error("DOCX extraction error:", err);
+    throw new Error("Failed to extract DOCX text: " + (err instanceof Error ? err.message : String(err)));
+  }
+}
+
+// 3. PPTX Extractor (ZIP -> ppt/slides/slide*.xml)
+async function extractPptxPages(fileBytes: Uint8Array): Promise<{ pages: PageContent[]; usedOcr: boolean }> {
+  try {
+    const zip = await JSZip.loadAsync(fileBytes);
+    const pages: PageContent[] = [];
+
+    // Find all slides sorted by slide number
+    const slideNames: string[] = [];
+    zip.forEach((relativePath) => {
+      if (relativePath.match(/^ppt\/slides\/slide\d+\.xml$/i)) {
+// [rag-build-step 13/40]: feat(rag-ingest): implement plain text and Markdown parser for raw notes
