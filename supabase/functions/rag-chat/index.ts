@@ -105,4 +105,17 @@ async function incrementDailyUsage(identifier: string): Promise<number> {
 
 // ── Cached Response Layer (Matching Phase 1 logic) ───────────
 function normalizeQuery(text: string): string {
-// [rag-build-step 8/45]: feat(rag-chat): execute hybrid retrieval via match_rag_chunks RPC
+  return text
+    .toLowerCase()
+    .replace(/[^\w\s]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+const GREETING_WORDS = new Set(["hi", "hello", "hey", "namaste", "hii", "helo", "greetings"]);
+
+const CACHED_ENTRIES = [
+  {
+    keywords: ["notes contribute", "contribute notes", "notes submit", "notes upload"],
+    response: `📝 **Notes Contribution Process:**\n\nTo contribute notes, **Admin Access** is required.\n1. Contact Founder Priyal Kumar on WhatsApp (+91 89572 21543).\n2. Share your name, branch, and semester so Admin Portal access can be granted.\n3. After review, your notes will go live and you'll earn **StudyCoins** on the [Notes Contributors](/notes-contributors) leaderboard!`,
+// [rag-build-step 9/45]: feat(rag-chat): apply similarity threshold filtering to candidate chunks
