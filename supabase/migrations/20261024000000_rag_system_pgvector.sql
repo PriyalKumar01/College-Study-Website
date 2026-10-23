@@ -298,4 +298,13 @@ CREATE POLICY "Admins can manage rag-documents bucket"
     )
   )
   WITH CHECK (
--- [rag-build-step 29/30]: style(db): format SQL comments and documentation headers
+    bucket_id = 'rag-documents' AND (
+      EXISTS (
+        SELECT 1 FROM public.admin_roles ar
+        WHERE ar.user_email = auth.jwt() ->> 'email'
+        AND ar.role IN ('owner', 'super_admin', 'admin')
+      )
+      OR (auth.jwt() ->> 'email' = 'priyalkumar06@gmail.com')
+    )
+  );
+
