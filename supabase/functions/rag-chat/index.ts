@@ -372,4 +372,17 @@ serve(async (req) => {
     const effectiveId = userEmail?.toLowerCase() || identifier || "anonymous";
 
     // 2. Check Cached Response Layer first (quota-free)
-// [rag-build-step 28/45]: feat(rag-chat): record latency, provider, and retrieved chunk count
+    const cachedHit = findServerCachedResponse(query);
+    if (cachedHit) {
+      const { count } = await checkDailyRateLimit(effectiveId);
+      const remaining = Math.max(0, MAX_QUERIES_PER_DAY - count);
+
+      // Async log query
+      supabaseAdmin.from("ai_query_logs").insert({
+        query: query.slice(0, 500),
+        used_cache: true,
+        model_used: "cache",
+        fallback_used: false,
+        latency_ms: Date.now() - startTime,
+      }).then(() => {});
+// [rag-build-step 29/45]: feat(rag-chat): format JSON response with answer, citations, and provider
