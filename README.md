@@ -55,4 +55,61 @@ flowchart TD
         EmbedQuery --> HybridSearch["Call PostgreSQL RPC: rag_hybrid_search"]
         
         subgraph StorageEngine ["Supabase PostgreSQL + pgvector"]
-# [rag-build-step 1/7]: docs(readme): update README with RAG system architecture overview
+            HybridSearch --> VectorSim["Vector Cosine Distance (HNSW Index)"]
+            HybridSearch --> FTS["Full-Text Keyword Search (English tsvector)"]
+            VectorSim & FTS --> RRF["Reciprocal Rank Fusion (RRF Scoring)"]
+            RRF --> TopChunks[("Top 6 Relevant Academic Chunks")]
+        end
+
+        TopChunks --> GroundedPrompt["Assemble Grounded Prompt + Numbered Sources"]
+        
+        subgraph DualLLM ["Dual-LLM Failover Engine"]
+            GroundedPrompt --> PrimaryLLM["Primary: Google Gemini 3.5 Flash"]
+            PrimaryLLM -- Success (200 OK) --> ResponseFormat["Format Inline Citations [1], [2]"]
+            PrimaryLLM -- Fail (Timeout / 429 / 5xx) --> FallbackLLM["Fallback: OpenAI GPT-4o-mini"]
+            FallbackLLM --> ResponseFormat
+        end
+        
+        ResponseFormat --> Telemetry["Log Query & Latency (ai_query_logs)"]
+        Telemetry --> JSONResponse["Return Grounded JSON Response"]
+    end
+
+    JSONResponse --> RenderChat["Render Message with Clickable Citations & Sheet Drawer"]
+```
+
+### 🔬 Core Components of the RAG Engine
+
+1. **Document Ingestion Pipeline (`rag-ingest`)**:
+   - Multi-format ingestion supporting **PDF**, **DOCX**, **PPTX**, **TXT**, and **MD** (up to 25 MB).
+   - Page-by-page extraction preserving structural headers, tables, and page boundaries.
+   - **Gemini Multimodal OCR Fallback**: Scanned or handwritten pages with sparse text are automatically transcribed via Gemini Vision OCR (`metadata.ocr = true`).
+   - **Semantic Chunking**: 800–1000 characters (~200–250 tokens) with 150-character overlap, splitting strictly on paragraph and heading boundaries.
+   - **Batch Embedding**: Vectorized via `gemini-embedding-001` (768 dimensions) with exponential backoff and rate-limit retry logic.
+
+2. **Vector Store & Hybrid Retrieval (`rag_hybrid_search`)**:
+   - Vector indexing powered by **pgvector** using **Hierarchical Navigable Small World (HNSW)** cosine distance indexes (`m=16`, `ef_construction=64`).
+   - Hybrid retrieval combines dense semantic vector search with sparse full-text lexical search (`websearch_to_tsquery`) through **Reciprocal Rank Fusion (RRF)**:
+     $$\text{RRF Score} = \frac{1}{60 + \text{Rank}_{\text{dense}}} + \frac{1}{60 + \text{Rank}_{\text{sparse}}}$$
+   - Granular filtering by branch, semester, and course subject.
+
+3. **Grounding & Source Citation**:
+   - Context is injected as numbered blocks (`[1]`, `[2]`).
+   - Every claim is tied to an inline citation tag.
+   - Students can click any citation pill to view the source title, page range, similarity score, and raw text preview.
+
+4. **Dual-LLM Failover Architecture**:
+   - **Primary Model**: Google Gemini 3.5 Flash (sub-second TTFT, generous context window).
+   - **Fallback Model**: OpenAI GPT-4o-mini, triggered automatically if Gemini encounters network timeouts, 429 rate limits, or service outages.
+
+5. **Quota-Free Server-Side Cached Response Layer**:
+   - Scored keyword and word-boundary matching for common university queries (e.g., ERP links, attendance regulations, scholarship procedures, notes contribution).
+   - High-confidence matches return instantly without consuming LLM API quota or user daily query limits.
+
+6. **Admin Knowledge Base Dashboard (`/admin/knowledge-base`)**:
+   - Drag-and-drop batch document upload into private Supabase Storage (`rag-documents`).
+   - Live document processing status (Pending, Processing, Ready, Failed), page counts, and chunk totals.
+   - Built-in **Retrieval Testing Console** to test queries and inspect top-scoring vectors and similarity weights in real time.
+
+7. **One-Off Chat File Analysis (`rag-extract`)**:
+   - Any student can attach a document directly in the chat interface.
+# [rag-build-step 2/7]: docs(readme): update README with Gemini 3.5 Flash and GPT-4o-mini details
