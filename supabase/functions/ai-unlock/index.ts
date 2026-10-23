@@ -23,4 +23,9 @@ function timingSafeEqual(a: string, b: string): boolean {
     return false;
   }
   let diff = 0;
-// [rag-build-step 5/20]: feat(ai-unlock): read AI_ACCESS_CODE from Deno environment securely
+  for (let i = 0; i < aBuf.byteLength; i++) {
+    diff |= aBuf[i] ^ bBuf[i];
+  }
+  return diff === 0;
+}
+// [rag-build-step 6/20]: feat(ai-unlock): implement constant-time string comparison for security
