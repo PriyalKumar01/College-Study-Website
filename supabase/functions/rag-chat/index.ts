@@ -145,4 +145,17 @@ const CACHED_ENTRIES = [
   },
   {
     keywords: ["hello", "hi", "hey", "namaste", "hii", "helo"],
-// [rag-build-step 11/45]: feat(rag-chat): deduplicate retrieved chunks and sort by relevance score
+    response: `👋 **Hello! Welcome to College Study Assistant!**\nI am your official academic AI assistant. Ask me anything about notes, past year question papers (PYQs), university portals (ERP, Attendance), scholarships, or resume ATS scoring! 😊`,
+  },
+];
+
+function findServerCachedResponse(query: string): string | null {
+  const norm = normalizeQuery(query);
+  if (!norm) return null;
+
+  const words = norm.split(/\s+/).filter(Boolean);
+  let bestMatch: { response: string; score: number } | null = null;
+
+  for (const item of CACHED_ENTRIES) {
+    let entryScore = 0;
+// [rag-build-step 12/45]: feat(rag-chat): assemble context window with source metadata and chunk tags
