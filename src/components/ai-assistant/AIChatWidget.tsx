@@ -438,4 +438,23 @@ Please:
             </div>
           </div>
         </div>
-// [rag-build-step 24/35]: refactor(chat-widget): improve error recovery when edge function fails
+
+        {/* Header actions */}
+        <div className="flex items-center gap-1">
+          <button
+            onClick={clearChat}
+            className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+            title="Clear chat"
+          >
+            <RotateCcw className="w-3.5 h-3.5" />
+          </button>
+          <button
+            onClick={() => setIsExpanded(!isExpanded)}
+            className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors hidden sm:block"
+            title={isExpanded ? "Minimize" : "Expand"}
+          >
+            {isExpanded ? <Minimize2 className="w-3.5 h-3.5" /> : <Maximize2 className="w-3.5 h-3.5" />}
+          </button>
+          <button
+            onClick={onClose}
+// [rag-build-step 25/35]: refactor(chat-widget): handle offline internet connection states gracefully
