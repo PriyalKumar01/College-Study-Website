@@ -721,4 +721,40 @@ Direct link: [Premium Content](/premium-content) *(Premium Feature)*
     response: `📝 **Previous Year Questions (PYQs):**
 
 PYQs are integrated within branch and semester notes pages:
-// [rag-build-step 20/25]: test(knowledge-base): verify specific keywords beat generic keywords in cache
+- CSE 4th Semester PYQs: [4th Semester CSE Notes](/fourth-semester-cse-notes)
+- CSE 5th Semester PYQs: [5th Semester CSE Notes](/fifth-semester-cse-notes)
+- 1st & 2nd Semester (All Branches): [First Semester Notes](/first-semester-notes) | [Second Semester Notes](/second-semester-notes)
+
+💡 **Tip:** You can attach any question paper PDF or document directly in this chat to extract key topics and top probable questions! 🤖`,
+  },
+  {
+    keywords: ["coding playground", "online compiler", "code compiler", "online ide", "code editor", "coding space"],
+    response: `💻 **Coding Space & Online Compiler:**
+
+Practice and execute code directly in your browser:
+- 🚀 **Online Compiler & Playground:** [Coding Space](/coding-space)
+- 📚 **Coding Study Material:** [Coding Study Material](/coding-study-material)
+
+Supports C, C++, Java, Python, and JavaScript with fast client-side execution! ⚡`,
+  },
+  {
+    keywords: ["hello", "hi", "hey", "namaste", "hii", "helo"],
+    response: `👋 **Hello! Welcome to College Study Assistant!**
+
+I am your official academic AI assistant for College Study Hub.
+
+**Feel free to ask me about:**
+- 📚 Branch & semester notes, syllabus, and PYQs
+- 🏛️ HBTU portals (ERP, Attendance, Circulars)
+- 🏆 UP Scholarships, corporate CSR grants, and Digi Shakti tablet scheme
+- 📄 Resume ATS scoring & job description analysis
+- 💼 Placement roadmaps, GATE Study Hub & career resources
+
+How can I assist you today? 😊`,
+  },
+];
+
+// ── System Prompt for AI API ─────────────────────────────────
+export const buildSystemPrompt = (): string => {
+  return `You are College Study Assistant, the official AI academic assistant for College Study Hub (college-study.netlify.app), built specifically for Harcourt Butler Technical University (HBTU Kanpur) students.
+// [rag-build-step 21/25]: test(knowledge-base): verify unrelated queries return null from cache
