@@ -278,4 +278,21 @@ export function chunkDocument(
   docMeta: { title: string; subject?: string; branch?: string; semester?: string; doc_type?: string },
   targetSize = 900,
   overlap = 150
-// [rag-build-step 17/40]: feat(rag-ingest): convert PDF pages to inline data parts for Gemini API
+): ChunkData[] {
+  const chunks: ChunkData[] = [];
+  let currentHeading = "General";
+  let chunkIndex = 0;
+
+  for (const page of pages) {
+    const pageText = page.text;
+    if (!pageText || pageText.trim().length === 0) continue;
+
+    // Split paragraphs
+    const paragraphs = pageText.split(/\n\n+/);
+    let buffer = "";
+
+    for (const paragraph of paragraphs) {
+      // Check for headings: Markdown (# Heading) or short capitalized line
+      const firstLine = paragraph.trim().split("\n")[0].trim();
+      if (
+// [rag-build-step 18/40]: feat(rag-ingest): handle OCR response and merge transcribed page text
