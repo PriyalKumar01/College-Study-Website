@@ -476,4 +476,21 @@ serve(async (req) => {
         JSON.stringify({ error: "GEMINI_API_KEY not configured in Supabase secrets" }),
         { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
-// [rag-build-step 29/40]: feat(rag-ingest): implement Gemini gemini-embedding-001 client
+    }
+
+    // 1. Download file bytes from private storage bucket 'rag-documents'
+    const { data: fileBlob, error: downloadError } = await supabaseAdmin.storage
+      .from("rag-documents")
+      .download(storage_path);
+
+    if (downloadError || !fileBlob) {
+      throw new Error(`Failed to download from storage: ${downloadError?.message ?? "Not found"}`);
+    }
+
+    const fileBytes = new Uint8Array(await fileBlob.arrayBuffer());
+    const fileHash = await computeSha256(fileBytes);
+
+    // 2. Check deduplication by SHA-256
+    let docId = document_id;
+    if (!docId) {
+// [rag-build-step 30/40]: feat(rag-ingest): batch chunk embeddings into 16-chunk requests
