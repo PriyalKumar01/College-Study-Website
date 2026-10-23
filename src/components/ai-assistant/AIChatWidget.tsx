@@ -383,4 +383,23 @@ Please:
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       handleSend();
-// [rag-build-step 21/35]: style(chat-widget): polish dark mode background and borders
+    }
+  };
+
+  const clearChat = () => {
+    setMessages([{
+      id: "welcome",
+      role: "assistant",
+      content: `👋 **Chat cleared!** How can I help you today?
+
+*You have ${queriesLeft} queries remaining today.* 🚀`,
+      timestamp: new Date(),
+    }]);
+    setShowSuggestions(true);
+  };
+
+  const widgetWidthClass = isExpanded ? "sm:w-[540px]" : "sm:w-[430px]";
+  const widgetHeightClass = isExpanded
+    ? "max-h-[min(680px,calc(100dvh-120px))]"
+    : "max-h-[min(580px,calc(100dvh-120px))]";
+// [rag-build-step 22/35]: perf(chat-widget): debounce input events and memoize suggestion list
