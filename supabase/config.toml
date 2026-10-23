@@ -16,4 +16,7 @@ verify_jwt = false
 verify_jwt = false
 
 [functions.rag-extract]
-# [rag-build-step 4/5]: chore(config): register rag-extract edge function in config.toml
+verify_jwt = false
+
+[functions.rag-ingest-site-knowledge]
+verify_jwt = false
