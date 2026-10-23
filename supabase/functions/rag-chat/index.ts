@@ -51,4 +51,17 @@ async function verifySessionToken(token?: string | null): Promise<{ valid: boole
 // ── Server-Side Daily Rate Limit Check ───────────────────────
 async function checkDailyRateLimit(identifier: string): Promise<{ allowed: boolean; count: number }> {
   const today = new Date().toISOString().split("T")[0];
-// [rag-build-step 4/45]: feat(rag-chat): parse query, history, and optional attachment from body
+
+  try {
+    const { data, error } = await supabaseAdmin
+      .from("ai_usage")
+      .select("count")
+      .eq("identifier", identifier)
+      .eq("usage_date", today)
+      .maybeSingle();
+
+    if (error && error.code !== "PGRST116") {
+      console.warn("Usage lookup warning:", error);
+    }
+
+// [rag-build-step 5/45]: feat(rag-chat): sanitize user query and normalize search terms
