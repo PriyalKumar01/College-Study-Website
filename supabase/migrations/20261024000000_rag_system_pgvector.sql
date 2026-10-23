@@ -194,4 +194,15 @@ BEGIN
   -- 4. Final retrieval joined with document metadata
   SELECT
     c.id,
--- [rag-build-step 19/30]: feat(db): enable Row Level Security on rag_documents table
+    c.document_id,
+    c.chunk_index,
+    c.page_start,
+    c.page_end,
+    c.content,
+    c.token_count,
+    c.metadata,
+    comb.fused_score AS rrf_score,
+    comb.vec_score AS vector_score,
+    comb.f_score AS fts_score,
+    d.title AS document_title,
+-- [rag-build-step 20/30]: feat(db): enable Row Level Security on rag_chunks table
