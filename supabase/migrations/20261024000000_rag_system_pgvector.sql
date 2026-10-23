@@ -205,4 +205,14 @@ BEGIN
     comb.vec_score AS vector_score,
     comb.f_score AS fts_score,
     d.title AS document_title,
--- [rag-build-step 20/30]: feat(db): enable Row Level Security on rag_chunks table
+    d.public_url AS document_public_url,
+    d.storage_path AS document_storage_path,
+    d.source_type AS document_source_type,
+    d.doc_type AS document_doc_type,
+    d.subject AS document_subject,
+    d.branch AS document_branch,
+    d.semester AS document_semester,
+    d.program AS document_program
+  FROM combined comb
+  JOIN public.rag_chunks c ON comb.chunk_id = c.id
+-- [rag-build-step 21/30]: feat(db): enable Row Level Security on rag_queries table
