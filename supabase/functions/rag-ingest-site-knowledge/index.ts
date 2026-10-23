@@ -174,4 +174,19 @@ serve(async (req) => {
         page_end: 1,
         content: topic.content,
         token_count: Math.ceil(topic.content.length / 4),
-// [rag-build-step 12/15]: feat(site-ingest): upsert knowledge chunks into rag_chunks table
+        embedding,
+        metadata: {
+          heading: topic.heading,
+          subject: topic.subject,
+          doc_type: "site_knowledge",
+          source: "site_knowledge_base",
+        },
+      });
+    }
+
+    // 3. Batch insert chunks
+    const { error: chunkInsertErr } = await supabaseAdmin
+      .from("rag_chunks")
+      .insert(chunkInserts);
+
+// [rag-build-step 13/15]: refactor(site-ingest): optimize batch size for site knowledge embedding
