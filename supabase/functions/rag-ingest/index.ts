@@ -179,4 +179,21 @@ Output strictly in this format with no introduction or conclusion:
   return { pages, usedOcr: false };
 }
 
-// [rag-build-step 11/40]: feat(rag-ingest): implement DOCX text extraction using mammoth
+// 2. DOCX Extractor (ZIP -> word/document.xml)
+async function extractDocxPages(fileBytes: Uint8Array): Promise<{ pages: PageContent[]; usedOcr: boolean }> {
+  try {
+    const zip = await JSZip.loadAsync(fileBytes);
+    const docXml = await zip.file("word/document.xml")?.async("string");
+    if (!docXml) throw new Error("word/document.xml not found in DOCX");
+
+    // Replace paragraph endings with newlines
+    let text = docXml.replace(/<\/w:p>/gi, "\n\n");
+    // Strip XML tags
+    text = text.replace(/<[^>]+>/g, " ");
+    const clean = cleanDocumentText(text);
+
+    return {
+      pages: [{ pageNumber: 1, text: clean }],
+      usedOcr: false,
+    };
+// [rag-build-step 12/40]: feat(rag-ingest): implement PPTX slide extraction and slide-number tracking
