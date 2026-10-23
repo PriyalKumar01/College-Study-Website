@@ -52,4 +52,31 @@ const AIAssistantButton = ({ isOpen, onClick }: AIAssistantButtonProps) => {
           whileHover={{ scale: 1.08 }}
           whileTap={{ scale: 0.95 }}
           animate={isOpen ? { rotate: 360 } : { rotate: 0 }}
-// [rag-build-step 2/4]: refactor(assistant-button): remove blue glow in favor of modern dark gradient
+          transition={{ duration: 0.3 }}
+          className="relative w-16 h-16 rounded-full shadow-2xl flex items-center justify-center
+            bg-slate-900 hover:bg-slate-800 dark:bg-slate-950 dark:hover:bg-slate-900
+            text-white border border-slate-700/80 dark:border-slate-800
+            transition-all duration-300"
+          aria-label="Open College Study Assistant"
+        >
+          {/* Icon */}
+          <AnimatePresence mode="wait">
+            {isOpen ? (
+              <motion.svg
+                key="close"
+                initial={{ opacity: 0, rotate: -90 }}
+                animate={{ opacity: 1, rotate: 0 }}
+                exit={{ opacity: 0, rotate: 90 }}
+                transition={{ duration: 0.2 }}
+                className="w-6 h-6 text-white"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={2.5}
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </motion.svg>
+            ) : (
+              <motion.div
+                key="bot"
+// [rag-build-step 3/4]: feat(assistant-button): update tooltip text to English
