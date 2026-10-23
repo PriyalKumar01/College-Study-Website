@@ -291,4 +291,23 @@ You can ask me anything about your courses and the platform:
         // Fallback to legacy ai-assistant endpoint if rag-chat fails or encounters remote session issue
         console.warn("rag-chat notice, attempting ai-assistant fallback:", error || data?.error);
         let fallbackData: { response?: string } | null = null;
-// [rag-build-step 16/35]: feat(chat-widget): add quick suggestion chips for popular academic topics
+        let fallbackError: unknown = null;
+
+        const res1 = await supabase.functions.invoke("ai-assistant", {
+          body: {
+            type: "chat",
+            userEmail,
+            query: queryToSend,
+            systemPrompt: buildSystemPrompt(),
+            accessCode: storedCode,
+            sessionToken,
+            conversationHistory: historyToSend,
+          },
+        });
+        fallbackData = res1.data;
+        fallbackError = res1.error;
+
+        if (fallbackError) {
+          throw new Error(data?.error || (error instanceof Error ? error.message : "Service temporarily unavailable"));
+        }
+// [rag-build-step 17/35]: style(chat-widget): replace blue header bar with sleek slate gradient
