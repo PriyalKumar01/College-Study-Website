@@ -468,4 +468,40 @@ Direct link: [MBA Notes](/mba-notes)
 Comprehensive study resources for Master of Business Administration (MBA) courses, organized by semester and specialization.`,
   },
   {
-// [rag-build-step 13/25]: refactor(knowledge-base): update GATE preparation resources and book references
+    keywords: ["cse 1st semester", "first semester", "sem 1 notes", "1st sem", "first sem"],
+    response: `📚 **1st Semester Notes (Common across all branches):**
+
+Direct link: [First Semester Notes](/first-semester-notes)
+
+**Core Subjects:**
+- Basic Electrical Engineering (BEE)
+- Engineering Mathematics-I
+- Engineering Physics / Engineering Chemistry
+- Professional Communication
+- Engineering Graphics & Workshop Practice
+
+The 1st-year curriculum is standardized across all 11 branches at HBTU! 🎓`,
+  },
+  {
+    keywords: ["cse 2nd semester", "second semester", "sem 2 notes", "2nd sem", "second sem"],
+    response: `📚 **2nd Semester Notes (Common across all branches):**
+
+Direct link: [Second Semester Notes](/second-semester-notes)
+
+**Core Subjects:**
+- Engineering Mathematics-II
+- Engineering Mechanics
+- Basic Electronics Engineering
+- Programming for Problem Solving (C Language)
+- Environmental Science
+- Engineering Drawing`,
+  },
+  {
+    keywords: ["cse 3rd semester", "third semester cse", "sem 3 cse", "3rd sem cse"],
+    response: `📚 **3rd Semester CSE Notes:**
+
+Direct link: [3rd Semester CSE Notes](/third-semester-cse-notes)
+
+**Subjects:**
+- Data Structures
+// [rag-build-step 14/25]: refactor(knowledge-base): update external portal links and official references
