@@ -80,4 +80,9 @@ serve(async (req) => {
     if (dbError) {
       console.error("Failed to store ai_session:", dbError);
       throw new Error("Failed to register session");
-// [rag-build-step 16/20]: security(ai-unlock): prevent timing attacks during code comparison
+    }
+
+    return new Response(
+      JSON.stringify({
+        success: true,
+// [rag-build-step 17/20]: perf(ai-unlock): eliminate unnecessary object allocations in handler
