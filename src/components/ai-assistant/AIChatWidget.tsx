@@ -420,4 +420,22 @@ Please:
       `}
     >
       {/* ── Header ───────────────────────────────────────────── */}
-// [rag-build-step 23/35]: security(chat-widget): remove hardcoded access code fallbacks from component
+      <div className="bg-slate-900 dark:bg-slate-950 px-4 py-3 flex items-center justify-between flex-shrink-0 border-b border-slate-800 text-white">
+        <div className="flex items-center gap-2.5">
+          <div className="w-8 h-8 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center">
+            <Bot className="w-4 h-4 text-emerald-400" />
+          </div>
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="text-white font-bold text-sm">College Study Assistant</span>
+              <span className="bg-rose-600 text-white text-[9px] font-black px-1.5 py-0.5 rounded-full leading-none uppercase">
+                RAG BETA
+              </span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+              <span className="text-slate-300 text-[10px]">Grounded AI · {queriesLeft}/{RATE_LIMIT_CONFIG.maxQueriesPerDay} queries left</span>
+            </div>
+          </div>
+        </div>
+// [rag-build-step 24/35]: refactor(chat-widget): improve error recovery when edge function fails
