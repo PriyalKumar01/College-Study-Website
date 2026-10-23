@@ -427,4 +427,20 @@ async function getGeminiEmbedding(text: string, apiKey: string): Promise<number[
         lastError = new Error(`Embedding model ${model} error ${response.status}: ${errText}`);
       }
     } catch (e) {
-// [rag-build-step 26/40]: feat(rag-ingest): prioritize splitting on paragraph and heading boundaries
+      lastError = e;
+    }
+  }
+
+  throw lastError ?? new Error("Failed to compute chunk embedding with Gemini");
+}
+
+// ── Main Server ──────────────────────────────────────────────
+serve(async (req) => {
+  if (req.method === "OPTIONS") {
+    return new Response("ok", { headers: corsHeaders });
+  }
+
+  try {
+    const authHeader = req.headers.get("Authorization");
+    const { isAdmin, email } = await verifyAdminCaller(authHeader);
+// [rag-build-step 27/40]: feat(rag-ingest): track nearest section heading for contextual prefixing
