@@ -685,4 +685,40 @@ Direct Link: [https://www.buddy4study.com/scholarships](https://www.buddy4study.
 Direct link: [ATS Resume Builder & Scorer](/ats-resume)
 
 **Capabilities:**
-// [rag-build-step 19/25]: test(knowledge-base): add unit tests for word boundary regex matching
+- 🤖 **Direct PDF Scan:** Upload your resume PDF — AI scans every section, skill, and formatting layout.
+- 📊 **ATS Score (0–100):** Real-time compatibility rating benchmarked against recruitment standards.
+- 🎯 **Matched & Missing Keywords:** Pinpoints exact missing technical skills required by target job descriptions.
+- ✍️ **Actionable Bullet Points:** Generates copy-paste ready, high-impact resume bullet points.
+
+*Visit [ATS Resume Builder](/ats-resume) to analyze your resume today!* 🚀`,
+  },
+  {
+    keywords: ["about hbtu", "hbtu overview", "hbtu college info", "hbtu kanpur info", "hbtu history"],
+    response: `🎓 **About HBTU Kanpur & College Study Hub:**
+
+- 🏛️ **Harcourt Butler Technical University (HBTU Kanpur):** Founded in 1921, upgraded to a premier state university in 2016.
+- 🌐 **Official Portals:** [hbtu.ac.in](https://hbtu.ac.in/) | **ERP:** [erp.hbtu.ac.in](https://erp.hbtu.ac.in/NewIndex.html) | **Attendance:** [erp.hbtu.ac.in/StudentAttendance.aspx](https://erp.hbtu.ac.in/StudentAttendance.aspx)
+- 🚀 **College Study Hub Platform:** Built by **Priyal Kumar** (Final Year CSE, HBTU Kanpur) specifically for the student community.
+- 📚 **Coverage:** All 11 B.Tech branches (8 semesters), BS-MS, BBA, and MBA with 2500+ active students!
+
+For inquiries or special student discounts, connect with Founder Priyal Kumar on WhatsApp: +91 89572 21543 🎉`,
+  },
+  {
+    keywords: ["career roadmap", "fresher guide", "job roadmap", "career path", "after college", "fresher jobs"],
+    response: `🎯 **Career Roadmaps & Job Guides:**
+
+Direct link: [Premium Content](/premium-content) *(Premium Feature)*
+
+**Includes:**
+- Step-by-step fresher job preparation strategies
+- Domain-specific career roadmaps (SDE, Data Science, DevOps, Cloud)
+- Salary insights, interview benchmarks, and top target companies
+
+**Access:** Contact Founder Priyal Kumar on WhatsApp (+91 89572 21543) for special student rates! 💎`,
+  },
+  {
+    keywords: ["pyq", "pyqs", "previous year questions", "previous year papers", "past paper", "pyqs kahan", "old question papers"],
+    response: `📝 **Previous Year Questions (PYQs):**
+
+PYQs are integrated within branch and semester notes pages:
+// [rag-build-step 20/25]: test(knowledge-base): verify specific keywords beat generic keywords in cache
