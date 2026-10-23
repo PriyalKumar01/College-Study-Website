@@ -310,4 +310,30 @@ const AIChatMessage = ({ message, onFeedbackChange }: AIChatMessageProps) => {
                   </button>
                 );
               })}
-// [rag-build-step 12/15]: style(chat-message): adjust padding and border radius for chat bubbles
+            </div>
+
+            {/* Expandable Snippet Preview */}
+            <AnimatePresence>
+              {expandedSource !== null && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: "auto" }}
+                  exit={{ opacity: 0, height: 0 }}
+                  className="p-2.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-100/80 dark:bg-slate-900 text-slate-800 dark:text-slate-200 text-[11px] space-y-1.5"
+                >
+                  {(() => {
+                    const activeSrc = message.sources?.find((s) => s.index === expandedSource);
+                    if (!activeSrc) return null;
+                    return (
+                      <>
+                        <div className="flex items-center justify-between font-bold text-slate-900 dark:text-white">
+                          <span className="truncate">
+                            [{activeSrc.index}] {activeSrc.title} {activeSrc.page_start ? `(Page ${activeSrc.page_start})` : ""}
+                          </span>
+                          {activeSrc.url && (
+                            <a
+                              href={activeSrc.url}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="inline-flex items-center gap-0.5 text-xs text-slate-900 dark:text-slate-100 underline font-semibold"
+// [rag-build-step 13/15]: refactor(chat-message): handle rendering of empty or error messages gracefully
