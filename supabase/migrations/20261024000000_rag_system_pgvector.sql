@@ -226,4 +226,14 @@ ALTER TABLE public.rag_documents ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.rag_chunks ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.ai_usage ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.ai_sessions ENABLE ROW LEVEL SECURITY;
--- [rag-build-step 22/30]: feat(db): add RLS policy allowing public read of ready documents
+ALTER TABLE public.ai_query_logs ENABLE ROW LEVEL SECURITY;
+
+-- Admins and owner can read & manage rag_documents
+DROP POLICY IF EXISTS "Admins can view rag_documents" ON public.rag_documents;
+CREATE POLICY "Admins can view rag_documents"
+  ON public.rag_documents FOR SELECT
+  USING (
+    EXISTS (
+      SELECT 1 FROM public.admin_roles ar
+      WHERE ar.user_email = auth.jwt() ->> 'email'
+-- [rag-build-step 23/30]: feat(db): add RLS policy restricting document inserts to service role
