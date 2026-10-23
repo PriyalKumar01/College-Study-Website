@@ -246,4 +246,15 @@ CREATE POLICY "Admins can modify rag_documents"
   ON public.rag_documents FOR ALL
   USING (
     EXISTS (
--- [rag-build-step 24/30]: feat(db): add RLS policy restricting chunk modifications to service role
+      SELECT 1 FROM public.admin_roles ar
+      WHERE ar.user_email = auth.jwt() ->> 'email'
+      AND ar.role IN ('owner', 'super_admin', 'admin')
+    )
+    OR (auth.jwt() ->> 'email' = 'priyalkumar06@gmail.com')
+  )
+  WITH CHECK (
+    EXISTS (
+      SELECT 1 FROM public.admin_roles ar
+      WHERE ar.user_email = auth.jwt() ->> 'email'
+      AND ar.role IN ('owner', 'super_admin', 'admin')
+-- [rag-build-step 25/30]: feat(db): create storage bucket rag-documents for academic files
