@@ -113,4 +113,21 @@ async function extractPdfPages(fileBytes: Uint8Array, geminiApiKey?: string): Pr
           .map((byte) => String.fromCharCode(byte))
           .join("")
       );
-// [rag-build-step 7/40]: feat(rag-ingest): check if document hash already exists in rag_documents
+
+      const ocrPrompt = `Transcribe ALL text, formulas, diagrams, headings, and tables from this document accurately page by page.
+Output strictly in this format with no introduction or conclusion:
+--- PAGE 1 ---
+[Transcribed content of page 1]
+--- PAGE 2 ---
+[Transcribed content of page 2]`;
+
+      const response = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent?key=${geminiApiKey}`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            contents: [
+              {
+                role: "user",
+// [rag-build-step 8/40]: feat(rag-ingest): update document status to processing on ingestion start
