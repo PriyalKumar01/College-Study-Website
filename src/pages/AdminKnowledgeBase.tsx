@@ -561,4 +561,30 @@ const AdminKnowledgeBase = () => {
                       <option value="all">Common / All Branches</option>
                       {BTECH_BRANCHES.map((b) => (
                         <option key={b.id} value={b.code}>
-// [rag-build-step 22/31]: refactor(admin-kb): extract document table into dedicated sub-component
+                          {b.code} ({b.name})
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div>
+                    <Label className="text-xs font-semibold">Semester</Label>
+                    <select
+                      value={semester}
+                      onChange={(e) => setSemester(e.target.value)}
+                      className="w-full text-xs mt-1 px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950"
+                    >
+                      {[1, 2, 3, 4, 5, 6, 7, 8].map((s) => (
+                        <option key={s} value={`${s}th Semester`}>
+                          Semester {s}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div>
+                    <Label className="text-xs font-semibold">Document Type</Label>
+                    <select
+                      value={docType}
+                      onChange={(e) => setDocType(e.target.value as any)}
+// [rag-build-step 23/31]: refactor(admin-kb): extract upload dropzone into dedicated sub-component
