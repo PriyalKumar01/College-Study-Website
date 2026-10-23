@@ -344,4 +344,21 @@ export function chunkDocument(
                   pageEnd: page.pageNumber,
                   content,
                   embedText,
-// [rag-build-step 21/40]: feat(rag-ingest): strip recurring running headers and page numbers
+                  tokenCount: Math.ceil(content.length / 4),
+                  metadata: {
+                    heading: currentHeading,
+                    ocr: page.isOcr ?? false,
+                    subject: docMeta.subject,
+                    branch: docMeta.branch,
+                    semester: docMeta.semester,
+                    doc_type: docMeta.doc_type,
+                  },
+                });
+                // Carry overlap from sentence end
+                sentBuffer = sentBuffer.slice(-overlap) + " " + sentence;
+              } else {
+                sentBuffer = sentence;
+              }
+            }
+          }
+// [rag-build-step 22/40]: feat(rag-ingest): repair hyphenated words broken across line wraps
