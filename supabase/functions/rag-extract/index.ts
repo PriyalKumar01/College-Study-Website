@@ -150,4 +150,23 @@ serve(async (req) => {
       }
     }
     // 4. Plain Text
-// [rag-build-step 8/10]: refactor(rag-extract): reuse text cleaning logic from ingestion pipeline
+    else {
+      extractedText = cleanText(new TextDecoder("utf-8").decode(bytes));
+    }
+
+    if (!extractedText.trim()) {
+      return new Response(
+        JSON.stringify({
+          success: false,
+          error: "Could not extract readable text from the attached file. Ensure the file contains text or clear images.",
+        }),
+        { status: 422, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    // Truncate to safety cap
+    const safeText = extractedText.slice(0, MAX_EXTRACTED_CHARS);
+
+    return new Response(
+      JSON.stringify({
+// [rag-build-step 9/10]: perf(rag-extract): optimize in-memory buffer handling for fast response
