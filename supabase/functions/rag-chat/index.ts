@@ -385,4 +385,18 @@ serve(async (req) => {
         fallback_used: false,
         latency_ms: Date.now() - startTime,
       }).then(() => {});
-// [rag-build-step 29/45]: feat(rag-chat): format JSON response with answer, citations, and provider
+
+      return new Response(
+        JSON.stringify({
+          answer: cachedHit,
+          sources: [],
+          remaining_queries: remaining,
+          model_used: "cache",
+          fallback_used: false,
+          source: "cache",
+        }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+// [rag-build-step 30/45]: feat(rag-chat): support streaming response protocol for low-latency tokens
