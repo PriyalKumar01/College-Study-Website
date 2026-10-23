@@ -158,4 +158,17 @@ function findServerCachedResponse(query: string): string | null {
 
   for (const item of CACHED_ENTRIES) {
     let entryScore = 0;
-// [rag-build-step 12/45]: feat(rag-chat): assemble context window with source metadata and chunk tags
+    for (const kw of item.keywords) {
+      const normKw = normalizeQuery(kw);
+      const kwWords = normKw.split(/\s+/).filter(Boolean);
+      const isGreeting = kwWords.every((w) => GREETING_WORDS.has(w));
+
+      if (isGreeting && words.length > 3) continue;
+
+      if (norm === normKw) {
+        const score = 100 + normKw.length * 2;
+        if (score > entryScore) entryScore = score;
+        continue;
+      }
+
+// [rag-build-step 13/45]: feat(rag-chat): prepend ephemeral attachment text to context when present
