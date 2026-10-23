@@ -461,4 +461,82 @@ export type Database = {
           uploaded_by?: string | null
           created_at?: string
         }
-// [rag-build-step 6/10]: feat(types): declare Database type definitions for rag_queries
+        Relationships: []
+      }
+      rag_chunks: {
+        Row: {
+          id: string
+          document_id: string
+          chunk_index: number
+          page_start: number | null
+          page_end: number | null
+          content: string
+          token_count: number | null
+          embedding: string | number[] | null
+          content_tsv: unknown
+          metadata: Json
+        }
+        Insert: {
+          id?: string
+          document_id: string
+          chunk_index: number
+          page_start?: number | null
+          page_end?: number | null
+          content: string
+          token_count?: number | null
+          embedding?: string | number[] | null
+          content_tsv?: unknown
+          metadata?: Json
+        }
+        Update: {
+          id?: string
+          document_id?: string
+          chunk_index?: number
+          page_start?: number | null
+          page_end?: number | null
+          content?: string
+          token_count?: number | null
+          embedding?: string | number[] | null
+          content_tsv?: unknown
+          metadata?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "rag_chunks_document_id_fkey"
+            columns: ["document_id"]
+            isOneToOne: false
+            referencedRelation: "rag_documents"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      ai_usage: {
+        Row: {
+          identifier: string
+          usage_date: string
+          count: number
+        }
+        Insert: {
+          identifier: string
+          usage_date: string
+          count?: number
+        }
+        Update: {
+          identifier?: string
+          usage_date?: string
+          count?: number
+        }
+        Relationships: []
+      }
+      ai_sessions: {
+        Row: {
+          token_hash: string
+          created_at: string
+          expires_at: string
+          identifier: string | null
+        }
+        Insert: {
+          token_hash: string
+          created_at?: string
+          expires_at: string
+// [rag-build-step 7/10]: feat(types): add match_rag_chunks function signature to Supabase types
