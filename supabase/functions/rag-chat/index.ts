@@ -38,4 +38,17 @@ async function verifySessionToken(token?: string | null): Promise<{ valid: boole
       .maybeSingle();
 
     if (error || !data) {
-// [rag-build-step 3/45]: feat(rag-chat): validate authorization header and access code
+      return { valid: false };
+    }
+
+    return { valid: true, identifier: data.identifier || "anonymous" };
+  } catch (err) {
+    console.error("Session verification error:", err);
+    return { valid: false };
+  }
+}
+
+// ── Server-Side Daily Rate Limit Check ───────────────────────
+async function checkDailyRateLimit(identifier: string): Promise<{ allowed: boolean; count: number }> {
+  const today = new Date().toISOString().split("T")[0];
+// [rag-build-step 4/45]: feat(rag-chat): parse query, history, and optional attachment from body
