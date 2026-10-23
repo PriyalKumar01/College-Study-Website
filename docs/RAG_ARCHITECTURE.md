@@ -119,4 +119,34 @@ flowchart TD
 - **`ai_query_logs`**: Logs query text, latency, model used, fallback status, and user feedback.
 
 ### Indexing
-# [rag-build-step 4/8]: docs(rag): detail pgvector cosine similarity and HNSW/IVFFlat indexing
+- **Vector Index**: Hierarchical Navigable Small World (HNSW) on `embedding vector_cosine_ops`:
+  ```sql
+  create index if not exists rag_chunks_embedding_hnsw_idx 
+    on public.rag_chunks using hnsw (embedding vector_cosine_ops)
+    with (m = 16, ef_construction = 64);
+  ```
+- **Full-Text Index**: Generalized Inverted Index (GIN) on `content_tsv`:
+  ```sql
+  create index if not exists rag_chunks_tsv_idx 
+    on public.rag_chunks using gin (content_tsv);
+  ```
+
+### Hybrid Search via Reciprocal Rank Fusion (RRF)
+The SQL function `rag_hybrid_search` queries vector cosine similarity and full-text keyword ranking in parallel, combining ranks using Reciprocal Rank Fusion with smoothing parameter $k = 60.0$:
+
+$$\text{RRF Score}(d) = \frac{1.0}{k + \text{rank}_{\text{vector}}(d)} + \frac{1.0}{k + \text{rank}_{\text{text}}(d)}$$
+
+This guarantees that exact keyword queries (like "Amdahl's law" or "SGPA") and semantic queries (like "deadlock recovery methods in OS") both rank at the top.
+
+---
+
+## 4. Query & Generation Pipeline (`rag-chat`)
+
+1. **Authentication & Rate Limiting**:
+   - Client sends 256-bit session token in headers/body.
+   - Session verified in constant-time against SHA-256 hashes in `ai_sessions`.
+   - Daily limit of **10 queries/day** verified and atomically incremented in `ai_usage`.
+2. **Cached Response Layer**:
+   - Normalizes text, matches word boundaries (`\b`), and weights specificity.
+   - High-confidence FAQ matches return in $< 15$ ms without consuming daily quota.
+# [rag-build-step 5/8]: docs(rag): document OCR fallback mechanism with Gemini 3.5 Flash
