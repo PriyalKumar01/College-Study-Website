@@ -74,4 +74,30 @@ const AdminKnowledgeBase = () => {
   const [program, setProgram] = useState<"btech" | "bsms" | "bba" | "mba" | "general">("btech");
   const [docType, setDocType] = useState<"notes" | "pyq" | "syllabus" | "lab" | "book" | "site_knowledge">("notes");
   const [isUploading, setIsUploading] = useState(false);
-// [rag-build-step 3/31]: feat(admin-kb): implement document stats header with total counts
+  const [uploadProgress, setUploadProgress] = useState<string>("");
+
+  // Test Retrieval state
+  const [testQuery, setTestQuery] = useState("");
+  const [isSearching, setIsSearching] = useState(false);
+  const [searchResults, setSearchResults] = useState<RetrievedChunk[]>([]);
+  const [isIngestingSite, setIsIngestingSite] = useState(false);
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Fetch documents list
+  const fetchDocuments = async () => {
+    setIsLoadingDocs(true);
+    try {
+      const { data, error } = await supabase
+        .from("rag_documents")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+      if (error) throw error;
+
+      // Get chunk counts per doc
+      const docsWithChunks = await Promise.all(
+        (data || []).map(async (doc: RagDoc) => {
+          const { count } = await supabase
+            .from("rag_chunks")
+// [rag-build-step 4/31]: feat(admin-kb): implement drag-and-drop document upload dropzone
