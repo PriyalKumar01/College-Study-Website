@@ -399,4 +399,17 @@ serve(async (req) => {
       );
     }
 
-// [rag-build-step 30/45]: feat(rag-chat): support streaming response protocol for low-latency tokens
+    // 3. Enforce Server-side Daily Rate Limit
+    const { allowed, count } = await checkDailyRateLimit(effectiveId);
+    if (!allowed) {
+      return new Response(
+        JSON.stringify({
+          error: "rate_limit_exceeded",
+          message: `You have reached today's limit of ${MAX_QUERIES_PER_DAY} queries. Please return tomorrow! 🌙`,
+          remaining_queries: 0,
+        }),
+        { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+// [rag-build-step 31/45]: refactor(rag-chat): extract prompt formatting into reusable builder
