@@ -153,4 +153,14 @@ BEGIN
     WHERE d.status = 'ready'
       AND c.embedding IS NOT NULL
       AND (filter_branch IS NULL OR d.branch ILIKE filter_branch OR d.branch = 'all' OR d.branch = 'common')
--- [rag-build-step 15/30]: feat(db): implement match_rag_chunks RPC function for vector similarity
+      AND (filter_semester IS NULL OR d.semester ILIKE filter_semester)
+      AND (filter_subject IS NULL OR d.subject ILIKE '%' || filter_subject || '%')
+    ORDER BY c.embedding <=> query_embedding
+    LIMIT v_candidate_limit
+  ),
+
+  -- 2. Full-Text Search Candidates
+  fts_candidates AS (
+    SELECT
+      c.id AS chunk_id,
+-- [rag-build-step 16/30]: feat(db): add similarity threshold parameter to match_rag_chunks
