@@ -315,4 +315,57 @@ const ATSScorer = ({ userEmail }: ATSScorerProps) => {
                 bg-slate-50/50 dark:bg-slate-950/60 text-slate-800 dark:text-slate-200
                 placeholder:text-slate-400 dark:placeholder:text-slate-600
                 p-3.5 outline-none focus:border-purple-500 dark:focus:border-purple-500
-// [rag-build-step 6/9]: feat(ats-scorer): display categorized feedback with action items
+                focus:ring-2 focus:ring-purple-500/20 transition-all resize-none min-h-[190px]"
+            />
+          </div>
+        </div>
+
+        {/* Error Notification */}
+        {error && (
+          <motion.div
+            initial={{ opacity: 0, y: -4 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="flex items-center gap-2.5 text-xs sm:text-sm text-rose-600 dark:text-rose-400 
+              bg-rose-50 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-900/50 rounded-2xl p-4"
+          >
+            <AlertCircle className="w-4 h-4 flex-shrink-0" />
+            <span>{error}</span>
+          </motion.div>
+        )}
+
+        {/* Action Button */}
+        <Button
+          onClick={handleScore}
+          disabled={isLoading || (!resumeFile && !resumeText.trim()) || !jobDescription.trim()}
+          className="w-full bg-slate-900 hover:bg-slate-800 dark:bg-slate-100 dark:text-slate-900 dark:hover:bg-white
+            text-white font-bold py-3.5 h-auto rounded-2xl shadow-md transition-all text-sm disabled:opacity-50"
+        >
+          {isLoading ? (
+            <span className="flex items-center gap-2.5">
+              <Loader2 className="w-5 h-5 animate-spin" />
+              Scanning PDF words & calculating ATS score...
+            </span>
+          ) : (
+            <span className="flex items-center gap-2.5">
+              <BarChart2 className="w-5 h-5" />
+              Scan Resume & Calculate ATS Score
+            </span>
+          )}
+        </Button>
+
+        {/* ── Structured Results Section ──────────────────────── */}
+        <AnimatePresence>
+          {result && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              className="space-y-5 overflow-hidden pt-2"
+            >
+              {/* Score card */}
+              <div className="flex flex-col sm:flex-row items-center gap-5 p-5 bg-slate-50 dark:bg-slate-950/70 rounded-3xl border border-slate-200 dark:border-slate-800">
+                <ScoreRing score={result.score} />
+                <div className="text-center sm:text-left flex-1">
+                  <div className="flex items-center justify-center sm:justify-start gap-2 mb-1">
+                    <h4 className="font-extrabold text-slate-900 dark:text-white text-lg">ATS Match Score: {result.score}/100</h4>
+// [rag-build-step 7/9]: style(ats-scorer): update score meter animation and score badge styling
