@@ -130,4 +130,19 @@ serve(async (req) => {
     // 1. Create or retrieve site_knowledge document
     const fileHash = "csh_site_knowledge_v1";
     let { data: doc, error: fetchErr } = await supabaseAdmin
-// [rag-build-step 9/15]: security(site-ingest): filter out coupon codes and secrets from knowledge chunks
+      .from("rag_documents")
+      .select("id")
+      .eq("file_hash", fileHash)
+      .maybeSingle();
+
+    if (!doc) {
+      const { data: newDoc, error: insertDocErr } = await supabaseAdmin
+        .from("rag_documents")
+        .insert({
+          title: "College Study Hub & HBTU Knowledge Base",
+          source_type: "site",
+          program: "general",
+          doc_type: "site_knowledge",
+          file_hash: fileHash,
+          status: "processing",
+// [rag-build-step 10/15]: feat(site-ingest): generate embeddings for site knowledge chunks
