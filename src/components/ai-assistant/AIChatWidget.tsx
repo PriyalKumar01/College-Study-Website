@@ -126,4 +126,22 @@ You can ask me anything about your courses and the platform:
 
     const allowedExts = [".pdf", ".docx", ".pptx", ".txt", ".md", ".png", ".jpg", ".jpeg", ".webp"];
     const ext = "." + file.name.split(".").pop()?.toLowerCase();
-// [rag-build-step 7/35]: feat(chat-widget): integrate rag-chat edge function for RAG queries
+    const isAllowed = allowedExts.includes(ext) || file.type.startsWith("image/") || file.type === "application/pdf";
+
+    if (!isAllowed) {
+      addMessage({
+        role: "assistant",
+        content: "⚠️ Abhi sirf **PDF, DOCX, PPTX, TXT, MD aur Images** supported hain. Kripya supported format select karein.",
+      });
+      e.target.value = "";
+      return;
+    }
+
+    if (file.size > 10 * 1024 * 1024) {
+      addMessage({
+        role: "assistant",
+        content: "⚠️ File size **10MB se zyada** hai. Kripya choti file attach karein.",
+      });
+      e.target.value = "";
+      return;
+// [rag-build-step 8/35]: feat(chat-widget): check local cache before dispatching RAG network request
