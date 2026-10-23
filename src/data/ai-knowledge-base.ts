@@ -287,4 +287,40 @@ Direct link: [Opportunities](/opportunities)
 
 **What's available:**
 - 🏢 Job openings for fresh graduates and experienced alumni
-// [rag-build-step 8/25]: refactor(knowledge-base): update B.Tech curriculum mapping and syllabus links
+- 🎓 Internship listings across major domains
+- 💻 Hackathons and competitive coding contests
+- 🏆 Academic and technical competitions
+
+Filter by category, deadline, and eligibility. Regularly updated with active notifications! 🔔`,
+  },
+  {
+    keywords: ["placement preparation", "placement prep", "placement kaise kare", "interview prep", "placement resources"],
+    response: `💼 **Placement Preparation:**
+
+Direct link: [Placement Preparation](/placement-preparation)
+
+**Includes:**
+- 📋 Structured technical preparation roadmap
+- 💡 Core interview tips and strategies
+- 📝 Quantitative aptitude & logical reasoning practice
+- 💻 Technical coding interview guidance
+
+Also explore: [ATS Resume Builder](/ats-resume) to generate interview-ready resumes!`,
+  },
+  {
+    keywords: ["resume builder", "resume banana", "ats resume", "cv builder", "resume template"],
+    response: `📄 **ATS-Friendly Resume Builder:**
+
+Direct link: [ATS Resume Builder](/ats-resume)
+
+**Features:**
+- 📋 Overleaf-ready ATS-optimized resume templates
+- ✅ Industry-standard formatting guidelines
+- 🤖 **AI ATS Scorer** — Upload your resume + job description to get instant compatibility scores and keyword gap analysis
+- 💼 Benchmarked for technology and engineering recruitment
+
+*Contact Founder Priyal Kumar on WhatsApp (+91 89572 21543) for special student discounts!*`,
+  },
+  {
+    keywords: ["dsa notes", "data structures notes", "algorithm notes", "dsa kahan", "data structure"],
+// [rag-build-step 9/25]: refactor(knowledge-base): update scholarship guidelines and application steps
