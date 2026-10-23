@@ -212,4 +212,20 @@ async function extractPptxPages(fileBytes: Uint8Array): Promise<{ pages: PageCon
     const slideNames: string[] = [];
     zip.forEach((relativePath) => {
       if (relativePath.match(/^ppt\/slides\/slide\d+\.xml$/i)) {
-// [rag-build-step 13/40]: feat(rag-ingest): implement plain text and Markdown parser for raw notes
+        slideNames.push(relativePath);
+      }
+    });
+
+    slideNames.sort((a, b) => {
+      const numA = parseInt(a.match(/\d+/)![0], 10);
+      const numB = parseInt(b.match(/\d+/)![0], 10);
+      return numA - numB;
+    });
+
+    for (let i = 0; i < slideNames.length; i++) {
+      const slideXml = await zip.file(slideNames[i])?.async("string");
+      if (slideXml) {
+        let slideText = slideXml.replace(/<\/a:p>/gi, "\n");
+        slideText = slideText.replace(/<[^>]+>/g, " ");
+        const clean = cleanDocumentText(slideText);
+// [rag-build-step 14/40]: feat(rag-ingest): detect scanned or low-text PDF pages for OCR fallback
