@@ -47,6 +47,41 @@ export const ContestCalendarView: React.FC<ContestCalendarViewProps> = ({
 }) => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [calendarView, setCalendarView] = useState<'month' | 'agenda'>('month');
+  const [agendaFilter, setAgendaFilter] = useState<'all' | 'ended' | 'upcoming'>('all');
+
+  // Sorted chronological contest schedule:
+  // "wo jo sabse recently end hua hai wo top pe dikhe and so on"
+  const agendaContests = useMemo(() => {
+    const now = Date.now();
+    const list = [...filteredContests];
+
+    if (agendaFilter === 'ended') {
+      return list
+        .filter(c => new Date(c.endTime).getTime() <= now)
+        .sort((a, b) => new Date(b.endTime).getTime() - new Date(a.endTime).getTime());
+    }
+
+    if (agendaFilter === 'upcoming') {
+      return list
+        .filter(c => new Date(c.endTime).getTime() > now)
+        .sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime());
+    }
+
+    // Default 'all': Live first, then recently ended on top, then upcoming
+    const live = list.filter(c => {
+      const s = new Date(c.startTime).getTime();
+      const e = new Date(c.endTime).getTime();
+      return now >= s && now <= e;
+    });
+    const ended = list
+      .filter(c => new Date(c.endTime).getTime() < now)
+      .sort((a, b) => new Date(b.endTime).getTime() - new Date(a.endTime).getTime());
+    const upcoming = list
+      .filter(c => new Date(c.startTime).getTime() > now)
+      .sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime());
+
+    return [...live, ...ended, ...upcoming];
+  }, [filteredContests, agendaFilter]);
 
   // "Select Platform" Filter Popover
   const [isFilterOpen, setIsFilterOpen] = useState(false);
@@ -538,14 +573,55 @@ export const ContestCalendarView: React.FC<ContestCalendarViewProps> = ({
         </div>
       ) : (
         /* ------------------------------------------------------------- */
-        /* AGENDA LIST VIEW (Chronological Daily Schedule) */
+        /* AGENDA LIST VIEW (Chronological Daily Schedule - Recently Ended on Top) */
         /* ------------------------------------------------------------- */
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-sm divide-y divide-slate-100 dark:divide-slate-800 shadow-xs p-4 space-y-3">
-          <h4 className="text-xs font-black uppercase text-slate-400 tracking-wider">
-            Chronological Contest Schedule
-          </h4>
+        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-sm shadow-xs p-4 space-y-3">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2.5 pb-2 border-b border-slate-100 dark:border-slate-800">
+            <div>
+              <h4 className="text-xs font-black uppercase text-slate-800 dark:text-slate-200 tracking-wider">
+                Chronological Contest Schedule
+              </h4>
+              <p className="text-[11px] text-slate-500">
+                Sorted chronologically with the most recently ended contests at the top
+              </p>
+            </div>
 
-          {filteredContests.slice(0, 30).map((c) => {
+            <div className="flex items-center gap-1 bg-slate-100 dark:bg-slate-800 p-0.5 rounded-sm text-xs font-bold self-stretch sm:self-auto justify-center">
+              <button
+                onClick={() => setAgendaFilter('all')}
+                className={`px-2.5 py-1 rounded-sm text-[11px] transition-all ${
+                  agendaFilter === 'all'
+                    ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-xs'
+                    : 'text-slate-500 hover:text-slate-800'
+                }`}
+              >
+                All (Recent First)
+              </button>
+              <button
+                onClick={() => setAgendaFilter('ended')}
+                className={`px-2.5 py-1 rounded-sm text-[11px] transition-all ${
+                  agendaFilter === 'ended'
+                    ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-xs'
+                    : 'text-slate-500 hover:text-slate-800'
+                }`}
+              >
+                Recently Ended
+              </button>
+              <button
+                onClick={() => setAgendaFilter('upcoming')}
+                className={`px-2.5 py-1 rounded-sm text-[11px] transition-all ${
+                  agendaFilter === 'upcoming'
+                    ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-xs'
+                    : 'text-slate-500 hover:text-slate-800'
+                }`}
+              >
+                Upcoming
+              </button>
+            </div>
+          </div>
+
+          <div className="divide-y divide-slate-100 dark:divide-slate-800">
+          {agendaContests.slice(0, 50).map((c) => {
             const isPast = isPastContest(c.endTime);
 
             return (
@@ -600,6 +676,7 @@ export const ContestCalendarView: React.FC<ContestCalendarViewProps> = ({
               </div>
             );
           })}
+          </div>
         </div>
       )}
 
