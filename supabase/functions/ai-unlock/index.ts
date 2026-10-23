@@ -18,4 +18,9 @@ function timingSafeEqual(a: string, b: string): boolean {
   if (aBuf.byteLength !== bBuf.byteLength) {
     let diff = 1;
     for (let i = 0; i < aBuf.byteLength; i++) {
-// [rag-build-step 4/20]: feat(ai-unlock): sanitize and trim candidate access code
+      diff |= aBuf[i] ^ aBuf[i % Math.max(bBuf.byteLength, 1)];
+    }
+    return false;
+  }
+  let diff = 0;
+// [rag-build-step 5/20]: feat(ai-unlock): read AI_ACCESS_CODE from Deno environment securely
