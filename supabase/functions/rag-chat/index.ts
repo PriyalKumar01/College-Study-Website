@@ -573,4 +573,17 @@ STRICT CONFIDENTIALITY — CRITICAL RULE:
     return new Response(
       JSON.stringify({
         answer,
-// [rag-build-step 43/45]: chore(rag-chat): update max_tokens allocation for detailed study guides
+        sources,
+        remaining_queries: remainingQueries,
+        model_used: modelUsed,
+        fallback_used: fallbackUsed,
+        source: hasContext ? "rag" : "llm_only",
+      }),
+      { headers: { ...corsHeaders, "Content-Type": "application/json" } }
+    );
+  } catch (err: unknown) {
+    const errorMsg = err instanceof Error ? err.message : "Internal chat error";
+    console.error("rag-chat Error:", errorMsg);
+
+    return new Response(
+// [rag-build-step 44/45]: perf(rag-chat): optimize Supabase RPC roundtrips with single query
