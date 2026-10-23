@@ -292,4 +292,17 @@ async function callGemini(
 
 async function callOpenAI(
   systemInstruction: string,
-// [rag-build-step 22/45]: feat(rag-chat): trigger GPT fallback on Gemini 5xx server errors
+  messages: Array<{ role: string; content: string }>,
+  apiKey: string
+): Promise<string> {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 20000);
+
+  const response = await fetch("https://api.openai.com/v1/chat/completions", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+      "Content-Type": "application/json",
+    },
+    signal: controller.signal,
+// [rag-build-step 23/45]: feat(rag-chat): trigger GPT fallback on empty Gemini responses
