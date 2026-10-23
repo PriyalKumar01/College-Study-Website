@@ -11,4 +11,9 @@ verify_jwt = false
 
 [functions.rag-chat]
 verify_jwt = false
-# [rag-build-step 3/5]: chore(config): register rag-chat edge function in config.toml
+
+[functions.rag-ingest]
+verify_jwt = false
+
+[functions.rag-extract]
+# [rag-build-step 4/5]: chore(config): register rag-extract edge function in config.toml
