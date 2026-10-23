@@ -178,4 +178,33 @@ const AIAccessGate = ({ onAccessGranted }: AIAccessGateProps) => {
 
         <button
           type="submit"
-// [rag-build-step 6/7]: feat(access-gate): display helpful English error message on failed unlock
+          disabled={!code.trim() || isChecking}
+          className="w-full py-2 rounded-lg font-bold text-xs text-white
+            bg-slate-900 hover:bg-slate-800 dark:bg-slate-100 dark:text-slate-900 dark:hover:bg-white
+            disabled:opacity-50 disabled:cursor-not-allowed
+            transition-all duration-200 shadow-md
+            active:scale-[0.98]"
+        >
+          {isChecking ? (
+            <span className="flex items-center justify-center gap-1.5">
+              <svg className="w-3.5 h-3.5 animate-spin" viewBox="0 0 24 24" fill="none">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+              </svg>
+              Verifying...
+            </span>
+          ) : (
+            "🔓 Unlock Assistant"
+          )}
+        </button>
+      </motion.form>
+
+      <p className="text-[10px] text-slate-500 dark:text-slate-400 mt-2.5">
+        Don&apos;t have a code? Contact{" "}
+        <span className="text-slate-800 dark:text-slate-200 font-semibold">Priyal Kumar sir</span>.
+      </p>
+    </div>
+  );
+};
+
+export default AIAccessGate;
