@@ -44,4 +44,9 @@ serve(async (req) => {
   try {
     const body = await req.json();
     const { accessCode, userEmail } = body;
-// [rag-build-step 9/20]: feat(ai-unlock): generate signed session verification payload on success
+
+    const expectedCode = Deno.env.get("AI_ACCESS_CODE") || "";
+    const providedCode = (accessCode || "").trim();
+
+    if (!providedCode || !timingSafeEqual(providedCode, expectedCode)) {
+// [rag-build-step 10/20]: feat(ai-unlock): return 200 with unlocked status and timestamp
