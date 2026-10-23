@@ -152,4 +152,81 @@ export type Database = {
           created_by: string
           deadline: string | null
           description: string
-// [rag-build-step 2/10]: feat(types): add Row and Insert interfaces for rag_documents
+          id: string
+          image_url: string | null
+          likes_count: number | null
+          location: string
+          title: string
+          type: string
+          user_name: string
+        }
+        Insert: {
+          apply_url: string
+          comments_count?: number | null
+          company: string
+          created_at?: string | null
+          created_by: string
+          deadline?: string | null
+          description: string
+          id?: string
+          image_url?: string | null
+          likes_count?: number | null
+          location: string
+          title: string
+          type: string
+          user_name: string
+        }
+        Update: {
+          apply_url?: string
+          comments_count?: number | null
+          company?: string
+          created_at?: string | null
+          created_by?: string
+          deadline?: string | null
+          description?: string
+          id?: string
+          image_url?: string | null
+          likes_count?: number | null
+          location?: string
+          title?: string
+          type?: string
+          user_name?: string
+        }
+        Relationships: []
+      }
+      opportunity_comments: {
+        Row: {
+          content: string
+          created_at: string | null
+          id: string
+          opportunity_id: string
+          user_email: string
+          user_id: string
+          user_name: string
+        }
+        Insert: {
+          content: string
+          created_at?: string | null
+          id?: string
+          opportunity_id: string
+          user_email: string
+          user_id: string
+          user_name: string
+        }
+        Update: {
+          content?: string
+          created_at?: string | null
+          id?: string
+          opportunity_id?: string
+          user_email?: string
+          user_id?: string
+          user_name?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "opportunity_comments_opportunity_id_fkey"
+            columns: ["opportunity_id"]
+            isOneToOne: false
+            referencedRelation: "opportunities"
+            referencedColumns: ["id"]
+// [rag-build-step 3/10]: feat(types): add Update interface for rag_documents status
