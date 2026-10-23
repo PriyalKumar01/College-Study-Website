@@ -323,4 +323,40 @@ Direct link: [ATS Resume Builder](/ats-resume)
   },
   {
     keywords: ["dsa notes", "data structures notes", "algorithm notes", "dsa kahan", "data structure"],
-// [rag-build-step 9/25]: refactor(knowledge-base): update scholarship guidelines and application steps
+    response: `💻 **DSA (Data Structures & Algorithms) Notes:**
+
+Direct link: [DSA Notes](/dsa-notes)
+
+**Covers:**
+- Arrays, Linked Lists, Stacks, Queues
+- Trees, Binary Search Trees, Graphs, Heaps
+- Sorting & Searching algorithms
+- Dynamic Programming and Greedy strategies
+- Asymptotic Time & Space Complexity analysis
+
+Ideal for academic exams and technical coding interviews! Also explore [Coding Study Material](/coding-study-material).`,
+  },
+  {
+    keywords: ["web development notes", "webdev notes", "web dev", "html css", "javascript notes", "react notes"],
+    response: `🌐 **Web Development Notes:**
+
+Direct link: [Web Development Notes](/web-dev-notes)
+
+**Covers:**
+- HTML5, CSS3, Modern JavaScript (ES6+)
+- React.js architecture and state management
+- Backend fundamentals with Node.js and Express
+- RESTful APIs and database connectivity
+- Responsive UI design with Tailwind CSS`,
+  },
+  {
+    keywords: ["hall of fame", "contributors", "leaderboard", "studycoins", "badges", "top contributors"],
+    response: `🏆 **Notes Contributors Hall of Fame:**
+
+Direct link: [Notes Contributors](/notes-contributors)
+
+**Gamification System:**
+- 🪙 **StudyCoins** awarded for contributing verified notes
+- 🥇 Gold, 🥈 Silver, 🥉 Bronze contributor badges
+- 📊 Real-time community leaderboard
+// [rag-build-step 10/25]: refactor(knowledge-base): update placement preparation tips and core topics
