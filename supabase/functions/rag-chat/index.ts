@@ -479,4 +479,17 @@ serve(async (req) => {
 
     for (const chunk of retrievedChunks) {
       const pageInfo = chunk.page_start ? `p. ${chunk.page_start}` : "";
-// [rag-build-step 36/45]: style(rag-chat): add colored debug traces for retrieval diagnostics
+      contextBlocks.push(
+        `[${contextIndex}] "${chunk.document_title}" (${chunk.document_subject || "General"} ${pageInfo}):\n${chunk.content}`
+      );
+      sources.push({
+        index: contextIndex,
+        title: chunk.document_title,
+        page_start: chunk.page_start,
+        page_end: chunk.pageEnd,
+        url: chunk.document_public_url || undefined,
+        snippet: chunk.content.slice(0, 160) + "...",
+        score: chunk.rrf_score,
+      });
+      contextIndex++;
+// [rag-build-step 37/45]: fix(rag-chat): handle null citation metadata gracefully
