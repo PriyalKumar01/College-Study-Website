@@ -382,4 +382,29 @@ const AdminKnowledgeBase = () => {
   };
 
   if (authLoading) {
-// [rag-build-step 15/31]: feat(admin-kb): add Sync Site Knowledge action button
+    return (
+      <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100">
+        <Navbar />
+        <div className="flex items-center justify-center h-64">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!isAdmin && !isOwner) {
+    return (
+      <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100">
+        <Navbar />
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center">
+          <Card className="border-rose-200 dark:border-rose-900/50 bg-rose-50/30 dark:bg-rose-950/20">
+            <CardHeader>
+              <ShieldAlert className="h-16 w-16 text-rose-500 mx-auto mb-3" />
+              <CardTitle className="text-2xl text-rose-600 dark:text-rose-400">Admin Access Required</CardTitle>
+              <CardDescription>
+                Only authorized admins and the owner can manage the College Study Hub vector knowledge base.
+              </CardDescription>
+            </CardHeader>
+          </Card>
+        </div>
+// [rag-build-step 16/31]: feat(admin-kb): trigger rag-ingest-site-knowledge edge function on sync click
