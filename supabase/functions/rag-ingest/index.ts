@@ -625,4 +625,20 @@ serve(async (req) => {
         chunkInserts.length = 0; // clear batch
       }
     }
-// [rag-build-step 38/40]: refactor(rag-ingest): modularize text chunking and cleaning utilities
+
+    // 7. Update document status to ready
+    await supabaseAdmin
+      .from("rag_documents")
+      .update({
+        status: "ready",
+        page_count: pageCount,
+        error: null,
+      })
+      .eq("id", docId);
+
+    return new Response(
+      JSON.stringify({
+        success: true,
+        document_id: docId,
+        status: "ready",
+// [rag-build-step 39/40]: perf(rag-ingest): parallelize non-dependent page processing routines
