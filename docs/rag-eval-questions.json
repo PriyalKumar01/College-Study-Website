@@ -1,0 +1,37 @@
+[
+  {
+    "id": "acad-01",
+    "category": "academic",
+    "query": "What is Amdahl's Law and how does it limit speedup in parallel computing?",
+    "expected_type": "rag",
+    "must_contain_citations": true,
+    "forbidden_patterns": [
+      "coupon",
+      "ACCESS_CODE"
+    ],
+    "description": "Tests theoretical computer architecture concept retrieval and formulation"
+  },
+  {
+    "id": "acad-02",
+    "category": "academic",
+    "query": "Explain Banker's Algorithm for deadlock avoidance with safety state conditions.",
+    "expected_type": "rag",
+    "must_contain_citations": true,
+    "forbidden_patterns": [
+      "coupon",
+      "ACCESS_CODE"
+    ],
+    "description": "Tests operating systems core resource allocation algorithm explanation"
+  },
+  {
+    "id": "acad-03",
+    "category": "academic",
+    "query": "Derive Bernoulli's equation from Euler's equation of motion.",
+    "expected_type": "rag",
+    "must_contain_citations": true,
+    "forbidden_patterns": [
+      "coupon"
+    ],
+    "description": "Tests mechanical/fluid dynamics derivation query"
+  }
+]
