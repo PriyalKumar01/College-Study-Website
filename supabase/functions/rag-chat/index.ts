@@ -78,4 +78,17 @@ async function checkDailyRateLimit(identifier: string): Promise<{ allowed: boole
 async function incrementDailyUsage(identifier: string): Promise<number> {
   const today = new Date().toISOString().split("T")[0];
 
-// [rag-build-step 6/45]: feat(rag-chat): generate query embedding using gemini-embedding-001
+  try {
+    const { data: existing } = await supabaseAdmin
+      .from("ai_usage")
+      .select("count")
+      .eq("identifier", identifier)
+      .eq("usage_date", today)
+      .maybeSingle();
+
+    const newCount = (existing?.count ?? 0) + 1;
+
+    await supabaseAdmin
+      .from("ai_usage")
+      .upsert({
+// [rag-build-step 7/45]: feat(rag-chat): implement retry with backoff for query embedding call
