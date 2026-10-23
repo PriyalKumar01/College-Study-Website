@@ -108,4 +108,22 @@ You can ask me anything about your courses and the platform:
       reader.onload = () => {
         try {
           const res = reader.result as string;
-// [rag-build-step 6/35]: feat(chat-widget): call rag-extract to process one-off chat attachments
+          const base64 = res.includes(",") ? res.split(",")[1] : res;
+          resolve(base64);
+        } catch (err) {
+          reject(err);
+        }
+      };
+      reader.onerror = () => reject(new Error("File read error"));
+      reader.readAsDataURL(file);
+    });
+  };
+
+  // ── Handle File Selection & Auto-Extraction ──────────────────
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const allowedExts = [".pdf", ".docx", ".pptx", ".txt", ".md", ".png", ".jpg", ".jpeg", ".webp"];
+    const ext = "." + file.name.split(".").pop()?.toLowerCase();
+// [rag-build-step 7/35]: feat(chat-widget): integrate rag-chat edge function for RAG queries
