@@ -114,5 +114,41 @@
     "must_contain_citations": true,
     "forbidden_patterns": [],
     "description": "Tests branch specific semester course list"
+  },
+  {
+    "id": "syl-05",
+    "category": "syllabus_structure",
+    "query": "Chemical Engineering 4th sem syllabus kahan se milega?",
+    "expected_type": "rag",
+    "must_contain_citations": true,
+    "forbidden_patterns": [],
+    "description": "Tests curriculum path navigation"
+  },
+  {
+    "id": "nav-01",
+    "category": "site_navigation",
+    "query": "Notes contribute kaise karein?",
+    "expected_type": "cache",
+    "must_contain_citations": false,
+    "forbidden_patterns": [],
+    "description": "Tests cached FAQ response for notes contribution portal"
+  },
+  {
+    "id": "nav-02",
+    "category": "site_navigation",
+    "query": "Where is the CGPA calculator?",
+    "expected_type": "cache",
+    "must_contain_citations": false,
+    "forbidden_patterns": [],
+    "description": "Tests cached FAQ response for CGPA calculator link"
+  },
+  {
+    "id": "nav-03",
+    "category": "site_navigation",
+    "query": "Admin kaise bane?",
+    "expected_type": "cache",
+    "must_contain_citations": false,
+    "forbidden_patterns": [],
+    "description": "Tests cached FAQ response for admin role enquiry"
   }
 ]
