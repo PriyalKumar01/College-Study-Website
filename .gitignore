@@ -18,4 +18,23 @@ dist-ssr
 .idea
 .DS_Store
 *.suo
-# [rag-build-step 1/2]: chore(ignore): ignore supabase temp build artifacts in .gitignore
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+.env
+.env.*
+!.env.example
+.env.local
+.env.*.local
+
+# TypeScript build cache (auto-generated, should not be committed)
+*.tsbuildinfo
+
+# Developer scripts
+scripts/*
+!scripts/rag-eval.ts
+scratch/
+
+supabase/.temp/
+scratch/
