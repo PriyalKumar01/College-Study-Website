@@ -210,4 +210,33 @@ supabase secrets set AI_ACCESS_CODE="your_secret_access_code_here"
 supabase functions deploy ai-unlock
 supabase functions deploy rag-chat
 supabase functions deploy rag-ingest
-# [rag-build-step 7/8]: docs(rag): document citation generation and grounded verification
+supabase functions deploy rag-extract
+supabase functions deploy rag-ingest-site-knowledge
+```
+
+### 4. Run Site Knowledge Ingestion
+Navigate to `/admin/knowledge-base` as an admin user, or invoke `rag-ingest-site-knowledge` once to seed site portal facts and course links:
+```bash
+curl -X POST https://<your-project-ref>.supabase.co/functions/v1/rag-ingest-site-knowledge \
+  -H "Authorization: Bearer <SUPABASE_SERVICE_ROLE_KEY>"
+```
+
+### 5. Run Evaluation Benchmark
+```bash
+npx tsx scripts/rag-eval.ts
+```
+View results in `docs/rag-eval-results.md`.
+
+---
+
+## 7. Known Limitations & Roadmap
+
+1. **Re-Ranking Stage**:
+   - *Current*: RRF combines vector and keyword rankings with fixed weights.
+   - *Future*: Introduce a cross-encoder re-ranking step (e.g. Cohere Re-rank or BGE Re-ranker) on top 20 candidates before passing top 5 chunks to LLM.
+2. **Multimodal Diagrams in Answers**:
+   - *Current*: Chunks extract and preserve text and formulas.
+   - *Future*: Extract diagrams and schematics from PDFs as images in Supabase Storage, and render relevant diagrams inline with citations.
+3. **Conversational Memory Persistence**:
+   - *Current*: Passes the last 6 messages of history from the current browser session.
+   - *Future*: Persist chat sessions linked to user accounts across devices with summary compression.
