@@ -146,4 +146,21 @@ Output strictly in this format with no introduction or conclusion:
               temperature: 0.1,
             },
           }),
-// [rag-build-step 9/40]: feat(rag-ingest): implement PDF text extraction using unpdf parser
+        }
+      );
+
+      if (response.ok) {
+        const data = await response.json();
+        const ocrText = data.candidates?.[0]?.content?.parts?.[0]?.text;
+        if (ocrText && ocrText.trim().length > 100) {
+          const pageSplits = ocrText.split(/---\s*PAGE\s*(\d+)\s*---/i);
+          const ocrPages: PageContent[] = [];
+
+          if (pageSplits.length > 2) {
+            for (let i = 1; i < pageSplits.length; i += 2) {
+              const pNum = parseInt(pageSplits[i], 10) || Math.floor(i / 2) + 1;
+              const pContent = cleanDocumentText(pageSplits[i + 1] || "");
+              if (pContent) {
+                ocrPages.push({ pageNumber: pNum, text: pContent, isOcr: true });
+              }
+// [rag-build-step 10/40]: feat(rag-ingest): extract text content page-by-page from PDF buffer
