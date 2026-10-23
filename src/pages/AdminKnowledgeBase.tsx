@@ -612,4 +612,30 @@ const AdminKnowledgeBase = () => {
                   {isUploading ? "Ingesting Document..." : "Start Ingestion & Embed"}
                 </Button>
               </form>
-// [rag-build-step 24/31]: perf(admin-kb): optimize document list fetching with Supabase pagination
+            </CardContent>
+          </Card>
+
+          {/* Test Retrieval Box */}
+          <Card className="shadow-sm border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 flex flex-col">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-base font-bold flex items-center gap-2">
+                <Search className="w-4 h-4 text-emerald-600" />
+                Test Hybrid Retrieval
+              </CardTitle>
+              <CardDescription className="text-xs">
+                Probe the RRF hybrid index to inspect retrieved passages and source citations.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="flex-1 flex flex-col space-y-3">
+              <div className="flex gap-2">
+                <Input
+                  value={testQuery}
+                  onChange={(e) => setTestQuery(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && handleTestRetrieval()}
+                  placeholder="e.g. Banker's algorithm deadlock avoidance"
+                  className="text-xs"
+                />
+                <Button
+                  onClick={handleTestRetrieval}
+                  disabled={isSearching || !testQuery.trim()}
+// [rag-build-step 25/31]: refactor(admin-kb): handle edge function errors with toast notifications
