@@ -608,4 +608,21 @@ serve(async (req) => {
         content: chunk.content,
         token_count: chunk.tokenCount,
         embedding,
-// [rag-build-step 37/40]: feat(rag-ingest): log granular error details to document error column
+        metadata: {
+          ...chunk.metadata,
+          source_type: sourceType,
+          used_ocr: usedOcr,
+        },
+      });
+
+      // Insert in batches of 20 to avoid large payload sizes
+      if (chunkInserts.length >= 20 || i === chunks.length - 1) {
+        const { error: chunkError } = await supabaseAdmin
+          .from("rag_chunks")
+          .insert(chunkInserts);
+
+        if (chunkError) throw chunkError;
+        chunkInserts.length = 0; // clear batch
+      }
+    }
+// [rag-build-step 38/40]: refactor(rag-ingest): modularize text chunking and cleaning utilities
