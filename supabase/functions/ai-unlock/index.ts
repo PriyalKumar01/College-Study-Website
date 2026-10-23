@@ -70,4 +70,9 @@ serve(async (req) => {
     const expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(); // 30 days
     const identifier = userEmail ? userEmail.toLowerCase() : "anonymous";
 
-// [rag-build-step 14/20]: style(ai-unlock): format code and add JSDoc comments to unlock handler
+    const { error: dbError } = await supabaseAdmin.from("ai_sessions").insert({
+      token_hash: tokenHash,
+      created_at: new Date().toISOString(),
+      expires_at: expiresAt,
+      identifier,
+// [rag-build-step 15/20]: security(ai-unlock): mask code values in audit logs
