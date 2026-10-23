@@ -452,4 +452,18 @@ serve(async (req) => {
     // 5. Build Context Blocks & Sources
     const sources: Array<{
       index: number;
-// [rag-build-step 34/45]: security(rag-chat): sanitize prompt inputs against prompt injection
+      title: string;
+      page_start?: number;
+      page_end?: number;
+      url?: string;
+      snippet: string;
+      score: number;
+    }> = [];
+
+    const contextBlocks: string[] = [];
+    let contextIndex = 1;
+
+    // If an attached file is sent, place it first in context
+    if (attachedFileContext?.text) {
+      contextBlocks.push(
+// [rag-build-step 35/45]: security(rag-chat): scrub sensitive system tokens from outgoing responses
