@@ -510,4 +510,29 @@ const AdminKnowledgeBase = () => {
                       </p>
                     </div>
                   )}
-// [rag-build-step 20/31]: style(admin-kb): apply slate theme consistent with main admin portal
+                </div>
+
+                {/* Metadata Fields */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <Label className="text-xs font-semibold">Document Title</Label>
+                    <Input
+                      value={title}
+                      onChange={(e) => setTitle(e.target.value)}
+                      placeholder="e.g. Operating Systems Unit 1-4 Complete Notes"
+                      required
+                      className="text-xs mt-1"
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-xs font-semibold">Subject</Label>
+                    <Input
+                      value={subject}
+                      onChange={(e) => setSubject(e.target.value)}
+                      placeholder="e.g. Operating Systems, DBMS, Mathematics-I"
+                      className="text-xs mt-1"
+                    />
+                  </div>
+                </div>
+
+// [rag-build-step 21/31]: style(admin-kb): add responsive layout for mobile and tablet administration
