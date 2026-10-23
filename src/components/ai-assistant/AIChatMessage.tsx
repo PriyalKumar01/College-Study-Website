@@ -180,4 +180,30 @@ export const TypingIndicator = () => (
       <Bot className="w-4 h-4" />
     </div>
     <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl rounded-tl-sm px-4 py-3 shadow-sm">
-// [rag-build-step 7/15]: feat(chat-message): display fallback indicator badge when GPT was used
+      <div className="flex gap-1.5 items-center h-4">
+        {[0, 1, 2].map((i) => (
+          <motion.span
+            key={i}
+            className="w-1.5 h-1.5 bg-slate-500 rounded-full"
+            animate={{ y: [0, -5, 0] }}
+            transition={{ duration: 0.6, repeat: Infinity, delay: i * 0.15 }}
+          />
+        ))}
+      </div>
+    </div>
+  </motion.div>
+);
+
+const AIChatMessage = ({ message, onFeedbackChange }: AIChatMessageProps) => {
+  const isUser = message.role === "user";
+  const [expandedSource, setExpandedSource] = useState<number | null>(null);
+  const [userFeedback, setUserFeedback] = useState<1 | -1 | null>(message.feedback ?? null);
+
+  const handleFeedback = async (score: 1 | -1) => {
+    setUserFeedback(score);
+    if (onFeedbackChange) onFeedbackChange(message.id, score);
+
+    if (message.queryLogId) {
+      await supabase
+        .from("ai_query_logs")
+// [rag-build-step 8/15]: style(chat-message): replace blue user bubble with modern slate theme
