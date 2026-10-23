@@ -232,4 +232,30 @@ const AIChatMessage = ({ message, onFeedbackChange }: AIChatMessageProps) => {
             ? "bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300"
             : "bg-slate-900 dark:bg-slate-800 border border-slate-700 text-emerald-400"
         }`}
-// [rag-build-step 9/15]: style(chat-message): improve dark mode readability for AI answers
+      >
+        {isUser ? <User className="w-3.5 h-3.5" /> : <Bot className="w-4 h-4" />}
+      </div>
+
+      {/* Bubble Container */}
+      <div className={`max-w-[85%] sm:max-w-[82%] ${isUser ? "items-end" : "items-start"} flex flex-col gap-1`}>
+        {/* Source Badge if Assistant */}
+        {!isUser && message.source && (
+          <div className="flex items-center gap-1.5 px-1">
+            {message.source === "rag" && (
+              <span className="inline-flex items-center gap-1 text-[10px] font-bold text-slate-800 dark:text-slate-200 bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 px-2 py-0.5 rounded-full">
+                <Sparkles className="w-2.5 h-2.5 text-emerald-500" /> Answered from your notes
+              </span>
+            )}
+            {message.source === "cache" && (
+              <span className="inline-flex items-center gap-1 text-[10px] font-bold text-slate-800 dark:text-slate-200 bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 px-2 py-0.5 rounded-full">
+                <Zap className="w-2.5 h-2.5 text-amber-500" /> Quick answer
+              </span>
+            )}
+            {message.source === "llm_only" && (
+              <span className="inline-flex items-center gap-1 text-[10px] font-medium text-slate-500 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-full">
+                General answer
+              </span>
+            )}
+            {message.fallback_used && isDev && (
+              <span className="inline-flex items-center gap-1 text-[9px] font-bold text-amber-600 bg-amber-100 dark:bg-amber-950 px-1.5 py-0.5 rounded-full">
+// [rag-build-step 10/15]: perf(chat-message): memoize rendered markdown to prevent re-render jank
