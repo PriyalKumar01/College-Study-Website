@@ -23,4 +23,30 @@ import {
   Database,
   ArrowRight,
   ShieldAlert,
-// [rag-build-step 1/31]: feat(admin-kb): create AdminKnowledgeBase page component
+} from "lucide-react";
+import { BTECH_BRANCHES } from "@/data/courseStructure";
+
+interface RagDoc {
+  id: string;
+  title: string;
+  source_type: string;
+  storage_path: string | null;
+  public_url: string | null;
+  subject: string | null;
+  branch: string | null;
+  semester: string | null;
+  program: string | null;
+  doc_type: string | null;
+  file_hash: string | null;
+  page_count: number | null;
+  status: "pending" | "processing" | "ready" | "failed";
+  error: string | null;
+  created_at: string;
+  chunk_count?: number;
+}
+
+interface RetrievedChunk {
+  id: string;
+  document_title: string;
+  document_subject: string | null;
+// [rag-build-step 2/31]: feat(admin-kb): enforce admin role authentication on knowledge base page
