@@ -504,4 +504,40 @@ Direct link: [3rd Semester CSE Notes](/third-semester-cse-notes)
 
 **Subjects:**
 - Data Structures
-// [rag-build-step 14/25]: refactor(knowledge-base): update external portal links and official references
+- Digital Electronics
+- Discrete Mathematics
+- Object Oriented Programming (Java/OOP)
+- Mathematics-III
+- Analog Electronics`,
+  },
+  {
+    keywords: ["cse 4th semester", "fourth semester cse", "sem 4 cse", "4th sem cse", "dbms notes", "operating system notes", "os notes", "coa notes", "toc notes"],
+    response: `📚 **4th Semester CSE Notes:**
+
+Direct link: [4th Semester CSE Notes](/fourth-semester-cse-notes)
+
+**Subjects:**
+- 🗃️ Database Management Systems (DBMS)
+- 💻 Computer Organization & Architecture (COA)
+- 🖥️ Operating Systems (OS)
+- 🔣 Theory of Computation (TOC)
+- 📊 Mathematics-IV / Probability & Statistics
+- 🛠️ Software Engineering`,
+  },
+  {
+    keywords: ["cse 5th semester", "fifth semester cse", "sem 5 cse", "5th sem cse", "computer networks notes", "cn notes", "compiler design notes", "microprocessor notes", "web technologies notes", "ai notes"],
+    response: `📚 **5th Semester CSE Notes:**
+
+Direct link: [5th Semester CSE Notes](/fifth-semester-cse-notes)
+
+**Subjects:**
+- 🌐 Computer Networks (CN)
+- ⚙️ Compiler Design
+- 🔌 Microprocessors & Interfaces
+- 🌍 Web Technologies
+- 🤖 Artificial Intelligence (AI)
+- 📖 [Open Electives](/fifth-semester-open-electives)`,
+  },
+  {
+    keywords: ["cse 6th semester", "sixth semester cse", "sem 6 cse", "6th sem cse", "machine learning notes", "ml notes", "cloud computing notes", "information security notes"],
+// [rag-build-step 15/25]: refactor(knowledge-base): update buildSystemPrompt to enforce English answers
