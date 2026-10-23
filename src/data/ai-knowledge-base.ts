@@ -648,4 +648,41 @@ Direct Link: [https://digishakti.up.gov.in/](https://digishakti.up.gov.in/)
 **Instructions for Students:**
 - 🔹 Student records are uploaded directly to the state portal by the university administration.
 - 🔹 Students only need to verify their credentials and complete **eKYC** when prompted on the portal.
-// [rag-build-step 18/25]: perf(knowledge-base): compile regex patterns once for keyword matching
+- 🔹 Devices are distributed on campus once official university notification schedules are published.
+
+*For inquiries, contact the Student Welfare Section on campus.* ✨`,
+  },
+  {
+    keywords: ["up scholarship", "scholarship up", "scholarship.up.gov.in", "up scholarship portal", "fee reimbursement up"],
+    response: `🏛️ **UP Scholarship & Fee Reimbursement Scheme:**
+
+Direct Link: [https://scholarship.up.gov.in/index.aspx](https://scholarship.up.gov.in/index.aspx)
+
+**Key Information for HBTU Students:**
+1. **Application Category:** Apply under *Post-Matric Other Than Inter* for engineering and postgraduate courses.
+2. **Required Documents:** Income Certificate, Caste Certificate, Domicile Certificate, Fee Receipt, Academic Marksheets, and Aadhaar-seeded Bank Account.
+3. **Mandatory Hard Copy:** Print and submit your final application form with supporting proofs to the University Scholarship Office for verification.
+
+*Also explore our [Scholarships Portal](/scholarship-portal) for corporate and CSR opportunities!* 🏆`,
+  },
+  {
+    keywords: ["buddy4study", "buddy 4 study", "private scholarship", "scholarship list"],
+    response: `🏆 **Buddy4Study Scholarships Portal:**
+
+Direct Link: [https://www.buddy4study.com/scholarships](https://www.buddy4study.com/scholarships)
+
+**Available Opportunities:**
+- 💰 Corporate CSR Scholarships (Tata, Reliance, Infosys, HDFC, Kotak)
+- 🎯 Merit-cum-Means Scholarships (₹50,000 to ₹2,00,000/year)
+- 👩‍🎓 Special STEM & Women-in-Tech Scholarships
+
+*Check our [Scholarships Portal](/scholarship-portal) for active deadlines and application guides!* 🌟`,
+  },
+  {
+    keywords: ["ats resume", "ats score", "resume score", "resume checker", "resume analyzer", "ats kaise check"],
+    response: `📄 **AI ATS Resume Scorer & Analyzer:**
+
+Direct link: [ATS Resume Builder & Scorer](/ats-resume)
+
+**Capabilities:**
+// [rag-build-step 19/25]: test(knowledge-base): add unit tests for word boundary regex matching
