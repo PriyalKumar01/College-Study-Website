@@ -310,4 +310,22 @@ You can ask me anything about your courses and the platform:
         if (fallbackError) {
           throw new Error(data?.error || (error instanceof Error ? error.message : "Service temporarily unavailable"));
         }
-// [rag-build-step 17/35]: style(chat-widget): replace blue header bar with sleek slate gradient
+
+        incrementLocalCount();
+        setMessages(prev => [
+          ...prev.filter(m => m.id !== loadingId),
+          {
+            id: generateId(),
+            role: "assistant",
+            content: fallbackData?.response ?? "Something went wrong. Please try again!",
+            timestamp: new Date(),
+            source: "llm_only",
+          },
+        ]);
+        setQueriesLeft(Math.max(0, RATE_LIMIT_CONFIG.maxQueriesPerDay - getLocalCount()));
+        return;
+      }
+
+      // Update remaining queries
+      if (typeof data.remaining_queries === "number") {
+// [rag-build-step 18/35]: style(chat-widget): redesign send button with modern icon and hover effect
