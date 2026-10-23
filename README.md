@@ -169,4 +169,61 @@ All tables reside within Supabase PostgreSQL, protected by **Row Level Security 
 │ • premium_purchases (Razorpay orders)    │ • ai_sessions (hashed tokens)    │
 │ • coupon_codes (premium discounts)       │ • ai_usage (daily rate limits)   │
 │ • opportunities (jobs, internships)      │ • ai_query_logs (telemetry)      │
-# [rag-build-step 3/7]: docs(readme): update README with edge functions reference table
+│ • scholarships (deadlines, URLs)         │ • study_materials (notes review) │
+│ • contributors (gamified leaderboard)    │ • email_campaigns & logs         │
+└──────────────────────────────────────────┴──────────────────────────────────┘
+```
+
+### Table Definitions
+
+| Table | Purpose | Security / Access |
+|---|---|---|
+| `rag_documents` | Metadata for ingested files (PDF, DOCX, PPTX, TXT) | Public read (ready only), Admin write |
+| `rag_chunks` | Text chunks, page metadata, and 768-dim vector embeddings | Service Role only (accessed via Edge Functions) |
+| `ai_sessions` | SHA-256 hashed session tokens with 30-day expiration | Service Role only |
+| `ai_usage` | Per-user daily query tracking (enforcing 10 queries/day) | Service Role only |
+| `ai_query_logs` | Query telemetry, retrieved chunk IDs, models used, latency | Service Role only |
+| `profiles` | Student branch, batch, StudyCoins, avatar, and academic info | Users read all, update own |
+| `admin_roles` | Granular 3-tier RBAC (`member`, `admin`, `owner`) | Authenticated read, Owner write |
+| `premium_purchases`| Payment records, Razorpay order IDs, and active tiers | User read own, Service Role write |
+| `coupon_codes` | Discount codes for premium purchases (e.g., `HBTU@1843`) | Admin/Owner manage |
+| `opportunities` | Curated listings for jobs, internships, and hackathons | Public read, Admin manage |
+| `scholarships` | State and national scholarship schemes and deadlines | Public read, Admin manage |
+| `contributors` | Gamified leaderboard entries, coin totals, and badges | Public read, Admin manage |
+
+---
+
+## ⚡ Supabase Edge Functions Suite
+
+Built on the **Deno** runtime and deployed globally on Supabase Edge Network:
+
+| Function Name | Description | Invocation |
+|---|---|---|
+| `rag-chat` | Core RAG chat endpoint: access verification, cached lookup, query vectorization, pgvector hybrid retrieval, and dual-LLM generation | Authenticated / Client |
+| `rag-ingest` | Multi-file document ingestion, text sanitization, chunking, OCR fallback, and batch vector embedding | Admin JWT only |
+| `rag-extract` | Ephemeral document parser for client-side chat attachments | Authenticated / Client |
+| `rag-ingest-site-knowledge` | Syncs curriculum routes, site knowledge base, and official portal URLs into the vector store | Admin / Service Role |
+| `ai-unlock` | Validates server-side access code against secret and issues SHA-256 hashed session tokens | Public / Client |
+| `ai-assistant` | Legacy assistant endpoint & ATS Multimodal Resume Scorer | Authenticated / Client |
+| `send-otp-email` | Generates and sends passwordless email login OTPs via Brevo API | Public Auth |
+| `send-campaign-emails` | Dispatches bulk email announcements to registered university students | Admin / Owner only |
+| `update-blocked-domains` | Automated maintenance function filtering spam and disposable email domains | Cron / Service Role |
+
+---
+
+## 🛠️ Tech Stack & Key Libraries
+
+<div align="center">
+
+| Layer | Technologies & Libraries |
+|---|---|
+| **Frontend Core** | React 18, TypeScript 5, Vite 5 (SWC), React Router DOM v6 |
+| **Styling & Design** | Tailwind CSS v3, Shadcn UI, Radix UI Primitives, Lucide Icons |
+| **State & Data Fetching** | TanStack React Query v5, Context API, LocalStorage persistence |
+| **Animations** | Framer Motion v12 |
+| **Vector Database** | Supabase PostgreSQL with `pgvector` extension (HNSW indexing) |
+| **AI & Embeddings** | Google Gemini 3.5 Flash, Gemini Embedding-001 (768 dims), OpenAI GPT-4o-mini |
+| **Backend & Serverless** | Supabase Edge Functions (Deno runtime), PostgreSQL RLS, PL/pgSQL RPCs |
+| **Payments & Auth** | Razorpay Indian Gateway, Supabase Auth (Email OTP + Google OAuth) |
+| **Hosting & PWA** | Netlify Global CDN, `vite-plugin-pwa` (Workbox Service Worker) |
+# [rag-build-step 4/7]: docs(readme): update README with admin knowledge base guide
