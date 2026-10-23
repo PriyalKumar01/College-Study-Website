@@ -202,4 +202,30 @@ const AdminKnowledgeBase = () => {
 
         if (ingestError || ingestData?.error) {
           throw new Error(ingestData?.error || ingestError?.message || "Ingestion error");
-// [rag-build-step 8/31]: feat(admin-kb): trigger rag-ingest edge function on successful upload
+        }
+      }
+
+      toast({
+        title: "Ingestion complete!",
+        description: `Successfully ingested ${selectedFiles.length} document(s) into vector knowledge base.`,
+      });
+
+      setSelectedFiles([]);
+      setTitle("");
+      setSubject("");
+      fetchDocuments();
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Upload failed";
+      console.error("Upload error:", err);
+      toast({
+        title: "Ingestion failed",
+        description: msg,
+        variant: "destructive",
+      });
+    } finally {
+      setIsUploading(false);
+      setUploadProgress("");
+    }
+  };
+
+// [rag-build-step 9/31]: feat(admin-kb): show real-time upload and processing progress bar
