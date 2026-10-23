@@ -34,4 +34,40 @@ export const BTECH_NOTES = {
   years: {
     first: { path: "/notes/btech/first-year", label: "First Year" },
     second: { path: "/notes/btech/second-year", label: "Second Year" },
-// [rag-build-step 1/25]: refactor(knowledge-base): rewrite findCachedResponse with word boundary matching
+    third: { path: "/notes/btech/third-year", label: "Third Year" },
+    fourth: { path: "/notes/btech/fourth-year", label: "Fourth Year" },
+  },
+  semesters: {
+    sem1: {
+      path: "/first-semester-notes",
+      label: "1st Semester",
+      branches: "Common for all branches",
+      subjects: ["Basic Electrical Engineering (BEE)", "Engineering Mathematics-I", "Engineering Physics", "Engineering Chemistry", "Professional Communication", "Engineering Graphics", "Workshop Practice"],
+    },
+    sem2: {
+      path: "/second-semester-notes",
+      label: "2nd Semester",
+      branches: "Common for all branches",
+      subjects: ["Engineering Mathematics-II", "Engineering Mechanics", "Basic Electronics Engineering", "Programming for Problem Solving (C Language)", "Environmental Science", "Engineering Drawing"],
+    },
+    sem3: {
+      path: "/notes/btech/third-semester",
+      label: "3rd Semester",
+      branches: ["CSE", "ME", "CE", "CH", "LFT", "ET", "PT", "BE", "FT", "OT", "EE"],
+      cse: { path: "/third-semester-cse-notes", subjects: ["Data Structures", "Digital Electronics", "Discrete Mathematics", "Object Oriented Programming (OOP/Java)", "Mathematics-III", "Analog Electronics"] },
+      me: { path: "/third-semester-me-notes", subjects: ["Thermodynamics", "Fluid Mechanics", "Manufacturing Technology", "Strength of Materials", "Mathematics-III"] },
+      ce: { path: "/third-semester-ce-notes" },
+      ch: { path: "/third-semester-ch-notes" },
+      lft: { path: "/third-semester-lft-notes" },
+      et: { path: "/third-semester-et-notes" },
+      pt: { path: "/third-semester-pt-notes" },
+      be: { path: "/third-semester-be-notes" },
+      ft: { path: "/third-semester-ft-notes" },
+      ot: { path: "/third-semester-ot-notes" },
+      ee: { path: "/third-semester-ee-notes" },
+    },
+    sem4: {
+      path: "/notes/btech/fourth-semester",
+      label: "4th Semester",
+      branches: ["CSE", "ME", "CE", "CH", "LFT", "ET", "PT", "BE", "FT", "OT", "EE"],
+// [rag-build-step 2/25]: feat(knowledge-base): implement keyword specificity scoring algorithm
