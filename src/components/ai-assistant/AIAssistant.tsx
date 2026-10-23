@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import { AnimatePresence } from "framer-motion";
 import AIAssistantButton from "./AIAssistantButton";
 import AIAccessGate from "./AIAccessGate";
@@ -9,6 +10,7 @@ import { useAuth } from "@/contexts/AuthContext";
 
 const AIAssistant = () => {
   const { user } = useAuth();
+  const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
   const [hasAccess, setHasAccess] = useState(false);
 
@@ -21,6 +23,14 @@ const AIAssistant = () => {
   const handleAccessGranted = () => {
     setHasAccess(true);
   };
+
+  // Only show AI Assistant on primary hub pages: Home, Dashboard, Notes Categories, and About.
+  // Hide on deep sub-pages (Coding Space, individual semester/notes, quizzes, etc.) to prevent mobile screen overlap.
+  const allowedPaths = ['/', '/dashboard', '/notes', '/about'];
+  const normalizedPath = location.pathname.replace(/\/+$/, '') || '/';
+  if (!allowedPaths.includes(normalizedPath)) {
+    return null;
+  }
 
   // If user is not logged in, do not render AI Assistant at all
   if (!user) return null;
