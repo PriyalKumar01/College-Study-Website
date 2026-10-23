@@ -332,4 +332,17 @@ serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: corsHeaders });
   }
-// [rag-build-step 25/45]: feat(rag-chat): resolve citation keys to document title, page, and chunk id
+
+  const startTime = Date.now();
+
+  try {
+    const body = await req.json();
+    const {
+      sessionToken,
+      accessCode,
+      userEmail,
+      conversationHistory = [],
+      attachedFileContext,
+      filterBranch,
+      filterSemester,
+// [rag-build-step 26/45]: feat(rag-chat): build structured citations array for client-side rendering
