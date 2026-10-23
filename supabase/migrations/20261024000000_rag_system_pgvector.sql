@@ -70,4 +70,14 @@ CREATE TABLE IF NOT EXISTS public.ai_usage (
 
 -- 5. ai_sessions: Unlocked sessions from valid access codes
 CREATE TABLE IF NOT EXISTS public.ai_sessions (
--- [rag-build-step 7/30]: feat(db): define rag_chunks table schema with foreign key reference
+  token_hash    TEXT PRIMARY KEY,
+  created_at    TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  expires_at    TIMESTAMPTZ NOT NULL,
+  identifier    TEXT
+);
+
+CREATE INDEX IF NOT EXISTS idx_ai_sessions_expires_at 
+  ON public.ai_sessions (expires_at);
+
+-- 6. ai_query_logs: Query evaluation & telemetry
+-- [rag-build-step 8/30]: feat(db): add 768-dimension vector column to rag_chunks
