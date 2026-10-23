@@ -89,4 +89,34 @@ flowchart TD
    - **DOCX / PPTX**: Unpacked using zip parsing to extract raw text and slide numbers.
    - **TXT / Markdown**: Parsed directly with heading preservation.
 4. **Text Cleaning**:
-# [rag-build-step 3/8]: docs(rag): illustrate hybrid retrieval and dual-LLM orchestration flow
+   - Strips repeating page headers, running footers, and noise.
+   - Normalizes whitespace, repairs word hyphenation across lines, and retains markdown headings (`#`, `##`) and mathematical formulas.
+5. **Chunking Strategy**:
+   - **Target chunk size**: ~800 to 1,000 characters (~200 to 250 tokens).
+   - **Overlap**: 150 characters.
+   - **Boundary splitting**: Chunks break on paragraph (`\n\n`), heading (`#`), or sentence punctuation boundaries. Never mid-sentence.
+   - **Metadata enrichment**: Each chunk records `page_start`, `page_end`, nearest heading, and subject.
+   - **Context prefixing**: When generating the vector embedding, the chunk text is prefixed with:
+     ```
+     Subject: {subject} | Title: {document_title} | Heading: {nearest_heading}
+     {content}
+     ```
+     The raw chunk content is stored clean in Postgres for prompt rendering.
+6. **Vector Embeddings**:
+   - Model: `gemini-embedding-001` (fallback `gemini-embedding-2`).
+   - Output dimensionality: **768 dimensions** (utilizing Matryoshka Representation Learning).
+   - Rate limit mitigation: Batches processed with exponential backoff and jitter.
+
+---
+
+## 3. Database Schema & Search Mechanics
+
+### Schema Highlights (`supabase/migrations/20261024000000_rag_system_pgvector.sql`)
+- **`rag_documents`**: Tracks documents, metadata (`subject`, `branch`, `semester`, `program`, `doc_type`), SHA-256 hash, page counts, and lifecycle status (`pending`, `processing`, `ready`, `failed`).
+- **`rag_chunks`**: Stores content chunks, page coordinates, metadata, `embedding vector(768)`, and generated full-text `content_tsv tsvector`.
+- **`ai_usage`**: Tracks `(identifier, usage_date, count)` for server-side rate-limiting.
+- **`ai_sessions`**: Stores SHA-256 hashes of cryptographically random session tokens with a 30-day expiration timestamp.
+- **`ai_query_logs`**: Logs query text, latency, model used, fallback status, and user feedback.
+
+### Indexing
+# [rag-build-step 4/8]: docs(rag): detail pgvector cosine similarity and HNSW/IVFFlat indexing
