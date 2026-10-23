@@ -71,4 +71,22 @@ You can ask me anything about your courses and the platform:
 
 *You have ${Math.max(0, RATE_LIMIT_CONFIG.maxQueriesPerDay - getLocalCount())} queries remaining today.* 🚀`,
       timestamp: new Date(),
-// [rag-build-step 4/35]: feat(chat-widget): support PDF, DOCX, and TXT attachment selection
+    },
+  ]);
+  const [input, setInput] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [attachedFile, setAttachedFile] = useState<File | null>(null);
+  const [attachedContext, setAttachedContext] = useState<{ fileName: string; text: string } | null>(null);
+  const [isExtractingFile, setIsExtractingFile] = useState(false);
+  const [fileExtractStatus, setFileExtractStatus] = useState<string>("");
+  const [showSuggestions, setShowSuggestions] = useState(true);
+  const [queriesLeft, setQueriesLeft] = useState(Math.max(0, RATE_LIMIT_CONFIG.maxQueriesPerDay - getLocalCount()));
+
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLTextAreaElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Auto-scroll to bottom on new message
+  useEffect(() => {
+// [rag-build-step 5/35]: feat(chat-widget): show selected attachment chip with remove action
