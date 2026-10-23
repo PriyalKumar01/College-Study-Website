@@ -118,4 +118,34 @@ const AIAccessGate = ({ onAccessGranted }: AIAccessGateProps) => {
         <p className="text-[11px] font-bold text-slate-800 dark:text-slate-200 mb-1.5 flex items-center gap-1.5">
           <Sparkles className="w-3 h-3 text-slate-700 dark:text-slate-300" />
           Key Features:
-// [rag-build-step 4/7]: feat(access-gate): store verified session token in localStorage
+        </p>
+        <ul className="space-y-1">
+          {[
+            "📚 Notes & PYQs for all semesters",
+            "🏛️ HBTU portals, ERP & attendance doubts",
+            "📄 PDF resume scanner & ATS scoring",
+            "💡 Placement roadmaps & GATE prep",
+          ].map((item) => (
+            <li key={item} className="text-[11px] text-slate-600 dark:text-slate-300 font-medium leading-tight">{item}</li>
+          ))}
+        </ul>
+      </motion.div>
+
+      {/* Code Input Form */}
+      <motion.form
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.3 }}
+        onSubmit={handleSubmit}
+        className="w-full"
+      >
+        <motion.div
+          animate={isShaking ? { x: [-8, 8, -6, 6, -4, 4, 0] } : { x: 0 }}
+          transition={{ duration: 0.4 }}
+          className="relative mb-2.5"
+        >
+          <input
+            type="text"
+            value={code}
+            onChange={(e) => {
+// [rag-build-step 5/7]: feat(access-gate): add shake animation on invalid access code
