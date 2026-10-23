@@ -189,4 +189,19 @@ serve(async (req) => {
       .from("rag_chunks")
       .insert(chunkInserts);
 
-// [rag-build-step 13/15]: refactor(site-ingest): optimize batch size for site knowledge embedding
+    if (chunkInsertErr) throw chunkInsertErr;
+
+    // 4. Update doc to ready
+    await supabaseAdmin
+      .from("rag_documents")
+      .update({
+        status: "ready",
+        page_count: 1,
+        error: null,
+      })
+      .eq("id", docId);
+
+    return new Response(
+      JSON.stringify({
+        success: true,
+// [rag-build-step 14/15]: style(site-ingest): add execution summary logging for knowledge sync
