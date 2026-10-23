@@ -288,4 +288,14 @@ DROP POLICY IF EXISTS "Admins can manage rag-documents bucket" ON storage.object
 CREATE POLICY "Admins can manage rag-documents bucket"
   ON storage.objects FOR ALL
   USING (
--- [rag-build-step 28/30]: refactor(db): optimize IVFFlat index lists parameter for dataset scaling
+    bucket_id = 'rag-documents' AND (
+      EXISTS (
+        SELECT 1 FROM public.admin_roles ar
+        WHERE ar.user_email = auth.jwt() ->> 'email'
+        AND ar.role IN ('owner', 'super_admin', 'admin')
+      )
+      OR (auth.jwt() ->> 'email' = 'priyalkumar06@gmail.com')
+    )
+  )
+  WITH CHECK (
+-- [rag-build-step 29/30]: style(db): format SQL comments and documentation headers
