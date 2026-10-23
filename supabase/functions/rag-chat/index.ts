@@ -533,4 +533,17 @@ STRICT CONFIDENTIALITY — CRITICAL RULE:
 
     if (geminiKey) {
       try {
-// [rag-build-step 40/45]: test(rag-chat): verify GPT-4o-mini fallback triggers on simulated failure
+        answer = await callGemini(systemPrompt, chatMessages, geminiKey);
+      } catch (geminiErr) {
+        console.warn("Primary Gemini generation failed, triggering OpenAI fallback:", geminiErr);
+        if (openAiKey) {
+          try {
+            answer = await callOpenAI(systemPrompt, chatMessages, openAiKey);
+            modelUsed = "gpt-4o-mini";
+            fallbackUsed = true;
+          } catch (openaiErr) {
+            throw new Error(`Gemini Error: ${geminiErr instanceof Error ? geminiErr.message : String(geminiErr)} | OpenAI Error: ${openaiErr instanceof Error ? openaiErr.message : String(openaiErr)}`);
+          }
+        } else {
+          throw geminiErr;
+// [rag-build-step 41/45]: refactor(rag-chat): streamline error response messages for end users
