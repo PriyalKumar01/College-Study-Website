@@ -181,4 +181,23 @@ You can ask me anything about your courses and the platform:
   const handleSend = useCallback(async (queryText?: string) => {
     const text = (queryText ?? input).trim();
     if (!text && !attachedFile) return;
-// [rag-build-step 10/35]: feat(chat-widget): handle streaming tokens from rag-chat endpoint
+    if (isLoading) return;
+
+    setShowSuggestions(false);
+    const userEmail = user?.email ?? "anonymous";
+
+    // Client-side rate check
+    const currentCount = getLocalCount();
+    if (currentCount >= RATE_LIMIT_CONFIG.maxQueriesPerDay) {
+      addMessage({
+        role: "assistant",
+        content: `⛔ **Daily Limit Reached**\n\nAapne aaj ke ${RATE_LIMIT_CONFIG.maxQueriesPerDay} queries use kar liye hain.\n\nLimit **midnight IST** pe reset hogi. Kal phir milte hain! 🌙\n\n*Need more? Contact Priyal Kumar sir for expanded access.*`,
+      });
+      return;
+    }
+
+    const currentInput = text;
+    const currentFile = attachedFile;
+    const currentExtractedContext = attachedContext;
+
+// [rag-build-step 11/35]: feat(chat-widget): smooth scrolling to latest message during streaming
