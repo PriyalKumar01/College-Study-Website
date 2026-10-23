@@ -612,4 +612,40 @@ Direct link: [Premium Directory](/premium-directory) *(Premium Feature)*
 
 *All links are also organized under the **Useful Websites** dropdown in the top navbar!* 🚀`,
   },
-// [rag-build-step 17/25]: refactor(knowledge-base): add citation formatting directives to system prompt
+  {
+    keywords: ["erp portal", "erp login", "hbtu erp", "erp link", "semester registration erp", "fee receipt erp"],
+    response: `💻 **HBTU ERP Portal Login:**
+
+Direct URL: [https://erp.hbtu.ac.in/NewIndex.html](https://erp.hbtu.ac.in/NewIndex.html)
+
+**Key ERP Functions:**
+- 📝 **Semester Registration:** Select and register for your semester courses when sessions begin.
+- 💳 **Fee Payment & Receipts:** Pay university fees online and download official receipts.
+- 📜 **Admit Cards & Grade Sheets:** Download examination admit cards and semester grade cards.
+- 👤 **Student Profile:** Review and update your official university profile.
+
+💡 If you forgot your password, use the *Forgot Password* link or visit the Academic Section (Dean Office).`,
+  },
+  {
+    keywords: ["attendance portal", "attendance check", "hbtu attendance", "attendance link", "75 attendance", "attendance rule"],
+    response: `📊 **HBTU Attendance Portal & Regulations:**
+
+Direct Link: [HBTU Student Attendance Portal](https://erp.hbtu.ac.in/StudentAttendance.aspx)
+
+**Important Regulations:**
+- ⚠️ **75% Mandatory Attendance:** A minimum of 75% attendance is required to appear for Mid-Semester and End-Semester examinations.
+- 🔍 Subject-wise and cumulative attendance is updated periodically by course instructors.
+- 🩺 In case of medical absence, submit official medical certificates to the Dean of Academic Affairs within the stipulated timeframe.
+
+*Check your live attendance directly at [Attendance Portal](https://erp.hbtu.ac.in/StudentAttendance.aspx)!* 🎓`,
+  },
+  {
+    keywords: ["digi shakti", "tablet portal", "tablet yojana", "smartphone yojana", "digishakti", "ekyc tablet", "ekyc"],
+    response: `📱 **Digi Shakti Portal — UP Free Tablet & Smartphone Scheme:**
+
+Direct Link: [https://digishakti.up.gov.in/](https://digishakti.up.gov.in/)
+
+**Instructions for Students:**
+- 🔹 Student records are uploaded directly to the state portal by the university administration.
+- 🔹 Students only need to verify their credentials and complete **eKYC** when prompted on the portal.
+// [rag-build-step 18/25]: perf(knowledge-base): compile regex patterns once for keyword matching
