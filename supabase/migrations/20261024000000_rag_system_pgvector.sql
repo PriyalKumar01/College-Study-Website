@@ -29,4 +29,14 @@ CREATE TABLE IF NOT EXISTS public.rag_documents (
 -- Indexes for rag_documents
 CREATE INDEX IF NOT EXISTS idx_rag_documents_status ON public.rag_documents (status);
 CREATE INDEX IF NOT EXISTS idx_rag_documents_subject ON public.rag_documents (subject);
--- [rag-build-step 3/30]: feat(db): enable pg_trgm extension for fuzzy keyword matching
+CREATE INDEX IF NOT EXISTS idx_rag_documents_branch_sem ON public.rag_documents (branch, semester);
+
+-- 3. rag_chunks: Chunked Passages & 768-dim Vector Embeddings
+CREATE TABLE IF NOT EXISTS public.rag_chunks (
+  id            UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  document_id   UUID NOT NULL REFERENCES public.rag_documents(id) ON DELETE CASCADE,
+  chunk_index   INTEGER NOT NULL,
+  page_start    INTEGER,
+  page_end      INTEGER,
+  content       TEXT NOT NULL,
+-- [rag-build-step 4/30]: feat(db): define rag_documents table structure and timestamps
