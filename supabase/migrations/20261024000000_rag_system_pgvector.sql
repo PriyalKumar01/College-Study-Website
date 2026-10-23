@@ -39,4 +39,14 @@ CREATE TABLE IF NOT EXISTS public.rag_chunks (
   page_start    INTEGER,
   page_end      INTEGER,
   content       TEXT NOT NULL,
--- [rag-build-step 4/30]: feat(db): define rag_documents table structure and timestamps
+  token_count   INTEGER,
+  embedding     vector(768),
+  content_tsv   tsvector GENERATED ALWAYS AS (to_tsvector('english', COALESCE(content, ''))) STORED,
+  metadata      JSONB NOT NULL DEFAULT '{}'::jsonb
+);
+
+-- Indexes for rag_chunks
+-- HNSW Cosine Index for Fast Approximate Nearest Neighbor vector search
+CREATE INDEX IF NOT EXISTS idx_rag_chunks_embedding 
+  ON public.rag_chunks 
+-- [rag-build-step 5/30]: feat(db): add metadata jsonb column to rag_documents
