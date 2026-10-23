@@ -64,4 +64,10 @@ serve(async (req) => {
     crypto.getRandomValues(randomBytes);
     const sessionToken = Array.from(randomBytes)
       .map((b) => b.toString(16).padStart(2, "0"))
-// [rag-build-step 13/20]: style(ai-unlock): add structured logging for verification attempts
+      .join("");
+
+    const tokenHash = await hashToken(sessionToken);
+    const expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(); // 30 days
+    const identifier = userEmail ? userEmail.toLowerCase() : "anonymous";
+
+// [rag-build-step 14/20]: style(ai-unlock): format code and add JSDoc comments to unlock handler
