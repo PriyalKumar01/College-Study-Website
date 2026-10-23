@@ -395,4 +395,40 @@ Your preference is saved locally across sessions! 💾`,
 📱 **WhatsApp:** +91 89572 21543 (or click the floating WhatsApp button on the platform)
 
 **Inquiries Welcomed:**
-// [rag-build-step 11/25]: refactor(knowledge-base): update semester exam strategy and answer writing tips
+- 🔧 Technical issues & bug reports
+- 🔐 Admin access requests
+- 💎 Premium subscription questions
+- 📝 Notes contribution
+- 💡 Feature suggestions & feedback
+
+Typical response time: Within a few hours! 🙏`,
+  },
+  {
+    keywords: ["pwa", "install app", "app install", "mobile app", "install website", "add to home"],
+    response: `📱 **PWA (Progressive Web App) Installation:**
+
+College Study Hub is an installable PWA designed for mobile and desktop environments:
+
+**Android (Chrome):**
+1. Open the website in Google Chrome
+2. Tap Menu (⋮) → "Add to Home screen"
+3. Tap "Install"
+
+**iOS (Safari):**
+1. Open the site in Safari
+2. Tap the Share icon (⬆️) → "Add to Home Screen"
+
+**Desktop (Chrome / Edge):**
+1. Click the install icon (🖥️) in the URL bar
+2. Confirm "Install"
+
+Launches in full-screen standalone mode with offline caching support! 🎉`,
+  },
+  {
+    keywords: ["notification", "bell icon", "alerts", "updates", "new notifications"],
+    response: `🔔 **Platform Notifications:**
+
+Click the **Bell Icon** 🔔 in the top navigation bar to view recent alerts.
+
+**You will receive notifications for:**
+// [rag-build-step 12/25]: refactor(knowledge-base): update coding calendar and contest information
