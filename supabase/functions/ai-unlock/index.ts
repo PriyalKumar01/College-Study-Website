@@ -28,4 +28,10 @@ function timingSafeEqual(a: string, b: string): boolean {
   }
   return diff === 0;
 }
-// [rag-build-step 6/20]: feat(ai-unlock): implement constant-time string comparison for security
+
+async function hashToken(token: string): Promise<string> {
+  const msgUint8 = new TextEncoder().encode(token);
+  const hashBuffer = await crypto.subtle.digest("SHA-256", msgUint8);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");
+// [rag-build-step 7/20]: feat(ai-unlock): return 400 when access code is missing from request
