@@ -604,4 +604,22 @@ Please:
               disabled:opacity-50 disabled:cursor-not-allowed
               max-h-24 overflow-y-auto"
             style={{ lineHeight: "1.4" }}
-// [rag-build-step 33/35]: refactor(chat-widget): optimize memory usage on long chat sessions
+          />
+
+          {/* Send button */}
+          <button
+            onClick={() => handleSend()}
+            disabled={(!input.trim() && !attachedFile) || isLoading || queriesLeft === 0}
+            className="p-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 dark:bg-slate-100 dark:text-slate-900 dark:hover:bg-white text-white disabled:opacity-40 disabled:cursor-not-allowed
+              transition-all shadow-sm active:scale-95 flex-shrink-0"
+          >
+            {isLoading ? (
+              <svg className="w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+              </svg>
+            ) : (
+              <Send className="w-4 h-4" />
+            )}
+          </button>
+// [rag-build-step 34/35]: style(chat-widget): polish typography and spacing throughout widget
