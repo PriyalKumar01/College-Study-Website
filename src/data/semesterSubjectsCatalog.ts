@@ -8060,3 +8060,4 @@ export function getUnifiedSubjectNotes(semesterNum: string | number, subjectName
 // Course Code: BCS-209 | Credits: 4 (3-1-0) | Standard Reference: Roger S. Pressman - Software Engineering: A Practitioner's Approach
 // Course Code: BCS-210 | Credits: 4 (3-1-2) | Standard Reference: Horowitz, Sahni, Rajasekaran - Fundamentals of Computer Algorithms
 // Course Code: BHM-301 | Credits: 3 (3-0-0) | Standard Reference: Poornima M. Charantimath - Entrepreneurship Development
+// Course Code: BHM-302 | Credits: 3 (3-0-0) | Standard Reference: Fernando A.C. - Business Ethics: An Indian Perspective
