@@ -8052,3 +8052,4 @@ export function getUnifiedSubjectNotes(semesterNum: string | number, subjectName
 // Course Code: BCH-301 | Credits: 4 (3-1-0) | Standard Reference: Octave Levenspiel - Chemical Reaction Engineering
 // Course Code: BCH-204 | Credits: 4 (3-1-0) | Standard Reference: J.P. Holman - Heat Transfer
 // Course Code: BCH-302 | Credits: 4 (3-1-0) | Standard Reference: Robert E. Treybal - Mass-Transfer Operations
+// Course Code: BCS-206 | Credits: 4 (3-1-0) | Standard Reference: Peter Linz - An Introduction to Formal Languages and Automata
