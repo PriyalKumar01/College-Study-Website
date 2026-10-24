@@ -7,6 +7,8 @@ import { useToast } from '@/hooks/use-toast';
 import { Download, ArrowLeft, FileText, Play, ChevronDown, ChevronRight, Trash2, ExternalLink } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
+import { SessionPyqAccordion } from '@/components/SessionPyqAccordion';
+import { getUnifiedSubjectNotes } from '@/data/semesterSubjectsCatalog';
 import Footer from '@/components/Footer';
 import { PlaylistModal } from '@/components/PlaylistModal';
 import { smartDownload } from '@/lib/downloadUtils';
@@ -89,7 +91,7 @@ const ThirdSemesterPTNotes = () => {
       id: 'em',
       name: 'Economics & Management',
       icon: '💼',
-      color: 'bg-blue-500',
+      color: 'bg-emerald-500',
       notes: [
         { title: 'Complete Notes (Unit 1 to 5)', url: 'https://drive.google.com/file/d/1FKODzWwkZ4NLUs4J53Jw6aE3qIkfV3NK/view?usp=drivesdk', recommended : true },
         { title: 'Business Economics Book', url: 'https://drive.google.com/file/d/1XD2CnTGa8tpUzqLPlzzDnc1-P60wdAJO/view?usp=drive_link' },
@@ -345,7 +347,7 @@ const ThirdSemesterPTNotes = () => {
                       <span className="inline-block text-[10px] font-bold tracking-widest uppercase text-amber-600 dark:text-amber-400 mb-2">★ Recommended</span>
                     )}
                     {(note as any).isCommunity && (
-                      <span className="inline-block text-[10px] font-bold tracking-widest uppercase text-blue-500 dark:text-blue-400 mb-2 ml-2">Community</span>
+                      <span className="inline-block text-[10px] font-bold tracking-widest uppercase text-blue-500 dark:text-emerald-400 mb-2 ml-2">Community</span>
                     )}
                     <p className="text-sm font-medium text-foreground leading-snug mt-1 mb-3">{note.title}</p>
                   </div>
@@ -480,13 +482,21 @@ const ThirdSemesterPTNotes = () => {
                   {subject.id !== 'pyqs' && subject.id !== 'assignments' && (
                     <div className="mt-3 pt-3 border-t border-border">
                       <button
-                        className="flex items-center justify-between w-full text-xs font-semibold text-muted-foreground hover:text-foreground transition-colors"
+                        className={`flex items-center justify-between w-full text-xs font-bold px-3 py-2 rounded-xl border transition-all duration-200 cursor-pointer shadow-2xs ${
+                          expandedSubjects.includes(subject.id)
+                            ? 'bg-emerald-500/15 text-emerald-800 dark:text-emerald-200 border-emerald-500/40 shadow-xs'
+                            : 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border-emerald-500/25 hover:bg-emerald-500/20 hover:border-emerald-500/40'
+                        }`}
                         onClick={() => toggleSubjectExpansion(subject.id)}
                       >
                         <span className="flex items-center gap-1.5">
-                          <Play className="h-3 w-3" /> Study Playlists
+                          <Play className="h-3 w-3 fill-emerald-600/30 text-emerald-600 dark:text-emerald-400" /> Curated Playlists
                         </span>
-                        {expandedSubjects.includes(subject.id) ? <ChevronDown className="h-3.5 w-3.5" /> : <ChevronRight className="h-3.5 w-3.5" />}
+                        {expandedSubjects.includes(subject.id) ? (
+                          <ChevronDown className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" />
+                        ) : (
+                          <ChevronRight className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" />
+                        )}
                       </button>
                       {expandedSubjects.includes(subject.id) && (
                         <div className="mt-2 space-y-1">
