@@ -8067,3 +8067,4 @@ export function getUnifiedSubjectNotes(semesterNum: string | number, subjectName
 // Course Code: BCS-401 | Credits: 4 (3-1-2) | Standard Reference: Ian Goodfellow, Yoshua Bengio, Aaron Courville - Deep Learning
 // Course Code: BCS-307 | Credits: 4 (3-1-0) | Standard Reference: Stuart Russell, Peter Norvig - Artificial Intelligence: A Modern Approach
 // Course Code: BCS-402 | Credits: 4 (3-1-0) | Standard Reference: Seema Acharya, Subhashini Chellappan - Big Data and Analytics
+// Course Code: BCS-405 | Credits: 4 (3-1-0) | Standard Reference: Arshdeep Bahga, Vijay Madisetti - Internet of Things: A Hands-on Approach
