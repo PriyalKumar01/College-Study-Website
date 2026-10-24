@@ -74,15 +74,16 @@ export const ReportIssueModal: React.FC<ReportIssueModalProps> = ({
       // Fetch profile to get real verified branch, college, year
       supabase
         .from('profiles')
-        .select('college, branch, year, full_name')
-        .eq('id', user.id)
+        .select('college, branch, year, first_name, last_name')
+        .or(`id.eq.${user.id},user_id.eq.${user.id}`)
         .maybeSingle()
         .then(({ data }) => {
           if (data) {
             if (data.college) setStudentCollege(data.college);
             if (data.branch) setStudentBranch(data.branch);
             if (data.year) setStudentYear(String(data.year));
-            if (data.full_name) setUserName(data.full_name);
+            const fullName = [data.first_name, data.last_name].filter(Boolean).join(' ');
+            if (fullName) setUserName(fullName);
           }
         });
     }
