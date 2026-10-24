@@ -8065,3 +8065,4 @@ export function getUnifiedSubjectNotes(semesterNum: string | number, subjectName
 // Course Code: BHM-303 | Credits: 3 (3-0-0) | Standard Reference: O.P. Khanna - Industrial Engineering and Management
 // Course Code: BCS-306 | Credits: 4 (3-1-0) | Standard Reference: Rajkumar Buyya - Cloud Computing: Principles and Paradigms
 // Course Code: BCS-401 | Credits: 4 (3-1-2) | Standard Reference: Ian Goodfellow, Yoshua Bengio, Aaron Courville - Deep Learning
+// Course Code: BCS-307 | Credits: 4 (3-1-0) | Standard Reference: Stuart Russell, Peter Norvig - Artificial Intelligence: A Modern Approach
