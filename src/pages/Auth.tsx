@@ -5,6 +5,7 @@ import { Loader2, AlertTriangle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
 import { isDirectlyAllowedDomain } from '@/utils/emailValidation';
+import { syncUserMetadataIfIncomplete } from '@/utils/userMetadataHelper';
 
 const Auth = () => {
   const navigate = useNavigate();
@@ -56,25 +57,7 @@ const Auth = () => {
         session_expires_at: session?.expires_at,
       });
 
-      // Ensure GitHub or any OAuth user has name, full_name, first_name in user_metadata
-      const meta = user.user_metadata || {};
-      if (!meta.name && !meta.full_name) {
-        const rawName = meta.user_name || meta.preferred_username || user.email?.split('@')[0] || 'User';
-        const cleanName = rawName.replace(/[._-]/g, ' ').replace(/\b\w/g, (c: string) => c.toUpperCase()).trim();
-        const parts = cleanName.split(' ');
-        const fName = parts[0] || 'User';
-        const lName = parts.slice(1).join(' ') || '';
-
-        supabase.auth.updateUser({
-          data: {
-            name: cleanName,
-            full_name: cleanName,
-            first_name: fName,
-            last_name: lName,
-            email_verified: true
-          }
-        }).then(() => {}).catch(err => console.warn('OAuth name sync error:', err));
-      }
+      syncUserMetadataIfIncomplete(user);
     }
   }, [user, session]);
 
