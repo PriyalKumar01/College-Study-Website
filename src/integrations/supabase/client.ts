@@ -52,14 +52,33 @@ export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABL
 });
 
 // Secondary Supabase client for mirroring & synchronization
-// Uses a completely separate storage key to avoid GoTrueClient conflicts
-// Realtime fully disabled — only used for data writes
-export const supabaseSecondary = createClient<Database>(secondaryConfig.url, secondaryConfig.anonKey, {
-  auth: {
-    storageKey: 'studyhub_secondary_auth',
-    persistSession: false,
-    autoRefreshToken: false,
-    detectSessionInUrl: false,
+// Lazily initialized only if dualWriteTable is ever invoked, with isolated memory storage
+// to prevent "Multiple GoTrueClient instances" warnings in the browser.
+let _supabaseSecondary: any = null;
+export const getSupabaseSecondary = () => {
+  if (!_supabaseSecondary) {
+    _supabaseSecondary = createClient<Database>(secondaryConfig.url, secondaryConfig.anonKey, {
+      auth: {
+        storageKey: 'studyhub_secondary_auth_mem',
+        persistSession: false,
+        autoRefreshToken: false,
+        detectSessionInUrl: false,
+        storage: {
+          getItem: () => null,
+          setItem: () => {},
+          removeItem: () => {},
+        },
+        lock: async (_name: string, _acquireTimeout: number, fn: () => any) => await fn(),
+      },
+    });
+  }
+  return _supabaseSecondary;
+};
+
+// Exported proxy for backward compatibility without eager upfront instantiation
+export const supabaseSecondary = new Proxy({} as any, {
+  get(_target, prop) {
+    return (getSupabaseSecondary() as any)[prop];
   },
 });
 
