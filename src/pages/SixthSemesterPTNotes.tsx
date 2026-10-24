@@ -8,6 +8,8 @@ import { Button } from '@/components/ui/button';
 import { Download, ArrowLeft, ExternalLink, Share2, Trash2, BookOpen, FileText } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
+import { SessionPyqAccordion } from '@/components/SessionPyqAccordion';
+import { getUnifiedSubjectNotes } from '@/data/semesterSubjectsCatalog';
 import Footer from '@/components/Footer';
 import { smartDownload } from '@/lib/downloadUtils';
 
@@ -25,7 +27,7 @@ const SixthSemesterPTNotes = () => {
   };
 
   const staticSubjects = [
-    { id: 'ipc', name: 'Instrumentation & Process Control', icon: '🎛️', color: 'bg-blue-500', notes: [] },
+    { id: 'ipc', name: 'Instrumentation & Process Control', icon: '🎛️', color: 'bg-emerald-500', notes: [] },
     { id: 'surfacePrep', name: 'Technology of Surface Preparation, Treatments and Coating Applications', icon: '✨', color: 'bg-purple-500', notes: [] },
     { id: 'characterization', name: 'Characterization, Analysis and Evaluation of Coatings', icon: '🔬', color: 'bg-indigo-500', notes: [] },
     { id: 'inks', name: 'Technology of Printing Inks and Coatings', icon: '🖨️', color: 'bg-teal-500', notes: [] },
@@ -81,7 +83,14 @@ const SixthSemesterPTNotes = () => {
           </div>
         </div>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          {subject.notes.length === 0 ? (
+          {subject.id === 'pyqs' || subject.name.toLowerCase().includes('previous year') || subject.name.toLowerCase().includes('pyq') ? (
+            <SessionPyqAccordion
+              notes={subject.notes}
+              title={`${subject.name} - Semester 6`}
+              onDelete={handleDeleteCommunityNote}
+              isOwner={isOwner}
+            />
+          ) : subject.notes.length === 0 ? (
             <div className="text-center py-16 text-muted-foreground">
               <BookOpen className="h-12 w-12 mx-auto mb-4 opacity-30" />
               <p className="text-lg font-medium">No notes yet</p>
@@ -94,7 +103,7 @@ const SixthSemesterPTNotes = () => {
                   <div className="group relative flex flex-col h-full rounded-xl border border-border bg-card hover:border-primary/40 hover:shadow-md transition-all duration-200 p-4 gap-3">
                     <div className="flex items-center gap-2 flex-wrap">
                       <span className="text-[10px] font-semibold tracking-wider uppercase bg-primary/10 text-primary px-2 py-0.5 rounded">PDF</span>
-                      {(note as any).isCommunity && <span className="text-[10px] font-semibold tracking-wider uppercase bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400 px-2 py-0.5 rounded border border-blue-200 dark:border-blue-900/50">Community</span>}
+                      {(note as any).isCommunity && <span className="text-[10px] font-semibold tracking-wider uppercase bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 px-2 py-0.5 rounded border border-blue-200 dark:border-emerald-900/50">Community</span>}
                       {(note as any).recommended && <span className="text-[10px] font-bold tracking-wider uppercase bg-yellow-50 dark:bg-yellow-950/40 text-yellow-600 dark:text-yellow-500 px-2 py-0.5 rounded border border-yellow-200 dark:border-yellow-900/50">⭐ Best</span>}
                     </div>
                     <p className="text-sm font-medium leading-snug flex-1">{note.title}</p>
