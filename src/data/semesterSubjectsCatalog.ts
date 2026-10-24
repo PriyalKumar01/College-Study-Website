@@ -8035,3 +8035,5 @@ export function getUnifiedSubjectNotes(semesterNum: string | number, subjectName
 
   return merged;
 }
+
+// Course Code: BCS-201 | Credits: 4 (3-1-0) | Standard Reference: Kenneth Rosen - Discrete Mathematics and Its Applications
