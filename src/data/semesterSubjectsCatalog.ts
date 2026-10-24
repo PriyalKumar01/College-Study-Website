@@ -8056,3 +8056,4 @@ export function getUnifiedSubjectNotes(semesterNum: string | number, subjectName
 // Course Code: BCS-207 | Credits: 4 (3-1-2) | Standard Reference: Silberschatz, Galvin, Gagne - Operating System Concepts
 // Course Code: BCS-208 | Credits: 4 (3-1-2) | Standard Reference: Korth, Sudarshan, Silberschatz - Database System Concepts
 // Course Code: BCS-301 | Credits: 4 (3-1-0) | Standard Reference: Aho, Lam, Sethi, Ullman - Compilers: Principles, Techniques, and Tools
+// Course Code: BCS-302 | Credits: 4 (3-1-2) | Standard Reference: Andrew S. Tanenbaum - Computer Networks
