@@ -8049,3 +8049,4 @@ export function getUnifiedSubjectNotes(semesterNum: string | number, subjectName
 // Course Code: BEC-202 | Credits: 4 (3-1-0) | Standard Reference: Alan V. Oppenheim - Signals and Systems
 // Course Code: BCH-201 | Credits: 4 (3-1-0) | Standard Reference: Himmelblau - Basic Principles and Calculations in Chemical Engineering
 // Course Code: BCH-202 | Credits: 4 (3-1-0) | Standard Reference: McCabe, Smith, Harriott - Unit Operations of Chemical Engineering
+// Course Code: BCH-301 | Credits: 4 (3-1-0) | Standard Reference: Octave Levenspiel - Chemical Reaction Engineering
