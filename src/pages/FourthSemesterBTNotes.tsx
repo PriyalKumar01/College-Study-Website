@@ -7,6 +7,8 @@ import { useToast } from '@/hooks/use-toast';
 import { Download, ArrowLeft, FileText, Play, ChevronDown, ChevronRight, Trash2, ExternalLink } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
+import { SessionPyqAccordion } from '@/components/SessionPyqAccordion';
+import { getUnifiedSubjectNotes } from '@/data/semesterSubjectsCatalog';
 import Footer from '@/components/Footer';
 import { PlaylistModal } from '@/components/PlaylistModal';
 import { smartDownload, viewInBrowser } from '@/lib/downloadUtils';
@@ -196,7 +198,14 @@ const FourthSemesterBTNotes = () => {
         </div>
 
         <div className="max-w-5xl mx-auto px-4 sm:px-8 py-10 flex-1 w-full mb-12">
-          {subject.notes.length === 0 ? (
+          {subject.id === 'pyqs' || subject.name.toLowerCase().includes('previous year') || subject.name.toLowerCase().includes('pyq') ? (
+            <SessionPyqAccordion
+              notes={subject.notes}
+              title={`${subject.name} - Semester 4`}
+              onDelete={handleDeleteCommunityNote}
+              isOwner={isOwner}
+            />
+          ) : subject.notes.length === 0 ? (
             <div className="text-center py-16 border border-dashed rounded-xl bg-card">
               <p className="text-muted-foreground text-sm mb-1">No study materials uploaded yet for this subject.</p>
               <p className="text-xs text-muted-foreground">Contributions from students are welcome!</p>
@@ -226,7 +235,7 @@ const FourthSemesterBTNotes = () => {
                       </div>
                       <span className="text-[10px] font-bold tracking-wider uppercase bg-muted text-muted-foreground px-2 py-0.5 rounded">PDF</span>
                       {note.isCommunity && (
-                        <span className="text-[10px] font-bold tracking-wider uppercase bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400 px-2 py-0.5 rounded border border-blue-100 dark:border-blue-900/50">Community</span>
+                        <span className="text-[10px] font-bold tracking-wider uppercase bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 px-2 py-0.5 rounded border border-emerald-100 dark:border-emerald-900/50">Community</span>
                       )}
                       {note.recommended && (
                         <span className="text-[10px] font-bold tracking-wider uppercase bg-yellow-50 dark:bg-yellow-950/40 text-yellow-600 dark:text-yellow-500 px-2 py-0.5 rounded border border-yellow-200 dark:border-yellow-900/50">â­ Best</span>
