@@ -48,14 +48,23 @@ export function PremiumModal({ open, onClose, plan, onSuccess }: PremiumModalPro
 
   useEffect(() => {
     if (open) {
-      setCoupon('');
-      setCouponApplied(false);
-      setDiscount(0);
+      const isHbtu = Boolean(user?.email?.toLowerCase().endsWith('@hbtu.ac.in'));
+      if (isHbtu) {
+        const requiredCode = STRICT_PLAN_COUPONS[plan];
+        setCoupon(requiredCode);
+        setCouponApplied(true);
+        setDiscount(100);
+        setShowCoupon(true);
+      } else {
+        setCoupon('');
+        setCouponApplied(false);
+        setDiscount(0);
+        setShowCoupon(false);
+      }
       setProcessing(false);
       setValidatingCoupon(false);
-      setShowCoupon(false);
     }
-  }, [open, plan]);
+  }, [open, plan, user?.email]);
 
   const basePrice = plan === 'companies' ? 149 : plan === 'resume' ? 167 : plan === 'roadmaps' ? 549 : 999;
   const originalPrice = plan === 'companies' ? 499 : plan === 'resume' ? 559 : plan === 'roadmaps' ? 2196 : 3330;
@@ -353,6 +362,17 @@ export function PremiumModal({ open, onClose, plan, onSuccess }: PremiumModalPro
                 <span className="text-xs text-gray-400 font-medium">Lifetime Access</span>
               </div>
             </div>
+
+            {/* Official HBTU Student Privilege Banner */}
+            {user?.email?.toLowerCase().endsWith('@hbtu.ac.in') && (
+              <div className="mb-4 p-3 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-500/30 flex items-start gap-2.5 text-xs text-emerald-800 dark:text-emerald-300">
+                <Sparkles className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
+                <div>
+                  <p className="font-bold">Official HBTU Student Privilege Unlocked</p>
+                  <p className="opacity-90">Your 100% discount waiver coupon ({STRICT_PLAN_COUPONS[plan]}) is auto-filled. Simply click below to claim free lifetime access!</p>
+                </div>
+              </div>
+            )}
 
             {/* Coupon input */}
             <div className="mb-5">
