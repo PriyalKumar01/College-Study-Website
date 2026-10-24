@@ -5,8 +5,15 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import {
   Briefcase, Rocket, Code2, Trophy, ChevronRight, CheckCircle2,
-  Crown, Sparkles, ArrowRight, Lock, ArrowUpRight, ArrowRightLeft
+  Crown, Sparkles, ArrowRight, Lock, ArrowUpRight, ArrowRightLeft, PartyPopper, Check
 } from 'lucide-react';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from '@/components/ui/dialog';
 import Navbar from '@/components/Navbar';
 import { PremiumModal } from '@/components/PremiumModal';
 import Footer from '@/components/Footer';
@@ -89,6 +96,33 @@ export default function PremiumContent() {
   const [premiumModal, setPremiumModal] = useState<{ open: boolean; plan: 'companies' | 'hr_emails' | 'resume' | 'roadmaps' }>({ open: false, plan: 'companies' });
   const [expandedCategories, setExpandedCategories] = useState<string[]>([]);
 
+  // Official HBTU Student Celebration on First Visit
+  const isHbtuUser = Boolean(user?.email?.toLowerCase().endsWith('@hbtu.ac.in'));
+  const [showCelebration, setShowCelebration] = useState(false);
+
+  useEffect(() => {
+    if (user && isHbtuUser) {
+      try {
+        const key = `csh_hbtu_premium_celebrated_${user.id}`;
+        const celebrated = localStorage.getItem(key);
+        if (celebrated !== 'true') {
+          setShowCelebration(true);
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    }
+  }, [user, isHbtuUser]);
+
+  const handleDismissCelebration = () => {
+    setShowCelebration(false);
+    if (user) {
+      try {
+        localStorage.setItem(`csh_hbtu_premium_celebrated_${user.id}`, 'true');
+      } catch (err) {}
+    }
+  };
+
   const checkPurchases = useCallback(async (force = false) => {
     if (!user) return;
     if (!force) {
@@ -135,12 +169,36 @@ export default function PremiumContent() {
       <Navbar />
 
       {/* ══════════ HERO SECTION ══════════ */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-slate-950 to-black pt-12 pb-12">
+      <section className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-slate-950 to-black pt-8 pb-12">
         {/* Orbs */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute top-10 left-10 w-72 h-72 bg-amber-500/10 rounded-full blur-3xl" />
           <div className="absolute bottom-10 right-20 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl" />
         </div>
+
+        {/* Official HBTU Student Banner */}
+        {isHbtuUser && (
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 mb-6">
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="p-3.5 rounded-2xl bg-emerald-500/15 border border-emerald-500/40 flex flex-col sm:flex-row items-center justify-between gap-3 text-emerald-100 backdrop-blur-md shadow-lg shadow-emerald-950/20"
+            >
+              <div className="flex items-center gap-2.5 text-center sm:text-left">
+                <Sparkles className="w-5 h-5 text-emerald-400 shrink-0" />
+                <p className="text-xs sm:text-sm font-bold">
+                  🎓 Official HBTU Student Privilege: All 4 Premium Packages are 100% FREE for your university account!
+                </p>
+              </div>
+              <button
+                onClick={() => setShowCelebration(true)}
+                className="text-xs font-bold uppercase tracking-wider bg-emerald-600 hover:bg-emerald-500 text-white px-3.5 py-1.5 rounded-xl transition-all shadow-sm cursor-pointer shrink-0"
+              >
+                View College Benefits 🎉
+              </button>
+            </motion.div>
+          </div>
+        )}
 
         <div className="relative max-w-6xl mx-auto px-4 sm:px-6 text-center">
           <motion.p
@@ -554,10 +612,10 @@ export default function PremiumContent() {
                                       href={p.oldUrl} 
                                       target="_blank" 
                                       rel="noopener noreferrer" 
-                                      className="group/old inline-flex items-center gap-1 text-xs font-extrabold text-blue-600 dark:text-blue-400 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors"
+                                      className="group/old inline-flex items-center gap-1 text-xs font-extrabold text-emerald-600 dark:text-emerald-400 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors"
                                     >
                                       <span>{p.oldName}</span>
-                                      <ArrowUpRight className="w-3.5 h-3.5 text-blue-500 group-hover/old:text-emerald-500 transition-colors shrink-0" />
+                                      <ArrowUpRight className="w-3.5 h-3.5 text-emerald-500 group-hover/old:text-emerald-500 transition-colors shrink-0" />
                                     </a>
                                   </div>
 
@@ -575,7 +633,7 @@ export default function PremiumContent() {
                                       className="group/new inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-900 hover:bg-slate-950 dark:bg-slate-800 dark:hover:bg-slate-750 border border-slate-800 dark:border-slate-700 rounded-xl text-xs font-bold text-slate-100 hover:text-emerald-400 transition-colors shadow-sm"
                                     >
                                       <span>{p.newName}</span>
-                                      <ArrowUpRight className="w-3.5 h-3.5 text-blue-450 dark:text-blue-400 group-hover/new:text-emerald-400 group-hover/new:translate-x-0.5 group-hover/new:-translate-y-0.5 transition-transform shrink-0" />
+                                      <ArrowUpRight className="w-3.5 h-3.5 text-emerald-500 dark:text-emerald-400 group-hover/new:text-emerald-400 group-hover/new:translate-x-0.5 group-hover/new:-translate-y-0.5 transition-transform shrink-0" />
                                     </a>
                                   </div>
 
@@ -585,7 +643,7 @@ export default function PremiumContent() {
                                       href={p.oldUrl} 
                                       target="_blank" 
                                       rel="noopener noreferrer" 
-                                      className="group/old text-xs font-extrabold text-blue-600 dark:text-blue-400 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors"
+                                      className="group/old text-xs font-extrabold text-emerald-600 dark:text-emerald-400 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors"
                                     >
                                       {p.oldName}
                                     </a>
@@ -597,7 +655,7 @@ export default function PremiumContent() {
                                       className="group/new flex items-center gap-1 px-2.5 py-1 bg-slate-900 hover:bg-slate-950 dark:bg-slate-800 dark:hover:bg-slate-750 border border-slate-800 dark:border-slate-700 rounded-lg text-xs font-bold text-slate-100 dark:text-slate-300 hover:text-emerald-400 transition-colors"
                                     >
                                       {p.newName}
-                                      <ArrowUpRight className="w-3 h-3 text-blue-400 group-hover/new:text-emerald-400 shrink-0" />
+                                      <ArrowUpRight className="w-3 h-3 text-emerald-400 group-hover/new:text-emerald-400 shrink-0" />
                                     </a>
                                   </div>
 
@@ -630,8 +688,8 @@ export default function PremiumContent() {
                                   </div>
                                   <div className="flex-1 min-w-0">
                                     <div className="flex items-center gap-1.5">
-                                      <span className="font-extrabold text-sm text-blue-600 dark:text-blue-400 block leading-snug line-clamp-1 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">{p.name}</span>
-                                      <ArrowUpRight className="w-3.5 h-3.5 text-blue-500 group-hover:text-emerald-500 transition-colors shrink-0" />
+                                      <span className="font-extrabold text-sm text-foreground block leading-snug line-clamp-1 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">{p.name}</span>
+                                      <ArrowUpRight className="w-3.5 h-3.5 text-muted-foreground group-hover:text-emerald-500 transition-colors shrink-0" />
                                     </div>
                                     <span className="text-[11px] text-slate-500 dark:text-slate-400 line-clamp-1 leading-snug mt-0.5">{p.desc}</span>
                                   </div>
@@ -649,6 +707,61 @@ export default function PremiumContent() {
           </div>
         </div>
       </section>
+
+      {/* ══════════ OFFICIAL HBTU FIRST VISIT CELEBRATION MODAL ══════════ */}
+      <Dialog open={showCelebration} onOpenChange={setShowCelebration}>
+        <DialogContent
+          className="sm:max-w-md p-0 overflow-hidden rounded-3xl border border-emerald-500/30 bg-card shadow-2xl"
+        >
+          <div className="bg-gradient-to-br from-emerald-600 via-teal-700 to-slate-900 p-6 text-white text-center relative overflow-hidden">
+            <div className="w-14 h-14 mx-auto mb-3 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center text-3xl shadow-inner">
+              🎓
+            </div>
+            <DialogTitle className="text-xl sm:text-2xl font-black text-white tracking-tight">
+              🎉 Exclusive College Benefit Unlocked!
+            </DialogTitle>
+            <DialogDescription className="text-emerald-100 text-xs sm:text-sm mt-1.5 max-w-sm mx-auto">
+              Welcome HBTU student! Since you are registered with your official university email (<span className="font-semibold text-white">{user?.email}</span>), all premium career resources are <strong className="text-amber-300">100% FREE</strong> for you!
+            </DialogDescription>
+          </div>
+
+          <div className="p-6 space-y-4">
+            <div className="space-y-2.5 text-xs">
+              <div className="flex items-center gap-2.5 p-2.5 rounded-xl bg-muted/60 border border-border">
+                <span className="text-base">🏢</span>
+                <span className="font-semibold text-foreground flex-1">90+ Company Career Portals</span>
+                <span className="text-[10px] font-mono font-bold bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 px-2 py-0.5 rounded border border-emerald-500/30">Auto: HBTU@1843</span>
+              </div>
+              <div className="flex items-center gap-2.5 p-2.5 rounded-xl bg-muted/60 border border-border">
+                <span className="text-base">📧</span>
+                <span className="font-semibold text-foreground flex-1">1800+ HR Email Directory</span>
+                <span className="text-[10px] font-mono font-bold bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 px-2 py-0.5 rounded border border-emerald-500/30">Auto: HBTU@1843</span>
+              </div>
+              <div className="flex items-center gap-2.5 p-2.5 rounded-xl bg-muted/60 border border-border">
+                <span className="text-base">📄</span>
+                <span className="font-semibold text-foreground flex-1">ATS Friendly Resume Guide</span>
+                <span className="text-[10px] font-mono font-bold bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 px-2 py-0.5 rounded border border-emerald-500/30">Auto: HBTU@143</span>
+              </div>
+              <div className="flex items-center gap-2.5 p-2.5 rounded-xl bg-muted/60 border border-border">
+                <span className="text-base">🗺️</span>
+                <span className="font-semibold text-foreground flex-1">Placement Roadmap & Tool Guide</span>
+                <span className="text-[10px] font-mono font-bold bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 px-2 py-0.5 rounded border border-emerald-500/30">Auto: PLACE@75</span>
+              </div>
+            </div>
+
+            <p className="text-[11px] text-muted-foreground text-center">
+              Coupon codes are automatically filled for your account. Simply click any package below to claim your lifetime access.
+            </p>
+
+            <button
+              onClick={handleDismissCelebration}
+              className="w-full py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs uppercase tracking-wider transition-all shadow-md cursor-pointer"
+            >
+              Awesome! Let's Explore 🎉
+            </button>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       {/* ══════════ MODALS ══════════ */}
       <PremiumModal
