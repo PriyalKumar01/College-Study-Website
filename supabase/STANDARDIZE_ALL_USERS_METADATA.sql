@@ -17,6 +17,24 @@
 --    or Email will ALWAYS follow this clean standard structure.
 -- ==============================================================================
 
+-- 0. Ensure full_name column exists on public.profiles
+DO $$ 
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM information_schema.columns 
+    WHERE table_schema = 'public' 
+      AND table_name = 'profiles' 
+      AND column_name = 'full_name'
+  ) THEN
+    ALTER TABLE public.profiles ADD COLUMN full_name TEXT;
+  END IF;
+END $$;
+
+UPDATE public.profiles
+SET full_name = TRIM(CONCAT(COALESCE(first_name, ''), ' ', COALESCE(last_name, '')))
+WHERE (full_name IS NULL OR full_name = '')
+  AND (first_name IS NOT NULL OR last_name IS NOT NULL);
+
 -- 1. Helper Function
 CREATE OR REPLACE FUNCTION public.standardize_user_metadata(
   p_raw jsonb,
