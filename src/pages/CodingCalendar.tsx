@@ -56,7 +56,10 @@ const saveCodingAccessRecord = async (
         })
         .eq('id', existing.id);
 
-      if (updateErr) throw updateErr;
+      if (updateErr) {
+        console.warn('Notice updating coding access record:', updateErr?.message);
+        return { success: false, error: updateErr };
+      }
     } else {
       const { error: insertErr } = await (supabase as any)
         .from('premium_purchases')
@@ -70,11 +73,14 @@ const saveCodingAccessRecord = async (
           razorpay_payment_id: paymentId,
         });
 
-      if (insertErr) throw insertErr;
+      if (insertErr) {
+        console.warn('Notice saving coding access record:', insertErr?.message);
+        return { success: false, error: insertErr };
+      }
     }
     return { success: true };
   } catch (err: any) {
-    console.error('Error saving coding access record:', err);
+    console.warn('Error saving coding access record:', err?.message || err);
     return { success: false, error: err };
   }
 };
