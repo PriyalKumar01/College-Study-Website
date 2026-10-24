@@ -49,40 +49,6 @@ export const ContestCalendarView: React.FC<ContestCalendarViewProps> = ({
   const [calendarView, setCalendarView] = useState<'month' | 'agenda'>('month');
   const [agendaFilter, setAgendaFilter] = useState<'all' | 'ended' | 'upcoming'>('all');
 
-  // Sorted chronological contest schedule:
-  // "wo jo sabse recently end hua hai wo top pe dikhe and so on"
-  const agendaContests = useMemo(() => {
-    const now = Date.now();
-    const list = [...filteredContests];
-
-    if (agendaFilter === 'ended') {
-      return list
-        .filter(c => new Date(c.endTime).getTime() <= now)
-        .sort((a, b) => new Date(b.endTime).getTime() - new Date(a.endTime).getTime());
-    }
-
-    if (agendaFilter === 'upcoming') {
-      return list
-        .filter(c => new Date(c.endTime).getTime() > now)
-        .sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime());
-    }
-
-    // Default 'all': Live first, then recently ended on top, then upcoming
-    const live = list.filter(c => {
-      const s = new Date(c.startTime).getTime();
-      const e = new Date(c.endTime).getTime();
-      return now >= s && now <= e;
-    });
-    const ended = list
-      .filter(c => new Date(c.endTime).getTime() < now)
-      .sort((a, b) => new Date(b.endTime).getTime() - new Date(a.endTime).getTime());
-    const upcoming = list
-      .filter(c => new Date(c.startTime).getTime() > now)
-      .sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime());
-
-    return [...live, ...ended, ...upcoming];
-  }, [filteredContests, agendaFilter]);
-
   // "Select Platform" Filter Popover
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   // GFG is unticked by default as requested: "gfg untick rahe calender me kyuki usme contest hona abhi band hai"
@@ -162,6 +128,40 @@ export const ContestCalendarView: React.FC<ContestCalendarViewProps> = ({
       });
     });
   }, [contests, selectedPlatforms]);
+
+  // Sorted chronological contest schedule:
+  // "wo jo sabse recently end hua hai wo top pe dikhe and so on"
+  const agendaContests = useMemo(() => {
+    const now = Date.now();
+    const list = [...filteredContests];
+
+    if (agendaFilter === 'ended') {
+      return list
+        .filter(c => new Date(c.endTime).getTime() <= now)
+        .sort((a, b) => new Date(b.endTime).getTime() - new Date(a.endTime).getTime());
+    }
+
+    if (agendaFilter === 'upcoming') {
+      return list
+        .filter(c => new Date(c.endTime).getTime() > now)
+        .sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime());
+    }
+
+    // Default 'all': Live first, then recently ended on top, then upcoming
+    const live = list.filter(c => {
+      const s = new Date(c.startTime).getTime();
+      const e = new Date(c.endTime).getTime();
+      return now >= s && now <= e;
+    });
+    const ended = list
+      .filter(c => new Date(c.endTime).getTime() < now)
+      .sort((a, b) => new Date(b.endTime).getTime() - new Date(a.endTime).getTime());
+    const upcoming = list
+      .filter(c => new Date(c.startTime).getTime() > now)
+      .sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime());
+
+    return [...live, ...ended, ...upcoming];
+  }, [filteredContests, agendaFilter]);
 
   // Calendar Days calculation for Month view
   const calendarDays = useMemo(() => {
