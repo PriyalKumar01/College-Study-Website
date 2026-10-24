@@ -7,6 +7,8 @@ import { useToast } from '@/hooks/use-toast';
 import { Download, ArrowLeft, FileText, Play, ChevronDown, ChevronRight, Trash2, ExternalLink } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
+import { SessionPyqAccordion } from '@/components/SessionPyqAccordion';
+import { getUnifiedSubjectNotes } from '@/data/semesterSubjectsCatalog';
 import Footer from '@/components/Footer';
 import { PlaylistModal } from '@/components/PlaylistModal';
 import { smartDownload, viewInBrowser } from '@/lib/downloadUtils';
@@ -162,7 +164,7 @@ const ThirdSemesterFTNotes = () => {
       id: 'em',
       name: 'Economics & Management (E & M)',
       icon: '💼',
-      color: 'bg-blue-500',
+      color: 'bg-emerald-500',
       notes: [
         { title: 'Complete Notes (Unit 1 to 5)', url: 'https://drive.google.com/file/d/1FKODzWwkZ4NLUs4J53Jw6aE3qIkfV3NK/view?usp=drivesdk' , recommended : true },
         { title: 'Business Economics Book', url: 'https://drive.google.com/file/d/1XD2CnTGa8tpUzqLPlzzDnc1-P60wdAJO/view?usp=drive_link' },
@@ -194,7 +196,7 @@ const ThirdSemesterFTNotes = () => {
       id: 'fofs',
       name: 'Fundamentals of Food Science & Human Nutrition',
       icon: '⚙️',
-      color: 'bg-blue-500',
+      color: 'bg-emerald-500',
       notes: [
         { title: 'You May refer this PDF (as per your Syllabus)', url: 'https://web.sol.du.ac.in/my_modules/type/cbcs-40/data/root/B.A.%20Programme/Semester%201/DISCIPLINE%20SPECIFIC%20CORE%20COURSE-DSC/NHE%20-%20Fundamentals%20of%20Nutrition%20and%20Food%20Science/English%20Medium/Unit%201-3.pdf' },
       ]
@@ -304,7 +306,14 @@ interface Note {
         </div>
 
         <div className="max-w-5xl mx-auto px-4 sm:px-8 py-10 flex-1 w-full mb-12">
-          {subject.notes.length === 0 ? (
+          {subject.id === 'pyqs' || subject.name.toLowerCase().includes('previous year') || subject.name.toLowerCase().includes('pyq') ? (
+            <SessionPyqAccordion
+              notes={subject.notes}
+              title={`${subject.name} - Semester 3`}
+              onDelete={handleDeleteCommunityNote}
+              isOwner={isOwner}
+            />
+          ) : subject.notes.length === 0 ? (
             <div className="text-center py-16 border border-dashed rounded-xl bg-card">
               <p className="text-muted-foreground text-sm mb-1">No study materials uploaded yet for this subject.</p>
               <p className="text-xs text-muted-foreground">Contributions from students are welcome!</p>
@@ -334,7 +343,7 @@ interface Note {
                       </div>
                       <span className="text-[10px] font-bold tracking-wider uppercase bg-muted text-muted-foreground px-2 py-0.5 rounded">PDF</span>
                       {note.isCommunity && (
-                        <span className="text-[10px] font-bold tracking-wider uppercase bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400 px-2 py-0.5 rounded border border-blue-100 dark:border-blue-900/50">Community</span>
+                        <span className="text-[10px] font-bold tracking-wider uppercase bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 px-2 py-0.5 rounded border border-emerald-100 dark:border-emerald-900/50">Community</span>
                       )}
                       {note.recommended && (
                         <span className="text-[10px] font-bold tracking-wider uppercase bg-yellow-50 dark:bg-yellow-950/40 text-yellow-600 dark:text-yellow-500 px-2 py-0.5 rounded border border-yellow-200 dark:border-yellow-900/50">â­ Best</span>
@@ -479,13 +488,21 @@ interface Note {
                   {subject.id !== 'pyqs' && subject.id !== 'assignments' && (
                     <div className="mt-3 pt-3 border-t border-border">
                       <button
-                        className="flex items-center justify-between w-full text-xs font-semibold text-muted-foreground hover:text-foreground transition-colors"
+                        className={`flex items-center justify-between w-full text-xs font-bold px-3 py-2 rounded-xl border transition-all duration-200 cursor-pointer shadow-2xs ${
+                          expandedSubjects.includes(subject.id)
+                            ? 'bg-emerald-500/15 text-emerald-800 dark:text-emerald-200 border-emerald-500/40 shadow-xs'
+                            : 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border-emerald-500/25 hover:bg-emerald-500/20 hover:border-emerald-500/40'
+                        }`}
                         onClick={() => toggleSubjectExpansion(subject.id)}
                       >
                         <span className="flex items-center gap-1.5">
-                          <Play className="h-3 w-3" /> Study Playlists
+                          <Play className="h-3 w-3 fill-emerald-600/30 text-emerald-600 dark:text-emerald-400" /> Curated Playlists
                         </span>
-                        {expandedSubjects.includes(subject.id) ? <ChevronDown className="h-3.5 w-3.5" /> : <ChevronRight className="h-3.5 w-3.5" />}
+                        {expandedSubjects.includes(subject.id) ? (
+                          <ChevronDown className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" />
+                        ) : (
+                          <ChevronRight className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" />
+                        )}
                       </button>
                       {expandedSubjects.includes(subject.id) && (
                         <div className="mt-2 space-y-1">
