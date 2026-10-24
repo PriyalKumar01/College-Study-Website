@@ -271,7 +271,7 @@ const GateStudy = () => {
           const { data: profile } = await supabase
             .from('profiles')
             .select('branch, college, year')
-            .eq('id', user.id)
+            .or(`id.eq.${user.id},user_id.eq.${user.id}`)
             .maybeSingle();
           const targetBr = (data as any).target_branch || (data as any).branch || profile?.branch || 'CSE';
           setSelectedBranch(targetBr);
@@ -283,7 +283,7 @@ const GateStudy = () => {
           const { data: profile } = await supabase
             .from('profiles')
             .select('branch, college, year')
-            .eq('id', user.id)
+            .or(`id.eq.${user.id},user_id.eq.${user.id}`)
             .maybeSingle();
           setSubmittedDetails({
             branch: (data as any).target_branch || (data as any).branch || profile?.branch || 'CSE',

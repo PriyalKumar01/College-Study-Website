@@ -82,7 +82,7 @@ export default function Profile() {
       const { data: profileData, error } = await supabase
         .from('profiles')
         .select('first_name, last_name, email, mobile_number, college, branch, year, avatar_url, created_at')
-        .eq('id', user.id)
+        .or(`id.eq.${user.id},user_id.eq.${user.id}`)
         .maybeSingle();
 
       if (error) {

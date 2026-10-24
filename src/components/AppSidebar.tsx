@@ -88,7 +88,7 @@ const AppSidebar = ({ className }: AppSidebarProps) => {
           const { data } = await supabase
             .from('profiles')
             .select('avatar_url')
-            .eq('id', user.id)
+            .or(`id.eq.${user.id},user_id.eq.${user.id}`)
             .maybeSingle();
 
           if (data?.avatar_url) {
