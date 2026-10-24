@@ -11,6 +11,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { BRANCH_OPTIONS, YEAR_OPTIONS } from '@/components/ProfileCompletionModal';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
+import { parseHbtuRollNumber } from '@/utils/userMetadataHelper';
 import { Loader2, ArrowLeft, Edit3, Save, X, User, Mail, Phone, GraduationCap, Calendar, CheckCircle2, UploadCloud, School, UserCheck } from 'lucide-react';
 
 interface ProfileData {
@@ -29,6 +30,11 @@ export default function Profile() {
   const { user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
+
+  const isHbtuRoll = Boolean(
+    (user?.email || '').toLowerCase().endsWith('@hbtu.ac.in') &&
+    parseHbtuRollNumber(user?.email || '')
+  );
 
   const [isEditing, setIsEditing] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -233,9 +239,14 @@ export default function Profile() {
         finalAvatarUrl = user.user_metadata?.picture?.trim() || user.user_metadata?.avatar_url?.trim() || '';
       }
 
-      const finalCollege = collegeType === 'hbtu' ? 'HBTU Kanpur' : (collegeType === 'non-hbtu' ? customCollege.trim() : (editedProfile.college || 'HBTU Kanpur'));
-      const finalBranch = editedProfile.branch === 'Other' ? otherBranch.trim() : editedProfile.branch;
-      const finalYear = editedProfile.year === 'Other' ? otherYear.trim() : editedProfile.year;
+      let finalCollege = collegeType === 'hbtu' ? 'HBTU Kanpur' : (collegeType === 'non-hbtu' ? customCollege.trim() : (editedProfile.college || 'HBTU Kanpur'));
+      let finalBranch = editedProfile.branch === 'Other' ? otherBranch.trim() : editedProfile.branch;
+      let finalYear = editedProfile.year === 'Other' ? otherYear.trim() : editedProfile.year;
+
+      // If empty, fallback to auto-detected roll number values
+      if (!finalCollege && isHbtuRoll) finalCollege = 'HBTU Kanpur';
+      if (!finalBranch && isHbtuRoll) finalBranch = parseHbtuRollNumber(user.email || '')?.branch || '';
+      if (!finalYear && isHbtuRoll) finalYear = parseHbtuRollNumber(user.email || '')?.year || '';
 
       const profileUpdates = {
         first_name: editedProfile.first_name,
@@ -390,7 +401,7 @@ export default function Profile() {
   if (authLoading || isLoading) {
     return (
       <div className="min-h-screen bg-slate-50 flex items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
+        <Loader2 className="h-8 w-8 animate-spin text-emerald-600" />
       </div>
     );
   }
@@ -426,7 +437,7 @@ export default function Profile() {
 
               {/* Decorative Elements to simulate "generation" */}
               <div className="absolute top-[-50%] left-[-10%] w-[50%] h-[200%] bg-white/10 blur-3xl rounded-full transform rotate-12"></div>
-              <div className="absolute bottom-[-20%] left-[10%] w-[30%] h-[100%] bg-blue-400/20 blur-2xl rounded-full"></div>
+              <div className="absolute bottom-[-20%] left-[10%] w-[30%] h-[100%] bg-emerald-400/20 blur-2xl rounded-full"></div>
 
               {/* Main Image - Anchored Right & Faded into background */}
               <div className="absolute inset-0 flex items-center justify-end">
@@ -463,7 +474,7 @@ export default function Profile() {
                       <>
                         <label
                           htmlFor="avatar-upload"
-                          className="absolute bottom-1 right-1 p-2 bg-blue-600 text-white rounded-full shadow-lg cursor-pointer hover:bg-blue-700 transition-transform active:scale-95"
+                          className="absolute bottom-1 right-1 p-2 bg-emerald-600 text-white rounded-full shadow-lg cursor-pointer hover:bg-emerald-700 transition-transform active:scale-95"
                         >
                           <UploadCloud className="h-4 w-4" />
                         </label>
@@ -516,7 +527,7 @@ export default function Profile() {
                           setOtherYear(profile.year);
                         }
                       }}
-                      className="bg-blue-600 hover:bg-blue-700 text-white shadow-md rounded-full px-6"
+                      className="bg-emerald-600 hover:bg-emerald-700 text-white shadow-md rounded-full px-6"
                     >
                       <Edit3 className="h-4 w-4 mr-2" />
                       Edit Profile
@@ -551,7 +562,7 @@ export default function Profile() {
                 {/* Personal Information */}
                 <div className="space-y-6">
                   <div className="flex items-center gap-2 text-lg font-semibold text-slate-900 dark:text-slate-100 border-b dark:border-slate-700 pb-2">
-                    <User className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                    <User className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
                     Personal Details
                   </div>
 
@@ -616,12 +627,19 @@ export default function Profile() {
                     Academic Details
                   </div>
 
+                  {isHbtuRoll && (
+                    <div className="flex items-center gap-2 p-2.5 rounded-xl bg-emerald-500/10 text-emerald-800 dark:text-emerald-300 border border-emerald-500/30 text-xs font-semibold mb-3">
+                      <Sparkles className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
+                      <span>HBTU Roll Number Detected: Academic details are auto-filled. You can edit them if your branch upgraded in 2nd year or for lateral entry / PG courses.</span>
+                    </div>
+                  )}
+
                   <div className="space-y-2">
                     <Label className="text-slate-500 dark:text-slate-400 text-xs uppercase tracking-wider font-semibold">College</Label>
                     {isEditing ? (
                       <div className="space-y-2">
                         <div className="grid grid-cols-2 gap-2">
-                          <button type="button" onClick={() => { setCollegeType('hbtu'); setCustomCollege(''); }} className={`flex items-center justify-center gap-1 rounded-lg border p-2 text-sm transition-all ${collegeType === 'hbtu' ? 'border-sky-500 bg-sky-50 text-sky-700 dark:bg-sky-900/20 dark:text-sky-300' : 'border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800'}`}><School className="w-4 h-4"/> HBTU Kanpur</button>
+                          <button type="button" onClick={() => { setCollegeType('hbtu'); setCustomCollege(''); }} className={`flex items-center justify-center gap-1 rounded-lg border p-2 text-sm transition-all ${collegeType === 'hbtu' ? 'border-emerald-500 bg-emerald-50 text-emerald-700 dark:bg-emerald-900/20 dark:text-emerald-300' : 'border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800'}`}><School className="w-4 h-4"/> HBTU Kanpur</button>
                           <button type="button" onClick={() => { setCollegeType('non-hbtu'); }} className={`flex items-center justify-center gap-1 rounded-lg border p-2 text-sm transition-all ${collegeType === 'non-hbtu' ? 'border-indigo-500 bg-indigo-50 text-indigo-700 dark:bg-indigo-900/20 dark:text-indigo-300' : 'border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800'}`}><UserCheck className="w-4 h-4"/> Other College</button>
                         </div>
                         {collegeType === 'non-hbtu' && <Input value={customCollege} onChange={e => setCustomCollege(e.target.value)} placeholder="Enter full college name" className="bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800" />}
