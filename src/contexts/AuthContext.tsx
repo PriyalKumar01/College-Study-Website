@@ -4,6 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { getCachedData, setCachedData, removeCachedData, DEFAULT_CACHE_TTL_MS } from '@/lib/cacheUtils';
 
 import { isDisposableDomain, validateEmail, isDirectlyAllowedDomain } from '@/utils/emailValidation';
+import { syncUserMetadataIfIncomplete } from '@/utils/userMetadataHelper';
 
 type UserRole = 'member' | 'admin' | 'owner';
 type ApprovalStatus = 'approved' | 'pending' | 'rejected';
@@ -183,7 +184,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         .select('banned_until, approval_status');
 
       if (email) {
-        query = query.or(`id.eq.${userObj.id},user_id.eq.${userObj.id},email.eq.${email}`);
+        query = query.or(`id.eq.${userObj.id},user_id.eq.${userObj.id}`);
       } else {
         query = query.or(`id.eq.${userObj.id},user_id.eq.${userObj.id}`);
       }
@@ -262,6 +263,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
             if (isUserBanned) return;
 
             fetchUserRole(activeUser.email);
+            syncUserMetadataIfIncomplete(activeUser);
           }, 0);
         } else {
           setUserRole('member');
@@ -379,7 +381,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     }, 10 * 60 * 1000);
 
     return () => {
-      supabase.removeChannel(channel);
+      try {
+        supabase.removeChannel(channel);
+      } catch {}
       window.removeEventListener('focus', handleFocus);
       clearInterval(interval);
     };
