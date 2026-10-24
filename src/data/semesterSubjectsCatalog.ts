@@ -8053,3 +8053,4 @@ export function getUnifiedSubjectNotes(semesterNum: string | number, subjectName
 // Course Code: BCH-204 | Credits: 4 (3-1-0) | Standard Reference: J.P. Holman - Heat Transfer
 // Course Code: BCH-302 | Credits: 4 (3-1-0) | Standard Reference: Robert E. Treybal - Mass-Transfer Operations
 // Course Code: BCS-206 | Credits: 4 (3-1-0) | Standard Reference: Peter Linz - An Introduction to Formal Languages and Automata
+// Course Code: BCS-207 | Credits: 4 (3-1-2) | Standard Reference: Silberschatz, Galvin, Gagne - Operating System Concepts
