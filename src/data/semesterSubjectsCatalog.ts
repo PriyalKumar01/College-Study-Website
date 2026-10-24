@@ -8040,3 +8040,4 @@ export function getUnifiedSubjectNotes(semesterNum: string | number, subjectName
 // Course Code: BCS-202 | Credits: 4 (3-1-2) | Standard Reference: Cormen, Leiserson, Rivest, Stein - Introduction to Algorithms
 // Course Code: BEC-203 | Credits: 4 (3-1-0) | Standard Reference: M. Morris Mano - Digital Logic & Computer Design
 // Course Code: BCS-204 | Credits: 4 (3-1-0) | Standard Reference: William Stallings - Computer Organization and Architecture
+// Course Code: BCS-205 | Credits: 4 (3-1-2) | Standard Reference: E. Balagurusamy - Object Oriented Programming with C++
