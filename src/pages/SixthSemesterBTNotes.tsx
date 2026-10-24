@@ -7,6 +7,8 @@ import { useToast } from '@/hooks/use-toast';
 import { Download, ArrowLeft, FileText, Trash2, ExternalLink } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
+import { SessionPyqAccordion } from '@/components/SessionPyqAccordion';
+import { getUnifiedSubjectNotes } from '@/data/semesterSubjectsCatalog';
 import Footer from '@/components/Footer';
 import { smartDownload, viewInBrowser } from '@/lib/downloadUtils';
 
@@ -23,7 +25,7 @@ const SixthSemesterBTNotes = () => {
       id: 'bioprocess',
       name: 'Bioprocess Engineering',
       icon: '🧪',
-      color: 'bg-blue-500',
+      color: 'bg-emerald-500',
       notes: []
     },
     {
@@ -117,7 +119,14 @@ const SixthSemesterBTNotes = () => {
           </div>
         </div>
         <div className="max-w-5xl mx-auto px-4 sm:px-8 py-10 flex-1">
-          {subject.notes.length === 0 ? (
+          {subject.id === 'pyqs' || subject.name.toLowerCase().includes('previous year') || subject.name.toLowerCase().includes('pyq') ? (
+            <SessionPyqAccordion
+              notes={subject.notes}
+              title={`${subject.name} - Semester 6`}
+              onDelete={handleDeleteCommunityNote}
+              isOwner={isOwner}
+            />
+          ) : subject.notes.length === 0 ? (
             <div className="text-center py-16 border border-dashed rounded-xl bg-card">
               <FileText className="h-12 w-12 mx-auto mb-4 opacity-30" />
               <p className="text-lg font-medium">No notes yet</p>
@@ -130,7 +139,7 @@ const SixthSemesterBTNotes = () => {
                   <div className="group relative border border-border bg-card hover:border-foreground/30 rounded-xl p-4 transition-all duration-300 hover:shadow-lg h-full flex flex-col justify-between">
                     <div>
                       {note.isCommunity && (
-                        <span className="inline-block text-[10px] font-bold tracking-widest uppercase text-blue-500 dark:text-blue-400 mb-2">Community</span>
+                        <span className="inline-block text-[10px] font-bold tracking-widest uppercase text-blue-500 dark:text-emerald-400 mb-2">Community</span>
                       )}
                       <p className="text-sm font-medium text-foreground leading-snug mt-1 mb-3">{note.title}</p>
                     </div>
