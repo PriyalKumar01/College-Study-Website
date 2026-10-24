@@ -8046,3 +8046,4 @@ export function getUnifiedSubjectNotes(semesterNum: string | number, subjectName
 // Course Code: BME-202 | Credits: 4 (3-1-0) | Standard Reference: S. Ramamrutham - Strength of Materials
 // Course Code: BEE-201 | Credits: 4 (3-1-2) | Standard Reference: P.S. Bimbhra - Electrical Machinery
 // Course Code: BEE-202 | Credits: 4 (3-1-0) | Standard Reference: Van Valkenburg - Network Analysis
+// Course Code: BEC-202 | Credits: 4 (3-1-0) | Standard Reference: Alan V. Oppenheim - Signals and Systems
