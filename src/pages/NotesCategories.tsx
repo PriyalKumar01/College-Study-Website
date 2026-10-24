@@ -11,8 +11,8 @@ const noteCategories = [
     route: '/btech-notes',
     image: '/card_btech.png',
     badge: 'All 1st to 4th Years Notes',
-    badgeColor: 'bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-800',
-    accentColor: 'from-blue-500 to-blue-700',
+    badgeColor: 'bg-emerald-100 dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800',
+    accentColor: 'from-emerald-600 to-teal-700',
   },
   {
     id: 'bsms',
@@ -108,103 +108,22 @@ const noteCategories = [
 
 const NotesCategories = () => {
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-background transition-colors duration-300">
+    <div className="min-h-screen bg-slate-50 dark:bg-background transition-colors duration-300 flex flex-col font-sans">
       <Navbar />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10">
-
-        {/* ── Hero Banner ── */}
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.55 }}
-          className="relative rounded-3xl overflow-hidden shadow-xl border border-blue-100 dark:border-blue-900/30 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-indigo-950/20 dark:to-blue-900/20"
-        >
-          {/* Decorative shapes */}
-          <div className="absolute top-0 right-0 -translate-y-12 translate-x-1/3 w-96 h-96 bg-blue-100/25 dark:bg-blue-950/10 rounded-full blur-3xl pointer-events-none" />
-          <div className="absolute bottom-0 right-1/4 translate-y-1/2 w-80 h-80 bg-indigo-200/20 dark:bg-indigo-950/20 rounded-full blur-3xl pointer-events-none" />
-
-          <div className="relative z-10 flex flex-col md:flex-row items-center gap-6 p-8 md:p-12">
-            {/* Left content */}
-            <div className="flex-1 space-y-5">
-              <span className="inline-flex items-center gap-2 text-xs font-bold tracking-widest text-blue-700 dark:text-blue-300 bg-blue-100/60 dark:bg-blue-900/50 border border-blue-200 dark:border-blue-800 rounded-full px-4 py-1.5 uppercase shadow-xs">
-                <Sparkles className="h-3.5 w-3.5" />
-                College Study Community
-              </span>
-
-              <h1 className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-slate-900 dark:text-white leading-tight">
-                Study Better With{' '}
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400">
-                  Curated Notes
-                </span>
-              </h1>
-
-              <div className="space-y-3 text-sm md:text-base text-slate-650 dark:text-slate-300 font-medium">
-                <p>
-                  ✨ <strong>Structured Notes + PYQs:</strong> Score well using curated notes and AI Tools to reinforce learning.
-                </p>
-                <p>
-                  🎉 <strong>Enjoy College Life:</strong> Make memories, participate in events, and lead clubs while studying smart.
-                </p>
-                <p>
-                  📅 <strong>Study Smart:</strong> Prepare 3–4 days or 1 week before exams based on your learning style.
-                </p>
-                <p>
-                  🎯 <strong>Maintain GPA:</strong> 8.0+ is excellent. A minimum of 6.5–7.0 is required by most companies.
-                </p>
-              </div>
-
-              <div className="grid grid-cols-2 gap-3 sm:flex sm:flex-wrap pt-2">
-                <Link
-                  to="/cgpa-calculator"
-                  className="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-2xl text-white font-semibold text-xs whitespace-nowrap shadow-lg shadow-blue-500/20 hover:shadow-xl hover:scale-105 transition-all duration-300 bg-gradient-to-r from-blue-600 to-indigo-600"
-                >
-                  🎓 CGPA Calculator
-                </Link>
-                <Link
-                  to="/scholarship-portal"
-                  className="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-2xl text-white font-semibold text-xs whitespace-nowrap shadow-lg shadow-emerald-500/20 hover:shadow-xl hover:scale-105 transition-all duration-300 bg-gradient-to-r from-emerald-600 to-teal-600"
-                >
-                  🏆 Scholarships
-                </Link>
-                <Link
-                  to="/opportunities"
-                  className="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-2xl text-white font-semibold text-xs whitespace-nowrap shadow-lg shadow-amber-500/20 hover:shadow-xl hover:scale-105 transition-all duration-300 bg-gradient-to-r from-amber-600 to-orange-600"
-                >
-                  💼 Opportunities
-                </Link>
-                <Link
-                  to="/premium-content"
-                  className="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-2xl text-white font-semibold text-xs whitespace-nowrap shadow-lg shadow-purple-500/20 hover:shadow-xl hover:scale-105 transition-all duration-300 bg-gradient-to-r from-purple-600 to-pink-600"
-                >
-                  📄 Premium Content
-                </Link>
-              </div>
-            </div>
-
-            {/* Right image */}
-            <div className="flex-shrink-0 w-full md:w-80 lg:w-96 flex items-center justify-center">
-              <img
-                src="/images/study/GirlsBoysGroupOf4.png"
-                alt="College students studying"
-                className="w-full h-64 md:h-72 object-contain drop-shadow-xl"
-              />
-            </div>
-          </div>
-        </motion.div>
-
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 w-full space-y-8">
         {/* ── Section Heading ── */}
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2, duration: 0.5 }}
-          className="text-center"
+          transition={{ duration: 0.4 }}
+          className="text-center pt-2"
         >
-          <h2 className="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white mb-2">
+          <h1 className="text-3xl md:text-4xl font-extrabold text-slate-900 dark:text-white mb-2 tracking-tight">
             📚 Choose Your Notes Category
-          </h2>
-          <p className="text-slate-500 dark:text-slate-400 text-base">
-            Access comprehensive, well-organised study materials for every course
+          </h1>
+          <p className="text-slate-500 dark:text-slate-400 text-sm sm:text-base max-w-xl mx-auto">
+            Access comprehensive, well-organised study materials, syllabus, and past exam papers for every course.
           </p>
         </motion.div>
 
