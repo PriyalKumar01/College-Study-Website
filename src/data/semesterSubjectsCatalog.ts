@@ -8044,3 +8044,4 @@ export function getUnifiedSubjectNotes(semesterNum: string | number, subjectName
 // Course Code: BMA-201 | Credits: 4 (3-1-0) | Standard Reference: Erwin Kreyszig - Advanced Engineering Mathematics
 // Course Code: BME-201 | Credits: 4 (3-1-0) | Standard Reference: Dr. R.K. Bansal - A Textbook of Fluid Mechanics
 // Course Code: BME-202 | Credits: 4 (3-1-0) | Standard Reference: S. Ramamrutham - Strength of Materials
+// Course Code: BEE-201 | Credits: 4 (3-1-2) | Standard Reference: P.S. Bimbhra - Electrical Machinery
