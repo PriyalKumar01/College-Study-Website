@@ -12,6 +12,7 @@ import { Loader2, Eye, EyeOff, ChevronDown, School, UserCheck, CheckCircle2, XCi
 import { Checkbox } from "@/components/ui/checkbox";
 import logoImg from '@/assets/college-study-hub-logo.png';
 import { isDirectlyAllowedDomain } from '@/utils/emailValidation';
+import { parseHbtuRollNumber, resolveCleanUserName } from '@/utils/userMetadataHelper';
 
 // ---------------------------------------------------------------------------
 // Batch / Graduating Year dropdown options
@@ -78,13 +79,15 @@ const FieldLabel = ({ htmlFor, children }: { htmlFor?: string; children: React.R
 );
 
 const inputClass =
-    "w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-sky-500 dark:focus:ring-sky-400 focus:border-transparent transition-all px-3 py-2.5 text-sm shadow-sm";
+    "w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-emerald-600 dark:focus:ring-emerald-500 focus:border-transparent transition-all px-3 py-2.5 text-sm shadow-sm";
 
 // ---------------------------------------------------------------------------
 // Component
 // ---------------------------------------------------------------------------
 export function ProfileCompletionModal() {
     const { user } = useAuth();
+    const userEmail = (user?.email || '').toLowerCase().trim();
+    const isHbtuRoll = Boolean(userEmail.endsWith('@hbtu.ac.in') && parseHbtuRollNumber(userEmail));
     const [isOpen, setIsOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const { toast } = useToast();
@@ -154,9 +157,9 @@ export function ProfileCompletionModal() {
 
             const collegeIsHBTUVariant = existingCollege !== "" && isHBTUCollege(existingCollege) && existingCollege !== "HBTU Kanpur";
 
-            // If user already has basic required profile fields (firstName, college, branch), they are already COMPLETE!
-            const hasCompleteDetails = Boolean(existingFirstName && existingCollege && existingBranch);
-            const isMetaComplete = user.user_metadata?.profile_completed === true || localCompleted || hasCompleteDetails;
+            // A profile is strictly complete only if ALL 4 core fields (first_name, college, branch, year) are present
+            const hasCompleteDetails = Boolean(existingFirstName && existingCollege && existingBranch && existingYear);
+            const isMetaComplete = user.user_metadata?.profile_completed === true && hasCompleteDetails;
 
             // If user already has complete details, NEVER show modal
             if (hasCompleteDetails || isMetaComplete) {
@@ -184,7 +187,7 @@ export function ProfileCompletionModal() {
                 return;
             }
 
-            if (!isMetaComplete || !existingCollege || !existingBranch || !existingYear) {
+            if (!hasCompleteDetails) {
                 setIsUpdateMode(false);
                 // Only ask for password if user signed up via email (not OAuth like Google or GitHub)
                 const isOAuthUser = user.app_metadata?.provider === "google" ||
@@ -193,19 +196,26 @@ export function ProfileCompletionModal() {
                     (user.app_metadata?.providers || []).includes("github");
                 setAskForPassword(!isOAuthUser);
 
-                if (user.user_metadata) {
-                    const { full_name, name, user_name, preferred_username, college: metaCollege, branch: metaBranch, year: metaYear } = user.user_metadata;
-                    const resolvedName = full_name || name || user_name || preferred_username || '';
+                const userEmail = (user.email || '').toLowerCase().trim();
+                const isHbtuRoll = Boolean(userEmail.endsWith('@hbtu.ac.in') && parseHbtuRollNumber(userEmail));
+                const isHbtu = userEmail.endsWith('@hbtu.ac.in');
+                const cleanUser = resolveCleanUserName(user.user_metadata, userEmail);
 
-                    if (resolvedName && !firstName) {
-                        const clean = resolvedName.replace(/[._-]/g, ' ').trim();
-                        const names = clean.split(' ');
-                        setFirstName(names[0] || '');
-                        setLastName(names.slice(1).join(' ') || '');
+                if (!firstName) {
+                    setFirstName(cleanUser.firstName);
+                    setLastName(cleanUser.lastName);
+                }
+
+                if (isHbtu) {
+                    setCollegeType("hbtu");
+                    setCollege("HBTU Kanpur");
+                    const parsed = parseHbtuRollNumber(userEmail);
+                    if (parsed) {
+                        if (!branch && parsed.branch) setBranch(parsed.branch);
+                        if (!year && parsed.year) setYear(parsed.year);
                     }
-                    if (metaBranch && !branch) setBranch(metaBranch);
-                    if (metaYear && !year && isValidYearOption(metaYear)) setYear(metaYear);
-
+                } else {
+                    const metaCollege = data?.college || user.user_metadata?.college || '';
                     if (metaCollege) {
                         if (isHBTUCollege(metaCollege)) {
                             setCollegeType("hbtu");
@@ -216,7 +226,12 @@ export function ProfileCompletionModal() {
                             setCollege(metaCollege);
                         }
                     }
+                    const metaBranch = data?.branch || user.user_metadata?.branch || '';
+                    if (metaBranch && !branch) setBranch(metaBranch);
+                    const metaYear = data?.year || user.user_metadata?.year || '';
+                    if (metaYear && !year && isValidYearOption(metaYear)) setYear(metaYear);
                 }
+
                 setIsOpen(true);
                 return;
             }
@@ -280,10 +295,12 @@ export function ProfileCompletionModal() {
                         last_name: effectiveLastName,
                         name: fullName,
                         full_name: fullName,
-                        year: finalYear,
-                        college: resolvedCollege,
-                        branch: finalBranch,
+                        year: finalYearToSave,
+                        college: finalCollegeToSave,
+                        branch: finalBranchToSave,
+                        email: (user.email || '').toLowerCase().trim(),
                         email_verified: true,
+                        phone_verified: false,
                         profile_completed: true
                     },
                 });
@@ -304,9 +321,9 @@ export function ProfileCompletionModal() {
                     first_name: effectiveFirstName,
                     last_name: effectiveLastName,
                     email: user!.email || '',
-                    college: resolvedCollege,
-                    branch: finalBranch,
-                    year: finalYear,
+                    college: finalCollegeToSave,
+                    branch: finalBranchToSave,
+                    year: finalYearToSave,
                     approval_status: approvalVal,
                     updated_at: new Date().toISOString()
                 }, { onConflict: 'id' });
@@ -319,9 +336,9 @@ export function ProfileCompletionModal() {
                 await supabase.rpc("upsert_my_profile", {
                     p_first_name: effectiveFirstName || undefined,
                     p_last_name: effectiveLastName || undefined,
-                    p_college: resolvedCollege,
-                    p_branch: finalBranch,
-                    p_year: finalYear,
+                    p_college: finalCollegeToSave,
+                    p_branch: finalBranchToSaveToSave,
+                    p_year: finalYearToSaveToSave,
                     p_email: user!.email
                 });
             } catch (rpcErr) {
@@ -398,10 +415,12 @@ export function ProfileCompletionModal() {
                         last_name: lastName,
                         name: fullName,
                         full_name: fullName,
-                        college: resolvedCollege,
-                        branch: finalBranch,
-                        year: finalYear,
+                        college: finalCollegeToSave,
+                        branch: finalBranchToSave,
+                        year: finalYearToSave,
+                        email: (user.email || '').toLowerCase().trim(),
                         email_verified: true,
+                        phone_verified: false,
                         profile_completed: true
                     },
                 });
@@ -430,9 +449,9 @@ export function ProfileCompletionModal() {
                     first_name: firstName,
                     last_name: lastName,
                     email: user!.email || '',
-                    college: resolvedCollege,
-                    branch: finalBranch,
-                    year: finalYear,
+                    college: finalCollegeToSave,
+                    branch: finalBranchToSave,
+                    year: finalYearToSave,
                     approval_status: approvalVal,
                     updated_at: new Date().toISOString()
                 }, { onConflict: 'id' });
@@ -445,9 +464,9 @@ export function ProfileCompletionModal() {
                 await supabase.rpc("upsert_my_profile", {
                     p_first_name: firstName,
                     p_last_name: lastName,
-                    p_college: resolvedCollege,
-                    p_branch: finalBranch,
-                    p_year: finalYear,
+                    p_college: finalCollegeToSave,
+                    p_branch: finalBranchToSaveToSave,
+                    p_year: finalYearToSaveToSave,
                     p_email: user!.email
                 });
             } catch (rpcErr) {
@@ -522,10 +541,10 @@ export function ProfileCompletionModal() {
                 <button
                     type="button"
                     onClick={() => { setCollegeType("hbtu"); setCollege("HBTU Kanpur"); setCustomCollege(""); }}
-                    className={`flex flex-col items-center gap-2 rounded-xl border-2 p-3.5 text-sm font-semibold transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-1
+                    className={`flex flex-col items-center gap-2 rounded-xl border-2 p-3.5 text-sm font-semibold transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-emerald-600 focus:ring-offset-1
                         ${collegeType === "hbtu"
-                            ? "border-sky-500 bg-sky-500/10 text-sky-600 dark:text-sky-400 dark:bg-sky-500/20 shadow-sm"
-                            : "border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300 hover:border-sky-400 hover:bg-sky-50 dark:hover:bg-sky-500/10 dark:hover:border-sky-500"
+                            ? "border-emerald-600 bg-emerald-600/10 text-emerald-700 dark:text-emerald-500 dark:bg-emerald-600/20 shadow-sm"
+                            : "border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300 hover:border-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-600/10 dark:hover:border-emerald-600"
                         }`}
                 >
                     <School className="h-5 w-5" />
@@ -545,7 +564,7 @@ export function ProfileCompletionModal() {
                 </button>
             </div>
             {collegeType === "hbtu" && (
-                <p className="flex items-center gap-1.5 text-xs font-semibold text-sky-600 dark:text-sky-400 mt-1">
+                <p className="flex items-center gap-1.5 text-xs font-semibold text-emerald-700 dark:text-emerald-500 mt-1">
                     <CheckCircle2 className="h-3.5 w-3.5" /> College set to: HBTU Kanpur
                 </p>
             )}
@@ -581,7 +600,7 @@ export function ProfileCompletionModal() {
                 onEscapeKeyDown={(e) => e.preventDefault()}
             >
                 {/* ── Header ── */}
-                <DialogHeader className="flex flex-row items-center gap-4 space-y-0 px-6 py-5 border-b border-gray-100 dark:border-gray-800 bg-gradient-to-r from-sky-50 to-violet-50 dark:from-gray-800 dark:to-gray-800 shrink-0">
+                <DialogHeader className="flex flex-row items-center gap-4 space-y-0 px-6 py-5 border-b border-gray-100 dark:border-gray-800 bg-gradient-to-r from-emerald-50 to-violet-50 dark:from-gray-800 dark:to-gray-800 shrink-0">
                     <div className="flex-shrink-0 w-12 h-12 rounded-xl overflow-hidden bg-white dark:bg-gray-700 shadow-sm flex items-center justify-center">
                         <img src={logoImg} alt="Logo" className="w-10 h-10 object-contain" />
                     </div>
@@ -601,8 +620,17 @@ export function ProfileCompletionModal() {
                 <div
                     ref={scrollRef}
                     onScroll={handleScroll}
-                    className="flex-1 overflow-y-auto px-6 py-5 space-y-5 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-sky-400/60 dark:[&::-webkit-scrollbar-thumb]:bg-sky-600/60 [&::-webkit-scrollbar-track]:transparent"
+                    className="flex-1 overflow-y-auto px-6 py-5 space-y-5 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-emerald-500/60 dark:[&::-webkit-scrollbar-thumb]:bg-emerald-700/60 [&::-webkit-scrollbar-track]:transparent"
                 >
+                    {isHbtuRoll && (
+                        <div className="flex items-start gap-2.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-500/30 p-3 text-xs text-emerald-800 dark:text-emerald-300">
+                            <Sparkles className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
+                            <div>
+                                <p className="font-bold">✨ HBTU Roll Number Auto-Detected</p>
+                                <p className="opacity-90">We have pre-filled your college, branch, and graduating year. You can freely change them if your branch upgraded in 2nd year or if you are in a lateral entry / PG program.</p>
+                            </div>
+                        </div>
+                    )}
 
                     {/* ========================================================
                         UPDATE MODE
@@ -625,12 +653,12 @@ export function ProfileCompletionModal() {
                             <FieldGroup>
                                 <FieldLabel htmlFor="branch-update">Branch <span className="text-red-500">*</span></FieldLabel>
                                 <Select value={branch} onValueChange={(v) => { setBranch(v); if (v !== "Other") setOtherBranch(""); }}>
-                                    <SelectTrigger id="branch-update" className="w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 h-10 text-sm focus:ring-2 focus:ring-sky-500">
+                                    <SelectTrigger id="branch-update" className="w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 h-10 text-sm focus:ring-2 focus:ring-emerald-600">
                                         <SelectValue placeholder="Select your branch" />
                                     </SelectTrigger>
                                     <SelectContent className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 max-h-60">
                                         {BRANCH_OPTIONS.map((o) => (
-                                            <SelectItem key={o} value={o} className="text-slate-900 dark:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800 focus:bg-sky-600 focus:text-white dark:focus:bg-sky-600 dark:focus:text-white data-[highlighted]:bg-sky-600 data-[highlighted]:text-white text-sm cursor-pointer">{o}</SelectItem>
+                                            <SelectItem key={o} value={o} className="text-slate-900 dark:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800 focus:bg-emerald-700 focus:text-white dark:focus:bg-emerald-700 dark:focus:text-white data-[highlighted]:bg-emerald-700 data-[highlighted]:text-white text-sm cursor-pointer">{o}</SelectItem>
                                         ))}
                                     </SelectContent>
                                 </Select>
@@ -643,12 +671,12 @@ export function ProfileCompletionModal() {
                             <FieldGroup>
                                 <FieldLabel htmlFor="year-update">Batch / Graduating Year <span className="text-red-500">*</span></FieldLabel>
                                 <Select value={year} onValueChange={(v) => { setYear(v); if (v !== "Other") setOtherYear(""); }}>
-                                    <SelectTrigger id="year-update" className="w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 h-10 text-sm focus:ring-2 focus:ring-sky-500">
+                                    <SelectTrigger id="year-update" className="w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 h-10 text-sm focus:ring-2 focus:ring-emerald-600">
                                         <SelectValue placeholder="Select your batch year" />
                                     </SelectTrigger>
                                     <SelectContent className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 max-h-60">
                                         {YEAR_OPTIONS.map((o) => (
-                                            <SelectItem key={o.value} value={o.value} className="text-slate-900 dark:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800 focus:bg-sky-600 focus:text-white dark:focus:bg-sky-600 dark:focus:text-white data-[highlighted]:bg-sky-600 data-[highlighted]:text-white text-sm cursor-pointer">{o.label}</SelectItem>
+                                            <SelectItem key={o.value} value={o.value} className="text-slate-900 dark:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800 focus:bg-emerald-700 focus:text-white dark:focus:bg-emerald-700 dark:focus:text-white data-[highlighted]:bg-emerald-700 data-[highlighted]:text-white text-sm cursor-pointer">{o.label}</SelectItem>
                                         ))}
                                     </SelectContent>
                                 </Select>
@@ -660,7 +688,7 @@ export function ProfileCompletionModal() {
                             <button
                                 type="submit"
                                 disabled={isLoading}
-                                className="w-full flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-sky-500 to-violet-500 hover:from-sky-600 hover:to-violet-600 text-white font-semibold py-3 text-sm transition-all duration-200 shadow-md hover:shadow-lg disabled:opacity-60 disabled:cursor-not-allowed mt-2"
+                                className="w-full flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-600 to-violet-500 hover:from-emerald-700 hover:to-violet-600 text-white font-semibold py-3 text-sm transition-all duration-200 shadow-md hover:shadow-lg disabled:opacity-60 disabled:cursor-not-allowed mt-2"
                             >
                                 {isLoading && <Loader2 className="h-4 w-4 animate-spin" />}
                                 Save & Continue
@@ -742,12 +770,12 @@ export function ProfileCompletionModal() {
                             <FieldGroup>
                                 <FieldLabel htmlFor="branch">Branch <span className="text-red-500">*</span></FieldLabel>
                                 <Select value={branch} onValueChange={(v) => { setBranch(v); if (v !== "Other") setOtherBranch(""); }}>
-                                    <SelectTrigger id="branch" className="w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 h-10 text-sm focus:ring-2 focus:ring-sky-500">
+                                    <SelectTrigger id="branch" className="w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 h-10 text-sm focus:ring-2 focus:ring-emerald-600">
                                         <SelectValue placeholder="Select your branch" />
                                     </SelectTrigger>
                                     <SelectContent className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 max-h-60">
                                         {BRANCH_OPTIONS.map((o) => (
-                                            <SelectItem key={o} value={o} className="text-slate-900 dark:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800 focus:bg-sky-600 focus:text-white dark:focus:bg-sky-600 dark:focus:text-white data-[highlighted]:bg-sky-600 data-[highlighted]:text-white text-sm cursor-pointer">{o}</SelectItem>
+                                            <SelectItem key={o} value={o} className="text-slate-900 dark:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800 focus:bg-emerald-700 focus:text-white dark:focus:bg-emerald-700 dark:focus:text-white data-[highlighted]:bg-emerald-700 data-[highlighted]:text-white text-sm cursor-pointer">{o}</SelectItem>
                                         ))}
                                     </SelectContent>
                                 </Select>
@@ -766,12 +794,12 @@ export function ProfileCompletionModal() {
                             <FieldGroup>
                                 <FieldLabel htmlFor="year">Batch / Graduating Year <span className="text-red-500">*</span></FieldLabel>
                                 <Select value={year} onValueChange={(v) => { setYear(v); if (v !== "Other") setOtherYear(""); }}>
-                                    <SelectTrigger id="year" className="w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 h-10 text-sm focus:ring-2 focus:ring-sky-500">
+                                    <SelectTrigger id="year" className="w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 h-10 text-sm focus:ring-2 focus:ring-emerald-600">
                                         <SelectValue placeholder="Select your batch year" />
                                     </SelectTrigger>
                                     <SelectContent className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 max-h-60">
                                         {YEAR_OPTIONS.map((o) => (
-                                            <SelectItem key={o.value} value={o.value} className="text-slate-900 dark:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800 focus:bg-sky-600 focus:text-white dark:focus:bg-sky-600 dark:focus:text-white data-[highlighted]:bg-sky-600 data-[highlighted]:text-white text-sm cursor-pointer">{o.label}</SelectItem>
+                                            <SelectItem key={o.value} value={o.value} className="text-slate-900 dark:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800 focus:bg-emerald-700 focus:text-white dark:focus:bg-emerald-700 dark:focus:text-white data-[highlighted]:bg-emerald-700 data-[highlighted]:text-white text-sm cursor-pointer">{o.label}</SelectItem>
                                         ))}
                                     </SelectContent>
                                 </Select>
@@ -792,13 +820,13 @@ export function ProfileCompletionModal() {
                                     id="terms"
                                     checked={acceptedTerms}
                                     onCheckedChange={(c) => setAcceptedTerms(c as boolean)}
-                                    className="mt-0.5 border-gray-300 dark:border-gray-600 data-[state=checked]:bg-sky-500 data-[state=checked]:border-sky-500"
+                                    className="mt-0.5 border-gray-300 dark:border-gray-600 data-[state=checked]:bg-emerald-600 data-[state=checked]:border-emerald-600"
                                 />
                                 <label htmlFor="terms" className="text-xs text-gray-600 dark:text-gray-400 leading-relaxed cursor-pointer">
                                     I agree to the{" "}
-                                    <Link to="/terms" target="_blank" className="text-sky-600 dark:text-sky-400 font-semibold hover:underline">Terms of Service</Link>
+                                    <Link to="/terms" target="_blank" className="text-emerald-700 dark:text-emerald-500 font-semibold hover:underline">Terms of Service</Link>
                                     {" "}and{" "}
-                                    <Link to="/privacy" target="_blank" className="text-sky-600 dark:text-sky-400 font-semibold hover:underline">Privacy Policy</Link>
+                                    <Link to="/privacy" target="_blank" className="text-emerald-700 dark:text-emerald-500 font-semibold hover:underline">Privacy Policy</Link>
                                 </label>
                             </div>
 
@@ -806,7 +834,7 @@ export function ProfileCompletionModal() {
                             <button
                                 type="submit"
                                 disabled={isLoading}
-                                className="w-full flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-sky-500 to-violet-500 hover:from-sky-600 hover:to-violet-600 text-white font-semibold py-3 text-sm transition-all duration-200 shadow-md hover:shadow-lg disabled:opacity-60 disabled:cursor-not-allowed"
+                                className="w-full flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-600 to-violet-500 hover:from-emerald-700 hover:to-violet-600 text-white font-semibold py-3 text-sm transition-all duration-200 shadow-md hover:shadow-lg disabled:opacity-60 disabled:cursor-not-allowed"
                             >
                                 {isLoading && <Loader2 className="h-4 w-4 animate-spin" />}
                                 Save & Continue
@@ -819,7 +847,7 @@ export function ProfileCompletionModal() {
                 {showScrollArrow && (
                     <div className="absolute bottom-4 right-5 pointer-events-none animate-bounce z-10">
                         <div className="bg-white dark:bg-gray-700 rounded-full p-1.5 shadow-lg border border-gray-200 dark:border-gray-600">
-                            <ChevronDown className="h-4 w-4 text-sky-500 dark:text-sky-400" />
+                            <ChevronDown className="h-4 w-4 text-emerald-600 dark:text-emerald-500" />
                         </div>
                     </div>
                 )}
