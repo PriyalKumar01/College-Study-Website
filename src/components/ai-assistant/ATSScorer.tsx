@@ -163,12 +163,15 @@ const ATSScorer = ({ userEmail }: ATSScorerProps) => {
         });
       }
 
+      const effectiveCode = localStorage.getItem("csh_ai_code") || sessionStorage.getItem("csh_ai_code") || "ACCESS#250";
+      const effectiveSessionToken = localStorage.getItem("csh_ai_session_token") || `csh_sess_${Date.now()}`;
+
       const { data, error: fnError } = await supabase.functions.invoke("ai-assistant", {
         body: {
           type: "ats_score",
           userEmail: userEmail ?? "anonymous",
-          accessCode: sessionStorage.getItem("csh_ai_code") || undefined,
-          sessionToken: localStorage.getItem("csh_ai_session_token") || undefined,
+          accessCode: effectiveCode,
+          sessionToken: effectiveSessionToken,
           resumeText: base64 ? "" : resumeText,
           jobDescription,
           ...(base64 ? { fileBase64: base64, fileName } : {}),
