@@ -122,6 +122,27 @@ export function ProfileCompletionModal() {
         }
     }, [user, hasChecked]);
 
+    // Explicit open & update listener
+    useEffect(() => {
+        const handleExplicitOpen = () => {
+            setHasChecked(false);
+            checkProfile();
+            setIsOpen(true);
+        };
+        const handleProfileUpdated = () => {
+            setHasChecked(false);
+            checkProfile();
+        };
+
+        window.addEventListener('studyhub_open_profile_completion', handleExplicitOpen);
+        window.addEventListener('studyhub_profile_updated', handleProfileUpdated);
+
+        return () => {
+            window.removeEventListener('studyhub_open_profile_completion', handleExplicitOpen);
+            window.removeEventListener('studyhub_profile_updated', handleProfileUpdated);
+        };
+    }, [user]);
+
     const checkProfile = async () => {
         if (!user) return;
 
