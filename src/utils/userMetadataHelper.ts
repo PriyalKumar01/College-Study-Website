@@ -46,8 +46,7 @@ const HBTU_BRANCH_MAP: Record<string, string> = {
 export function isValidAcademicField(value?: string | null): boolean {
   if (!value) return false;
   const s = value.trim().toLowerCase();
-  if (!s || s === 'not set' || s === 'null' || s === 'undefined' || s === 'none' || s === 'n/a') return false;
-  if (s.startsWith('test ') || s === 'test' || s === 'test college' || s === 'test branch') return false;
+  if (!s || s === 'not set' || s === 'null' || s === 'undefined' || s === 'none' || s === 'n/a' || s === '-') return false;
   return true;
 }
 
