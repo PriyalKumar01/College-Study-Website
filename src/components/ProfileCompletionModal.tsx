@@ -490,8 +490,8 @@ export function ProfileCompletionModal() {
                     p_first_name: firstName,
                     p_last_name: lastName,
                     p_college: finalCollegeToSave,
-                    p_branch: finalBranchToSaveToSave,
-                    p_year: finalYearToSaveToSave,
+                    p_branch: finalBranchToSave,
+                    p_year: finalYearToSave,
                     p_email: user!.email
                 });
             } catch (rpcErr) {
