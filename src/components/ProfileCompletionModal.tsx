@@ -2,13 +2,10 @@ import { useState, useEffect, useRef } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Link } from "react-router-dom";
-import { Loader2, Eye, EyeOff, ChevronDown, School, UserCheck, CheckCircle2, XCircle } from "lucide-react";
+import { Loader2, School, UserCheck, CheckCircle2, Sparkles, ChevronDown } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import logoImg from '@/assets/college-study-hub-logo.png';
 import { isDirectlyAllowedDomain } from '@/utils/emailValidation';
@@ -92,8 +89,6 @@ export function ProfileCompletionModal() {
     const [isLoading, setIsLoading] = useState(false);
     const { toast } = useToast();
 
-    const [isUpdateMode, setIsUpdateMode] = useState(false);
-
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
     const [college, setCollege] = useState("");
@@ -101,17 +96,32 @@ export function ProfileCompletionModal() {
     const [year, setYear] = useState("");
     const [otherYear, setOtherYear] = useState("");
     const [otherBranch, setOtherBranch] = useState("");
-    const [password, setPassword] = useState("");
-    const [showPassword, setShowPassword] = useState(false);
 
     const [collegeType, setCollegeType] = useState<"hbtu" | "non-hbtu" | "">("");
     const [customCollege, setCustomCollege] = useState("");
 
     const [hasChecked, setHasChecked] = useState(false);
-    const [acceptedTerms, setAcceptedTerms] = useState(true);
-    const [askForPassword, setAskForPassword] = useState(false);
+    const [acceptedTerms, setAcceptedTerms] = useState(false);
 
-    // Reset check status when user changes (e.g. logging out and logging in as someone else)
+    // Scroll indicator
+    const [showScrollArrow, setShowScrollArrow] = useState(true);
+    const scrollRef = useRef<HTMLDivElement>(null);
+
+    const handleScroll = () => {
+        if (scrollRef.current) {
+            const { scrollTop, scrollHeight, clientHeight } = scrollRef.current;
+            setShowScrollArrow(scrollTop + clientHeight < scrollHeight - 20);
+        }
+    };
+
+    useEffect(() => {
+        if (scrollRef.current) {
+            const { scrollHeight, clientHeight } = scrollRef.current;
+            setShowScrollArrow(scrollHeight > clientHeight);
+        }
+    }, [isOpen]);
+
+    // Reset check status when user changes
     useEffect(() => {
         setHasChecked(false);
     }, [user?.id]);
@@ -147,9 +157,6 @@ export function ProfileCompletionModal() {
         if (!user) return;
 
         try {
-            // 0. Instant localStorage check
-            const localCompleted = typeof window !== 'undefined' && localStorage.getItem(`profile_completed_${user.id}`) === 'true';
-
             // Safely fetch profile data from profiles table (prioritizing active session user_id)
             let data: any = null;
             try {
@@ -224,7 +231,6 @@ export function ProfileCompletionModal() {
             try { localStorage.removeItem(`profile_completed_${user.id}`); } catch {}
 
             const userEmail = (user.email || '').toLowerCase().trim();
-            const isHbtuRoll = Boolean(userEmail.endsWith('@hbtu.ac.in') && parseHbtuRollNumber(userEmail));
             const isHbtu = userEmail.endsWith('@hbtu.ac.in');
             const cleanUser = resolveCleanUserName(user.user_metadata, userEmail);
 
@@ -235,14 +241,6 @@ export function ProfileCompletionModal() {
                 setFirstName(existingFirst);
                 setLastName(existingLast);
             }
-
-            // If user already has a recognized name (e.g. from Google or previous login), show streamlined update form
-            if (existingFirst && existingFirst.toLowerCase() !== 'user') {
-                setIsUpdateMode(true);
-            } else {
-                setIsUpdateMode(false);
-            }
-            setAskForPassword(false);
 
             if (isHbtu) {
                 setCollegeType("hbtu");
@@ -276,13 +274,8 @@ export function ProfileCompletionModal() {
                 else if (!existingYear) setYear("");
             }
 
+            setAcceptedTerms(false);
             setIsOpen(true);
-            return;
-
-            // Profile is completely filled
-            setHasChecked(true);
-            setIsOpen(false);
-            try { localStorage.setItem(`profile_completed_${user.id}`, 'true'); } catch {}
         } catch (err) {
             console.error("Profile check failed:", err);
             setHasChecked(true);
@@ -305,8 +298,7 @@ export function ProfileCompletionModal() {
         targetLastName: string,
         targetCollege: string,
         targetBranch: string,
-        targetYear: string,
-        targetPassword?: string
+        targetYear: string
     ) => {
         if (!user) throw new Error("No active session found.");
 
@@ -323,7 +315,7 @@ export function ProfileCompletionModal() {
         let dbUpdated = false;
         let metaUpdated = false;
 
-        // 1. Direct update/insert to public.profiles table by user_id
+        // 1. Direct update or insert into public.profiles by user_id
         try {
             const { data: existingUserRow } = await supabase
                 .from("profiles")
@@ -345,7 +337,7 @@ export function ProfileCompletionModal() {
                     .eq("user_id", user.id);
 
                 if (!upErr) dbUpdated = true;
-                else console.warn("Update by user_id failed:", upErr);
+                else console.warn("Update by user_id notice:", upErr);
             } else if (cleanEmail) {
                 const { data: existingEmailRow } = await supabase
                     .from("profiles")
@@ -369,7 +361,7 @@ export function ProfileCompletionModal() {
                         .eq("id", existingEmailRow[0].id);
 
                     if (!upEmailErr) dbUpdated = true;
-                    else console.warn("Update by email id failed:", upEmailErr);
+                    else console.warn("Update by email notice:", upEmailErr);
                 } else {
                     const { error: insErr } = await supabase
                         .from("profiles")
@@ -386,11 +378,11 @@ export function ProfileCompletionModal() {
                         });
 
                     if (!insErr) dbUpdated = true;
-                    else console.warn("Insert new profile failed:", insErr);
+                    else console.warn("Insert new profile notice:", insErr);
                 }
             }
         } catch (upErr) {
-            console.warn("Direct profiles update/insert warning:", upErr);
+            console.warn("Direct profiles update/insert notice:", upErr);
         }
 
         // 2. Call RPC helper as guaranteed fallback (SECURITY DEFINER)
@@ -404,9 +396,9 @@ export function ProfileCompletionModal() {
                 p_email: cleanEmail
             });
             if (!rpcErr) dbUpdated = true;
-            else console.warn("RPC upsert warning:", rpcErr);
+            else console.warn("RPC upsert notice:", rpcErr);
         } catch (rpcErr) {
-            console.warn("RPC upsert warning:", rpcErr);
+            console.warn("RPC upsert notice:", rpcErr);
         }
 
         // 3. Update Supabase Auth User Metadata
@@ -427,18 +419,9 @@ export function ProfileCompletionModal() {
                 },
             });
             if (!metaErr) metaUpdated = true;
-            else console.warn("updateUser metadata warning:", metaErr);
+            else console.warn("updateUser metadata notice:", metaErr);
         } catch (uErr) {
-            console.warn("updateUser metadata warning:", uErr);
-        }
-
-        // 4. Update password if provided
-        if (targetPassword && targetPassword.trim()) {
-            try {
-                await supabase.auth.updateUser({ password: targetPassword.trim() });
-            } catch (pErr) {
-                console.warn("updateUser password warning:", pErr);
-            }
+            console.warn("updateUser metadata notice:", uErr);
         }
 
         if (!metaUpdated && !dbUpdated) {
@@ -452,7 +435,7 @@ export function ProfileCompletionModal() {
         try {
             await supabase.auth.refreshSession();
         } catch (refErr) {
-            console.warn("Session refresh warning:", refErr);
+            console.warn("Session refresh notice:", refErr);
         }
 
         if (typeof window !== 'undefined') {
@@ -464,91 +447,50 @@ export function ProfileCompletionModal() {
     };
 
     // ---------------------------------------------------------------------------
-    // HANDLER: Update Mode
-    // ---------------------------------------------------------------------------
-    const handleUpdateSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-
-        if (!finalYear) {
-            toast({ title: "Required", description: "Please select your batch / Graduating year.", variant: "destructive" });
-            return;
-        }
-        if (year === "Other" && !otherYear.trim()) {
-            toast({ title: "Required", description: "Please specify your year/batch.", variant: "destructive" });
-            return;
-        }
-        if (!collegeType) {
-            toast({ title: "Required", description: "Please select HBTU or Other College.", variant: "destructive" });
-            return;
-        }
-        if (collegeType === "non-hbtu" && !customCollege.trim()) {
-            toast({ title: "Required", description: "Please enter your college name.", variant: "destructive" });
-            return;
-        }
-        if (!finalBranch) {
-            toast({ title: "Required", description: "Please select your branch.", variant: "destructive" });
-            return;
-        }
-
-        setIsLoading(true);
-        try {
-            const effectiveFirst = firstName || user?.user_metadata?.first_name || '';
-            const effectiveLast = lastName || user?.user_metadata?.last_name || '';
-            await persistProfileData(effectiveFirst, effectiveLast, resolvedCollege, finalBranch, finalYear);
-            toast({ title: "Profile Saved ✓", description: "Your details have been saved successfully!" });
-        } catch (err: any) {
-            toast({ title: "Error", description: err.message || "Failed to update profile.", variant: "destructive" });
-        } finally {
-            setIsLoading(false);
-        }
-    };
-
-    // ---------------------------------------------------------------------------
-    // HANDLER: Full Profile Completion
+    // HANDLER: Submit Profile Completion
     // ---------------------------------------------------------------------------
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        if (!firstName.trim() || !finalBranch || !finalYear || !resolvedCollege) {
-            toast({ title: "Required Fields", description: "Please fill in all details.", variant: "destructive" });
+        if (!firstName.trim()) {
+            toast({ title: "Name Required", description: "Please enter your first name.", variant: "destructive" });
             return;
         }
         if (!collegeType) {
-            toast({ title: "Required", description: "Please indicate HBTU or Other College.", variant: "destructive" });
+            toast({ title: "College Required", description: "Please indicate HBTU or Other College.", variant: "destructive" });
             return;
         }
         if (collegeType === "non-hbtu" && !customCollege.trim()) {
-            toast({ title: "Required", description: "Please enter your full college name.", variant: "destructive" });
+            toast({ title: "College Required", description: "Please enter your full college name.", variant: "destructive" });
+            return;
+        }
+        if (!finalBranch) {
+            toast({ title: "Branch Required", description: "Please select your branch.", variant: "destructive" });
+            return;
+        }
+        if (branch === "Other" && !otherBranch.trim()) {
+            toast({ title: "Branch Required", description: "Please specify your branch.", variant: "destructive" });
+            return;
+        }
+        if (!finalYear) {
+            toast({ title: "Year Required", description: "Please select your batch / graduating year.", variant: "destructive" });
+            return;
+        }
+        if (year === "Other" && !otherYear.trim()) {
+            toast({ title: "Year Required", description: "Please specify your batch/year.", variant: "destructive" });
             return;
         }
         if (!acceptedTerms) {
-            toast({ title: "Terms Required", description: "You must accept the Terms & Conditions.", variant: "destructive" });
+            toast({ title: "Terms Required", description: "Please agree to the Terms of Service & Privacy Policy.", variant: "destructive" });
             return;
-        }
-        if (password) {
-            const isOk = password.length >= 6 && /[A-Z]/.test(password) && /[a-z]/.test(password) && /[0-9]/.test(password) && /[!@#$%^&*(),.?":{}|<>]/.test(password);
-            if (!isOk) {
-                toast({ title: "Weak Password", description: "Please meet all password requirements.", variant: "destructive" });
-                return;
-            }
         }
 
         setIsLoading(true);
         try {
-            await persistProfileData(firstName, lastName, resolvedCollege, finalBranch, finalYear, password || undefined);
-            toast({ title: "Profile Saved ✓", description: "Welcome aboard! You're all set." });
+            await persistProfileData(firstName, lastName, resolvedCollege, finalBranch, finalYear);
+            toast({ title: "Profile Saved ✓", description: "Welcome aboard! Your academic details have been saved." });
         } catch (error: any) {
             console.error("Profile update error:", error);
-            if (error.message?.includes("foreign key constraint") || error.code === "23503") {
-                toast({ 
-                    title: "Session Invalid", 
-                    description: "Your account appears to have been removed or session is invalid. Logging you out...", 
-                    variant: "destructive" 
-                });
-                await supabase.auth.signOut();
-                window.location.reload();
-                return;
-            }
             toast({ title: "Save Failed", description: error.message || "Could not save profile details.", variant: "destructive" });
         } finally {
             setIsLoading(false);
@@ -556,27 +498,7 @@ export function ProfileCompletionModal() {
     };
 
     // ---------------------------------------------------------------------------
-    // Scroll indicator
-    // ---------------------------------------------------------------------------
-    const [showScrollArrow, setShowScrollArrow] = useState(true);
-    const scrollRef = useRef<HTMLDivElement>(null);
-
-    const handleScroll = () => {
-        if (scrollRef.current) {
-            const { scrollTop, scrollHeight, clientHeight } = scrollRef.current;
-            setShowScrollArrow(scrollTop + clientHeight < scrollHeight - 20);
-        }
-    };
-
-    useEffect(() => {
-        if (scrollRef.current) {
-            const { scrollHeight, clientHeight } = scrollRef.current;
-            setShowScrollArrow(scrollHeight > clientHeight);
-        }
-    }, [isOpen]);
-
-    // ---------------------------------------------------------------------------
-    // College picker UI (shared)
+    // College picker UI
     // ---------------------------------------------------------------------------
     const renderCollegePicker = () => (
         <FieldGroup>
@@ -623,15 +545,6 @@ export function ProfileCompletionModal() {
         </FieldGroup>
     );
 
-    // Password rules checker
-    const pwdRules = [
-        { label: "At least 6 characters", ok: password.length >= 6 },
-        { label: "One uppercase letter (A-Z)", ok: /[A-Z]/.test(password) },
-        { label: "One lowercase letter (a-z)", ok: /[a-z]/.test(password) },
-        { label: "One number (0-9)", ok: /[0-9]/.test(password) },
-        { label: "One special character (!@#...)", ok: /[!@#$%^&*(),.?":{}|<>]/.test(password) },
-    ];
-
     // ---------------------------------------------------------------------------
     // Render
     // ---------------------------------------------------------------------------
@@ -650,12 +563,10 @@ export function ProfileCompletionModal() {
                     </div>
                     <div className="text-left min-w-0">
                         <DialogTitle className="text-lg font-bold text-gray-900 dark:text-white leading-tight">
-                            {isUpdateMode ? "Update Your Profile" : "Complete Your Profile"}
+                            Complete Your Profile
                         </DialogTitle>
                         <DialogDescription className="text-sm text-gray-500 dark:text-gray-400 mt-0.5 leading-snug">
-                            {isUpdateMode
-                                ? "Please confirm your details to continue."
-                                : "A few details and you're all set!"}
+                            Please provide your academic details to continue.
                         </DialogDescription>
                     </div>
                 </DialogHeader>
@@ -676,215 +587,105 @@ export function ProfileCompletionModal() {
                         </div>
                     )}
 
-                    {/* ========================================================
-                        UPDATE MODE
-                    ======================================================== */}
-                    {isUpdateMode ? (
-                        <form onSubmit={handleUpdateSubmit} className="space-y-5">
-                            {/* Info banner */}
-                            <div className="flex items-start gap-3 rounded-xl bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700/50 p-3.5">
-                                <span className="text-xl leading-none mt-0.5">👋</span>
-                                <p className="text-sm text-amber-800 dark:text-amber-300 leading-relaxed">
-                                    Hey <strong>{firstName || "there"}</strong>! Please update your{" "}
-                                    <strong>branch</strong>, <strong>batch year</strong> and confirm your college.
-                                </p>
-                            </div>
-
-                            {/* College */}
-                            {renderCollegePicker()}
-
-                            {/* Branch */}
+                    <form onSubmit={handleSubmit} className="space-y-4">
+                        {/* Name row */}
+                        <div className="grid grid-cols-2 gap-3">
                             <FieldGroup>
-                                <FieldLabel htmlFor="branch-update">Branch <span className="text-red-500">*</span></FieldLabel>
-                                <Select value={branch} onValueChange={(v) => { setBranch(v); if (v !== "Other") setOtherBranch(""); }}>
-                                    <SelectTrigger id="branch-update" className="w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 h-10 text-sm focus:ring-2 focus:ring-emerald-600">
-                                        <SelectValue placeholder="Select your branch" />
-                                    </SelectTrigger>
-                                    <SelectContent className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 max-h-60">
-                                        {BRANCH_OPTIONS.map((o) => (
-                                            <SelectItem key={o} value={o} className="text-slate-900 dark:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800 focus:bg-emerald-700 focus:text-white dark:focus:bg-emerald-700 dark:focus:text-white data-[highlighted]:bg-emerald-700 data-[highlighted]:text-white text-sm cursor-pointer">{o}</SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
-                                {branch === "Other" && (
-                                    <input value={otherBranch} onChange={(e) => setOtherBranch(e.target.value)} placeholder="e.g. Architecture, MBA..." className={inputClass + " mt-2"} />
-                                )}
-                            </FieldGroup>
-
-                            {/* Year */}
-                            <FieldGroup>
-                                <FieldLabel htmlFor="year-update">Batch / Graduating Year <span className="text-red-500">*</span></FieldLabel>
-                                <Select value={year} onValueChange={(v) => { setYear(v); if (v !== "Other") setOtherYear(""); }}>
-                                    <SelectTrigger id="year-update" className="w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 h-10 text-sm focus:ring-2 focus:ring-emerald-600">
-                                        <SelectValue placeholder="Select your batch year" />
-                                    </SelectTrigger>
-                                    <SelectContent className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 max-h-60">
-                                        {YEAR_OPTIONS.map((o) => (
-                                            <SelectItem key={o.value} value={o.value} className="text-slate-900 dark:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800 focus:bg-emerald-700 focus:text-white dark:focus:bg-emerald-700 dark:focus:text-white data-[highlighted]:bg-emerald-700 data-[highlighted]:text-white text-sm cursor-pointer">{o.label}</SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
-                                {year === "Other" && (
-                                    <input value={otherYear} onChange={(e) => setOtherYear(e.target.value)} placeholder="e.g. Faculty, 2014..." className={inputClass + " mt-2"} />
-                                )}
-                            </FieldGroup>
-
-                            <button
-                                type="submit"
-                                disabled={isLoading}
-                                className="w-full flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-600 to-violet-500 hover:from-emerald-700 hover:to-violet-600 text-white font-semibold py-3 text-sm transition-all duration-200 shadow-md hover:shadow-lg disabled:opacity-60 disabled:cursor-not-allowed mt-2"
-                            >
-                                {isLoading && <Loader2 className="h-4 w-4 animate-spin" />}
-                                Save & Continue
-                            </button>
-                        </form>
-
-                    ) : (
-                    /* ========================================================
-                        FULL PROFILE COMPLETION
-                    ======================================================== */
-                        <form onSubmit={handleSubmit} className="space-y-5">
-
-                            {/* Name row */}
-                            <div className="grid grid-cols-2 gap-3">
-                                <FieldGroup>
-                                    <FieldLabel htmlFor="firstName">First Name <span className="text-red-500">*</span></FieldLabel>
-                                    <input
-                                        id="firstName"
-                                        value={firstName}
-                                        onChange={(e) => setFirstName(e.target.value)}
-                                        placeholder="e.g. Priyal"
-                                        className={inputClass}
-                                    />
-                                </FieldGroup>
-                                <FieldGroup>
-                                    <FieldLabel htmlFor="lastName">Last Name</FieldLabel>
-                                    <input
-                                        id="lastName"
-                                        value={lastName}
-                                        onChange={(e) => setLastName(e.target.value)}
-                                        placeholder="e.g. Kumar"
-                                        className={inputClass}
-                                    />
-                                </FieldGroup>
-                            </div>
-
-                            {/* Password */}
-                            {askForPassword && (
-                                <FieldGroup>
-                                    <FieldLabel htmlFor="password">Create Password <span className="text-red-500">*</span></FieldLabel>
-                                    <div className="relative">
-                                        <input
-                                            id="password"
-                                            type={showPassword ? "text" : "password"}
-                                            value={password}
-                                            onChange={(e) => setPassword(e.target.value)}
-                                            placeholder="Create a strong password"
-                                            className={inputClass + " pr-10"}
-                                        />
-                                        <button
-                                            type="button"
-                                            onClick={() => setShowPassword(!showPassword)}
-                                            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
-                                        >
-                                            {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                                        </button>
-                                    </div>
-                                    {password && (
-                                        <div className="mt-2 p-3 rounded-lg bg-gray-50 dark:bg-gray-800/80 border border-gray-200 dark:border-gray-700 space-y-1.5">
-                                            <p className="text-xs font-semibold text-gray-600 dark:text-gray-300 mb-1">Password requirements:</p>
-                                            {pwdRules.map((r) => (
-                                                <div key={r.label} className={`flex items-center gap-2 text-xs ${r.ok ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-500 dark:text-red-400'}`}>
-                                                    {r.ok
-                                                        ? <CheckCircle2 className="h-3.5 w-3.5 flex-shrink-0" />
-                                                        : <XCircle className="h-3.5 w-3.5 flex-shrink-0" />
-                                                    }
-                                                    <span>{r.label}</span>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    )}
-                                </FieldGroup>
-                            )}
-
-                            {/* College picker */}
-                            {renderCollegePicker()}
-
-                            {/* Branch */}
-                            <FieldGroup>
-                                <FieldLabel htmlFor="branch">Branch <span className="text-red-500">*</span></FieldLabel>
-                                <Select value={branch} onValueChange={(v) => { setBranch(v); if (v !== "Other") setOtherBranch(""); }}>
-                                    <SelectTrigger id="branch" className="w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 h-10 text-sm focus:ring-2 focus:ring-emerald-600">
-                                        <SelectValue placeholder="Select your branch" />
-                                    </SelectTrigger>
-                                    <SelectContent className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 max-h-60">
-                                        {BRANCH_OPTIONS.map((o) => (
-                                            <SelectItem key={o} value={o} className="text-slate-900 dark:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800 focus:bg-emerald-700 focus:text-white dark:focus:bg-emerald-700 dark:focus:text-white data-[highlighted]:bg-emerald-700 data-[highlighted]:text-white text-sm cursor-pointer">{o}</SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
-                                {branch === "Other" && (
-                                    <input
-                                        id="otherBranch"
-                                        value={otherBranch}
-                                        onChange={(e) => setOtherBranch(e.target.value)}
-                                        placeholder="e.g. Architecture, MBA..."
-                                        className={inputClass + " mt-2"}
-                                    />
-                                )}
-                            </FieldGroup>
-
-                            {/* Year */}
-                            <FieldGroup>
-                                <FieldLabel htmlFor="year">Batch / Graduating Year <span className="text-red-500">*</span></FieldLabel>
-                                <Select value={year} onValueChange={(v) => { setYear(v); if (v !== "Other") setOtherYear(""); }}>
-                                    <SelectTrigger id="year" className="w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 h-10 text-sm focus:ring-2 focus:ring-emerald-600">
-                                        <SelectValue placeholder="Select your batch year" />
-                                    </SelectTrigger>
-                                    <SelectContent className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 max-h-60">
-                                        {YEAR_OPTIONS.map((o) => (
-                                            <SelectItem key={o.value} value={o.value} className="text-slate-900 dark:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800 focus:bg-emerald-700 focus:text-white dark:focus:bg-emerald-700 dark:focus:text-white data-[highlighted]:bg-emerald-700 data-[highlighted]:text-white text-sm cursor-pointer">{o.label}</SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
-                                {year === "Other" && (
-                                    <input
-                                        id="otherYear"
-                                        value={otherYear}
-                                        onChange={(e) => setOtherYear(e.target.value)}
-                                        placeholder="e.g. Faculty, 2014..."
-                                        className={inputClass + " mt-2"}
-                                    />
-                                )}
-                            </FieldGroup>
-
-                            {/* Terms */}
-                            <div className="flex items-start gap-3 pt-1">
-                                <Checkbox
-                                    id="terms"
-                                    checked={acceptedTerms}
-                                    onCheckedChange={(c) => setAcceptedTerms(c as boolean)}
-                                    className="mt-0.5 border-gray-300 dark:border-gray-600 data-[state=checked]:bg-emerald-600 data-[state=checked]:border-emerald-600"
+                                <FieldLabel htmlFor="firstName">First Name <span className="text-red-500">*</span></FieldLabel>
+                                <input
+                                    id="firstName"
+                                    value={firstName}
+                                    onChange={(e) => setFirstName(e.target.value)}
+                                    placeholder="e.g. Priyal"
+                                    className={inputClass}
                                 />
-                                <label htmlFor="terms" className="text-xs text-gray-600 dark:text-gray-400 leading-relaxed cursor-pointer">
-                                    I agree to the{" "}
-                                    <Link to="/terms" target="_blank" className="text-emerald-700 dark:text-emerald-500 font-semibold hover:underline">Terms of Service</Link>
-                                    {" "}and{" "}
-                                    <Link to="/privacy" target="_blank" className="text-emerald-700 dark:text-emerald-500 font-semibold hover:underline">Privacy Policy</Link>
-                                </label>
-                            </div>
+                            </FieldGroup>
+                            <FieldGroup>
+                                <FieldLabel htmlFor="lastName">Last Name</FieldLabel>
+                                <input
+                                    id="lastName"
+                                    value={lastName}
+                                    onChange={(e) => setLastName(e.target.value)}
+                                    placeholder="e.g. Kumar"
+                                    className={inputClass}
+                                />
+                            </FieldGroup>
+                        </div>
 
-                            {/* Submit */}
-                            <button
-                                type="submit"
-                                disabled={isLoading}
-                                className="w-full flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-600 to-violet-500 hover:from-emerald-700 hover:to-violet-600 text-white font-semibold py-3 text-sm transition-all duration-200 shadow-md hover:shadow-lg disabled:opacity-60 disabled:cursor-not-allowed"
-                            >
-                                {isLoading && <Loader2 className="h-4 w-4 animate-spin" />}
-                                Save & Continue
-                            </button>
-                        </form>
-                    )}
+                        {/* College picker */}
+                        {renderCollegePicker()}
+
+                        {/* Branch */}
+                        <FieldGroup>
+                            <FieldLabel htmlFor="branch">Branch <span className="text-red-500">*</span></FieldLabel>
+                            <Select value={branch} onValueChange={(v) => { setBranch(v); if (v !== "Other") setOtherBranch(""); }}>
+                                <SelectTrigger id="branch" className="w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 h-10 text-sm focus:ring-2 focus:ring-emerald-600">
+                                    <SelectValue placeholder="Select your branch" />
+                                </SelectTrigger>
+                                <SelectContent className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 max-h-60">
+                                    {BRANCH_OPTIONS.map((o) => (
+                                        <SelectItem key={o} value={o} className="text-slate-900 dark:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800 focus:bg-emerald-700 focus:text-white dark:focus:bg-emerald-700 dark:focus:text-white data-[highlighted]:bg-emerald-700 data-[highlighted]:text-white text-sm cursor-pointer">{o}</SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                            {branch === "Other" && (
+                                <input
+                                    id="otherBranch"
+                                    value={otherBranch}
+                                    onChange={(e) => setOtherBranch(e.target.value)}
+                                    placeholder="e.g. Architecture, MBA..."
+                                    className={inputClass + " mt-2"}
+                                />
+                            )}
+                        </FieldGroup>
+
+                        {/* Year */}
+                        <FieldGroup>
+                            <FieldLabel htmlFor="year">Batch / Graduating Year <span className="text-red-500">*</span></FieldLabel>
+                            <Select value={year} onValueChange={(v) => { setYear(v); if (v !== "Other") setOtherYear(""); }}>
+                                <SelectTrigger id="year" className="w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 h-10 text-sm focus:ring-2 focus:ring-emerald-600">
+                                    <SelectValue placeholder="Select your batch year" />
+                                </SelectTrigger>
+                                <SelectContent className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 max-h-60">
+                                    {YEAR_OPTIONS.map((o) => (
+                                        <SelectItem key={o.value} value={o.value} className="text-slate-900 dark:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800 focus:bg-emerald-700 focus:text-white dark:focus:bg-emerald-700 dark:focus:text-white data-[highlighted]:bg-emerald-700 data-[highlighted]:text-white text-sm cursor-pointer">{o.label}</SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                            {year === "Other" && (
+                                <input
+                                    id="otherYear"
+                                    value={otherYear}
+                                    onChange={(e) => setOtherYear(e.target.value)}
+                                    placeholder="e.g. Faculty, 2014..."
+                                    className={inputClass + " mt-2"}
+                                />
+                            )}
+                        </FieldGroup>
+
+                        {/* Terms and Conditions Checkbox */}
+                        <div className="flex items-start gap-2.5 p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60 mt-2">
+                            <Checkbox
+                                id="terms"
+                                checked={acceptedTerms}
+                                onCheckedChange={(c) => setAcceptedTerms(Boolean(c))}
+                                className="mt-0.5 data-[state=checked]:bg-emerald-600 data-[state=checked]:border-emerald-600"
+                            />
+                            <label htmlFor="terms" className="text-xs text-slate-600 dark:text-slate-300 leading-snug cursor-pointer select-none">
+                                I agree to the <Link to="/terms-conditions" target="_blank" className="text-emerald-600 dark:text-emerald-400 font-semibold underline hover:text-emerald-700">Terms of Service</Link> and <Link to="/privacy-policy" target="_blank" className="text-emerald-600 dark:text-emerald-400 font-semibold underline hover:text-emerald-700">Privacy Policy</Link> of College Study Hub.
+                            </label>
+                        </div>
+
+                        {/* Submit Button */}
+                        <button
+                            type="submit"
+                            disabled={isLoading || !acceptedTerms}
+                            className="w-full flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-600 to-violet-500 hover:from-emerald-700 hover:to-violet-600 text-white font-semibold py-3 text-sm transition-all duration-200 shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed mt-3"
+                        >
+                            {isLoading && <Loader2 className="h-4 w-4 animate-spin" />}
+                            Complete Profile & Proceed
+                        </button>
+                    </form>
                 </div>
 
                 {/* Scroll indicator */}
