@@ -261,8 +261,7 @@ export default function Profile() {
 
       // Direct upsert into public.profiles table
       try {
-        await supabase.from('profiles').upsert({
-          id: user.id,
+        const { error: upErr } = await supabase.from('profiles').upsert({
           user_id: user.id,
           first_name: editedProfile.first_name,
           last_name: editedProfile.last_name,
@@ -273,7 +272,22 @@ export default function Profile() {
           year: finalYear,
           avatar_url: profileUpdates.avatar_url,
           updated_at: new Date().toISOString()
-        }, { onConflict: 'id' });
+        }, { onConflict: 'user_id' });
+
+        if (upErr) {
+          console.warn("Direct profiles upsert on user_id warning in Profile.tsx:", upErr);
+          await supabase.from('profiles').update({
+            first_name: editedProfile.first_name,
+            last_name: editedProfile.last_name,
+            email: user.email || '',
+            mobile_number: profileUpdates.mobile_number,
+            college: finalCollege,
+            branch: finalBranch,
+            year: finalYear,
+            avatar_url: profileUpdates.avatar_url,
+            updated_at: new Date().toISOString()
+          }).or(`id.eq.${user.id},user_id.eq.${user.id}`);
+        }
       } catch (upErr) {
         console.warn("Direct profiles upsert warning in Profile.tsx:", upErr);
       }
