@@ -23,11 +23,6 @@ const SecondSemesterNotes = () => {
   const [selectedPlaylistType, setSelectedPlaylistType] = useState<'detailed' | 'oneshot'>('detailed');
   const [selectedSubjectForPlaylist, setSelectedSubjectForPlaylist] = useState<string>('');
   const [expandedSubjects, setExpandedSubjects] = useState<string[]>([]);
-
-  useSubjectAutoScroll(subjects, (matched) => {
-    if (matched.id) toggleSubjectExpansion(matched.id);
-  });
-
   const { data: communityNotes, refetch: refreshNotes } = useCommunityNotes('btech', 'ALL-2nd Semester');
 
   const subjectPlaylists = {
@@ -293,6 +288,12 @@ const SecondSemesterNotes = () => {
         }))
     ]
   }));
+
+  useSubjectAutoScroll(subjects, (matched) => {
+    if (matched.id) {
+      setExpandedSubjects(prev => prev.includes(matched.id) ? prev : [...prev, matched.id]);
+    }
+  });
 
   const handleDeleteCommunityNote = async (id: string, fileName: string) => {
     if (!user || !isOwner) return;

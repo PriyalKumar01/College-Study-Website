@@ -25,11 +25,6 @@ const SeventhSemesterCSENotes = () => {
   const [selectedPlaylistType, setSelectedPlaylistType] = useState<'detailed' | 'oneshot'>('detailed');
   const [selectedSubjectForPlaylist, setSelectedSubjectForPlaylist] = useState<string>('');
   const [expandedSubjects, setExpandedSubjects] = useState<string[]>([]);
-
-  useSubjectAutoScroll(subjects, (matched) => {
-    if (matched.id) toggleSubjectExpansion(matched.id);
-  });
-
   const handleWhatsAppShare = (subjectName: string, subjectId: string) => {
     const shareUrl = `${window.location.origin}${location.pathname}?subject=${encodeURIComponent(subjectId)}`;
     const message = `Check out ${subjectName} notes for 7th Semester CSE on College Study Hub: ${shareUrl}`;
@@ -163,6 +158,12 @@ const SeventhSemesterCSENotes = () => {
         .filter((cn) => {
           if (sub.name === 'Open Elective-II' || sub.id === 'open_elective_2') {
             return cn.subject === 'Open Elective-II' || cn.subject === 'OE2' || cn.subject === 'Open Elective' || cn.subject?.toLowerCase().includes('open elective');
+
+  useSubjectAutoScroll(subjects, (matched) => {
+    if (matched.id) {
+      setExpandedSubjects(prev => prev.includes(matched.id) ? prev : [...prev, matched.id]);
+    }
+  });
           }
           return cn.subject === sub.name || cn.subject === sub.id;
         })

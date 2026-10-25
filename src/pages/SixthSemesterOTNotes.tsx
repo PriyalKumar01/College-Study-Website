@@ -21,11 +21,6 @@ const SixthSemesterOTNotes = () => {
   const { user, isOwner } = useAuth();
   const { toast } = useToast();
   const [selectedSubject, setSelectedSubject] = useState<string | null>(null);
-
-  useSubjectAutoScroll(subjects, (matched) => {
-    if (matched.id) setSelectedSubject(matched.id);
-  });
-
   const handleWhatsAppShare = (subjectName: string, subjectId: string) => {
     const shareUrl = `${window.location.origin}${location.pathname}?subject=${encodeURIComponent(subjectId)}`;
     const message = `Check out ${subjectName} notes for 6th Semester B.Tech on College Study Hub: ${shareUrl}`;
@@ -53,6 +48,12 @@ const SixthSemesterOTNotes = () => {
         .map((cn) => ({ id: cn.id, title: cn.title, url: cn.file_url, isCommunity: true, fileName: cn.file_name, uploadedBy: cn.uploaded_by, userName: cn.user_name })),
     ],
   }));
+
+  useSubjectAutoScroll(subjects, (matched) => {
+    if (matched.id) {
+      setSelectedSubject(matched.id);
+    }
+  });
 
   const handleDeleteCommunityNote = async (id: string, fileName?: string) => {
     if (!user || !isOwner) return;

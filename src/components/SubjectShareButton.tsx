@@ -63,7 +63,7 @@ export const SubjectShareButton: React.FC<SubjectShareButtonProps> = ({
         type="button"
         onClick={handleShare}
         className={cn(
-          'inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30 transition-all cursor-pointer',
+          'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-800 dark:text-emerald-200 border border-emerald-500/30 transition-all cursor-pointer shadow-2xs active:scale-95',
           className
         )}
         title={defaultTitle}
@@ -81,7 +81,7 @@ export const SubjectShareButton: React.FC<SubjectShareButtonProps> = ({
         type="button"
         onClick={handleShare}
         className={cn(
-          'inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-emerald-600 hover:bg-emerald-700 text-white shadow-xs transition-all cursor-pointer',
+          'inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white shadow-xs transition-all cursor-pointer active:scale-95',
           className
         )}
         title={defaultTitle}
@@ -93,13 +93,13 @@ export const SubjectShareButton: React.FC<SubjectShareButtonProps> = ({
     );
   }
 
-  // Default 'icon' variant
+  // Default 'icon' variant - ALWAYS visible, clearly styled with emerald tint & border
   return (
     <button
       type="button"
       onClick={handleShare}
       className={cn(
-        'p-1.5 rounded-lg text-muted-foreground hover:text-emerald-600 dark:hover:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 transition-colors duration-200 cursor-pointer shrink-0',
+        'p-1.5 rounded-lg bg-emerald-500/10 dark:bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30 dark:border-emerald-500/40 hover:bg-emerald-600 hover:text-white dark:hover:bg-emerald-500 dark:hover:text-slate-950 transition-all duration-200 cursor-pointer shrink-0 flex items-center justify-center shadow-2xs active:scale-95',
         className
       )}
       title={defaultTitle}

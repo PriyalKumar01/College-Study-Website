@@ -39,10 +39,6 @@ const FifthSemesterCHENotes = () => {
   };
 
   const [selectedSubject, setSelectedSubject] = useState<string | null>(null);
-
-  useSubjectAutoScroll(subjects, (matched) => {
-    if (matched.id) setSelectedSubject(matched.id);
-  });
   const [showPlaylistModal, setShowPlaylistModal] = useState(false);
   const [selectedPlaylistType, setSelectedPlaylistType] = useState<'detailed' | 'oneshot'>('detailed');
   const [selectedSubjectForPlaylist, setSelectedSubjectForPlaylist] = useState<string>('');
@@ -156,6 +152,12 @@ const FifthSemesterCHENotes = () => {
         }))
     ]
   }));
+
+  useSubjectAutoScroll(subjects, (matched) => {
+    if (matched.id) {
+      setSelectedSubject(matched.id);
+    }
+  });
 
   const handleDownload = (url: string, title: string) => smartDownload(url, title);
 

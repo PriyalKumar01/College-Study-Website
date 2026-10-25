@@ -20,11 +20,6 @@ const SixthSemesterPLNotes = () => {
   const { user, isOwner } = useAuth();
   const { toast } = useToast();
   const [selectedSubject, setSelectedSubject] = useState<string | null>(null);
-
-  useSubjectAutoScroll(subjects, (matched) => {
-    if (matched.id) setSelectedSubject(matched.id);
-  });
-
   const { data: communityNotes, refetch: refreshNotes } = useCommunityNotes('btech', 'PL-6th Semester');
 
   const staticSubjects = [
@@ -104,6 +99,12 @@ const SixthSemesterPLNotes = () => {
         }))
     ]
   }));
+
+  useSubjectAutoScroll(subjects, (matched) => {
+    if (matched.id) {
+      setSelectedSubject(matched.id);
+    }
+  });
 
   const handleDeleteCommunityNote = async (id: string, fileName?: string) => {
     if (!user || !isOwner) return;

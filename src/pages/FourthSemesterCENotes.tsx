@@ -44,11 +44,6 @@ const FourthSemesterCENotes = () => {
   const [selectedPlaylistType, setSelectedPlaylistType] = useState<'detailed' | 'oneshot'>('detailed');
   const [selectedSubjectForPlaylist, setSelectedSubjectForPlaylist] = useState<string>('');
   const [expandedSubjects, setExpandedSubjects] = useState<string[]>([]);
-
-  useSubjectAutoScroll(subjects, (matched) => {
-    if (matched.id) toggleSubjectExpansion(matched.id);
-  });
-
   const subjectPlaylists: Record<string, { detailed: { title: string; url: string; recommended?: boolean }[]; oneshot: { title: string; url: string; recommended?: boolean }[] }> = {
     math3: {
       detailed: [
@@ -163,6 +158,12 @@ const FourthSemesterCENotes = () => {
         }))
     ]
   }));
+
+  useSubjectAutoScroll(subjects, (matched) => {
+    if (matched.id) {
+      setExpandedSubjects(prev => prev.includes(matched.id) ? prev : [...prev, matched.id]);
+    }
+  });
 
   const syllabus = {
     title: '4th Sem CE Syllabus',

@@ -27,10 +27,6 @@ const ThirdSemesterBENotes = () => {
   const [selectedPlaylistType, setSelectedPlaylistType] = useState<'detailed' | 'oneshot' | 'workshop'>('detailed');
   const [selectedSubjectForPlaylist, setSelectedSubjectForPlaylist] = useState<string>('');
   const [expandedSubjects, setExpandedSubjects] = useState<string[]>([]);
-
-  useSubjectAutoScroll(subjects, (matched) => {
-    if (matched.id) toggleSubjectExpansion(matched.id);
-  });
   const [selectedSubject, setSelectedSubject] = useState<string | null>(null);
 
   const handleDeleteCommunityNote = async (id: string) => {
@@ -224,6 +220,12 @@ const ThirdSemesterBENotes = () => {
         }))
     ]
   }));
+
+  useSubjectAutoScroll(subjects, (matched) => {
+    if (matched.id) {
+      setExpandedSubjects(prev => prev.includes(matched.id) ? prev : [...prev, matched.id]);
+    }
+  });
 
   const syllabus = {
     title: '3rd Semester Syllabus',

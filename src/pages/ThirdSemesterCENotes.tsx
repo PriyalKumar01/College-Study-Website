@@ -23,11 +23,6 @@ const ThirdSemesterCENotes = () => {
   const { data: communityNotes, refetch: refreshNotes } = useCommunityNotes('btech', 'CE-3rd Semester');
 
   const [selectedSubject, setSelectedSubject] = useState<string | null>(null);
-
-  useSubjectAutoScroll(subjects, (matched) => {
-    if (matched.id) setSelectedSubject(matched.id);
-  });
-
   const staticSubjects = [
     {
       id: 'math2',
@@ -157,6 +152,12 @@ interface Note {
         } as Note))
     ]
   }));
+
+  useSubjectAutoScroll(subjects, (matched) => {
+    if (matched.id) {
+      setSelectedSubject(matched.id);
+    }
+  });
 
   const handleDeleteCommunityNote = async (id: string) => {
     if (!window.confirm('Delete this user-uploaded material?')) return;

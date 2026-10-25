@@ -26,11 +26,6 @@ const ThirdSemesterMENotes = () => {
   const [selectedPlaylistType, setSelectedPlaylistType] = useState<'detailed' | 'oneshot'>('detailed');
   const [selectedSubjectForPlaylist, setSelectedSubjectForPlaylist] = useState<string>('');
   const [expandedSubjects, setExpandedSubjects] = useState<string[]>([]);
-
-  useSubjectAutoScroll(subjects, (matched) => {
-    if (matched.id) toggleSubjectExpansion(matched.id);
-  });
-
   const subjectPlaylists = {
     math2: {
       detailed: [
@@ -208,6 +203,12 @@ const ThirdSemesterMENotes = () => {
         }))
     ]
   }));
+
+  useSubjectAutoScroll(subjects, (matched) => {
+    if (matched.id) {
+      setExpandedSubjects(prev => prev.includes(matched.id) ? prev : [...prev, matched.id]);
+    }
+  });
 
   const handleDeleteCommunityNote = async (id: string) => {
     if (!window.confirm('Delete this user-uploaded material?')) return;

@@ -9,34 +9,48 @@ export interface AutoScrollSubjectItem {
   code?: string;
 }
 
+const safeEscape = (str: string): string => {
+  try {
+    if (typeof CSS !== 'undefined' && typeof CSS.escape === 'function') {
+      return CSS.escape(str);
+    }
+  } catch {}
+  return str.replace(/["\\]/g, '\\$&');
+};
+
 /**
  * Automatically scrolls to and highlights a subject card when opened via
  * a direct link containing ?subject=<id-or-name>.
  */
 export function useSubjectAutoScroll<T extends AutoScrollSubjectItem>(
-  subjects: T[],
+  subjects: T[] | undefined | null,
   onMatch?: (matchedSubject: T) => void
 ) {
   const [searchParams] = useSearchParams();
   const location = useLocation();
   const { toast } = useToast();
-  const hasScrolledRef = useRef(false);
+  const hasTriggeredRef = useRef(false);
 
   useEffect(() => {
-    // Only trigger once per navigation
-    if (hasScrolledRef.current) return;
+    if (hasTriggeredRef.current) return;
+    if (!subjects || subjects.length === 0) return;
 
+    // Check query parameter from multiple reliable sources
     const rawParam =
       searchParams.get('subject') ||
       new URLSearchParams(location.search).get('subject') ||
-      new URLSearchParams(window.location.search).get('subject');
+      (typeof window !== 'undefined'
+        ? new URLSearchParams(window.location.search).get('subject')
+        : null);
 
-    if (!rawParam || subjects.length === 0) return;
+    if (!rawParam) return;
 
     const query = decodeURIComponent(rawParam).toLowerCase().trim();
     const queryAlnum = query.replace(/[^a-z0-9]/g, '');
 
-    // Search for match by ID, Name, or Full Name
+    if (!queryAlnum) return;
+
+    // Search for match by ID, Name, Full Name, or Code
     const matched = subjects.find(s => {
       const idRaw = (s.id || '').toLowerCase().trim();
       const idAlnum = idRaw.replace(/[^a-z0-9]/g, '');
@@ -60,55 +74,52 @@ export function useSubjectAutoScroll<T extends AutoScrollSubjectItem>(
     });
 
     if (matched) {
-      hasScrolledRef.current = true;
+      hasTriggeredRef.current = true;
 
-      // Small delay allows React + framer-motion animations to complete mount
-      const timer = setTimeout(() => {
+      // Smart polling retry mechanism to locate DOM element across renders & framer-motion animations
+      let attempts = 0;
+      const maxAttempts = 12;
+
+      const checkAndScroll = () => {
+        attempts++;
         const targetId = matched.id || matched.name.toLowerCase().replace(/[^a-z0-9]/g, '-');
+        
         const el =
           document.getElementById(`subject-${targetId}`) ||
-          document.getElementById(`subject-${matched.id}`) ||
-          document.querySelector(`[data-subject-id="${matched.id}"]`) ||
-          document.querySelector(`[data-subject-name="${CSS.escape(matched.name)}"]`);
+          (matched.id ? document.getElementById(`subject-${matched.id}`) : null) ||
+          (matched.id ? document.querySelector(`[data-subject-id="${matched.id}"]`) : null) ||
+          document.querySelector(`[data-subject-name="${safeEscape(matched.name)}"]`);
 
         if (el) {
           el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-
-          // Visual glowing highlight ring
-          el.classList.add(
-            'ring-4',
-            'ring-emerald-500',
-            'ring-offset-2',
-            'ring-offset-background',
-            'shadow-xl',
-            'shadow-emerald-500/20',
-            'transition-all',
-            'duration-500'
-          );
+          el.classList.add('csh-subject-highlight');
 
           toast({
-            title: `🎯 Viewing ${matched.name}`,
-            description: `Navigated directly to ${matched.name} notes.`,
+            title: `🎯 ${matched.name}`,
+            description: `Directly viewed ${matched.name} notes.`,
           });
 
           setTimeout(() => {
-            el.classList.remove(
-              'ring-4',
-              'ring-emerald-500',
-              'ring-offset-2',
-              'ring-offset-background',
-              'shadow-xl',
-              'shadow-emerald-500/20'
-            );
-          }, 4000);
-        }
+            el.classList.remove('csh-subject-highlight');
+          }, 4500);
 
-        if (onMatch) {
-          onMatch(matched);
+          if (onMatch) {
+            try {
+              onMatch(matched);
+            } catch (err) {
+              console.error('onMatch callback error:', err);
+            }
+          }
+        } else if (attempts < maxAttempts) {
+          setTimeout(checkAndScroll, 200);
         }
-      }, 350);
+      };
 
-      return () => clearTimeout(timer);
+      // Initial check after short delay for mount
+      const initialTimer = setTimeout(checkAndScroll, 250);
+      return () => clearTimeout(initialTimer);
     }
   }, [searchParams, location.search, subjects, onMatch, toast]);
 }
+
+export default useSubjectAutoScroll;

@@ -21,11 +21,6 @@ const FifthSemesterOpenElectives = () => {
   const [selectedPlaylistType, setSelectedPlaylistType] = useState<'detailed' | 'oneshot'>('detailed');
   const [selectedSubjectForPlaylist, setSelectedSubjectForPlaylist] = useState<string>('');
   const [expandedSubjects, setExpandedSubjects] = useState<string[]>([]);
-
-  useSubjectAutoScroll(subjects, (matched) => {
-    if (matched.id) toggleSubjectExpansion(matched.id);
-  });
-
   const { data: communityNotes } = useCommunityNotes('btech', [
     'CSE-5th Semester',
     'IT-5th Semester',
@@ -205,6 +200,12 @@ const FifthSemesterOpenElectives = () => {
       ]
     },
   ];
+
+  useSubjectAutoScroll(subjects, (matched) => {
+    if (matched.id) {
+      setExpandedSubjects(prev => prev.includes(matched.id) ? prev : [...prev, matched.id]);
+    }
+  });
 
   const handleDownload = (url: string, title: string) => smartDownload(url, title);
 

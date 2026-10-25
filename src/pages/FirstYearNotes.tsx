@@ -103,10 +103,6 @@ const FirstYearNotes = () => {
   const { toast } = useToast();
 
   const [selectedSubject, setSelectedSubject] = useState<string | null>(null);
-
-  useSubjectAutoScroll(subjects, (matched) => {
-    if (matched.id) setSelectedSubject(matched.id);
-  });
   const [showPlaylistModal, setShowPlaylistModal] = useState(false);
   const [selectedPlaylistType, setSelectedPlaylistType] = useState<'detailed' | 'oneshot' | 'workshop'>('detailed');
   const [selectedSubjectForPlaylist, setSelectedSubjectForPlaylist] = useState<string>('');
@@ -799,6 +795,12 @@ const FirstYearNotes = () => {
       const matchedCommunityNotes = allCommunityNotes
         .filter(cn => {
           const s = (cn.subject || '').toLowerCase().trim();
+
+  useSubjectAutoScroll(subjects, (matched) => {
+    if (matched.id) {
+      setExpandedSubjects(prev => prev.includes(matched.id) ? prev : [...prev, matched.id]);
+    }
+  });
           const target = sub.name.toLowerCase().trim();
           const subId = sub.id.toLowerCase().trim();
           const code = (sub.code || '').toLowerCase().trim();

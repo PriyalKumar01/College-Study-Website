@@ -25,11 +25,6 @@ const FifthSemesterLFTNotes = () => {
   const [selectedPlaylistType, setSelectedPlaylistType] = useState<'detailed' | 'oneshot'>('detailed');
   const [selectedSubjectForPlaylist, setSelectedSubjectForPlaylist] = useState<string>('');
   const [expandedSubjects, setExpandedSubjects] = useState<string[]>([]);
-
-  useSubjectAutoScroll(subjects, (matched) => {
-    if (matched.id) toggleSubjectExpansion(matched.id);
-  });
-
   // Semester key MUST match what the upload form stores: 'LFT-5th Semester'
   const { data: communityNotes, refetch: refreshNotes } = useCommunityNotes('btech', 'LFT-5th Semester');
 
@@ -127,6 +122,12 @@ const FifthSemesterLFTNotes = () => {
         }))
     ]
   }));
+
+  useSubjectAutoScroll(subjects, (matched) => {
+    if (matched.id) {
+      setExpandedSubjects(prev => prev.includes(matched.id) ? prev : [...prev, matched.id]);
+    }
+  });
 
   const handleDeleteCommunityNote = async (id: string, fileName: string) => {
     if (!user || !isOwner) return;
