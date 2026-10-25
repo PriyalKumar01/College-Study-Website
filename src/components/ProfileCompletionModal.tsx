@@ -150,22 +150,29 @@ export function ProfileCompletionModal() {
             // 0. Instant localStorage check
             const localCompleted = typeof window !== 'undefined' && localStorage.getItem(`profile_completed_${user.id}`) === 'true';
 
-            // Safely fetch profile data from profiles table (by id, user_id, or email)
+            // Safely fetch profile data from profiles table (prioritizing active session user_id)
             let data: any = null;
             try {
-                let query = supabase
+                const { data: byUid, error: uidErr } = await supabase
                     .from("profiles")
-                    .select("id, user_id, email, first_name, last_name, college, branch, year");
+                    .select("id, user_id, email, first_name, last_name, college, branch, year")
+                    .eq("user_id", user.id)
+                    .order("updated_at", { ascending: false })
+                    .limit(1);
 
-                if (user.email) {
-                    query = query.or(`id.eq.${user.id},user_id.eq.${user.id},email.eq.${user.email.toLowerCase()}`);
-                } else {
-                    query = query.or(`id.eq.${user.id},user_id.eq.${user.id}`);
-                }
-                const { data: pData, error: pError } = await query.maybeSingle();
+                if (!uidErr && byUid && byUid.length > 0) {
+                    data = byUid[0];
+                } else if (user.email) {
+                    const { data: byEmail } = await supabase
+                        .from("profiles")
+                        .select("id, user_id, email, first_name, last_name, college, branch, year")
+                        .eq("email", user.email.toLowerCase().trim())
+                        .order("updated_at", { ascending: false })
+                        .limit(1);
 
-                if (!pError && pData) {
-                    data = pData;
+                    if (byEmail && byEmail.length > 0) {
+                        data = byEmail[0];
+                    }
                 }
             } catch (pErr) {
                 console.warn("Could not query profiles table:", pErr);
@@ -316,47 +323,74 @@ export function ProfileCompletionModal() {
         let dbUpdated = false;
         let metaUpdated = false;
 
-        // 1. Direct update to existing row in public.profiles table (try update first to preserve row id)
+        // 1. Direct update/insert to public.profiles table by user_id
         try {
-            const updatePayload: any = {
-                first_name: effectiveFirstName,
-                last_name: effectiveLastName,
-                college: targetCollege,
-                branch: targetBranch,
-                year: targetYear,
-                user_id: user.id,
-                updated_at: new Date().toISOString()
-            };
+            const { data: existingUserRow } = await supabase
+                .from("profiles")
+                .select("id")
+                .eq("user_id", user.id)
+                .limit(1);
 
-            let updateQuery = supabase.from("profiles").update(updatePayload);
-            if (cleanEmail) {
-                updateQuery = updateQuery.or(`id.eq.${user.id},user_id.eq.${user.id},email.eq.${cleanEmail}`);
-            } else {
-                updateQuery = updateQuery.or(`id.eq.${user.id},user_id.eq.${user.id}`);
-            }
-
-            const { data: updatedRows, error: updateErr } = await updateQuery.select('id');
-            if (!updateErr && updatedRows && updatedRows.length > 0) {
-                dbUpdated = true;
-            } else {
-                // If update didn't match any row, upsert on user_id
-                const { error: upErr } = await supabase.from("profiles").upsert({
-                    user_id: user.id,
-                    first_name: effectiveFirstName,
-                    last_name: effectiveLastName,
-                    email: cleanEmail,
-                    college: targetCollege,
-                    branch: targetBranch,
-                    year: targetYear,
-                    approval_status: approvalVal,
-                    updated_at: new Date().toISOString()
-                }, { onConflict: 'user_id' });
+            if (existingUserRow && existingUserRow.length > 0) {
+                const { error: upErr } = await supabase
+                    .from("profiles")
+                    .update({
+                        first_name: effectiveFirstName,
+                        last_name: effectiveLastName,
+                        college: targetCollege,
+                        branch: targetBranch,
+                        year: targetYear,
+                        updated_at: new Date().toISOString()
+                    })
+                    .eq("user_id", user.id);
 
                 if (!upErr) dbUpdated = true;
-                else console.warn("Direct profiles upsert on user_id warning:", upErr);
+                else console.warn("Update by user_id failed:", upErr);
+            } else if (cleanEmail) {
+                const { data: existingEmailRow } = await supabase
+                    .from("profiles")
+                    .select("id")
+                    .eq("email", cleanEmail)
+                    .order("updated_at", { ascending: false })
+                    .limit(1);
+
+                if (existingEmailRow && existingEmailRow.length > 0) {
+                    const { error: upEmailErr } = await supabase
+                        .from("profiles")
+                        .update({
+                            user_id: user.id,
+                            first_name: effectiveFirstName,
+                            last_name: effectiveLastName,
+                            college: targetCollege,
+                            branch: targetBranch,
+                            year: targetYear,
+                            updated_at: new Date().toISOString()
+                        })
+                        .eq("id", existingEmailRow[0].id);
+
+                    if (!upEmailErr) dbUpdated = true;
+                    else console.warn("Update by email id failed:", upEmailErr);
+                } else {
+                    const { error: insErr } = await supabase
+                        .from("profiles")
+                        .insert({
+                            user_id: user.id,
+                            email: cleanEmail,
+                            first_name: effectiveFirstName,
+                            last_name: effectiveLastName,
+                            college: targetCollege,
+                            branch: targetBranch,
+                            year: targetYear,
+                            approval_status: approvalVal,
+                            updated_at: new Date().toISOString()
+                        });
+
+                    if (!insErr) dbUpdated = true;
+                    else console.warn("Insert new profile failed:", insErr);
+                }
             }
         } catch (upErr) {
-            console.warn("Direct profiles update/upsert warning:", upErr);
+            console.warn("Direct profiles update/insert warning:", upErr);
         }
 
         // 2. Call RPC helper as guaranteed fallback (SECURITY DEFINER)
