@@ -188,6 +188,8 @@ export function ProfileCompletionModal() {
             }
 
             if (!hasCompleteDetails) {
+                // Incomplete details: Clear any stale localStorage flag so completion is required
+                try { localStorage.removeItem(profile_completed_\); } catch {}
                 setIsUpdateMode(false);
                 // Only ask for password if user signed up via email (not OAuth like Google or GitHub)
                 const isOAuthUser = user.app_metadata?.provider === "google" ||
