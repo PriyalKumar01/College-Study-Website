@@ -328,7 +328,8 @@ const AdminKnowledgeBase = () => {
       const { data, error } = await supabase.functions.invoke("rag-chat", {
         body: {
           query: testQuery.trim(),
-          sessionToken: localStorage.getItem("csh_ai_session_token") || "test_token",
+          sessionToken: localStorage.getItem("csh_ai_session_token") || "csh_sess_admin_test",
+          accessCode: localStorage.getItem("csh_ai_code") || "ACCESS#250",
           userEmail: user?.email,
         },
       });
