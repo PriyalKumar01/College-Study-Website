@@ -294,8 +294,9 @@ export function ProfileCompletionModal() {
             const fullName = `${effectiveFirstName} ${effectiveLastName}`.trim() || user?.user_metadata?.name || user?.user_metadata?.full_name || '';
 
             // 1. Update Supabase Auth User Metadata
+            let metaUpdated = false;
             try {
-                await supabase.auth.updateUser({
+                const { error: metaErr } = await supabase.auth.updateUser({
                     data: {
                         first_name: effectiveFirstName,
                         last_name: effectiveLastName,
@@ -310,6 +311,8 @@ export function ProfileCompletionModal() {
                         profile_completed: true
                     },
                 });
+                if (!metaErr) metaUpdated = true;
+                else console.warn("updateUser metadata warning:", metaErr);
             } catch (uErr) {
                 console.warn("updateUser metadata warning:", uErr);
             }
@@ -354,7 +357,7 @@ export function ProfileCompletionModal() {
 
             // 3. Call RPC helper if available
             try {
-                await supabase.rpc("upsert_my_profile", {
+                const { error: rpcErr } = await supabase.rpc("upsert_my_profile", {
                     p_first_name: effectiveFirstName || undefined,
                     p_last_name: effectiveLastName || undefined,
                     p_college: finalCollegeToSave,
@@ -362,8 +365,14 @@ export function ProfileCompletionModal() {
                     p_year: finalYearToSave,
                     p_email: user!.email
                 });
+                if (!rpcErr) dbUpdated = true;
+                else console.warn("RPC upsert warning:", rpcErr);
             } catch (rpcErr) {
                 console.warn("RPC upsert warning:", rpcErr);
+            }
+
+            if (!metaUpdated && !dbUpdated) {
+                throw new Error("Unable to save profile details. Please try again.");
             }
 
             try {
@@ -433,8 +442,9 @@ export function ProfileCompletionModal() {
             const fullName = `${firstName} ${lastName}`.trim();
 
             // 1. Update Supabase Auth User Metadata (Crucial for auth.users raw_user_meta_data)
+            let metaUpdated = false;
             try {
-                await supabase.auth.updateUser({
+                const { error: metaErr } = await supabase.auth.updateUser({
                     data: {
                         first_name: firstName,
                         last_name: lastName,
@@ -449,6 +459,8 @@ export function ProfileCompletionModal() {
                         profile_completed: true
                     },
                 });
+                if (!metaErr) metaUpdated = true;
+                else console.warn("updateUser metadata warning:", metaErr);
             } catch (uErr) {
                 console.warn("updateUser metadata warning:", uErr);
             }
@@ -467,9 +479,9 @@ export function ProfileCompletionModal() {
             const isOwnerOrAdmin = (user!.email?.toLowerCase() === 'priyalkumar06@gmail.com');
             const approvalVal = (isDomainDirect || isOwnerOrAdmin) ? 'approved' : 'pending';
 
+            let dbUpdated = false;
             try {
-                await supabase.from("profiles").upsert({
-                    id: user!.id,
+                const { error: upErr } = await supabase.from("profiles").upsert({
                     user_id: user!.id,
                     first_name: firstName,
                     last_name: lastName,
@@ -479,14 +491,30 @@ export function ProfileCompletionModal() {
                     year: finalYearToSave,
                     approval_status: approvalVal,
                     updated_at: new Date().toISOString()
-                }, { onConflict: 'id' });
+                }, { onConflict: 'user_id' });
+
+                if (!upErr) {
+                    dbUpdated = true;
+                } else {
+                    console.warn("Direct profiles upsert on user_id warning:", upErr);
+                    // Fallback to update by user_id/id/email
+                    const { error: fallbackErr } = await supabase.from("profiles").update({
+                        first_name: firstName,
+                        last_name: lastName,
+                        college: finalCollegeToSave,
+                        branch: finalBranchToSave,
+                        year: finalYearToSave,
+                        updated_at: new Date().toISOString()
+                    }).or(`id.eq.${user!.id},user_id.eq.${user!.id},email.eq.${(user!.email || '').toLowerCase()}`);
+                    if (!fallbackErr) dbUpdated = true;
+                }
             } catch (upErr) {
                 console.warn("Direct profiles upsert warning:", upErr);
             }
 
             // 3. Call RPC helper if available
             try {
-                await supabase.rpc("upsert_my_profile", {
+                const { error: rpcErr } = await supabase.rpc("upsert_my_profile", {
                     p_first_name: firstName,
                     p_last_name: lastName,
                     p_college: finalCollegeToSave,
@@ -494,8 +522,14 @@ export function ProfileCompletionModal() {
                     p_year: finalYearToSave,
                     p_email: user!.email
                 });
+                if (!rpcErr) dbUpdated = true;
+                else console.warn("RPC upsert warning:", rpcErr);
             } catch (rpcErr) {
                 console.warn("RPC upsert warning:", rpcErr);
+            }
+
+            if (!metaUpdated && !dbUpdated) {
+                throw new Error("Unable to save profile details. Please try again.");
             }
 
             try {
