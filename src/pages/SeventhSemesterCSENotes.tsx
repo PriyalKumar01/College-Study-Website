@@ -7,6 +7,8 @@ import { useToast } from '@/hooks/use-toast';
 import { Download, ArrowLeft, FileText, Play, ChevronDown, ChevronRight, Share2, Trash2, ExternalLink } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
+import { SubjectShareButton } from '@/components/SubjectShareButton';
+import { useSubjectAutoScroll } from '@/hooks/useSubjectAutoScroll';
 import { SessionPyqAccordion } from '@/components/SessionPyqAccordion';
 import { getUnifiedSubjectNotes } from '@/data/semesterSubjectsCatalog';
 import Footer from '@/components/Footer';
@@ -23,6 +25,10 @@ const SeventhSemesterCSENotes = () => {
   const [selectedPlaylistType, setSelectedPlaylistType] = useState<'detailed' | 'oneshot'>('detailed');
   const [selectedSubjectForPlaylist, setSelectedSubjectForPlaylist] = useState<string>('');
   const [expandedSubjects, setExpandedSubjects] = useState<string[]>([]);
+
+  useSubjectAutoScroll(subjects, (matched) => {
+    if (matched.id) toggleSubjectExpansion(matched.id);
+  });
 
   const handleWhatsAppShare = (subjectName: string, subjectId: string) => {
     const shareUrl = `${window.location.origin}${location.pathname}?subject=${encodeURIComponent(subjectId)}`;
@@ -297,7 +303,7 @@ const SeventhSemesterCSENotes = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {subjects.map((subject, index) => (
               <motion.div key={subject.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.06, duration: 0.4 }}>
-                <div className="group border border-border bg-card hover:border-foreground/30 rounded-xl p-5 transition-all duration-300 hover:shadow-lg h-full flex flex-col justify-between">
+                <div className="group border border-border bg-card hover:border-foreground/30 rounded-xl p-5 transition-all duration-300 hover:shadow-lg h-full flex flex-col justify-between" id={`subject-${subject.id}`} data-subject-id={subject.id} data-subject-name={subject.name}>
                   <div>
                     <div className="flex items-start justify-between mb-4">
                       <span className="text-2xl">{subject.icon}</span>
@@ -305,9 +311,7 @@ const SeventhSemesterCSENotes = () => {
                         <span className="text-xs font-bold text-white bg-green-500 px-2 py-0.5 rounded-full">
                           {subject.notes.length} files
                         </span>
-                        <button className="opacity-0 group-hover:opacity-100 transition-opacity text-green-600 hover:text-green-700 p-1" onClick={(e) => { e.stopPropagation(); handleWhatsAppShare(subject.name, subject.id); }} title="Share on WhatsApp">
-                          <Share2 className="h-4 w-4" />
-                        </button>
+                        <SubjectShareButton subjectName={subject.name} subjectId={subject.id} />
                       </div>
                     </div>
                     <h3 className="font-semibold text-foreground text-sm leading-snug mb-1">{subject.name}</h3>

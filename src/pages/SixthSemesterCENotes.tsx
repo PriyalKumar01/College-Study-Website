@@ -8,6 +8,8 @@ import { Button } from '@/components/ui/button';
 import { Download, ArrowLeft, ExternalLink, Share2, Trash2, BookOpen, FileText } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
+import { SubjectShareButton } from '@/components/SubjectShareButton';
+import { useSubjectAutoScroll } from '@/hooks/useSubjectAutoScroll';
 import { SessionPyqAccordion } from '@/components/SessionPyqAccordion';
 import { getUnifiedSubjectNotes } from '@/data/semesterSubjectsCatalog';
 import Footer from '@/components/Footer';
@@ -19,6 +21,10 @@ const SixthSemesterCENotes = () => {
   const { user, isOwner } = useAuth();
   const { toast } = useToast();
   const [selectedSubject, setSelectedSubject] = useState<string | null>(null);
+
+  useSubjectAutoScroll(subjects, (matched) => {
+    if (matched.id) setSelectedSubject(matched.id);
+  });
 
   const handleWhatsAppShare = (subjectName: string, subjectId: string) => {
     const shareUrl = `${window.location.origin}${location.pathname}?subject=${encodeURIComponent(subjectId)}`;
@@ -153,9 +159,7 @@ const SixthSemesterCENotes = () => {
                     <h3 className="font-semibold text-sm leading-tight truncate">{subject.name}</h3>
                     <p className="text-xs text-muted-foreground mt-0.5">{subject.notes.length} file{subject.notes.length !== 1 ? 's' : ''}</p>
                   </div>
-                  <button className="opacity-0 group-hover:opacity-100 transition-opacity text-green-600 hover:text-green-700 p-1" onClick={(e) => { e.stopPropagation(); handleWhatsAppShare(subject.name, subject.id); }} title="Share on WhatsApp">
-                    <Share2 className="h-4 w-4" />
-                  </button>
+                  <SubjectShareButton subjectName={subject.name} subjectId={subject.id} />
                 </div>
                 <div className="px-5 pb-5 flex flex-col gap-3 flex-1">
                   <Button variant="outline" size="sm" className="w-full text-xs h-8 mt-auto" onClick={(e) => { e.stopPropagation(); setSelectedSubject(subject.id); }}>

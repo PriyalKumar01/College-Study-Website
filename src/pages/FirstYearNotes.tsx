@@ -103,6 +103,10 @@ const FirstYearNotes = () => {
   const { toast } = useToast();
 
   const [selectedSubject, setSelectedSubject] = useState<string | null>(null);
+
+  useSubjectAutoScroll(subjects, (matched) => {
+    if (matched.id) setSelectedSubject(matched.id);
+  });
   const [showPlaylistModal, setShowPlaylistModal] = useState(false);
   const [selectedPlaylistType, setSelectedPlaylistType] = useState<'detailed' | 'oneshot' | 'workshop'>('detailed');
   const [selectedSubjectForPlaylist, setSelectedSubjectForPlaylist] = useState<string>('');
@@ -1450,7 +1454,7 @@ const FirstYearNotes = () => {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: index * 0.02, duration: 0.25 }}
                   >
-                    <div className="group border border-border bg-card hover:border-indigo-400/80 hover:bg-indigo-50/20 dark:hover:border-indigo-800/80 dark:hover:bg-indigo-950/20 rounded-xl p-4 sm:p-5 transition-all duration-200 hover:shadow-md hover:shadow-indigo-500/5 h-full flex flex-col justify-between">
+                    <div className="group border border-border bg-card hover:border-indigo-400/80 hover:bg-indigo-50/20 dark:hover:border-indigo-800/80 dark:hover:bg-indigo-950/20 rounded-xl p-4 sm:p-5 transition-all duration-200 hover:shadow-md hover:shadow-indigo-500/5 h-full flex flex-col justify-between" id={`subject-${subject.id}`} data-subject-id={subject.id} data-subject-name={subject.name}>
                       <div>
                         {/* Top Row: Icon + Badges + File Count */}
                         <div className="flex items-start justify-between gap-2 mb-3">
@@ -1473,6 +1477,18 @@ const FirstYearNotes = () => {
                             }`}>
                               {subject.notes.length} files
                             </span>
+                            <SubjectShareButton
+                              subjectName={subject.name}
+                              subjectId={subject.id}
+                              semesterName="1st Year B.Tech"
+                              route="/btech-notes/first-year"
+                            />
+                            <SubjectShareButton
+                              subjectName={subject.name}
+                              subjectId={subject.id}
+                              semesterName="1st Year B.Tech"
+                              route="/btech-notes/first-year"
+                            />
                           </div>
                         </div>
 

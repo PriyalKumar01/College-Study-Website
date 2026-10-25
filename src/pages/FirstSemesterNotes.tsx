@@ -7,6 +7,8 @@ import { useToast } from '@/hooks/use-toast';
 import { Download, ArrowLeft, FileText, Play, ChevronDown, ChevronRight, Trash2, ExternalLink } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
+import { SubjectShareButton } from '@/components/SubjectShareButton';
+import { useSubjectAutoScroll } from '@/hooks/useSubjectAutoScroll';
 import Footer from '@/components/Footer';
 import { PlaylistModal } from '@/components/PlaylistModal';
 import { smartDownload, viewInBrowser } from '@/lib/downloadUtils';
@@ -21,6 +23,10 @@ const FirstSemesterNotes = () => {
   const [selectedPlaylistType, setSelectedPlaylistType] = useState<'detailed' | 'oneshot' | 'workshop'>('detailed');
   const [selectedSubjectForPlaylist, setSelectedSubjectForPlaylist] = useState<string>('');
   const [expandedSubjects, setExpandedSubjects] = useState<string[]>([]);
+
+  useSubjectAutoScroll(subjects, (matched) => {
+    if (matched.id) toggleSubjectExpansion(matched.id);
+  });
 
   const { data: communityNotes, refetch: refreshNotes } = useCommunityNotes('btech', 'ALL-1st Semester');
 
@@ -426,12 +432,15 @@ const FirstSemesterNotes = () => {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.06, duration: 0.4 }}
                 >
-                  <div className="group border border-border bg-card hover:border-foreground/30 rounded-xl p-5 transition-all duration-300 hover:shadow-lg h-full flex flex-col relative">
+                  <div className="group border border-border bg-card hover:border-foreground/30 rounded-xl p-5 transition-all duration-300 hover:shadow-lg h-full flex flex-col relative" id={`subject-${subject.id}`} data-subject-id={subject.id} data-subject-name={subject.name}>
                     <div className="flex items-start justify-between mb-4">
                       <span className="text-2xl">{subject.icon}</span>
+                      <div className="flex items-center gap-1.5">
                       <span className="text-xs font-bold text-white bg-green-500 px-2 py-0.5 rounded-full">
                         {subject.notes.length} files
                       </span>
+                      <SubjectShareButton subjectName={subject.name} subjectId={subject.id} />
+                    </div>
                     </div>
                     <h3 className="font-semibold text-foreground text-sm leading-snug mb-1 flex-1">{subject.name}</h3>
 

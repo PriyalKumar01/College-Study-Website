@@ -3,6 +3,8 @@ import { motion } from 'framer-motion';
 import { Download, ArrowLeft, FileText, Play, ChevronDown, ChevronRight, ExternalLink } from 'lucide-react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
+import { SubjectShareButton } from '@/components/SubjectShareButton';
+import { useSubjectAutoScroll } from '@/hooks/useSubjectAutoScroll';
 import { SessionPyqAccordion } from '@/components/SessionPyqAccordion';
 import { getUnifiedSubjectNotes } from '@/data/semesterSubjectsCatalog';
 import Footer from '@/components/Footer';
@@ -19,6 +21,10 @@ const FifthSemesterOpenElectives = () => {
   const [selectedPlaylistType, setSelectedPlaylistType] = useState<'detailed' | 'oneshot'>('detailed');
   const [selectedSubjectForPlaylist, setSelectedSubjectForPlaylist] = useState<string>('');
   const [expandedSubjects, setExpandedSubjects] = useState<string[]>([]);
+
+  useSubjectAutoScroll(subjects, (matched) => {
+    if (matched.id) toggleSubjectExpansion(matched.id);
+  });
 
   const { data: communityNotes } = useCommunityNotes('btech', [
     'CSE-5th Semester',
@@ -363,9 +369,12 @@ const FifthSemesterOpenElectives = () => {
                       <div className={`w-16 h-16 ${subject.color} rounded-full flex items-center justify-center text-2xl shadow-lg`}>
                         {subject.icon}
                       </div>
+                      <div className="flex items-center gap-1.5">
                       <span className="text-xs font-bold text-white bg-green-500 px-2 py-0.5 rounded-full">
                         {subject.notes[0].url === '#' ? 0 : subject.notes.length} files
                       </span>
+                      <SubjectShareButton subjectName={subject.name} subjectId={subject.id} />
+                    </div>
                     </div>
 
                     <h3 className="font-semibold text-foreground text-sm leading-snug mb-1 flex-1">{subject.name}</h3>

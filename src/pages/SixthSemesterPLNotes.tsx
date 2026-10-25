@@ -7,6 +7,8 @@ import { useToast } from '@/hooks/use-toast';
 import { Download, ArrowLeft, FileText, Trash2, ExternalLink } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
+import { SubjectShareButton } from '@/components/SubjectShareButton';
+import { useSubjectAutoScroll } from '@/hooks/useSubjectAutoScroll';
 import { SessionPyqAccordion } from '@/components/SessionPyqAccordion';
 import { getUnifiedSubjectNotes } from '@/data/semesterSubjectsCatalog';
 import Footer from '@/components/Footer';
@@ -18,6 +20,10 @@ const SixthSemesterPLNotes = () => {
   const { user, isOwner } = useAuth();
   const { toast } = useToast();
   const [selectedSubject, setSelectedSubject] = useState<string | null>(null);
+
+  useSubjectAutoScroll(subjects, (matched) => {
+    if (matched.id) setSelectedSubject(matched.id);
+  });
 
   const { data: communityNotes, refetch: refreshNotes } = useCommunityNotes('btech', 'PL-6th Semester');
 
@@ -200,7 +206,7 @@ const SixthSemesterPLNotes = () => {
             if (subject.isSpecial) {
               return (
                 <motion.div key={subject.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.05, duration: 0.4 }}>
-                  <div className="group border-2 border-primary/35 bg-gradient-to-br from-primary/5 to-purple-500/5 hover:border-primary rounded-xl p-5 transition-all duration-300 hover:shadow-lg h-full flex flex-col relative cursor-pointer" onClick={() => navigate('/sixth-semester-open-electives')}>
+                  <div className="group border-2 border-primary/35 bg-gradient-to-br from-primary/5 to-purple-500/5 hover:border-primary rounded-xl p-5 transition-all duration-300 hover:shadow-lg h-full flex flex-col relative cursor-pointer" id={`subject-${subject.id}`} data-subject-id={subject.id} data-subject-name={subject.name} onClick={() => navigate('/sixth-semester-open-electives')}>
                     <div className="flex items-start justify-between mb-4">
                       <span className="text-2xl">{subject.icon}</span>
                       <span className="text-[10px] font-bold tracking-wider uppercase bg-primary text-white px-2 py-0.5 rounded">Elective</span>
@@ -221,7 +227,10 @@ const SixthSemesterPLNotes = () => {
                   <div>
                     <div className="flex items-center justify-between mb-3">
                       <span className="text-2xl">{subject.icon}</span>
+                      <div className="flex items-center gap-1.5">
                       <span className="text-xs font-bold text-white bg-green-500 px-2 py-0.5 rounded-full">{subject.notes.length} files</span>
+                      <SubjectShareButton subjectName={subject.name} subjectId={subject.id} />
+                    </div>
                     </div>
                     <h3 className="font-semibold text-foreground text-sm leading-tight mb-2">{subject.name}</h3>
                   </div>

@@ -3,6 +3,8 @@ import { motion } from 'framer-motion';
 import { Download, ArrowLeft, FileText, Play, ChevronDown, ChevronRight, ExternalLink } from 'lucide-react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
+import { SubjectShareButton } from '@/components/SubjectShareButton';
+import { useSubjectAutoScroll } from '@/hooks/useSubjectAutoScroll';
 import { SessionPyqAccordion } from '@/components/SessionPyqAccordion';
 import { getUnifiedSubjectNotes } from '@/data/semesterSubjectsCatalog';
 import Footer from '@/components/Footer';
@@ -19,6 +21,10 @@ const SixthSemesterOpenElectives = () => {
   const [selectedPlaylistType, setSelectedPlaylistType] = useState<'detailed' | 'oneshot'>('detailed');
   const [selectedSubjectForPlaylist, setSelectedSubjectForPlaylist] = useState<string>('');
   const [expandedSubjects, setExpandedSubjects] = useState<string[]>([]);
+
+  useSubjectAutoScroll(subjects, (matched) => {
+    if (matched.id) toggleSubjectExpansion(matched.id);
+  });
 
   const { data: communityNotes } = useCommunityNotes('btech', [
     'CHE-6th Semester',
