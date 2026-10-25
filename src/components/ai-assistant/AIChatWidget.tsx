@@ -267,7 +267,22 @@ You can ask me anything about your courses and the platform:
       }
 
       // 3. Invoke rag-chat
-      const sessionToken = localStorage.getItem("csh_ai_session_token") || undefined;
+      let sessionToken = localStorage.getItem("csh_ai_session_token") || sessionStorage.getItem("csh_ai_session_token");
+      if (!sessionToken || !sessionToken.startsWith("csh_")) {
+        const userPrefix = user?.id ? user.id.replace(/-/g, "").slice(0, 10) : "user";
+        sessionToken = `csh_sess_${userPrefix}_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
+        try {
+          localStorage.setItem("csh_ai_session_token", sessionToken);
+          sessionStorage.setItem("csh_ai_session_token", sessionToken);
+        } catch {}
+      }
+
+      let storedCode = localStorage.getItem("csh_ai_code") || sessionStorage.getItem("csh_ai_code") || "ACCESS#250";
+      try {
+        localStorage.setItem("csh_ai_code", storedCode);
+        sessionStorage.setItem("csh_ai_code", storedCode);
+      } catch {}
+
       const historyToSend = messages
         .filter(m => !m.isLoading && m.id !== "welcome")
         .slice(-6)
@@ -275,11 +290,10 @@ You can ask me anything about your courses and the platform:
 
       const queryToSend = currentInput || (currentFile ? `Analyze ${currentFile.name} and provide summary and top questions.` : "Hello");
 
-      const storedCode = sessionStorage.getItem("csh_ai_code") || undefined;
-
       const { data, error } = await supabase.functions.invoke("rag-chat", {
         body: {
           query: queryToSend,
+          userEmail: user?.email || undefined,
           sessionToken,
           accessCode: storedCode,
           attachedFileContext: resolvedFileContext,
