@@ -79,11 +79,17 @@ export default function Profile() {
 
     setIsLoading(true);
     try {
-      const { data: profileData, error } = await supabase
+      let query = supabase
         .from('profiles')
-        .select('first_name, last_name, email, mobile_number, college, branch, year, avatar_url, created_at')
-        .or(`id.eq.${user.id},user_id.eq.${user.id}`)
-        .maybeSingle();
+        .select('first_name, last_name, email, mobile_number, college, branch, year, avatar_url, created_at');
+
+      if (user.email) {
+        query = query.or(`id.eq.${user.id},user_id.eq.${user.id},email.eq.${user.email.toLowerCase()}`);
+      } else {
+        query = query.or(`id.eq.${user.id},user_id.eq.${user.id}`);
+      }
+
+      const { data: profileData, error } = await query.maybeSingle();
 
       if (error) {
         console.error('Error fetching profile:', error);
@@ -276,7 +282,7 @@ export default function Profile() {
 
         if (upErr) {
           console.warn("Direct profiles upsert on user_id warning in Profile.tsx:", upErr);
-          await supabase.from('profiles').update({
+          let updateQuery = supabase.from('profiles').update({
             first_name: editedProfile.first_name,
             last_name: editedProfile.last_name,
             email: user.email || '',
@@ -285,8 +291,15 @@ export default function Profile() {
             branch: finalBranch,
             year: finalYear,
             avatar_url: profileUpdates.avatar_url,
+            user_id: user.id,
             updated_at: new Date().toISOString()
-          }).or(`id.eq.${user.id},user_id.eq.${user.id}`);
+          });
+          if (user.email) {
+            updateQuery = updateQuery.or(`id.eq.${user.id},user_id.eq.${user.id},email.eq.${user.email.toLowerCase()}`);
+          } else {
+            updateQuery = updateQuery.or(`id.eq.${user.id},user_id.eq.${user.id}`);
+          }
+          await updateQuery;
         }
       } catch (upErr) {
         console.warn("Direct profiles upsert warning in Profile.tsx:", upErr);

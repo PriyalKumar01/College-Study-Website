@@ -108,7 +108,7 @@ export function ProfileCompletionModal() {
     const [customCollege, setCustomCollege] = useState("");
 
     const [hasChecked, setHasChecked] = useState(false);
-    const [acceptedTerms, setAcceptedTerms] = useState(false);
+    const [acceptedTerms, setAcceptedTerms] = useState(true);
     const [askForPassword, setAskForPassword] = useState(false);
 
     // Reset check status when user changes (e.g. logging out and logging in as someone else)
@@ -210,24 +210,28 @@ export function ProfileCompletionModal() {
 
             if (!hasCompleteDetails) {
                 // Incomplete details: Clear any stale localStorage flag so completion is required
-                try { localStorage.removeItem(profile_completed_\); } catch {}
-                setIsUpdateMode(false);
-                // Only ask for password if user signed up via email (not OAuth like Google or GitHub)
-                const isOAuthUser = user.app_metadata?.provider === "google" ||
-                    (user.app_metadata?.providers || []).includes("google") ||
-                    user.app_metadata?.provider === "github" ||
-                    (user.app_metadata?.providers || []).includes("github");
-                setAskForPassword(!isOAuthUser);
+                try { localStorage.removeItem(`profile_completed_${user.id}`); } catch {}
 
                 const userEmail = (user.email || '').toLowerCase().trim();
                 const isHbtuRoll = Boolean(userEmail.endsWith('@hbtu.ac.in') && parseHbtuRollNumber(userEmail));
                 const isHbtu = userEmail.endsWith('@hbtu.ac.in');
                 const cleanUser = resolveCleanUserName(user.user_metadata, userEmail);
 
+                const existingFirst = (data?.first_name || user.user_metadata?.first_name || cleanUser.firstName || '').trim();
+                const existingLast = (data?.last_name || user.user_metadata?.last_name || cleanUser.lastName || '').trim();
+
                 if (!firstName) {
-                    setFirstName(cleanUser.firstName);
-                    setLastName(cleanUser.lastName);
+                    setFirstName(existingFirst);
+                    setLastName(existingLast);
                 }
+
+                // If user already has a recognized name (e.g. from Google or previous login), show streamlined update form
+                if (existingFirst && existingFirst.toLowerCase() !== 'user') {
+                    setIsUpdateMode(true);
+                } else {
+                    setIsUpdateMode(false);
+                }
+                setAskForPassword(false);
 
                 if (isHbtu) {
                     setCollegeType("hbtu");
@@ -278,14 +282,149 @@ export function ProfileCompletionModal() {
     const finalBranch = branch === "Other" ? otherBranch.trim() : branch;
 
     // ---------------------------------------------------------------------------
+    // CORE HELPER: Persist Profile Data
+    // ---------------------------------------------------------------------------
+    const persistProfileData = async (
+        targetFirstName: string,
+        targetLastName: string,
+        targetCollege: string,
+        targetBranch: string,
+        targetYear: string,
+        targetPassword?: string
+    ) => {
+        if (!user) throw new Error("No active session found.");
+
+        const effectiveFirstName = targetFirstName.trim();
+        const effectiveLastName = targetLastName.trim();
+        const fullName = `${effectiveFirstName} ${effectiveLastName}`.trim() || user?.user_metadata?.name || user?.user_metadata?.full_name || '';
+        const cleanEmail = (user.email || '').toLowerCase().trim();
+
+        const userDomain = cleanEmail.split('@')[1] || '';
+        const isDomainDirect = isDirectlyAllowedDomain(userDomain);
+        const isOwnerOrAdmin = (cleanEmail === 'priyalkumar06@gmail.com');
+        const approvalVal = (isDomainDirect || isOwnerOrAdmin) ? 'approved' : 'pending';
+
+        let dbUpdated = false;
+        let metaUpdated = false;
+
+        // 1. Direct update to existing row in public.profiles table (try update first to preserve row id)
+        try {
+            const updatePayload: any = {
+                first_name: effectiveFirstName,
+                last_name: effectiveLastName,
+                college: targetCollege,
+                branch: targetBranch,
+                year: targetYear,
+                user_id: user.id,
+                updated_at: new Date().toISOString()
+            };
+
+            let updateQuery = supabase.from("profiles").update(updatePayload);
+            if (cleanEmail) {
+                updateQuery = updateQuery.or(`id.eq.${user.id},user_id.eq.${user.id},email.eq.${cleanEmail}`);
+            } else {
+                updateQuery = updateQuery.or(`id.eq.${user.id},user_id.eq.${user.id}`);
+            }
+
+            const { data: updatedRows, error: updateErr } = await updateQuery.select('id');
+            if (!updateErr && updatedRows && updatedRows.length > 0) {
+                dbUpdated = true;
+            } else {
+                // If update didn't match any row, upsert on user_id
+                const { error: upErr } = await supabase.from("profiles").upsert({
+                    user_id: user.id,
+                    first_name: effectiveFirstName,
+                    last_name: effectiveLastName,
+                    email: cleanEmail,
+                    college: targetCollege,
+                    branch: targetBranch,
+                    year: targetYear,
+                    approval_status: approvalVal,
+                    updated_at: new Date().toISOString()
+                }, { onConflict: 'user_id' });
+
+                if (!upErr) dbUpdated = true;
+                else console.warn("Direct profiles upsert on user_id warning:", upErr);
+            }
+        } catch (upErr) {
+            console.warn("Direct profiles update/upsert warning:", upErr);
+        }
+
+        // 2. Call RPC helper as guaranteed fallback (SECURITY DEFINER)
+        try {
+            const { error: rpcErr } = await supabase.rpc("upsert_my_profile", {
+                p_first_name: effectiveFirstName || undefined,
+                p_last_name: effectiveLastName || undefined,
+                p_college: targetCollege,
+                p_branch: targetBranch,
+                p_year: targetYear,
+                p_email: cleanEmail
+            });
+            if (!rpcErr) dbUpdated = true;
+            else console.warn("RPC upsert warning:", rpcErr);
+        } catch (rpcErr) {
+            console.warn("RPC upsert warning:", rpcErr);
+        }
+
+        // 3. Update Supabase Auth User Metadata
+        try {
+            const { error: metaErr } = await supabase.auth.updateUser({
+                data: {
+                    first_name: effectiveFirstName,
+                    last_name: effectiveLastName,
+                    name: fullName,
+                    full_name: fullName,
+                    college: targetCollege,
+                    branch: targetBranch,
+                    year: targetYear,
+                    email: cleanEmail,
+                    email_verified: true,
+                    phone_verified: false,
+                    profile_completed: true
+                },
+            });
+            if (!metaErr) metaUpdated = true;
+            else console.warn("updateUser metadata warning:", metaErr);
+        } catch (uErr) {
+            console.warn("updateUser metadata warning:", uErr);
+        }
+
+        // 4. Update password if provided
+        if (targetPassword && targetPassword.trim()) {
+            try {
+                await supabase.auth.updateUser({ password: targetPassword.trim() });
+            } catch (pErr) {
+                console.warn("updateUser password warning:", pErr);
+            }
+        }
+
+        if (!metaUpdated && !dbUpdated) {
+            throw new Error("Unable to save profile details. Please try again.");
+        }
+
+        try {
+            localStorage.setItem(`profile_completed_${user.id}`, 'true');
+        } catch {}
+
+        try {
+            await supabase.auth.refreshSession();
+        } catch (refErr) {
+            console.warn("Session refresh warning:", refErr);
+        }
+
+        if (typeof window !== 'undefined') {
+            window.dispatchEvent(new Event('studyhub_profile_updated'));
+        }
+
+        setHasChecked(true);
+        setIsOpen(false);
+    };
+
+    // ---------------------------------------------------------------------------
     // HANDLER: Update Mode
     // ---------------------------------------------------------------------------
     const handleUpdateSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-
-        const finalCollegeToSave = resolvedCollege;
-        const finalBranchToSave = finalBranch;
-        const finalYearToSave = finalYear;
 
         if (!finalYear) {
             toast({ title: "Required", description: "Please select your batch / Graduating year.", variant: "destructive" });
@@ -310,109 +449,10 @@ export function ProfileCompletionModal() {
 
         setIsLoading(true);
         try {
-            const effectiveFirstName = firstName || user?.user_metadata?.first_name || '';
-            const effectiveLastName = lastName || user?.user_metadata?.last_name || '';
-            const fullName = `${effectiveFirstName} ${effectiveLastName}`.trim() || user?.user_metadata?.name || user?.user_metadata?.full_name || '';
-
-            // 1. Update Supabase Auth User Metadata
-            let metaUpdated = false;
-            try {
-                const { error: metaErr } = await supabase.auth.updateUser({
-                    data: {
-                        first_name: effectiveFirstName,
-                        last_name: effectiveLastName,
-                        name: fullName,
-                        full_name: fullName,
-                        year: finalYearToSave,
-                        college: finalCollegeToSave,
-                        branch: finalBranchToSave,
-                        email: (user.email || '').toLowerCase().trim(),
-                        email_verified: true,
-                        phone_verified: false,
-                        profile_completed: true
-                    },
-                });
-                if (!metaErr) metaUpdated = true;
-                else console.warn("updateUser metadata warning:", metaErr);
-            } catch (uErr) {
-                console.warn("updateUser metadata warning:", uErr);
-            }
-
-            // 2. Direct upsert into public.profiles table
-            const userDomain = (user!.email || '').split('@')[1] || '';
-            const isDomainDirect = isDirectlyAllowedDomain(userDomain);
-            const isOwnerOrAdmin = (user!.email?.toLowerCase() === 'priyalkumar06@gmail.com');
-            const approvalVal = (isDomainDirect || isOwnerOrAdmin) ? 'approved' : 'pending';
-
-            let dbUpdated = false;
-            try {
-                const { error: upErr } = await supabase.from("profiles").upsert({
-                    user_id: user!.id,
-                    first_name: effectiveFirstName,
-                    last_name: effectiveLastName,
-                    email: user!.email || '',
-                    college: finalCollegeToSave,
-                    branch: finalBranchToSave,
-                    year: finalYearToSave,
-                    approval_status: approvalVal,
-                    updated_at: new Date().toISOString()
-                }, { onConflict: 'user_id' });
-
-                if (!upErr) {
-                    dbUpdated = true;
-                } else {
-                    console.warn("Direct profiles upsert on user_id warning:", upErr);
-                    const { error: fallbackErr } = await supabase.from("profiles").update({
-                        first_name: effectiveFirstName,
-                        last_name: effectiveLastName,
-                        college: finalCollegeToSave,
-                        branch: finalBranchToSave,
-                        year: finalYearToSave,
-                        updated_at: new Date().toISOString()
-                    }).or(`id.eq.${user!.id},user_id.eq.${user!.id},email.eq.${(user!.email || '').toLowerCase()}`);
-                    if (!fallbackErr) dbUpdated = true;
-                }
-            } catch (upErr) {
-                console.warn("Direct profiles upsert warning:", upErr);
-            }
-
-            // 3. Call RPC helper if available
-            try {
-                const { error: rpcErr } = await supabase.rpc("upsert_my_profile", {
-                    p_first_name: effectiveFirstName || undefined,
-                    p_last_name: effectiveLastName || undefined,
-                    p_college: finalCollegeToSave,
-                    p_branch: finalBranchToSave,
-                    p_year: finalYearToSave,
-                    p_email: user!.email
-                });
-                if (!rpcErr) dbUpdated = true;
-                else console.warn("RPC upsert warning:", rpcErr);
-            } catch (rpcErr) {
-                console.warn("RPC upsert warning:", rpcErr);
-            }
-
-            if (!metaUpdated && !dbUpdated) {
-                throw new Error("Unable to save profile details. Please try again.");
-            }
-
-            try {
-                localStorage.setItem(`profile_completed_${user!.id}`, 'true');
-            } catch {}
-
-            try {
-                await supabase.auth.refreshSession();
-            } catch (refErr) {
-                console.warn("Session refresh warning:", refErr);
-            }
-
-            if (typeof window !== 'undefined') {
-                window.dispatchEvent(new Event('studyhub_profile_updated'));
-            }
-
-            setHasChecked(true);
-            setIsOpen(false);
-            toast({ title: "Profile Updated ✓", description: "Your profile has been saved!" });
+            const effectiveFirst = firstName || user?.user_metadata?.first_name || '';
+            const effectiveLast = lastName || user?.user_metadata?.last_name || '';
+            await persistProfileData(effectiveFirst, effectiveLast, resolvedCollege, finalBranch, finalYear);
+            toast({ title: "Profile Saved ✓", description: "Your details have been saved successfully!" });
         } catch (err: any) {
             toast({ title: "Error", description: err.message || "Failed to update profile.", variant: "destructive" });
         } finally {
@@ -426,11 +466,7 @@ export function ProfileCompletionModal() {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        const finalCollegeToSave = resolvedCollege;
-        const finalBranchToSave = finalBranch;
-        const finalYearToSave = finalYear;
-
-        if (!firstName || !finalBranch || !finalYear || !resolvedCollege) {
+        if (!firstName.trim() || !finalBranch || !finalYear || !resolvedCollege) {
             toast({ title: "Required Fields", description: "Please fill in all details.", variant: "destructive" });
             return;
         }
@@ -446,11 +482,7 @@ export function ProfileCompletionModal() {
             toast({ title: "Terms Required", description: "You must accept the Terms & Conditions.", variant: "destructive" });
             return;
         }
-        if (askForPassword && !password) {
-            toast({ title: "Password Required", description: "Please set a password for your account.", variant: "destructive" });
-            return;
-        }
-        if (askForPassword && password) {
+        if (password) {
             const isOk = password.length >= 6 && /[A-Z]/.test(password) && /[a-z]/.test(password) && /[0-9]/.test(password) && /[!@#$%^&*(),.?":{}|<>]/.test(password);
             if (!isOk) {
                 toast({ title: "Weak Password", description: "Please meet all password requirements.", variant: "destructive" });
@@ -460,120 +492,10 @@ export function ProfileCompletionModal() {
 
         setIsLoading(true);
         try {
-            const fullName = `${firstName} ${lastName}`.trim();
-
-            // 1. Update Supabase Auth User Metadata (Crucial for auth.users raw_user_meta_data)
-            let metaUpdated = false;
-            try {
-                const { error: metaErr } = await supabase.auth.updateUser({
-                    data: {
-                        first_name: firstName,
-                        last_name: lastName,
-                        name: fullName,
-                        full_name: fullName,
-                        college: finalCollegeToSave,
-                        branch: finalBranchToSave,
-                        year: finalYearToSave,
-                        email: (user.email || '').toLowerCase().trim(),
-                        email_verified: true,
-                        phone_verified: false,
-                        profile_completed: true
-                    },
-                });
-                if (!metaErr) metaUpdated = true;
-                else console.warn("updateUser metadata warning:", metaErr);
-            } catch (uErr) {
-                console.warn("updateUser metadata warning:", uErr);
-            }
-
-            if (password) {
-                try {
-                    await supabase.auth.updateUser({ password });
-                } catch (pErr) {
-                    console.warn("updateUser password warning:", pErr);
-                }
-            }
-
-            // 2. Direct upsert into public.profiles table
-            const userDomain = (user!.email || '').split('@')[1] || '';
-            const isDomainDirect = isDirectlyAllowedDomain(userDomain);
-            const isOwnerOrAdmin = (user!.email?.toLowerCase() === 'priyalkumar06@gmail.com');
-            const approvalVal = (isDomainDirect || isOwnerOrAdmin) ? 'approved' : 'pending';
-
-            let dbUpdated = false;
-            try {
-                const { error: upErr } = await supabase.from("profiles").upsert({
-                    user_id: user!.id,
-                    first_name: firstName,
-                    last_name: lastName,
-                    email: user!.email || '',
-                    college: finalCollegeToSave,
-                    branch: finalBranchToSave,
-                    year: finalYearToSave,
-                    approval_status: approvalVal,
-                    updated_at: new Date().toISOString()
-                }, { onConflict: 'user_id' });
-
-                if (!upErr) {
-                    dbUpdated = true;
-                } else {
-                    console.warn("Direct profiles upsert on user_id warning:", upErr);
-                    // Fallback to update by user_id/id/email
-                    const { error: fallbackErr } = await supabase.from("profiles").update({
-                        first_name: firstName,
-                        last_name: lastName,
-                        college: finalCollegeToSave,
-                        branch: finalBranchToSave,
-                        year: finalYearToSave,
-                        updated_at: new Date().toISOString()
-                    }).or(`id.eq.${user!.id},user_id.eq.${user!.id},email.eq.${(user!.email || '').toLowerCase()}`);
-                    if (!fallbackErr) dbUpdated = true;
-                }
-            } catch (upErr) {
-                console.warn("Direct profiles upsert warning:", upErr);
-            }
-
-            // 3. Call RPC helper if available
-            try {
-                const { error: rpcErr } = await supabase.rpc("upsert_my_profile", {
-                    p_first_name: firstName,
-                    p_last_name: lastName,
-                    p_college: finalCollegeToSave,
-                    p_branch: finalBranchToSave,
-                    p_year: finalYearToSave,
-                    p_email: user!.email
-                });
-                if (!rpcErr) dbUpdated = true;
-                else console.warn("RPC upsert warning:", rpcErr);
-            } catch (rpcErr) {
-                console.warn("RPC upsert warning:", rpcErr);
-            }
-
-            if (!metaUpdated && !dbUpdated) {
-                throw new Error("Unable to save profile details. Please try again.");
-            }
-
-            try {
-                localStorage.setItem(`profile_completed_${user!.id}`, 'true');
-            } catch {}
-
-            try {
-                await supabase.auth.refreshSession();
-            } catch (refErr) {
-                console.warn("Session refresh warning:", refErr);
-            }
-
-            if (typeof window !== 'undefined') {
-                window.dispatchEvent(new Event('studyhub_profile_updated'));
-            }
-
-            setHasChecked(true);
-            setIsOpen(false);
+            await persistProfileData(firstName, lastName, resolvedCollege, finalBranch, finalYear, password || undefined);
             toast({ title: "Profile Saved ✓", description: "Welcome aboard! You're all set." });
         } catch (error: any) {
             console.error("Profile update error:", error);
-            
-            // Handle the case where the user was deleted from the database but still has a valid JWT session in the browser.
             if (error.message?.includes("foreign key constraint") || error.code === "23503") {
                 toast({ 
                     title: "Session Invalid", 
@@ -584,8 +506,7 @@ export function ProfileCompletionModal() {
                 window.location.reload();
                 return;
             }
-
-            toast({ title: "Error", description: error.message || "Failed to save profile.", variant: "destructive" });
+            toast({ title: "Save Failed", description: error.message || "Could not save profile details.", variant: "destructive" });
         } finally {
             setIsLoading(false);
         }
