@@ -79,20 +79,29 @@ export default function Profile() {
 
     setIsLoading(true);
     try {
-      let query = supabase
+      let profileData: any = null;
+      // 1. Prioritize active user_id (exact 1-to-1 session match)
+      const { data: byUid, error: uidErr } = await supabase
         .from('profiles')
-        .select('first_name, last_name, email, mobile_number, college, branch, year, avatar_url, created_at');
+        .select('first_name, last_name, email, mobile_number, college, branch, year, avatar_url, created_at')
+        .eq('user_id', user.id)
+        .order('updated_at', { ascending: false })
+        .limit(1);
 
-      if (user.email) {
-        query = query.or(`id.eq.${user.id},user_id.eq.${user.id},email.eq.${user.email.toLowerCase()}`);
-      } else {
-        query = query.or(`id.eq.${user.id},user_id.eq.${user.id}`);
-      }
+      if (!uidErr && byUid && byUid.length > 0) {
+        profileData = byUid[0];
+      } else if (user.email) {
+        // 2. Fallback to matching by email if no row has user_id yet
+        const { data: byEmail } = await supabase
+          .from('profiles')
+          .select('first_name, last_name, email, mobile_number, college, branch, year, avatar_url, created_at')
+          .eq('email', user.email.toLowerCase().trim())
+          .order('updated_at', { ascending: false })
+          .limit(1);
 
-      const { data: profileData, error } = await query.maybeSingle();
-
-      if (error) {
-        console.error('Error fetching profile:', error);
+        if (byEmail && byEmail.length > 0) {
+          profileData = byEmail[0];
+        }
       }
 
       const googleAvatar = user.user_metadata?.picture?.trim() || user.user_metadata?.avatar_url?.trim() || '';
@@ -273,44 +282,72 @@ export default function Profile() {
         avatar_url: finalAvatarUrl || null,
       };
 
-      // Direct upsert into public.profiles table
+      // Direct update to public.profiles table
       try {
-        const { error: upErr } = await supabase.from('profiles').upsert({
-          user_id: user.id,
-          first_name: editedProfile.first_name,
-          last_name: editedProfile.last_name,
-          email: user.email || '',
-          mobile_number: profileUpdates.mobile_number,
-          college: finalCollege,
-          branch: finalBranch,
-          year: finalYear,
-          avatar_url: profileUpdates.avatar_url,
-          updated_at: new Date().toISOString()
-        }, { onConflict: 'user_id' });
+        const { data: existingUserRow } = await supabase
+          .from('profiles')
+          .select('id')
+          .eq('user_id', user.id)
+          .limit(1);
 
-        if (upErr) {
-          console.warn("Direct profiles upsert on user_id warning in Profile.tsx:", upErr);
-          let updateQuery = supabase.from('profiles').update({
-            first_name: editedProfile.first_name,
-            last_name: editedProfile.last_name,
-            email: user.email || '',
-            mobile_number: profileUpdates.mobile_number,
-            college: finalCollege,
-            branch: finalBranch,
-            year: finalYear,
-            avatar_url: profileUpdates.avatar_url,
-            user_id: user.id,
-            updated_at: new Date().toISOString()
-          });
-          if (user.email) {
-            updateQuery = updateQuery.or(`id.eq.${user.id},user_id.eq.${user.id},email.eq.${user.email.toLowerCase()}`);
+        if (existingUserRow && existingUserRow.length > 0) {
+          await supabase
+            .from('profiles')
+            .update({
+              first_name: editedProfile.first_name,
+              last_name: editedProfile.last_name,
+              email: user.email || '',
+              mobile_number: profileUpdates.mobile_number,
+              college: finalCollege,
+              branch: finalBranch,
+              year: finalYear,
+              avatar_url: profileUpdates.avatar_url,
+              updated_at: new Date().toISOString()
+            })
+            .eq('user_id', user.id);
+        } else if (user.email) {
+          const { data: existingEmailRow } = await supabase
+            .from('profiles')
+            .select('id')
+            .eq('email', user.email.toLowerCase().trim())
+            .order('updated_at', { ascending: false })
+            .limit(1);
+
+          if (existingEmailRow && existingEmailRow.length > 0) {
+            await supabase
+              .from('profiles')
+              .update({
+                user_id: user.id,
+                first_name: editedProfile.first_name,
+                last_name: editedProfile.last_name,
+                email: user.email || '',
+                mobile_number: profileUpdates.mobile_number,
+                college: finalCollege,
+                branch: finalBranch,
+                year: finalYear,
+                avatar_url: profileUpdates.avatar_url,
+                updated_at: new Date().toISOString()
+              })
+              .eq('id', existingEmailRow[0].id);
           } else {
-            updateQuery = updateQuery.or(`id.eq.${user.id},user_id.eq.${user.id}`);
+            await supabase
+              .from('profiles')
+              .insert({
+                user_id: user.id,
+                first_name: editedProfile.first_name,
+                last_name: editedProfile.last_name,
+                email: user.email || '',
+                mobile_number: profileUpdates.mobile_number,
+                college: finalCollege,
+                branch: finalBranch,
+                year: finalYear,
+                avatar_url: profileUpdates.avatar_url,
+                updated_at: new Date().toISOString()
+              });
           }
-          await updateQuery;
         }
       } catch (upErr) {
-        console.warn("Direct profiles upsert warning in Profile.tsx:", upErr);
+        console.warn("Direct profiles update warning in Profile.tsx:", upErr);
       }
 
       // Robust Upsert: Handles both Insert and Update in one go using our custom RPC
