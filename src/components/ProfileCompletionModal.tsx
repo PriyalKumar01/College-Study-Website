@@ -262,6 +262,10 @@ export function ProfileCompletionModal() {
     const handleUpdateSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
+        const finalCollegeToSave = resolvedCollege;
+        const finalBranchToSave = finalBranch;
+        const finalYearToSave = finalYear;
+
         if (!finalYear) {
             toast({ title: "Required", description: "Please select your batch / Graduating year.", variant: "destructive" });
             return;
