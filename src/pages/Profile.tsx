@@ -271,6 +271,22 @@ export default function Profile() {
       if (!finalBranch && isHbtuRoll) finalBranch = parseHbtuRollNumber(user.email || '')?.branch || '';
       if (!finalYear && isHbtuRoll) finalYear = parseHbtuRollNumber(user.email || '')?.year || '';
 
+      if (collegeType === 'non-hbtu' && !customCollege.trim()) {
+        toast({ title: "College Required", description: "Please enter your college name.", variant: "destructive" });
+        setIsSaving(false);
+        return;
+      }
+      if (!finalBranch || (editedProfile.branch === 'Other' && !otherBranch.trim())) {
+        toast({ title: "Branch Required", description: "Please select or specify your branch.", variant: "destructive" });
+        setIsSaving(false);
+        return;
+      }
+      if (!finalYear || (editedProfile.year === 'Other' && !otherYear.trim())) {
+        toast({ title: "Year Required", description: "Please select or specify your batch/year.", variant: "destructive" });
+        setIsSaving(false);
+        return;
+      }
+
       const profileUpdates = {
         first_name: editedProfile.first_name,
         last_name: editedProfile.last_name,
@@ -632,31 +648,6 @@ export default function Profile() {
                 </div>
               </div>
 
-              {/* Incomplete details alert banner */}
-              {!isLoading && (!profile.college || !profile.branch || !profile.year) && (
-                <div className="mb-6 p-4 rounded-2xl bg-amber-500/10 border-2 border-amber-500/30 text-amber-900 dark:text-amber-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-sm animate-in fade-in slide-in-from-top-2">
-                  <div className="flex items-center gap-3">
-                    <div className="p-2 bg-amber-500/20 rounded-xl text-amber-600 dark:text-amber-400 shrink-0">
-                      <GraduationCap className="w-5 h-5" />
-                    </div>
-                    <div>
-                      <p className="font-bold text-sm">Academic Details Incomplete</p>
-                      <p className="text-xs text-amber-700/80 dark:text-amber-300/80">
-                        Your College, Branch, or Batch / Graduating Year is missing. Please complete your profile.
-                      </p>
-                    </div>
-                  </div>
-                  <Button
-                    size="sm"
-                    onClick={() => {
-                      window.dispatchEvent(new Event('studyhub_open_profile_completion'));
-                    }}
-                    className="bg-amber-600 hover:bg-amber-700 text-white font-semibold rounded-xl text-xs shrink-0 shadow-md cursor-pointer"
-                  >
-                    Complete Profile Pop-up
-                  </Button>
-                </div>
-              )}
 
               {/* Form Fields */}
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-8">
