@@ -48,6 +48,8 @@ import { useNavigate } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { PlaylistModal } from '@/components/PlaylistModal';
+import { SubjectShareButton } from '@/components/SubjectShareButton';
+import { useSubjectAutoScroll } from '@/hooks/useSubjectAutoScroll';
 import { smartDownload, viewInBrowser } from '@/lib/downloadUtils';
 
 interface NoteItem {
@@ -796,11 +798,6 @@ const FirstYearNotes = () => {
         .filter(cn => {
           const s = (cn.subject || '').toLowerCase().trim();
 
-  useSubjectAutoScroll(subjects, (matched) => {
-    if (matched.id) {
-      setExpandedSubjects(prev => prev.includes(matched.id) ? prev : [...prev, matched.id]);
-    }
-  });
           const target = sub.name.toLowerCase().trim();
           const subId = sub.id.toLowerCase().trim();
           const code = (sub.code || '').toLowerCase().trim();
@@ -849,6 +846,12 @@ const FirstYearNotes = () => {
       };
     });
   }, [allCommunityNotes]);
+
+  useSubjectAutoScroll(subjects, (matched) => {
+    if (matched.id) {
+      setSelectedSubject(matched.id);
+    }
+  });
 
   const regularSubjects = useMemo(() => {
     return subjects.filter(s => s.id !== 'assignments' && s.id !== 'pyqs');

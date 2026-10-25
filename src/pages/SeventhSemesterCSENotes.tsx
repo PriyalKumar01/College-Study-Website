@@ -158,18 +158,18 @@ const SeventhSemesterCSENotes = () => {
         .filter((cn) => {
           if (sub.name === 'Open Elective-II' || sub.id === 'open_elective_2') {
             return cn.subject === 'Open Elective-II' || cn.subject === 'OE2' || cn.subject === 'Open Elective' || cn.subject?.toLowerCase().includes('open elective');
-
-  useSubjectAutoScroll(subjects, (matched) => {
-    if (matched.id) {
-      setExpandedSubjects(prev => prev.includes(matched.id) ? prev : [...prev, matched.id]);
-    }
-  });
           }
           return cn.subject === sub.name || cn.subject === sub.id;
         })
         .map((cn) => ({ id: cn.id, title: cn.title, url: cn.file_url, isCommunity: true, fileName: cn.file_name, uploadedBy: cn.uploaded_by, userName: cn.user_name })),
     ],
   }));
+
+  useSubjectAutoScroll(subjects, (matched) => {
+    if (matched.id) {
+      setExpandedSubjects(prev => prev.includes(matched.id) ? prev : [...prev, matched.id]);
+    }
+  });
 
   const handleDeleteCommunityNote = async (id: string, fileName?: string) => {
     if (!user || !isOwner) return;
