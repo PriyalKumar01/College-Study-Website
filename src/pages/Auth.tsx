@@ -57,7 +57,35 @@ const Auth = () => {
         session_expires_at: session?.expires_at,
       });
 
-      syncUserMetadataIfIncomplete(user);
+      // Fetch latest profile row first so we preserve user's genuine academic details
+      (async () => {
+        try {
+          let profData: any = null;
+          const { data: byUid } = await supabase
+            .from('profiles')
+            .select('first_name, last_name, college, branch, year')
+            .eq('user_id', user.id)
+            .order('updated_at', { ascending: false })
+            .limit(1);
+
+          if (byUid && byUid.length > 0) {
+            profData = byUid[0];
+          } else if (user.email) {
+            const { data: byEmail } = await supabase
+              .from('profiles')
+              .select('first_name, last_name, college, branch, year')
+              .eq('email', user.email.toLowerCase().trim())
+              .order('updated_at', { ascending: false })
+              .limit(1);
+            if (byEmail && byEmail.length > 0) {
+              profData = byEmail[0];
+            }
+          }
+          await syncUserMetadataIfIncomplete(user, profData);
+        } catch {
+          syncUserMetadataIfIncomplete(user);
+        }
+      })();
     }
   }, [user, session]);
 
