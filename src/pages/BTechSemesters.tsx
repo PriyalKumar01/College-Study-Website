@@ -4,6 +4,8 @@ import { Badge } from "@/components/ui/badge";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { motion } from "framer-motion";
+import { useToast } from "@/hooks/use-toast";
+import { shareContent } from "@/utils/shareUtils";
 import thirdSemImg from "@/assets/sem3-thumbnail-new.png";
 import fourthSemImg from "@/assets/sem4-thumbnail-new.png";
 import fifthSemImg from "@/assets/5th-sem-thumbnail.jpg";
@@ -15,10 +17,15 @@ const BTechSemesters = () => {
   const navigate = useNavigate();
   const { year } = useParams<{ year: string }>();
 
-  const handleWhatsAppShare = (semName: string, route: string) => {
-    const shareUrl = `${window.location.origin}${route}`;
-    const message = `Check out ${semName} B.Tech Notes on College Study Hub: ${shareUrl}`;
-    window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, '_blank');
+  const { toast } = useToast();
+
+  const handleShare = async (semName: string, route: string) => {
+    await shareContent({
+      title: `${semName} B.Tech Notes`,
+      text: `Check out ${semName} B.Tech Notes on College Study Hub:`,
+      url: route,
+      toast,
+    });
   };
 
   const semestersByYear: Record<string, any[]> = {
@@ -125,9 +132,9 @@ const BTechSemesters = () => {
               >
                 {/* Share button */}
                 <button
-                  className="absolute top-3 right-3 z-10 w-8 h-8 bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm rounded-full flex items-center justify-center text-green-600 hover:scale-110 transition-all shadow-sm"
-                  onClick={(e) => { e.stopPropagation(); handleWhatsAppShare(semester.name, semester.route); }}
-                  title="Share on WhatsApp"
+                  className="absolute top-3 right-3 z-10 w-8 h-8 bg-white/90 dark:bg-slate-900/90 hover:bg-emerald-600 hover:text-white text-emerald-600 dark:text-emerald-400 backdrop-blur-sm rounded-full flex items-center justify-center transition-all shadow-sm cursor-pointer"
+                  onClick={(e) => { e.stopPropagation(); handleShare(semester.name, semester.route); }}
+                  title={`Share ${semester.name} Notes`}
                 >
                   <Share2 className="h-4 w-4" />
                 </button>

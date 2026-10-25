@@ -3,6 +3,8 @@ import { ArrowLeft, BookOpen, Share2, Lock, GraduationCap, CheckCircle2 } from "
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { motion } from "framer-motion";
+import { useToast } from "@/hooks/use-toast";
+import { shareContent } from "@/utils/shareUtils";
 
 const years = [
   {
@@ -42,10 +44,15 @@ const years = [
 const BTechYears = () => {
   const navigate = useNavigate();
 
-  const handleWhatsAppShare = (yearName: string, route: string) => {
-    const shareUrl = `${window.location.origin}${route}`;
-    const message = `Check out ${yearName} B.Tech Notes on College Study Hub: ${shareUrl}`;
-    window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, "_blank");
+  const { toast } = useToast();
+
+  const handleShare = async (yearName: string, route: string) => {
+    await shareContent({
+      title: `${yearName} B.Tech Notes`,
+      text: `Check out ${yearName} B.Tech Notes on College Study Hub:`,
+      url: route,
+      toast,
+    });
   };
 
   return (
@@ -117,8 +124,8 @@ const BTechYears = () => {
                   {year.available && (
                     <button
                       className="absolute top-4 right-4 z-10 w-9 h-9 bg-background/80 backdrop-blur-md rounded-full flex items-center justify-center text-foreground hover:scale-110 transition-all border border-border shadow-md"
-                      onClick={(e) => { e.stopPropagation(); handleWhatsAppShare(year.name, year.route); }}
-                      title="Share on WhatsApp"
+                      onClick={(e) => { e.stopPropagation(); handleShare(year.name, year.route); }}
+                      title={`Share ${year.name} Notes`}
                     >
                       <Share2 className="h-4 w-4" />
                     </button>

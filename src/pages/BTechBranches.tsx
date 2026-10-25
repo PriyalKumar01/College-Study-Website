@@ -17,6 +17,10 @@ import {
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import Navbar from "@/components/Navbar";
+import { SubjectShareButton } from "@/components/SubjectShareButton";
+import { useToast } from "@/hooks/use-toast";
+import { shareContent } from "@/utils/shareUtils";
+import { Share2 } from "lucide-react";
 import Footer from "@/components/Footer";
 import { PlaylistModal } from "@/components/PlaylistModal";
 import { smartDownload, viewInBrowser } from "@/lib/downloadUtils";
@@ -42,6 +46,7 @@ import btImg from "@/assets/bt-thumbnail-new.png";
 
 const BTechBranches = () => {
   const navigate = useNavigate();
+  const { toast } = useToast();
   const { year, semester } = useParams<{ year: string; semester: string }>();
   const semesterNum = semester?.replace("semester-", "") || "3";
 
@@ -153,6 +158,18 @@ const BTechBranches = () => {
   const handleBranchClick = (branch: typeof branches[0]) => {
     const route = getRoute(branch.name);
     if (route !== '#') navigate(route);
+  };
+
+  const handleShareBranch = async (branch: typeof branches[0]) => {
+    const route = getRoute(branch.name);
+    if (route !== '#') {
+      await shareContent({
+        title: `${branch.name} - Semester ${semesterNum} Notes`,
+        text: `Check out ${branch.fullName} Semester ${semesterNum} Notes on College Study Hub:`,
+        url: route,
+        toast,
+      });
+    }
   };
 
   // ════════════ SUBJECT FILTER ACROSS BRANCHES ════════════
@@ -491,6 +508,12 @@ const BTechBranches = () => {
                             <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-emerald-600 text-white">
                               {sub.notes.length} files
                             </span>
+                            <SubjectShareButton
+                              subjectName={sub.name}
+                              subjectId={sub.key}
+                              semesterName={`Semester ${semesterNum}`}
+                              route={`/btech-notes/${year}/${semester}`}
+                            />
                           </div>
                         </div>
 
@@ -661,7 +684,20 @@ const BTechBranches = () => {
                           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-103"
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
-                        <div className="absolute top-3 right-3">
+                        <div className="absolute top-3 right-3 flex items-center gap-1.5">
+                          {available && (
+                            <button
+                              type="button"
+                              className="w-7 h-7 bg-black/60 hover:bg-emerald-600 text-white backdrop-blur-sm rounded-full flex items-center justify-center transition-all shadow-sm cursor-pointer"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleShareBranch(branch);
+                              }}
+                              title={`Share ${branch.name} Semester ${semesterNum} Notes`}
+                            >
+                              <Share2 className="h-3.5 w-3.5" />
+                            </button>
+                          )}
                           {available ? (
                             <span className="text-[9px] font-bold tracking-wider uppercase bg-emerald-500/90 text-white px-2 py-0.5 rounded-full">
                               Available
