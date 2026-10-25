@@ -338,6 +338,10 @@ export default function Profile() {
         console.warn("Session refresh warning:", refErr);
       }
 
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new Event('studyhub_profile_updated'));
+      }
+
       setProfile({
         ...editedProfile,
         college: finalCollege,
