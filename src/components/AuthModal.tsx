@@ -407,19 +407,21 @@ Simply click one of the buttons below to log in or sign up immediately.`,
         toast({ title: "Verified", description: "Please set your new password." });
       } else if (mode === 'signup') {
         const cleanEmail = email.trim().toLowerCase();
-        let isProfileCompleted = data.user.user_metadata?.profile_completed === true;
+        const meta = data.user.user_metadata || {};
+        const metaHasComplete = Boolean(meta.first_name && meta.college && meta.branch && meta.year);
+        let isProfileCompleted = meta.profile_completed === true && metaHasComplete;
 
         let existingProfile: any = null;
         try {
           const { data: prof } = await supabase
             .from('profiles')
-            .select('first_name, college, branch, approval_status')
+            .select('first_name, college, branch, year, approval_status')
             .or(`email.eq.${cleanEmail},id.eq.${data.user.id},user_id.eq.${data.user.id}`)
             .maybeSingle();
 
           if (prof) {
             existingProfile = prof;
-            if (prof.first_name && prof.college && prof.branch) {
+            if (prof.first_name && prof.college && prof.branch && prof.year) {
               isProfileCompleted = true;
               try { localStorage.setItem(`profile_completed_${data.user.id}`, 'true'); } catch {}
             }
