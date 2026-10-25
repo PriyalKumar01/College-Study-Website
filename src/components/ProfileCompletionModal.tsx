@@ -343,8 +343,8 @@ export function ProfileCompletionModal() {
                     p_first_name: effectiveFirstName || undefined,
                     p_last_name: effectiveLastName || undefined,
                     p_college: finalCollegeToSave,
-                    p_branch: finalBranchToSaveToSave,
-                    p_year: finalYearToSaveToSave,
+                    p_branch: finalBranchToSave,
+                    p_year: finalYearToSave,
                     p_email: user!.email
                 });
             } catch (rpcErr) {
