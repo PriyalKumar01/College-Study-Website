@@ -65,6 +65,8 @@ const AIAccessGate = ({ onAccessGranted }: AIAccessGateProps) => {
       } else {
         localStorage.setItem(RATE_LIMIT_CONFIG.localStorageKey, "true");
         localStorage.setItem("csh_ai_session_token", sessionToken);
+        sessionStorage.setItem("csh_ai_session_token", sessionToken);
+        localStorage.setItem("csh_ai_code", cleanCode);
         sessionStorage.setItem("csh_ai_code", cleanCode);
         onAccessGranted();
       }
