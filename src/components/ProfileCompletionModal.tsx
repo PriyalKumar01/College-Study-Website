@@ -396,6 +396,10 @@ export function ProfileCompletionModal() {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
+        const finalCollegeToSave = resolvedCollege;
+        const finalBranchToSave = finalBranch;
+        const finalYearToSave = finalYear;
+
         if (!firstName || !finalBranch || !finalYear || !resolvedCollege) {
             toast({ title: "Required Fields", description: "Please fill in all details.", variant: "destructive" });
             return;
