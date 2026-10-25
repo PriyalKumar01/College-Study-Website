@@ -12,7 +12,7 @@ import { Loader2, Eye, EyeOff, ChevronDown, School, UserCheck, CheckCircle2, XCi
 import { Checkbox } from "@/components/ui/checkbox";
 import logoImg from '@/assets/college-study-hub-logo.png';
 import { isDirectlyAllowedDomain } from '@/utils/emailValidation';
-import { parseHbtuRollNumber, resolveCleanUserName } from '@/utils/userMetadataHelper';
+import { parseHbtuRollNumber, resolveCleanUserName, isValidAcademicField } from '@/utils/userMetadataHelper';
 
 // ---------------------------------------------------------------------------
 // Batch / Graduating Year dropdown options
@@ -171,19 +171,24 @@ export function ProfileCompletionModal() {
                 console.warn("Could not query profiles table:", pErr);
             }
 
-            const existingYear: string = (data?.year || user.user_metadata?.year || "").trim();
-            const existingCollege: string = (data?.college || user.user_metadata?.college || "").trim();
-            const existingBranch: string = (data?.branch || user.user_metadata?.branch || "").trim();
-            const existingFirstName: string = (data?.first_name || user.user_metadata?.first_name || "").trim();
+            const rawYear: string = (data?.year || user.user_metadata?.year || "").trim();
+            const rawCollege: string = (data?.college || user.user_metadata?.college || "").trim();
+            const rawBranch: string = (data?.branch || user.user_metadata?.branch || "").trim();
+            const rawFirstName: string = (data?.first_name || user.user_metadata?.first_name || "").trim();
+
+            const existingYear = isValidAcademicField(rawYear) ? rawYear : "";
+            const existingCollege = isValidAcademicField(rawCollege) ? rawCollege : "";
+            const existingBranch = isValidAcademicField(rawBranch) ? rawBranch : "";
+            const existingFirstName = (rawFirstName && rawFirstName.toLowerCase() !== "user") ? rawFirstName : "";
 
             const collegeIsHBTUVariant = existingCollege !== "" && isHBTUCollege(existingCollege) && existingCollege !== "HBTU Kanpur";
 
-            // A profile is strictly complete only if ALL 4 core fields (first_name, college, branch, year) are present
+            // A profile is strictly complete only if ALL 4 core fields (first_name, college, branch, year) are present, valid and profile_completed is true
             const hasCompleteDetails = Boolean(existingFirstName && existingCollege && existingBranch && existingYear);
             const isMetaComplete = user.user_metadata?.profile_completed === true && hasCompleteDetails;
 
-            // If user already has complete details, NEVER show modal
-            if (hasCompleteDetails || isMetaComplete) {
+            // If user already has genuinely complete details, NEVER show modal
+            if (hasCompleteDetails && isMetaComplete) {
                 setIsOpen(false);
                 setHasChecked(true);
                 try { localStorage.setItem(`profile_completed_${user.id}`, 'true'); } catch {}
@@ -208,60 +213,64 @@ export function ProfileCompletionModal() {
                 return;
             }
 
-            if (!hasCompleteDetails) {
-                // Incomplete details: Clear any stale localStorage flag so completion is required
-                try { localStorage.removeItem(`profile_completed_${user.id}`); } catch {}
+            // Incomplete details: Clear any stale localStorage flag so completion is strictly required
+            try { localStorage.removeItem(`profile_completed_${user.id}`); } catch {}
 
-                const userEmail = (user.email || '').toLowerCase().trim();
-                const isHbtuRoll = Boolean(userEmail.endsWith('@hbtu.ac.in') && parseHbtuRollNumber(userEmail));
-                const isHbtu = userEmail.endsWith('@hbtu.ac.in');
-                const cleanUser = resolveCleanUserName(user.user_metadata, userEmail);
+            const userEmail = (user.email || '').toLowerCase().trim();
+            const isHbtuRoll = Boolean(userEmail.endsWith('@hbtu.ac.in') && parseHbtuRollNumber(userEmail));
+            const isHbtu = userEmail.endsWith('@hbtu.ac.in');
+            const cleanUser = resolveCleanUserName(user.user_metadata, userEmail);
 
-                const existingFirst = (data?.first_name || user.user_metadata?.first_name || cleanUser.firstName || '').trim();
-                const existingLast = (data?.last_name || user.user_metadata?.last_name || cleanUser.lastName || '').trim();
+            const existingFirst = (data?.first_name || user.user_metadata?.first_name || cleanUser.firstName || '').trim();
+            const existingLast = (data?.last_name || user.user_metadata?.last_name || cleanUser.lastName || '').trim();
 
-                if (!firstName) {
-                    setFirstName(existingFirst);
-                    setLastName(existingLast);
-                }
-
-                // If user already has a recognized name (e.g. from Google or previous login), show streamlined update form
-                if (existingFirst && existingFirst.toLowerCase() !== 'user') {
-                    setIsUpdateMode(true);
-                } else {
-                    setIsUpdateMode(false);
-                }
-                setAskForPassword(false);
-
-                if (isHbtu) {
-                    setCollegeType("hbtu");
-                    setCollege("HBTU Kanpur");
-                    const parsed = parseHbtuRollNumber(userEmail);
-                    if (parsed) {
-                        if (!branch && parsed.branch) setBranch(parsed.branch);
-                        if (!year && parsed.year) setYear(parsed.year);
-                    }
-                } else {
-                    const metaCollege = data?.college || user.user_metadata?.college || '';
-                    if (metaCollege) {
-                        if (isHBTUCollege(metaCollege)) {
-                            setCollegeType("hbtu");
-                            setCollege("HBTU Kanpur");
-                        } else {
-                            setCollegeType("non-hbtu");
-                            setCustomCollege(metaCollege);
-                            setCollege(metaCollege);
-                        }
-                    }
-                    const metaBranch = data?.branch || user.user_metadata?.branch || '';
-                    if (metaBranch && !branch) setBranch(metaBranch);
-                    const metaYear = data?.year || user.user_metadata?.year || '';
-                    if (metaYear && !year && isValidYearOption(metaYear)) setYear(metaYear);
-                }
-
-                setIsOpen(true);
-                return;
+            if (!firstName) {
+                setFirstName(existingFirst);
+                setLastName(existingLast);
             }
+
+            // If user already has a recognized name (e.g. from Google or previous login), show streamlined update form
+            if (existingFirst && existingFirst.toLowerCase() !== 'user') {
+                setIsUpdateMode(true);
+            } else {
+                setIsUpdateMode(false);
+            }
+            setAskForPassword(false);
+
+            if (isHbtu) {
+                setCollegeType("hbtu");
+                setCollege("HBTU Kanpur");
+                const parsed = parseHbtuRollNumber(userEmail);
+                if (parsed) {
+                    if (!branch && parsed.branch) setBranch(parsed.branch);
+                    if (!year && parsed.year) setYear(parsed.year);
+                }
+            } else {
+                const validMetaCollege = existingCollege;
+                if (validMetaCollege) {
+                    if (isHBTUCollege(validMetaCollege)) {
+                        setCollegeType("hbtu");
+                        setCollege("HBTU Kanpur");
+                    } else {
+                        setCollegeType("non-hbtu");
+                        setCustomCollege(validMetaCollege);
+                        setCollege(validMetaCollege);
+                    }
+                } else {
+                    setCollegeType("");
+                    setCollege("");
+                    setCustomCollege("");
+                }
+
+                if (existingBranch && !branch) setBranch(existingBranch);
+                else if (!existingBranch) setBranch("");
+
+                if (existingYear && !year && isValidYearOption(existingYear)) setYear(existingYear);
+                else if (!existingYear) setYear("");
+            }
+
+            setIsOpen(true);
+            return;
 
             // Profile is completely filled
             setHasChecked(true);

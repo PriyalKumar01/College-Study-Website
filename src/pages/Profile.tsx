@@ -11,7 +11,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { BRANCH_OPTIONS, YEAR_OPTIONS } from '@/components/ProfileCompletionModal';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
-import { parseHbtuRollNumber } from '@/utils/userMetadataHelper';
+import { parseHbtuRollNumber, isValidAcademicField } from '@/utils/userMetadataHelper';
 import { Loader2, ArrowLeft, Edit3, Save, X, User, Mail, Phone, GraduationCap, Calendar, CheckCircle2, UploadCloud, School, UserCheck } from 'lucide-react';
 
 interface ProfileData {
@@ -99,15 +99,23 @@ export default function Profile() {
       const dbAvatar = profileData?.avatar_url?.trim() || '';
       const initialAvatar = dbAvatar || googleAvatar || '';
 
+      const rawCollege = (profileData?.college || user.user_metadata?.college || '').trim();
+      const rawBranch = (profileData?.branch || user.user_metadata?.branch || '').trim();
+      const rawYear = (profileData?.year || user.user_metadata?.year || '').trim();
+
+      const validCollege = isValidAcademicField(rawCollege) ? rawCollege : '';
+      const validBranch = isValidAcademicField(rawBranch) ? rawBranch : '';
+      const validYear = isValidAcademicField(rawYear) ? rawYear : '';
+
       if (profileData) {
         const fetchedProfile: ProfileData = {
           first_name: profileData.first_name || user.user_metadata?.first_name || '',
           last_name: profileData.last_name || user.user_metadata?.last_name || '',
           email: profileData.email || user.email || '',
           mobile_number: profileData.mobile_number || user.user_metadata?.mobile_number || '',
-          college: profileData.college || user.user_metadata?.college || '',
-          branch: profileData.branch || user.user_metadata?.branch || '',
-          year: profileData.year || user.user_metadata?.year || '',
+          college: validCollege,
+          branch: validBranch,
+          year: validYear,
           avatar_url: initialAvatar,
           created_at: profileData.created_at || '',
         };
@@ -120,9 +128,9 @@ export default function Profile() {
           last_name: user.user_metadata?.last_name || '',
           email: user.email || '',
           mobile_number: user.user_metadata?.mobile_number || '',
-          college: user.user_metadata?.college || '',
-          branch: user.user_metadata?.branch || '',
-          year: user.user_metadata?.year || '',
+          college: validCollege,
+          branch: validBranch,
+          year: validYear,
           avatar_url: initialAvatar,
           created_at: user.created_at || '',
         };

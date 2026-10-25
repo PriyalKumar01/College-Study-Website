@@ -40,6 +40,18 @@ const HBTU_BRANCH_MAP: Record<string, string> = {
 };
 
 /**
+ * Validates that an academic field (college, branch, year) is real and not a test placeholder,
+ * null string, or empty.
+ */
+export function isValidAcademicField(value?: string | null): boolean {
+  if (!value) return false;
+  const s = value.trim().toLowerCase();
+  if (!s || s === 'not set' || s === 'null' || s === 'undefined' || s === 'none' || s === 'n/a') return false;
+  if (s.startsWith('test ') || s === 'test' || s === 'test college' || s === 'test branch') return false;
+  return true;
+}
+
+/**
  * Parses an HBTU student roll number or email (e.g., 240112025@hbtu.ac.in)
  * and returns auto-computed college, graduating year, and branch.
  */
@@ -112,9 +124,13 @@ export function buildStandardizedUserMetadata(
   const { fullName, firstName, lastName } = resolveCleanUserName(meta, email);
 
   // Priority: profile table > metadata > HBTU roll number auto-detection > default empty string
-  let college = (profileData?.college || meta.college || '').trim();
-  let branch = (profileData?.branch || meta.branch || '').trim();
-  let year = (profileData?.year || meta.year || '').trim();
+  const rawCollege = (profileData?.college || meta.college || '').trim();
+  const rawBranch = (profileData?.branch || meta.branch || '').trim();
+  const rawYear = (profileData?.year || meta.year || '').trim();
+
+  let college = isValidAcademicField(rawCollege) ? rawCollege : '';
+  let branch = isValidAcademicField(rawBranch) ? rawBranch : '';
+  let year = isValidAcademicField(rawYear) ? rawYear : '';
 
   if (isHbtu) {
     if (!college) college = 'HBTU Kanpur';
@@ -131,9 +147,9 @@ export function buildStandardizedUserMetadata(
 
   const isComplete = Boolean(
     effectiveFirstName &&
-    college &&
-    branch &&
-    year
+    isValidAcademicField(college) &&
+    isValidAcademicField(branch) &&
+    isValidAcademicField(year)
   );
 
   return {

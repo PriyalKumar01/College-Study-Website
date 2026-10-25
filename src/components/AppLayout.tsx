@@ -50,7 +50,7 @@ const AppLayout = () => {
           )}
 
           <Outlet />
-          {!isPending && <ProfileCompletionModal />}
+          <ProfileCompletionModal />
         </main>
       </div>
 
