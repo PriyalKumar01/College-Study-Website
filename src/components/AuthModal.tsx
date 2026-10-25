@@ -599,7 +599,7 @@ Simply click one of the buttons below to log in or sign up immediately.`,
             year: finalYear,
             approval_status: initialApproval,
             updated_at: new Date().toISOString()
-          }, { onConflict: 'id' });
+          }, { onConflict: 'user_id' });
         } catch (upErr) {
           console.warn("Direct profiles upsert warning in AuthModal:", upErr);
         }
