@@ -17,8 +17,26 @@ const AIAssistant = () => {
   // Check localStorage for existing access
   useEffect(() => {
     const granted = localStorage.getItem(RATE_LIMIT_CONFIG.localStorageKey);
-    setHasAccess(granted === "true");
-  }, []);
+    const isGranted = granted === "true";
+    setHasAccess(isGranted);
+
+    if (isGranted) {
+      if (!localStorage.getItem("csh_ai_code")) {
+        try {
+          localStorage.setItem("csh_ai_code", "ACCESS#250");
+          sessionStorage.setItem("csh_ai_code", "ACCESS#250");
+        } catch {}
+      }
+      if (!localStorage.getItem("csh_ai_session_token")) {
+        const userPrefix = user?.id ? user.id.replace(/-/g, "").slice(0, 10) : "user";
+        const token = `csh_sess_${userPrefix}_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
+        try {
+          localStorage.setItem("csh_ai_session_token", token);
+          sessionStorage.setItem("csh_ai_session_token", token);
+        } catch {}
+      }
+    }
+  }, [user?.id]);
 
   const handleAccessGranted = () => {
     setHasAccess(true);
