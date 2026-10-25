@@ -320,9 +320,9 @@ export function ProfileCompletionModal() {
             const isOwnerOrAdmin = (user!.email?.toLowerCase() === 'priyalkumar06@gmail.com');
             const approvalVal = (isDomainDirect || isOwnerOrAdmin) ? 'approved' : 'pending';
 
+            let dbUpdated = false;
             try {
-                await supabase.from("profiles").upsert({
-                    id: user!.id,
+                const { error: upErr } = await supabase.from("profiles").upsert({
                     user_id: user!.id,
                     first_name: effectiveFirstName,
                     last_name: effectiveLastName,
@@ -332,7 +332,22 @@ export function ProfileCompletionModal() {
                     year: finalYearToSave,
                     approval_status: approvalVal,
                     updated_at: new Date().toISOString()
-                }, { onConflict: 'id' });
+                }, { onConflict: 'user_id' });
+
+                if (!upErr) {
+                    dbUpdated = true;
+                } else {
+                    console.warn("Direct profiles upsert on user_id warning:", upErr);
+                    const { error: fallbackErr } = await supabase.from("profiles").update({
+                        first_name: effectiveFirstName,
+                        last_name: effectiveLastName,
+                        college: finalCollegeToSave,
+                        branch: finalBranchToSave,
+                        year: finalYearToSave,
+                        updated_at: new Date().toISOString()
+                    }).or(`id.eq.${user!.id},user_id.eq.${user!.id},email.eq.${(user!.email || '').toLowerCase()}`);
+                    if (!fallbackErr) dbUpdated = true;
+                }
             } catch (upErr) {
                 console.warn("Direct profiles upsert warning:", upErr);
             }
