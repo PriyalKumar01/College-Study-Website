@@ -9,7 +9,7 @@ import { Loader2, School, UserCheck, CheckCircle2, Sparkles, ChevronDown } from 
 import { Checkbox } from "@/components/ui/checkbox";
 import logoImg from '@/assets/college-study-hub-logo.png';
 import { isDirectlyAllowedDomain } from '@/utils/emailValidation';
-import { parseHbtuRollNumber, resolveCleanUserName, isValidAcademicField } from '@/utils/userMetadataHelper';
+import { isHbtuEmail, resolveCleanUserName, isValidAcademicField } from '@/utils/userMetadataHelper';
 
 // ---------------------------------------------------------------------------
 // Batch / Graduating Year dropdown options
@@ -84,7 +84,7 @@ const inputClass =
 export function ProfileCompletionModal() {
     const { user } = useAuth();
     const userEmail = (user?.email || '').toLowerCase().trim();
-    const isHbtuRoll = Boolean(userEmail.endsWith('@hbtu.ac.in') && parseHbtuRollNumber(userEmail));
+    const isHbtu = isHbtuEmail(userEmail);
     const [isOpen, setIsOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const { toast } = useToast();
@@ -245,11 +245,8 @@ export function ProfileCompletionModal() {
             if (isHbtu) {
                 setCollegeType("hbtu");
                 setCollege("HBTU Kanpur");
-                const parsed = parseHbtuRollNumber(userEmail);
-                if (parsed) {
-                    if (!branch && parsed.branch) setBranch(parsed.branch);
-                    if (!year && parsed.year) setYear(parsed.year);
-                }
+                if (existingBranch && !branch) setBranch(existingBranch);
+                if (existingYear && !year && isValidYearOption(existingYear)) setYear(existingYear);
             } else {
                 const validMetaCollege = existingCollege;
                 if (validMetaCollege) {
@@ -278,6 +275,12 @@ export function ProfileCompletionModal() {
             setIsOpen(true);
         } catch (err) {
             console.error("Profile check failed:", err);
+            // If the user's metadata is already incomplete, ensure the modal is still shown
+            const meta = user.user_metadata || {};
+            const isMetaComplete = meta.profile_completed === true && meta.first_name && meta.college && meta.branch && meta.year;
+            if (!isMetaComplete) {
+                setIsOpen(true);
+            }
             setHasChecked(true);
         }
     };
@@ -577,12 +580,12 @@ export function ProfileCompletionModal() {
                     onScroll={handleScroll}
                     className="flex-1 overflow-y-auto px-6 py-5 space-y-5 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-emerald-500/60 dark:[&::-webkit-scrollbar-thumb]:bg-emerald-700/60 [&::-webkit-scrollbar-track]:transparent"
                 >
-                    {isHbtuRoll && (
+                    {isHbtu && (
                         <div className="flex items-start gap-2.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-500/30 p-3 text-xs text-emerald-800 dark:text-emerald-300">
-                            <Sparkles className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
+                            <School className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
                             <div>
-                                <p className="font-bold">✨ HBTU Roll Number Auto-Detected</p>
-                                <p className="opacity-90">We have pre-filled your college, branch, and graduating year. You can freely change them if your branch upgraded in 2nd year or if you are in a lateral entry / PG program.</p>
+                                <p className="font-bold">🎓 Official HBTU Student Email Verified</p>
+                                <p className="opacity-90">College is set to HBTU Kanpur. Please select your official branch and batch / graduating year to complete your profile.</p>
                             </div>
                         </div>
                     )}
