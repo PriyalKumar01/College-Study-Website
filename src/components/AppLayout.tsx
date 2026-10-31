@@ -11,6 +11,7 @@ const AppLayout = () => {
 
   const isApproved = !!user && approvalStatus === 'approved';
   const isPending = !!user && approvalStatus === 'pending';
+  const isProfileComplete = !user || user.user_metadata?.profile_completed === true;
 
   const isQuizExam = location.pathname.includes('/gate-study/quiz') && new URLSearchParams(location.search).get('mode') === 'exam';
 
@@ -54,8 +55,8 @@ const AppLayout = () => {
         </main>
       </div>
 
-      {/* ── Professional Sticky Mobile Bottom Navigation Bar (Only for approved members) ── */}
-      {isApproved && !isQuizExam && (
+      {/* ── Professional Sticky Mobile Bottom Navigation Bar (Only for approved members with completed profiles) ── */}
+      {isApproved && isProfileComplete && !isQuizExam && (
         <nav 
           className="md:hidden fixed bottom-0 left-0 right-0 z-[150] bg-white/95 dark:bg-slate-950/95 border-t border-slate-200/80 dark:border-slate-800/80 backdrop-blur-xl shadow-[0_-8px_30px_rgba(0,0,0,0.06)] dark:shadow-[0_-8px_30px_rgba(0,0,0,0.4)] transition-all duration-300"
           style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}
