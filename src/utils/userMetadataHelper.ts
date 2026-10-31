@@ -17,27 +17,30 @@ export interface StandardUserMetadata {
 }
 
 /**
- * HBTU branch code lookup based on official university roll numbers.
- * Roll number pattern: YY PP BB NNN (e.g. 24 01 12 025)
- * YY: Admission Year (24 = 2024 -> B.Tech Graduating Year 2028)
- * PP: Program Code (01 = B.Tech)
- * BB: Branch Code (12 = Plastic Technology)
+ * Checks if an email address belongs to the official HBTU student/faculty domain.
  */
-const HBTU_BRANCH_MAP: Record<string, string> = {
-  '01': 'Computer Science & Engineering (CSE)',
-  '02': 'Information Technology (IT)',
-  '03': 'Electronics Engineering (ET)',
-  '04': 'Electrical Engineering (EE)',
-  '05': 'Mechanical Engineering (ME)',
-  '06': 'Civil Engineering (CE)',
-  '07': 'Chemical Engineering (CHE)',
-  '08': 'Biochemical Engineering (BE)',
-  '09': 'Food Technology (FT)',
-  '10': 'Oil Technology (OT)',
-  '11': 'Paint Technology (PT)',
-  '12': 'Plastic Technology (PL)',
-  '13': 'Leather & Fashion Technology (LFT)',
-};
+export function isHbtuEmail(emailOrRoll: string): boolean {
+  if (!emailOrRoll) return false;
+  const clean = emailOrRoll.toLowerCase().trim();
+  return clean.endsWith('@hbtu.ac.in') || clean.includes('@hbtu.ac.in');
+}
+
+/**
+ * Backward-compatible helper for HBTU email recognition.
+ * NOTE: Heuristic branch and year predictions from roll numbers have been completely
+ * removed to prevent incorrect branch allocations (e.g., CSE codes vs EE).
+ * Users choose their own actual branch and graduating year.
+ */
+export function parseHbtuRollNumber(emailOrRoll: string): { college: string; year: string; branch: string } | null {
+  if (!emailOrRoll) return null;
+  if (!isHbtuEmail(emailOrRoll)) return null;
+
+  return {
+    college: 'HBTU Kanpur',
+    year: '',
+    branch: '',
+  };
+}
 
 /**
  * Validates that an academic field (college, branch, year) is real and not a test placeholder,
@@ -48,35 +51,6 @@ export function isValidAcademicField(value?: string | null): boolean {
   const s = value.trim().toLowerCase();
   if (!s || s === 'not set' || s === 'null' || s === 'undefined' || s === 'none' || s === 'n/a' || s === '-') return false;
   return true;
-}
-
-/**
- * Parses an HBTU student roll number or email (e.g., 240112025@hbtu.ac.in)
- * and returns auto-computed college, graduating year, and branch.
- */
-export function parseHbtuRollNumber(emailOrRoll: string): { college: string; year: string; branch: string } | null {
-  if (!emailOrRoll) return null;
-  const username = emailOrRoll.includes('@') ? emailOrRoll.split('@')[0].trim() : emailOrRoll.trim();
-
-  // Match 9-digit roll number: e.g. 240112025
-  const match = username.match(/^(\d{2})(\d{2})(\d{2})(\d{3})$/);
-  if (!match) return null;
-
-  const [, yy, prog, bb] = match;
-  const admYear = 2000 + parseInt(yy, 10);
-
-  // Program: 01 is B.Tech (4 years), 02 is M.Tech (2 years), 03 is MCA (2 years)
-  let passingYear = (admYear + 4).toString();
-  if (prog === '02') passingYear = (admYear + 2).toString();
-  if (prog === '03') passingYear = (admYear + 2).toString();
-
-  const branch = HBTU_BRANCH_MAP[bb] || '';
-
-  return {
-    college: 'HBTU Kanpur',
-    year: passingYear,
-    branch,
-  };
 }
 
 /**
@@ -118,11 +92,11 @@ export function buildStandardizedUserMetadata(
 ): StandardUserMetadata {
   const meta = user.user_metadata || {};
   const email = (user.email || '').toLowerCase().trim();
-  const isHbtu = email.endsWith('@hbtu.ac.in');
+  const isHbtu = isHbtuEmail(email);
 
   const { fullName, firstName, lastName } = resolveCleanUserName(meta, email);
 
-  // Priority: profile table > metadata > HBTU roll number auto-detection > default empty string
+  // Priority: profile table > metadata > default empty string
   const rawCollege = (profileData?.college || meta.college || '').trim();
   const rawBranch = (profileData?.branch || meta.branch || '').trim();
   const rawYear = (profileData?.year || meta.year || '').trim();
@@ -131,25 +105,27 @@ export function buildStandardizedUserMetadata(
   let branch = isValidAcademicField(rawBranch) ? rawBranch : '';
   let year = isValidAcademicField(rawYear) ? rawYear : '';
 
-  if (isHbtu) {
-    if (!college) college = 'HBTU Kanpur';
-    const parsed = parseHbtuRollNumber(email);
-    if (parsed) {
-      if (!branch) branch = parsed.branch;
-      if (!year) year = parsed.year;
-    }
+  if (isHbtu && !college) {
+    college = 'HBTU Kanpur';
   }
+  // NOTE: branch and year are NEVER auto-predicted from roll numbers.
+  // The user explicitly selects their real academic branch and batch.
 
   const effectiveFirstName = (profileData?.first_name || firstName).trim();
   const effectiveLastName = (profileData?.last_name || lastName).trim();
   const effectiveFullName = `${effectiveFirstName} ${effectiveLastName}`.trim() || fullName;
 
-  const isComplete = Boolean(
+  // A profile is strictly complete ONLY if:
+  // 1) The user has explicitly completed/saved their profile (meta.profile_completed === true)
+  // 2) All core fields (firstName, college, branch, year) are filled with valid values
+  const hasAcademicFields = Boolean(
     effectiveFirstName &&
     isValidAcademicField(college) &&
     isValidAcademicField(branch) &&
     isValidAcademicField(year)
   );
+
+  const isComplete = Boolean(meta.profile_completed === true && hasAcademicFields);
 
   return {
     ...meta,
@@ -161,7 +137,7 @@ export function buildStandardizedUserMetadata(
     branch: branch || '',
     year: year || '',
     email: email,
-    email_verified: true,
+    email_verified: Boolean(user.email_confirmed_at || meta.email_verified || isHbtu),
     phone_verified: false,
     profile_completed: isComplete,
   };
