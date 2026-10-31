@@ -11,8 +11,8 @@ import { supabase } from '@/integrations/supabase/client';
 import { BRANCH_OPTIONS, YEAR_OPTIONS } from '@/components/ProfileCompletionModal';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
-import { parseHbtuRollNumber, isValidAcademicField } from '@/utils/userMetadataHelper';
-import { Loader2, ArrowLeft, Edit3, Save, X, User, Mail, Phone, GraduationCap, Calendar, CheckCircle2, UploadCloud, School, UserCheck } from 'lucide-react';
+import { isHbtuEmail, isValidAcademicField } from '@/utils/userMetadataHelper';
+import { Loader2, ArrowLeft, Edit3, Save, X, User, Mail, Phone, GraduationCap, Calendar, CheckCircle2, UploadCloud, School, UserCheck, Sparkles } from 'lucide-react';
 
 interface ProfileData {
   first_name: string;
@@ -31,10 +31,7 @@ export default function Profile() {
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  const isHbtuRoll = Boolean(
-    (user?.email || '').toLowerCase().endsWith('@hbtu.ac.in') &&
-    parseHbtuRollNumber(user?.email || '')
-  );
+  const isHbtu = isHbtuEmail(user?.email || '');
 
   const [isEditing, setIsEditing] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -266,10 +263,8 @@ export default function Profile() {
       let finalBranch = editedProfile.branch === 'Other' ? otherBranch.trim() : editedProfile.branch;
       let finalYear = editedProfile.year === 'Other' ? otherYear.trim() : editedProfile.year;
 
-      // If empty, fallback to auto-detected roll number values
-      if (!finalCollege && isHbtuRoll) finalCollege = 'HBTU Kanpur';
-      if (!finalBranch && isHbtuRoll) finalBranch = parseHbtuRollNumber(user.email || '')?.branch || '';
-      if (!finalYear && isHbtuRoll) finalYear = parseHbtuRollNumber(user.email || '')?.year || '';
+      // Default college for HBTU student emails if empty
+      if (!finalCollege && isHbtu) finalCollege = 'HBTU Kanpur';
 
       if (collegeType === 'non-hbtu' && !customCollege.trim()) {
         toast({ title: "College Required", description: "Please enter your college name.", variant: "destructive" });
@@ -720,10 +715,10 @@ export default function Profile() {
                     Academic Details
                   </div>
 
-                  {isHbtuRoll && (
+                  {isHbtu && (
                     <div className="flex items-center gap-2 p-2.5 rounded-xl bg-emerald-500/10 text-emerald-800 dark:text-emerald-300 border border-emerald-500/30 text-xs font-semibold mb-3">
-                      <Sparkles className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
-                      <span>HBTU Roll Number Detected: Academic details are auto-filled. You can edit them if your branch upgraded in 2nd year or for lateral entry / PG courses.</span>
+                      <School className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
+                      <span>Official HBTU Email Verified ({user?.email}). You can freely update your academic details below.</span>
                     </div>
                   )}
 
