@@ -26,10 +26,34 @@ export function isHbtuEmail(emailOrRoll: string): boolean {
 }
 
 /**
+ * Calculates a default estimated passing year for an HBTU student based on their roll number prefix.
+ * e.g., '24XXXX...' (admitted 2024) -> 2028 graduating year (+4 years for standard B.Tech).
+ * '26XXXX...' (admitted 2026) -> 2030 graduating year.
+ * NOTE: This is ONLY provided as an editable initial suggestion in the UI form.
+ * Students can freely change it if they are Lateral Entry, M.Tech, MCA, or PhD.
+ * BRANCH IS NEVER AUTO-DETECTED.
+ */
+export function getHbtuSuggestedPassingYear(emailOrRoll: string): string {
+  if (!emailOrRoll) return '';
+  const clean = emailOrRoll.toLowerCase().trim();
+  const username = clean.includes('@') ? clean.split('@')[0] : clean;
+  // Match first 2 digits of roll number: e.g. '240104...' -> 24 -> 2024 + 4 = 2028
+  const match = username.match(/^(\d{2})/);
+  if (match) {
+    const startYear = parseInt(match[1], 10);
+    // Realistic admission years: 2015 to 2035
+    if (startYear >= 15 && startYear <= 35) {
+      const gradYear = 2000 + startYear + 4;
+      return String(gradYear);
+    }
+  }
+  return '';
+}
+
+/**
  * Backward-compatible helper for HBTU email recognition.
- * NOTE: Heuristic branch and year predictions from roll numbers have been completely
- * removed to prevent incorrect branch allocations (e.g., CSE codes vs EE).
- * Users choose their own actual branch and graduating year.
+ * NOTE: Heuristic branch auto-detection from roll numbers has been completely
+ * removed. Users must explicitly choose their own branch.
  */
 export function parseHbtuRollNumber(emailOrRoll: string): { college: string; year: string; branch: string } | null {
   if (!emailOrRoll) return null;
@@ -37,7 +61,7 @@ export function parseHbtuRollNumber(emailOrRoll: string): { college: string; yea
 
   return {
     college: 'HBTU Kanpur',
-    year: '',
+    year: getHbtuSuggestedPassingYear(emailOrRoll),
     branch: '',
   };
 }
@@ -49,7 +73,7 @@ export function parseHbtuRollNumber(emailOrRoll: string): { college: string; yea
 export function isValidAcademicField(value?: string | null): boolean {
   if (!value) return false;
   const s = value.trim().toLowerCase();
-  if (!s || s === 'not set' || s === 'null' || s === 'undefined' || s === 'none' || s === 'n/a' || s === '-') return false;
+  if (!s || s === 'not set' || s === 'null' || s === 'undefined' || s === 'none' || s === 'n/a' || s === '-' || s === 'user') return false;
   return true;
 }
 
@@ -108,24 +132,26 @@ export function buildStandardizedUserMetadata(
   if (isHbtu && !college) {
     college = 'HBTU Kanpur';
   }
-  // NOTE: branch and year are NEVER auto-predicted from roll numbers.
-  // The user explicitly selects their real academic branch and batch.
+  // NOTE: Branch is NEVER auto-detected from roll numbers.
+  // The user explicitly selects their actual branch from the dropdown.
 
   const effectiveFirstName = (profileData?.first_name || firstName).trim();
   const effectiveLastName = (profileData?.last_name || lastName).trim();
   const effectiveFullName = `${effectiveFirstName} ${effectiveLastName}`.trim() || fullName;
 
   // A profile is strictly complete ONLY if:
-  // 1) The user has explicitly completed/saved their profile (meta.profile_completed === true)
-  // 2) All core fields (firstName, college, branch, year) are filled with valid values
+  // All 4 core fields (firstName, college, branch, year) are filled with valid non-placeholder values
   const hasAcademicFields = Boolean(
     effectiveFirstName &&
+    effectiveFirstName.toLowerCase() !== 'user' &&
     isValidAcademicField(college) &&
     isValidAcademicField(branch) &&
     isValidAcademicField(year)
   );
 
-  const isComplete = Boolean(meta.profile_completed === true && hasAcademicFields);
+  const isComplete = Boolean(
+    hasAcademicFields && (meta.profile_completed === true || Boolean(profileData?.branch))
+  );
 
   return {
     ...meta,
@@ -146,6 +172,8 @@ export function buildStandardizedUserMetadata(
 /**
  * Checks if the user's raw_user_meta_data is missing any standard keys
  * or needs normalization, and updates Supabase Auth if necessary.
+ * IMPORTANT: Safely fetches profile from DB first if not provided to prevent
+ * overwriting valid user data.
  */
 export async function syncUserMetadataIfIncomplete(
   user: User,
@@ -153,8 +181,27 @@ export async function syncUserMetadataIfIncomplete(
 ): Promise<void> {
   if (!user || !user.email) return;
 
-  const standard = buildStandardizedUserMetadata(user, profileData);
+  let effectiveProfile = profileData;
+  if (!effectiveProfile) {
+    try {
+      const { data } = await supabase
+        .from('profiles')
+        .select('first_name, last_name, college, branch, year')
+        .eq('user_id', user.id)
+        .maybeSingle();
+      if (data) {
+        effectiveProfile = data;
+      }
+    } catch {}
+  }
+
+  const standard = buildStandardizedUserMetadata(user, effectiveProfile);
   const current = user.user_metadata || {};
+
+  // Guard: NEVER downgrade an already completed profile to incomplete if DB fetch was null/failed
+  if (current.profile_completed === true && !standard.profile_completed && !effectiveProfile) {
+    return;
+  }
 
   const isMissingKeys =
     current.name === undefined ||

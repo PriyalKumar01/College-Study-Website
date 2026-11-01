@@ -5,11 +5,16 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { useToast } from "@/hooks/use-toast";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Link } from "react-router-dom";
-import { Loader2, School, UserCheck, CheckCircle2, Sparkles, ChevronDown } from "lucide-react";
+import { Loader2, School, UserCheck, CheckCircle2, ChevronDown } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import logoImg from '@/assets/college-study-hub-logo.png';
 import { isDirectlyAllowedDomain } from '@/utils/emailValidation';
-import { isHbtuEmail, resolveCleanUserName, isValidAcademicField } from '@/utils/userMetadataHelper';
+import {
+    isHbtuEmail,
+    resolveCleanUserName,
+    isValidAcademicField,
+    getHbtuSuggestedPassingYear
+} from '@/utils/userMetadataHelper';
 
 // ---------------------------------------------------------------------------
 // Batch / Graduating Year dropdown options
@@ -33,17 +38,17 @@ export const BRANCH_OPTIONS = [
     "Information Technology (IT)",
     "Electronics Engineering (ET)",
     "Electrical Engineering (EE)",
+    "Mechanical Engineering (ME)",
+    "Civil Engineering (CE)",
+    "Chemical Engineering (CHE)",
+    "Biochemical Engineering (BE)",
+    "BioTechnology (BT)",
+    "Food Technology (FT)",
     "Oil Technology (OT)",
     "Paint Technology (PT)",
     "Plastic Technology (PL)",
-    "Chemical Engineering (CHE)",
-    "Electronics & Communication Engineering (ECE)",
-    "Mechanical Engineering (ME)",
-    "Civil Engineering (CE)",
     "Leather & Fashion Technology (LFT)",
-    "Food Technology (FT)",
-    "Biochemical Engineering (BE)",
-    "BioTechnology (BT)",
+    "Electronics & Communication Engineering (ECE)",
     "CSE - AI/ML",
     "Metallurgy",
     "Other",
@@ -78,14 +83,18 @@ const FieldLabel = ({ htmlFor, children }: { htmlFor?: string; children: React.R
 const inputClass =
     "w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-emerald-600 dark:focus:ring-emerald-500 focus:border-transparent transition-all px-3 py-2.5 text-sm shadow-sm";
 
+interface ProfileCompletionModalProps {
+    forceOpen?: boolean;
+}
+
 // ---------------------------------------------------------------------------
 // Component
 // ---------------------------------------------------------------------------
-export function ProfileCompletionModal() {
-    const { user } = useAuth();
+export function ProfileCompletionModal({ forceOpen = false }: ProfileCompletionModalProps) {
+    const { user, isProfileComplete } = useAuth();
     const userEmail = (user?.email || '').toLowerCase().trim();
     const isHbtu = isHbtuEmail(userEmail);
-    const [isOpen, setIsOpen] = useState(false);
+    const [isOpen, setIsOpen] = useState(forceOpen);
     const [isLoading, setIsLoading] = useState(false);
     const { toast } = useToast();
 
@@ -113,6 +122,12 @@ export function ProfileCompletionModal() {
             setShowScrollArrow(scrollTop + clientHeight < scrollHeight - 20);
         }
     };
+
+    useEffect(() => {
+        if (forceOpen) {
+            setIsOpen(true);
+        }
+    }, [forceOpen]);
 
     useEffect(() => {
         if (scrollRef.current) {
@@ -192,48 +207,42 @@ export function ProfileCompletionModal() {
 
             const existingYear = isValidAcademicField(rawYear) ? rawYear : "";
             const existingCollege = isValidAcademicField(rawCollege) ? rawCollege : "";
-            const existingBranch = isValidAcademicField(rawBranch) ? rawBranch : "";
+            let existingBranch = isValidAcademicField(rawBranch) ? rawBranch : "";
             const existingFirstName = (rawFirstName && rawFirstName.toLowerCase() !== "user") ? rawFirstName : "";
 
-            const collegeIsHBTUVariant = existingCollege !== "" && isHBTUCollege(existingCollege) && existingCollege !== "HBTU Kanpur";
+            // Auto-correct corrupted branch records from the flawed database trigger:
+            // In HBTU roll numbers: 104 is CSE (was incorrectly filled as EE)
+            // 108 is IT (was incorrectly filled as BE)
+            const rollPart = userEmail.split('@')[0];
+            if (isHbtu) {
+                if (existingBranch === "Electrical Engineering (EE)" && (rollPart.includes("104") || rollPart.includes("04"))) {
+                    existingBranch = "Computer Science & Engineering (CSE)";
+                } else if (existingBranch === "Biochemical Engineering (BE)" && (rollPart.includes("108") || rollPart.includes("08"))) {
+                    existingBranch = "Information Technology (IT)";
+                }
+            }
 
-            // A profile is strictly complete only if ALL 4 core fields (first_name, college, branch, year) are present, valid and profile_completed is true
+            // A profile is strictly complete only if ALL 4 core fields (first_name, college, branch, year) are validly filled
             const hasCompleteDetails = Boolean(existingFirstName && existingCollege && existingBranch && existingYear);
-            const isMetaComplete = user.user_metadata?.profile_completed === true && hasCompleteDetails;
+            const isMetaComplete = (user.user_metadata?.profile_completed === true || isProfileComplete) && hasCompleteDetails;
 
-            // If user already has genuinely complete details, NEVER show modal
-            if (hasCompleteDetails && isMetaComplete) {
+            if (hasCompleteDetails && isMetaComplete && !forceOpen) {
                 setIsOpen(false);
                 setHasChecked(true);
-                try { localStorage.setItem(`profile_completed_${user.id}`, 'true'); } catch {}
-
-                // Silent background cleanup if needed (normalize HBTU variant & link user_id)
-                (async () => {
-                    try {
-                        const updates: any = {};
-                        if (collegeIsHBTUVariant) updates.college = "HBTU Kanpur";
-                        if (data && data.user_id !== user.id) updates.user_id = user.id;
-                        if (Object.keys(updates).length > 0) {
-                            if (user.email) {
-                                await supabase.from("profiles").update(updates).eq("email", user.email.toLowerCase());
-                            } else {
-                                await supabase.from("profiles").update(updates).eq("id", user.id);
-                            }
-                        }
-                    } catch (e) {
-                        // Silent non-blocking background sync
-                    }
-                })();
+                try {
+                    localStorage.setItem('csh_profile_complete', 'true');
+                    localStorage.setItem(`profile_completed_${user.id}`, 'true');
+                } catch {}
                 return;
             }
 
-            // Incomplete details: Clear any stale localStorage flag so completion is strictly required
-            try { localStorage.removeItem(`profile_completed_${user.id}`); } catch {}
+            // Incomplete details: Clear any stale localStorage flag
+            try {
+                localStorage.removeItem('csh_profile_complete');
+                localStorage.removeItem(`profile_completed_${user.id}`);
+            } catch {}
 
-            const userEmail = (user.email || '').toLowerCase().trim();
-            const isHbtu = userEmail.endsWith('@hbtu.ac.in');
             const cleanUser = resolveCleanUserName(user.user_metadata, userEmail);
-
             const existingFirst = (data?.first_name || user.user_metadata?.first_name || cleanUser.firstName || '').trim();
             const existingLast = (data?.last_name || user.user_metadata?.last_name || cleanUser.lastName || '').trim();
 
@@ -245,8 +254,18 @@ export function ProfileCompletionModal() {
             if (isHbtu) {
                 setCollegeType("hbtu");
                 setCollege("HBTU Kanpur");
-                if (existingBranch && !branch) setBranch(existingBranch);
-                if (existingYear && !year && isValidYearOption(existingYear)) setYear(existingYear);
+                if (existingBranch) {
+                    setBranch(existingBranch);
+                }
+                // Pre-populate suggested passing year for HBTU students from roll number if not set
+                if (existingYear && isValidYearOption(existingYear)) {
+                    setYear(existingYear);
+                } else {
+                    const suggested = getHbtuSuggestedPassingYear(userEmail);
+                    if (suggested && isValidYearOption(suggested)) {
+                        setYear(suggested);
+                    }
+                }
             } else {
                 const validMetaCollege = existingCollege;
                 if (validMetaCollege) {
@@ -264,23 +283,15 @@ export function ProfileCompletionModal() {
                     setCustomCollege("");
                 }
 
-                if (existingBranch && !branch) setBranch(existingBranch);
-                else if (!existingBranch) setBranch("");
-
-                if (existingYear && !year && isValidYearOption(existingYear)) setYear(existingYear);
-                else if (!existingYear) setYear("");
+                if (existingBranch) setBranch(existingBranch);
+                if (existingYear && isValidYearOption(existingYear)) setYear(existingYear);
             }
 
             setAcceptedTerms(false);
             setIsOpen(true);
         } catch (err) {
             console.error("Profile check failed:", err);
-            // If the user's metadata is already incomplete, ensure the modal is still shown
-            const meta = user.user_metadata || {};
-            const isMetaComplete = meta.profile_completed === true && meta.first_name && meta.college && meta.branch && meta.year;
-            if (!isMetaComplete) {
-                setIsOpen(true);
-            }
+            setIsOpen(true);
             setHasChecked(true);
         }
     };
@@ -335,6 +346,7 @@ export function ProfileCompletionModal() {
                         college: targetCollege,
                         branch: targetBranch,
                         year: targetYear,
+                        email: cleanEmail,
                         updated_at: new Date().toISOString()
                     })
                     .eq("user_id", user.id);
@@ -432,6 +444,7 @@ export function ProfileCompletionModal() {
         }
 
         try {
+            localStorage.setItem('csh_profile_complete', 'true');
             localStorage.setItem(`profile_completed_${user.id}`, 'true');
         } catch {}
 
@@ -460,7 +473,7 @@ export function ProfileCompletionModal() {
             return;
         }
         if (!collegeType) {
-            toast({ title: "College Required", description: "Please indicate HBTU or Other College.", variant: "destructive" });
+            toast({ title: "College Required", description: "Please select HBTU or Other College.", variant: "destructive" });
             return;
         }
         if (collegeType === "non-hbtu" && !customCollege.trim()) {
@@ -491,7 +504,7 @@ export function ProfileCompletionModal() {
         setIsLoading(true);
         try {
             await persistProfileData(firstName, lastName, resolvedCollege, finalBranch, finalYear);
-            toast({ title: "Profile Saved ✓", description: "Welcome aboard! Your academic details have been saved." });
+            toast({ title: "Profile Saved ✓", description: "Welcome aboard! Your academic details have been successfully saved." });
         } catch (error: any) {
             console.error("Profile update error:", error);
             toast({ title: "Save Failed", description: error.message || "Could not save profile details.", variant: "destructive" });
@@ -585,7 +598,7 @@ export function ProfileCompletionModal() {
                             <School className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
                             <div>
                                 <p className="font-bold">🎓 Official HBTU Student Email Verified</p>
-                                <p className="opacity-90">College is set to HBTU Kanpur. Please select your official branch and batch / graduating year to complete your profile.</p>
+                                <p className="opacity-90">College is set to HBTU Kanpur. Please choose your branch and graduating year to proceed.</p>
                             </div>
                         </div>
                     )}
@@ -618,7 +631,7 @@ export function ProfileCompletionModal() {
                         {/* College picker */}
                         {renderCollegePicker()}
 
-                        {/* Branch */}
+                        {/* Branch - Explicit User Selection */}
                         <FieldGroup>
                             <FieldLabel htmlFor="branch">Branch <span className="text-red-500">*</span></FieldLabel>
                             <Select value={branch} onValueChange={(v) => { setBranch(v); if (v !== "Other") setOtherBranch(""); }}>
@@ -644,7 +657,12 @@ export function ProfileCompletionModal() {
 
                         {/* Year */}
                         <FieldGroup>
-                            <FieldLabel htmlFor="year">Batch / Graduating Year <span className="text-red-500">*</span></FieldLabel>
+                            <div className="flex items-center justify-between">
+                                <FieldLabel htmlFor="year">Batch / Graduating Year <span className="text-red-500">*</span></FieldLabel>
+                                {isHbtu && (
+                                    <span className="text-[11px] text-muted-foreground italic">Editable if Lateral/M.Tech</span>
+                                )}
+                            </div>
                             <Select value={year} onValueChange={(v) => { setYear(v); if (v !== "Other") setOtherYear(""); }}>
                                 <SelectTrigger id="year" className="w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 h-10 text-sm focus:ring-2 focus:ring-emerald-600">
                                     <SelectValue placeholder="Select your batch year" />

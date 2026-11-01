@@ -398,6 +398,7 @@ export default function Profile() {
 
       try {
         localStorage.setItem(`profile_completed_${user.id}`, 'true');
+        localStorage.setItem('csh_profile_complete', 'true');
       } catch {}
 
       // Force session refresh to allow Sidebar to see new metadata immediately

@@ -2,13 +2,21 @@ import { Navigate, Outlet, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import PendingApprovalScreen from "@/components/PendingApprovalScreen";
 import { isDirectlyAllowedDomain } from "@/utils/emailValidation";
+import { ProfileCompletionModal } from "@/components/ProfileCompletionModal";
 
 const ProtectedRoute = () => {
-    const { user, loading, approvalStatus, refreshApprovalStatus, signOut, isOwner, isAdmin } = useAuth();
+    const { user, loading, approvalStatus, refreshApprovalStatus, signOut, isOwner, isAdmin, isProfileComplete } = useAuth();
     const location = useLocation();
 
     if (loading) {
-        return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-background">
+                <div className="flex flex-col items-center gap-3">
+                    <div className="w-8 h-8 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin" />
+                    <p className="text-sm text-muted-foreground">Checking authentication...</p>
+                </div>
+            </div>
+        );
     }
 
     if (!user) {
@@ -36,6 +44,17 @@ const ProtectedRoute = () => {
                 onRefresh={refreshApprovalStatus}
                 onSignOut={signOut}
             />
+        );
+    }
+
+    // MANDATORY PROFILE COMPLETION:
+    // Any authenticated user (whether college email or @gmail.com) MUST complete their profile
+    // before accessing any notes, semesters, dashboard, or protected interior page.
+    if (!isProfileComplete) {
+        return (
+            <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex flex-col items-center justify-center p-4">
+                <ProfileCompletionModal forceOpen={true} />
+            </div>
         );
     }
 

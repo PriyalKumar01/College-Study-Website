@@ -4,7 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { getCachedData, setCachedData, removeCachedData, DEFAULT_CACHE_TTL_MS } from '@/lib/cacheUtils';
 
 import { isDisposableDomain, validateEmail, isDirectlyAllowedDomain } from '@/utils/emailValidation';
-import { syncUserMetadataIfIncomplete } from '@/utils/userMetadataHelper';
+import { syncUserMetadataIfIncomplete, isValidAcademicField } from '@/utils/userMetadataHelper';
 
 type UserRole = 'member' | 'admin' | 'owner';
 type ApprovalStatus = 'approved' | 'pending' | 'rejected';
@@ -18,9 +18,11 @@ interface AuthContextType {
   isOwner: boolean;
   isBanned: boolean;
   approvalStatus: ApprovalStatus;
+  isProfileComplete: boolean;
   signOut: () => Promise<void>;
   refreshRole: () => Promise<void>;
   refreshApprovalStatus: () => Promise<void>;
+  refreshProfileStatus: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -53,6 +55,14 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       }
     } catch {}
     return 'pending';
+  });
+
+  const [isProfileComplete, setIsProfileComplete] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem('csh_profile_complete') === 'true';
+    } catch {
+      return false;
+    }
   });
 
   const checkAndRejectDisposable = async (email?: string, userObj?: User | null): Promise<boolean> => {
@@ -183,11 +193,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         .from('profiles')
         .select('banned_until, approval_status');
 
-      if (email) {
-        query = query.or(`id.eq.${userObj.id},user_id.eq.${userObj.id}`);
-      } else {
-        query = query.or(`id.eq.${userObj.id},user_id.eq.${userObj.id}`);
-      }
+      query = query.or(`id.eq.${userObj.id},user_id.eq.${userObj.id}`);
 
       const { data: profile } = await query.maybeSingle();
 
@@ -233,6 +239,80 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     await checkBanAndApproval(user, true);
   };
 
+  const checkProfileCompletion = async (userObj: User | null): Promise<boolean> => {
+    if (!userObj) {
+      setIsProfileComplete(false);
+      try {
+        localStorage.removeItem('csh_profile_complete');
+      } catch {}
+      return false;
+    }
+
+    const meta = userObj.user_metadata || {};
+    const metaFirstName = (meta.first_name || meta.name || '').trim();
+    const hasCompleteMeta = Boolean(
+      meta.profile_completed === true &&
+      metaFirstName &&
+      metaFirstName.toLowerCase() !== 'user' &&
+      isValidAcademicField(meta.college) &&
+      isValidAcademicField(meta.branch) &&
+      isValidAcademicField(meta.year)
+    );
+
+    if (hasCompleteMeta) {
+      setIsProfileComplete(true);
+      try {
+        localStorage.setItem('csh_profile_complete', 'true');
+        localStorage.setItem(`profile_completed_${userObj.id}`, 'true');
+      } catch {}
+      return true;
+    }
+
+    // Check DB profile table if metadata appears incomplete
+    try {
+      const { data } = await supabase
+        .from('profiles')
+        .select('first_name, last_name, college, branch, year')
+        .eq('user_id', userObj.id)
+        .order('updated_at', { ascending: false })
+        .limit(1)
+        .maybeSingle();
+
+      const dbFirst = (data?.first_name || '').trim();
+      if (
+        data &&
+        dbFirst &&
+        dbFirst.toLowerCase() !== 'user' &&
+        isValidAcademicField(data.college) &&
+        isValidAcademicField(data.branch) &&
+        isValidAcademicField(data.year)
+      ) {
+        setIsProfileComplete(true);
+        try {
+          localStorage.setItem('csh_profile_complete', 'true');
+          localStorage.setItem(`profile_completed_${userObj.id}`, 'true');
+        } catch {}
+        // Sync metadata quietly so user_metadata also reflects completion
+        syncUserMetadataIfIncomplete(userObj, data);
+        return true;
+      }
+    } catch (err) {
+      console.warn('Error checking profile completion in AuthContext:', err);
+    }
+
+    setIsProfileComplete(false);
+    try {
+      localStorage.removeItem('csh_profile_complete');
+      localStorage.removeItem(`profile_completed_${userObj.id}`);
+    } catch {}
+    return false;
+  };
+
+  const refreshProfileStatus = async () => {
+    if (!user) return;
+    await checkProfileCompletion(user);
+  };
+
   useEffect(() => {
     // 1. Set up auth state listener - strictly synchronous/non-blocking
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
@@ -254,6 +334,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
             try { localStorage.setItem('csh_approval_status', 'pending'); } catch {}
           }
 
+          // Check profile completion immediately
+          checkProfileCompletion(activeUser);
+
           // Defer verification to next tick outside GoTrue auth dispatch lock
           setTimeout(async () => {
             const isBlocked = await checkAndRejectDisposable(activeUser.email, activeUser);
@@ -268,8 +351,10 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         } else {
           setUserRole('member');
           setApprovalStatus('approved');
+          setIsProfileComplete(false);
           try {
             localStorage.removeItem('csh_approval_status');
+            localStorage.removeItem('csh_profile_complete');
           } catch {}
         }
       }
@@ -299,6 +384,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
             try { localStorage.setItem('csh_approval_status', 'pending'); } catch {}
           }
 
+          checkProfileCompletion(activeUser);
+
           const isBlocked = await checkAndRejectDisposable(activeUser.email, activeUser);
           if (!isBlocked) {
             const isUserBanned = await checkBanAndApproval(activeUser);
@@ -308,8 +395,10 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
           }
         } else {
           setApprovalStatus('approved');
+          setIsProfileComplete(false);
           try {
             localStorage.removeItem('csh_approval_status');
+            localStorage.removeItem('csh_profile_complete');
           } catch {}
         }
       } catch (err) {
@@ -323,6 +412,19 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
     return () => subscription.unsubscribe();
   }, []);
+
+  // Listen for custom profile update events across the entire app
+  useEffect(() => {
+    const handleProfileUpdated = () => {
+      if (user) {
+        checkProfileCompletion(user);
+      }
+    };
+    window.addEventListener('studyhub_profile_updated', handleProfileUpdated);
+    return () => {
+      window.removeEventListener('studyhub_profile_updated', handleProfileUpdated);
+    };
+  }, [user]);
 
   // Real-time ban and approval listener for active session
   useEffect(() => {
@@ -363,21 +465,28 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
               localStorage.setItem('csh_approval_status', newStatus);
             } catch {}
           }
+
+          // If academic fields updated, re-check completion
+          if (updated?.college || updated?.branch || updated?.year || updated?.first_name) {
+            checkProfileCompletion(user);
+          }
         }
       )
       .subscribe();
 
-    // Gentle 10-minute heartbeat check (drastically reduces Log Ingestion from 61% to <5%)
+    // Gentle 10-minute heartbeat check (drastically reduces Log Ingestion)
     let lastFocusCheck = Date.now();
     const handleFocus = () => {
       if (Date.now() - lastFocusCheck > 5 * 60 * 1000) {
         lastFocusCheck = Date.now();
         checkBanAndApproval(user);
+        checkProfileCompletion(user);
       }
     };
     window.addEventListener('focus', handleFocus);
     const interval = setInterval(() => {
       checkBanAndApproval(user);
+      checkProfileCompletion(user);
     }, 10 * 60 * 1000);
 
     return () => {
@@ -396,12 +505,17 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     }
     localStorage.removeItem('csh_banned_user');
     localStorage.removeItem('csh_approval_status');
+    localStorage.removeItem('csh_profile_complete');
+    if (user?.id) {
+      localStorage.removeItem(`profile_completed_${user.id}`);
+    }
     await supabase.auth.signOut();
     setUser(null);
     setSession(null);
     setUserRole('member');
     setIsBanned(false);
     setApprovalStatus('approved');
+    setIsProfileComplete(false);
     setLoading(false);
   };
 
@@ -417,9 +531,11 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     isOwner,
     isBanned,
     approvalStatus,
+    isProfileComplete,
     signOut,
     refreshRole,
     refreshApprovalStatus,
+    refreshProfileStatus,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

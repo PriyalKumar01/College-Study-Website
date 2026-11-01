@@ -15,6 +15,7 @@ import logoImg from '@/assets/college-study-hub-logo.png';
 import HCaptcha from '@hcaptcha/react-hcaptcha';
 import { BRANCH_OPTIONS, YEAR_OPTIONS } from './ProfileCompletionModal';
 import { validateEmail, isDisposableDomain, isDirectlyAllowedDomain } from '@/utils/emailValidation';
+import { isHbtuEmail, getHbtuSuggestedPassingYear } from '@/utils/userMetadataHelper';
 import { sendCampaignBatch } from '@/lib/emailService';
 
 // hCaptcha Site Key provided by user
@@ -456,6 +457,11 @@ Simply click one of the buttons below to log in or sign up immediately.`,
           }
         } else {
           // New user or incomplete profile -> Move to Profile Completion
+          if (isHbtuEmail(email)) {
+            setCollegeType('hbtu');
+            const suggested = getHbtuSuggestedPassingYear(email);
+            if (suggested) setYear(suggested);
+          }
           setStep('signup-complete');
           toast({ title: "Verified!", description: "Please complete your profile." });
         }
@@ -642,6 +648,10 @@ Simply click one of the buttons below to log in or sign up immediately.`,
         console.warn("Session refresh warning:", refErr);
       }
 
+      localStorage.setItem('csh_profile_complete', 'true');
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new Event('studyhub_profile_updated'));
+      }
       sessionStorage.setItem('hasSignedUp', 'true');
       if (initialApproval === 'pending') {
         localStorage.setItem('csh_approval_status', 'pending');

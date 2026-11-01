@@ -1,17 +1,16 @@
-import { useEffect } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { ProfileCompletionModal } from "./ProfileCompletionModal";
 import { LayoutDashboard, BookOpen, Briefcase, Calendar } from "lucide-react";
 
 const AppLayout = () => {
-  const { user, approvalStatus } = useAuth();
+  const { user, approvalStatus, isProfileComplete } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
 
   const isApproved = !!user && approvalStatus === 'approved';
   const isPending = !!user && approvalStatus === 'pending';
-  const isProfileComplete = !user || user.user_metadata?.profile_completed === true;
+  const canAccessFullExperience = !user || isProfileComplete;
 
   const isQuizExam = location.pathname.includes('/gate-study/quiz') && new URLSearchParams(location.search).get('mode') === 'exam';
 
@@ -56,7 +55,7 @@ const AppLayout = () => {
       </div>
 
       {/* ── Professional Sticky Mobile Bottom Navigation Bar (Only for approved members with completed profiles) ── */}
-      {isApproved && isProfileComplete && !isQuizExam && (
+      {isApproved && canAccessFullExperience && !isQuizExam && (
         <nav 
           className="md:hidden fixed bottom-0 left-0 right-0 z-[150] bg-white/95 dark:bg-slate-950/95 border-t border-slate-200/80 dark:border-slate-800/80 backdrop-blur-xl shadow-[0_-8px_30px_rgba(0,0,0,0.06)] dark:shadow-[0_-8px_30px_rgba(0,0,0,0.4)] transition-all duration-300"
           style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}
