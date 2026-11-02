@@ -11,7 +11,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { BRANCH_OPTIONS, YEAR_OPTIONS } from '@/components/ProfileCompletionModal';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
-import { isHbtuEmail, isValidAcademicField } from '@/utils/userMetadataHelper';
+import { isHbtuEmail, isValidAcademicField, isNumericOrRollNumber } from '@/utils/userMetadataHelper';
 import { Loader2, ArrowLeft, Edit3, Save, X, User, Mail, Phone, GraduationCap, Calendar, CheckCircle2, UploadCloud, School, UserCheck, Sparkles } from 'lucide-react';
 
 interface ProfileData {
@@ -115,7 +115,7 @@ export default function Profile() {
 
       if (profileData) {
         const fetchedProfile: ProfileData = {
-          first_name: profileData.first_name || user.user_metadata?.first_name || '',
+          first_name: (!isNumericOrRollNumber(profileData.first_name) && profileData.first_name?.toLowerCase() !== 'user') ? profileData.first_name : ((!isNumericOrRollNumber(user.user_metadata?.first_name) && user.user_metadata?.first_name?.toLowerCase() !== 'user') ? user.user_metadata?.first_name : ''),
           last_name: profileData.last_name || user.user_metadata?.last_name || '',
           email: profileData.email || user.email || '',
           mobile_number: profileData.mobile_number || user.user_metadata?.mobile_number || '',
@@ -130,7 +130,7 @@ export default function Profile() {
       } else {
         // Fallback to user metadata
         const metaProfile: ProfileData = {
-          first_name: user.user_metadata?.first_name || '',
+          first_name: (!isNumericOrRollNumber(user.user_metadata?.first_name) && user.user_metadata?.first_name?.toLowerCase() !== 'user') ? user.user_metadata?.first_name : '',
           last_name: user.user_metadata?.last_name || '',
           email: user.email || '',
           mobile_number: user.user_metadata?.mobile_number || '',
