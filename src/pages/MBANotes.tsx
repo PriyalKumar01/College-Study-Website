@@ -1,3 +1,4 @@
+// MBA management program notes
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Download, ArrowLeft, FileText, ChevronDown, ChevronRight, ExternalLink } from 'lucide-react';
