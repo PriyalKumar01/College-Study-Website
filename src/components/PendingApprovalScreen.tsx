@@ -26,7 +26,11 @@ export const PendingApprovalScreen: React.FC<PendingApprovalScreenProps> = ({
 
   React.useEffect(() => {
     if (isWhitelisted) {
-      try { localStorage.setItem('csh_approval_status', 'approved'); } catch {}
+      try {
+        localStorage.setItem('csh_approval_status', 'approved');
+      } catch {
+        // Ignore storage error
+      }
       window.location.href = '/dashboard';
     }
   }, [isWhitelisted]);

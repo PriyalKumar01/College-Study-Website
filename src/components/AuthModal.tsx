@@ -424,7 +424,11 @@ Simply click one of the buttons below to log in or sign up immediately.`,
             existingProfile = prof;
             if (prof.first_name && prof.college && prof.branch && prof.year) {
               isProfileCompleted = true;
-              try { localStorage.setItem(`profile_completed_${data.user.id}`, 'true'); } catch {}
+              try {
+                localStorage.setItem(`profile_completed_${data.user.id}`, 'true');
+              } catch {
+                // Ignore storage error
+              }
             }
           }
         } catch (e) {
@@ -453,7 +457,7 @@ Simply click one of the buttons below to log in or sign up immediately.`,
             localStorage.setItem('csh_approval_status', 'approved');
             toast({ title: "Welcome back!", description: "You already have an account. Signed in successfully." });
             handleClose();
-            { const r = (()=>{try{const v=sessionStorage.getItem('postLoginRedirect');if(v){sessionStorage.removeItem('postLoginRedirect');return v;}}catch{}return '/dashboard';})(); navigate(r); }
+            { const r = (()=>{try{const v=sessionStorage.getItem('postLoginRedirect');if(v){sessionStorage.removeItem('postLoginRedirect');return v;}}catch{ /* ignore */ }return '/dashboard';})(); navigate(r); }
           }
         } else {
           // New user or incomplete profile -> Move to Profile Completion
@@ -482,7 +486,9 @@ Simply click one of the buttons below to log in or sign up immediately.`,
           if (prof?.approval_status) {
             isPending = prof.approval_status === 'pending';
           }
-        } catch {}
+        } catch {
+          // Ignore approval check error
+        }
 
         if (isPending) {
           localStorage.setItem('csh_approval_status', 'pending');
@@ -500,7 +506,9 @@ Simply click one of the buttons below to log in or sign up immediately.`,
             try {
               const v = sessionStorage.getItem('postLoginRedirect');
               if (v) { sessionStorage.removeItem('postLoginRedirect'); return v; }
-            } catch {}
+            } catch {
+              // Ignore session storage error
+            }
             return '/dashboard';
           })();
           navigate(r);
@@ -598,7 +606,9 @@ Simply click one of the buttons below to log in or sign up immediately.`,
       if (currentUserId) {
         try {
           localStorage.setItem(`profile_completed_${currentUserId}`, 'true');
-        } catch {}
+        } catch {
+          // Ignore local storage error
+        }
         try {
           await supabase.from('profiles').upsert({
             id: currentUserId,
@@ -675,7 +685,7 @@ Simply click one of the buttons below to log in or sign up immediately.`,
           description: "Welcome to College Study Hub!",
         });
         handleClose();
-        { const r = (()=>{try{const v=sessionStorage.getItem('postLoginRedirect');if(v){sessionStorage.removeItem('postLoginRedirect');return v;}}catch{}return '/dashboard';})(); navigate(r); }
+        { const r = (()=>{try{const v=sessionStorage.getItem('postLoginRedirect');if(v){sessionStorage.removeItem('postLoginRedirect');return v;}}catch{ /* ignore */ }return '/dashboard';})(); navigate(r); }
       }
 
     } catch (err: any) {
@@ -802,7 +812,9 @@ Simply click one of the buttons below to log in or sign up immediately.`,
           if (prof?.approval_status) {
             isPending = prof.approval_status === 'pending';
           }
-        } catch {}
+        } catch {
+          // Ignore approval query error
+        }
 
         if (isPending) {
           localStorage.setItem('csh_approval_status', 'pending');
@@ -816,7 +828,7 @@ Simply click one of the buttons below to log in or sign up immediately.`,
           localStorage.setItem('csh_approval_status', 'approved');
           toast({ title: "Welcome back!", description: "Signed in successfully." });
           handleClose();
-          { const r = (()=>{try{const v=sessionStorage.getItem('postLoginRedirect');if(v){sessionStorage.removeItem('postLoginRedirect');return v;}}catch{}return '/dashboard';})(); navigate(r); }
+          { const r = (()=>{try{const v=sessionStorage.getItem('postLoginRedirect');if(v){sessionStorage.removeItem('postLoginRedirect');return v;}}catch{ /* ignore */ }return '/dashboard';})(); navigate(r); }
         }
       }
     } catch (err: any) {

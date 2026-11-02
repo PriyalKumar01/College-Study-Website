@@ -24,7 +24,9 @@ const CookieConsent = () => {
     if (e) e.stopPropagation();
     try {
       localStorage.setItem('cookie-consent', 'accepted');
-    } catch {}
+    } catch {
+      // Ignore storage error
+    }
     setShowConsent(false);
   };
 
@@ -32,7 +34,9 @@ const CookieConsent = () => {
     if (e) e.stopPropagation();
     try {
       localStorage.setItem('cookie-consent', 'rejected');
-    } catch {}
+    } catch {
+      // Ignore storage error
+    }
     setShowConsent(false);
   };
 

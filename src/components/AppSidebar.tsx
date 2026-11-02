@@ -76,7 +76,9 @@ const AppSidebar = ({ className }: AppSidebarProps) => {
       if (cached && time && Date.now() - Number(time) < 15 * 60 * 1000) {
         return Number(cached);
       }
-    } catch {}
+    } catch {
+      // Ignore cache parse error
+    }
     return null;
   });
 
@@ -94,7 +96,11 @@ const AppSidebar = ({ className }: AppSidebarProps) => {
 
           if (data?.avatar_url) {
             setProfileAvatar(data.avatar_url);
-            try { sessionStorage.setItem(`cached_avatar_${user.id}`, data.avatar_url); } catch {}
+            try {
+              sessionStorage.setItem(`cached_avatar_${user.id}`, data.avatar_url);
+            } catch {
+              // Ignore session storage error
+            }
           }
         } catch (e) {
           console.error("Error fetching avatar:", e);

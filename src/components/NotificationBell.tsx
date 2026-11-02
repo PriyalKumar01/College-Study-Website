@@ -23,7 +23,9 @@ export default function NotificationBell() {
       if (cached && time && Date.now() - Number(time) < 5 * 60 * 1000) {
         return JSON.parse(cached);
       }
-    } catch {}
+    } catch {
+      // Ignore cache parse error
+    }
     return [];
   });
   const [readIds, setReadIds] = useState<Set<string>>(new Set());
@@ -46,7 +48,9 @@ export default function NotificationBell() {
       if (cached && time && Date.now() - Number(time) < 5 * 60 * 1000) {
         return;
       }
-    } catch {}
+    } catch {
+      // Ignore cache access error
+    }
 
     const { data } = await (supabase as any)
       .from('notifications')
@@ -59,7 +63,9 @@ export default function NotificationBell() {
       try {
         sessionStorage.setItem('cached_notifications', JSON.stringify(data));
         sessionStorage.setItem('cached_notifications_time', String(Date.now()));
-      } catch {}
+      } catch {
+        // Ignore cache storage error
+      }
     }
   };
 

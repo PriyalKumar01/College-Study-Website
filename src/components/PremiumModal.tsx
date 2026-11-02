@@ -262,7 +262,9 @@ export function PremiumModal({ open, onClose, plan, onSuccess }: PremiumModalPro
         try {
           localStorage.removeItem(`purchases_${user.id}`);
           localStorage.removeItem(`unlocked_${plan}`);
-        } catch (_) {}
+        } catch (_) {
+          // Ignore storage cleanup error
+        }
       }
 
       toast({

@@ -233,7 +233,9 @@ export function ProfileCompletionModal({ forceOpen = false, inline = false }: Pr
                 try {
                     localStorage.setItem('csh_profile_complete', 'true');
                     localStorage.setItem(`profile_completed_${user.id}`, 'true');
-                } catch {}
+                } catch {
+                    // Ignore storage access error
+                }
                 return;
             }
 
@@ -241,7 +243,9 @@ export function ProfileCompletionModal({ forceOpen = false, inline = false }: Pr
             try {
                 localStorage.removeItem('csh_profile_complete');
                 localStorage.removeItem(`profile_completed_${user.id}`);
-            } catch {}
+            } catch {
+                // Ignore storage access error
+            }
 
             const cleanUser = resolveCleanUserName(user.user_metadata, userEmail);
             let existingFirst = (data?.first_name || user.user_metadata?.first_name || cleanUser.firstName || '').trim();
@@ -454,7 +458,9 @@ export function ProfileCompletionModal({ forceOpen = false, inline = false }: Pr
         try {
             localStorage.setItem('csh_profile_complete', 'true');
             localStorage.setItem(`profile_completed_${user.id}`, 'true');
-        } catch {}
+        } catch {
+            // Ignore storage access error
+        }
 
         try {
             await supabase.auth.refreshSession();

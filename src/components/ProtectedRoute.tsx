@@ -21,7 +21,11 @@ const ProtectedRoute = () => {
 
     if (!user) {
         const target = location.pathname + location.search + location.hash;
-        try { sessionStorage.setItem('postLoginRedirect', target); } catch {}
+        try {
+            sessionStorage.setItem('postLoginRedirect', target);
+        } catch {
+            // Ignore session storage error
+        }
         return <Navigate to="/" replace state={{ from: target }} />;
     }
 
