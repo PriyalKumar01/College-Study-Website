@@ -1,3 +1,4 @@
+// Auto-scroll to specific subject anchor on page load
 import { useEffect, useRef } from 'react';
 import { useSearchParams, useLocation } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
