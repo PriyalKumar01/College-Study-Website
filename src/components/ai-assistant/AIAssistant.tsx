@@ -1,3 +1,4 @@
+// AI study assistant chat widget
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { AnimatePresence } from "framer-motion";
