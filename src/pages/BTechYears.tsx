@@ -1,3 +1,4 @@
+// B.Tech year selection portal
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, BookOpen, Share2, Lock, GraduationCap, CheckCircle2 } from "lucide-react";
 import Navbar from "@/components/Navbar";
