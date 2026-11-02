@@ -1,3 +1,4 @@
+// BS-MS integrated science years portal
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, BookOpen, ExternalLink, Lock } from 'lucide-react';
