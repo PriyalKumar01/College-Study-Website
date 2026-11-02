@@ -1,3 +1,4 @@
+// Student contributors and hall of fame
 import { useNavigate, useLocation } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
