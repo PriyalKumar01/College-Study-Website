@@ -1,3 +1,4 @@
+// Navigation route definitions and lazy loaded page components
 import { lazy } from "react";
 
 const Index = lazy(() => import("./pages/Index"));
