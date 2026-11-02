@@ -1,3 +1,4 @@
+// ATS-friendly resume templates and guidelines
 import React, { useState, useEffect, useCallback } from "react";
 import ATSScorer from "@/components/ai-assistant/ATSScorer";
 import { motion, AnimatePresence } from "framer-motion";
