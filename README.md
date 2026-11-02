@@ -211,6 +211,123 @@ Built on the **Deno** runtime and deployed globally on Supabase Edge Network:
 
 ---
 
+## 🏗️ Platform System Architecture
+
+College Study Hub is built on a resilient, micro-service-inspired serverless architecture designed for zero downtime, strict egress optimization, and rapid client-side rendering.
+
+```mermaid
+flowchart TD
+    subgraph ClientLayer ["Client Layer (Progressive Web App)"]
+        UI["React 18 + TypeScript + Tailwind CSS"]
+        Router["React Router DOM (Code-Split Lazy Pages)"]
+        AuthCtx["AuthContext (JWT Session + Role Hierarchy)"]
+        PWA["Service Worker (Workbox Offline Cache 300+ Assets)"]
+    end
+
+    subgraph CDNAndAPIs ["External CDNs & Upstream APIs"]
+        Netlify["Netlify Edge CDN (Hosting & Headers)"]
+        CF_API["Codeforces Official REST API"]
+        GDocs["Google Docs Viewer (Offloaded PDF Delivery)"]
+        Brevo["Brevo Transactional SMTP Engine"]
+        Razorpay["Razorpay Payment Gateway"]
+    end
+
+    subgraph SupabaseServices ["Supabase BaaS Infrastructure"]
+        AuthService["Supabase Auth (GoTrue - OAuth & Email OTP)"]
+        EdgeFunctions["Edge Functions (Deno Serverless Runtime)"]
+        
+        subgraph PostgresEngine ["PostgreSQL 15 Database"]
+            RLS["Row Level Security (Tenant Data Isolation)"]
+            PGVector["pgvector (HNSW Index for Semantic Search)"]
+            Triggers["Lifecycle Triggers (User Creation & Cascade Purge)"]
+            Tables[("profiles, note_downloads, premium_purchases, rag_chunks")]
+        end
+        
+        Storage["Supabase Storage (Community Uploads)"]
+    end
+
+    UI --> Router
+    Router --> AuthCtx
+    UI --> PWA
+    Netlify --> UI
+
+    UI -->|"Live Contest Sync"| CF_API
+    UI -->|"Zero-Egress PDF Preview"| GDocs
+    AuthCtx -->|"Auth State & Token Refresh"| AuthService
+    UI -->|"Vector RAG Chat / ATS Scorer"| EdgeFunctions
+    UI -->|"Transactional Queries & RPCs"| RLS
+    RLS --> Tables
+    Triggers --> Tables
+    EdgeFunctions -->|"Vector Distance & RRF"| PGVector
+    EdgeFunctions --> Brevo
+    UI -->|"Order Verification"| Razorpay
+```
+
+---
+
+## 📅 Coding Calendar & Contest Synchronization Engine
+
+The **Coding Calendar** (`/coding-calendar`) is a centralized competitive programming dashboard aggregating active and upcoming coding contests across 5 premier global platforms: **Codeforces**, **LeetCode**, **CodeChef**, **AtCoder**, and **Code360 (Coding Ninjas / Naukri)**.
+
+### 1. Hybrid Ingestion Pipeline (Live API + Mathematical Determinism)
+- **Live Codeforces Synchronization**:
+  - Live contests are queried directly from the official Codeforces API endpoint:
+    `https://codeforces.com/api/contest.list?gym=false`
+  - Contests falling within a sliding window of **past 30 days to next 35 days** are dynamically normalized into standardized `ContestEvent` objects.
+  - **12-Hour Stale-While-Revalidate Client Caching**: API responses are cached in `localStorage` under `csh_codeforces_contests` with epoch timestamps to prevent hitting Codeforces rate limits while guaranteeing lightning-fast tab switches.
+- **Mathematical Recurrence Formula Engine**:
+  - Platforms with fixed weekly/biweekly schedules (LeetCode, CodeChef, AtCoder, Code360) are calculated on-the-fly using mathematical epoch anchors without requiring brittle web scraping:
+    - **LeetCode Weekly Contest**: Every Sunday 08:00 AM – 09:30 AM IST. Calculated from anchor `2024-06-02` (Contest #400) + $\Delta\text{weeks}$.
+    - **LeetCode Biweekly Contest**: Alternate Saturdays 08:00 PM – 09:30 PM IST. Calculated from anchor `2024-05-11` (Contest #130) + $\lfloor\Delta\text{weeks} / 2\rfloor$.
+    - **CodeChef Starters**: Every Wednesday 08:00 PM – 10:00 PM IST. Calculated from anchor `2024-05-29` (Starters #136) + $\Delta\text{weeks}$.
+    - **AtCoder Beginner Contest (ABC)**: Every Saturday 05:30 PM – 07:10 PM IST. Calculated from anchor `2024-06-01` (ABC #356) + $\Delta\text{weeks}$.
+    - **Code360 Weekly Contest**: Every Thursday 08:31 PM – 10:01 PM IST. Calculated from anchor `2026-10-22` (Contest #254) + $\Delta\text{weeks}$.
+- **Deduplication Engine**:
+  - All contests are funneled through `deduplicateContests()` to guarantee that overlapping live rounds and generated slots merge into unique chronological items with accurate URLs.
+
+### 2. Embedded Preparation Ecosystem
+- **Curated DSA Sheets Hub**: Direct progress tracking for **Striver's SDE Sheet**, **Love Babbar 450**, **NeetCode 150**, **Fraz SDE Sheet**, and **Blind 75**.
+- **Company Interview Preparation Kits**: System design, core subject cheat sheets, and interview experiences for **Google, Microsoft, Amazon, Adobe, and Flipkart**.
+- **Starred GitHub Repositories**: Fast navigation to high-impact open-source computer science resources.
+
+---
+
+## 🛡️ Bandwidth Protection & PDF Rate-Limiting Engine
+
+To allow **100% free lifetime access** without exceeding Supabase monthly egress limits or crashing server bandwidth during peak examination weeks, College Study Hub implements a multi-tiered PDF delivery architecture:
+
+1. **Google Drive Proxying & Strict Rate Limiting** (`src/lib/downloadLimits.ts`):
+   - Direct Google Drive downloads enforce student quotas: **5 PDFs per day** and **20 PDFs per month**.
+   - Quotas are logged in `note_downloads` table with UTC date boundaries.
+   - When a student reaches the quota, they are politely directed to read online in their browser.
+2. **Google Docs Viewer CDN Offloading** (`src/lib/downloadUtils.ts`):
+   - For all community-uploaded and server-hosted notes, direct blob fetching is intercepted and opened via Google Docs Viewer:
+     `https://docs.google.com/viewer?url={encodedUrl}`
+   - Google's worldwide edge CDN downloads and renders the PDF bytes, completely eliminating Supabase storage egress.
+3. **Owner Exemption Protocol**:
+   - The platform Owner (`priyalkumar06@gmail.com` or users with `role: 'owner'` / `'super_admin'`) is automatically exempted from all download limits and preview restrictions, enabling unrestricted content audits.
+
+---
+
+## 🔄 Account Lifecycle & Automated Cascade Cleanup
+
+During rapid staging and student testing, accounts are frequently created and removed from the Supabase Authentication dashboard. To prevent orphan profile records or stale data from corrupting new test signups:
+
+- **`BEFORE DELETE ON auth.users` Database Trigger** (`handle_user_delete`):
+  - When an account is removed from Supabase `auth.users`, a `SECURITY DEFINER` trigger immediately executes and purges all associated records:
+    - `public.profiles` (by `user_id`, `id`, and lowercase `email`)
+    - `public.note_downloads` (by `user_id` and `user_email`)
+    - `public.premium_purchases` (test access grants)
+    - `public.signup_attempts`
+    - `public.issue_reports`
+    - `public.opportunity_bookmarks`
+  - Prevents foreign key constraint errors (`violates foreign key constraint`) when deleting users in the Supabase Dashboard.
+  - Ensures that re-registering with the same test email provides a 100% clean, pristine onboarding experience.
+
+---
+
+---
+
 ## 🛠️ Tech Stack & Key Libraries
 
 <div align="center">
