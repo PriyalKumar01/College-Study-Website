@@ -1,3 +1,4 @@
+// 5th semester Biochemical Engineering notes
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useCommunityNotes } from '@/hooks/useCommunityNotes';
