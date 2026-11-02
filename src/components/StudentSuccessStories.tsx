@@ -1,3 +1,4 @@
+// Student testimonials and placement success stories
 
 import React, { useEffect, useState } from 'react';
 import useEmblaCarousel from 'embla-carousel-react';
