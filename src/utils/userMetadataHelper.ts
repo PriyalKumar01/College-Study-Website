@@ -70,6 +70,16 @@ export function parseHbtuRollNumber(emailOrRoll: string): { college: string; yea
  * Validates that an academic field (college, branch, year) is real and not a test placeholder,
  * null string, or empty.
  */
+/**
+ * Checks if a string consists entirely of digits or looks like a student roll number
+ * (e.g., '260105030', '240104010'). Roll numbers must NEVER be used as a student's personal name.
+ */
+export function isNumericOrRollNumber(val?: string | null): boolean {
+  if (!val) return false;
+  const cleaned = val.trim().replace(/[\s._-]+/g, '');
+  return /^\d+$/.test(cleaned);
+}
+
 export function isValidAcademicField(value?: string | null): boolean {
   if (!value) return false;
   const s = value.trim().toLowerCase();
@@ -87,19 +97,32 @@ export function resolveCleanUserName(meta: Record<string, any> = {}, email: stri
   lastName: string;
 } {
   let rawName = (meta.full_name || meta.name || '').trim();
-
-  if (!rawName) {
-    const rawFallback = meta.user_name || meta.preferred_username || (email ? email.split('@')[0] : '') || 'User';
-    // Clean string by converting hyphens/underscores/dots to spaces and capitalizing words
-    rawName = rawFallback
-      .replace(/[._-]+/g, ' ')
-      .replace(/\b[a-z]/g, (char) => char.toUpperCase())
-      .trim();
+  if (isNumericOrRollNumber(rawName)) {
+    rawName = '';
   }
 
-  const parts = rawName.split(/\s+/).filter(Boolean);
-  const firstName = (meta.first_name || parts[0] || 'User').trim();
-  const lastName = (meta.last_name || parts.slice(1).join(' ') || '').trim();
+  if (!rawName) {
+    const candidateFallback = meta.user_name || meta.preferred_username || (email ? email.split('@')[0] : '');
+    // If the candidate is just roll number digits (e.g. 260105030), do NOT convert it to a name!
+    if (candidateFallback && !isNumericOrRollNumber(candidateFallback)) {
+      rawName = candidateFallback
+        .replace(/[._-]+/g, ' ')
+        .replace(/\b[a-z]/g, (char) => char.toUpperCase())
+        .trim();
+    }
+  }
+
+  const parts = rawName ? rawName.split(/\s+/).filter(Boolean) : [];
+  let firstName = (meta.first_name || parts[0] || '').trim();
+  if (isNumericOrRollNumber(firstName) || firstName.toLowerCase() === 'user') {
+    firstName = '';
+  }
+
+  let lastName = (meta.last_name || parts.slice(1).join(' ') || '').trim();
+  if (isNumericOrRollNumber(lastName)) {
+    lastName = '';
+  }
+
   const fullName = rawName || `${firstName} ${lastName}`.trim();
 
   return { fullName, firstName, lastName };
@@ -141,9 +164,14 @@ export function buildStandardizedUserMetadata(
 
   // A profile is strictly complete ONLY if:
   // All 4 core fields (firstName, college, branch, year) are filled with valid non-placeholder values
-  const hasAcademicFields = Boolean(
+  const isRealName = Boolean(
     effectiveFirstName &&
     effectiveFirstName.toLowerCase() !== 'user' &&
+    !isNumericOrRollNumber(effectiveFirstName)
+  );
+
+  const hasAcademicFields = Boolean(
+    isRealName &&
     isValidAcademicField(college) &&
     isValidAcademicField(branch) &&
     isValidAcademicField(year)
