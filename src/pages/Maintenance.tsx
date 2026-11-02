@@ -1,3 +1,4 @@
+// Maintenance mode fallback page
 import React, { useState, useEffect } from "react";
 import { RefreshCw, Bell, ServerCog, Activity, ShieldAlert, Sparkles } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
