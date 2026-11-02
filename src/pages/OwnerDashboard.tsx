@@ -1,3 +1,4 @@
+// Owner privileged management dashboard
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { ResponsiveContainer, PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ComposedChart, Line, AreaChart, Area } from 'recharts';
 import { useAuth } from '@/contexts/AuthContext';
