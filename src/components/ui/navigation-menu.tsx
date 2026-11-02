@@ -1,3 +1,4 @@
+// Navigation menu with viewport and trigger items
 import * as React from "react"
 import * as NavigationMenuPrimitive from "@radix-ui/react-navigation-menu"
 import { cva } from "class-variance-authority"
