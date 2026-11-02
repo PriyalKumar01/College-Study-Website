@@ -113,8 +113,7 @@ const Dashboard = () => {
       }
 
       // Try fetching Users count via RPC or profiles table
-      // @ts-ignore - 'get_user_count' missing from generated database types
-      const { data: countData, error } = await supabase.rpc('get_user_count');
+      const { data: countData, error } = await (supabase as any).rpc('get_user_count');
       if (!error && countData !== null) {
         const val = countData + '+';
         setUserCount(val);

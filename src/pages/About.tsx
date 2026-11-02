@@ -38,7 +38,6 @@ const AboutStatCounterInline = ({ targetVal, decimals = 0, isK = false }: { targ
   const [count, setCount] = useState(0);
 
   useEffect(() => {
-    let start = 0;
     const duration = 1500; // 1.5s count
     const steps = 50;
     const stepTime = duration / steps;
