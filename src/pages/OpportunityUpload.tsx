@@ -1,3 +1,4 @@
+// Opportunity upload form for contributors
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { motion } from 'framer-motion';
