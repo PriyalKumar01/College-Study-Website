@@ -233,7 +233,6 @@ export async function validateEmail(email: string): Promise<EmailValidationResul
       const timeout = setTimeout(() => controller.abort(), 1500);
       try {
         const res = await fetch(`https://api.mailcheck.ai/domain/${domain}`, { signal: controller.signal });
-        clearTimeout(timeout);
         if (res.ok) {
           const data = await res.json();
           if (data.disposable === true) {
@@ -243,7 +242,11 @@ export async function validateEmail(email: string): Promise<EmailValidationResul
             return { isValid: false, isDisposable: false, reason: 'This domain cannot receive emails (no valid MX record found).' };
           }
         }
-      } catch {}
+      } catch (err) {
+        // Mailcheck API timeout or network failure
+      } finally {
+        clearTimeout(timeout);
+      }
       return null;
     };
 
@@ -252,14 +255,17 @@ export async function validateEmail(email: string): Promise<EmailValidationResul
       const timeout = setTimeout(() => controller.abort(), 1500);
       try {
         const res = await fetch(`https://disposable.debounce.io/?email=${cleanEmail}`, { signal: controller.signal });
-        clearTimeout(timeout);
         if (res.ok) {
           const data = await res.json();
           if (data.disposable === 'true' || data.disposable === true) {
             return { isValid: false, isDisposable: true, reason: 'Temporary email domain detected via verification API.' };
           }
         }
-      } catch {}
+      } catch (err) {
+        // Debounce API timeout or network failure
+      } finally {
+        clearTimeout(timeout);
+      }
       return null;
     };
 
@@ -268,14 +274,17 @@ export async function validateEmail(email: string): Promise<EmailValidationResul
       const timeout = setTimeout(() => controller.abort(), 1500);
       try {
         const res = await fetch(`https://open.kickbox.com/v1/disposable/${domain}`, { signal: controller.signal });
-        clearTimeout(timeout);
         if (res.ok) {
           const data = await res.json();
           if (data.disposable === true) {
             return { isValid: false, isDisposable: true, reason: 'Temporary email domain detected via verification API.' };
           }
         }
-      } catch {}
+      } catch (err) {
+        // Kickbox API timeout or network failure
+      } finally {
+        clearTimeout(timeout);
+      }
       return null;
     };
 
