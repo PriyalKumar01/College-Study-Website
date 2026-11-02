@@ -249,7 +249,7 @@ export default function Profile() {
         const publicUrl = await uploadAvatar(avatarFile);
         if (publicUrl) {
           finalAvatarUrl = publicUrl;
-          try { sessionStorage.setItem(`cached_avatar_${user.id}`, publicUrl); } catch {}
+          try { sessionStorage.setItem(`cached_avatar_${user.id}`, publicUrl); } catch { /* ignore */ }
         } else {
           uploadFailed = true;
         }
@@ -259,9 +259,9 @@ export default function Profile() {
         finalAvatarUrl = user.user_metadata?.picture?.trim() || user.user_metadata?.avatar_url?.trim() || '';
       }
 
-      let finalCollege = collegeType === 'hbtu' ? 'HBTU Kanpur' : (collegeType === 'non-hbtu' ? customCollege.trim() : (editedProfile.college || 'HBTU Kanpur'));
-      let finalBranch = editedProfile.branch === 'Other' ? otherBranch.trim() : editedProfile.branch;
-      let finalYear = editedProfile.year === 'Other' ? otherYear.trim() : editedProfile.year;
+      let finalCollege = collegeType === 'hbtu' ? 'HBTU Kanpur' : (collegeType === 'non-hbtu' ? customCollege.trim() : (editedProfile.college || (isHbtu ? 'HBTU Kanpur' : '')));
+      const finalBranch = editedProfile.branch === 'Other' ? otherBranch.trim() : editedProfile.branch;
+      const finalYear = editedProfile.year === 'Other' ? otherYear.trim() : editedProfile.year;
 
       // Default college for HBTU student emails if empty
       if (!finalCollege && isHbtu) finalCollege = 'HBTU Kanpur';
@@ -399,7 +399,9 @@ export default function Profile() {
       try {
         localStorage.setItem(`profile_completed_${user.id}`, 'true');
         localStorage.setItem('csh_profile_complete', 'true');
-      } catch {}
+      } catch {
+        // Ignore storage write error
+      }
 
       // Force session refresh to allow Sidebar to see new metadata immediately
       try {
