@@ -1,3 +1,4 @@
+// 6th semester Leather & Fashion Technology notes
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useAuth } from '@/contexts/AuthContext';
