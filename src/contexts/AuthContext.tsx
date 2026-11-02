@@ -218,7 +218,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       localStorage.removeItem('csh_banned_user');
 
       // 2. Approval status check
-      let determinedStatus: ApprovalStatus = profile?.approval_status
+      const determinedStatus: ApprovalStatus = profile?.approval_status
         ? (profile.approval_status as ApprovalStatus)
         : 'pending';
 
@@ -417,9 +417,19 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   // Listen for custom profile update events across the entire app
   useEffect(() => {
-    const handleProfileUpdated = () => {
-      if (user) {
-        checkProfileCompletion(user);
+    const handleProfileUpdated = async () => {
+      try {
+        const { data: { user: freshUser } } = await supabase.auth.getUser();
+        if (freshUser) {
+          setUser(freshUser);
+          await checkProfileCompletion(freshUser);
+        } else if (user) {
+          await checkProfileCompletion(user);
+        }
+      } catch (err) {
+        if (user) {
+          await checkProfileCompletion(user);
+        }
       }
     };
     window.addEventListener('studyhub_profile_updated', handleProfileUpdated);
