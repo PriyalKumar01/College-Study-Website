@@ -1,3 +1,4 @@
+// Component to scroll window to top on route change
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronUp } from 'lucide-react';
