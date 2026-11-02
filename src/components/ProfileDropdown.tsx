@@ -23,9 +23,12 @@ const ProfileDropdown = () => {
   const cachedAvatar = user.id ? (() => { try { return sessionStorage.getItem(`cached_avatar_${user.id}`); } catch { return null; } })() : null;
   const avatarUrl = cachedAvatar?.trim() || user.user_metadata?.avatar_url?.trim() || user.user_metadata?.picture?.trim() || '';
   const avatarEmoji = user.user_metadata?.avatar || '👤';
-  const firstName = user.user_metadata?.first_name || '';
-  const lastName = user.user_metadata?.last_name || '';
-  const fullName = `${firstName} ${lastName}`.trim() || user.user_metadata?.name || user.user_metadata?.full_name || 'User';
+  const rawFirst = (user.user_metadata?.first_name || '').trim();
+  const isNum = /^\d+$/.test(rawFirst.replace(/[\s._-]+/g, ''));
+  const firstName = isNum ? '' : rawFirst;
+  const lastName = (user.user_metadata?.last_name || '').trim();
+  const rawFull = (user.user_metadata?.full_name || user.user_metadata?.name || '').trim();
+  const fullName = `${firstName} ${lastName}`.trim() || (!/^\d+$/.test(rawFull) ? rawFull : 'Student') || 'Student';
   const email = user.email || '';
 
   const isPending = approvalStatus === 'pending';
