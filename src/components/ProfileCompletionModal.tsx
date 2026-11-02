@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { Loader2, School, UserCheck, CheckCircle2, ChevronDown } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import logoImg from '@/assets/college-study-hub-logo.png';
@@ -13,7 +13,8 @@ import {
     isHbtuEmail,
     resolveCleanUserName,
     isValidAcademicField,
-    getHbtuSuggestedPassingYear
+    getHbtuSuggestedPassingYear,
+    isNumericOrRollNumber
 } from '@/utils/userMetadataHelper';
 
 // ---------------------------------------------------------------------------
@@ -85,13 +86,15 @@ const inputClass =
 
 interface ProfileCompletionModalProps {
     forceOpen?: boolean;
+    inline?: boolean;
 }
 
 // ---------------------------------------------------------------------------
 // Component
 // ---------------------------------------------------------------------------
-export function ProfileCompletionModal({ forceOpen = false }: ProfileCompletionModalProps) {
+export function ProfileCompletionModal({ forceOpen = false, inline = false }: ProfileCompletionModalProps) {
     const { user, isProfileComplete } = useAuth();
+    const location = useLocation();
     const userEmail = (user?.email || '').toLowerCase().trim();
     const isHbtu = isHbtuEmail(userEmail);
     const [isOpen, setIsOpen] = useState(forceOpen);
@@ -208,11 +211,9 @@ export function ProfileCompletionModal({ forceOpen = false }: ProfileCompletionM
             const existingYear = isValidAcademicField(rawYear) ? rawYear : "";
             const existingCollege = isValidAcademicField(rawCollege) ? rawCollege : "";
             let existingBranch = isValidAcademicField(rawBranch) ? rawBranch : "";
-            const existingFirstName = (rawFirstName && rawFirstName.toLowerCase() !== "user") ? rawFirstName : "";
+            const existingFirstName = (rawFirstName && rawFirstName.toLowerCase() !== "user" && !isNumericOrRollNumber(rawFirstName)) ? rawFirstName : "";
 
-            // Auto-correct corrupted branch records from the flawed database trigger:
-            // In HBTU roll numbers: 104 is CSE (was incorrectly filled as EE)
-            // 108 is IT (was incorrectly filled as BE)
+            // Auto-correct corrupted branch records from legacy heuristics
             const rollPart = userEmail.split('@')[0];
             if (isHbtu) {
                 if (existingBranch === "Electrical Engineering (EE)" && (rollPart.includes("104") || rollPart.includes("04"))) {
@@ -243,8 +244,15 @@ export function ProfileCompletionModal({ forceOpen = false }: ProfileCompletionM
             } catch {}
 
             const cleanUser = resolveCleanUserName(user.user_metadata, userEmail);
-            const existingFirst = (data?.first_name || user.user_metadata?.first_name || cleanUser.firstName || '').trim();
-            const existingLast = (data?.last_name || user.user_metadata?.last_name || cleanUser.lastName || '').trim();
+            let existingFirst = (data?.first_name || user.user_metadata?.first_name || cleanUser.firstName || '').trim();
+            let existingLast = (data?.last_name || user.user_metadata?.last_name || cleanUser.lastName || '').trim();
+
+            if (isNumericOrRollNumber(existingFirst) || existingFirst.toLowerCase() === 'user') {
+                existingFirst = '';
+            }
+            if (isNumericOrRollNumber(existingLast)) {
+                existingLast = '';
+            }
 
             if (!firstName) {
                 setFirstName(existingFirst);
@@ -472,6 +480,10 @@ export function ProfileCompletionModal({ forceOpen = false }: ProfileCompletionM
             toast({ title: "Name Required", description: "Please enter your first name.", variant: "destructive" });
             return;
         }
+        if (isNumericOrRollNumber(firstName.trim())) {
+            toast({ title: "Real Name Required", description: "Please enter your actual name, not your roll number.", variant: "destructive" });
+            return;
+        }
         if (!collegeType) {
             toast({ title: "College Required", description: "Please select HBTU or Other College.", variant: "destructive" });
             return;
@@ -554,7 +566,7 @@ export function ProfileCompletionModal({ forceOpen = false }: ProfileCompletionM
                 <input
                     value={customCollege}
                     onChange={(e) => { setCustomCollege(e.target.value); setCollege(e.target.value); }}
-                    placeholder="Enter your full college name"
+                    placeholder="Enter your full college name (e.g. AKTU, DU, MMMUT...)"
                     className={inputClass + " mt-2"}
                 />
             )}
@@ -562,14 +574,178 @@ export function ProfileCompletionModal({ forceOpen = false }: ProfileCompletionM
     );
 
     // ---------------------------------------------------------------------------
-    // Render
+    // Core Form Content
+    // ---------------------------------------------------------------------------
+    const renderFormContent = () => (
+        <form onSubmit={handleSubmit} className="space-y-4">
+            {isHbtu && (
+                <div className="flex items-start gap-2.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-500/30 p-3 text-xs text-emerald-800 dark:text-emerald-300">
+                    <School className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
+                    <div>
+                        <p className="font-bold">🎓 Official HBTU Student Email Verified</p>
+                        <p className="opacity-90">College is set to HBTU Kanpur. Please choose your branch and graduating year to proceed.</p>
+                    </div>
+                </div>
+            )}
+
+            {/* Name row */}
+            <div className="grid grid-cols-2 gap-3">
+                <FieldGroup>
+                    <FieldLabel htmlFor="firstName">First Name <span className="text-red-500">*</span></FieldLabel>
+                    <input
+                        id="firstName"
+                        value={firstName}
+                        onChange={(e) => setFirstName(e.target.value)}
+                        placeholder="e.g. Priyal"
+                        className={inputClass}
+                    />
+                </FieldGroup>
+                <FieldGroup>
+                    <FieldLabel htmlFor="lastName">Last Name</FieldLabel>
+                    <input
+                        id="lastName"
+                        value={lastName}
+                        onChange={(e) => setLastName(e.target.value)}
+                        placeholder="e.g. Kumar"
+                        className={inputClass}
+                    />
+                </FieldGroup>
+            </div>
+
+            {/* College picker */}
+            {renderCollegePicker()}
+
+            {/* Branch - Explicit User Selection */}
+            <FieldGroup>
+                <FieldLabel htmlFor="branch">Branch <span className="text-red-500">*</span></FieldLabel>
+                <Select value={branch} onValueChange={(v) => { setBranch(v); if (v !== "Other") setOtherBranch(""); }}>
+                    <SelectTrigger id="branch" className="w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 h-10 text-sm focus:ring-2 focus:ring-emerald-600">
+                        <SelectValue placeholder="Select your branch" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 max-h-60 z-[9999]">
+                        {BRANCH_OPTIONS.map((o) => (
+                            <SelectItem key={o} value={o} className="text-slate-900 dark:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800 focus:bg-emerald-700 focus:text-white dark:focus:bg-emerald-700 dark:focus:text-white data-[highlighted]:bg-emerald-700 data-[highlighted]:text-white text-sm cursor-pointer">{o}</SelectItem>
+                        ))}
+                    </SelectContent>
+                </Select>
+                {branch === "Other" && (
+                    <input
+                        id="otherBranch"
+                        value={otherBranch}
+                        onChange={(e) => setOtherBranch(e.target.value)}
+                        placeholder="e.g. Architecture, MBA..."
+                        className={inputClass + " mt-2"}
+                    />
+                )}
+            </FieldGroup>
+
+            {/* Year */}
+            <FieldGroup>
+                <div className="flex items-center justify-between">
+                    <FieldLabel htmlFor="year">Batch / Graduating Year <span className="text-red-500">*</span></FieldLabel>
+                    {isHbtu && (
+                        <span className="text-[11px] text-muted-foreground italic">Editable if Lateral/M.Tech</span>
+                    )}
+                </div>
+                <Select value={year} onValueChange={(v) => { setYear(v); if (v !== "Other") setOtherYear(""); }}>
+                    <SelectTrigger id="year" className="w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 h-10 text-sm focus:ring-2 focus:ring-emerald-600">
+                        <SelectValue placeholder="Select your batch year" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 max-h-60 z-[9999]">
+                        {YEAR_OPTIONS.map((o) => (
+                            <SelectItem key={o.value} value={o.value} className="text-slate-900 dark:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800 focus:bg-emerald-700 focus:text-white dark:focus:bg-emerald-700 dark:focus:text-white data-[highlighted]:bg-emerald-700 data-[highlighted]:text-white text-sm cursor-pointer">{o.label}</SelectItem>
+                        ))}
+                    </SelectContent>
+                </Select>
+                {year === "Other" && (
+                    <input
+                        id="otherYear"
+                        value={otherYear}
+                        onChange={(e) => setOtherYear(e.target.value)}
+                        placeholder="e.g. Faculty, 2014..."
+                        className={inputClass + " mt-2"}
+                    />
+                )}
+            </FieldGroup>
+
+            {/* Terms and Conditions Checkbox */}
+            <div className="flex items-start gap-2.5 p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60 mt-2">
+                <Checkbox
+                    id="terms"
+                    checked={acceptedTerms}
+                    onCheckedChange={(c) => setAcceptedTerms(Boolean(c))}
+                    className="mt-0.5 data-[state=checked]:bg-emerald-600 data-[state=checked]:border-emerald-600"
+                />
+                <label htmlFor="terms" className="text-xs text-slate-600 dark:text-slate-300 leading-snug cursor-pointer select-none">
+                    I agree to the <Link to="/terms-conditions" target="_blank" className="text-emerald-600 dark:text-emerald-400 font-semibold underline hover:text-emerald-700">Terms of Service</Link> and <Link to="/privacy-policy" target="_blank" className="text-emerald-600 dark:text-emerald-400 font-semibold underline hover:text-emerald-700">Privacy Policy</Link> of College Study Hub.
+                </label>
+            </div>
+
+            {/* Submit Button */}
+            <button
+                type="submit"
+                disabled={isLoading || !acceptedTerms}
+                className="w-full flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-600 to-violet-500 hover:from-emerald-700 hover:to-violet-600 text-white font-semibold py-3 text-sm transition-all duration-200 shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed mt-3 cursor-pointer"
+            >
+                {isLoading && <Loader2 className="h-4 w-4 animate-spin" />}
+                Complete Profile & Proceed
+            </button>
+        </form>
+    );
+
+    // ---------------------------------------------------------------------------
+    // Render: Inline Card Mode (used by ProtectedRoute for clean, unblocked full-page UX)
+    // ---------------------------------------------------------------------------
+    if (inline) {
+        return (
+            <div className="w-full max-w-[500px] mx-auto bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+                <div className="flex flex-row items-center gap-4 px-6 py-5 border-b border-gray-100 dark:border-gray-800 bg-gradient-to-r from-emerald-50 to-violet-50 dark:from-gray-800 dark:to-gray-800 shrink-0">
+                    <div className="flex-shrink-0 w-12 h-12 rounded-xl overflow-hidden bg-white dark:bg-gray-700 shadow-sm flex items-center justify-center">
+                        <img src={logoImg} alt="Logo" className="w-10 h-10 object-contain" />
+                    </div>
+                    <div className="text-left min-w-0">
+                        <h2 className="text-lg font-bold text-gray-900 dark:text-white leading-tight">
+                            Complete Your Profile
+                        </h2>
+                        <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5 leading-snug">
+                            Please provide your academic details to continue.
+                        </p>
+                    </div>
+                </div>
+                <div className="p-6 space-y-5">
+                    {renderFormContent()}
+                </div>
+            </div>
+        );
+    }
+
+    // If not inline and we are currently on a protected route, let ProtectedRoute render the inline card
+    // instead of popping a duplicate Dialog modal on top
+    const isProtectedRoute = location.pathname !== '/' && location.pathname !== '/about' && location.pathname !== '/terms-of-service' && location.pathname !== '/privacy-policy' && location.pathname !== '/terms' && location.pathname !== '/privacy';
+    if (!inline && isProtectedRoute && !isProfileComplete) {
+        return null;
+    }
+
+    // ---------------------------------------------------------------------------
+    // Render: Modal Mode (used on public pages)
     // ---------------------------------------------------------------------------
     return (
         <Dialog open={isOpen} onOpenChange={(open) => { if (!open) return; setIsOpen(open); }}>
             <DialogContent
                 hideDefaultClose={true}
-                className="sm:max-w-[480px] max-h-[90vh] flex flex-col p-0 gap-0 rounded-2xl overflow-hidden border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 shadow-2xl"
-                onPointerDownOutside={(e) => e.preventDefault()}
+                className="sm:max-w-[480px] max-h-[90vh] flex flex-col p-0 gap-0 rounded-2xl overflow-hidden border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 shadow-2xl z-[200]"
+                onPointerDownOutside={(e) => {
+                    const target = e.target as HTMLElement | null;
+                    if (
+                        target?.closest?.('[data-radix-popper-content-wrapper]') ||
+                        target?.closest?.('[role="listbox"]') ||
+                        target?.closest?.('[data-radix-select-viewport]') ||
+                        target?.closest?.('[data-radix-select-content]')
+                    ) {
+                        return;
+                    }
+                    e.preventDefault();
+                }}
                 onEscapeKeyDown={(e) => e.preventDefault()}
             >
                 {/* ── Header ── */}
@@ -593,120 +769,7 @@ export function ProfileCompletionModal({ forceOpen = false }: ProfileCompletionM
                     onScroll={handleScroll}
                     className="flex-1 overflow-y-auto px-6 py-5 space-y-5 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-emerald-500/60 dark:[&::-webkit-scrollbar-thumb]:bg-emerald-700/60 [&::-webkit-scrollbar-track]:transparent"
                 >
-                    {isHbtu && (
-                        <div className="flex items-start gap-2.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-500/30 p-3 text-xs text-emerald-800 dark:text-emerald-300">
-                            <School className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
-                            <div>
-                                <p className="font-bold">🎓 Official HBTU Student Email Verified</p>
-                                <p className="opacity-90">College is set to HBTU Kanpur. Please choose your branch and graduating year to proceed.</p>
-                            </div>
-                        </div>
-                    )}
-
-                    <form onSubmit={handleSubmit} className="space-y-4">
-                        {/* Name row */}
-                        <div className="grid grid-cols-2 gap-3">
-                            <FieldGroup>
-                                <FieldLabel htmlFor="firstName">First Name <span className="text-red-500">*</span></FieldLabel>
-                                <input
-                                    id="firstName"
-                                    value={firstName}
-                                    onChange={(e) => setFirstName(e.target.value)}
-                                    placeholder="e.g. Priyal"
-                                    className={inputClass}
-                                />
-                            </FieldGroup>
-                            <FieldGroup>
-                                <FieldLabel htmlFor="lastName">Last Name</FieldLabel>
-                                <input
-                                    id="lastName"
-                                    value={lastName}
-                                    onChange={(e) => setLastName(e.target.value)}
-                                    placeholder="e.g. Kumar"
-                                    className={inputClass}
-                                />
-                            </FieldGroup>
-                        </div>
-
-                        {/* College picker */}
-                        {renderCollegePicker()}
-
-                        {/* Branch - Explicit User Selection */}
-                        <FieldGroup>
-                            <FieldLabel htmlFor="branch">Branch <span className="text-red-500">*</span></FieldLabel>
-                            <Select value={branch} onValueChange={(v) => { setBranch(v); if (v !== "Other") setOtherBranch(""); }}>
-                                <SelectTrigger id="branch" className="w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 h-10 text-sm focus:ring-2 focus:ring-emerald-600">
-                                    <SelectValue placeholder="Select your branch" />
-                                </SelectTrigger>
-                                <SelectContent className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 max-h-60">
-                                    {BRANCH_OPTIONS.map((o) => (
-                                        <SelectItem key={o} value={o} className="text-slate-900 dark:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800 focus:bg-emerald-700 focus:text-white dark:focus:bg-emerald-700 dark:focus:text-white data-[highlighted]:bg-emerald-700 data-[highlighted]:text-white text-sm cursor-pointer">{o}</SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
-                            {branch === "Other" && (
-                                <input
-                                    id="otherBranch"
-                                    value={otherBranch}
-                                    onChange={(e) => setOtherBranch(e.target.value)}
-                                    placeholder="e.g. Architecture, MBA..."
-                                    className={inputClass + " mt-2"}
-                                />
-                            )}
-                        </FieldGroup>
-
-                        {/* Year */}
-                        <FieldGroup>
-                            <div className="flex items-center justify-between">
-                                <FieldLabel htmlFor="year">Batch / Graduating Year <span className="text-red-500">*</span></FieldLabel>
-                                {isHbtu && (
-                                    <span className="text-[11px] text-muted-foreground italic">Editable if Lateral/M.Tech</span>
-                                )}
-                            </div>
-                            <Select value={year} onValueChange={(v) => { setYear(v); if (v !== "Other") setOtherYear(""); }}>
-                                <SelectTrigger id="year" className="w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 h-10 text-sm focus:ring-2 focus:ring-emerald-600">
-                                    <SelectValue placeholder="Select your batch year" />
-                                </SelectTrigger>
-                                <SelectContent className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 max-h-60">
-                                    {YEAR_OPTIONS.map((o) => (
-                                        <SelectItem key={o.value} value={o.value} className="text-slate-900 dark:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800 focus:bg-emerald-700 focus:text-white dark:focus:bg-emerald-700 dark:focus:text-white data-[highlighted]:bg-emerald-700 data-[highlighted]:text-white text-sm cursor-pointer">{o.label}</SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
-                            {year === "Other" && (
-                                <input
-                                    id="otherYear"
-                                    value={otherYear}
-                                    onChange={(e) => setOtherYear(e.target.value)}
-                                    placeholder="e.g. Faculty, 2014..."
-                                    className={inputClass + " mt-2"}
-                                />
-                            )}
-                        </FieldGroup>
-
-                        {/* Terms and Conditions Checkbox */}
-                        <div className="flex items-start gap-2.5 p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60 mt-2">
-                            <Checkbox
-                                id="terms"
-                                checked={acceptedTerms}
-                                onCheckedChange={(c) => setAcceptedTerms(Boolean(c))}
-                                className="mt-0.5 data-[state=checked]:bg-emerald-600 data-[state=checked]:border-emerald-600"
-                            />
-                            <label htmlFor="terms" className="text-xs text-slate-600 dark:text-slate-300 leading-snug cursor-pointer select-none">
-                                I agree to the <Link to="/terms-conditions" target="_blank" className="text-emerald-600 dark:text-emerald-400 font-semibold underline hover:text-emerald-700">Terms of Service</Link> and <Link to="/privacy-policy" target="_blank" className="text-emerald-600 dark:text-emerald-400 font-semibold underline hover:text-emerald-700">Privacy Policy</Link> of College Study Hub.
-                            </label>
-                        </div>
-
-                        {/* Submit Button */}
-                        <button
-                            type="submit"
-                            disabled={isLoading || !acceptedTerms}
-                            className="w-full flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-600 to-violet-500 hover:from-emerald-700 hover:to-violet-600 text-white font-semibold py-3 text-sm transition-all duration-200 shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed mt-3"
-                        >
-                            {isLoading && <Loader2 className="h-4 w-4 animate-spin" />}
-                            Complete Profile & Proceed
-                        </button>
-                    </form>
+                    {renderFormContent()}
                 </div>
 
                 {/* Scroll indicator */}
