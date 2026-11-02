@@ -1,3 +1,4 @@
+// Landing page with hero carousel, statistics, and quick access
 import { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate, useLocation } from 'react-router-dom';
