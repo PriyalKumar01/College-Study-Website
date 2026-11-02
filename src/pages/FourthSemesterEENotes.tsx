@@ -1,3 +1,4 @@
+// 4th semester Electrical Engineering notes
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useAuth } from '@/contexts/AuthContext';
