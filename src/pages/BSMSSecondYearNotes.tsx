@@ -1,3 +1,4 @@
+// BS-MS 2nd year notes
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, BookOpen, Binary, Layers, CheckCircle2, Share2 } from 'lucide-react';
