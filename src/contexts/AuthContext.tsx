@@ -4,7 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { getCachedData, setCachedData, removeCachedData, DEFAULT_CACHE_TTL_MS } from '@/lib/cacheUtils';
 
 import { isDisposableDomain, validateEmail, isDirectlyAllowedDomain } from '@/utils/emailValidation';
-import { syncUserMetadataIfIncomplete, isValidAcademicField } from '@/utils/userMetadataHelper';
+import { syncUserMetadataIfIncomplete, isValidAcademicField, isNumericOrRollNumber } from '@/utils/userMetadataHelper';
 
 type UserRole = 'member' | 'admin' | 'owner';
 type ApprovalStatus = 'approved' | 'pending' | 'rejected';
@@ -254,6 +254,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       meta.profile_completed === true &&
       metaFirstName &&
       metaFirstName.toLowerCase() !== 'user' &&
+      !isNumericOrRollNumber(metaFirstName) &&
       isValidAcademicField(meta.college) &&
       isValidAcademicField(meta.branch) &&
       isValidAcademicField(meta.year)
@@ -283,6 +284,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         data &&
         dbFirst &&
         dbFirst.toLowerCase() !== 'user' &&
+        !isNumericOrRollNumber(dbFirst) &&
         isValidAcademicField(data.college) &&
         isValidAcademicField(data.branch) &&
         isValidAcademicField(data.year)
