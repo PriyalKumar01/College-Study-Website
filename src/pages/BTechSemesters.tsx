@@ -1,3 +1,4 @@
+// B.Tech semester list portal
 import { useNavigate, useParams } from "react-router-dom";
 import { ArrowLeft, BookOpen, Share2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
