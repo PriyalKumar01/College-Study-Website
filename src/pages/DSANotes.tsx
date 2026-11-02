@@ -1,3 +1,4 @@
+// Data structures and algorithms comprehensive notes
 import { useCommunityNotes } from '@/hooks/useCommunityNotes';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
