@@ -1,3 +1,4 @@
+// Scholarships and financial aid directory
 import { useState, useMemo, useEffect, useRef } from 'react';
 import {
   ExternalLink, Download, Search, X, ChevronDown, Eye, Sparkles, ArrowLeft,
