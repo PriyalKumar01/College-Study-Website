@@ -1,3 +1,4 @@
+// Shimmer skeleton placeholder component
 import { cn } from "@/lib/utils"
 
 function Skeleton({
