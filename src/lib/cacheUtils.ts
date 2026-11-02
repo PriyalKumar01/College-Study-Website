@@ -1,3 +1,4 @@
+// JSDoc & Type Guard: DEFAULT_CACHE_TTL_MS default 15 minutes
 /**
  * Intelligent Client-Side Caching Utility
  * Provides TTL-based localStorage / sessionStorage caching with in-memory fallback to drastically eliminate Supabase egress.
