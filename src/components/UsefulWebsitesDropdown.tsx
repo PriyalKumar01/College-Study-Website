@@ -1,3 +1,4 @@
+// Useful student websites dropdown
 import React, { useState } from 'react';
 import { ChevronDown, ExternalLink, Globe } from 'lucide-react';
 import {
