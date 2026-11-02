@@ -49,7 +49,9 @@ export const checkIsTrending = (item: Opportunity): boolean => {
   try {
     const trendingIds = JSON.parse(localStorage.getItem('trending_opportunity_ids') || '[]');
     if (trendingIds.includes(item.id)) return true;
-  } catch (_) {}
+  } catch (_) {
+    // Ignore storage parse error
+  }
   return false;
 };
 
@@ -591,7 +593,9 @@ function OpportunityModal({ open, onClose, editing, activeTab, onSaved }: {
             trendingIds = trendingIds.filter(id => id !== savedItem.id);
           }
           localStorage.setItem('trending_opportunity_ids', JSON.stringify(trendingIds));
-        } catch (_) {}
+        } catch (_) {
+          // Ignore local storage error
+        }
       }
 
       removeCachedData('opportunities');
@@ -901,7 +905,9 @@ const Opportunities = () => {
         const plans = data.map((p: any) => p.plan);
         setCachedData(`purchases_${user.id}`, plans);
       }
-    } catch (_) {}
+    } catch (_) {
+      // Ignore background purchase fetch error
+    }
   }, [user, isOwner]);
 
   useEffect(() => {
@@ -980,7 +986,9 @@ const Opportunities = () => {
         trendingIds = trendingIds.filter(id => id !== item.id);
       }
       localStorage.setItem('trending_opportunity_ids', JSON.stringify(trendingIds));
-    } catch (_) {}
+    } catch (_) {
+      // Ignore local storage error
+    }
 
     removeCachedData('opportunities');
 

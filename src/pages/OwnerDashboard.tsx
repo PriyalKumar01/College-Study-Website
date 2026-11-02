@@ -1297,7 +1297,7 @@ const OwnerDashboard = () => {
       
       if (error) throw error;
       
-      let total = data?.length || 0;
+      const total = data?.length || 0;
       let sent = 0;
       let failed = 0;
       
@@ -2034,7 +2034,9 @@ const OwnerDashboard = () => {
         if (!rpcErr) {
           removedViaRpc = true;
         }
-      } catch (rpcEx) {}
+      } catch (rpcEx) {
+        console.warn('RPC remove admin notice:', rpcEx);
+      }
 
       // 3. Direct DELETE attempt
       let directDeleted = false;
