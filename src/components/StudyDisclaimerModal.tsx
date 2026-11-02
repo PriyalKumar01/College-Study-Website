@@ -1,3 +1,4 @@
+// Study disclaimer modal component
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ShieldAlert, AlertTriangle, CheckCircle2, Scale } from 'lucide-react';
