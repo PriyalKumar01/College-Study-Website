@@ -71,7 +71,52 @@ export async function checkAndRecordDownload(
     const userEmail = user.email.toLowerCase().trim();
     const userId = user.id;
 
-    // 4. Query downloads for today
+    // 4. Owner / Administrator Exemption: Owner never hits download limits
+    const isOwner = userEmail === 'priyalkumar06@gmail.com';
+    let isUnlimited = isOwner;
+
+    if (!isUnlimited) {
+      try {
+        const cachedRole = sessionStorage.getItem(`role_${userEmail}`) || localStorage.getItem(`role_${userEmail}`);
+        if (cachedRole && (cachedRole.includes('owner') || cachedRole.includes('super_admin'))) {
+          isUnlimited = true;
+        } else {
+          const { data: roleRow } = await supabase
+            .from('admin_roles')
+            .select('role')
+            .eq('user_email', userEmail)
+            .neq('role', 'removed')
+            .maybeSingle();
+          if (roleRow?.role === 'owner' || roleRow?.role === 'super_admin') {
+            isUnlimited = true;
+          }
+        }
+      } catch {
+        // Fallback to isOwner
+      }
+    }
+
+    if (isUnlimited) {
+      // Record download log for tracking analytics, but bypass limit restrictions
+      const userName = user.user_metadata?.first_name || user.email.split('@')[0];
+      await supabase.from('note_downloads').insert({
+        user_id: userId,
+        user_email: userEmail,
+        user_name: userName,
+        note_title: title,
+        note_url: url,
+        download_timestamp: new Date().toISOString(),
+      });
+
+      return {
+        allowed: true,
+        message: 'Unlimited owner download permitted.',
+        dailyRemaining: 9999,
+        monthlyRemaining: 9999,
+      };
+    }
+
+    // 5. Query downloads for today (Regular Students)
     const { count: dailyCount, error: dailyErr } = await supabase
       .from('note_downloads')
       .select('id', { count: 'exact', head: true })

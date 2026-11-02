@@ -107,19 +107,25 @@ export const smartDownload = async (
     return;
   }
 
-  // 1. Supabase Storage / Community PDF: VIEW-ONLY (Preserves server bandwidth and enforces preview)
+  const userEmail = currentUser?.email?.toLowerCase().trim() || '';
+  const isOwner = userEmail === 'priyalkumar06@gmail.com';
+
+  // 1. Supabase Storage / Community PDF: VIEW-ONLY for students to preserve server bandwidth,
+  // while allowing Owner unlimited direct access
   if (isSupabaseStorageUrl(url)) {
-    alert('📖 Online Reading Mode:\n\nDirect downloading for community notes is restricted to protect monthly server limits. Opening in online preview mode for reading!');
+    if (!isOwner) {
+      alert('📖 Online Reading Mode:\n\nDirect downloading for community notes is restricted to protect monthly server limits. Opening in online preview mode for reading!');
+      viewInBrowser(url);
+      return;
+    }
+  }
+
+  if (!isGoogleDriveUrl(url) && !isOwner) {
     viewInBrowser(url);
     return;
   }
 
-  if (!isGoogleDriveUrl(url)) {
-    viewInBrowser(url);
-    return;
-  }
-
-  // 2. Enforce Verified User Download Limits for Google Drive (5/day, 20/month)
+  // 2. Enforce Verified User Download Limits for Google Drive (5/day, 20/month) - Owner is exempt
   const limitCheck = await checkAndRecordDownload(url, title, currentUser);
   if (!limitCheck.allowed) {
     alert(`🔒 Download Notice:\n\n${limitCheck.message}`);
