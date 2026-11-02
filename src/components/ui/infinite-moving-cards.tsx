@@ -1,3 +1,4 @@
+// Infinite horizontal marquee scrolling cards
 import { cn } from "@/lib/utils";
 import React, { useEffect, useState } from "react";
 
