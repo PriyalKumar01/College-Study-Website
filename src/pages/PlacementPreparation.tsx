@@ -1,3 +1,4 @@
+// Placement preparation kits and interview questions
 
 import { useCommunityNotes } from '@/hooks/useCommunityNotes';
 import { useAuth } from '@/contexts/AuthContext';
