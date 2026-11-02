@@ -56,7 +56,7 @@ export async function syncContributorCount({
   let cleanBranch = (branch || '').trim();
   let cleanBatch = (batch || '').trim().replace(/^'+/, ''); // normalize '28 -> 28
   const cleanEmail = (email || '').trim().toLowerCase();
-  let inputName = (name || '').trim();
+  const inputName = (name || '').trim();
 
   // Strip invalid/placeholder branch strings
   if (

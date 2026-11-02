@@ -174,7 +174,7 @@ export const useStudentStories = () => {
 
                         const rawPhoto = row[11]?.replace(/^"|"$/g, '').trim();
                         const firstPhoto = rawPhoto.split(',')[0].trim();
-                        let photoUrl = getGoogleDriveImage(firstPhoto);
+                        const photoUrl = getGoogleDriveImage(firstPhoto);
 
 
 
