@@ -1,3 +1,4 @@
+// Main navigation bar component
 import { useState, useRef, useEffect } from 'react';
 import { 
   Menu, Moon, Sun, LogOut, Home, 
