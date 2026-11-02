@@ -1,3 +1,4 @@
+// Theme management provider (light / dark / system)
 import { createContext, useContext, useEffect, useState } from 'react'
 
 type Theme = 'dark' | 'light' | 'system'
