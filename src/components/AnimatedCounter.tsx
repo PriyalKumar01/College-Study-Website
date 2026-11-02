@@ -1,3 +1,4 @@
+// Smooth animated counter component
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 
