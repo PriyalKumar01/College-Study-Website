@@ -1,3 +1,4 @@
+// 6th semester open electives notes
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Download, ArrowLeft, FileText, Play, ChevronDown, ChevronRight, ExternalLink } from 'lucide-react';
