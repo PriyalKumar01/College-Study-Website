@@ -1,3 +1,4 @@
+// Animated background canvas for auth pages
 import { motion } from 'framer-motion';
 import logoImg from '@/assets/college-study-hub-logo.png';
 
