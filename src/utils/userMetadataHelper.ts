@@ -149,8 +149,8 @@ export function buildStandardizedUserMetadata(
   const rawYear = (profileData?.year || meta.year || '').trim();
 
   let college = isValidAcademicField(rawCollege) ? rawCollege : '';
-  let branch = isValidAcademicField(rawBranch) ? rawBranch : '';
-  let year = isValidAcademicField(rawYear) ? rawYear : '';
+  const branch = isValidAcademicField(rawBranch) ? rawBranch : '';
+  const year = isValidAcademicField(rawYear) ? rawYear : '';
 
   if (isHbtu && !college) {
     college = 'HBTU Kanpur';
@@ -177,9 +177,7 @@ export function buildStandardizedUserMetadata(
     isValidAcademicField(year)
   );
 
-  const isComplete = Boolean(
-    hasAcademicFields && (meta.profile_completed === true || Boolean(profileData?.branch))
-  );
+  const isComplete = Boolean(hasAcademicFields);
 
   return {
     ...meta,
@@ -220,7 +218,9 @@ export async function syncUserMetadataIfIncomplete(
       if (data) {
         effectiveProfile = data;
       }
-    } catch {}
+    } catch {
+      // Ignore background fetch error
+    }
   }
 
   const standard = buildStandardizedUserMetadata(user, effectiveProfile);
