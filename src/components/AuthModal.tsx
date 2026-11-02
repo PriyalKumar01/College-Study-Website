@@ -15,7 +15,7 @@ import logoImg from '@/assets/college-study-hub-logo.png';
 import HCaptcha from '@hcaptcha/react-hcaptcha';
 import { BRANCH_OPTIONS, YEAR_OPTIONS } from './ProfileCompletionModal';
 import { validateEmail, isDisposableDomain, isDirectlyAllowedDomain } from '@/utils/emailValidation';
-import { isHbtuEmail, getHbtuSuggestedPassingYear } from '@/utils/userMetadataHelper';
+import { isHbtuEmail, getHbtuSuggestedPassingYear, isNumericOrRollNumber } from '@/utils/userMetadataHelper';
 import { sendCampaignBatch } from '@/lib/emailService';
 
 // hCaptcha Site Key provided by user
@@ -552,6 +552,13 @@ Simply click one of the buttons below to log in or sign up immediately.`,
     const resolvedCollege = collegeType === 'hbtu' ? 'HBTU Kanpur' : customCollege.trim();
 
     if (!firstName || !lastName || !resolvedCollege || !finalBranch || !finalYear) {
+      toast({ title: "Missing Fields", description: "Please fill all required fields.", variant: "destructive" });
+      return;
+    }
+
+    if (isNumericOrRollNumber(firstName.trim())) {
+      toast({ title: "Real Name Required", description: "Please enter your actual name, not your roll number.", variant: "destructive" });
+      return;
       toast({ title: "Missing Fields", description: "Please fill all required fields.", variant: "destructive" });
       return;
     }
