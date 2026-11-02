@@ -277,7 +277,7 @@ You can ask me anything about your courses and the platform:
         } catch {}
       }
 
-      let storedCode = localStorage.getItem("csh_ai_code") || sessionStorage.getItem("csh_ai_code") || "ACCESS#250";
+      const storedCode = localStorage.getItem("csh_ai_code") || sessionStorage.getItem("csh_ai_code") || "ACCESS#250";
       try {
         localStorage.setItem("csh_ai_code", storedCode);
         sessionStorage.setItem("csh_ai_code", storedCode);

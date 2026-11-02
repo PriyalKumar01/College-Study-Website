@@ -238,7 +238,7 @@ Click below to check out the details, themes, and registration links.`,
   const fetchUsers = async () => {
     setLoadingUsers(true);
     try {
-      let allUsers: UserActivityRecord[] = [];
+      const allUsers: UserActivityRecord[] = [];
       let page = 0;
       const pageSize = 1000;
       let hasMore = true;
@@ -320,7 +320,7 @@ Click below to check out the details, themes, and registration links.`,
   const fetchSignupAttempts = async () => {
     setLoadingAttempts(true);
     try {
-      let allAttempts: SignupAttemptRecord[] = [];
+      const allAttempts: SignupAttemptRecord[] = [];
       let page = 0;
       const pageSize = 1000;
       let hasMore = true;
@@ -1066,7 +1066,7 @@ Click below to check out the details, themes, and registration links.`,
                   <Key className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
                   <span className="text-xs font-bold text-foreground">Email Engine Status</span>
                 </div>
-                {Boolean(import.meta.env.VITE_BREVO_API_KEY || brevoApiKey) ? (
+                {import.meta.env.VITE_BREVO_API_KEY || brevoApiKey ? (
                   <Badge variant="outline" className="text-[10px] text-emerald-600 bg-emerald-500/10 border-emerald-500/30 flex items-center gap-1 font-semibold">
                     <CheckCircle2 className="h-3 w-3" /> Ready & Connected to Brevo
                   </Badge>
@@ -1077,7 +1077,7 @@ Click below to check out the details, themes, and registration links.`,
                 )}
               </div>
 
-              {Boolean(import.meta.env.VITE_BREVO_API_KEY) ? (
+              {import.meta.env.VITE_BREVO_API_KEY ? (
                 <p className="text-[11px] text-muted-foreground">
                   ✓ Your Brevo email engine is configured and active via environment variables. You do <strong>not</strong> need to fill anything in this step.
                 </p>
