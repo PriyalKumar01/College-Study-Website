@@ -1,3 +1,4 @@
+// BS-MS 3rd year notes
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, BookOpen, Layers, Sparkles, CheckCircle2, Share2 } from 'lucide-react';
