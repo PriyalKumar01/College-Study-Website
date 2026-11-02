@@ -1,3 +1,4 @@
+// B.Pharma pharmacy program notes
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Download, ArrowLeft, FileText, ChevronDown, ChevronRight, ExternalLink, Sparkles, BookOpen } from 'lucide-react';
