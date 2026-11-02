@@ -1,3 +1,4 @@
+// 1st year foundational engineering notes
 import { useState, useMemo, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useCommunityNotes } from '@/hooks/useCommunityNotes';
