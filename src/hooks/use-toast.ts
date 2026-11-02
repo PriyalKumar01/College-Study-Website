@@ -1,3 +1,4 @@
+// Toast notification state manager
 import * as React from "react"
 
 import type {
