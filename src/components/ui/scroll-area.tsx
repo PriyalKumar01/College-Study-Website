@@ -1,3 +1,4 @@
+// Custom scroll area with styled scrollbars
 import * as React from "react"
 import * as ScrollAreaPrimitive from "@radix-ui/react-scroll-area"
 
