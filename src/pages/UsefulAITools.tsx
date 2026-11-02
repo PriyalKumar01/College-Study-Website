@@ -1,3 +1,4 @@
+// 500+ curated AI tools directory
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
