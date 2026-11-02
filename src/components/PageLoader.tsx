@@ -1,3 +1,4 @@
+// Full page suspense loading skeleton
 export const PageLoader = () => {
   return (
     <div className="min-h-[70vh] flex flex-col items-center justify-center gap-3 w-full animate-in fade-in duration-300">
