@@ -96,12 +96,7 @@ BEGIN
     v_first_name !~ '^\d+$'
   );
 
-  v_profile_completed := (
-    v_has_all_fields AND (
-      COALESCE((p_raw->>'profile_completed')::boolean, false) = true OR
-      (p_prof_branch IS NOT NULL AND p_prof_branch <> '')
-    )
-  );
+  v_profile_completed := v_has_all_fields;
 
   RETURN COALESCE(p_raw, '{}'::jsonb) || jsonb_build_object(
     'name', v_full_name,
