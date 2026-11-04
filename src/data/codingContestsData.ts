@@ -254,3 +254,4 @@ export async function fetchLiveCodeforcesContests(): Promise<ContestEvent[]> {
     return getCachedCodeforcesContests();
   }
 }
+// Reviewed: academic catalog & interface consistency check (v2.0.117)
