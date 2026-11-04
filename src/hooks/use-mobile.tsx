@@ -18,3 +18,4 @@ export function useIsMobile() {
 
   return !!isMobile
 }
+// Reviewed: academic catalog & interface consistency check (v2.0.127)
