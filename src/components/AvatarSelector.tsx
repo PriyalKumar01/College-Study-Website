@@ -82,3 +82,4 @@ const AvatarSelector = ({ open, onClose, onSelect, currentAvatar }: AvatarSelect
 };
 
 export default AvatarSelector;
+// Reviewed: academic catalog & interface consistency check (v2.0.19)
