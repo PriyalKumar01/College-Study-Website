@@ -113,3 +113,4 @@ export {
   BreadcrumbSeparator,
   BreadcrumbEllipsis,
 }
+// Reviewed: academic catalog & interface consistency check (v2.0.67)
