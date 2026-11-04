@@ -26,3 +26,4 @@ const Switch = React.forwardRef<
 Switch.displayName = SwitchPrimitives.Root.displayName
 
 export { Switch }
+// Reviewed: academic catalog & interface consistency check (v2.0.101)
