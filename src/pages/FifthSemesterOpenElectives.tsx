@@ -12,6 +12,7 @@ import Footer from '@/components/Footer';
 import { PlaylistModal } from '@/components/PlaylistModal';
 import { smartDownload, viewInBrowser } from '@/lib/downloadUtils';
 import { useCommunityNotes } from '@/hooks/useCommunityNotes';
+import { matchesSubject } from '@/utils/subjectMatcher';
 
 const FifthSemesterOpenElectives = () => {
   const navigate = useNavigate();
@@ -238,15 +239,29 @@ const FifthSemesterOpenElectives = () => {
           {(() => {
             const staticNotes = (subject.notes || []).filter(n => n.url && n.url !== '#');
             const matchingCommunity = (communityNotes || []).filter((cn: any) => {
-              const sLower = (cn.subject || '').toLowerCase();
-              const subNameLower = subject.name.toLowerCase();
-              const subFullLower = subject.fullName.toLowerCase();
-              return sLower === subNameLower || sLower === subFullLower || sLower.includes(subNameLower) || (sLower.includes('open elective') && (cn.title || '').toLowerCase().includes(subNameLower));
+              const sLower = (cn.subject || '').toLowerCase().trim();
+              const subNameLower = subject.name.toLowerCase().trim();
+              const subFullLower = subject.fullName.toLowerCase().trim();
+              const subIdLower = subject.id.toLowerCase().trim();
+              return (
+                sLower === subNameLower ||
+                sLower === subFullLower ||
+                sLower === subIdLower ||
+                sLower.includes(subNameLower) ||
+                subNameLower.includes(sLower) ||
+                ((sLower.includes('open elective') || sLower.includes('oe')) && (
+                  (cn.title || '').toLowerCase().includes(subNameLower) ||
+                  (cn.description || '').toLowerCase().includes(subNameLower) ||
+                  sLower.includes(subNameLower)
+                )) ||
+                matchesSubject(cn.subject, subject.name, subject.id)
+              );
             }).map((cn: any) => ({
               title: cn.title,
               url: cn.file_url,
               isCommunity: true,
-              uploadedBy: cn.user_name || 'Community Member'
+              uploadedBy: cn.user_name || 'Community Member',
+              materialType: cn.material_type,
             }));
 
             const allNotes = [...staticNotes, ...matchingCommunity];
@@ -275,7 +290,15 @@ const FifthSemesterOpenElectives = () => {
                           <div className={`w-8 h-8 rounded-full ${subject.color} flex items-center justify-center text-white text-xs`}>
                             <FileText className="h-4 w-4" />
                           </div>
-                          <span className="text-[10px] font-bold tracking-wider uppercase bg-muted text-muted-foreground px-2 py-0.5 rounded">PDF</span>
+                          <span className={`text-[10px] font-bold tracking-wider uppercase px-2 py-0.5 rounded ${
+                            note.materialType === 'pyqs'
+                              ? 'bg-red-500/15 text-red-600 dark:text-red-400 border border-red-500/30'
+                              : note.materialType === 'assignments'
+                              ? 'bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/30'
+                              : 'bg-muted text-muted-foreground'
+                          }`}>
+                            {note.materialType === 'pyqs' ? "PYQ's" : note.materialType === 'assignments' ? "Assignment" : "PDF"}
+                          </span>
                         </div>
                         {(note as any).recommended && (
                           <span className="text-[10px] font-bold uppercase bg-amber-500/15 text-amber-600 dark:text-amber-400 px-2 py-0.5 rounded border border-amber-500/30">
@@ -334,16 +357,16 @@ const FifthSemesterOpenElectives = () => {
           >
             <ArrowLeft className="h-3.5 w-3.5" /> {source === 'bsms' ? 'Back to 5th Sem BS-MS' : 'Back to 5th Sem'}
           </button>
-          <p className="text-xs font-bold tracking-[0.2em] uppercase opacity-50 mb-3">Open Elective Subjects</p>
+          <p className="text-xs font-bold tracking-[0.2em] uppercase opacity-50 mb-3">Open Elective-I Subjects (OE-I)</p>
           <h1 className="text-4xl md:text-5xl font-serif leading-tight mb-3">
-            Open Electives<br />
-            <span className="opacity-60">5th Semester Study Resources</span>
+            Open Elective-I (OE-I)<br />
+            <span className="opacity-60">5th Semester Engineering Study Resources</span>
           </h1>
           <p className="text-sm opacity-50 mb-8">Choose your preferred open elective subject — One will be allotted based on GPA</p>
           <div className="flex flex-wrap gap-2">
             <span className="text-xs font-semibold tracking-wider uppercase border border-background/30 px-3 py-1.5 rounded">{source === 'bsms' ? 'BS-MS Electives' : 'B.Tech Electives'}</span>
             <span className="text-xs font-semibold tracking-wider uppercase border border-background/30 px-3 py-1.5 rounded">{subjects.length} Subjects Available</span>
-            <span className="text-xs font-semibold tracking-wider uppercase border border-background/30 px-3 py-1.5 rounded">5th Semester</span>
+            <span className="text-xs font-semibold tracking-wider uppercase border border-background/30 px-3 py-1.5 rounded">5th Semester (OE-I)</span>
           </div>
         </div>
       </div>
@@ -355,6 +378,21 @@ const FifthSemesterOpenElectives = () => {
             {subjects.map((subject, index) => {
               const playlists = getSubjectPlaylists(subject.id);
               const hasPlaylists = (playlists.detailed?.length > 0 && playlists.detailed[0].url !== '#') || (playlists.oneshot?.length > 0);
+              const cleanStr = (s: string) => s.toLowerCase().replace(/[^a-z0-9]/g, '');
+              const sClean = cleanStr(subject.name);
+              const sFullClean = subject.fullName ? cleanStr(subject.fullName) : '';
+              const commCount = communityNotes.filter(cn => {
+                const cnClean = cleanStr(cn.subject || '');
+                return matchesSubject(cn.subject, subject.name) ||
+                  (subject.fullName && matchesSubject(cn.subject, subject.fullName)) ||
+                  cnClean === sClean ||
+                  cnClean === sFullClean ||
+                  cnClean.includes(sClean) ||
+                  sClean.includes(cnClean) ||
+                  cn.subject.toLowerCase() === subject.id.toLowerCase();
+              }).length;
+              const staticCount = subject.notes[0]?.url === '#' ? 0 : subject.notes.length;
+              const totalFiles = staticCount + commCount;
 
               return (
                 <motion.div
@@ -373,7 +411,7 @@ const FifthSemesterOpenElectives = () => {
                       </div>
                       <div className="flex items-center gap-1.5">
                       <span className="text-xs font-bold text-white bg-green-500 px-2 py-0.5 rounded-full">
-                        {subject.notes[0].url === '#' ? 0 : subject.notes.length} files
+                        {totalFiles} files
                       </span>
                       <SubjectShareButton subjectName={subject.name} subjectId={subject.id} />
                     </div>
