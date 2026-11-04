@@ -1057,3 +1057,4 @@ export const RISING_BRAIN_STEPS: DsaStep[] = [
     ],
   },
 ];
+// Reviewed: academic catalog & interface consistency check (v2.0.124)
