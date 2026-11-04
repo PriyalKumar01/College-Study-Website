@@ -34,7 +34,7 @@ const SixthSemesterCHENotes = () => {
     { id: 'process', name: 'Process Dynamics & Control', icon: '🎛️', color: 'bg-green-600', notes: [{ title: 'Process Dynamics Notes', url: '#' }] },
     { id: 'biochem', name: 'Biochemical Engineering', icon: '🧬', color: 'bg-purple-500', notes: [{ title: 'Biochemical Engineering Notes', url: '#' }] },
     { id: 'petro', name: 'Petroleum Refining', icon: '🛢️', color: 'bg-gray-600', notes: [{ title: 'Petroleum Refining Notes', url: '#' }] },
-    { id: 'open-elective', name: 'Open Elective (OE)', icon: '🌟', color: 'bg-indigo-600', isSpecial: true, notes: [] },
+    { id: 'open-elective', name: 'Open Elective-I (OE-I)', icon: '🌟', color: 'bg-indigo-600', isSpecial: true, notes: [] },
     { id: 'pyqs', name: 'ALL MID & ESE PYQs', icon: '📚', color: 'bg-purple-500', notes: [{ title: "Mid Sem-1 PYQ'S (2025-26)", url: '#' }, { title: "Mid Sem-2 PYQ'S (2024-25)", url: '#' }, { title: "End Sem PYQ'S (2024-25)", url: '#' }] },
     { id: 'assignments', name: 'Assignments - All Subjects', icon: '📝', color: 'bg-yellow-500', notes: [] },
   ];
