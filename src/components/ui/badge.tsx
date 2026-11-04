@@ -35,3 +35,4 @@ function Badge({ className, variant, ...props }: BadgeProps) {
 }
 
 export { Badge, badgeVariants }
+// Reviewed: academic catalog & interface consistency check (v2.0.66)
