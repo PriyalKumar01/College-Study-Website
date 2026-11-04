@@ -416,18 +416,18 @@ const FifthSemesterMENotes = () => {
                 <div className="flex items-start justify-between mb-4">
                   <span className="text-2xl">📚</span>
                   <span className="text-[10px] font-bold tracking-wider uppercase bg-yellow-500 text-white px-2 py-0.5 rounded">
-                    8 Subjects
+                    OE-I
                   </span>
                 </div>
-                <h3 className="font-semibold text-foreground text-sm leading-snug mb-2">Open Electives</h3>
+                <h3 className="font-semibold text-foreground text-sm leading-snug mb-2">Open Elective-I</h3>
                 <p className="text-xs text-muted-foreground mb-4 flex-1">
-                  Choose from Business Ethics, Environment & Ecology, Soft Skills, and more...
+                  Choose from Cybersecurity, Business Ethics, Soft Skills, and more...
                 </p>
                 <div>
                   <button
                     className="w-full text-xs font-bold tracking-wider uppercase py-2.5 px-4 rounded-lg border border-yellow-500/30 hover:bg-yellow-500 hover:text-white transition-all duration-200"
                   >
-                    View All Electives
+                    View Electives
                   </button>
                 </div>
               </div>
