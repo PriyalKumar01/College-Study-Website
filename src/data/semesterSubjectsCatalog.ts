@@ -7784,94 +7784,224 @@ export const SEMESTER_SUBJECTS_CATALOG: Record<string, SemesterSubjectItem[]> = 
   ],
   "7": [
     {
-      "id": "cc",
-      "key": "cloudcomputing",
-      "name": "Cloud Computing",
-      "icon": "☁️",
-      "color": "bg-indigo-500",
-      "branches": [
-        "CSE/IT"
-      ],
-      "notes": [],
-      "playlists": {
-        "detailed": [],
-        "oneshot": []
-      }
-    },
-    {
-      "id": "cns",
-      "key": "cryptographynetworksecurity",
-      "name": "Cryptography & Network Security",
-      "icon": "📡",
+      "id": "seminar",
+      "key": "seminar",
+      "name": "SEMINAR",
+      "icon": "🎓",
       "color": "bg-blue-600",
-      "branches": [
-        "CSE/IT"
-      ],
+      "branches": ["CSE/IT"],
       "notes": [],
-      "playlists": {
-        "detailed": [],
-        "oneshot": []
-      }
+      "playlists": { "detailed": [], "oneshot": [] }
     },
     {
-      "id": "dept_elective",
-      "key": "departmentalelective",
-      "name": "Departmental Elective",
-      "icon": "📘",
-      "color": "bg-orange-500",
-      "branches": [
-        "CSE/IT"
-      ],
+      "id": "industrial_training",
+      "key": "industrialtraining",
+      "name": "INDUSTRIAL TRAINING",
+      "icon": "🏭",
+      "color": "bg-amber-600",
+      "branches": ["CSE/IT"],
       "notes": [],
-      "playlists": {
-        "detailed": [],
-        "oneshot": []
-      }
+      "playlists": { "detailed": [], "oneshot": [] }
     },
     {
-      "id": "ds",
-      "key": "distributedsystems",
-      "name": "Distributed Systems",
-      "icon": "🌐",
-      "color": "bg-purple-600",
-      "branches": [
-        "CSE/IT"
-      ],
+      "id": "minor_project",
+      "key": "minorproject",
+      "name": "MINOR PROJECT",
+      "icon": "💻",
+      "color": "bg-indigo-600",
+      "branches": ["CSE/IT"],
       "notes": [],
-      "playlists": {
-        "detailed": [],
-        "oneshot": []
-      }
+      "playlists": { "detailed": [], "oneshot": [] }
     },
     {
-      "id": "ml",
+      "id": "ml_pe4",
       "key": "machinelearning",
-      "name": "Machine Learning",
+      "name": "MACHINE LEARNING (PE-IV)",
       "icon": "🤖",
-      "color": "bg-green-600",
-      "branches": [
-        "CSE/IT"
-      ],
+      "color": "bg-emerald-600",
+      "branches": ["CSE/IT"],
       "notes": [],
-      "playlists": {
-        "detailed": [],
-        "oneshot": []
-      }
+      "playlists": { "detailed": [], "oneshot": [] }
     },
     {
-      "id": "open_elective_2",
-      "key": "openelective",
-      "name": "Open Elective-II",
-      "icon": "🌟",
-      "color": "bg-emerald-600",
-      "branches": [
-        "CSE/IT"
-      ],
+      "id": "spm_pe3",
+      "key": "softwareprojectmanagement",
+      "name": "SOFTWARE PROJECT MANAGEMENT (PE-III)",
+      "icon": "📊",
+      "color": "bg-purple-600",
+      "branches": ["CSE/IT"],
       "notes": [],
-      "playlists": {
-        "detailed": [],
-        "oneshot": []
-      }
+      "playlists": { "detailed": [], "oneshot": [] }
+    },
+    {
+      "id": "st_pe2",
+      "key": "softwaretesting",
+      "name": "SOFTWARE TESTING (PE-II)",
+      "icon": "🧪",
+      "color": "bg-rose-600",
+      "branches": ["CSE/IT"],
+      "notes": [],
+      "playlists": { "detailed": [], "oneshot": [] }
+    },
+    {
+      "id": "oe2",
+      "key": "openelective",
+      "name": "OE-II",
+      "icon": "🌟",
+      "color": "bg-teal-600",
+      "branches": ["CSE/IT"],
+      "notes": [],
+      "playlists": { "detailed": [], "oneshot": [] }
+    },
+    {
+      "id": "oe_obe401",
+      "key": "oe2_obe401",
+      "name": "Fundamentals of Enzyme Engineering (OBE401)",
+      "icon": "🧪",
+      "color": "bg-emerald-600",
+      "branches": ["All Branches (except BE)"],
+      "notes": [],
+      "playlists": { "detailed": [], "oneshot": [] }
+    },
+    {
+      "id": "oe_och401",
+      "key": "oe2_och401",
+      "name": "Energy Resources and Utilization (OCH401)",
+      "icon": "⚡",
+      "color": "bg-amber-600",
+      "branches": ["All Branches (except CHE)"],
+      "notes": [],
+      "playlists": { "detailed": [], "oneshot": [] }
+    },
+    {
+      "id": "oe_oce401",
+      "key": "oe2_oce401",
+      "name": "Environmental Pollution and Management (OCE401)",
+      "icon": "🌱",
+      "color": "bg-green-600",
+      "branches": ["All Branches (except CE)"],
+      "notes": [],
+      "playlists": { "detailed": [], "oneshot": [] }
+    },
+    {
+      "id": "oe_ocs401",
+      "key": "oe2_ocs401",
+      "name": "Artificial Intelligence (OCS401)",
+      "icon": "🤖",
+      "color": "bg-blue-600",
+      "branches": ["All Branches (except CSE)"],
+      "notes": [],
+      "playlists": { "detailed": [], "oneshot": [] }
+    },
+    {
+      "id": "oe_oee401",
+      "key": "oe2_oee401",
+      "name": "Power Plant Engineering (OEE401)",
+      "icon": "🏭",
+      "color": "bg-yellow-600",
+      "branches": ["All Branches (except EE)"],
+      "notes": [],
+      "playlists": { "detailed": [], "oneshot": [] }
+    },
+    {
+      "id": "oe_oet403",
+      "key": "oe2_oet403",
+      "name": "Communication Systems (OET403)",
+      "icon": "📡",
+      "color": "bg-indigo-600",
+      "branches": ["All Branches (except ET)"],
+      "notes": [],
+      "playlists": { "detailed": [], "oneshot": [] }
+    },
+    {
+      "id": "oe_oft401",
+      "key": "oe2_oft401",
+      "name": "Nutritional Aspects of Natural & Processed Foods (OFT401)",
+      "icon": "🥫",
+      "color": "bg-orange-600",
+      "branches": ["All Branches (except FT)"],
+      "notes": [],
+      "playlists": { "detailed": [], "oneshot": [] }
+    },
+    {
+      "id": "oe_olt401",
+      "key": "oe2_olt401",
+      "name": "Entrepreneurship for Leather Sector (OLT401)",
+      "icon": "💼",
+      "color": "bg-amber-700",
+      "branches": ["All Branches (except LFT)"],
+      "notes": [],
+      "playlists": { "detailed": [], "oneshot": [] }
+    },
+    {
+      "id": "oe_ome401",
+      "key": "oe2_ome401",
+      "name": "Composite Material (OME401)",
+      "icon": "🔩",
+      "color": "bg-slate-600",
+      "branches": ["All Branches (except ME)"],
+      "notes": [],
+      "playlists": { "detailed": [], "oneshot": [] }
+    },
+    {
+      "id": "oe_oot401",
+      "key": "oe2_oot401",
+      "name": "Technology of Soaps (OOT401)",
+      "icon": "🧼",
+      "color": "bg-teal-600",
+      "branches": ["All Branches (except OT)"],
+      "notes": [],
+      "playlists": { "detailed": [], "oneshot": [] }
+    },
+    {
+      "id": "oe_opt401",
+      "key": "oe2_opt401",
+      "name": "Basics of Paint Manufacturing (OPT401)",
+      "icon": "🎨",
+      "color": "bg-pink-600",
+      "branches": ["All Branches (except PT)"],
+      "notes": [],
+      "playlists": { "detailed": [], "oneshot": [] }
+    },
+    {
+      "id": "oe_opl401",
+      "key": "oe2_opl401",
+      "name": "Basics of Polymer Processing (OPL401)",
+      "icon": "🔬",
+      "color": "bg-cyan-600",
+      "branches": ["All Branches (except PL)"],
+      "notes": [],
+      "playlists": { "detailed": [], "oneshot": [] }
+    },
+    {
+      "id": "oe_oma401",
+      "key": "oe2_oma401",
+      "name": "Operation Research (OMA401)",
+      "icon": "📐",
+      "color": "bg-purple-600",
+      "branches": ["All Branches"],
+      "notes": [],
+      "playlists": { "detailed": [], "oneshot": [] }
+    },
+    {
+      "id": "oe_ohs401",
+      "key": "oe2_ohs401",
+      "name": "Business Intelligence (OHS401)",
+      "icon": "📊",
+      "color": "bg-violet-600",
+      "branches": ["All Branches"],
+      "notes": [],
+      "playlists": { "detailed": [], "oneshot": [] }
+    },
+    {
+      "id": "oe_ohs403",
+      "key": "oe2_ohs403",
+      "name": "Human Resource Management (OHS403)",
+      "icon": "👥",
+      "color": "bg-rose-600",
+      "branches": ["All Branches"],
+      "notes": [],
+      "playlists": { "detailed": [], "oneshot": [] }
     }
   ],
   "8": [
