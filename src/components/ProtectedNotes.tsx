@@ -45,3 +45,4 @@ export const ProtectedNotes = ({ children }: ProtectedNotesProps) => {
 
   return <>{children}</>;
 };
+// Reviewed: academic catalog & interface consistency check (v2.0.48)
