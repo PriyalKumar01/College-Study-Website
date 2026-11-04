@@ -68,7 +68,7 @@ const SixthSemesterPLNotes = () => {
     },
     {
       id: 'openElective',
-      name: 'Open Elective',
+      name: 'Open Elective-I (OE-I)',
       icon: '📚',
       color: 'bg-gradient-to-br from-purple-500 to-pink-500',
       isSpecial: true,
