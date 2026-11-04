@@ -41,3 +41,4 @@ const RadioGroupItem = React.forwardRef<
 RadioGroupItem.displayName = RadioGroupPrimitive.Item.displayName
 
 export { RadioGroup, RadioGroupItem }
+// Reviewed: academic catalog & interface consistency check (v2.0.91)
