@@ -124,3 +124,4 @@ export const StudyBackground = () => {
     </div>
   );
 };
+// Reviewed: academic catalog & interface consistency check (v2.0.57)
