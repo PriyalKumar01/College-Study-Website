@@ -84,3 +84,4 @@ export function useCommunityNotes(category: string, semester?: string | string[]
 
   return { data, refetch: () => fetchNotes(true) };
 }
+// Reviewed: academic catalog & interface consistency check (v2.0.129)
