@@ -102,3 +102,4 @@ export const GATE_NOTES_DATA: Record<string, { title: string; url: string; descr
 };
 
 export const COMMON_GATE_NOTES: { title: string; url: string; description?: string }[] = [];
+// Reviewed: academic catalog & interface consistency check (v2.0.121)
