@@ -25,3 +25,4 @@ const Slider = React.forwardRef<
 Slider.displayName = SliderPrimitive.Root.displayName
 
 export { Slider }
+// Reviewed: academic catalog & interface consistency check (v2.0.99)
