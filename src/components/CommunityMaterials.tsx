@@ -200,3 +200,4 @@ const MaterialCard = ({ material, index }: { material: CommunityMaterial; index:
 };
 
 export default CommunityMaterials;
+// Reviewed: academic catalog & interface consistency check (v2.0.27)
