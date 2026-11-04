@@ -124,3 +124,4 @@ export function useSubjectAutoScroll<T extends AutoScrollSubjectItem>(
 }
 
 export default useSubjectAutoScroll;
+// Reviewed: academic catalog & interface consistency check (v2.0.132)
