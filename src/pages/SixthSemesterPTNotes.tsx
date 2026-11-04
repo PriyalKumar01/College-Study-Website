@@ -35,7 +35,7 @@ const SixthSemesterPTNotes = () => {
     { id: 'inks', name: 'Technology of Printing Inks and Coatings', icon: '🖨️', color: 'bg-teal-500', notes: [] },
     { id: 'coatingsLab', name: 'Characterization, Analysis and Evaluation of Coatings Lab', icon: '🥼', color: 'bg-emerald-500', notes: [] },
     { id: 'basicPaint', name: 'Basic Paint Technology', icon: '🎨', color: 'bg-amber-500', notes: [] },
-    { id: 'openElective', name: 'Open Elective', icon: '📚', color: 'bg-gradient-to-br from-purple-500 to-pink-500', isSpecial: true, notes: [] },
+    { id: 'openElective', name: 'Open Elective-I (OE-I)', icon: '📚', color: 'bg-gradient-to-br from-purple-500 to-pink-500', isSpecial: true, notes: [] },
     { id: 'pyqs', name: 'ALL MID & ESE PYQs', icon: '❓', color: 'bg-red-500', notes: [] },
   ];
 
