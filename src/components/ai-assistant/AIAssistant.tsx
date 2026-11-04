@@ -113,3 +113,4 @@ const AIAssistant = () => {
 };
 
 export default AIAssistant;
+// Reviewed: academic catalog & interface consistency check (v2.0.9)
