@@ -76,6 +76,80 @@ export const MBA_YEARS = [
   { id: '2nd', label: '2nd Year', semesters: ['3rd Semester', '4th Semester'] },
 ];
 
+// ── Branch Categorization ──────────────────────────────────────────
+export const ENGINEERING_BRANCH_CODES = ['CSE', 'IT', 'CSE-AIML', 'ET', 'EE', 'ME', 'CE'];
+export const TECHNOLOGY_BRANCH_CODES = ['CHE', 'BE', 'LFT', 'PT', 'PL', 'FT', 'OT', 'BT'];
+
+export const isEngineeringBranch = (code?: string): boolean => {
+  if (!code) return false;
+  return ENGINEERING_BRANCH_CODES.includes(code.toUpperCase().trim());
+};
+
+export const isTechnologyBranch = (code?: string): boolean => {
+  if (!code) return false;
+  return TECHNOLOGY_BRANCH_CODES.includes(code.toUpperCase().trim());
+};
+
+// ── Open Elective Subjects Lists ─────────────────────────────────
+export interface OeSubjectItem {
+  id: string;
+  name: string;
+  fullName: string;
+}
+
+export const OPEN_ELECTIVE_I_ENGG_SUBJECTS: OeSubjectItem[] = [
+  { id: 'business-ethics', name: 'Business Ethics', fullName: 'Business Ethics & Corporate Governance' },
+  { id: 'soft-skills', name: 'Soft Skills & PD', fullName: 'Soft Skills & Personality Development' },
+  { id: 'critical-thinking', name: 'Critical & Logical Thinking', fullName: 'Critical & Logical Thinking' },
+  { id: 'cybersecurity', name: 'Cybersecurity', fullName: 'Cybersecurity' },
+  { id: 'solar-energy', name: 'Solar Energy', fullName: 'Solar Energy' },
+  { id: 'env-ecology', name: 'Environment & Ecology', fullName: 'Environment & Ecology' },
+  { id: 'discrete-maths', name: 'Discrete Maths', fullName: 'Discrete Mathematics' },
+  { id: 'non-conventional-energy', name: 'Non-Conventional Energy', fullName: 'Non-Conventional Energy Resources' },
+];
+
+export const OPEN_ELECTIVE_I_TECH_SUBJECTS: OeSubjectItem[] = [
+  { id: 'business-ethics', name: 'Business Ethics', fullName: 'Business Ethics & Corporate Governance' },
+  { id: 'soft-skills', name: 'Soft Skills & PD', fullName: 'Soft Skills & Personality Development' },
+  { id: 'critical-thinking', name: 'Critical & Logical Thinking', fullName: 'Critical & Logical Thinking' },
+  { id: 'cybersecurity', name: 'Cybersecurity', fullName: 'Cybersecurity' },
+  { id: 'tqm', name: 'Total Quality Management', fullName: 'Total Quality Management (TQM)' },
+  { id: 'cyber-law', name: 'Cyber Law & IT Security', fullName: 'Cyber Law and Information Security' },
+  { id: 'hvpe', name: 'Human Values & Ethics', fullName: 'Human Values & Professional Ethics (HVPE)' },
+];
+
+export const ALL_OPEN_ELECTIVE_I_SUBJECTS: OeSubjectItem[] = [
+  { id: 'business-ethics', name: 'Business Ethics', fullName: 'Business Ethics & Corporate Governance' },
+  { id: 'soft-skills', name: 'Soft Skills & PD', fullName: 'Soft Skills & Personality Development' },
+  { id: 'critical-thinking', name: 'Critical & Logical Thinking', fullName: 'Critical & Logical Thinking' },
+  { id: 'cybersecurity', name: 'Cybersecurity', fullName: 'Cybersecurity' },
+  { id: 'solar-energy', name: 'Solar Energy', fullName: 'Solar Energy' },
+  { id: 'env-ecology', name: 'Environment & Ecology', fullName: 'Environment & Ecology' },
+  { id: 'discrete-maths', name: 'Discrete Maths', fullName: 'Discrete Mathematics' },
+  { id: 'non-conventional-energy', name: 'Non-Conventional Energy', fullName: 'Non-Conventional Energy Resources' },
+  { id: 'tqm', name: 'Total Quality Management', fullName: 'Total Quality Management (TQM)' },
+  { id: 'cyber-law', name: 'Cyber Law & IT Security', fullName: 'Cyber Law and Information Security' },
+  { id: 'hvpe', name: 'Human Values & Ethics', fullName: 'Human Values & Professional Ethics (HVPE)' },
+];
+
+export const OPEN_ELECTIVE_II_SUBJECTS: OeSubjectItem[] = [
+  { id: 'obe401', name: 'Fundamentals of Enzyme Engineering (OBE401)', fullName: 'Biochemical Engineering — Fundamentals of Enzyme Engineering (OBE401)' },
+  { id: 'och401', name: 'Energy Resources and Utilization (OCH401)', fullName: 'Chemical Engineering — Energy Resources and Utilization (OCH401)' },
+  { id: 'oce401', name: 'Environmental Pollution and Management (OCE401)', fullName: 'Civil Engineering — Environmental Pollution and Management (OCE401)' },
+  { id: 'ocs401', name: 'Artificial Intelligence (OCS401)', fullName: 'Computer Science & Engineering — Artificial Intelligence (OCS401)' },
+  { id: 'oee401', name: 'Power Plant Engineering (OEE401)', fullName: 'Electrical Engineering — Power Plant Engineering (OEE401)' },
+  { id: 'oet403', name: 'Communication Systems (OET403)', fullName: 'Electronics Engineering — Communication Systems (OET403)' },
+  { id: 'oft401', name: 'Nutritional Aspects of Natural & Processed Foods (OFT401)', fullName: 'Food Technology — Nutritional Aspects of Natural & Processed Foods (OFT401)' },
+  { id: 'olt401', name: 'Entrepreneurship for Leather Sector (OLT401)', fullName: 'Leather Technology — Entrepreneurship for Leather Sector (OLT401)' },
+  { id: 'ome401', name: 'Composite Material (OME401)', fullName: 'Mechanical Engineering — Composite Material (OME401)' },
+  { id: 'oot401', name: 'Technology of Soaps (OOT401)', fullName: 'Oil Technology — Technology of Soaps (OOT401)' },
+  { id: 'opt401', name: 'Basics of Paint Manufacturing (OPT401)', fullName: 'Paint Technology — Basics of Paint Manufacturing (OPT401)' },
+  { id: 'opl401', name: 'Basics of Polymer Processing (OPL401)', fullName: 'Plastic Technology — Basics of Polymer Processing (OPL401)' },
+  { id: 'oma401', name: 'Operation Research (OMA401)', fullName: 'Mathematics — Operation Research (OMA401)' },
+  { id: 'ohs401', name: 'Business Intelligence (OHS401)', fullName: 'Humanities & Social Sciences — Business Intelligence (OHS401)' },
+  { id: 'ohs403', name: 'Human Resource Management (OHS403)', fullName: 'Humanities & Social Sciences — Human Resource Management (OHS403)' },
+];
+
 export const BTECH_BRANCHES = [
   { code: 'CSE', fullName: 'Computer Science & Engineering' },
   { code: 'IT', fullName: 'Information Technology' },
@@ -165,8 +239,8 @@ export const SUBJECTS: Record<string, SubjectInfo[]> = {
     { name: 'Data Science', fullName: 'Data Science' },
     { name: 'Computer Network', fullName: 'Computer Networks' },
     { name: 'DAA', fullName: 'Design and Analysis of Algorithms' },
-    { name: 'Open Elective', fullName: 'Open Elective (OE)' },
-    { name: 'Cybersecurity', fullName: 'Cybersecurity (Open Elective)' },
+    { name: 'Open Elective-I', fullName: 'Open Elective-I (OE-I)' },
+
   ],
   'CSE-6th Semester': [
     { name: 'Artificial Intelligence', fullName: 'Artificial Intelligence' },
@@ -175,7 +249,7 @@ export const SUBJECTS: Record<string, SubjectInfo[]> = {
     { name: 'Entrepreneurship', fullName: 'Entrepreneurship' },
     { name: 'Object Oriented System Design', fullName: 'Object Oriented System Design' },
     { name: 'Computer Graphics', fullName: 'Computer Graphics' },
-    { name: 'Cybersecurity', fullName: 'Cybersecurity (Open Elective)' },
+
   ],
 
   // ════════════════════════════════════════════════════════════════
@@ -203,7 +277,7 @@ export const SUBJECTS: Record<string, SubjectInfo[]> = {
     { name: 'DSP', fullName: 'Digital Signal Processing' },
     { name: 'Antenna & Wave Propagation', fullName: 'Antenna & Wave Propagation' },
     { name: 'Embedded System', fullName: 'Embedded System' },
-    { name: 'Open Elective', fullName: 'Open Elective (OE)' },
+    { name: 'Open Elective-I', fullName: 'Open Elective-I (OE-I)' },
   ],
   'ET-6th Semester': [
     { name: 'Optical Communication', fullName: 'Optical Communication' },
@@ -238,6 +312,7 @@ export const SUBJECTS: Record<string, SubjectInfo[]> = {
     { name: 'Control Systems', fullName: 'Control Systems' },
     { name: 'Micro-Processors', fullName: 'Micro-Processors' },
     { name: 'Utilization of Electrical Energy & Traction', fullName: 'Utilization of Electrical Energy & Traction' },
+    { name: 'Open Elective-I', fullName: 'Open Elective-I (OE-I)' },
   ],
   'EE-6th Semester': [
     { name: 'Power Electronics', fullName: 'Power Electronics' },
@@ -272,7 +347,7 @@ export const SUBJECTS: Record<string, SubjectInfo[]> = {
     { name: 'Industrial Engineering', fullName: 'Industrial Engineering' },
     { name: 'CAD/CAM', fullName: 'Computer Aided Design & Manufacturing' },
     { name: 'Dynamics of Machinery', fullName: 'Dynamics of Machinery' },
-    { name: 'Open Elective', fullName: 'Open Elective (OE)' },
+    { name: 'Open Elective-I', fullName: 'Open Elective-I (OE-I)' },
   ],
 
   // ════════════════════════════════════════════════════════════════
@@ -299,7 +374,7 @@ export const SUBJECTS: Record<string, SubjectInfo[]> = {
     { name: 'Environmental Engineering', fullName: 'Environmental Engineering' },
     { name: 'Estimation & Costing', fullName: 'Estimation & Costing' },
     { name: 'Steel Structures', fullName: 'Steel Structures' },
-    { name: 'Open Elective', fullName: 'Open Elective (OE)' },
+    { name: 'Open Elective-I', fullName: 'Open Elective-I (OE-I)' },
   ],
 
   // ════════════════════════════════════════════════════════════════
@@ -332,7 +407,7 @@ export const SUBJECTS: Record<string, SubjectInfo[]> = {
     { name: 'Process Equipment Design', fullName: 'Process Equipment Design' },
     { name: 'Petroleum Refining', fullName: 'Petroleum Refining & Petrochemicals' },
     { name: 'Safety & Hazard Management', fullName: 'Safety & Hazard Management' },
-    { name: 'Open Elective', fullName: 'Open Elective (OE)' },
+    { name: 'Open Elective-I', fullName: 'Open Elective-I (OE-I)' },
   ],
 
   // ════════════════════════════════════════════════════════════════
@@ -361,7 +436,7 @@ export const SUBJECTS: Record<string, SubjectInfo[]> = {
     { name: 'Bioreactor Design', fullName: 'Bioreactor Design & Analysis' },
     { name: 'Bioseparation Engineering', fullName: 'Bioseparation Engineering' },
     { name: 'Bioprocess Plant Design', fullName: 'Bioprocess Plant Design' },
-    { name: 'Open Elective', fullName: 'Open Elective (OE)' },
+    { name: 'Open Elective-I', fullName: 'Open Elective-I (OE-I)' },
   ],
 
   'LFT-3rd Semester': [
@@ -387,7 +462,7 @@ export const SUBJECTS: Record<string, SubjectInfo[]> = {
     { name: 'Advanced Leather Processing', fullName: 'Advanced Leather Processing' },
     { name: 'Footwear Machinery & Automation', fullName: 'Footwear Machinery & Automation' },
     { name: 'Leather Product Design & Styling', fullName: 'Leather Product Design & Styling' },
-    { name: 'Open Elective', fullName: 'Open Elective (OE)' },
+    { name: 'Open Elective-I', fullName: 'Open Elective-I (OE-I)' },
   ],
 
   // Paint Technology (PT)
@@ -425,7 +500,7 @@ export const SUBJECTS: Record<string, SubjectInfo[]> = {
     { name: 'Technology of Printing Inks and Coatings', fullName: 'Technology of Printing Inks and Coatings' },
     { name: 'Characterization, Analysis and Evaluation of Coatings Lab', fullName: 'Characterization, Analysis and Evaluation of Coatings Lab' },
     { name: 'Basic Paint Technology', fullName: 'Basic Paint Technology' },
-    { name: 'Open Elective', fullName: 'Open Elective (OE)' },
+    { name: 'Open Elective-I', fullName: 'Open Elective-I (OE-I)' },
   ],
 
   // Plastic Technology (PL)
@@ -463,7 +538,7 @@ export const SUBJECTS: Record<string, SubjectInfo[]> = {
     { name: 'Polymer Composite', fullName: 'Polymer Composite' },
     { name: 'Polymer Characterization Lab', fullName: 'Polymer Characterization Lab' },
     { name: 'Introduction to Polymer Science', fullName: 'Introduction to Polymer Science' },
-    { name: 'Open Elective', fullName: 'Open Elective (OE)' },
+    { name: 'Open Elective-I', fullName: 'Open Elective-I (OE-I)' },
   ],
 
   // BioTechnology (BT)
@@ -496,7 +571,7 @@ export const SUBJECTS: Record<string, SubjectInfo[]> = {
     { name: 'Genetic Engineering', fullName: 'Genetic Engineering' },
     { name: 'Immunotechnology', fullName: 'Immunotechnology' },
     { name: 'Bioinformatics', fullName: 'Bioinformatics' },
-    { name: 'Open Elective', fullName: 'Open Elective (OE)' },
+    { name: 'Open Elective-I', fullName: 'Open Elective-I (OE-I)' },
   ],
 
   'FT-3rd Semester': [
@@ -523,7 +598,7 @@ export const SUBJECTS: Record<string, SubjectInfo[]> = {
     { name: 'Food Process Equipment Design', fullName: 'Food Process Equipment Design' },
     { name: 'Bakery & Confectionery Technology', fullName: 'Bakery & Confectionery Technology' },
     { name: 'Beverage Technology', fullName: 'Beverage Technology' },
-    { name: 'Open Elective', fullName: 'Open Elective (OE)' },
+    { name: 'Open Elective-I', fullName: 'Open Elective-I (OE-I)' },
   ],
 
   'OT-3rd Semester': [
@@ -550,89 +625,112 @@ export const SUBJECTS: Record<string, SubjectInfo[]> = {
     { name: 'Surfactant & Detergent Technology', fullName: 'Surfactant & Detergent Technology' },
     { name: 'Oleochemicals & Bio-fuels', fullName: 'Oleochemicals & Bio-fuels' },
     { name: 'Plant Layout & Energy Conservation', fullName: 'Plant Layout & Energy Conservation' },
-    { name: 'Open Elective', fullName: 'Open Elective (OE)' },
+    { name: 'Open Elective-I', fullName: 'Open Elective-I (OE-I)' },
   ],
 
   // ════════════════════════════════════════════════════════════════
   // 7th Semester (All 13 Branches with Open Elective-II / OE2)
   // ════════════════════════════════════════════════════════════════
   'CSE-7th Semester': [
-    { name: 'Cloud Computing', fullName: 'Cloud Computing' },
-    { name: 'Cryptography & Network Security', fullName: 'Cryptography & Network Security' },
-    { name: 'Machine Learning', fullName: 'Machine Learning' },
-    { name: 'Open Elective-II', fullName: 'Open Elective-II (OE2)' },
+    { name: 'SEMINAR', fullName: 'SEMINAR' },
+    { name: 'INDUSTRIAL TRAINING', fullName: 'INDUSTRIAL TRAINING' },
+    { name: 'MINOR PROJECT', fullName: 'MINOR PROJECT' },
+    { name: 'MACHINE LEARNING (PE-IV)', fullName: 'MACHINE LEARNING (PE-IV)' },
+    { name: 'SOFTWARE PROJECT MANAGEMENT (PE-III)', fullName: 'SOFTWARE PROJECT MANAGEMENT (PE-III)' },
+    { name: 'SOFTWARE TESTING (PE-II)', fullName: 'SOFTWARE TESTING (PE-II)' },
+    { name: 'OE-II', fullName: 'OE-II (Open Elective-II)' },
   ],
   'IT-7th Semester': [
     { name: 'Cloud Computing', fullName: 'Cloud Computing' },
     { name: 'Information Security', fullName: 'Information Security' },
     { name: 'Machine Learning', fullName: 'Machine Learning' },
-    { name: 'Open Elective-II', fullName: 'Open Elective-II (OE2)' },
+    { name: 'Open Elective-II', fullName: 'Open Elective-II (OE-II)' },
   ],
   'CSE-AIML-7th Semester': [
     { name: 'Deep Learning', fullName: 'Deep Learning' },
     { name: 'Natural Language Processing', fullName: 'Natural Language Processing' },
     { name: 'Computer Vision', fullName: 'Computer Vision' },
-    { name: 'Open Elective-II', fullName: 'Open Elective-II (OE2)' },
+    { name: 'Open Elective-II', fullName: 'Open Elective-II (OE-II)' },
   ],
   'ET-7th Semester': [
     { name: 'Wireless Communication', fullName: 'Wireless Communication' },
     { name: 'Embedded System Design', fullName: 'Embedded System Design' },
-    { name: 'Open Elective-II', fullName: 'Open Elective-II (OE2)' },
+    { name: 'Open Elective-II', fullName: 'Open Elective-II (OE-II)' },
   ],
   'EE-7th Semester': [
     { name: 'Electric Drives & Control', fullName: 'Electric Drives & Control' },
     { name: 'Renewable Energy Systems', fullName: 'Renewable Energy Systems' },
-    { name: 'Open Elective-II', fullName: 'Open Elective-II (OE2)' },
+    { name: 'Open Elective-II', fullName: 'Open Elective-II (OE-II)' },
   ],
   'ME-7th Semester': [
     { name: 'Automobile Engineering', fullName: 'Automobile Engineering' },
     { name: 'Power Plant Engineering', fullName: 'Power Plant Engineering' },
-    { name: 'Open Elective-II', fullName: 'Open Elective-II (OE2)' },
+    { name: 'Open Elective-II', fullName: 'Open Elective-II (OE-II)' },
   ],
   'CE-7th Semester': [
     { name: 'Bridge Engineering', fullName: 'Bridge Engineering' },
     { name: 'Earthquake Engineering', fullName: 'Earthquake Engineering' },
-    { name: 'Open Elective-II', fullName: 'Open Elective-II (OE2)' },
+    { name: 'Open Elective-II', fullName: 'Open Elective-II (OE-II)' },
   ],
   'CHE-7th Semester': [
     { name: 'Petrochemical Engineering', fullName: 'Petrochemical Engineering' },
     { name: 'Transport Phenomena-II', fullName: 'Transport Phenomena-II' },
-    { name: 'Open Elective-II', fullName: 'Open Elective-II (OE2)' },
   ],
   'BE-7th Semester': [
     { name: 'Downstream Processing', fullName: 'Downstream Processing' },
     { name: 'Biochemical Plant Design', fullName: 'Biochemical Plant Design' },
-    { name: 'Open Elective-II', fullName: 'Open Elective-II (OE2)' },
   ],
   'LFT-7th Semester': [
     { name: 'Advanced Footwear Design', fullName: 'Advanced Footwear Design' },
     { name: 'Leather Industry Waste Management', fullName: 'Leather Industry Waste Management' },
-    { name: 'Open Elective-II', fullName: 'Open Elective-II (OE2)' },
   ],
   'PT-7th Semester': [
     { name: 'Specialty Coatings', fullName: 'Specialty & High Performance Coatings' },
     { name: 'Corrosion Control', fullName: 'Corrosion Science & Engineering' },
-    { name: 'Open Elective-II', fullName: 'Open Elective-II (OE2)' },
   ],
   'PL-7th Semester': [
     { name: 'Polymer Blends & Alloys', fullName: 'Polymer Blends & Alloys' },
     { name: 'Advanced Polymer Processing', fullName: 'Advanced Polymer Processing' },
-    { name: 'Open Elective-II', fullName: 'Open Elective-II (OE2)' },
   ],
   'FT-7th Semester': [
     { name: 'Food Biotechnology', fullName: 'Food Biotechnology' },
     { name: 'Food Plant Layout & Design', fullName: 'Food Plant Layout & Design' },
-    { name: 'Open Elective-II', fullName: 'Open Elective-II (OE2)' },
   ],
   'OT-7th Semester': [
     { name: 'Fat Modification Processes', fullName: 'Fat Modification Processes' },
     { name: 'Quality Assurance in Oil Industry', fullName: 'Quality Assurance in Oil Industry' },
-    { name: 'Open Elective-II', fullName: 'Open Elective-II (OE2)' },
   ],
   'BT-7th Semester': [
     { name: 'Stem Cell & Tissue Engineering', fullName: 'Stem Cell & Tissue Engineering' },
     { name: 'Metabolic Engineering', fullName: 'Metabolic Engineering' },
-    { name: 'Open Elective-II', fullName: 'Open Elective-II (OE2)' },
+  ],
+
+  // ════════════════════════════════════════════════════════════════
+  // 8th Semester (Technology Branches with Open Elective-II)
+  // ════════════════════════════════════════════════════════════════
+  'CHE-8th Semester': [
+    { name: 'Open Elective-II', fullName: 'Open Elective-II (OE-II)' },
+  ],
+  'BE-8th Semester': [
+    { name: 'Open Elective-II', fullName: 'Open Elective-II (OE-II)' },
+  ],
+  'LFT-8th Semester': [
+    { name: 'Open Elective-II', fullName: 'Open Elective-II (OE-II)' },
+  ],
+  'PT-8th Semester': [
+    { name: 'Open Elective-II', fullName: 'Open Elective-II (OE-II)' },
+  ],
+  'PL-8th Semester': [
+    { name: 'Open Elective-II', fullName: 'Open Elective-II (OE-II)' },
+  ],
+  'FT-8th Semester': [
+    { name: 'Open Elective-II', fullName: 'Open Elective-II (OE-II)' },
+  ],
+  'OT-8th Semester': [
+    { name: 'Open Elective-II', fullName: 'Open Elective-II (OE-II)' },
+  ],
+  'BT-8th Semester': [
+    { name: 'Open Elective-II', fullName: 'Open Elective-II (OE-II)' },
   ],
 
 
