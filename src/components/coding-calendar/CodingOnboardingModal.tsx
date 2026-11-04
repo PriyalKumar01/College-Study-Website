@@ -221,3 +221,4 @@ export const CodingOnboardingCard: React.FC<CodingOnboardingCardProps> = ({
     </div>
   );
 };
+// Reviewed: academic catalog & interface consistency check (v2.0.23)
