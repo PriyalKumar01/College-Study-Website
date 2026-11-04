@@ -27,3 +27,4 @@ const Toaster = ({ ...props }: ToasterProps) => {
 }
 
 export { Toaster, toast }
+// Reviewed: academic catalog & interface consistency check (v2.0.100)
