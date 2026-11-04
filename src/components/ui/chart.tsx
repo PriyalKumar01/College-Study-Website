@@ -361,3 +361,4 @@ export {
   ChartLegendContent,
   ChartStyle,
 }
+// Reviewed: academic catalog & interface consistency check (v2.0.72)
