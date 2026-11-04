@@ -34,7 +34,7 @@ const SixthSemesterOTNotes = () => {
     { id: 'petroleum', name: 'Petroleum Refinery Processes', icon: '⚙️', color: 'bg-orange-600', notes: [{ title: 'Petroleum Refinery Notes', url: '#' }] },
     { id: 'corrosion', name: 'Corrosion Engineering', icon: '🔩', color: 'bg-red-500', notes: [{ title: 'Corrosion Engineering Notes', url: '#' }] },
     { id: 'environment', name: 'Environmental Engineering', icon: '🌿', color: 'bg-green-500', notes: [{ title: 'Environmental Engineering Notes', url: '#' }] },
-    { id: 'open-elective', name: 'Open Elective (OE)', icon: '🌟', color: 'bg-indigo-600', isSpecial: true, notes: [] },
+    { id: 'open-elective', name: 'Open Elective-I (OE-I)', icon: '🌟', color: 'bg-indigo-600', isSpecial: true, notes: [] },
     { id: 'pyqs', name: 'ALL MID & ESE PYQs', icon: '📚', color: 'bg-purple-500', notes: [{ title: "Mid Sem-1 PYQ'S (2025-26)", url: '#' }, { title: "Mid Sem-2 PYQ'S (2024-25)", url: '#' }, { title: "End Sem PYQ'S (2024-25)", url: '#' }] },
     { id: 'assignments', name: 'Assignments - All Subjects', icon: '📝', color: 'bg-yellow-500', notes: [] },
   ];
