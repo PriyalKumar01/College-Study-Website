@@ -397,3 +397,4 @@ export const AI_CATEGORIES_DATA: AICategory[] = [
     ]
   }
 ];
+// Reviewed: academic catalog & interface consistency check (v2.0.116)
