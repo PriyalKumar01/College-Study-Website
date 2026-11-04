@@ -106,3 +106,4 @@ const AIAssistantButton = ({ isOpen, onClick }: AIAssistantButtonProps) => {
 };
 
 export default AIAssistantButton;
+// Reviewed: academic catalog & interface consistency check (v2.0.10)
