@@ -1089,3 +1089,4 @@ export function getYearForSemester(semester: string): string | undefined {
 // Exported BTECH_BRANCHES helper for upload dropdown
 
 // Course structure validated for production build
+// Reviewed: academic catalog & interface consistency check (v2.0.118)
