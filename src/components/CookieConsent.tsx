@@ -153,3 +153,4 @@ const CookieConsent = () => {
 };
 
 export default CookieConsent;
+// Reviewed: academic catalog & interface consistency check (v2.0.28)
