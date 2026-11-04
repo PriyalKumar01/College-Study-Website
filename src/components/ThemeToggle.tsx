@@ -20,3 +20,4 @@ const ThemeToggle = () => {
 };
 
 export default ThemeToggle;
+// Reviewed: academic catalog & interface consistency check (v2.0.60)
