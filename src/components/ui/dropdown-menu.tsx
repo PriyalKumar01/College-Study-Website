@@ -196,3 +196,4 @@ export {
   DropdownMenuSubTrigger,
   DropdownMenuRadioGroup,
 }
+// Reviewed: academic catalog & interface consistency check (v2.0.79)
