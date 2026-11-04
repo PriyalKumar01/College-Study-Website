@@ -1183,3 +1183,4 @@ export const DsaSheetsHub: React.FC<DsaSheetsHubProps> = ({
     </div>
   );
 };
+// Reviewed: academic catalog & interface consistency check (v2.0.25)
