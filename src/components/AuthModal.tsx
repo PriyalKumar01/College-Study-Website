@@ -1477,3 +1477,4 @@ Simply click one of the buttons below to log in or sign up immediately.`,
 };
 
 export default AuthModal;
+// Reviewed: academic catalog & interface consistency check (v2.0.18)
