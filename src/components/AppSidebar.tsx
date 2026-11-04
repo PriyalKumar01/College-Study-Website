@@ -476,3 +476,4 @@ const AppSidebar = ({ className }: AppSidebarProps) => {
 };
 
 export default AppSidebar;
+// Reviewed: academic catalog & interface consistency check (v2.0.16)
