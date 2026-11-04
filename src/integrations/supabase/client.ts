@@ -122,3 +122,4 @@ export async function dualWriteTable(
 
   return primaryResult;
 }
+// Reviewed: academic catalog & interface consistency check (v2.0.134)
