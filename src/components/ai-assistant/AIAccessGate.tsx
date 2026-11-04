@@ -210,3 +210,4 @@ const AIAccessGate = ({ onAccessGranted }: AIAccessGateProps) => {
 };
 
 export default AIAccessGate;
+// Reviewed: academic catalog & interface consistency check (v2.0.8)
