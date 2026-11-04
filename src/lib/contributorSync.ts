@@ -52,11 +52,25 @@ export async function syncContributorCount({
   branch?: string | null;
   batch?: string | null;
 }): Promise<ContributorSyncResult | null> {
+  const cleanEmail = (email || '').trim().toLowerCase();
+  const inputName = (name || '').trim();
+
+  // OWNER CHECK: Never add or count the platform owner in the contributor list
+  const isOwnerAccount =
+    cleanEmail === 'priyalkumar06@gmail.com' ||
+    cleanEmail.includes('priyalkumar') ||
+    inputName.toLowerCase() === 'priyal' ||
+    inputName.toLowerCase().startsWith('priyal ') ||
+    inputName.toLowerCase() === 'owner';
+
+  if (isOwnerAccount) {
+    console.log('[syncContributorCount] Platform owner detected — skipping contributor list addition.');
+    return null;
+  }
+
   const cleanCount = Math.max(1, Math.round(Number(count) || 1));
   let cleanBranch = (branch || '').trim();
   let cleanBatch = (batch || '').trim().replace(/^'+/, ''); // normalize '28 -> 28
-  const cleanEmail = (email || '').trim().toLowerCase();
-  const inputName = (name || '').trim();
 
   // Strip invalid/placeholder branch strings
   if (
@@ -79,10 +93,20 @@ export async function syncContributorCount({
   try {
     const { data: adminRoles } = await (supabase as any)
       .from('admin_roles')
-      .select('user_name, user_email')
+      .select('user_name, user_email, role')
       .neq('role', 'removed');
 
     if (adminRoles && Array.isArray(adminRoles) && adminRoles.length > 0) {
+      // If role is owner or super_admin, skip immediately
+      const ownerAdmin = adminRoles.find((a: any) => 
+        (cleanEmail && a.user_email?.toLowerCase() === cleanEmail) && 
+        (a.role === 'owner' || a.role === 'super_admin' || a.user_email?.toLowerCase() === 'priyalkumar06@gmail.com')
+      );
+      if (ownerAdmin) {
+        console.log('[syncContributorCount] Admin is owner, skipping contributor sync.');
+        return null;
+      }
+
       // Find matching admin by email or name
       const matchedAdmin = adminRoles.find((a: any) => {
         const aEmail = (a.user_email || '').toLowerCase().trim();
@@ -136,26 +160,55 @@ export async function syncContributorCount({
     // 2. Fetch current contributors to perform robust fuzzy & exact matching
     const { data: existingContribs, error: fetchErr } = await (supabase as any)
       .from('contributors')
-      .select('id, name, branch, batch, coins');
+      .select('id, name, branch, batch, coins, email');
 
     if (!fetchErr && Array.isArray(existingContribs) && existingContribs.length > 0) {
       const targetLower = resolvedName.toLowerCase().replace(/\s+/g, ' ').trim();
       const targetParts = targetLower.split(' ').filter(Boolean);
+      const targetFirstName = targetParts[0] || '';
+      const normTarget = targetLower.replace(/[^a-z0-9]/g, '');
 
-      // Match Strategy A: Exact match (case-insensitive & whitespace trimmed)
-      let matched = existingContribs.find((c: any) => {
-        const cLower = (c.name || '').toLowerCase().replace(/\s+/g, ' ').trim();
-        return cLower === targetLower;
-      });
+      // Helper to check name equivalence (e.g. kanujiya vs kanaujia)
+      const isNameEquivalent = (a: string, b: string) => {
+        const aClean = a.toLowerCase().replace(/kanujiya/g, 'kanaujia').replace(/[^a-z0-9]/g, '');
+        const bClean = b.toLowerCase().replace(/kanujiya/g, 'kanaujia').replace(/[^a-z0-9]/g, '');
+        return aClean === bClean || (aClean.length > 4 && (aClean.includes(bClean) || bClean.includes(aClean)));
+      };
 
-      // Match Strategy B: Admin team matching or first/last name overlap
-      if (!matched && targetParts.length > 0) {
+      // Match Strategy 1: Email match (highest fidelity)
+      let matched = cleanEmail
+        ? existingContribs.find((c: any) => c.email && c.email.toLowerCase().trim() === cleanEmail)
+        : null;
+
+      // Match Strategy 2: Exact or normalized name equivalence (handles spelling variants like Kanujiya / Kanaujia)
+      if (!matched) {
         matched = existingContribs.find((c: any) => {
           const cLower = (c.name || '').toLowerCase().replace(/\s+/g, ' ').trim();
           if (cLower === targetLower) return true;
-          // E.g. "Rahul" matches "Rahul Singh" or "Devanshi" matches "Devanshi Saxena"
-          if (targetParts.length === 1 && cLower.startsWith(targetParts[0] + ' ')) return true;
-          if (cLower.split(' ').length === 1 && targetLower.startsWith(cLower + ' ')) return true;
+          return isNameEquivalent(c.name || '', resolvedName);
+        });
+      }
+
+      // Match Strategy 3: Admin name or first name + branch match
+      if (!matched && targetFirstName.length > 2) {
+        matched = existingContribs.find((c: any) => {
+          const cLower = (c.name || '').toLowerCase().replace(/\s+/g, ' ').trim();
+          const cFirst = cLower.split(' ').filter(Boolean)[0] || '';
+          const cBranch = (c.branch || '').toUpperCase().trim();
+          const qBranch = (cleanBranch || '').toUpperCase().trim();
+
+          // E.g. "Asad" matching "Mo. Asad Idrishi"
+          if (cLower.includes(targetFirstName) || targetLower.includes(cFirst)) {
+            if (!qBranch || !cBranch || cBranch === 'ENGINEERING' || cBranch === qBranch) {
+              return true;
+            }
+          }
+
+          // Same first name and same branch (e.g. Ananya CSE)
+          if (cFirst === targetFirstName && qBranch && cBranch === qBranch) {
+            return true;
+          }
+
           return false;
         });
       }
@@ -168,13 +221,26 @@ export async function syncContributorCount({
         const newLeague = getLeagueUpgradeInfo(updatedCoins);
         const tierUpgraded = oldLeague.tierName !== newLeague.tierName;
 
+        const updatePayload: Record<string, any> = {
+          coins: updatedCoins,
+        };
+
+        // Link email if missing
+        if (cleanEmail && !matched.email) {
+          updatePayload.email = cleanEmail;
+        }
+
+        // Clean up placeholder branch/batch if better info is available
+        if (cleanBranch && (!matched.branch || matched.branch.toLowerCase().includes('first year') || matched.branch.toLowerCase().includes('all subjects') || matched.branch.toLowerCase().includes('semester') || matched.branch.toLowerCase() === 'engineering')) {
+          updatePayload.branch = cleanBranch;
+        }
+        if (cleanBatch && (!matched.batch || matched.batch === '1st' || matched.batch === '2nd' || matched.batch.length < 2)) {
+          updatePayload.batch = cleanBatch;
+        }
+
         await (supabase as any)
           .from('contributors')
-          .update({
-            coins: updatedCoins,
-            ...(cleanBranch && (!matched.branch || matched.branch.toLowerCase().includes('first year') || matched.branch.toLowerCase().includes('all subjects') || matched.branch.toLowerCase().includes('semester')) ? { branch: cleanBranch } : {}),
-            ...(cleanBatch && (!matched.batch || matched.batch === '1st' || matched.batch === '2nd' || matched.batch.length < 2) ? { batch: cleanBatch } : {}),
-          })
+          .update(updatePayload)
           .eq('id', matched.id);
 
         clearCachePrefix('contributors');
@@ -217,6 +283,7 @@ export async function syncContributorCount({
         coins: cleanCount,
         branch: cleanBranch || 'Engineering',
         batch: cleanBatch || '28',
+        email: cleanEmail || null,
       })
       .select()
       .maybeSingle();
