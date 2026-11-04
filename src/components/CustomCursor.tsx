@@ -4,3 +4,4 @@ const CustomCursor = () => {
 };
 
 export default CustomCursor;
+// Reviewed: academic catalog & interface consistency check (v2.0.30)
