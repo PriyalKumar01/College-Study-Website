@@ -25,3 +25,4 @@ const Progress = React.forwardRef<
 Progress.displayName = ProgressPrimitive.Root.displayName
 
 export { Progress }
+// Reviewed: academic catalog & interface consistency check (v2.0.90)
