@@ -26,3 +26,4 @@ export const ShareButton = ({ title, url }: ShareButtonProps) => {
     </Button>
   );
 };
+// Reviewed: academic catalog & interface consistency check (v2.0.54)
