@@ -16,7 +16,9 @@ import {
 } from 'lucide-react';
 import {
   CATEGORIES, BTECH_YEARS, BSMS_YEARS, BPHARMA_YEARS, MBA_YEARS, BTECH_BRANCHES, BTECH_FIRST_YEAR_SUBJECTS,
-  getSubjects, getSemesters
+  getSubjects, getSemesters,
+  OPEN_ELECTIVE_I_ENGG_SUBJECTS, OPEN_ELECTIVE_I_TECH_SUBJECTS, ALL_OPEN_ELECTIVE_I_SUBJECTS, OPEN_ELECTIVE_II_SUBJECTS,
+  isTechnologyBranch
 } from '@/data/courseStructure';
 import { saveCustomSubject, saveRenamedSubject } from '@/lib/customSubjects';
 import { clearCachePrefix } from '@/lib/cacheUtils';
@@ -64,6 +66,7 @@ const UploadMaterialForm = ({ onUploadSuccess }: UploadMaterialFormProps) => {
   const [year, setYear] = useState('');
   const [semester, setSemester] = useState('');
   const [subject, setSubject] = useState('');
+  const [oeSubject, setOeSubject] = useState('');
   const [materialType, setMaterialType] = useState<'notes' | 'pyqs' | 'assignments' | 'book' | 'practical_file'>('notes');
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -73,6 +76,24 @@ const UploadMaterialForm = ({ onUploadSuccess }: UploadMaterialFormProps) => {
 
   // Active expanded step state (1 to 6)
   const [activeStep, setActiveStep] = useState<number>(1);
+
+  // Open Elective detection
+  const isOeISelected = subject === 'Open Elective-I' || subject === 'Open Elective' || subject === 'OE-I' || subject.startsWith('Open Elective-I') || subject.startsWith('OE-I');
+  const isOeIISelected = subject === 'Open Elective-II' || subject === 'OE-II' || subject === 'OE2' || subject.startsWith('Open Elective-II') || subject.startsWith('OE-II');
+  const isOeSelected = isOeISelected || isOeIISelected;
+
+  const availableOeSubjects = useMemo(() => {
+    if (isOeISelected) {
+      if (isTechnologyBranch(branch) || semester === '6th Semester') {
+        return OPEN_ELECTIVE_I_TECH_SUBJECTS;
+      }
+      return OPEN_ELECTIVE_I_ENGG_SUBJECTS;
+    }
+    if (isOeIISelected) {
+      return OPEN_ELECTIVE_II_SUBJECTS;
+    }
+    return [];
+  }, [isOeISelected, isOeIISelected, branch, semester]);
 
   // PYQ Smart Title Builder state
   const PYQ_EXAM_TYPES = [
@@ -113,11 +134,12 @@ const UploadMaterialForm = ({ onUploadSuccess }: UploadMaterialFormProps) => {
     if (pyqExamType === 'Other') return pyqCustomTitle;
     const yearPart = pyqAcademicYear ? `(${pyqAcademicYear})` : '';
     const examPart = pyqExamType || "PYQ's";
-    if (subject && subject !== 'Previous Year Questions' && subject !== 'Previous Year Questions (PYQs)') {
-      return `${subject} ${examPart} ${yearPart}`.trim();
+    const displaySubject = isOeSelected && oeSubject ? oeSubject : subject;
+    if (displaySubject && displaySubject !== 'Previous Year Questions' && displaySubject !== 'Previous Year Questions (PYQs)') {
+      return `${displaySubject} ${examPart} ${yearPart}`.trim();
     }
     return `${examPart} ${yearPart}`.trim();
-  }, [isPyqMode, pyqExamType, pyqAcademicYear, pyqCustomTitle, subject, title]);
+  }, [isPyqMode, pyqExamType, pyqAcademicYear, pyqCustomTitle, subject, isOeSelected, oeSubject, title]);
 
   // Effective title used for submission
   const effectiveTitle = isPyqMode ? autoPyqTitle : title;
@@ -172,12 +194,14 @@ const UploadMaterialForm = ({ onUploadSuccess }: UploadMaterialFormProps) => {
     setYear('');
     setSemester('');
     setSubject('');
+    setOeSubject('');
     const targetCat = CATEGORIES.find(c => c.id === val);
     setActiveStep(targetCat?.hasYears ? 2 : (targetCat?.hasSemesters ? 4 : 6));
   };
 
   const handleYearChange = (val: string) => {
     setYear(val);
+    setOeSubject('');
     if ((category === 'btech' || category === 'bsms') && val === '1st') {
       setBranchType('all');
       setSemester('ALL-First Year (All Subjects)');
@@ -197,12 +221,14 @@ const UploadMaterialForm = ({ onUploadSuccess }: UploadMaterialFormProps) => {
     setBranchType(val);
     setSemester('');
     setSubject('');
+    setOeSubject('');
     setActiveStep(4);
   };
 
   const handleSemesterChange = (val: string) => {
     setSemester(val);
     setSubject('');
+    setOeSubject('');
     if (category === 'btech' && !isFirstYear) {
       setActiveStep(5);
     } else {
@@ -213,11 +239,22 @@ const UploadMaterialForm = ({ onUploadSuccess }: UploadMaterialFormProps) => {
   const handleBranchChange = (val: string) => {
     setBranch(val);
     setSubject('');
+    setOeSubject('');
     setActiveStep(6);
   };
 
   const handleSubjectChange = (val: string) => {
     setSubject(val);
+    setOeSubject('');
+    if (val === 'Open Elective-I' || val === 'Open Elective-II' || val === 'Open Elective') {
+      setActiveStep(6);
+    } else {
+      setActiveStep(7);
+    }
+  };
+
+  const handleOeSubjectChange = (val: string) => {
+    setOeSubject(val);
     setActiveStep(7);
   };
 
@@ -314,6 +351,7 @@ const UploadMaterialForm = ({ onUploadSuccess }: UploadMaterialFormProps) => {
     if (selectedCategory?.hasSemesters && !isFirstYear && !semester) return 'Please select a semester.';
     if (selectedCategory?.hasBranches && !isFirstYear && !branch) return 'Please select a branch.';
     if (availableSubjects.length > 0 && !subject) return 'Please select a subject.';
+    if (isOeSelected && !oeSubject) return `Please choose your ${isOeISelected ? 'O.E-I' : 'O.E-II'} subject.`;
 
     if (isPyqMode) {
       if (!pyqAcademicYear) return 'Please select PYQ academic year.';
@@ -438,15 +476,21 @@ const UploadMaterialForm = ({ onUploadSuccess }: UploadMaterialFormProps) => {
         console.warn('Could not check contribution count:', cErr);
       }
 
+      const targetSubject = isOeSelected && oeSubject ? oeSubject : (subject || category);
+      const oeDescription = isOeSelected ? `Open Elective: ${oeSubject} (${isOeISelected ? 'OE-I' : 'OE-II'})` : null;
+      const finalDescription = description.trim()
+        ? (oeDescription ? `${description.trim()} | ${oeDescription}` : description.trim())
+        : oeDescription;
+
       const { error: insertError } = await supabase
         .from('notes')
         .insert({
           title: finalTitle,
-          subject: subject || category,
+          subject: targetSubject,
           semester: dbSemester,
           material_type: finalMaterialType,
           year: year || null,
-          description: description.trim() || null,
+          description: finalDescription,
           file_url: urlData.publicUrl,
           file_name: file!.name,
           uploaded_by: currentUser?.id || 'admin',
@@ -463,17 +507,10 @@ const UploadMaterialForm = ({ onUploadSuccess }: UploadMaterialFormProps) => {
         throw insertError;
       }
 
-      // Auto-sync contributor coins if approved right away (e.g. uploaded directly by owner)
+      // Contributor coins: Owners are platform owners and not added to contributor list
       let syncResult = null;
-      if (isOwner) {
-        syncResult = await syncContributorCount({
-          name: currentUser?.user_metadata?.first_name || currentUser?.email?.split('@')[0],
-          email: currentUser?.email,
-          count: 1,
-          branch: branch || (isFirstYear ? '1st Year' : semester),
-          batch: year || '28',
-        });
-      }
+      // Do not sync contributor coins for owner
+
 
       clearCachePrefix('notes');
       if (typeof window !== 'undefined') {
@@ -551,7 +588,7 @@ const UploadMaterialForm = ({ onUploadSuccess }: UploadMaterialFormProps) => {
     !isFirstYear && branch ? BTECH_BRANCHES.find(b => b.code === branch)?.fullName : undefined,
     year && (categoryYears.find(y => y.id === year)?.label || `${year} Year`),
     semester,
-    subject && availableSubjects.find(s => s.name === subject)?.fullName,
+    subject && (isOeSelected && oeSubject ? `${subject} (${oeSubject})` : (availableSubjects.find(s => s.name === subject)?.fullName || subject)),
   ].filter(Boolean);
 
   return (
@@ -850,7 +887,9 @@ const UploadMaterialForm = ({ onUploadSuccess }: UploadMaterialFormProps) => {
                 <div className="w-6 h-6 rounded-full bg-emerald-600 text-white flex items-center justify-center text-xs font-bold">✓</div>
                 <div>
                   <p className="text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold uppercase tracking-wider">Subject Selected</p>
-                  <p className="text-sm font-bold text-foreground">{subject}</p>
+                  <p className="text-sm font-bold text-foreground">
+                    {isOeSelected && oeSubject ? `${subject} — ${oeSubject}` : subject}
+                  </p>
                 </div>
               </div>
               <div className="flex items-center gap-2">
@@ -1055,13 +1094,48 @@ const UploadMaterialForm = ({ onUploadSuccess }: UploadMaterialFormProps) => {
                   ))}
                 </SelectContent>
               </Select>
+
+              {/* Secondary dropdown when Open Elective-I or Open Elective-II is selected */}
+              {isOeSelected && (
+                <div className="mt-4 p-4 sm:p-5 rounded-xl border-2 border-primary/40 bg-primary/5 space-y-3 animate-in fade-in slide-in-from-top-2 duration-300">
+                  <div className="flex items-center justify-between flex-wrap gap-2">
+                    <Label className="text-sm font-bold flex items-center gap-2 text-foreground">
+                      <span className="w-6 h-6 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-xs font-bold shadow-xs">
+                        ★
+                      </span>
+                      {isOeISelected ? 'Choose your O.E-I Subject' : 'Choose your O.E-II Subject'}
+                    </Label>
+                    <Badge variant="outline" className="text-[10px] font-bold uppercase tracking-wider bg-background border-primary/30 text-primary">
+                      {isOeISelected ? 'Open Elective-I' : 'Open Elective-II'}
+                    </Badge>
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    Select which specific {isOeISelected ? 'O.E-I' : 'O.E-II'} elective subject you want to upload study notes or PYQs for:
+                  </p>
+                  <Select value={oeSubject} onValueChange={handleOeSubjectChange}>
+                    <SelectTrigger className="h-12 bg-background border-primary/50 text-foreground font-semibold shadow-xs">
+                      <SelectValue placeholder={isOeISelected ? "Choose your O.E-I Subject" : "Choose your O.E-II Subject"} />
+                    </SelectTrigger>
+                    <SelectContent className="bg-card border-border text-foreground max-h-64">
+                      {availableOeSubjects.map(oe => (
+                        <SelectItem key={oe.id} value={oe.name} className="hover:bg-muted font-medium">
+                          <span className="font-semibold text-foreground">{oe.name}</span>
+                          {oe.fullName && oe.fullName !== oe.name && (
+                            <span className="text-muted-foreground ml-2">— {oe.fullName}</span>
+                          )}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
             </div>
           )}
         </div>
       )}
 
       {/* Step 6 / Final Upload Details Section */}
-      {((!selectedCategory?.hasSemesters && category) || (semester && (availableSubjects.length === 0 || subject))) && (
+      {((!selectedCategory?.hasSemesters && category) || (semester && (availableSubjects.length === 0 || (subject && (!isOeSelected || oeSubject))))) && (
         <div className="border border-border/80 rounded-xl p-5 sm:p-6 bg-muted/20 space-y-6 text-foreground" ref={detailsRef}>
           <Label className="text-lg font-extrabold flex items-center gap-3 text-foreground border-b border-border pb-4">
             <span className="w-8 h-8 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-xs font-bold shadow-lg">
@@ -1202,7 +1276,7 @@ const UploadMaterialForm = ({ onUploadSuccess }: UploadMaterialFormProps) => {
                 id="upload-title"
                 value={title}
                 onChange={e => setTitle(e.target.value)}
-                placeholder="e.g., Unit-1 Complete Notes, Assignment 2024"
+                placeholder={isOeSelected && oeSubject ? `e.g., ${oeSubject} Unit-1 Complete Notes` : "e.g., Unit-1 Complete Notes, Assignment 2024"}
                 className="h-12 bg-background border-border text-foreground"
               />
             </div>
