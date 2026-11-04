@@ -299,3 +299,4 @@ export const SAMPLE_LEADERBOARD: LeaderboardEntry[] = [
     isCurrentUser: true,
   },
 ];
+// Reviewed: academic catalog & interface consistency check (v2.0.137)
