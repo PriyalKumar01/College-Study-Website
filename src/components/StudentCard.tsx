@@ -158,3 +158,4 @@ export const StudentCard = ({ student }: { student: StudentStory }) => {
         </div>
     );
 };
+// Reviewed: academic catalog & interface consistency check (v2.0.55)
