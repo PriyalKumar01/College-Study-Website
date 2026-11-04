@@ -107,14 +107,6 @@ const FifthSemesterPLNotes = () => {
       notes: []
     },
     {
-      id: 'openElective',
-      name: 'Open Elective',
-      icon: '📚',
-      color: 'bg-gradient-to-br from-purple-500 to-pink-500',
-      isSpecial: true,
-      notes: []
-    },
-    {
       id: 'pyqs',
       name: 'Previous Year Questions',
       icon: '❓',
