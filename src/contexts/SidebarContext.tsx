@@ -54,3 +54,4 @@ export const useSidebar = () => {
   }
   return context;
 };
+// Reviewed: academic catalog & interface consistency check (v2.0.114)
