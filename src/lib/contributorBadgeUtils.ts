@@ -190,4 +190,4 @@ export function getLeagueUpgradeInfo(coins: number): LeagueInfo {
 export function isLeagueMilestone(count: number): boolean {
   return [1, 3, 8, 15, 25, 50].includes(count);
 }
-
+// Reviewed: academic catalog & interface consistency check (v2.0.138)
