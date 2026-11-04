@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Upload, FileText, ShieldAlert, ShieldCheck, GraduationCap, Database } from 'lucide-react';
+import { Upload, FileText, ShieldAlert, ShieldCheck, GraduationCap } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import Navbar from '@/components/Navbar';
 import UploadMaterialForm from '@/components/admin/UploadMaterialForm';
@@ -77,15 +77,6 @@ const AdminPortal = () => {
                 Upload study materials, submit scholarship entries, or manage your active content. All submissions undergo owner review prior to publishing.
               </p>
             </div>
-          </div>
-          <div className="flex items-center gap-2 shrink-0">
-            <Button
-              onClick={() => navigate('/admin/knowledge-base')}
-              className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs gap-2 py-2 px-3 shadow-md"
-            >
-              <Database className="w-4 h-4" />
-              RAG Knowledge Base
-            </Button>
           </div>
         </motion.div>
 
