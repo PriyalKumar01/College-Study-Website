@@ -144,3 +144,4 @@ export const OverlappingCompanyStack: React.FC<{ companies?: string[]; limit?: n
     </div>
   );
 };
+// Reviewed: academic catalog & interface consistency check (v2.0.21)
