@@ -1,5 +1,6 @@
 // Owner privileged management dashboard
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { ResponsiveContainer, PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ComposedChart, Line, AreaChart, Area } from 'recharts';
 import { useAuth } from '@/contexts/AuthContext';
 import { motion } from 'framer-motion';
@@ -19,7 +20,7 @@ import {
 } from '@/components/ui/select';
 import {
   CheckCircle, XCircle, User, Calendar, BookOpen, ShieldAlert,
-  Eye, Trash2, Crown, UserPlus, UserMinus, Search, Loader2, FileText, Download, GraduationCap, ExternalLink, Bell, Send, Pencil, Trophy, Coins, Link, Lock, Sparkles, Clock, RefreshCw, RotateCcw, Code2, AlertTriangle
+  Eye, Trash2, Crown, UserPlus, UserMinus, Search, Loader2, FileText, Download, GraduationCap, ExternalLink, Bell, Send, Pencil, Trophy, Coins, Link, Lock, Sparkles, Clock, RefreshCw, RotateCcw, Code2, AlertTriangle, Database
 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
@@ -974,6 +975,7 @@ const CodingEnrolledSection = ({ items, onRevoke, revokingId }: any) => {
 };
 
 const OwnerDashboard = () => {
+  const navigate = useNavigate();
   const { user, isOwner, loading: authLoading } = useAuth();
   const { theme } = useTheme();
   const isDark = theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
@@ -1546,14 +1548,7 @@ const OwnerDashboard = () => {
 
   const fetchPendingApprovals = async () => {
     try {
-      // 1. Try secure RPC function first
-      const { data: rpcData, error: rpcError } = await (supabase as any).rpc('get_pending_account_approvals');
-      if (!rpcError && rpcData) {
-        setPendingApprovals(rpcData || []);
-        return;
-      }
-
-      // 2. Direct profiles fallback
+      // Direct profiles query for pending account approvals
       const { data, error } = await (supabase as any)
         .from('profiles')
         .select('*')
@@ -2147,11 +2142,20 @@ const OwnerDashboard = () => {
                 StudyHub System Core Status • Authorized Personnel Only
               </p>
             </div>
-            <div className={`text-[10px] border rounded-lg p-2 font-mono ${
-              isDark ? 'bg-slate-900/80 border-slate-800 text-slate-500' : 'bg-white/80 border-slate-200 text-slate-600 shadow-sm'
-            }`}>
-              System Node: Live (Netlify) <br />
-              Client Latency: Operational
+            <div className="flex items-center gap-3 flex-wrap">
+              <Button
+                onClick={() => navigate('/admin/knowledge-base')}
+                className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs gap-2 py-2 px-3.5 shadow-md rounded-xl transition-all hover:scale-105 active:scale-95 cursor-pointer"
+              >
+                <Database className="w-4 h-4" />
+                RAG Knowledge Base
+              </Button>
+              <div className={`text-[10px] border rounded-lg p-2 font-mono ${
+                isDark ? 'bg-slate-900/80 border-slate-800 text-slate-500' : 'bg-white/80 border-slate-200 text-slate-600 shadow-sm'
+              }`}>
+                System Node: Live (Netlify) <br />
+                Client Latency: Operational
+              </div>
             </div>
           </div>
 
