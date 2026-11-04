@@ -14,7 +14,8 @@ import {
   BookOpen,
   Sparkles,
   RotateCcw,
-  FileText
+  FileText,
+  X
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import Navbar from "@/components/Navbar";
@@ -270,7 +271,21 @@ const BTechBranches = () => {
   }, [allSemesterSubjects, searchFilterQuery]);
 
   // Active subjects displayed in cards when filtered
-  const activeFilteredSubjects = useMemo(() => {
+  
+  // Inline search state matching 1st year search bar
+  const [inlineSearchQuery, setInlineSearchQuery] = useState('');
+
+  const searchedSubjects = useMemo(() => {
+    const q = inlineSearchQuery.trim().toLowerCase();
+    if (!q) return [];
+    return allSemesterSubjects.filter(sub => {
+      const nameMatch = sub.name.toLowerCase().includes(q);
+      const branchMatch = sub.branches.some(b => b.toLowerCase().includes(q));
+      const noteMatch = sub.notes.some(n => n.title.toLowerCase().includes(q));
+      return nameMatch || branchMatch || noteMatch;
+    });
+  }, [allSemesterSubjects, inlineSearchQuery]);
+const activeFilteredSubjects = useMemo(() => {
     if (selectedSubjectKeys.length === 0) return [];
     return allSemesterSubjects.filter(sub => selectedSubjectKeys.includes(sub.key));
   }, [allSemesterSubjects, selectedSubjectKeys]);
@@ -282,15 +297,11 @@ const BTechBranches = () => {
   };
 
   const handleOpenPlaylist = (subject: SemesterSubjectItem, type: 'detailed' | 'oneshot') => {
+    const playlistArr = (subject.playlists && (subject.playlists as any)[type]) || [];
     setActivePlaylistData({
       subjectName: subject.name,
       type,
-      playlists: {
-        [subject.name]: {
-          detailed: subject.playlists.detailed,
-          oneshot: subject.playlists.oneshot,
-        }
-      }
+      playlists: playlistArr
     });
     setShowPlaylistModal(true);
   };
@@ -322,39 +333,51 @@ const BTechBranches = () => {
             </p>
           </div>
 
-          {/* Top Right Action: Filter Subjects Across Branches */}
-          <div className="relative" ref={subjectDropdownRef}>
-            <button
-              onClick={() => setIsSubjectDropdownOpen(!isSubjectDropdownOpen)}
-              className={`inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all shadow-md cursor-pointer ${
-                selectedSubjectKeys.length > 0
-                  ? 'bg-emerald-600 hover:bg-emerald-500 text-white border border-emerald-400/40'
-                  : 'bg-slate-800 hover:bg-slate-700 text-emerald-300 border border-emerald-500/30'
-              }`}
-            >
-              <Sparkles className="h-4 w-4 text-emerald-400 shrink-0" />
-              <span>
-                {selectedSubjectKeys.length > 0
-                  ? `Filtered (${selectedSubjectKeys.length} Subjects)`
-                  : `Filter Subjects (${allSemesterSubjects.length})`}
-              </span>
-              <ChevronDown className={`h-3.5 w-3.5 transition-transform ${isSubjectDropdownOpen ? 'rotate-180' : ''}`} />
-            </button>
+          </div>
+      </div>
 
-            {/* Dropdown Menu with Live Typeahead Search and Green Ticks */}
+      {/* ══════════ MAIN CONTENT AREA ══════════ */}
+      <div className="max-w-6xl mx-auto px-4 sm:px-8 py-8 flex-1 w-full mb-12 space-y-8">
+        {/* ══════════ UNIFIED SUBJECT FILTER & SEARCH BAR (EXACT 1ST YEAR STYLE) ══════════ */}
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-card border border-slate-300 dark:border-slate-800 p-3.5 rounded-2xl shadow-xs transition-all">
+          {/* Left: My Subjects dropdown filter */}
+          <div className="relative flex-1 max-w-xs sm:max-w-sm" ref={subjectDropdownRef}>
+            <div className="flex items-center gap-2">
+              <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground whitespace-nowrap">
+                My Subjects:
+              </label>
+              <button
+                type="button"
+                onClick={() => setIsSubjectDropdownOpen(!isSubjectDropdownOpen)}
+                className="w-full flex items-center justify-between text-xs h-9 px-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-background hover:bg-muted/40 transition-colors font-medium text-foreground cursor-pointer"
+              >
+                <span className="truncate">
+                  {selectedSubjectKeys.length === 0
+                    ? `All Subjects (${allSemesterSubjects.length})`
+                    : `${selectedSubjectKeys.length} of ${allSemesterSubjects.length} Selected`}
+                </span>
+                <div className="flex items-center gap-1.5 shrink-0 ml-2">
+                  {selectedSubjectKeys.length > 0 && (
+                    <span className="bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 text-[10px] font-extrabold px-1.5 py-0.2 rounded-full border border-emerald-500/30">
+                      Filtered
+                    </span>
+                  )}
+                  <ChevronDown className={`h-3.5 w-3.5 text-muted-foreground transition-transform ${isSubjectDropdownOpen ? 'rotate-180' : ''}`} />
+                </div>
+              </button>
+            </div>
+
+            {/* Dropdown Menu Popup with Green Checkmarks */}
             {isSubjectDropdownOpen && (
-              <div className="absolute right-0 top-12 z-50 w-80 sm:w-96 bg-popover border border-border rounded-2xl shadow-2xl p-3.5 space-y-3 text-popover-foreground animate-in fade-in zoom-in-95 duration-150">
-                <div className="flex items-center justify-between border-b border-border pb-2.5">
-                  <div>
-                    <h4 className="text-xs font-bold text-foreground">Semester {semesterNum} Subjects</h4>
-                    <p className="text-[10px] text-muted-foreground">Unique subjects across all branches</p>
-                  </div>
+              <div className="absolute left-0 top-11 z-50 w-full sm:w-88 bg-popover border border-slate-300 dark:border-slate-800 rounded-xl shadow-xl p-2.5 space-y-2 text-popover-foreground animate-in fade-in zoom-in-95 duration-150">
+                <div className="flex items-center justify-between border-b border-border pb-2 px-1">
+                  <span className="text-xs font-bold text-foreground">Filter Semester {semesterNum} Subjects</span>
                   <div className="flex items-center gap-2">
                     {selectedSubjectKeys.length < allSemesterSubjects.length && (
                       <button
                         type="button"
                         onClick={selectAllSubjects}
-                        className="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 hover:underline cursor-pointer"
+                        className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 hover:underline cursor-pointer"
                       >
                         Select All
                       </button>
@@ -363,7 +386,7 @@ const BTechBranches = () => {
                       <button
                         type="button"
                         onClick={resetSubjectSelection}
-                        className="text-[11px] font-bold text-rose-500 hover:underline cursor-pointer"
+                        className="text-[10px] font-bold text-rose-500 hover:underline cursor-pointer"
                       >
                         Reset
                       </button>
@@ -371,33 +394,29 @@ const BTechBranches = () => {
                   </div>
                 </div>
 
-                {/* Live Search Input (Type-ahead like Google/YouTube) */}
-                <div className="relative">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
+                {/* Search input inside dropdown */}
+                <div className="relative px-0.5">
+                  <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
                   <input
                     type="text"
                     value={searchFilterQuery}
                     onChange={e => setSearchFilterQuery(e.target.value)}
-                    placeholder="Search any subject (e.g. Entrepreneur, Math)..."
+                    placeholder="Type subject name..."
                     className="w-full pl-8 pr-3 py-1.5 rounded-lg border border-border bg-background text-foreground text-xs placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-emerald-500/40"
-                    autoFocus
                   />
                 </div>
 
-                {/* Subjects List with Green Ticks */}
-                <div className="max-h-72 overflow-y-auto space-y-1 pr-1 custom-scrollbar">
+                <div className="max-h-64 overflow-y-auto space-y-1 pr-1 custom-scrollbar">
                   {dropdownFilteredSubjects.length === 0 ? (
-                    <div className="text-center py-6 text-xs text-muted-foreground">
-                      No subjects match "{searchFilterQuery}".
-                    </div>
+                    <p className="text-center py-4 text-xs text-muted-foreground">No subjects found</p>
                   ) : (
-                    dropdownFilteredSubjects.map(sub => {
+                    dropdownFilteredSubjects.map((sub) => {
                       const isChecked = selectedSubjectKeys.includes(sub.key);
                       return (
                         <div
                           key={sub.key}
                           onClick={() => toggleSubjectSelect(sub.key)}
-                          className={`flex items-center justify-between gap-2 p-2 rounded-xl text-xs cursor-pointer select-none transition-all ${
+                          className={`flex items-center justify-between gap-2 p-2 rounded-lg text-xs cursor-pointer select-none transition-colors ${
                             isChecked
                               ? 'bg-emerald-50/70 dark:bg-emerald-950/40 text-foreground font-semibold border border-emerald-500/30'
                               : 'hover:bg-muted text-muted-foreground hover:text-foreground border border-transparent'
@@ -406,22 +425,12 @@ const BTechBranches = () => {
                           <div className="flex items-center gap-2 min-w-0 flex-1">
                             <span className="text-sm shrink-0">{sub.icon}</span>
                             <div className="min-w-0">
-                              <p className="truncate text-xs font-semibold leading-tight text-foreground">
-                                {sub.name}
+                              <p className="truncate text-xs font-semibold leading-tight text-foreground">{sub.name}</p>
+                              <p className="text-[10px] text-muted-foreground truncate">
+                                {sub.branches.join(', ')} • {sub.notes.length} notes
                               </p>
-                              <div className="flex items-center gap-1 mt-0.5 flex-wrap">
-                                <span className="text-[9px] font-bold text-muted-foreground uppercase">
-                                  {sub.branches.join(', ')}
-                                </span>
-                                {sub.notes.length > 0 && (
-                                  <span className="text-[9px] font-bold text-emerald-600 dark:text-emerald-400">
-                                    • {sub.notes.length} notes
-                                  </span>
-                                )}
-                              </div>
                             </div>
                           </div>
-
                           <div
                             className={`w-4 h-4 rounded border flex items-center justify-center shrink-0 transition-colors ${
                               isChecked
@@ -436,31 +445,57 @@ const BTechBranches = () => {
                     })
                   )}
                 </div>
-
-                {selectedSubjectKeys.length > 0 && (
-                  <div className="pt-2 border-t border-border flex items-center justify-between">
-                    <span className="text-[11px] text-muted-foreground">
-                      {selectedSubjectKeys.length} selected
-                    </span>
-                    <button
-                      onClick={() => setIsSubjectDropdownOpen(false)}
-                      className="text-xs font-bold px-3 py-1 bg-foreground text-background rounded-lg hover:opacity-90"
-                    >
-                      Done
-                    </button>
-                  </div>
-                )}
               </div>
             )}
           </div>
-        </div>
-      </div>
 
-      {/* ══════════ MAIN CONTENT AREA ══════════ */}
-      <div className="max-w-6xl mx-auto px-4 sm:px-8 py-8 flex-1 w-full mb-12 space-y-8">
-        
+          {/* Middle: Search input bar */}
+          <div className="relative flex-1 max-w-md">
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
+            <input
+              type="text"
+              value={inlineSearchQuery}
+              onChange={e => setInlineSearchQuery(e.target.value)}
+              placeholder="Search subjects, codes, or notes across all branches..."
+              className="w-full pl-9 pr-8 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-background text-foreground text-xs placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-emerald-500/40"
+            />
+            {inlineSearchQuery && (
+              <button
+                type="button"
+                onClick={() => setInlineSearchQuery('')}
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground p-0.5 cursor-pointer"
+              >
+                <X className="h-3.5 w-3.5" />
+              </button>
+            )}
+          </div>
+
+          {/* Right: Count indicator & quick reset */}
+          <div className="text-xs text-muted-foreground font-semibold flex items-center gap-2 self-start sm:self-auto shrink-0">
+            {(selectedSubjectKeys.length > 0 || inlineSearchQuery.trim()) ? (
+              <>
+                <span className="text-emerald-600 dark:text-emerald-400 font-bold">
+                  Showing {(inlineSearchQuery.trim() ? searchedSubjects : activeFilteredSubjects).length} subject{(inlineSearchQuery.trim() ? searchedSubjects : activeFilteredSubjects).length !== 1 ? 's' : ''}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => {
+                    resetSubjectSelection();
+                    setInlineSearchQuery('');
+                  }}
+                  className="text-[11px] font-bold text-rose-500 hover:underline cursor-pointer"
+                >
+                  Reset
+                </button>
+              </>
+            ) : (
+              <span>Showing {allSemesterSubjects.length} Subjects Total</span>
+            )}
+          </div>
+        </div>
+
         {/* ── CASE 1: USER HAS SELECTED SUBJECTS VIA FILTER ── */}
-        {selectedSubjectKeys.length > 0 ? (
+        {(inlineSearchQuery.trim() ? searchedSubjects : activeFilteredSubjects).length > 0 || inlineSearchQuery.trim() ? (
           <div className="space-y-6">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-card border border-emerald-500/30 p-4 rounded-2xl shadow-xs">
               <div className="flex items-center gap-2.5">
@@ -469,7 +504,9 @@ const BTechBranches = () => {
                 </div>
                 <div>
                   <h3 className="font-bold text-sm text-foreground">
-                    Filtered Subjects ({activeFilteredSubjects.length} of {allSemesterSubjects.length})
+                    {inlineSearchQuery.trim() 
+                      ? `Search Results for "${inlineSearchQuery}" (${searchedSubjects.length} subjects)`
+                      : `Filtered Subjects (${activeFilteredSubjects.length} of ${allSemesterSubjects.length})`}
                   </h3>
                   <p className="text-xs text-muted-foreground">
                     Direct access to notes, consolidated files, and curated playlists across branches.
@@ -478,7 +515,13 @@ const BTechBranches = () => {
               </div>
 
               <button
-                onClick={resetSubjectSelection}
+                onClick={() => {
+                  if (inlineSearchQuery.trim()) {
+                    setInlineSearchQuery('');
+                  } else {
+                    resetSubjectSelection();
+                  }
+                }}
                 className="inline-flex items-center gap-1.5 text-xs font-bold text-rose-500 hover:text-rose-600 bg-rose-50 dark:bg-rose-950/20 px-3 py-1.5 rounded-lg border border-rose-200 dark:border-rose-900/30 transition-colors self-start sm:self-auto cursor-pointer"
               >
                 <RotateCcw className="h-3.5 w-3.5" /> Reset to All Branches
@@ -486,8 +529,14 @@ const BTechBranches = () => {
             </div>
 
             {/* Filtered Subjects Grid */}
+            {(inlineSearchQuery.trim() ? searchedSubjects : activeFilteredSubjects).length === 0 ? (
+              <div className="text-center py-12 text-muted-foreground border border-dashed border-border rounded-2xl bg-card/40">
+                <p className="text-sm font-semibold">No subjects matched "{inlineSearchQuery}".</p>
+                <p className="text-xs mt-1">Try another keyword or clear search to view all branches.</p>
+              </div>
+            ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-              {activeFilteredSubjects.map((sub, idx) => {
+              {(inlineSearchQuery.trim() ? searchedSubjects : activeFilteredSubjects).map((sub, idx) => {
                 const hasDetailed = sub.playlists.detailed && sub.playlists.detailed.length > 0;
                 const hasOneshot = sub.playlists.oneshot && sub.playlists.oneshot.length > 0;
                 const hasAnyPlaylist = hasDetailed || hasOneshot;
@@ -643,9 +692,10 @@ const BTechBranches = () => {
                 );
               })}
             </div>
+            )}
           </div>
         ) : (
-          /* ── CASE 2: DEFAULT VIEW (ALL ENGINEERING BRANCHES GRID) ── */
+        /* ── CASE 2: DEFAULT VIEW (ALL ENGINEERING BRANCHES GRID) ── */
           <div>
             <div className="flex items-center justify-between mb-6">
               <p className="text-xs font-bold tracking-[0.15em] uppercase text-muted-foreground">
@@ -754,9 +804,11 @@ const BTechBranches = () => {
         <PlaylistModal
           isOpen={showPlaylistModal}
           onClose={() => setShowPlaylistModal(false)}
+          title={activePlaylistData.subjectName}
           subjectName={activePlaylistData.subjectName}
+          type={activePlaylistData.type}
           playlistType={activePlaylistData.type}
-          subjectPlaylists={activePlaylistData.playlists}
+          playlists={activePlaylistData.playlists}
         />
       )}
 
