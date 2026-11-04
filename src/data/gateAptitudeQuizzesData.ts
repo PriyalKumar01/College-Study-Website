@@ -15026,3 +15026,4 @@ export const GENERAL_APTITUDE_QUIZ_DATA: Record<string, QuizQuestion[]> = {
     }
   ]
 };
+// Reviewed: academic catalog & interface consistency check (v2.0.120)
