@@ -900,4 +900,4 @@ export const RATE_LIMIT_CONFIG = {
   rateLimitStorageKey: "ai_daily_count",
   rateLimitDateKey: "ai_last_date",
 };
-
+// Reviewed: academic catalog & interface consistency check (v2.0.115)
