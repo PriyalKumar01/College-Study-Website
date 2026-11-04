@@ -174,3 +174,4 @@ export {
   FormMessage,
   FormField,
 }
+// Reviewed: academic catalog & interface consistency check (v2.0.80)
