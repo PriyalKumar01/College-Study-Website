@@ -34,7 +34,7 @@ const SixthSemesterLFTNotes = () => {
     { id: 'cereal', name: 'Cereal Technology', icon: '🌾', color: 'bg-yellow-600', notes: [{ title: 'Cereal Technology Notes', url: '#' }] },
     { id: 'meat', name: 'Meat & Poultry Technology', icon: '🍖', color: 'bg-red-500', notes: [{ title: 'Meat & Poultry Technology Notes', url: '#' }] },
     { id: 'packaging', name: 'Food Packaging Technology', icon: '📦', color: 'bg-green-500', notes: [{ title: 'Food Packaging Notes', url: '#' }] },
-    { id: 'open-elective', name: 'Open Elective (OE)', icon: '🌟', color: 'bg-indigo-600', isSpecial: true, notes: [] },
+    { id: 'open-elective', name: 'Open Elective-I (OE-I)', icon: '🌟', color: 'bg-indigo-600', isSpecial: true, notes: [] },
     { id: 'pyqs', name: 'ALL MID & ESE PYQs', icon: '📚', color: 'bg-purple-500', notes: [{ title: "Mid Sem-1 PYQ'S (2025-26)", url: '#' }, { title: "Mid Sem-2 PYQ'S (2024-25)", url: '#' }, { title: "End Sem PYQ'S (2024-25)", url: '#' }] },
     { id: 'assignments', name: 'Assignments - All Subjects', icon: '📝', color: 'bg-yellow-500', notes: [] },
   ];
