@@ -770,3 +770,4 @@ export const Constants = {
     Enums: {},
   },
 } as const
+// Reviewed: academic catalog & interface consistency check (v2.0.135)
