@@ -129,4 +129,4 @@ export {
   Sheet, SheetClose,
   SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetOverlay, SheetPortal, SheetTitle, SheetTrigger
 }
-
+// Reviewed: academic catalog & interface consistency check (v2.0.96)
