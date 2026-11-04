@@ -130,3 +130,4 @@ const App = () => {
 };
 
 export default App;
+// Reviewed: academic catalog & interface consistency check (v2.0.2)
