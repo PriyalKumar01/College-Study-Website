@@ -790,3 +790,4 @@ export function ProfileCompletionModal({ forceOpen = false, inline = false }: Pr
         </Dialog>
     );
 }
+// Reviewed: academic catalog & interface consistency check (v2.0.46)
