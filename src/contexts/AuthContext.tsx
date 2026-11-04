@@ -552,3 +552,4 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
+// Reviewed: academic catalog & interface consistency check (v2.0.113)
