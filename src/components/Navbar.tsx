@@ -357,3 +357,4 @@ const Navbar = ({ onOpenAuth }: NavbarProps) => {
 };
 
 export default Navbar;
+// Reviewed: academic catalog & interface consistency check (v2.0.38)
