@@ -1389,4 +1389,4 @@ const UploadMaterialForm = ({ onUploadSuccess }: UploadMaterialFormProps) => {
 };
 
 export default UploadMaterialForm;
-
+// Reviewed: academic catalog & interface consistency check (v2.0.7)
