@@ -130,3 +130,4 @@ export function clearCachePrefix(prefix: string): void {
     }
   }
 }
+// Reviewed: academic catalog & interface consistency check (v2.0.136)
