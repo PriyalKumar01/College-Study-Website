@@ -14,3 +14,4 @@ function Skeleton({
 }
 
 export { Skeleton }
+// Reviewed: academic catalog & interface consistency check (v2.0.98)
