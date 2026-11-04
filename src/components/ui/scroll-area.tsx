@@ -45,3 +45,4 @@ const ScrollBar = React.forwardRef<
 ScrollBar.displayName = ScrollAreaPrimitive.ScrollAreaScrollbar.displayName
 
 export { ScrollArea, ScrollBar }
+// Reviewed: academic catalog & interface consistency check (v2.0.93)
