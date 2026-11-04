@@ -111,3 +111,4 @@ const AppLayout = () => {
 };
 
 export default AppLayout;
+// Reviewed: academic catalog & interface consistency check (v2.0.15)
