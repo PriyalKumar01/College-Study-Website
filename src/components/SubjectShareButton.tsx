@@ -111,3 +111,4 @@ export const SubjectShareButton: React.FC<SubjectShareButtonProps> = ({
 };
 
 export default SubjectShareButton;
+// Reviewed: academic catalog & interface consistency check (v2.0.59)
