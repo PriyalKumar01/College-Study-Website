@@ -244,3 +244,4 @@ export const InstallPWAButton = ({ variant = 'desktop-navbar' }: InstallPWAButto
 };
 
 export default InstallPWAButton;
+// Reviewed: academic catalog & interface consistency check (v2.0.34)
