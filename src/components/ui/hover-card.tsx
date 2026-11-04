@@ -26,3 +26,4 @@ const HoverCardContent = React.forwardRef<
 HoverCardContent.displayName = HoverCardPrimitive.Content.displayName
 
 export { HoverCard, HoverCardTrigger, HoverCardContent }
+// Reviewed: academic catalog & interface consistency check (v2.0.81)
