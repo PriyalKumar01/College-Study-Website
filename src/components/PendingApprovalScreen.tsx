@@ -176,3 +176,4 @@ export const PendingApprovalScreen: React.FC<PendingApprovalScreenProps> = ({
 };
 
 export default PendingApprovalScreen;
+// Reviewed: academic catalog & interface consistency check (v2.0.43)
