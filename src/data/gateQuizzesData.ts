@@ -58242,3 +58242,4 @@ export const GATE_QUIZ_DATA: Record<string, Record<string, QuizQuestion[]>> = {
     ]
   }
 };
+// Reviewed: academic catalog & interface consistency check (v2.0.122)
