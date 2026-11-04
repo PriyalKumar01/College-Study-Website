@@ -1449,3 +1449,4 @@ export const NINJAS_SDE_STEPS: DsaStep[] = [
     ],
   },
 ];
+// Reviewed: academic catalog & interface consistency check (v2.0.123)
