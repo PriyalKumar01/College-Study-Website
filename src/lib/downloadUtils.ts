@@ -18,6 +18,14 @@ export const isSupabaseStorageUrl = (url?: string): boolean => {
 };
 
 /**
+ * Checks if a given URL belongs to Cloudflare R2 (zero egress storage).
+ */
+export const isCloudflareR2Url = (url?: string): boolean => {
+  if (!url || url === '#') return false;
+  return url.includes('.r2.dev') || url.includes('.r2.cloudflarestorage.com');
+};
+
+/**
  * Checks if a URL points to any decommissioned/dead host.
  */
 export const isBlockedServerUrl = (url?: string): boolean => {
@@ -33,6 +41,29 @@ export const downloadFile = async (url: string, filename: string) => {
     alert('📖 Online Reading Mode:\n\nTo keep StudyHub 100% free and protect server bandwidth, direct PDF download is disabled for community notes. Opening in fast online reader!');
     viewInBrowser(url);
     return;
+  }
+
+  // Cloudflare R2: Zero egress storage, allows direct downloading smoothly
+  if (isCloudflareR2Url(url)) {
+    try {
+      const response = await fetch(url);
+      if (response.ok) {
+        const blob = await response.blob();
+        const blobUrl = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = blobUrl;
+        a.download = filename || 'study-material.pdf';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(blobUrl);
+        return;
+      }
+    } catch {
+      // Fallback: direct window.open
+      window.open(url, '_blank');
+      return;
+    }
   }
 
   try {
@@ -118,6 +149,12 @@ export const smartDownload = async (
       viewInBrowser(url);
       return;
     }
+  }
+
+  // 2. Cloudflare R2: Zero egress fees! Students can download and view freely without warnings or limits
+  if (isCloudflareR2Url(url)) {
+    await downloadFile(url, title.endsWith('.pdf') ? title : `${title}.pdf`);
+    return;
   }
 
   if (!isGoogleDriveUrl(url) && !isOwner) {
