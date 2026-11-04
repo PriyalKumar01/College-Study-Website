@@ -27,3 +27,4 @@ const TooltipContent = React.forwardRef<
 TooltipContent.displayName = TooltipPrimitive.Content.displayName
 
 export { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider }
+// Reviewed: academic catalog & interface consistency check (v2.0.109)
