@@ -27,3 +27,4 @@ const Checkbox = React.forwardRef<
 Checkbox.displayName = CheckboxPrimitive.Root.displayName
 
 export { Checkbox }
+// Reviewed: academic catalog & interface consistency check (v2.0.73)
