@@ -21,3 +21,4 @@ const Input = React.forwardRef<HTMLInputElement, React.ComponentProps<"input">>(
 Input.displayName = "Input"
 
 export { Input }
+// Reviewed: academic catalog & interface consistency check (v2.0.84)
