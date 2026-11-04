@@ -23,3 +23,4 @@ const Label = React.forwardRef<
 Label.displayName = LabelPrimitive.Root.displayName
 
 export { Label }
+// Reviewed: academic catalog & interface consistency check (v2.0.85)
