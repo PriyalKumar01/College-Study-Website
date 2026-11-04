@@ -48,3 +48,4 @@ export function useLiveStudentCount() {
     formattedWithComma,
   };
 }
+// Reviewed: academic catalog & interface consistency check (v2.0.131)
