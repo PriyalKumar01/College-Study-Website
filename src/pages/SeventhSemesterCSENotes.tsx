@@ -5,16 +5,28 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useCommunityNotes } from '@/hooks/useCommunityNotes';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { Download, ArrowLeft, FileText, Play, ChevronDown, ChevronRight, Share2, Trash2, ExternalLink } from 'lucide-react';
+import { Download, ArrowLeft, FileText, Play, ChevronDown, ChevronRight, Share2, Trash2, ExternalLink, Sparkles } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import { SubjectShareButton } from '@/components/SubjectShareButton';
 import { useSubjectAutoScroll } from '@/hooks/useSubjectAutoScroll';
 import { SessionPyqAccordion } from '@/components/SessionPyqAccordion';
-import { getUnifiedSubjectNotes } from '@/data/semesterSubjectsCatalog';
 import Footer from '@/components/Footer';
 import { PlaylistModal } from '@/components/PlaylistModal';
-import { smartDownload } from '@/lib/downloadUtils';
+import { smartDownload, viewInBrowser } from '@/lib/downloadUtils';
+
+interface SubjectItem {
+  id: string;
+  name: string;
+  icon: string;
+  color: string;
+  description?: string;
+  playlists: {
+    detailed: { title: string; url: string; recommended?: boolean }[];
+    oneshot: { title: string; url: string; recommended?: boolean }[];
+  };
+  notes: any[];
+}
 
 const SeventhSemesterCSENotes = () => {
   const navigate = useNavigate();
@@ -26,11 +38,6 @@ const SeventhSemesterCSENotes = () => {
   const [selectedPlaylistType, setSelectedPlaylistType] = useState<'detailed' | 'oneshot'>('detailed');
   const [selectedSubjectForPlaylist, setSelectedSubjectForPlaylist] = useState<string>('');
   const [expandedSubjects, setExpandedSubjects] = useState<string[]>([]);
-  const handleWhatsAppShare = (subjectName: string, subjectId: string) => {
-    const shareUrl = `${window.location.origin}${location.pathname}?subject=${encodeURIComponent(subjectId)}`;
-    const message = `Check out ${subjectName} notes for 7th Semester CSE on College Study Hub: ${shareUrl}`;
-    window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, '_blank');
-  };
 
   const toggleSubjectExpansion = (subjectId: string) => {
     setExpandedSubjects(prev =>
@@ -42,7 +49,7 @@ const SeventhSemesterCSENotes = () => {
 
   const handlePlaylistClick = (subjectId: string, type: 'detailed' | 'oneshot') => {
     const subject = subjects.find(s => s.id === subjectId);
-    if (subject?.playlists?.[type]?.length > 0) {
+    if (subject?.playlists?.[type]?.length) {
       setSelectedSubjectForPlaylist(subjectId);
       setSelectedPlaylistType(type);
       setShowPlaylistModal(true);
@@ -54,121 +61,179 @@ const SeventhSemesterCSENotes = () => {
     return subject?.playlists || { detailed: [], oneshot: [] };
   };
 
-  const staticSubjects = [
+  const staticSubjects: SubjectItem[] = [
     {
-      id: 'cns',
-      name: 'Cryptography & Network Security',
-      icon: '📡',
+      id: 'seminar',
+      name: 'SEMINAR',
+      icon: '🎓',
       color: 'bg-blue-600',
-      playlists: {
-        detailed: [],
-        oneshot: []
-      },
-      notes: []
+      description: 'Technical Seminar, Presentation & Research Review',
+      playlists: { detailed: [], oneshot: [] },
+      notes: [],
     },
     {
-      id: 'ds',
-      name: 'Distributed Systems',
-      icon: '🌐',
-      color: 'bg-purple-600',
-      playlists: {
-        detailed: [],
-        oneshot: []
-      },
-      notes: []
+      id: 'industrial_training',
+      name: 'INDUSTRIAL TRAINING',
+      icon: '🏭',
+      color: 'bg-amber-600',
+      description: 'Industrial Summer Training, Internship Report & Viva',
+      playlists: { detailed: [], oneshot: [] },
+      notes: [],
     },
     {
-      id: 'ml',
-      name: 'Machine Learning',
+      id: 'minor_project',
+      name: 'MINOR PROJECT',
+      icon: '💻',
+      color: 'bg-indigo-600',
+      description: 'Pre-final Year Capstone Project, System Design & Implementation',
+      playlists: { detailed: [], oneshot: [] },
+      notes: [],
+    },
+    {
+      id: 'ml_pe4',
+      name: 'MACHINE LEARNING (PE-IV)',
       icon: '🤖',
-      color: 'bg-green-600',
-      playlists: {
-        detailed: [],
-        oneshot: []
-      },
-      notes: []
-    },
-    {
-      id: 'cc',
-      name: 'Cloud Computing',
-      icon: '☁️',
-      color: 'bg-indigo-500',
-      playlists: {
-        detailed: [],
-        oneshot: []
-      },
-      notes: []
-    },
-    {
-      id: 'dept_elective',
-      name: 'Departmental Elective',
-      icon: '📘',
-      color: 'bg-orange-500',
-      playlists: {
-        detailed: [],
-        oneshot: []
-      },
-      notes: []
-    },
-    {
-      id: 'open_elective_2',
-      name: 'Open Elective-II',
-      icon: '🌟',
       color: 'bg-emerald-600',
-      playlists: {
-        detailed: [],
-        oneshot: []
-      },
-      notes: []
+      description: 'Supervised & Unsupervised Learning, Neural Nets, Model Evaluation',
+      playlists: { detailed: [], oneshot: [] },
+      notes: [],
+    },
+    {
+      id: 'spm_pe3',
+      name: 'SOFTWARE PROJECT MANAGEMENT (PE-III)',
+      icon: '📊',
+      color: 'bg-purple-600',
+      description: 'Agile & Waterfall Lifecycle, Effort Estimation, Quality Assurance',
+      playlists: { detailed: [], oneshot: [] },
+      notes: [],
+    },
+    {
+      id: 'st_pe2',
+      name: 'SOFTWARE TESTING (PE-II)',
+      icon: '🧪',
+      color: 'bg-rose-600',
+      description: 'Black-box, White-box Testing, Automation & Test Case Design',
+      playlists: { detailed: [], oneshot: [] },
+      notes: [],
+    },
+    {
+      id: 'oe2',
+      name: 'OE-II',
+      icon: '🌟',
+      color: 'bg-teal-600',
+      description: 'Open Elective-II across 15 Departments (OBE401, OCS401, OMA401...)',
+      playlists: { detailed: [], oneshot: [] },
+      notes: [],
     },
     {
       id: 'pyqs',
       name: 'ALL MID & ESE PYQs',
       icon: '📚',
       color: 'bg-red-500',
-      playlists: {
-        detailed: [],
-        oneshot: []
-      },
-      notes: []
+      description: 'Mid Sem-1, Mid Sem-2 and End Sem Previous Year Papers',
+      playlists: { detailed: [], oneshot: [] },
+      notes: [],
     },
     {
       id: 'assignments',
       name: 'Assignments - All Subjects',
       icon: '📝',
       color: 'bg-yellow-500',
-      playlists: {
-        detailed: [],
-        oneshot: []
-      },
-      notes: []
-    }
+      description: 'Lab assignments, tutorial problem sheets and tutorials',
+      playlists: { detailed: [], oneshot: [] },
+      notes: [],
+    },
   ];
 
   const syllabus = {
     title: '7th Semester CSE Syllabus',
-    url: '#'
+    url: '#',
   };
 
-  const { data: communityNotes, refetch: refreshNotes } = useCommunityNotes('btech', ['CSE-7th Semester', 'IT-7th Semester', 'CSE-AIML-7th Semester']);
-  const subjects = staticSubjects.map((sub) => ({
-    ...sub,
-    notes: [
-      ...sub.notes,
-      ...(communityNotes || [])
-        .filter((cn) => {
-          if (sub.name === 'Open Elective-II' || sub.id === 'open_elective_2') {
-            return cn.subject === 'Open Elective-II' || cn.subject === 'OE2' || cn.subject === 'Open Elective' || cn.subject?.toLowerCase().includes('open elective');
-          }
-          return cn.subject === sub.name || cn.subject === sub.id;
-        })
-        .map((cn) => ({ id: cn.id, title: cn.title, url: cn.file_url, isCommunity: true, fileName: cn.file_name, uploadedBy: cn.uploaded_by, userName: cn.user_name })),
-    ],
-  }));
+  const { data: communityNotes, refetch: refreshNotes } = useCommunityNotes('btech', [
+    'CSE-7th Semester',
+    'IT-7th Semester',
+    'CSE-AIML-7th Semester',
+    'ALL-7th Semester',
+    'OE-II',
+    'Open Elective-II',
+  ]);
 
-  useSubjectAutoScroll(subjects, (matched) => {
+  const normalizeSub = (s: string) => (s || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+
+  const subjects = staticSubjects.map(sub => {
+    const matchedCommunity = (communityNotes || [])
+      .filter(cn => {
+        const cnSub = (cn.subject || '').trim();
+        const cnDesc = (cn.description || '').trim();
+        const cnSubNorm = normalizeSub(cnSub);
+        const cnDescNorm = normalizeSub(cnDesc);
+        const subNameNorm = normalizeSub(sub.name);
+
+        if (sub.id === 'oe2') {
+          return (
+            cnSubNorm.includes('oe2') ||
+            cnSubNorm.includes('oeii') ||
+            cnSubNorm.includes('openelective') ||
+            cnDescNorm.includes('oe2') ||
+            cnDescNorm.includes('oeii') ||
+            cnDescNorm.includes('openelective')
+          );
+        }
+        if (sub.id === 'seminar') {
+          return cnSubNorm.includes('seminar');
+        }
+        if (sub.id === 'industrial_training') {
+          return cnSubNorm.includes('industrialtraining') || cnSubNorm.includes('training');
+        }
+        if (sub.id === 'minor_project') {
+          return cnSubNorm.includes('minorproject');
+        }
+        if (sub.id === 'ml_pe4') {
+          return cnSubNorm.includes('machinelearning') || cnSubNorm.includes('peiv') || cnSubNorm.includes('pe4');
+        }
+        if (sub.id === 'spm_pe3') {
+          return (
+            cnSubNorm.includes('softwareprojectmanagement') ||
+            cnSubNorm.includes('spm') ||
+            cnSubNorm.includes('peiii') ||
+            cnSubNorm.includes('pe3')
+          );
+        }
+        if (sub.id === 'st_pe2') {
+          return (
+            cnSubNorm.includes('softwaretesting') ||
+            cnSubNorm.includes('peii') ||
+            cnSubNorm.includes('pe2')
+          );
+        }
+        if (sub.id === 'pyqs') {
+          return cn.material_type === 'pyqs' || cnSubNorm.includes('pyq') || cnSubNorm.includes('previousyear');
+        }
+        if (sub.id === 'assignments') {
+          return cn.material_type === 'assignments' || cnSubNorm.includes('assignment');
+        }
+        return cnSubNorm === subNameNorm || cnSubNorm.includes(subNameNorm) || subNameNorm.includes(cnSubNorm);
+      })
+      .map(cn => ({
+        id: cn.id,
+        title: cn.title,
+        url: cn.file_url,
+        isCommunity: true,
+        fileName: cn.file_name,
+        uploadedBy: cn.uploaded_by,
+        userName: cn.user_name,
+      }));
+
+    return {
+      ...sub,
+      notes: [...sub.notes, ...matchedCommunity],
+    };
+  });
+
+  useSubjectAutoScroll(subjects, matched => {
     if (matched.id) {
-      setExpandedSubjects(prev => prev.includes(matched.id) ? prev : [...prev, matched.id]);
+      setExpandedSubjects(prev => (prev.includes(matched.id) ? prev : [...prev, matched.id]));
     }
   });
 
@@ -191,22 +256,29 @@ const SeventhSemesterCSENotes = () => {
   if (selectedSubject) {
     const subject = subjects.find(s => s.id === selectedSubject);
     if (!subject) return null;
+
     return (
-      <div className="min-h-screen bg-background flex flex-col">
+      <div className="min-h-screen bg-background flex flex-col font-sans">
         <Navbar />
         <div className="bg-foreground dark:bg-card text-background dark:text-foreground pt-16 pb-10 px-4 sm:px-8">
           <div className="max-w-5xl mx-auto">
-            <button onClick={() => setSelectedSubject(null)} className="inline-flex items-center gap-2 text-xs font-semibold tracking-widest uppercase opacity-60 hover:opacity-100 transition-opacity mb-6">
-              <ArrowLeft className="h-3.5 w-3.5" /> Back to Subjects
+            <button
+              onClick={() => setSelectedSubject(null)}
+              className="inline-flex items-center gap-2 text-xs font-semibold tracking-widest uppercase opacity-60 hover:opacity-100 transition-opacity mb-6 cursor-pointer"
+            >
+              <ArrowLeft className="h-3.5 w-3.5" /> Back to 7th Semester Subjects
             </button>
-            <div className="flex items-center gap-3 mb-2">
+            <div className="flex items-center gap-3 mb-2 flex-wrap">
               <span className="text-3xl">{subject.icon}</span>
-              <h1 className="text-2xl md:text-3xl font-bold">{subject.name}</h1>
+              <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight">{subject.name}</h1>
             </div>
-            <p className="opacity-60 text-sm">{subject.notes.length} file{subject.notes.length !== 1 ? 's' : ''} available · 7th Semester B.Tech</p>
+            <p className="opacity-60 text-xs">
+              {subject.notes.length} file{subject.notes.length !== 1 ? 's' : ''} available · 7th Semester CSE (B.Tech)
+            </p>
           </div>
         </div>
-        <div className="max-w-5xl mx-auto px-4 sm:px-8 py-10 flex-1">
+
+        <div className="max-w-5xl mx-auto px-4 sm:px-8 py-10 flex-1 w-full">
           {subject.id === 'pyqs' || subject.name.toLowerCase().includes('previous year') || subject.name.toLowerCase().includes('pyq') ? (
             <SessionPyqAccordion
               notes={subject.notes}
@@ -215,34 +287,52 @@ const SeventhSemesterCSENotes = () => {
               isOwner={isOwner}
             />
           ) : subject.notes.length === 0 ? (
-            <div className="text-center py-16 text-muted-foreground">
-              <FileText className="h-12 w-12 mx-auto mb-4 opacity-30" />
-              <p className="text-lg font-medium">No notes yet</p>
-              <p className="text-sm">Notes for this subject will be added soon.</p>
+            <div className="text-center py-16 text-muted-foreground border border-dashed border-border rounded-2xl bg-card/50">
+              <FileText className="h-12 w-12 mx-auto mb-4 opacity-30 text-emerald-500" />
+              <p className="text-lg font-bold text-foreground">0 Files Uploaded</p>
+              <p className="text-xs text-muted-foreground mt-1 max-w-sm mx-auto">
+                No materials uploaded yet for {subject.name}. Admins can upload notes from the Admin Portal.
+              </p>
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {subject.notes.map((note, index) => (
-                <motion.div key={index} initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.05, duration: 0.3 }}>
-                  <div className="group relative flex flex-col h-full rounded-xl border border-border bg-card hover:border-foreground/30 transition-all duration-200 p-4 gap-3">
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, y: 16 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.05, duration: 0.3 }}
+                >
+                  <div className="group relative flex flex-col h-full rounded-2xl border border-border bg-card hover:border-emerald-500/40 transition-all duration-200 p-4 gap-3 shadow-xs hover:shadow-md">
                     <div>
-                      {(note as any).recommended && (
-                        <span className="inline-block text-[10px] font-bold tracking-widest uppercase text-amber-600 dark:text-amber-400 mb-2">★ Recommended</span>
-                      )}
                       {(note as any).isCommunity && (
-                        <span className="inline-block text-[10px] font-bold tracking-widest uppercase text-blue-500 dark:text-blue-400 mb-2 ml-2">Community</span>
+                        <span className="inline-block text-[10px] font-bold tracking-widest uppercase bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20 px-2 py-0.5 rounded-full mb-2">
+                          Community
+                        </span>
                       )}
-                      <p className="text-sm font-medium text-foreground leading-snug mt-1 mb-3">{note.title}</p>
+                      <p className="text-sm font-semibold text-foreground leading-snug">{note.title}</p>
                     </div>
                     <div className="flex gap-2 pt-2 border-t border-border mt-auto">
-                      <button onClick={() => handleDownload(note.url, note.title)} className="flex-1 inline-flex items-center justify-center gap-1.5 text-xs font-semibold py-2 px-3 rounded-lg bg-foreground text-background hover:opacity-80 transition-opacity" disabled={(note as any).url === '#'}>
-                        <Download className="h-3.5 w-3.5" /> {(note as any).url === '#' ? 'Coming Soon' : 'Download'}
+                      <button
+                        onClick={() => handleDownload(note.url, note.title)}
+                        className="flex-1 inline-flex items-center justify-center gap-1.5 text-xs font-bold py-2 px-3 rounded-xl bg-foreground text-background hover:opacity-85 transition-opacity cursor-pointer"
+                        disabled={(note as any).url === '#'}
+                      >
+                        <Download className="h-3.5 w-3.5" /> Download
                       </button>
-                      <a href={note.url} target="_blank" rel="noopener noreferrer" className={`inline-flex items-center justify-center gap-1.5 text-xs font-semibold py-2 px-3 rounded-lg border border-border hover:bg-muted transition-colors ${note.url === '#' ? 'pointer-events-none opacity-50' : ''}`} title="Open in new tab">
+                      <button
+                        onClick={() => viewInBrowser(note.url)}
+                        className="inline-flex items-center justify-center py-2 px-3 rounded-xl border border-border hover:bg-muted transition-colors cursor-pointer text-foreground"
+                        title="View in Browser"
+                      >
                         <ExternalLink className="h-3.5 w-3.5" />
-                      </a>
+                      </button>
                       {(note as any).isCommunity && isOwner && (
-                        <button onClick={() => handleDeleteCommunityNote((note as any).id, (note as any).fileName)} className="inline-flex items-center justify-center py-2 px-3 rounded-lg border border-red-200 text-red-500 hover:bg-red-50 dark:hover:bg-red-950/20 transition-colors text-xs">
+                        <button
+                          onClick={() => handleDeleteCommunityNote((note as any).id, (note as any).fileName)}
+                          className="inline-flex items-center justify-center py-2 px-3 rounded-xl border border-red-200 text-red-500 hover:bg-red-50 dark:hover:bg-red-950/20 transition-colors text-xs cursor-pointer"
+                          title="Delete Note"
+                        >
                           <Trash2 className="h-3.5 w-3.5" />
                         </button>
                       )}
@@ -259,120 +349,150 @@ const SeventhSemesterCSENotes = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background flex flex-col font-sans">
       <Navbar />
-      <div className="bg-foreground dark:bg-card text-background dark:text-foreground pt-16 pb-12 px-4 sm:px-8">
-        <div className="max-w-5xl mx-auto">
-          <button onClick={() => navigate('/btech-notes/fourth-year/semester-7')} className="inline-flex items-center gap-2 text-xs font-semibold tracking-widest uppercase opacity-50 hover:opacity-100 transition-opacity mb-8">
-            <ArrowLeft className="h-3.5 w-3.5" /> Back to Branches
+
+      {/* Hero Header */}
+      <div className="bg-foreground dark:bg-card text-background dark:text-foreground pt-14 pb-12 px-4 sm:px-8 border-b border-border">
+        <div className="max-w-6xl mx-auto">
+          <button
+            onClick={() => navigate('/btech-notes/fourth-year/semester-7')}
+            className="inline-flex items-center gap-2 text-xs font-semibold tracking-widest uppercase opacity-60 hover:opacity-100 transition-opacity mb-4 cursor-pointer"
+          >
+            <ArrowLeft className="h-3.5 w-3.5" /> Back to 7th Semester Branches
           </button>
-          <p className="text-xs font-bold tracking-[0.2em] uppercase opacity-50 mb-3">7th Semester — B.Tech Notes</p>
-          <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight mb-1">
-            CSE / IT
+          <div className="flex items-center gap-2 mb-2 flex-wrap">
+            <span className="bg-emerald-600 text-white font-extrabold text-[10px] uppercase tracking-wider px-3 py-1 rounded-full shadow-xs">
+              OFFICIAL HBTU CURRICULUM
+            </span>
+            <span className="text-xs opacity-75">B.Tech VII Semester</span>
+          </div>
+          <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight mb-2">
+            Computer Science & Engineering
           </h1>
-          <p className="text-xl font-bold opacity-80 mb-4">
-            (+ CSE- AI & ML)
+          <p className="text-sm opacity-70 max-w-2xl leading-relaxed">
+            Seminar, Industrial Training, Minor Project, Machine Learning (PE-IV), Software Project Management (PE-III), Software Testing (PE-II), and Open Elective-II.
           </p>
-          <p className="text-sm opacity-60 mb-8 max-w-xl">Comprehensive study materials, notes, playlists, and PYQs for CSE, IT and CSE (AI & ML) 7th Semester.</p>
-          <div className="flex flex-wrap gap-2">
-            <span className="text-xs font-semibold tracking-wider uppercase border border-background/30 px-3 py-1.5 rounded">CSE / IT / CSE-AIML</span>
-            <span className="text-xs font-semibold tracking-wider uppercase border border-background/30 px-3 py-1.5 rounded">{staticSubjects.filter(s => s.id !== 'pyqs' && s.id !== 'assignments').length} Subjects</span>
-            <span className="text-xs font-semibold tracking-wider uppercase border border-background/30 px-3 py-1.5 rounded">7th Semester</span>
+          <div className="flex flex-wrap gap-2 mt-4">
+            <span className="text-xs font-semibold tracking-wider uppercase border border-background/30 px-3 py-1 rounded-md">
+              CSE & IT Department
+            </span>
+            <span className="text-xs font-semibold tracking-wider uppercase border border-background/30 px-3 py-1 rounded-md">
+              {staticSubjects.filter(s => s.id !== 'pyqs' && s.id !== 'assignments').length} Core Subjects & Electives
+            </span>
+            <span className="text-xs font-semibold tracking-wider uppercase border border-background/30 px-3 py-1 rounded-md">
+              7th Semester
+            </span>
           </div>
         </div>
       </div>
 
-      <div className="max-w-5xl mx-auto px-4 sm:px-8 py-10 space-y-10">
+      <div className="max-w-6xl mx-auto px-4 sm:px-8 py-10 space-y-8 flex-1 w-full">
         {/* Syllabus Card */}
-        <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1, duration: 0.4 }} className="border border-border rounded-xl p-5 bg-card flex items-center justify-between gap-4 flex-wrap">
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.05, duration: 0.3 }}
+          className="border border-border rounded-2xl p-5 bg-card flex items-center justify-between gap-4 flex-wrap shadow-xs"
+        >
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-foreground/10 flex items-center justify-center">
+            <div className="w-10 h-10 rounded-xl bg-foreground/10 flex items-center justify-center">
               <FileText className="h-5 w-5 text-foreground" />
             </div>
             <div>
-              <p className="font-semibold text-foreground text-sm">{syllabus.title}</p>
-              <p className="text-xs text-muted-foreground">Official syllabus for 7th semester CSE</p>
+              <p className="font-bold text-foreground text-sm">{syllabus.title}</p>
+              <p className="text-xs text-muted-foreground">Official syllabus structure for 7th semester CSE (HBTU Kanpur)</p>
             </div>
           </div>
-          <button onClick={() => handleDownload(syllabus.url, syllabus.title)} className="inline-flex items-center gap-2 text-xs font-bold tracking-wider uppercase py-2.5 px-5 rounded-lg bg-foreground text-background hover:opacity-80 transition-opacity" disabled={syllabus.url === '#'}>
+          <button
+            onClick={() => handleDownload(syllabus.url, syllabus.title)}
+            className="inline-flex items-center gap-2 text-xs font-bold tracking-wider uppercase py-2.5 px-5 rounded-xl bg-foreground text-background hover:opacity-85 transition-opacity cursor-pointer"
+            disabled={syllabus.url === '#'}
+          >
             <Download className="h-3.5 w-3.5" /> Download Syllabus
           </button>
         </motion.div>
 
         {/* Subjects Grid */}
         <div>
-          <p className="text-xs font-bold tracking-[0.15em] uppercase text-muted-foreground mb-5">Study Resources</p>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {subjects.map((subject, index) => (
-              <motion.div key={subject.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.06, duration: 0.4 }}>
-                <div className="group border border-border bg-card hover:border-foreground/30 rounded-xl p-5 transition-all duration-300 hover:shadow-lg h-full flex flex-col justify-between" id={`subject-${subject.id}`} data-subject-id={subject.id} data-subject-name={subject.name}>
-                  <div>
-                    <div className="flex items-start justify-between mb-4">
-                      <span className="text-2xl">{subject.icon}</span>
-                      <div className="flex gap-2 items-center">
-                        <span className="text-xs font-bold text-white bg-green-500 px-2 py-0.5 rounded-full">
-                          {subject.notes.length} files
-                        </span>
-                        <SubjectShareButton subjectName={subject.name} subjectId={subject.id} />
+          <div className="flex items-center justify-between mb-5">
+            <p className="text-xs font-bold tracking-[0.15em] uppercase text-muted-foreground">
+              7th Semester Subjects & Electives ({subjects.length})
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+            {subjects.map((subject, index) => {
+              const isOe = subject.id === 'oe2';
+
+              return (
+                <motion.div
+                  key={subject.id}
+                  initial={{ opacity: 0, y: 16 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.04, duration: 0.3 }}
+                >
+                  <div
+                    className={`group border rounded-2xl p-5 transition-all duration-200 hover:shadow-md h-full flex flex-col justify-between ${
+                      isOe
+                        ? 'border-teal-500/40 bg-teal-500/5 hover:border-teal-500'
+                        : 'border-border bg-card hover:border-emerald-500/60'
+                    }`}
+                    id={`subject-${subject.id}`}
+                  >
+                    <div>
+                      <div className="flex items-start justify-between gap-2 mb-3">
+                        <span className="text-2xl p-2 rounded-xl bg-muted/60">{subject.icon}</span>
+                        <div className="flex items-center gap-1.5 flex-wrap justify-end">
+                          <span
+                            className={`text-[10px] font-extrabold px-2.5 py-0.5 rounded-full text-white ${
+                              isOe ? 'bg-teal-600' : 'bg-emerald-600'
+                            }`}
+                          >
+                            {subject.notes.length} files
+                          </span>
+                          <SubjectShareButton subjectName={subject.name} subjectId={subject.id} />
+                        </div>
                       </div>
+
+                      <h3 className="font-bold text-foreground text-base leading-snug mb-1 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
+                        {subject.name}
+                      </h3>
+                      {subject.description && (
+                        <p className="text-xs text-muted-foreground mb-4 leading-relaxed">
+                          {subject.description}
+                        </p>
+                      )}
                     </div>
-                    <h3 className="font-semibold text-foreground text-sm leading-snug mb-1">{subject.name}</h3>
 
-                    {/* Playlist section */}
-                    {subject.id !== 'pyqs' && subject.id !== 'assignments' && (
-                      <div className="mt-3 pt-3 border-t border-border">
+                    <div className="pt-3 border-t border-border mt-auto">
+                      {isOe ? (
                         <button
-                        className={`flex items-center justify-between w-full text-xs font-bold px-3 py-2 rounded-xl border transition-all duration-200 cursor-pointer shadow-2xs ${
-                          expandedSubjects.includes(subject.id)
-                            ? 'bg-emerald-500/15 text-emerald-800 dark:text-emerald-200 border-emerald-500/40 shadow-xs'
-                            : 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border-emerald-500/25 hover:bg-emerald-500/20 hover:border-emerald-500/40'
-                        }`}
-                        onClick={() => toggleSubjectExpansion(subject.id)}
-                      >
-                        <span className="flex items-center gap-1.5">
-                          <Play className="h-3 w-3 fill-emerald-600/30 text-emerald-600 dark:text-emerald-400" /> Curated Playlists
-                        </span>
-                        {expandedSubjects.includes(subject.id) ? (
-                          <ChevronDown className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" />
-                        ) : (
-                          <ChevronRight className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" />
-                        )}
-                      </button>
-                        {expandedSubjects.includes(subject.id) && (
-                          <div className="mt-2 space-y-1">
-                            {getSubjectPlaylists(subject.id).detailed.length > 0 && (
-                              <button className="w-full text-left text-xs py-1.5 px-2 rounded-lg hover:bg-muted transition-colors text-muted-foreground hover:text-foreground" onClick={() => handlePlaylistClick(subject.id, 'detailed')}>
-                                📚 Detailed ({getSubjectPlaylists(subject.id).detailed.length})
-                              </button>
-                            )}
-                            {getSubjectPlaylists(subject.id).oneshot.length > 0 && (
-                              <button className="w-full text-left text-xs py-1.5 px-2 rounded-lg hover:bg-muted transition-colors text-muted-foreground hover:text-foreground" onClick={() => handlePlaylistClick(subject.id, 'oneshot')}>
-                                ⚡ One Shot ({getSubjectPlaylists(subject.id).oneshot.length})
-                              </button>
-                            )}
-                            {getSubjectPlaylists(subject.id).detailed.length === 0 && getSubjectPlaylists(subject.id).oneshot.length === 0 && (
-                              <p className="text-xs text-muted-foreground px-2 py-1">Not available yet</p>
-                            )}
-                          </div>
-                        )}
-                      </div>
-                    )}
+                          onClick={() => navigate('/seventh-semester-open-electives')}
+                          className="w-full text-xs font-bold tracking-wider uppercase py-2.5 px-4 rounded-xl bg-teal-600 hover:bg-teal-500 text-white transition-all duration-200 shadow-sm cursor-pointer flex items-center justify-center gap-1.5"
+                        >
+                          <Sparkles className="w-3.5 h-3.5" />
+                          <span>View Electives (15 Courses)</span>
+                        </button>
+                      ) : (
+                        <button
+                          onClick={() => setSelectedSubject(subject.id)}
+                          className="w-full text-xs font-bold tracking-wider uppercase py-2.5 px-4 rounded-xl border border-foreground/20 hover:bg-foreground hover:text-background transition-all duration-200 cursor-pointer"
+                        >
+                          View Notes
+                        </button>
+                      )}
+                    </div>
                   </div>
-
-                  <div className="mt-4">
-                    <button onClick={() => setSelectedSubject(subject.id)} className="w-full text-xs font-bold tracking-wider uppercase py-2.5 px-4 rounded-lg border border-foreground/20 hover:bg-foreground hover:text-background transition-all duration-200">
-                      View Notes
-                    </button>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
+                </motion.div>
+              );
+            })}
           </div>
         </div>
       </div>
+
       <Footer />
 
-      {/* Playlist Modal */}
       <PlaylistModal
         isOpen={showPlaylistModal}
         onClose={() => setShowPlaylistModal(false)}
@@ -385,8 +505,3 @@ const SeventhSemesterCSENotes = () => {
 };
 
 export default SeventhSemesterCSENotes;
-// Includes CSE, IT, and CSE-AIML notes integration
-
-// AI/ML badge styled with dark purple badge theme
-
-// Verified against 7th sem CSE syllabus
