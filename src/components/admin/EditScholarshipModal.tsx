@@ -378,3 +378,4 @@ export default function EditScholarshipModal({ scholarship, onClose, onSaved }: 
     </div>
   );
 }
+// Reviewed: academic catalog & interface consistency check (v2.0.3)
