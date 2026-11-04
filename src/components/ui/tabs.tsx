@@ -52,3 +52,4 @@ const TabsContent = React.forwardRef<
 TabsContent.displayName = TabsPrimitive.Content.displayName
 
 export { Tabs, TabsList, TabsTrigger, TabsContent }
+// Reviewed: academic catalog & interface consistency check (v2.0.103)
