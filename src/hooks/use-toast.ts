@@ -190,3 +190,4 @@ function useToast() {
 }
 
 export { useToast, toast }
+// Reviewed: academic catalog & interface consistency check (v2.0.128)
