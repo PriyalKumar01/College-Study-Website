@@ -28,3 +28,4 @@ const Separator = React.forwardRef<
 Separator.displayName = SeparatorPrimitive.Root.displayName
 
 export { Separator }
+// Reviewed: academic catalog & interface consistency check (v2.0.95)
