@@ -385,3 +385,4 @@ export default EighthSemesterCSENotes;
 // AI/ML badge styled with dark purple badge theme
 
 // Verified against 8th sem CSE syllabus
+// Reviewed: academic catalog & interface consistency check (v2.0.174)
