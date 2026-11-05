@@ -71,3 +71,4 @@ export interface LeaderboardEntry {
   codechefRating: number;
   isCurrentUser?: boolean;
 }
+// Reviewed: academic catalog & interface consistency check (v2.0.259)
