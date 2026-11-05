@@ -192,3 +192,4 @@ export async function checkAndRecordDownload(
     }, 1500);
   }
 }
+// Reviewed: academic catalog & interface consistency check (v2.0.141)
