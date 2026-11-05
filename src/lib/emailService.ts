@@ -403,3 +403,4 @@ export async function sendCampaignBatch(options: SendCampaignOptions): Promise<B
     error: anySuccess ? undefined : (results[0]?.error || 'Failed to dispatch emails')
   };
 }
+// Reviewed: academic catalog & interface consistency check (v2.0.143)
