@@ -266,3 +266,4 @@ export const CodingNotesView: React.FC = () => {
   );
 };
 // Reviewed: academic catalog & interface consistency check (v2.0.22)
+// Reviewed: academic catalog & interface consistency check (v2.1.297)
