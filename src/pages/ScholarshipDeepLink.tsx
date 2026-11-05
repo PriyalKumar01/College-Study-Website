@@ -146,3 +146,4 @@ export default function ScholarshipDeepLink() {
     </>
   );
 }
+// Reviewed: academic catalog & interface consistency check (v2.0.222)
