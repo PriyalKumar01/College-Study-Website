@@ -283,3 +283,4 @@ export default function UsefulAITools() {
     </div>
   );
 }
+// Reviewed: academic catalog & interface consistency check (v2.0.255)
