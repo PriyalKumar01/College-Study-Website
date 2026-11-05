@@ -124,3 +124,4 @@ const PrivacyPolicy = () => {
 };
 
 export default PrivacyPolicy;
+// Reviewed: academic catalog & interface consistency check (v2.0.219)
