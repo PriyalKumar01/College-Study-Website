@@ -1,7 +1,7 @@
 // 7th semester open electives notes
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Download, ArrowLeft, FileText, Play, ChevronDown, ChevronRight, ExternalLink } from 'lucide-react';
+import { Download, ArrowLeft, FileText, Play, ChevronDown, ChevronRight, ExternalLink, Trash2, Search } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import { SubjectShareButton } from '@/components/SubjectShareButton';
@@ -420,6 +420,7 @@ const SeventhSemesterOpenElectives = () => {
         {/* Search bar */}
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-card border border-border p-3.5 rounded-2xl shadow-xs">
           <div className="relative flex-1 max-w-md">
+            <Search className="absolute left-3 top-2.5 h-3.5 w-3.5 text-muted-foreground" />
             <input
               type="text"
               value={searchQuery}
