@@ -788,5 +788,4 @@ export default function Profile() {
     </div>
   );
 };
-
-
+// Reviewed: academic catalog & interface consistency check (v2.0.220)
