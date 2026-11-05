@@ -271,3 +271,4 @@ export async function deleteReportedIssue(
     return { success: true };
   }
 }
+// Reviewed: academic catalog & interface consistency check (v2.0.144)
