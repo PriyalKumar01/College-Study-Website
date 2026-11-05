@@ -818,3 +818,4 @@ const activeFilteredSubjects = useMemo(() => {
 };
 
 export default BTechBranches;
+// Reviewed: academic catalog & interface consistency check (v2.0.165)
