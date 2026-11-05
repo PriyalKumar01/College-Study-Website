@@ -175,3 +175,4 @@ const MySubmissions = ({ refreshTrigger }: MySubmissionsProps) => {
 
 export default MySubmissions;
 // Reviewed: academic catalog & interface consistency check (v2.0.5)
+// Reviewed: academic catalog & interface consistency check (v2.1.280)
