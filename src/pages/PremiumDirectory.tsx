@@ -713,3 +713,4 @@ export default function PremiumDirectory() {
     </div>
   );
 }
+// Reviewed: academic catalog & interface consistency check (v2.0.218)
