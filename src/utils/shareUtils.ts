@@ -80,3 +80,4 @@ export function buildSubjectShareUrl(
   if (!queryVal) return cleanPath;
   return `${cleanPath}?subject=${encodeURIComponent(queryVal)}`;
 }
+// Reviewed: academic catalog & interface consistency check (v2.0.269)
