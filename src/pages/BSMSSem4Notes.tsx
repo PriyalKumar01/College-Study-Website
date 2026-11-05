@@ -453,6 +453,4 @@ const BSMSSem4Notes = () => {
 };
 
 export default BSMSSem4Notes;
-
-
-
+// Reviewed: academic catalog & interface consistency check (v2.0.160)
