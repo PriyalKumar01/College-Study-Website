@@ -27,3 +27,4 @@ export function highlightMatchedText(text: string, query: string): { matched: bo
     text: part,
   }));
 }
+// Reviewed: academic catalog & interface consistency check (v2.0.272)
