@@ -174,5 +174,4 @@ const CodingStudyMaterial = () => {
 };
 
 export default CodingStudyMaterial;
-
-
+// Reviewed: academic catalog & interface consistency check (v2.0.171)
