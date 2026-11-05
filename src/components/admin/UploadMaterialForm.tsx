@@ -78,19 +78,59 @@ const UploadMaterialForm = ({ onUploadSuccess }: UploadMaterialFormProps) => {
   const [activeStep, setActiveStep] = useState<number>(1);
 
   // Open Elective detection
-  const isOeISelected = subject === 'Open Elective-I' || subject === 'Open Elective' || subject === 'OE-I' || subject.startsWith('Open Elective-I') || subject.startsWith('OE-I');
-  const isOeIISelected = subject === 'Open Elective-II' || subject === 'OE-II' || subject === 'OE2' || subject.startsWith('Open Elective-II') || subject.startsWith('OE-II');
+  const isOeIISelected = useMemo(() => {
+    if (!subject) return false;
+    const s = subject.trim().toLowerCase();
+    if (
+      s === 'oe-ii' ||
+      s === 'oe2' ||
+      s === 'oe ii' ||
+      s === 'oe-2' ||
+      s === 'open elective-ii' ||
+      s === 'open elective ii' ||
+      s.includes('oe-ii') ||
+      s.includes('oe2') ||
+      s.includes('elective-ii') ||
+      s.includes('elective ii')
+    ) {
+      return true;
+    }
+    if ((semester === '7th Semester' || semester === '8th Semester') && (s.includes('open elective') || s.includes('oe'))) {
+      return true;
+    }
+    return false;
+  }, [subject, semester]);
+
+  const isOeISelected = useMemo(() => {
+    if (!subject || isOeIISelected) return false;
+    const s = subject.trim().toLowerCase();
+    return (
+      s === 'open elective-i' ||
+      s === 'open elective i' ||
+      s === 'open elective' ||
+      s === 'oe-i' ||
+      s === 'oe1' ||
+      s === 'oe i' ||
+      s === 'oe-1' ||
+      s.includes('oe-i') ||
+      s.includes('oe1') ||
+      s.includes('elective-i') ||
+      s.includes('elective i') ||
+      ((semester === '5th Semester' || semester === '6th Semester') && (s.includes('open elective') || s.includes('oe')))
+    );
+  }, [subject, isOeIISelected, semester]);
+
   const isOeSelected = isOeISelected || isOeIISelected;
 
   const availableOeSubjects = useMemo(() => {
+    if (isOeIISelected) {
+      return OPEN_ELECTIVE_II_SUBJECTS;
+    }
     if (isOeISelected) {
       if (isTechnologyBranch(branch) || semester === '6th Semester') {
         return OPEN_ELECTIVE_I_TECH_SUBJECTS;
       }
       return OPEN_ELECTIVE_I_ENGG_SUBJECTS;
-    }
-    if (isOeIISelected) {
-      return OPEN_ELECTIVE_II_SUBJECTS;
     }
     return [];
   }, [isOeISelected, isOeIISelected, branch, semester]);
@@ -243,19 +283,53 @@ const UploadMaterialForm = ({ onUploadSuccess }: UploadMaterialFormProps) => {
     setActiveStep(6);
   };
 
+  const isOeSubjectValue = (val: string) => {
+    if (!val) return false;
+    const s = val.trim().toLowerCase();
+    return (
+      s === 'oe-ii' ||
+      s === 'oe2' ||
+      s === 'oe ii' ||
+      s === 'oe-2' ||
+      s === 'open elective-ii' ||
+      s === 'open elective ii' ||
+      s.includes('oe-ii') ||
+      s.includes('oe2') ||
+      s.includes('elective-ii') ||
+      s.includes('elective ii') ||
+      s === 'open elective-i' ||
+      s === 'open elective i' ||
+      s === 'open elective' ||
+      s === 'oe-i' ||
+      s === 'oe1' ||
+      s === 'oe i' ||
+      s === 'oe-1' ||
+      s.includes('oe-i') ||
+      s.includes('oe1') ||
+      s.includes('elective-i') ||
+      s.includes('elective i') ||
+      ((semester === '7th Semester' || semester === '8th Semester' || semester === '5th Semester' || semester === '6th Semester') &&
+        (s.includes('open elective') || s.includes('oe')))
+    );
+  };
+
   const handleSubjectChange = (val: string) => {
     setSubject(val);
     setOeSubject('');
-    if (val === 'Open Elective-I' || val === 'Open Elective-II' || val === 'Open Elective') {
+    if (isOeSubjectValue(val)) {
+      // Keep on Step 6 so user can pick their specific Open Elective subject from the secondary dropdown
       setActiveStep(6);
     } else {
+      // Normal subject selected: proceed to Step 7 (Upload details) and scroll down
       setActiveStep(7);
+      scrollToRef(detailsRef);
     }
   };
 
   const handleOeSubjectChange = (val: string) => {
     setOeSubject(val);
     setActiveStep(7);
+    scrollToRef(detailsRef);
   };
 
   const handleSaveNewSubject = async () => {
@@ -878,7 +952,7 @@ const UploadMaterialForm = ({ onUploadSuccess }: UploadMaterialFormProps) => {
       {/* Step 5/6: Subject */}
       {semester && (availableSubjects.length > 0 || isOwner) && (
         <div className="space-y-3" ref={subjectRef}>
-          {subject && activeStep !== 6 ? (
+          {subject && (!isOeSelected || oeSubject) && activeStep !== 6 ? (
             <div className="flex items-center justify-between p-3.5 rounded-xl border border-emerald-500/30 bg-emerald-500/10 shadow-sm">
               <div
                 onClick={() => setActiveStep(6)}
@@ -1103,18 +1177,18 @@ const UploadMaterialForm = ({ onUploadSuccess }: UploadMaterialFormProps) => {
                       <span className="w-6 h-6 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-xs font-bold shadow-xs">
                         ★
                       </span>
-                      {isOeISelected ? 'Choose your O.E-I Subject' : 'Choose your O.E-II Subject'}
+                      {isOeIISelected ? 'Choose your O.E-II Subject' : 'Choose your O.E-I Subject'}
                     </Label>
                     <Badge variant="outline" className="text-[10px] font-bold uppercase tracking-wider bg-background border-primary/30 text-primary">
-                      {isOeISelected ? 'Open Elective-I' : 'Open Elective-II'}
+                      {isOeIISelected ? 'Open Elective-II' : 'Open Elective-I'}
                     </Badge>
                   </div>
                   <p className="text-xs text-muted-foreground">
-                    Select which specific {isOeISelected ? 'O.E-I' : 'O.E-II'} elective subject you want to upload study notes or PYQs for:
+                    Select which specific {isOeIISelected ? 'O.E-II' : 'O.E-I'} elective subject you want to upload study notes or PYQs for:
                   </p>
                   <Select value={oeSubject} onValueChange={handleOeSubjectChange}>
                     <SelectTrigger className="h-12 bg-background border-primary/50 text-foreground font-semibold shadow-xs">
-                      <SelectValue placeholder={isOeISelected ? "Choose your O.E-I Subject" : "Choose your O.E-II Subject"} />
+                      <SelectValue placeholder={isOeIISelected ? "Choose your O.E-II Subject (15 Courses)" : "Choose your O.E-I Subject"} />
                     </SelectTrigger>
                     <SelectContent className="bg-card border-border text-foreground max-h-64">
                       {availableOeSubjects.map(oe => (

@@ -177,7 +177,12 @@ const SeventhSemesterCSENotes = () => {
             cnSubNorm.includes('openelective') ||
             cnDescNorm.includes('oe2') ||
             cnDescNorm.includes('oeii') ||
-            cnDescNorm.includes('openelective')
+            cnDescNorm.includes('openelective') ||
+            cnSubNorm.includes('obe401') || cnSubNorm.includes('och401') || cnSubNorm.includes('oce401') ||
+            cnSubNorm.includes('ocs401') || cnSubNorm.includes('oee401') || cnSubNorm.includes('oet403') ||
+            cnSubNorm.includes('oft401') || cnSubNorm.includes('olt401') || cnSubNorm.includes('ome401') ||
+            cnSubNorm.includes('oot401') || cnSubNorm.includes('opt401') || cnSubNorm.includes('opl401') ||
+            cnSubNorm.includes('oma401') || cnSubNorm.includes('ohs401') || cnSubNorm.includes('ohs403')
           );
         }
         if (sub.id === 'seminar') {

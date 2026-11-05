@@ -195,9 +195,23 @@ const SeventhSemesterOpenElectives = () => {
   const [searchQuery, setSearchQuery] = useState('');
 
   const { data: communityNotes, refetch: refreshNotes } = useCommunityNotes('btech', [
+    '7th Semester',
     'CSE-7th Semester',
     'IT-7th Semester',
     'CSE-AIML-7th Semester',
+    'ET-7th Semester',
+    'EE-7th Semester',
+    'ME-7th Semester',
+    'CE-7th Semester',
+    'CHE-7th Semester',
+    'BE-7th Semester',
+    'LFT-7th Semester',
+    'PT-7th Semester',
+    'PL-7th Semester',
+    'FT-7th Semester',
+    'OT-7th Semester',
+    'BT-7th Semester',
+    'CHE-8th Semester',
     'ALL-7th Semester',
     'OE-II',
     'Open Elective-II'
