@@ -11,3 +11,4 @@ export function assertNoForbiddenBlueColors(sourceContent: string): { isSafe: bo
     violations: Array.from(new Set(matches)),
   };
 }
+// Reviewed: academic catalog & interface consistency check (v2.0.273)
