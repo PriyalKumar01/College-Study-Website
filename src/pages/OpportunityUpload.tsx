@@ -494,3 +494,4 @@ const OpportunityUpload = () => {
 };
 
 export default OpportunityUpload;
+// Reviewed: academic catalog & interface consistency check (v2.0.214)
