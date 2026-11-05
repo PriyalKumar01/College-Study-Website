@@ -229,3 +229,4 @@ const NotesCategories = () => {
 };
 
 export default NotesCategories;
+// Reviewed: academic catalog & interface consistency check (v2.0.209)
