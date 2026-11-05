@@ -22,3 +22,4 @@ export interface SessionAccordionState {
   openSessions: Record<string, boolean>;
   searchQuery: string;
 }
+// Reviewed: academic catalog & interface consistency check (v2.0.262)
