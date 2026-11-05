@@ -26,3 +26,4 @@ export function parseHbtuRollNumberEnhanced(emailOrRoll: string): HbtuStudentIde
     collegeName: 'HBTU Kanpur',
   };
 }
+// Reviewed: academic catalog & interface consistency check (v2.0.268)
