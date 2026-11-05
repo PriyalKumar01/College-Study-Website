@@ -303,3 +303,4 @@ export async function validateEmail(email: string): Promise<EmailValidationResul
     isDisposable: false
   };
 }
+// Reviewed: academic catalog & interface consistency check (v2.0.265)
