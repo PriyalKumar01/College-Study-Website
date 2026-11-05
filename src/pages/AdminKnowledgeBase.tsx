@@ -792,3 +792,4 @@ const AdminKnowledgeBase = () => {
 };
 
 export default AdminKnowledgeBase;
+// Reviewed: academic catalog & interface consistency check (v2.0.151)
