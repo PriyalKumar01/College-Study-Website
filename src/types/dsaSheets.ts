@@ -46,3 +46,4 @@ export interface DsaSheet {
   featuredCompany?: string;
   steps: DsaStep[];
 }
+// Reviewed: academic catalog & interface consistency check (v2.0.261)
