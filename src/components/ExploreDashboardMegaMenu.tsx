@@ -280,3 +280,4 @@ export const ExploreDashboardMegaMenu: React.FC<MegaMenuProps> = ({ isActive }) 
   );
 };
 // Reviewed: academic catalog & interface consistency check (v2.0.32)
+// Reviewed: academic catalog & interface consistency check (v2.1.307)
