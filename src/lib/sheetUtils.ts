@@ -272,3 +272,4 @@ function parseCSV(text: string): string[][] {
     if (currentVal || currentRow.length > 0) { currentRow.push(currentVal); rows.push(currentRow); }
     return rows;
 }
+// Reviewed: academic catalog & interface consistency check (v2.0.145)
