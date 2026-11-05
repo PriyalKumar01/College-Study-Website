@@ -79,3 +79,4 @@ export const useTheme = () => {
 
   return context
 }
+// Reviewed: academic catalog & interface consistency check (v2.0.258)
