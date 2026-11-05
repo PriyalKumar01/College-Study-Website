@@ -445,3 +445,4 @@ const ATSFriendlyResume = () => {
 };
 
 export default ATSFriendlyResume;
+// Reviewed: academic catalog & interface consistency check (v2.0.153)
