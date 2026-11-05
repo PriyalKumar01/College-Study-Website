@@ -324,3 +324,4 @@ export async function syncContributorCount({
     return null;
   }
 }
+// Reviewed: academic catalog & interface consistency check (v2.0.139)
