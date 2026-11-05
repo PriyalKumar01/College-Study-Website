@@ -250,3 +250,4 @@ export const CuratedNotesMegaMenu: React.FC<CuratedNotesMegaMenuProps> = ({ isAc
   );
 };
 // Reviewed: academic catalog & interface consistency check (v2.0.29)
+// Reviewed: academic catalog & interface consistency check (v2.1.304)
