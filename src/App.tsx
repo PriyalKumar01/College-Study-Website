@@ -1,3 +1,7 @@
+/**
+ * StudyHub Application Root Component
+ * Handles client routing, authentication boundaries, and global UI providers.
+ */
 // Root application router and global context providers
 import { Suspense, lazy } from "react";
 import { Toaster } from "@/components/ui/toaster";
