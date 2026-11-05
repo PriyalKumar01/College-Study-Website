@@ -198,3 +198,4 @@ const BSMSYears = () => {
 };
 
 export default BSMSYears;
+// Reviewed: academic catalog & interface consistency check (v2.0.164)
