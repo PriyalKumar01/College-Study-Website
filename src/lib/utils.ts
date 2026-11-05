@@ -5,3 +5,4 @@ import { twMerge } from "tailwind-merge"
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
+// Reviewed: academic catalog & interface consistency check (v2.0.146)
