@@ -203,3 +203,4 @@ export async function saveRenamedSubject(
     console.error('Failed to save renamed subject', e);
   }
 }
+// Reviewed: academic catalog & interface consistency check (v2.0.140)
