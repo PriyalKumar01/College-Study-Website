@@ -216,3 +216,4 @@ export const navItems = [
   { to: "/roadmaps/fresher-job-guide", page: <RoadmapGuide /> },
   { to: "*", page: <NotFound /> },
 ];
+// Reviewed: academic catalog & interface consistency check (v2.0.148)
