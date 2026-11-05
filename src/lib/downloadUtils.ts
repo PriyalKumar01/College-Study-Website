@@ -189,3 +189,4 @@ export const smartDownload = async (
     window.open(url, '_blank');
   }
 };
+// Reviewed: academic catalog & interface consistency check (v2.0.142)
