@@ -23,3 +23,4 @@ export function getSelectedSubjectIds(sem: number): string[] {
     return [];
   }
 }
+// Reviewed: academic catalog & interface consistency check (v2.0.270)
