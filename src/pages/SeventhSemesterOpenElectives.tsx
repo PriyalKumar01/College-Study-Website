@@ -237,6 +237,35 @@ const SeventhSemesterOpenElectives = () => {
     return subject?.playlists || { detailed: [], oneshot: [] };
   };
 
+  // Extract all 7th sem & OE PYQs (Mid Sem 1, Mid Sem 2, and Open Elective question papers)
+  const allOePyqs = (communityNotes || [])
+    .filter(cn => {
+      const cnSub = (cn.subject || '').toLowerCase();
+      const cnTitle = (cn.title || '').toLowerCase();
+      const cnDesc = (cn.description || '').toLowerCase();
+      const cnType = (cn.material_type || '').toLowerCase();
+      return (
+        cnType === 'pyqs' ||
+        cnSub.includes('pyq') ||
+        cnSub.includes('previous year') ||
+        cnTitle.includes('pyq') ||
+        cnTitle.includes('mid sem') ||
+        cnTitle.includes('end sem') ||
+        cnDesc.includes('pyq') ||
+        cnDesc.includes('open elective')
+      );
+    })
+    .map(cn => ({
+      id: cn.id,
+      title: cn.title,
+      url: cn.file_url,
+      isCommunity: true,
+      fileName: cn.file_name,
+      uploadedBy: cn.uploaded_by,
+      userName: cn.user_name,
+      subject: cn.subject,
+    }));
+
   const subjects = OE_II_COURSES.map(course => {
     const matchedNotes = (communityNotes || [])
       .filter(cn => {

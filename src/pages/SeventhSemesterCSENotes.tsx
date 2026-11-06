@@ -5,7 +5,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useCommunityNotes } from '@/hooks/useCommunityNotes';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { Download, ArrowLeft, FileText, Play, ChevronDown, ChevronRight, Share2, Trash2, ExternalLink, Sparkles } from 'lucide-react';
+import { Download, ArrowLeft, FileText, Play, ChevronDown, ChevronRight, Share2, Trash2, ExternalLink, Sparkles, Search, BookOpen } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import { SubjectShareButton } from '@/components/SubjectShareButton';
@@ -38,6 +38,7 @@ const SeventhSemesterCSENotes = () => {
   const [selectedPlaylistType, setSelectedPlaylistType] = useState<'detailed' | 'oneshot'>('detailed');
   const [selectedSubjectForPlaylist, setSelectedSubjectForPlaylist] = useState<string>('');
   const [expandedSubjects, setExpandedSubjects] = useState<string[]>([]);
+  const [searchQuery, setSearchQuery] = useState('');
 
   const toggleSubjectExpansion = (subjectId: string) => {
     setExpandedSubjects(prev =>

@@ -43,7 +43,7 @@ const MySubmissions = ({ refreshTrigger }: MySubmissionsProps) => {
       const { data, error } = await supabase
         .from('notes')
         .select('*')
-        .eq('uploaded_by', user.id)
+        .or(`uploaded_by.eq.${user.id},user_email.ilike.${user.email?.toLowerCase().trim()}`)
         .order('uploaded_at', { ascending: false });
 
       if (error) throw error;

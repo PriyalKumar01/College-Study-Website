@@ -22,12 +22,11 @@ export function useCommunityNotes(category: string, semester?: string | string[]
   }, []);
 
   const fetchNotes = useCallback(async (forceRefresh = false) => {
-    // Check cache first: if fresh data is in cache, return immediately to eliminate egress
+    // 1. Instant render from cache (Stale-While-Revalidate)
     if (!forceRefresh) {
       const cached = getCachedData<any[]>(cacheKey, DEFAULT_CACHE_TTL_MS);
       if (cached !== null) {
         setData(cached);
-        return;
       }
     }
 
