@@ -33,38 +33,11 @@ export const isBlockedServerUrl = (url?: string): boolean => {
 };
 
 /**
- * Downloads a file using blob fetch or opens in a new tab.
- * Supabase Storage files are automatically intercepted and routed to online reading to eliminate egress.
+ * Downloads a file using blob fetch or triggers direct browser download.
+ * Direct PDF download is fully enabled for community notes and Cloudflare storage.
  */
 export const downloadFile = async (url: string, filename: string) => {
-  if (isSupabaseStorageUrl(url)) {
-    alert('📖 Online Reading Mode:\n\nTo keep StudyHub 100% free and protect server bandwidth, direct PDF download is disabled for community notes. Opening in fast online reader!');
-    viewInBrowser(url);
-    return;
-  }
-
-  // Cloudflare R2: Zero egress storage, allows direct downloading smoothly
-  if (isCloudflareR2Url(url)) {
-    try {
-      const response = await fetch(url);
-      if (response.ok) {
-        const blob = await response.blob();
-        const blobUrl = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = blobUrl;
-        a.download = filename || 'study-material.pdf';
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(blobUrl);
-        return;
-      }
-    } catch {
-      // Fallback: direct window.open
-      window.open(url, '_blank');
-      return;
-    }
-  }
+  const safeFilename = filename?.endsWith('.pdf') ? filename : `${filename || 'study-material'}.pdf`;
 
   try {
     const response = await fetch(url);
@@ -73,21 +46,28 @@ export const downloadFile = async (url: string, filename: string) => {
     const blobUrl = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = blobUrl;
-    a.download = filename || 'study-material.pdf';
+    a.download = safeFilename;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(blobUrl);
   } catch {
-    // Fallback: open directly in new tab
-    window.open(url, '_blank');
+    // Fallback: direct download parameter for Supabase Storage or open in new tab
+    if (isSupabaseStorageUrl(url)) {
+      const downloadUrl = url.includes('?')
+        ? `${url}&download=${encodeURIComponent(safeFilename)}`
+        : `${url}?download=${encodeURIComponent(safeFilename)}`;
+      window.open(downloadUrl, '_blank');
+    } else {
+      window.open(url, '_blank');
+    }
   }
 };
 
 /**
  * Opens a file in browser for preview.
  * - Converts Drive download links to preview /preview links.
- * - Opens Supabase Storage files in Google Docs Viewer so Google CDN caches the rendering and eliminates egress.
+ * - Opens Supabase Storage files in Google Docs Viewer so Google CDN caches the rendering.
  */
 export const viewInBrowser = (url: string) => {
   if (!url || url === '#') return;
@@ -122,9 +102,9 @@ export const viewInBrowser = (url: string) => {
 
 /**
  * Smart download handler:
- * - Downloads PDFs smoothly without blocking alert popups.
- * - Direct Google Drive downloads enforce student rate-limits (5/day, 20/month).
- * - Supabase Storage files are kept strictly view-only to maintain egress limits.
+ * - Direct PDF downloads enabled smoothly for community notes & all sources without blocking alert popups.
+ * - Enforces verified student rate-limits (5/day, 20/month) to prevent abuse.
+ * - Supports Google Drive, Supabase Storage, and Cloudflare R2 seamlessly.
  */
 export const smartDownload = async (
   url: string,
@@ -138,55 +118,38 @@ export const smartDownload = async (
     return;
   }
 
-  const userEmail = currentUser?.email?.toLowerCase().trim() || '';
-  const isOwner = userEmail === 'priyalkumar06@gmail.com';
-
-  // 1. Supabase Storage / Community PDF: VIEW-ONLY for students to preserve server bandwidth,
-  // while allowing Owner unlimited direct access
-  if (isSupabaseStorageUrl(url)) {
-    if (!isOwner) {
-      alert('📖 Online Reading Mode:\n\nDirect downloading for community notes is restricted to protect monthly server limits. Opening in online preview mode for reading!');
-      viewInBrowser(url);
-      return;
-    }
-  }
-
-  // 2. Cloudflare R2: Zero egress fees! Students can download and view freely without warnings or limits
-  if (isCloudflareR2Url(url)) {
-    await downloadFile(url, title.endsWith('.pdf') ? title : `${title}.pdf`);
-    return;
-  }
-
-  if (!isGoogleDriveUrl(url) && !isOwner) {
-    viewInBrowser(url);
-    return;
-  }
-
-  // 2. Enforce Verified User Download Limits for Google Drive (5/day, 20/month) - Owner is exempt
+  // 1. Enforce Student Download Limits (5/day, 20/month) - Owner & Admins exempt
   const limitCheck = await checkAndRecordDownload(url, title, currentUser);
   if (!limitCheck.allowed) {
     alert(`🔒 Download Notice:\n\n${limitCheck.message}`);
     return;
   }
 
-  // 3. Trigger Google Drive Download
-  try {
-    const parsed = new URL(url);
-    if (parsed.hostname === 'drive.google.com') {
-      const fileId = url.match(/\/d\/([a-zA-Z0-9-_]+)/)?.[1] || parsed.searchParams.get('id');
-      if (fileId) {
-        const downloadUrl = `https://drive.google.com/uc?export=download&id=${fileId}`;
-        window.open(downloadUrl, '_blank');
+  const safeFilename = title.endsWith('.pdf') ? title : `${title}.pdf`;
+
+  // 2. Google Drive direct download
+  if (isGoogleDriveUrl(url)) {
+    try {
+      const parsed = new URL(url);
+      if (parsed.hostname === 'drive.google.com') {
+        const fileId = url.match(/\/d\/([a-zA-Z0-9-_]+)/)?.[1] || parsed.searchParams.get('id');
+        if (fileId) {
+          const downloadUrl = `https://drive.google.com/uc?export=download&id=${fileId}`;
+          window.open(downloadUrl, '_blank');
+          return;
+        }
+      }
+
+      if (parsed.hostname.includes('google.com') || parsed.protocol === 'https:') {
+        window.open(url, '_blank');
         return;
       }
-    }
-
-    if (parsed.hostname.includes('google.com') || parsed.protocol === 'https:') {
+    } catch {
       window.open(url, '_blank');
       return;
     }
-  } catch {
-    window.open(url, '_blank');
   }
+
+  // 3. Supabase Storage, Cloudflare R2, and all direct PDF URLs: download directly!
+  await downloadFile(url, safeFilename);
 };
-// Reviewed: academic catalog & interface consistency check (v2.0.142)
