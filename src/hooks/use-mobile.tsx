@@ -1,3 +1,4 @@
+// Responsive: dynamic viewport width breakpoint detection hook
 // Mobile viewport detection hook
 import * as React from "react"
 
