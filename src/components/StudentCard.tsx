@@ -1,3 +1,4 @@
+// Community: contributor profile showcase card with tier badge indicator
 
 import React from 'react';
 import { Quote, Linkedin, Award, Star } from 'lucide-react';
