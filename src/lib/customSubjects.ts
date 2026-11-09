@@ -1,3 +1,4 @@
+// Curriculum: dynamic open elective and custom subject mapping
 import { SubjectInfo } from '@/data/courseStructure';
 import { supabase } from '@/integrations/supabase/client';
 import { clearCachePrefix } from '@/lib/cacheUtils';
