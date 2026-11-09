@@ -1,10 +1,20 @@
-// Community notes fetching and caching hook
+// Community notes fetching and caching hook (Zero-Egress & Anti-Loop Protected)
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { getCachedData, setCachedData, DEFAULT_CACHE_TTL_MS } from '@/lib/cacheUtils';
+import { normalizeToZeroEgressUrl, isSupabaseStorageUrl } from '@/lib/downloadUtils';
 
 export function useCommunityNotes(category: string, semester?: string | string[]) {
-  const cacheKey = `notes_${category}_${Array.isArray(semester) ? semester.join('_') : (semester || 'all')}`;
+  // Stable serialized key: prevents infinite re-render loops when inline arrays are passed
+  const semesterKey = Array.isArray(semester)
+    ? [...semester].sort().join('|')
+    : (semester || 'all');
+
+  const cacheKey = `notes_${category}_${semesterKey}`;
+
+  // Keep a stable ref to semester query filter to prevent callback invalidation
+  const semesterRef = useRef(semester);
+  semesterRef.current = semester;
 
   const [data, setData] = useState<any[]>(() => {
     const cached = getCachedData<any[]>(cacheKey, DEFAULT_CACHE_TTL_MS) || [];
@@ -22,11 +32,12 @@ export function useCommunityNotes(category: string, semester?: string | string[]
   }, []);
 
   const fetchNotes = useCallback(async (forceRefresh = false) => {
-    // 1. Instant render from cache (Stale-While-Revalidate)
+    // 1. Instant cache check (Zero Supabase Egress & Log Ingestion when cache is valid)
     if (!forceRefresh) {
       const cached = getCachedData<any[]>(cacheKey, DEFAULT_CACHE_TTL_MS);
-      if (cached !== null) {
+      if (cached !== null && cached.length >= 0) {
         setData(cached);
+        return; // Return immediately to prevent hammering Supabase on every render
       }
     }
 
@@ -36,11 +47,12 @@ export function useCommunityNotes(category: string, semester?: string | string[]
         .select('id, title, subject, semester, material_type, file_url, file_name, uploaded_at, user_name, uploaded_by, description, year, status, approved')
         .eq('status', 'approved');
 
-      if (semester) {
-        if (Array.isArray(semester)) {
-          query = query.in('semester', semester);
+      const activeSemester = semesterRef.current;
+      if (activeSemester) {
+        if (Array.isArray(activeSemester)) {
+          query = query.in('semester', activeSemester);
         } else {
-          query = query.eq('semester', semester);
+          query = query.eq('semester', activeSemester);
         }
       } else {
         query = query.eq('semester', category);
@@ -51,13 +63,19 @@ export function useCommunityNotes(category: string, semester?: string | string[]
         .limit(100);
 
       if (!error && notes && isMountedRef.current) {
-        // Sanitize: filter out broken server entries, placeholder subjects, or dead links
-        const sanitizedNotes = notes.filter((note) => {
-          if (!note.file_url || note.file_url === '#' || note.file_url.trim() === '') return false;
-          if (note.material_type === 'subject_placeholder') return false;
-          
-          return true;
-        });
+        // Sanitize: filter out placeholders and ensure all URLs route through zero-egress Cloudflare R2
+        const sanitizedNotes = notes
+          .filter((note) => {
+            if (!note.file_url || note.file_url === '#' || note.file_url.trim() === '') return false;
+            if (note.material_type === 'subject_placeholder') return false;
+            return true;
+          })
+          .map((note) => {
+            if (isSupabaseStorageUrl(note.file_url)) {
+              return { ...note, file_url: normalizeToZeroEgressUrl(note.file_url) };
+            }
+            return note;
+          });
 
         setCachedData(cacheKey, sanitizedNotes);
         setData(sanitizedNotes);
@@ -65,7 +83,7 @@ export function useCommunityNotes(category: string, semester?: string | string[]
     } catch (e) {
       console.error("Failed to fetch community notes", e);
     }
-  }, [category, semester, cacheKey]);
+  }, [category, semesterKey, cacheKey]);
 
   useEffect(() => {
     fetchNotes();
@@ -83,4 +101,3 @@ export function useCommunityNotes(category: string, semester?: string | string[]
 
   return { data, refetch: () => fetchNotes(true) };
 }
-// Reviewed: academic catalog & interface consistency check (v2.0.129)
