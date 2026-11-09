@@ -1,3 +1,4 @@
+// Infrastructure: dual-provider email service with Brevo and Resend dispatch
 import { supabase } from '@/integrations/supabase/client';
 
 export interface Recipient {
