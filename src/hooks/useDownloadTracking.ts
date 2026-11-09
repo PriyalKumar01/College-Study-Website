@@ -1,3 +1,4 @@
+// Telemetry: asynchronous download event tracking without blocking I/O
 // Download tracking hook for analytics
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
