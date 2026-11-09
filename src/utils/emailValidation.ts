@@ -1,3 +1,4 @@
+// Security: RFC-compliant email syntax and disposable domain blocklist
 /**
  * Utility for verifying email addresses and detecting disposable/temporary/fake emails.
  */
