@@ -1,3 +1,4 @@
+// Filter: multi-token subject query filter and punctuation normalizer
 /**
  * Subject Search and Filtering Utilities
  */
