@@ -1,3 +1,4 @@
+// Security: student rate limit verification & server bandwidth protection
 import { supabase } from '@/integrations/supabase/client';
 import { User } from '@supabase/supabase-js';
 
