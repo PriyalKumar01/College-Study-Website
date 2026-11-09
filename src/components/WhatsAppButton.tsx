@@ -1,3 +1,4 @@
+// Community: floating WhatsApp group join button with hover tooltip
 // Floating WhatsApp community connect button
 import { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
