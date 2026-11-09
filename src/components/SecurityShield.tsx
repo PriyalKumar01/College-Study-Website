@@ -1,3 +1,4 @@
+// Security: verified SSL & Cloudflare protection badge presentation
 // Security shield banner component
 import { useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
