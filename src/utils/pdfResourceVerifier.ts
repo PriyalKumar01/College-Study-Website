@@ -1,3 +1,4 @@
+// Integrity: PDF link reachability checker and zero-egress sanitizer
 /**
  * PDF Resource Link Verifier
  */
