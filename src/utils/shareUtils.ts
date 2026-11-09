@@ -1,3 +1,4 @@
+// Social: native Web Share API caller with clipboard copy fallback
 /**
  * Utility for unified, high-reliability sharing across College Study Hub.
  * Uses native Web Share API on mobile devices, with automatic clipboard copy
