@@ -1,3 +1,4 @@
+// Visuals: ambient background gradient mesh with subtle geometric accents
 // Animated background canvas for auth pages
 import { motion } from 'framer-motion';
 import logoImg from '@/assets/college-study-hub-logo.png';
