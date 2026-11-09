@@ -1,3 +1,4 @@
+// Data: Google Sheets CSV ingest with resilient error boundaries
 import { useState, useEffect } from 'react';
 
 export interface StudentStory {
