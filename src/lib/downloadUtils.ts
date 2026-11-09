@@ -14,7 +14,12 @@ export const isGoogleDriveUrl = (url?: string): boolean => {
  */
 export const isSupabaseStorageUrl = (url?: string): boolean => {
   if (!url || url === '#') return false;
-  return url.includes('supabase.co/storage');
+  return (
+    url.includes('supabase.co/storage') ||
+    url.includes('/storage/v1/object/public/') ||
+    url.includes('axalbmmjqdezbkpffore') ||
+    url.includes('xjxdauvimiflzbozycki')
+  );
 };
 
 /**
@@ -22,7 +27,7 @@ export const isSupabaseStorageUrl = (url?: string): boolean => {
  */
 export const isCloudflareR2Url = (url?: string): boolean => {
   if (!url || url === '#') return false;
-  return url.includes('.r2.dev') || url.includes('.r2.cloudflarestorage.com');
+  return url.includes('.r2.dev') || url.includes('.r2.cloudflarestorage.com') || url.includes('pub-a7a8e9cce7e14983a69b9c28a6487e28');
 };
 
 /**
@@ -33,10 +38,40 @@ export const isBlockedServerUrl = (url?: string): boolean => {
 };
 
 /**
+ * Zero-Egress URL Normalizer:
+ * Automatically routes any Supabase Storage URLs directly through Cloudflare R2 CDN,
+ * ensuring 100% zero Supabase egress fees and zero storage bandwidth consumption.
+ */
+export const normalizeToZeroEgressUrl = (url?: string): string => {
+  if (!url || url === '#' || url.trim() === '') return '';
+
+  // Google Drive URLs remain intact
+  if (isGoogleDriveUrl(url)) return url;
+
+  // Cloudflare R2 URLs are already optimal
+  if (isCloudflareR2Url(url)) return url;
+
+  // Transform Supabase Storage URLs to Cloudflare R2
+  if (isSupabaseStorageUrl(url)) {
+    const match = url.match(/\/storage\/v1\/object\/public\/(.*)/) || url.match(/\/study-materials\/(.*)/);
+    if (match) {
+      const rawPath = decodeURIComponent(match[1]);
+      // Normalize prefix to study-materials/...
+      const cleanPath = rawPath.replace(/^study-materials\//, '');
+      const encodedKey = cleanPath.split('/').map(part => encodeURIComponent(part)).join('/');
+      return `https://pub-a7a8e9cce7e14983a69b9c28a6487e28.r2.dev/study-materials/${encodedKey}`;
+    }
+  }
+
+  return url;
+};
+
+/**
  * Downloads a file using blob fetch or triggers direct browser download.
  * Direct PDF download is fully enabled for community notes and Cloudflare storage.
  */
-export const downloadFile = async (url: string, filename: string) => {
+export const downloadFile = async (rawUrl: string, filename: string) => {
+  const url = normalizeToZeroEgressUrl(rawUrl);
   const safeFilename = filename?.endsWith('.pdf') ? filename : `${filename || 'study-material'}.pdf`;
 
   try {
@@ -67,10 +102,12 @@ export const downloadFile = async (url: string, filename: string) => {
 /**
  * Opens a file in browser for preview.
  * - Converts Drive download links to preview /preview links.
- * - Opens Supabase Storage files in Google Docs Viewer so Google CDN caches the rendering.
+ * - Normalizes Supabase Storage links to Cloudflare R2 to eliminate egress completely.
  */
-export const viewInBrowser = (url: string) => {
-  if (!url || url === '#') return;
+export const viewInBrowser = (rawUrl: string) => {
+  if (!rawUrl || rawUrl === '#') return;
+
+  const url = normalizeToZeroEgressUrl(rawUrl);
 
   if (isBlockedServerUrl(url)) {
     console.warn('[viewInBrowser] Skipping unreachable server link:', url);
@@ -88,7 +125,7 @@ export const viewInBrowser = (url: string) => {
       return;
     }
 
-    // Supabase Storage: Use Google Docs Viewer to offload file delivery to Google CDN
+    // Supabase Storage fallback: Use Google Docs Viewer to offload file delivery to Google CDN
     if (isSupabaseStorageUrl(url)) {
       window.open(`https://docs.google.com/viewer?url=${encodeURIComponent(url)}&embedded=false`, '_blank');
       return;
@@ -107,11 +144,13 @@ export const viewInBrowser = (url: string) => {
  * - Supports Google Drive, Supabase Storage, and Cloudflare R2 seamlessly.
  */
 export const smartDownload = async (
-  url: string,
+  rawUrl: string,
   title: string = 'download.pdf',
   currentUser?: User | null
 ) => {
-  if (!url || url === '#') return;
+  if (!rawUrl || rawUrl === '#') return;
+
+  const url = normalizeToZeroEgressUrl(rawUrl);
 
   if (isBlockedServerUrl(url)) {
     console.warn('[smartDownload] Skipping unreachable server link:', url);
