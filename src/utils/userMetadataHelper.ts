@@ -1,3 +1,4 @@
+// Auth: Supabase GoTrue metadata synchronization and academic field checks
 import { User } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 
