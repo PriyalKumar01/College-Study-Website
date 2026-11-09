@@ -1,3 +1,4 @@
+// Support: user-submitted issue ticketing and tracking service
 import { supabase } from '@/integrations/supabase/client';
 
 export interface ReportedIssue {
