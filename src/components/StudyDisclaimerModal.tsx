@@ -1,3 +1,4 @@
+// Legal: academic syllabus disclaimer dialog with acknowledgement persistence
 // Study disclaimer modal component
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
