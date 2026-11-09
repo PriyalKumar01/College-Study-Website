@@ -1,3 +1,4 @@
+// AI: assistant feature gating with token balance verification
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Lock, Sparkles, AlertCircle } from "lucide-react";
