@@ -1,3 +1,4 @@
+// Presence: active student counter with stale-while-revalidate caching
 // Live student presence counter hook
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
