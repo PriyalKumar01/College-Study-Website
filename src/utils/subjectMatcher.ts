@@ -1,3 +1,4 @@
+// Search: normalized subject name matching and elective keyword resolution
 /**
  * Utility to match community note subjects against static subject definitions.
  * Handles abbreviations, slight differences in naming, and acronyms (e.g. ITPC, FMMO, CPC, E&M, DBMS, OS).
