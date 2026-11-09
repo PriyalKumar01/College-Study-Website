@@ -1,3 +1,4 @@
+// Account: authenticated profile menu with role badge and sign-out action
 import { User, LogOut, Crown, Shield } from 'lucide-react';
 import {
   Avatar,
