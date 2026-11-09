@@ -1,3 +1,4 @@
+// Interaction: social share dispatcher with responsive copy link toast
 import { Share2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
