@@ -1,3 +1,4 @@
+// Navigation: collapsible navigation drawer with active route highlighting
 // Responsive collapsible app sidebar navigation
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
