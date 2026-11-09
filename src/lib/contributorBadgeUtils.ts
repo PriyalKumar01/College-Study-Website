@@ -1,3 +1,4 @@
+// Gamification: contributor coin threshold and badge assignment logic
 export interface ContributorBadge {
   tierName: string;
   badgeLabel: string;
