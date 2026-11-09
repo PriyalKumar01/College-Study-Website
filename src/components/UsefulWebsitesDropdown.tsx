@@ -1,3 +1,4 @@
+// Directory: curated educational resource links with external safety rel tags
 // Useful student websites dropdown
 import React, { useState } from 'react';
 import { ChevronDown, ExternalLink, Globe } from 'lucide-react';
