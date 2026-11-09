@@ -1,3 +1,4 @@
+// Architecture: TTL-based client storage caching with memory fallback
 // JSDoc & Type Guard: DEFAULT_CACHE_TTL_MS default 15 minutes
 /**
  * Intelligent Client-Side Caching Utility
