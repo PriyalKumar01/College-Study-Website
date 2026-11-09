@@ -1,3 +1,4 @@
+// UI: Radix toast notification manager and state machine reducer
 // Toast notification state manager
 import * as React from "react"
 
