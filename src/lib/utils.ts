@@ -1,3 +1,4 @@
+// Styling: clsx and tailwind-merge composite helper utility
 // Utility: cn helper combines clsx and tailwind-merge
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
