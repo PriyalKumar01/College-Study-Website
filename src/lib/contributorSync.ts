@@ -1,3 +1,4 @@
+// Database: community contributor upload count & coin ledger synchronization
 import { supabase } from '@/integrations/supabase/client';
 import { clearCachePrefix, removeCachedData } from '@/lib/cacheUtils';
 import { getLeagueUpgradeInfo } from '@/lib/contributorBadgeUtils';
