@@ -1,3 +1,4 @@
+// Onboarding: mandatory academic branch and year verification dialog
 import { useState, useEffect, useRef } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
