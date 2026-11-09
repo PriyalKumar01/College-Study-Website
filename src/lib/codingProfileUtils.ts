@@ -1,3 +1,4 @@
+// Utilities: competitive programming profile parsing and cache resolver
 import confetti from 'canvas-confetti';
 import { ContestEvent, UserCodingProfile, PlatformKey, LeaderboardEntry } from '@/types/codingProfile';
 
