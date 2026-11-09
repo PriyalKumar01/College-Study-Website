@@ -1,3 +1,4 @@
+// Storage: legacy Supabase to Cloudflare R2 path mapper and sanitizer
 /**
  * LocalStorage Migration Helper for Semester Filters
  */
