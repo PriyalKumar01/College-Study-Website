@@ -1,3 +1,4 @@
+// Scroll: smooth scroll restoration coordinator for viewport transitions
 // Component to scroll window to top on route change
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
