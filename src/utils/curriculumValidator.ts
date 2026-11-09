@@ -1,3 +1,4 @@
+// Validation: academic curriculum catalog schema and branch validator
 /**
  * Curriculum and Catalog Validator
  */
