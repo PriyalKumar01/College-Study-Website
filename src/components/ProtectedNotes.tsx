@@ -1,3 +1,4 @@
+// Access: membership gate overlay with inline authentication trigger
 import { useAuth } from '@/contexts/AuthContext';
 import { ReactNode } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
