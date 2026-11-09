@@ -1,3 +1,4 @@
+// Academic: HBTU postgraduate and specialized program curriculum definitions
 /**
  * HBTU Degree Programs and Academic Regulations Mapping
  */
