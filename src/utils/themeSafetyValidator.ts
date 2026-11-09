@@ -1,3 +1,4 @@
+// Preferences: color scheme safety validator and localStorage persistence
 /**
  * Theme Safety Validator
  * Verifies that no forbidden blue color tokens (bg-blue, text-blue, border-blue) exist in targeted modules.
