@@ -1,3 +1,4 @@
+// Guard: React Router protection boundary with redirect state preservation
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import PendingApprovalScreen from "@/components/PendingApprovalScreen";
