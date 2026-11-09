@@ -1,3 +1,4 @@
+// SocialProof: placement success stories ticker with animated counter
 // Student testimonials and placement success stories
 
 import React, { useEffect, useState } from 'react';
