@@ -1,3 +1,4 @@
+// Assistant: floating study companion chat interface with markdown rendering
 // AI study assistant chat widget
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
