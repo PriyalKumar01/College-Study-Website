@@ -1,3 +1,4 @@
+// Viewer: PDF preview modal and document streaming controller
 // Notes viewer component with PDF rendering
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
