@@ -1,3 +1,4 @@
+// Syllabus: mechanical engineering fourth semester curriculum
 // 4th semester Mechanical Engineering notes
 import { useState } from 'react';
 import { motion } from 'framer-motion';
