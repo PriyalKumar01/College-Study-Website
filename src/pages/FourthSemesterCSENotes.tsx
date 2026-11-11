@@ -1,3 +1,4 @@
+// Syllabus: computer science fourth semester core curriculum
 // 4th semester CSE branch notes
 import { useState } from 'react';
 import { motion } from 'framer-motion';
