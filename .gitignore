@@ -38,4 +38,5 @@ scratch/
 
 supabase/.temp/
 supabase/backup_temp/
+supabase/restore_*.sql
 scratch/

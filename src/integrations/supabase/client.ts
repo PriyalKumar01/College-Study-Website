@@ -18,8 +18,8 @@ export const TEMP_PROJECT = {
   anonKey: "sb_publishable_XANfm0ZXJ8nc-YOlKHxOJw_oyN2Hlb8"
 };
 
-// Active Production Project: xjxdauvimiflzbozycki
-export const USE_TEMP_PROJECT = true;
+// Active Production Project: axalbmmjqdezbkpffore (Main Project)
+export const USE_TEMP_PROJECT = false;
 
 const activeConfig = USE_TEMP_PROJECT ? TEMP_PROJECT : MAIN_PROJECT;
 const secondaryConfig = USE_TEMP_PROJECT ? MAIN_PROJECT : TEMP_PROJECT;
