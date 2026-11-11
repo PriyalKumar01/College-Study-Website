@@ -1,3 +1,4 @@
+// Compliance: student privacy policy and data governance safeguards
 // Privacy Policy legal agreement
 import { motion } from 'framer-motion';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
