@@ -1,3 +1,4 @@
+// Curriculum: bachelor of business administration syllabus and notes
 // BBA program notes
 import { useState } from 'react';
 import { motion } from 'framer-motion';
