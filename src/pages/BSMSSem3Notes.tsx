@@ -1,3 +1,4 @@
+// Syllabus: third semester science curriculum subject modules
 // BS-MS 3rd semester notes
 import { useState } from 'react';
 import { motion } from 'framer-motion';
