@@ -1,3 +1,4 @@
+// Syllabus: electronics technology fourth semester curriculum
 // 4th semester Electronics Engineering notes
 import { useState } from 'react';
 import { motion } from 'framer-motion';
