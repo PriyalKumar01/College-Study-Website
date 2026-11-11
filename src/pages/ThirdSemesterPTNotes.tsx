@@ -1,3 +1,4 @@
+// Syllabus: paint technology third semester curriculum
 // 3rd semester Paint Technology notes
 import { useState } from 'react';
 import { motion } from 'framer-motion';
