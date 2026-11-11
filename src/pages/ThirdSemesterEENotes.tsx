@@ -1,3 +1,4 @@
+// Syllabus: electrical engineering third semester curriculum
 // 3rd semester Electrical Engineering notes
 import { useState } from 'react';
 import { motion } from 'framer-motion';
