@@ -37,4 +37,5 @@ scripts/*
 scratch/
 
 supabase/.temp/
+supabase/backup_temp/
 scratch/

@@ -1,116 +1,116 @@
-// Layout: top-level shell layout with fixed header and custom scroll container
-import { Outlet, useLocation, useNavigate } from "react-router-dom";
-import { useAuth } from "@/contexts/AuthContext";
-import { ProfileCompletionModal } from "./ProfileCompletionModal";
-import { LayoutDashboard, BookOpen, Briefcase, Calendar } from "lucide-react";
-
-const AppLayout = () => {
-  const { user, approvalStatus, isProfileComplete } = useAuth();
-  const location = useLocation();
-  const navigate = useNavigate();
-
-  const isApproved = !!user && approvalStatus === 'approved';
-  const isPending = !!user && approvalStatus === 'pending';
-  const canAccessFullExperience = !user || isProfileComplete;
-
-  const isQuizExam = location.pathname.includes('/gate-study/quiz') && new URLSearchParams(location.search).get('mode') === 'exam';
-
-  const isActiveTab = (path: string) => {
-    if (path === '/notes') {
-      return location.pathname.startsWith('/notes') || location.pathname.includes('-notes') || location.pathname.startsWith('/bsms') || location.pathname.startsWith('/first-semester') || location.pathname.startsWith('/second-semester') || location.pathname.startsWith('/third-semester') || location.pathname.startsWith('/fourth-semester') || location.pathname.startsWith('/fifth-semester') || location.pathname.startsWith('/sixth-semester') || location.pathname.startsWith('/seventh-semester') || location.pathname.startsWith('/eighth-semester');
-    }
-    if (path === '/coding-calendar') {
-      return location.pathname.startsWith('/coding-calendar') || location.pathname.startsWith('/coding-space');
-    }
-    return location.pathname.startsWith(path);
-  };
-
-  return (
-    <div className="min-h-screen bg-background flex flex-col">
-      <div className="flex bg-background h-screen overflow-hidden w-full">
-        {/* ── Main Content (Full Width Without Sidebar) ── */}
-        <main className={`flex-1 overflow-y-auto overflow-x-hidden relative scroll-smooth w-full flex flex-col ${isApproved ? 'pb-28 md:pb-0' : 'pb-12 md:pb-0'}`}>
-          {/* Top Notice for Pending Review Users on Public Pages */}
-          {isPending && (
-            <div className="bg-gradient-to-r from-amber-500/15 via-amber-500/10 to-amber-500/15 border-b border-amber-500/30 px-4 py-2.5 text-xs text-amber-800 dark:text-amber-200">
-              <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
-                <div className="flex items-center gap-2 text-center sm:text-left">
-                  <span className="flex h-2 w-2 rounded-full bg-amber-500 animate-ping shrink-0" />
-                  <span>
-                    <strong>Account Under Review ({user?.email}):</strong> You are currently viewing public pages. All notes, semesters, and interior dashboards remain locked until your registration is approved by an administrator.
-                  </span>
-                </div>
-                <button
-                  onClick={() => navigate('/pending-approval')}
-                  className="shrink-0 font-bold underline hover:text-amber-600 dark:hover:text-amber-300 ml-1 cursor-pointer"
-                >
-                  View Status Details &rarr;
-                </button>
-              </div>
-            </div>
-          )}
-
-          <Outlet />
-          <ProfileCompletionModal />
-        </main>
-      </div>
-
-      {/* ── Professional Sticky Mobile Bottom Navigation Bar (Only for approved members with completed profiles) ── */}
-      {isApproved && canAccessFullExperience && !isQuizExam && (
-        <nav 
-          className="md:hidden fixed bottom-0 left-0 right-0 z-[150] bg-white/95 dark:bg-slate-950/95 border-t border-slate-200/80 dark:border-slate-800/80 backdrop-blur-xl shadow-[0_-8px_30px_rgba(0,0,0,0.06)] dark:shadow-[0_-8px_30px_rgba(0,0,0,0.4)] transition-all duration-300"
-          style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}
-          aria-label="Mobile Navigation"
-        >
-          <div className="flex items-center justify-around h-[62px] px-2">
-            {[
-              { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
-              { label: "Notes", href: "/notes", icon: BookOpen },
-              { label: "Coding Calendar", href: "/coding-calendar", icon: Calendar },
-              { label: "Opportunities", href: "/opportunities", icon: Briefcase }
-            ].map((item) => {
-              const active = isActiveTab(item.href);
-              const Icon = item.icon;
-              return (
-                <button
-                  key={item.href}
-                  onClick={() => navigate(item.href)}
-                  className={`flex flex-col items-center justify-center flex-1 h-full py-1 transition-all relative group cursor-pointer ${
-                    active 
-                      ? "text-indigo-600 dark:text-indigo-400 font-bold" 
-                      : "text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 font-medium"
-                  }`}
-                >
-                  {/* Active top glowing indicator */}
-                  {active && (
-                    <span className="absolute top-0 left-1/2 -translate-x-1/2 w-8 h-[2.5px] rounded-full bg-gradient-to-r from-indigo-600 to-blue-500 shadow-[0_0_8px_rgba(99,102,241,0.6)]" />
-                  )}
-
-                  <div className={`p-1.5 rounded-xl transition-all duration-200 flex items-center justify-center ${
-                    active 
-                      ? "bg-indigo-50 dark:bg-indigo-950/70 border border-indigo-100 dark:border-indigo-900/60 shadow-sm scale-105" 
-                      : "bg-transparent group-hover:bg-slate-100 dark:group-hover:bg-slate-900"
-                  }`}>
-                    <Icon className={`h-5 w-5 transition-transform ${active ? "stroke-[2.2px]" : "stroke-[1.7px]"}`} />
-                  </div>
-
-                  <span className={`text-[10px] mt-0.5 tracking-tight transition-colors ${
-                    active 
-                      ? "text-indigo-600 dark:text-indigo-400 font-bold" 
-                      : "text-slate-500 dark:text-slate-400 font-medium"
-                  }`}>
-                    {item.label}
-                  </span>
-                </button>
-              );
-            })}
-          </div>
-        </nav>
-      )}
-    </div>
-  );
-};
-
-export default AppLayout;
-// Reviewed: academic catalog & interface consistency check (v2.0.15)
-// Reviewed: academic catalog & interface consistency check (v2.1.290)
+// Layout: top-level shell layout with fixed header and custom scroll container
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
+import { ProfileCompletionModal } from "./ProfileCompletionModal";
+import { LayoutDashboard, BookOpen, Briefcase, Calendar } from "lucide-react";
+
+const AppLayout = () => {
+  const { user, approvalStatus, isProfileComplete } = useAuth();
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const isApproved = !!user && approvalStatus === 'approved';
+  const isPending = !!user && approvalStatus === 'pending';
+  const canAccessFullExperience = !user || isProfileComplete;
+
+  const isQuizExam = location.pathname.includes('/gate-study/quiz') && new URLSearchParams(location.search).get('mode') === 'exam';
+
+  const isActiveTab = (path: string) => {
+    if (path === '/notes') {
+      return location.pathname.startsWith('/notes') || location.pathname.includes('-notes') || location.pathname.startsWith('/bsms') || location.pathname.startsWith('/first-semester') || location.pathname.startsWith('/second-semester') || location.pathname.startsWith('/third-semester') || location.pathname.startsWith('/fourth-semester') || location.pathname.startsWith('/fifth-semester') || location.pathname.startsWith('/sixth-semester') || location.pathname.startsWith('/seventh-semester') || location.pathname.startsWith('/eighth-semester');
+    }
+    if (path === '/coding-calendar') {
+      return location.pathname.startsWith('/coding-calendar') || location.pathname.startsWith('/coding-space');
+    }
+    return location.pathname.startsWith(path);
+  };
+
+  return (
+    <div className="min-h-screen bg-background flex flex-col">
+      <div className="flex bg-background h-screen overflow-hidden w-full">
+        {/* ── Main Content (Full Width Without Sidebar) ── */}
+        <main className={`flex-1 overflow-y-auto overflow-x-hidden relative scroll-smooth w-full flex flex-col ${isApproved ? 'pb-28 md:pb-0' : 'pb-12 md:pb-0'}`}>
+          {/* Top Notice for Pending Review Users on Public Pages */}
+          {isPending && (
+            <div className="bg-gradient-to-r from-amber-500/15 via-amber-500/10 to-amber-500/15 border-b border-amber-500/30 px-4 py-2.5 text-xs text-amber-800 dark:text-amber-200">
+              <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
+                <div className="flex items-center gap-2 text-center sm:text-left">
+                  <span className="flex h-2 w-2 rounded-full bg-amber-500 animate-ping shrink-0" />
+                  <span>
+                    <strong>Account Under Review ({user?.email}):</strong> You are currently viewing public pages. All notes, semesters, and interior dashboards remain locked until your registration is approved by an administrator.
+                  </span>
+                </div>
+                <button
+                  onClick={() => navigate('/pending-approval')}
+                  className="shrink-0 font-bold underline hover:text-amber-600 dark:hover:text-amber-300 ml-1 cursor-pointer"
+                >
+                  View Status Details &rarr;
+                </button>
+              </div>
+            </div>
+          )}
+
+          <Outlet />
+          {!canAccessFullExperience && <ProfileCompletionModal />}
+        </main>
+      </div>
+
+      {/* ── Professional Sticky Mobile Bottom Navigation Bar (Only for approved members with completed profiles) ── */}
+      {isApproved && canAccessFullExperience && !isQuizExam && (
+        <nav 
+          className="md:hidden fixed bottom-0 left-0 right-0 z-[150] bg-white/95 dark:bg-slate-950/95 border-t border-slate-200/80 dark:border-slate-800/80 backdrop-blur-xl shadow-[0_-8px_30px_rgba(0,0,0,0.06)] dark:shadow-[0_-8px_30px_rgba(0,0,0,0.4)] transition-all duration-300"
+          style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}
+          aria-label="Mobile Navigation"
+        >
+          <div className="flex items-center justify-around h-[62px] px-2">
+            {[
+              { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
+              { label: "Notes", href: "/notes", icon: BookOpen },
+              { label: "Coding Calendar", href: "/coding-calendar", icon: Calendar },
+              { label: "Opportunities", href: "/opportunities", icon: Briefcase }
+            ].map((item) => {
+              const active = isActiveTab(item.href);
+              const Icon = item.icon;
+              return (
+                <button
+                  key={item.href}
+                  onClick={() => navigate(item.href)}
+                  className={`flex flex-col items-center justify-center flex-1 h-full py-1 transition-all relative group cursor-pointer ${
+                    active 
+                      ? "text-indigo-600 dark:text-indigo-400 font-bold" 
+                      : "text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 font-medium"
+                  }`}
+                >
+                  {/* Active top glowing indicator */}
+                  {active && (
+                    <span className="absolute top-0 left-1/2 -translate-x-1/2 w-8 h-[2.5px] rounded-full bg-gradient-to-r from-indigo-600 to-blue-500 shadow-[0_0_8px_rgba(99,102,241,0.6)]" />
+                  )}
+
+                  <div className={`p-1.5 rounded-xl transition-all duration-200 flex items-center justify-center ${
+                    active 
+                      ? "bg-indigo-50 dark:bg-indigo-950/70 border border-indigo-100 dark:border-indigo-900/60 shadow-sm scale-105" 
+                      : "bg-transparent group-hover:bg-slate-100 dark:group-hover:bg-slate-900"
+                  }`}>
+                    <Icon className={`h-5 w-5 transition-transform ${active ? "stroke-[2.2px]" : "stroke-[1.7px]"}`} />
+                  </div>
+
+                  <span className={`text-[10px] mt-0.5 tracking-tight transition-colors ${
+                    active 
+                      ? "text-indigo-600 dark:text-indigo-400 font-bold" 
+                      : "text-slate-500 dark:text-slate-400 font-medium"
+                  }`}>
+                    {item.label}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        </nav>
+      )}
+    </div>
+  );
+};
+
+export default AppLayout;
+// Reviewed: academic catalog & interface consistency check (v2.0.15)
+// Reviewed: academic catalog & interface consistency check (v2.1.290)
