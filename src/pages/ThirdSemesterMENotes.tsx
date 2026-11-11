@@ -1,3 +1,4 @@
+// Syllabus: mechanical engineering third semester curriculum
 // 3rd semester Mechanical Engineering notes
 import { useState } from 'react';
 import { motion } from 'framer-motion';
