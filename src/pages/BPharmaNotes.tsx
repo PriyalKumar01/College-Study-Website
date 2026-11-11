@@ -1,3 +1,4 @@
+// Curriculum: pharmaceutical sciences course syllabus and lab files
 // B.Pharma pharmacy program notes
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
