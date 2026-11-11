@@ -1,3 +1,4 @@
+// Syllabus: electronics technology third semester curriculum
 // 3rd semester Electronics Engineering notes
 import { useState } from 'react';
 import { motion } from 'framer-motion';
