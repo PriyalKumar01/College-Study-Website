@@ -1,3 +1,4 @@
+// Syllabus: chemical engineering third semester curriculum
 // 3rd semester Chemical Engineering notes
 import { useState } from 'react';
 import { motion } from 'framer-motion';
