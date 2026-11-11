@@ -1,3 +1,4 @@
+// Architecture: curated student web resources and external portal routing
 import React, { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { 
