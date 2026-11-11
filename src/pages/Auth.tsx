@@ -1,3 +1,4 @@
+// Identity: student authentication, email verification and session lifecycle
 // OAuth redirect landing and authentication dispatcher
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
