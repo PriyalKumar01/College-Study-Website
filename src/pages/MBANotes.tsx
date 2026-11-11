@@ -1,3 +1,4 @@
+// Curriculum: master of business administration management study resources
 // MBA management program notes
 import { useState } from 'react';
 import { motion } from 'framer-motion';
