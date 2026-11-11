@@ -1,3 +1,4 @@
+// Curated: first year physics and chemistry cycle syllabus grouping
 // 1st year foundational engineering notes
 import { useState, useMemo, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
