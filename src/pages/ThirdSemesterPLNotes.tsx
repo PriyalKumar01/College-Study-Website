@@ -1,3 +1,4 @@
+// Syllabus: plastic technology third semester curriculum
 // 3rd semester Plastic Technology notes
 import { useState } from 'react';
 import { motion } from 'framer-motion';
