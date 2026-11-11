@@ -1,3 +1,4 @@
+// Syllabus: computer science third semester core curriculum
 // 3rd semester CSE branch notes
 import { useState } from 'react';
 import { motion } from 'framer-motion';
