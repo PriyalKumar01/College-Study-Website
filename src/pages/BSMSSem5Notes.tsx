@@ -1,3 +1,4 @@
+// Syllabus: fifth semester science curriculum subject modules
 // BS-MS 5th semester notes
 import { useState } from 'react';
 import { motion } from 'framer-motion';
