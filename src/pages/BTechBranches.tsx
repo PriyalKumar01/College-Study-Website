@@ -1,3 +1,4 @@
+// Catalog: engineering discipline catalog and curriculum mapping
 // B.Tech branch list portal
 import { useState, useMemo, useRef, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
