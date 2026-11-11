@@ -480,7 +480,15 @@ const UploadMaterialForm = ({ onUploadSuccess }: UploadMaterialFormProps) => {
     setUploading(true);
 
     try {
+      // Ensure active session is fresh on mobile devices
       let currentUser = user;
+      try {
+        const { data: sessionData } = await supabase.auth.getSession();
+        if (sessionData?.session?.user) {
+          currentUser = sessionData.session.user;
+        }
+      } catch {}
+
       if (!currentUser) {
         const { data: authData } = await supabase.auth.getUser();
         currentUser = authData?.user ?? null;
@@ -648,7 +656,7 @@ const UploadMaterialForm = ({ onUploadSuccess }: UploadMaterialFormProps) => {
       console.error('[UploadMaterial] Failed:', error);
       let errMsg = error?.message || 'Failed to upload file';
       if (errMsg === 'Failed to fetch' || errMsg.includes('fetch')) {
-        errMsg = 'Connection glitch or upload timed out. Please retry uploading your file.';
+        errMsg = 'Connection glitch or upload timed out. Please check your internet connection, turn off any AdBlocker/Private DNS, and retry.';
       }
       toast({ title: 'Upload failed', description: errMsg, variant: 'destructive' });
     } finally {
