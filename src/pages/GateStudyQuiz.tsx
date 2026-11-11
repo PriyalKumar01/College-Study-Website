@@ -1,3 +1,4 @@
+// Assessment: interactive GATE quiz timer and scoring engine
 import { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
