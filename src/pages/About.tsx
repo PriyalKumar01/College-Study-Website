@@ -1,3 +1,4 @@
+// Community: College Study Hub mission statement and contributor team
 // About College Study Hub mission and vision
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
