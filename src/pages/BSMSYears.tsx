@@ -1,3 +1,4 @@
+// Curriculum: integrated BS-MS science curriculum year navigation
 // BS-MS integrated science years portal
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
