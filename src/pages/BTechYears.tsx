@@ -1,3 +1,4 @@
+// Catalog: undergraduate engineering academic years routing table
 // B.Tech year selection portal
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, BookOpen, Share2, Lock, GraduationCap, CheckCircle2 } from "lucide-react";
