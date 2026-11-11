@@ -1,3 +1,4 @@
+// Algorithm: grade point average calculation and university scale rules
 // Precision SGPA and CGPA calculator
 import { useState } from 'react';
 import { motion } from 'framer-motion';
