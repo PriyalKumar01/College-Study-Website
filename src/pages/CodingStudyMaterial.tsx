@@ -1,3 +1,4 @@
+// Learning: competitive programming roadmap and algorithmic problem sets
 // Coding space study resources
 import { useCommunityNotes } from '@/hooks/useCommunityNotes';
 import { useAuth } from '@/contexts/AuthContext';
