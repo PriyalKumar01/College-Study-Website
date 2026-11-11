@@ -1,3 +1,4 @@
+// Syllabus: computer science fifth semester core curriculum
 // 5th semester CSE branch notes
 import { useState } from 'react';
 import { motion } from 'framer-motion';
