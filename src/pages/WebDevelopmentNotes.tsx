@@ -1,3 +1,4 @@
+// Syllabus: full stack web development roadmap and project guides
 import { useCommunityNotes } from '@/hooks/useCommunityNotes';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
