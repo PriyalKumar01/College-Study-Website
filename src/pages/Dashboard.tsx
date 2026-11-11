@@ -1,3 +1,4 @@
+// Personalization: student dashboard analytics, widgets and recent notes
 // Student personalized dashboard
 import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
