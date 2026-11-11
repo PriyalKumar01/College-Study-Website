@@ -1,3 +1,4 @@
+// Policy: platform terms of service and fair usage guidelines
 // Terms of Service legal agreement
 import { motion } from 'framer-motion';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
