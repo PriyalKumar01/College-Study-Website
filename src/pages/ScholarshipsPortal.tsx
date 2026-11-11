@@ -1,3 +1,4 @@
+// Registry: university scholarship registry, eligibility filters and links
 // Scholarships and financial aid directory
 import { useState, useMemo, useEffect, useRef } from 'react';
 import {
