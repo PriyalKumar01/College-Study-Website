@@ -1,3 +1,4 @@
+// Career: student internship and technical contest opportunities feed
 // Internships and job opportunities board
 import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
