@@ -53,12 +53,12 @@ const AdminPortal = () => {
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col font-sans">
       <Navbar />
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 w-full">
+      <div className="max-w-5xl mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-8 flex-1 w-full">
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
-          className="mb-8 p-6 rounded-2xl border border-border bg-card shadow-lg flex flex-col md:flex-row md:items-center justify-between gap-4"
+          className="mb-6 sm:mb-8 p-4 sm:p-6 rounded-xl sm:rounded-2xl border border-border bg-card shadow-md sm:shadow-lg flex flex-col md:flex-row md:items-center justify-between gap-4"
         >
           <div className="flex items-start gap-4">
             <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-600 dark:text-emerald-400 shrink-0 shadow-sm mt-1">
@@ -70,7 +70,7 @@ const AdminPortal = () => {
                   <ShieldCheck className="h-3.5 w-3.5" /> AUTHORIZED ADMIN CONSOLE
                 </span>
               </div>
-              <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-foreground">
+              <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight text-foreground">
                 Admin Management Portal
               </h1>
               <p className="text-muted-foreground text-sm sm:text-base mt-1 max-w-2xl leading-relaxed">
