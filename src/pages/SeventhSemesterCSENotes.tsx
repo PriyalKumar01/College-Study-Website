@@ -1,3 +1,4 @@
+// Syllabus: computer science seventh semester core curriculum
 // 7th semester CSE branch notes
 import { useState } from 'react';
 import { motion } from 'framer-motion';
