@@ -1,3 +1,4 @@
+// Exam: GATE exam syllabus modules and study notes index
 // GATE exam preparation portal
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
