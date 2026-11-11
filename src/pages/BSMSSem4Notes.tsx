@@ -1,3 +1,4 @@
+// Syllabus: fourth semester science curriculum subject modules
 // BS-MS 4th semester notes
 import { useState } from 'react';
 import { motion } from 'framer-motion';
