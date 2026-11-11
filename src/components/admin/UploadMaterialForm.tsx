@@ -1,1476 +1,1476 @@
-// Upload: study material ingest pipeline with zero-egress R2 target mapping
-import { useState, useRef, useMemo } from 'react';
-import { supabase } from '@/integrations/supabase/client';
-import { useAuth } from '@/contexts/AuthContext';
-import { useToast } from '@/hooks/use-toast';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Card, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import {
-  Upload, FileText, CheckCircle2, Loader2, X, AlertTriangle,
-  GraduationCap, BookOpen, Briefcase, Database, Code, Globe,
-  Sparkles, ChevronRight, Plus, Pencil
-} from 'lucide-react';
-import {
-  CATEGORIES, BTECH_YEARS, BSMS_YEARS, BPHARMA_YEARS, MBA_YEARS, BTECH_BRANCHES, BTECH_FIRST_YEAR_SUBJECTS,
-  getSubjects, getSemesters,
-  OPEN_ELECTIVE_I_ENGG_SUBJECTS, OPEN_ELECTIVE_I_TECH_SUBJECTS, ALL_OPEN_ELECTIVE_I_SUBJECTS, OPEN_ELECTIVE_II_SUBJECTS,
-  isTechnologyBranch
-} from '@/data/courseStructure';
-import { saveCustomSubject, saveRenamedSubject } from '@/lib/customSubjects';
-import { clearCachePrefix } from '@/lib/cacheUtils';
-import { syncContributorCount } from '@/lib/contributorSync';
-import { MilestoneCelebrationModal } from '@/components/MilestoneCelebrationModal';
-import { isLeagueMilestone, getLeagueUpgradeInfo } from '@/lib/contributorBadgeUtils';
-
-const ICON_MAP: Record<string, React.ReactNode> = {
-  GraduationCap: <GraduationCap className="h-5 w-5" />,
-  Briefcase: <Briefcase className="h-5 w-5" />,
-  Database: <Database className="h-5 w-5" />,
-  Code: <Code className="h-5 w-5" />,
-  Globe: <Globe className="h-5 w-5" />,
-  Sparkles: <Sparkles className="h-5 w-5" />,
-};
-
-interface UploadMaterialFormProps {
-  onUploadSuccess?: () => void;
-}
-
-const UploadMaterialForm = ({ onUploadSuccess }: UploadMaterialFormProps) => {
-  const { user, isOwner } = useAuth();
-  const { toast } = useToast();
-  const fileInputRef = useRef<HTMLInputElement>(null);
-
-  // Refs for auto-scrolling
-  const yearRef = useRef<HTMLDivElement>(null);
-  const semesterRef = useRef<HTMLDivElement>(null);
-  const branchRef = useRef<HTMLDivElement>(null);
-  const subjectRef = useRef<HTMLDivElement>(null);
-  const detailsRef = useRef<HTMLDivElement>(null);
-
-  const scrollToRef = (ref: React.RefObject<HTMLDivElement>) => {
-    setTimeout(() => {
-      if (ref.current) {
-        ref.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }
-    }, 100);
-  };
-
-  // Form state - cascading
-  const [category, setCategory] = useState('');
-  const [branch, setBranch] = useState('');
-  const [branchType, setBranchType] = useState<'engineering' | 'technology' | ''>(''); // 1st year only
-  const [year, setYear] = useState('');
-  const [semester, setSemester] = useState('');
-  const [subject, setSubject] = useState('');
-  const [oeSubject, setOeSubject] = useState('');
-  const [materialType, setMaterialType] = useState<'notes' | 'pyqs' | 'assignments' | 'book' | 'practical_file'>('notes');
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
-  const [file, setFile] = useState<File | null>(null);
-  const [uploading, setUploading] = useState(false);
-  const [dragOver, setDragOver] = useState(false);
-
-  // Active expanded step state (1 to 6)
-  const [activeStep, setActiveStep] = useState<number>(1);
-
-  // Open Elective detection
-  const isOeIISelected = useMemo(() => {
-    if (!subject) return false;
-    const s = subject.trim().toLowerCase();
-    if (
-      s === 'oe-ii' ||
-      s === 'oe2' ||
-      s === 'oe ii' ||
-      s === 'oe-2' ||
-      s === 'open elective-ii' ||
-      s === 'open elective ii' ||
-      s.includes('oe-ii') ||
-      s.includes('oe2') ||
-      s.includes('elective-ii') ||
-      s.includes('elective ii')
-    ) {
-      return true;
-    }
-    if ((semester === '7th Semester' || semester === '8th Semester') && (s.includes('open elective') || s.includes('oe'))) {
-      return true;
-    }
-    return false;
-  }, [subject, semester]);
-
-  const isOeISelected = useMemo(() => {
-    if (!subject || isOeIISelected) return false;
-    const s = subject.trim().toLowerCase();
-    return (
-      s === 'open elective-i' ||
-      s === 'open elective i' ||
-      s === 'open elective' ||
-      s === 'oe-i' ||
-      s === 'oe1' ||
-      s === 'oe i' ||
-      s === 'oe-1' ||
-      s.includes('oe-i') ||
-      s.includes('oe1') ||
-      s.includes('elective-i') ||
-      s.includes('elective i') ||
-      ((semester === '5th Semester' || semester === '6th Semester') && (s.includes('open elective') || s.includes('oe')))
-    );
-  }, [subject, isOeIISelected, semester]);
-
-  const isOeSelected = isOeISelected || isOeIISelected;
-
-  const availableOeSubjects = useMemo(() => {
-    if (isOeIISelected) {
-      return OPEN_ELECTIVE_II_SUBJECTS;
-    }
-    if (isOeISelected) {
-      if (isTechnologyBranch(branch) || semester === '6th Semester') {
-        return OPEN_ELECTIVE_I_TECH_SUBJECTS;
-      }
-      return OPEN_ELECTIVE_I_ENGG_SUBJECTS;
-    }
-    return [];
-  }, [isOeISelected, isOeIISelected, branch, semester]);
-
-  // PYQ Smart Title Builder state
-  const PYQ_EXAM_TYPES = [
-    "Mid Sem-1 PYQ'S",
-    "Mid Sem-2 PYQ'S",
-    "End Sem PYQ'S",
-    "Complete PYQ's",
-    'Other',
-  ];
-  const ACADEMIC_YEARS = [
-    '2021-22',
-    '2022-23',
-    '2023-24',
-    '2024-25',
-    '2025-26',
-    '2026-27',
-    '2027-28',
-    '2028-29',
-    '2029-30',
-    '2030-31',
-    '2031-32',
-    '2032-33',
-    '2033-34',
-    '2034-35',
-    '2035-36',
-  ];
-  const [pyqExamType, setPyqExamType] = useState('');
-  const [pyqAcademicYear, setPyqAcademicYear] = useState('2024-25');
-  const [pyqCustomTitle, setPyqCustomTitle] = useState('');
-
-  // Derived: is current upload a PYQ?
-  const isPyqMode =
-    materialType === 'pyqs' || subject === 'Previous Year Questions' || subject === 'Previous Year Questions (PYQs)';
-
-  // Auto-build title for PYQs with Subject + Exam Type + Academic Year
-  const autoPyqTitle = useMemo(() => {
-    if (!isPyqMode) return title;
-    if (pyqExamType === 'Other') return pyqCustomTitle;
-    const yearPart = pyqAcademicYear ? `(${pyqAcademicYear})` : '';
-    const examPart = pyqExamType || "PYQ's";
-    const displaySubject = isOeSelected && oeSubject ? oeSubject : subject;
-    if (displaySubject && displaySubject !== 'Previous Year Questions' && displaySubject !== 'Previous Year Questions (PYQs)') {
-      return `${displaySubject} ${examPart} ${yearPart}`.trim();
-    }
-    return `${examPart} ${yearPart}`.trim();
-  }, [isPyqMode, pyqExamType, pyqAcademicYear, pyqCustomTitle, subject, isOeSelected, oeSubject, title]);
-
-  // Effective title used for submission
-  const effectiveTitle = isPyqMode ? autoPyqTitle : title;
-
-  // For 1st year: map the actual semester to the correct subject list
-  const isFirstYear = (category === 'btech' || category === 'bsms') && year === '1st';
-  const mappedSemester = isFirstYear && branchType === 'technology' && semester
-    ? (semester === '1st Semester' ? '2nd Semester' : '1st Semester')
-    : semester;
-
-  const [customRefresh, setCustomRefresh] = useState(0);
-
-  // Owner custom subject management states
-  const [isAddingSubject, setIsAddingSubject] = useState(false);
-  const [newSubjectName, setNewSubjectName] = useState('');
-  const [newSubjectFullName, setNewSubjectFullName] = useState('');
-
-  const [isRenamingSubject, setIsRenamingSubject] = useState(false);
-  const [renameValue, setRenameValue] = useState('');
-
-  // Celebration modal state for 1st contribution / league upgrades
-  const [celebrationData, setCelebrationData] = useState<{
-    isOpen: boolean;
-    contributorName: string;
-    coins: number;
-    isFirst: boolean;
-    isPending: boolean;
-    tierName?: string;
-  } | null>(null);
-
-  // Derived data
-  const selectedCategory = CATEGORIES.find(c => c.id === category);
-
-  const categoryYears = useMemo(() => {
-    if (category === 'bsms') return BSMS_YEARS;
-    if (category === 'bpharma') return BPHARMA_YEARS;
-    if (category === 'mba') return MBA_YEARS;
-    return BTECH_YEARS;
-  }, [category]);
-
-  const availableSemesters = category ? getSemesters(category, year) : [];
-  const availableSubjects = isFirstYear
-    ? BTECH_FIRST_YEAR_SUBJECTS
-    : (category && semester
-        ? getSubjects(category, semester, branch)
-        : []);
-
-  const handleCategoryChange = (val: string) => {
-    setCategory(val);
-    setBranch('');
-    setBranchType('');
-    setYear('');
-    setSemester('');
-    setSubject('');
-    setOeSubject('');
-    const targetCat = CATEGORIES.find(c => c.id === val);
-    setActiveStep(targetCat?.hasYears ? 2 : (targetCat?.hasSemesters ? 4 : 6));
-  };
-
-  const handleYearChange = (val: string) => {
-    setYear(val);
-    setOeSubject('');
-    if ((category === 'btech' || category === 'bsms') && val === '1st') {
-      setBranchType('all');
-      setSemester('ALL-First Year (All Subjects)');
-      setSubject('');
-      setBranch('');
-      setActiveStep(6);
-    } else {
-      setBranchType('');
-      setSemester('');
-      setSubject('');
-      setBranch('');
-      setActiveStep(4);
-    }
-  };
-
-  const handleBranchTypeChange = (val: 'engineering' | 'technology') => {
-    setBranchType(val);
-    setSemester('');
-    setSubject('');
-    setOeSubject('');
-    setActiveStep(4);
-  };
-
-  const handleSemesterChange = (val: string) => {
-    setSemester(val);
-    setSubject('');
-    setOeSubject('');
-    if (category === 'btech' && !isFirstYear) {
-      setActiveStep(5);
-    } else {
-      setActiveStep(6);
-    }
-  };
-
-  const handleBranchChange = (val: string) => {
-    setBranch(val);
-    setSubject('');
-    setOeSubject('');
-    setActiveStep(6);
-  };
-
-  const isOeSubjectValue = (val: string) => {
-    if (!val) return false;
-    const s = val.trim().toLowerCase();
-    return (
-      s === 'oe-ii' ||
-      s === 'oe2' ||
-      s === 'oe ii' ||
-      s === 'oe-2' ||
-      s === 'open elective-ii' ||
-      s === 'open elective ii' ||
-      s.includes('oe-ii') ||
-      s.includes('oe2') ||
-      s.includes('elective-ii') ||
-      s.includes('elective ii') ||
-      s === 'open elective-i' ||
-      s === 'open elective i' ||
-      s === 'open elective' ||
-      s === 'oe-i' ||
-      s === 'oe1' ||
-      s === 'oe i' ||
-      s === 'oe-1' ||
-      s.includes('oe-i') ||
-      s.includes('oe1') ||
-      s.includes('elective-i') ||
-      s.includes('elective i') ||
-      ((semester === '7th Semester' || semester === '8th Semester' || semester === '5th Semester' || semester === '6th Semester') &&
-        (s.includes('open elective') || s.includes('oe')))
-    );
-  };
-
-  const handleSubjectChange = (val: string) => {
-    setSubject(val);
-    setOeSubject('');
-    if (isOeSubjectValue(val)) {
-      // Keep on Step 6 so user can pick their specific Open Elective subject from the secondary dropdown
-      setActiveStep(6);
-    } else {
-      // Normal subject selected: proceed to Step 7 (Upload details) and scroll down
-      setActiveStep(7);
-      scrollToRef(detailsRef);
-    }
-  };
-
-  const handleOeSubjectChange = (val: string) => {
-    setOeSubject(val);
-    setActiveStep(7);
-    scrollToRef(detailsRef);
-  };
-
-  const handleSaveNewSubject = async () => {
-    if (!isOwner) return;
-    const trimmed = newSubjectName.trim();
-    if (!trimmed) {
-      toast({ title: "Name required", description: "Please enter a subject name.", variant: "destructive" });
-      return;
-    }
-    await saveCustomSubject(
-      category,
-      semester,
-      isFirstYear ? undefined : branch,
-      {
-        name: trimmed,
-        fullName: newSubjectFullName.trim() || trimmed
-      },
-      user
-    );
-    setSubject(trimmed);
-    setIsAddingSubject(false);
-    setNewSubjectName('');
-    setNewSubjectFullName('');
-    setCustomRefresh(c => c + 1);
-    toast({
-      title: "Subject Created! 🎓",
-      description: `"${trimmed}" is now live on the website! You or admins can now share notes under it.`
-    });
-  };
-
-  const handleSaveRenameSubject = async () => {
-    if (!isOwner) return;
-    const trimmed = renameValue.trim();
-    if (!trimmed) {
-      toast({ title: "Name required", description: "Please enter a new name.", variant: "destructive" });
-      return;
-    }
-    if (trimmed === subject) {
-      setIsRenamingSubject(false);
-      return;
-    }
-    const old = subject;
-    await saveRenamedSubject(old, trimmed);
-    setSubject(trimmed);
-    setIsRenamingSubject(false);
-    setCustomRefresh(c => c + 1);
-    toast({ title: "Subject Renamed! ✏️", description: `Renamed "${old}" to "${trimmed}".` });
-  };
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const selected = e.target.files?.[0];
-    if (selected) {
-      if (selected.type !== 'application/pdf') {
-        toast({ title: 'Invalid file', description: 'Only PDF files are accepted.', variant: 'destructive' });
-        return;
-      }
-      if (selected.size > 20 * 1024 * 1024) {
-        toast({ title: 'File too large', description: 'Maximum file size is 20MB.', variant: 'destructive' });
-        return;
-      }
-      setFile(selected);
-    }
-  };
-
-  const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault();
-    setDragOver(false);
-    const droppedFile = e.dataTransfer.files[0];
-    if (droppedFile?.type === 'application/pdf') {
-      if (droppedFile.size > 20 * 1024 * 1024) {
-        toast({ title: 'File too large', description: 'Maximum file size is 20MB.', variant: 'destructive' });
-        return;
-      }
-      setFile(droppedFile);
-    } else {
-      toast({ title: 'Invalid file', description: 'Only PDF files are accepted.', variant: 'destructive' });
-    }
-  };
-
-  const derivedMaterialType = 
-    subject === 'Previous Year Questions' || subject === 'Previous Year Questions (PYQs)' ? 'pyqs' :
-    subject === 'Assignments' || subject === 'Assignments - All Subjects' ? 'assignments' :
-    ['dsa', 'coding', 'webdev', 'placement'].includes(category) ? 'notes' :
-    null;
-
-  const finalMaterialType = derivedMaterialType || materialType;
-
-  // Returns null if valid, or a friendly reason string if not
-  const getValidationError = (): string | null => {
-    if (!user) return 'You are not logged in. Please re-login and try again.';
-    if (!category) return 'Please select a category.';
-    if (selectedCategory?.hasYears && !year) return 'Please select a year.';
-    if (selectedCategory?.hasSemesters && !isFirstYear && !semester) return 'Please select a semester.';
-    if (selectedCategory?.hasBranches && !isFirstYear && !branch) return 'Please select a branch.';
-    if (availableSubjects.length > 0 && !subject) return 'Please select a subject.';
-    if (isOeSelected && !oeSubject) return `Please choose your ${isOeISelected ? 'O.E-I' : 'O.E-II'} subject.`;
-
-    if (isPyqMode) {
-      if (!pyqAcademicYear) return 'Please select PYQ academic year.';
-      if (pyqExamType === 'Other' && !pyqCustomTitle.trim()) return 'Please enter a custom PYQ title.';
-    } else {
-      if (!title.trim()) return 'Please enter a title.';
-    }
-    if (!file) return 'Please choose a PDF file to upload.';
-    return null;
-  };
-
-  const uploadFileWithRetry = async (filePath: string, uploadFile: File, maxRetries = 3) => {
-    let attempt = 0;
-    while (attempt < maxRetries) {
-      attempt++;
-      try {
-        const { data, error } = await supabase.storage
-          .from('study-materials')
-          .upload(filePath, uploadFile, {
-            cacheControl: '31536000',
-            upsert: true,
-            contentType: uploadFile.type || 'application/pdf',
-          });
-
-        if (error) {
-          // If already exists, generate a new path and retry
-          if (error.message?.includes('already exists') || (error as any)?.statusCode === '409') {
-            const fileExt = (uploadFile.name.split('.').pop() || 'pdf').toLowerCase();
-            const newPath = filePath.replace(/\.[^/.]+$/, `-${Date.now()}.${fileExt}`);
-            return uploadFileWithRetry(newPath, uploadFile, maxRetries - 1);
-          }
-          throw error;
-        }
-        return { data, filePath };
-      } catch (err: any) {
-        console.warn(`[UploadMaterial] Attempt ${attempt} failed:`, err);
-        if (attempt >= maxRetries) throw err;
-        // Wait before retrying (exponential backoff)
-        await new Promise(r => setTimeout(r, 1000 * attempt));
-      }
-    }
-    throw new Error('Upload failed after multiple retries. Please check your internet connection.');
-  };
-
-  const handleSubmit = async () => {
-    const validationError = getValidationError();
-    if (validationError) {
-      toast({ title: 'Missing info', description: validationError, variant: 'destructive' });
-      return;
-    }
-    setUploading(true);
-
-    try {
-      // Ensure active session is fresh on mobile devices
-      let currentUser = user;
-      try {
-        const { data: sessionData } = await supabase.auth.getSession();
-        if (sessionData?.session?.user) {
-          currentUser = sessionData.session.user;
-        }
-      } catch {}
-
-      if (!currentUser) {
-        const { data: authData } = await supabase.auth.getUser();
-        currentUser = authData?.user ?? null;
-      }
-
-      const dbSemester = category === 'btech'
-        ? (isFirstYear
-            ? (semester || 'ALL-First Year (All Subjects)')
-            : `${branch}-${semester}`)
-        : (category === 'bsms'
-            ? (isFirstYear
-                ? 'ALL-First Year (All Subjects)'
-                : (semester.startsWith('BSMS-') ? semester : `BSMS-${semester}`))
-            : (category === 'bpharma'
-                ? (semester.startsWith('BPHARMA-') ? semester : `BPHARMA-${semester}`)
-                : (category === 'mba'
-                    ? (semester.startsWith('MBA-') ? semester : `MBA-${semester}`)
-                    : (semester || category))));
-
-      const finalTitle = effectiveTitle.trim();
-
-      const fileExt = (file!.name.split('.').pop() || 'pdf').toLowerCase();
-      const safeCat = category || 'misc';
-      const safeBranch = branch || 'general';
-      const safeSem = semester || 'misc';
-      const rand = Math.random().toString(36).slice(2, 10);
-      const filePath = `${safeCat}/${safeBranch}/${safeSem}/${Date.now()}-${rand}.${fileExt}`;
-
-      const { filePath: uploadedPath } = await uploadFileWithRetry(filePath, file!);
-
-      const { data: urlData } = supabase.storage
-        .from('study-materials')
-        .getPublicUrl(uploadedPath);
-
-      // Check contributor's previous uploads and contributors list to accurately trigger 1st milestone or league upgrade
-      let previousCount = 0;
-      let alreadyInContributorList = false;
-      try {
-        const uId = currentUser?.id;
-        const uEmail = currentUser?.email?.toLowerCase();
-        const uName = (currentUser?.user_metadata?.first_name || currentUser?.email?.split('@')[0] || '').toLowerCase().trim();
-
-        // Check contributors table first
-        const { data: contribList } = await (supabase as any)
-          .from('contributors')
-          .select('id, name, coins');
-
-        if (contribList && Array.isArray(contribList)) {
-          const matched = contribList.find((c: any) => {
-            const cName = (c.name || '').toLowerCase().trim();
-            return cName === uName || (uName && cName.includes(uName)) || (uName && uName.includes(cName));
-          });
-          if (matched) {
-            alreadyInContributorList = true;
-            previousCount = Number(matched.coins) || 0;
-          }
-        }
-
-        // If not in contributors table, check existing notes
-        if (!alreadyInContributorList && (uId || uEmail)) {
-          const { count } = await supabase
-            .from('notes')
-            .select('id', { count: 'exact', head: true })
-            .or(`uploaded_by.eq.${uId},user_email.eq.${uEmail}`);
-          previousCount = count || 0;
-        }
-      } catch (cErr) {
-        console.warn('Could not check contribution count:', cErr);
-      }
-
-      const targetSubject = isOeSelected && oeSubject ? oeSubject : (subject || category);
-      const oeDescription = isOeSelected ? `Open Elective: ${oeSubject} (${isOeISelected ? 'OE-I' : 'OE-II'})` : null;
-      const finalDescription = description.trim()
-        ? (oeDescription ? `${description.trim()} | ${oeDescription}` : description.trim())
-        : oeDescription;
-
-      const { error: insertError } = await supabase
-        .from('notes')
-        .insert({
-          title: finalTitle,
-          subject: targetSubject,
-          semester: dbSemester,
-          material_type: finalMaterialType,
-          year: year || null,
-          description: finalDescription,
-          file_url: urlData.publicUrl,
-          file_name: file!.name,
-          uploaded_by: currentUser?.id || 'admin',
-          user_email: currentUser?.email || 'admin@studyhub.com',
-          user_name: currentUser?.user_metadata?.first_name || currentUser?.email?.split('@')[0] || 'Admin',
-          status: isOwner ? 'approved' : 'pending',
-          approved: isOwner ? true : false,
-          approved_at: isOwner ? new Date().toISOString() : null,
-          approved_by: isOwner ? currentUser?.id : null,
-        });
-
-      if (insertError) {
-        await supabase.storage.from('study-materials').remove([uploadedPath]).catch(() => {});
-        throw insertError;
-      }
-
-      // Contributor coins: Owners are platform owners and not added to contributor list
-      let syncResult = null;
-      // Do not sync contributor coins for owner
-
-
-      clearCachePrefix('notes');
-      if (typeof window !== 'undefined') {
-        window.dispatchEvent(new Event('studyhub_notes_updated'));
-      }
-
-      if (syncResult) {
-        // Trigger celebration only if new contributor OR tier upgraded
-        if (syncResult.isNew || syncResult.tierUpgraded) {
-          setCelebrationData({
-            isOpen: true,
-            contributorName: syncResult.name || currentUser?.user_metadata?.first_name || 'Contributor',
-            coins: syncResult.coins,
-            isFirst: syncResult.isNew,
-            isPending: false,
-            tierName: syncResult.tierBadge,
-          });
-        }
-      } else {
-        const newTotalCount = previousCount + 1;
-        const prevTier = previousCount > 0 ? getLeagueUpgradeInfo(previousCount).tierName : null;
-        const nextLeague = getLeagueUpgradeInfo(newTotalCount);
-        const isFirstPending = !alreadyInContributorList && previousCount === 0;
-        const tierChanged = !isFirstPending && prevTier !== null && prevTier !== nextLeague.tierName;
-
-        if (isFirstPending || tierChanged) {
-          setCelebrationData({
-            isOpen: true,
-            contributorName: currentUser?.user_metadata?.first_name || currentUser?.email?.split('@')[0] || 'Contributor',
-            coins: newTotalCount,
-            isFirst: isFirstPending,
-            isPending: !isOwner,
-            tierName: nextLeague.badgeLabel,
-          });
-        }
-      }
-
-      const isFirst = syncResult ? syncResult.isNew : (!alreadyInContributorList && previousCount === 0);
-
-      toast({
-        title: isFirst ? '🎉 Congratulations on Your 1st Contribution!' : (isOwner ? '✅ Uploaded Successfully!' : '📤 Submitted for Approval!'),
-        description: isOwner
-          ? 'Your material is approved and live on the website immediately.'
-          : (isFirst 
-              ? 'Congratulations! Your first contribution is submitted for review and will be added to the Wall of Contributors once verified by the owner!' 
-              : 'Your material has been submitted for owner approval. It will appear on the website once approved by the owner.'),
-      });
-
-      // Reset form
-      setTitle('');
-      setDescription('');
-      setFile(null);
-      setPyqExamType('');
-      setPyqAcademicYear('');
-      setPyqCustomTitle('');
-      setActiveStep(1);
-      if (fileInputRef.current) fileInputRef.current.value = '';
-      onUploadSuccess?.();
-    } catch (error: any) {
-      console.error('[UploadMaterial] Failed:', error);
-      let errMsg = error?.message || 'Failed to upload file';
-      if (errMsg === 'Failed to fetch' || errMsg.includes('fetch')) {
-        errMsg = 'Connection glitch or upload timed out. Please check your internet connection, turn off any AdBlocker/Private DNS, and retry.';
-      }
-      toast({ title: 'Upload failed', description: errMsg, variant: 'destructive' });
-    } finally {
-      setUploading(false);
-    }
-  };
-
-  // ── Selection breadcrumb ─────────────────────────────────────
-  const breadcrumb = [
-    selectedCategory?.label,
-    isFirstYear && branchType ? (branchType === 'all' ? '1st Year (Unified)' : branchType === 'engineering' ? 'Engineering Branch' : 'Technology Branch') : undefined,
-    !isFirstYear && branch ? BTECH_BRANCHES.find(b => b.code === branch)?.fullName : undefined,
-    year && (categoryYears.find(y => y.id === year)?.label || `${year} Year`),
-    semester,
-    subject && (isOeSelected && oeSubject ? `${subject} (${oeSubject})` : (availableSubjects.find(s => s.name === subject)?.fullName || subject)),
-  ].filter(Boolean);
-
-  return (
-    <div className="border border-border bg-card shadow-xl rounded-2xl p-6 sm:p-8 space-y-6">
-      {/* Form Envelope Header */}
-      <div className="border-b border-border pb-4 mb-2 flex items-center justify-between flex-wrap gap-3">
-        <div>
-          <h2 className="text-xl font-extrabold text-foreground flex items-center gap-2">
-            <Upload className="h-5 w-5 text-primary" />
-            Upload Study Material Form
-          </h2>
-          <p className="text-xs text-muted-foreground mt-0.5">
-            Follow the steps below to upload study notes, PYQs, or assignments.
-          </p>
-        </div>
-        <Badge variant="outline" className="border-primary/40 text-primary font-bold text-[11px] px-3 py-1">
-          STEP-BY-STEP UPLOADER
-        </Badge>
-      </div>
-
-      {/* Breadcrumb trail */}
-      {breadcrumb.length > 0 && (
-        <div className="flex items-center gap-1 flex-wrap text-sm text-foreground bg-muted/60 rounded-xl px-4 py-3 border border-border shadow-sm">
-          <BookOpen className="h-4 w-4 mr-1.5 text-primary" />
-          {breadcrumb.map((item, i) => (
-            <span key={i} className="flex items-center gap-1">
-              {i > 0 && <ChevronRight className="h-3.5 w-3.5 text-muted-foreground" />}
-              <span className={i === breadcrumb.length - 1 ? 'text-foreground font-bold' : 'text-muted-foreground'}>{item}</span>
-            </span>
-          ))}
-        </div>
-      )}
-
-      {/* Step 1: Category */}
-      <div className="space-y-3">
-        {category && activeStep !== 1 ? (
-          <div
-            onClick={() => setActiveStep(1)}
-            className="flex items-center justify-between p-3.5 rounded-xl border border-emerald-500/30 bg-emerald-500/10 cursor-pointer hover:bg-emerald-500/15 transition-all shadow-sm"
-          >
-            <div className="flex items-center gap-3">
-              <div className="w-6 h-6 rounded-full bg-emerald-600 text-white flex items-center justify-center text-xs font-bold">✓</div>
-              <div>
-                <p className="text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold uppercase tracking-wider">Step 1: Category Selected</p>
-                <p className="text-sm font-bold text-foreground">{selectedCategory?.label}</p>
-              </div>
-            </div>
-            <span className="text-xs text-emerald-600 dark:text-emerald-400 font-semibold hover:underline">Change</span>
-          </div>
-        ) : (
-          <div className="border border-border/80 rounded-xl p-5 bg-muted/20 space-y-4">
-            <Label className="text-base font-bold flex items-center gap-2.5 text-foreground">
-              <span className="w-7 h-7 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-xs font-bold shadow-md">1</span>
-              Select Category
-            </Label>
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
-              {CATEGORIES.map(cat => (
-                <Card
-                  key={cat.id}
-                  className={`cursor-pointer transition-all duration-200 hover:-translate-y-0.5 border-border bg-card ${
-                    category === cat.id
-                      ? 'ring-2 ring-primary bg-primary/10 border-primary'
-                      : 'hover:border-primary/40 hover:bg-muted/50'
-                  }`}
-                  onClick={() => handleCategoryChange(cat.id)}
-                >
-                  <CardContent className="p-3.5 flex items-center gap-3">
-                    <div className={`w-10 h-10 rounded-lg bg-gradient-to-br ${cat.gradient} flex items-center justify-center text-white shrink-0 shadow-md`}>
-                      {ICON_MAP[cat.icon] || <BookOpen className="h-5 w-5" />}
-                    </div>
-                    <span className="text-xs font-bold leading-tight text-foreground">{cat.label}</span>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </div>
-        )}
-      </div>
-
-      {/* Step 2: Year */}
-      {selectedCategory?.hasYears && (
-        <div className="space-y-3" ref={yearRef}>
-          {year && activeStep !== 2 ? (
-            <div
-              onClick={() => setActiveStep(2)}
-              className="flex items-center justify-between p-3.5 rounded-xl border border-emerald-500/30 bg-emerald-500/10 cursor-pointer hover:bg-emerald-500/15 transition-all shadow-sm"
-            >
-              <div className="flex items-center gap-3">
-                <div className="w-6 h-6 rounded-full bg-emerald-600 text-white flex items-center justify-center text-xs font-bold">✓</div>
-                <div>
-                  <p className="text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold uppercase tracking-wider">Step 2: Academic Year Selected</p>
-                  <p className="text-sm font-bold text-foreground">{categoryYears.find(y => y.id === year)?.label}</p>
-                </div>
-              </div>
-              <span className="text-xs text-emerald-600 dark:text-emerald-400 font-semibold hover:underline">Change</span>
-            </div>
-          ) : (
-            <div className="border border-border/80 rounded-xl p-5 bg-muted/20 space-y-4">
-              <Label className="text-base font-bold flex items-center gap-2.5 text-foreground">
-                <span className="w-7 h-7 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-xs font-bold shadow-md">2</span>
-                Select Year
-              </Label>
-              <div className={`grid grid-cols-2 ${categoryYears.length >= 5 ? 'sm:grid-cols-5' : 'sm:grid-cols-4'} gap-3`}>
-                {categoryYears.map(y => (
-                  <Card
-                    key={y.id}
-                    className={`cursor-pointer transition-all duration-200 text-center border-border bg-card ${
-                      year === y.id
-                        ? 'ring-2 ring-primary bg-primary/10 border-primary'
-                        : 'hover:border-primary/40 hover:bg-muted/50'
-                    }`}
-                    onClick={() => handleYearChange(y.id)}
-                  >
-                    <CardContent className="p-3.5">
-                      <div className="text-base font-extrabold text-primary">{y.label}</div>
-                      <div className="text-xs text-muted-foreground mt-1">
-                        {y.semesters.filter(s => !s.includes('(All Subjects)')).join(' & ')}
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* Step 3 (1st year): Branch Type - Optional Unified or Specific Cycle */}
-      {isFirstYear && category === 'btech' && (
-        <div className="space-y-3" ref={branchRef}>
-          {branchType && activeStep !== 3 ? (
-            <div
-              onClick={() => setActiveStep(3)}
-              className="flex items-center justify-between p-3.5 rounded-xl border border-emerald-500/30 bg-emerald-500/10 cursor-pointer hover:bg-emerald-500/15 transition-all shadow-sm"
-            >
-              <div className="flex items-center gap-3">
-                <div className="w-6 h-6 rounded-full bg-emerald-600 text-white flex items-center justify-center text-xs font-bold">✓</div>
-                <div>
-                  <p className="text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold uppercase tracking-wider">Step 3: Branch Cycle Selected</p>
-                  <p className="text-sm font-bold text-foreground">
-                    {branchType === 'all' ? 'All Branches (Unified 2026 Scheme)' : branchType === 'engineering' ? 'Engineering Cycle' : 'Technology Cycle'}
-                  </p>
-                </div>
-              </div>
-              <span className="text-xs text-emerald-600 dark:text-emerald-400 font-semibold hover:underline">Change</span>
-            </div>
-          ) : (
-            <div className="border border-border/80 rounded-xl p-5 bg-muted/20 space-y-4">
-              <Label className="text-base font-bold flex items-center gap-2.5 text-foreground">
-                <span className="w-7 h-7 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-xs font-bold shadow-md">3</span>
-                Select 1st Year Branch Cycle
-              </Label>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                <Card
-                  className={`cursor-pointer transition-all duration-200 text-center border-border bg-card ${
-                    branchType === 'all' || branchType === ''
-                      ? 'ring-2 ring-primary bg-primary/10 border-primary'
-                      : 'hover:border-primary/40 hover:bg-muted/50'
-                  }`}
-                  onClick={() => handleBranchTypeChange('all' as any)}
-                >
-                  <CardContent className="p-3.5">
-                    <div className="text-sm font-bold text-primary">All Branches (Unified) ⭐</div>
-                    <div className="text-[11px] text-muted-foreground mt-0.5">Recommended (All Revised Subjects)</div>
-                  </CardContent>
-                </Card>
-                <Card
-                  className={`cursor-pointer transition-all duration-200 text-center border-border bg-card ${
-                    branchType === 'engineering'
-                      ? 'ring-2 ring-primary bg-primary/10 border-primary'
-                      : 'hover:border-primary/40 hover:bg-muted/50'
-                  }`}
-                  onClick={() => handleBranchTypeChange('engineering')}
-                >
-                  <CardContent className="p-3.5">
-                    <div className="text-sm font-bold text-primary">Engineering Cycle</div>
-                    <div className="text-[11px] text-muted-foreground mt-0.5">CSE, IT, ME, CE, ET, EE</div>
-                  </CardContent>
-                </Card>
-                <Card
-                  className={`cursor-pointer transition-all duration-200 text-center border-border bg-card ${
-                    branchType === 'technology'
-                      ? 'ring-2 ring-primary bg-primary/10 border-primary'
-                      : 'hover:border-primary/40 hover:bg-muted/50'
-                  }`}
-                  onClick={() => handleBranchTypeChange('technology')}
-                >
-                  <CardContent className="p-3.5">
-                    <div className="text-sm font-bold text-primary">Technology Cycle</div>
-                    <div className="text-[11px] text-muted-foreground mt-0.5">CHE, PT, PL, FT, OT, LFT, BE</div>
-                  </CardContent>
-                </Card>
-              </div>
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* Step 3/4: Semester */}
-      {((selectedCategory?.hasYears ? (year && !isFirstYear) : selectedCategory?.hasSemesters) && availableSemesters.length > 0) && (
-        <div className="space-y-3" ref={semesterRef}>
-          {semester && activeStep !== 4 ? (
-            <div
-              onClick={() => setActiveStep(4)}
-              className="flex items-center justify-between p-3.5 rounded-xl border border-emerald-500/30 bg-emerald-500/10 cursor-pointer hover:bg-emerald-500/15 transition-all shadow-sm"
-            >
-              <div className="flex items-center gap-3">
-                <div className="w-6 h-6 rounded-full bg-emerald-600 text-white flex items-center justify-center text-xs font-bold">✓</div>
-                <div>
-                  <p className="text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold uppercase tracking-wider">Semester Selected</p>
-                  <p className="text-sm font-bold text-foreground">{semester}</p>
-                </div>
-              </div>
-              <span className="text-xs text-emerald-600 dark:text-emerald-400 font-semibold hover:underline">Change</span>
-            </div>
-          ) : (
-            <div className="border border-border/80 rounded-xl p-5 bg-muted/20 space-y-4">
-              <Label className="text-base font-bold flex items-center gap-2.5 text-foreground">
-                <span className="w-7 h-7 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-xs font-bold shadow-md">
-                  {isFirstYear ? '4' : (category === 'btech' ? '3' : '2')}
-                </span>
-                Select Semester
-              </Label>
-              <div className={`grid ${availableSemesters.length >= 3 ? 'grid-cols-1 sm:grid-cols-3' : 'grid-cols-2'} gap-3`}>
-                {availableSemesters.map(sem => (
-                  <Card
-                    key={sem}
-                    className={`cursor-pointer transition-all duration-200 text-center border-border bg-card ${
-                      semester === sem
-                        ? 'ring-2 ring-primary bg-primary/10 border-primary'
-                        : 'hover:border-primary/40 hover:bg-muted/50'
-                    }`}
-                    onClick={() => handleSemesterChange(sem)}
-                  >
-                    <CardContent className="p-3.5">
-                      <div className="text-base font-bold text-foreground">{sem}</div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* Step 4/5: Branch (BTech only, NOT 1st year) */}
-      {category === 'btech' && !isFirstYear && semester && (
-        <div className="space-y-3" ref={branchRef}>
-          {branch && activeStep !== 5 ? (
-            <div
-              onClick={() => setActiveStep(5)}
-              className="flex items-center justify-between p-3.5 rounded-xl border border-emerald-500/30 bg-emerald-500/10 cursor-pointer hover:bg-emerald-500/15 transition-all shadow-sm"
-            >
-              <div className="flex items-center gap-3">
-                <div className="w-6 h-6 rounded-full bg-emerald-600 text-white flex items-center justify-center text-xs font-bold">✓</div>
-                <div>
-                  <p className="text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold uppercase tracking-wider">Branch Selected</p>
-                  <p className="text-sm font-bold text-foreground">{branch} — {BTECH_BRANCHES.find(b => b.code === branch)?.fullName}</p>
-                </div>
-              </div>
-              <span className="text-xs text-emerald-600 dark:text-emerald-400 font-semibold hover:underline">Change</span>
-            </div>
-          ) : (
-            <div className="border border-border/80 rounded-xl p-5 bg-muted/20 space-y-4">
-              <Label className="text-base font-bold flex items-center gap-2.5 text-foreground">
-                <span className="w-7 h-7 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-xs font-bold shadow-md">4</span>
-                Select Branch
-              </Label>
-              <Select value={branch} onValueChange={handleBranchChange}>
-                <SelectTrigger className="h-12 bg-background border-border text-foreground">
-                  <SelectValue placeholder="Choose engineering branch" />
-                </SelectTrigger>
-                <SelectContent className="bg-card border-border text-foreground">
-                  {BTECH_BRANCHES.map(b => (
-                    <SelectItem key={b.code} value={b.code} className="hover:bg-muted">
-                      <span className="font-bold text-primary">{b.code}</span>
-                      <span className="text-muted-foreground ml-2">— {b.fullName}</span>
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* Step 5/6: Subject */}
-      {semester && (availableSubjects.length > 0 || isOwner) && (
-        <div className="space-y-3" ref={subjectRef}>
-          {subject && (!isOeSelected || oeSubject) && activeStep !== 6 ? (
-            <div className="flex items-center justify-between p-3.5 rounded-xl border border-emerald-500/30 bg-emerald-500/10 shadow-sm">
-              <div
-                onClick={() => setActiveStep(6)}
-                className="flex items-center gap-3 cursor-pointer hover:opacity-85 transition-all flex-1"
-              >
-                <div className="w-6 h-6 rounded-full bg-emerald-600 text-white flex items-center justify-center text-xs font-bold">✓</div>
-                <div>
-                  <p className="text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold uppercase tracking-wider">Subject Selected</p>
-                  <p className="text-sm font-bold text-foreground">
-                    {isOeSelected && oeSubject ? `${subject} — ${oeSubject}` : subject}
-                  </p>
-                </div>
-              </div>
-              <div className="flex items-center gap-2">
-                {isOwner && (
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setRenameValue(subject);
-                      setIsRenamingSubject(true);
-                      setIsAddingSubject(false);
-                      setActiveStep(6);
-                    }}
-                    className="text-xs h-7 px-2.5 border-amber-500/40 text-amber-600 dark:text-amber-400 hover:bg-amber-500/10"
-                  >
-                    <Pencil className="h-3 w-3 mr-1" />
-                    Rename
-                  </Button>
-                )}
-                <span
-                  onClick={() => setActiveStep(6)}
-                  className="text-xs text-emerald-600 dark:text-emerald-400 font-semibold hover:underline cursor-pointer ml-1"
-                >
-                  Change
-                </span>
-              </div>
-            </div>
-          ) : (
-            <div className="border border-border/80 rounded-xl p-5 bg-muted/20 space-y-4">
-              <div className="flex items-center justify-between flex-wrap gap-2">
-                <Label className="text-base font-bold flex items-center gap-2.5 text-foreground">
-                  <span className="w-7 h-7 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-xs font-bold shadow-md">
-                    {category === 'btech' ? '5' : '3'}
-                  </span>
-                  Select Subject
-                </Label>
-                {isOwner && (
-                  <div className="flex items-center gap-2">
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={() => {
-                        setIsAddingSubject(!isAddingSubject);
-                        setIsRenamingSubject(false);
-                      }}
-                      className="text-xs h-8 px-2.5 bg-primary/10 hover:bg-primary/20 border-primary/40 text-primary font-semibold flex items-center gap-1.5 shadow-sm"
-                    >
-                      {isAddingSubject ? (
-                        <>
-                          <X className="h-3.5 w-3.5 mr-1" />
-                          Cancel
-                        </>
-                      ) : (
-                        <>
-                          <Plus className="h-3.5 w-3.5 mr-1" />
-                          Add Subject (Owner)
-                        </>
-                      )}
-                    </Button>
-                    {subject && (
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        onClick={() => {
-                          setRenameValue(subject);
-                          setIsRenamingSubject(!isRenamingSubject);
-                          setIsAddingSubject(false);
-                        }}
-                        className="text-xs h-8 px-2.5 border-amber-500/40 text-amber-600 dark:text-amber-400 hover:bg-amber-500/15 font-semibold flex items-center gap-1.5 shadow-sm"
-                      >
-                        <Pencil className="h-3.5 w-3.5 mr-1" />
-                        Rename
-                      </Button>
-                    )}
-                  </div>
-                )}
-              </div>
-
-              {/* Owner: Add Subject Form */}
-              {isOwner && isAddingSubject && (
-                <div className="p-4 rounded-xl border border-primary/30 bg-primary/5 space-y-3.5 animate-in fade-in duration-200">
-                  <div className="flex items-center justify-between">
-                    <p className="text-xs font-bold text-primary flex items-center gap-1.5">
-                      <Sparkles className="h-3.5 w-3.5" /> Add New Subject
-                      <span className="text-muted-foreground font-normal">
-                        ({category?.toUpperCase()} {branch ? `• ${branch}` : ''} • {semester})
-                      </span>
-                    </p>
-                    <Badge variant="outline" className="text-[10px] border-primary/30 text-primary">
-                      Owner Only
-                    </Badge>
-                  </div>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <div>
-                      <label className="text-[11px] font-semibold text-foreground/80 block mb-1">
-                        Subject Code / Name <span className="text-red-500">*</span>
-                      </label>
-                      <Input
-                        placeholder="e.g. DCS102 or AI Ethics"
-                        value={newSubjectName}
-                        onChange={(e) => setNewSubjectName(e.target.value)}
-                        className="h-9 text-xs bg-background"
-                      />
-                    </div>
-                    <div>
-                      <label className="text-[11px] font-semibold text-foreground/80 block mb-1">
-                        Full Descriptive Name (Optional)
-                      </label>
-                      <Input
-                        placeholder="e.g. Artificial Intelligence & Ethics"
-                        value={newSubjectFullName}
-                        onChange={(e) => setNewSubjectFullName(e.target.value)}
-                        className="h-9 text-xs bg-background"
-                      />
-                    </div>
-                  </div>
-                  <div className="flex justify-end gap-2 pt-1">
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => setIsAddingSubject(false)}
-                      className="h-8 text-xs"
-                    >
-                      Cancel
-                    </Button>
-                    <Button
-                      type="button"
-                      size="sm"
-                      onClick={handleSaveNewSubject}
-                      className="h-8 text-xs bg-primary hover:bg-primary/90 text-primary-foreground font-semibold px-4"
-                    >
-                      Save & Select Subject
-                    </Button>
-                  </div>
-                </div>
-              )}
-
-              {/* Owner: Rename Subject Form */}
-              {isOwner && isRenamingSubject && subject && (
-                <div className="p-4 rounded-xl border border-amber-500/30 bg-amber-500/5 space-y-3 animate-in fade-in duration-200">
-                  <div className="flex items-center justify-between">
-                    <p className="text-xs font-bold text-amber-600 dark:text-amber-400 flex items-center gap-1.5">
-                      <Pencil className="h-3.5 w-3.5" /> Rename Subject: <span className="font-extrabold underline">{subject}</span>
-                    </p>
-                    <Badge variant="outline" className="text-[10px] border-amber-500/40 text-amber-600 dark:text-amber-400">
-                      Owner Only
-                    </Badge>
-                  </div>
-                  <div>
-                    <label className="text-[11px] font-semibold text-foreground/80 block mb-1">
-                      Updated Subject Name <span className="text-red-500">*</span>
-                    </label>
-                    <Input
-                      placeholder="Enter new subject name"
-                      value={renameValue}
-                      onChange={(e) => setRenameValue(e.target.value)}
-                      className="h-9 text-xs bg-background"
-                    />
-                  </div>
-                  <p className="text-[10px] text-muted-foreground">
-                    ⚡ This updates the subject label and synchronizes existing notes in the database.
-                  </p>
-                  <div className="flex justify-end gap-2 pt-1">
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => setIsRenamingSubject(false)}
-                      className="h-8 text-xs"
-                    >
-                      Cancel
-                    </Button>
-                    <Button
-                      type="button"
-                      size="sm"
-                      onClick={handleSaveRenameSubject}
-                      className="h-8 text-xs bg-amber-600 hover:bg-amber-700 text-white font-semibold px-4"
-                    >
-                      Save Rename
-                    </Button>
-                  </div>
-                </div>
-              )}
-
-              <Select value={subject} onValueChange={handleSubjectChange}>
-                <SelectTrigger className="h-12 bg-background border-border text-foreground">
-                  <SelectValue placeholder={availableSubjects.length > 0 ? "Choose subject" : "No subjects yet — click + Add Subject"} />
-                </SelectTrigger>
-                <SelectContent className="bg-card border-border text-foreground max-h-64">
-                  {availableSubjects.map(s => (
-                    <SelectItem key={s.name} value={s.name} className="hover:bg-muted">
-                      <span className="font-semibold text-foreground">{s.name}</span>
-                      {s.name !== s.fullName && (
-                        <span className="text-muted-foreground ml-2">— {s.fullName}</span>
-                      )}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-
-              {/* Secondary dropdown when Open Elective-I or Open Elective-II is selected */}
-              {isOeSelected && (
-                <div className="mt-4 p-4 sm:p-5 rounded-xl border-2 border-primary/40 bg-primary/5 space-y-3 animate-in fade-in slide-in-from-top-2 duration-300">
-                  <div className="flex items-center justify-between flex-wrap gap-2">
-                    <Label className="text-sm font-bold flex items-center gap-2 text-foreground">
-                      <span className="w-6 h-6 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-xs font-bold shadow-xs">
-                        ★
-                      </span>
-                      {isOeIISelected ? 'Choose your O.E-II Subject' : 'Choose your O.E-I Subject'}
-                    </Label>
-                    <Badge variant="outline" className="text-[10px] font-bold uppercase tracking-wider bg-background border-primary/30 text-primary">
-                      {isOeIISelected ? 'Open Elective-II' : 'Open Elective-I'}
-                    </Badge>
-                  </div>
-                  <p className="text-xs text-muted-foreground">
-                    Select which specific {isOeIISelected ? 'O.E-II' : 'O.E-I'} elective subject you want to upload study notes or PYQs for:
-                  </p>
-                  <Select value={oeSubject} onValueChange={handleOeSubjectChange}>
-                    <SelectTrigger className="h-12 bg-background border-primary/50 text-foreground font-semibold shadow-xs">
-                      <SelectValue placeholder={isOeIISelected ? "Choose your O.E-II Subject (15 Courses)" : "Choose your O.E-I Subject"} />
-                    </SelectTrigger>
-                    <SelectContent className="bg-card border-border text-foreground max-h-64">
-                      {availableOeSubjects.map(oe => (
-                        <SelectItem key={oe.id} value={oe.name} className="hover:bg-muted font-medium">
-                          <span className="font-semibold text-foreground">{oe.name}</span>
-                          {oe.fullName && oe.fullName !== oe.name && (
-                            <span className="text-muted-foreground ml-2">— {oe.fullName}</span>
-                          )}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-              )}
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* Step 6 / Final Upload Details Section */}
-      {((!selectedCategory?.hasSemesters && category) || (semester && (availableSubjects.length === 0 || (subject && (!isOeSelected || oeSubject))))) && (
-        <div className="border border-border/80 rounded-xl p-5 sm:p-6 bg-muted/20 space-y-6 text-foreground" ref={detailsRef}>
-          <Label className="text-lg font-extrabold flex items-center gap-3 text-foreground border-b border-border pb-4">
-            <span className="w-8 h-8 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-xs font-bold shadow-lg">
-              {category === 'btech' ? (availableSubjects.length > 0 ? '6' : '5') : 
-               selectedCategory?.hasSemesters ? (availableSubjects.length > 0 ? '4' : '3') : '2'}
-            </span>
-            Upload Material Details 📁
-          </Label>
-
-          {/* Material Type Selection */}
-          {!derivedMaterialType && (
-            <div className="space-y-2">
-              <Label className="text-sm font-semibold text-foreground">Select Resource / Material Type</Label>
-              <div className="flex flex-wrap gap-2.5">
-                <Badge
-                  variant={materialType === 'notes' ? 'default' : 'outline'}
-                  className={`cursor-pointer px-3.5 py-2 text-xs sm:text-sm font-semibold transition-all ${
-                    materialType === 'notes' 
-                      ? 'bg-blue-600 text-white shadow-sm' 
-                      : 'hover:bg-muted border-border text-foreground'
-                  }`}
-                  onClick={() => setMaterialType('notes')}
-                >
-                  <FileText className="h-4 w-4 mr-1.5" />
-                  Notes
-                </Badge>
-                <Badge
-                  variant={materialType === 'assignments' ? 'default' : 'outline'}
-                  className={`cursor-pointer px-3.5 py-2 text-xs sm:text-sm font-semibold transition-all ${
-                    materialType === 'assignments' 
-                      ? 'bg-orange-600 text-white shadow-sm' 
-                      : 'hover:bg-muted border-border text-foreground'
-                  }`}
-                  onClick={() => setMaterialType('assignments')}
-                >
-                  <Briefcase className="h-4 w-4 mr-1.5" />
-                  Assignments
-                </Badge>
-                <Badge
-                  variant={materialType === 'book' ? 'default' : 'outline'}
-                  className={`cursor-pointer px-3.5 py-2 text-xs sm:text-sm font-semibold transition-all ${
-                    materialType === 'book' 
-                      ? 'bg-emerald-600 text-white shadow-sm' 
-                      : 'hover:bg-muted border-border text-foreground'
-                  }`}
-                  onClick={() => setMaterialType('book')}
-                >
-                  <BookOpen className="h-4 w-4 mr-1.5" />
-                  Book / Reference
-                </Badge>
-                <Badge
-                  variant={materialType === 'practical_file' ? 'default' : 'outline'}
-                  className={`cursor-pointer px-3.5 py-2 text-xs sm:text-sm font-semibold transition-all ${
-                    materialType === 'practical_file' 
-                      ? 'bg-purple-600 text-white shadow-sm' 
-                      : 'hover:bg-muted border-border text-foreground'
-                  }`}
-                  onClick={() => setMaterialType('practical_file')}
-                >
-                  <GraduationCap className="h-4 w-4 mr-1.5" />
-                  Practical File / Lab
-                </Badge>
-                <Badge
-                  variant={materialType === 'pyqs' ? 'default' : 'outline'}
-                  className={`cursor-pointer px-3.5 py-2 text-xs sm:text-sm font-semibold transition-all ${
-                    materialType === 'pyqs' 
-                      ? 'bg-red-600 text-white shadow-sm' 
-                      : 'hover:bg-muted border-border text-foreground'
-                  }`}
-                  onClick={() => setMaterialType('pyqs')}
-                >
-                  <Sparkles className="h-4 w-4 mr-1.5" />
-                  Previous Year Questions (PYQs)
-                </Badge>
-              </div>
-            </div>
-          )}
-
-          {/* Title input / builder */}
-          {isPyqMode ? (
-            <div className="space-y-4">
-              <Label className="text-sm font-bold flex items-center gap-2 text-amber-500">
-                <span>📋</span> PYQ Title Builder *
-              </Label>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="space-y-1.5">
-                  <Label htmlFor="pyq-exam-type" className="text-xs text-muted-foreground">Exam Type</Label>
-                  <Select value={pyqExamType} onValueChange={val => { setPyqExamType(val); setPyqCustomTitle(''); }}>
-                    <SelectTrigger id="pyq-exam-type" className="h-11 bg-background border-border text-foreground">
-                      <SelectValue placeholder="Choose exam type..." />
-                    </SelectTrigger>
-                    <SelectContent className="bg-card border-border text-foreground">
-                      {PYQ_EXAM_TYPES.map(et => (
-                        <SelectItem key={et} value={et}>{et}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="space-y-1.5">
-                  <Label htmlFor="pyq-year" className="text-xs text-muted-foreground">Academic Year</Label>
-                  <Select value={pyqAcademicYear} onValueChange={setPyqAcademicYear}>
-                    <SelectTrigger id="pyq-year" className="h-11 bg-background border-border text-foreground">
-                      <SelectValue placeholder="Choose year e.g. 2025-26" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-card border-border text-foreground">
-                      {ACADEMIC_YEARS.map(yr => (
-                        <SelectItem key={yr} value={yr}>{yr}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-
-              {pyqExamType === 'Other' && (
-                <div className="space-y-1.5">
-                  <Label htmlFor="pyq-custom" className="text-xs text-muted-foreground">Custom Title *</Label>
-                  <Input
-                    id="pyq-custom"
-                    value={pyqCustomTitle}
-                    onChange={e => setPyqCustomTitle(e.target.value)}
-                    placeholder="e.g., Supplementary PYQ 2025-26"
-                    className="h-11 bg-background border-border text-foreground"
-                  />
-                </div>
-              )}
-
-              {autoPyqTitle && (
-                <div className="flex items-center gap-2 px-4 py-3 bg-primary/10 border border-primary/30 rounded-xl">
-                  <span className="text-xs text-muted-foreground">Title preview:</span>
-                  <span className="text-sm font-bold text-primary">{autoPyqTitle}</span>
-                </div>
-              )}
-            </div>
-          ) : (
-            <div className="space-y-2">
-              <Label htmlFor="upload-title" className="text-sm font-bold text-foreground">Title *</Label>
-              <Input
-                id="upload-title"
-                value={title}
-                onChange={e => setTitle(e.target.value)}
-                placeholder={isOeSelected && oeSubject ? `e.g., ${oeSubject} Unit-1 Complete Notes` : "e.g., Unit-1 Complete Notes, Assignment 2024"}
-                className="h-12 bg-background border-border text-foreground"
-              />
-            </div>
-          )}
-
-          {/* Description */}
-          <div className="space-y-2">
-            <Label htmlFor="upload-desc" className="text-sm font-bold text-foreground">Description (optional)</Label>
-            <Textarea
-              id="upload-desc"
-              value={description}
-              onChange={e => setDescription(e.target.value)}
-              placeholder="Brief description of the content..."
-              rows={3}
-              className="bg-background border-border text-foreground"
-            />
-          </div>
-
-          {/* File Upload Box */}
-          <div className="space-y-2">
-            <Label className="text-sm font-bold text-foreground">PDF File * (max 20MB)</Label>
-            <div
-              className={`border-2 border-dashed rounded-xl p-8 text-center transition-all duration-200 cursor-pointer ${
-                dragOver
-                  ? 'border-primary bg-primary/10 scale-[1.01]'
-                  : file
-                    ? 'border-emerald-500/60 bg-emerald-500/10'
-                    : 'border-border bg-background hover:border-primary/50'
-              }`}
-              onDragOver={e => { e.preventDefault(); setDragOver(true); }}
-              onDragLeave={() => setDragOver(false)}
-              onDrop={handleDrop}
-              onClick={() => fileInputRef.current?.click()}
-            >
-              {file ? (
-                <div className="flex items-center justify-center gap-3">
-                  <CheckCircle2 className="h-7 w-7 text-emerald-500" />
-                  <div className="text-left">
-                    <p className="font-bold text-sm text-foreground">{file.name}</p>
-                    <p className="text-xs text-muted-foreground">
-                      {(file.size / (1024 * 1024)).toFixed(2)} MB
-                    </p>
-                  </div>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-8 w-8 ml-3 text-muted-foreground hover:text-foreground"
-                    onClick={e => { e.stopPropagation(); setFile(null); }}
-                  >
-                    <X className="h-4 w-4" />
-                  </Button>
-                </div>
-              ) : (
-                <div className="space-y-3">
-                  <Upload className="h-9 w-9 mx-auto text-primary" />
-                  <p className="text-sm text-foreground">
-                    Drag & drop a PDF or <span className="text-primary font-bold underline">click to browse</span>
-                  </p>
-                </div>
-              )}
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept=".pdf"
-                onChange={handleFileChange}
-                className="hidden"
-                aria-label="Upload PDF file"
-              />
-            </div>
-          </div>
-
-          {/* Submit Button */}
-          <Button
-            onClick={handleSubmit}
-            disabled={uploading}
-            className="w-full h-13 text-base font-bold bg-primary text-primary-foreground shadow-lg hover:shadow-xl hover:bg-primary/90 transition-all rounded-xl mt-4"
-          >
-            {uploading ? (
-              <span className="flex items-center gap-2">
-                <Loader2 className="h-5 w-5 animate-spin" /> Uploading PDF & Submitting...
-              </span>
-            ) : (
-              <span className="flex items-center justify-center gap-2">
-                <Upload className="h-5 w-5" /> Submit Material for Approval
-              </span>
-            )}
-          </Button>
-
-          <div className="flex items-start gap-2.5 text-xs text-amber-300 bg-amber-500/10 border border-amber-500/30 rounded-xl p-3.5">
-            <AlertTriangle className="h-4 w-4 text-amber-400 shrink-0 mt-0.5" />
-            <span>Your upload will be sent to the site owner for approval before appearing live on the notes page.</span>
-          </div>
-        </div>
-      )}
-
-      {/* 1st Contribution & League Upgrade Celebration Modal */}
-      {celebrationData && (
-        <MilestoneCelebrationModal
-          isOpen={celebrationData.isOpen}
-          onClose={() => setCelebrationData(null)}
-          contributorName={celebrationData.contributorName}
-          coins={celebrationData.coins}
-          tierName={celebrationData.tierName}
-          isFirstContribution={celebrationData.isFirst}
-          isPendingApproval={celebrationData.isPending}
-        />
-      )}
-    </div>
-  );
-};
-
-export default UploadMaterialForm;
-// Reviewed: academic catalog & interface consistency check (v2.0.7)
-// Reviewed: academic catalog & interface consistency check (v2.1.282)
+// Upload: study material ingest pipeline with zero-egress R2 target mapping
+import { useState, useRef, useMemo } from 'react';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/contexts/AuthContext';
+import { useToast } from '@/hooks/use-toast';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Card, CardContent } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import {
+  Upload, FileText, CheckCircle2, Loader2, X, AlertTriangle,
+  GraduationCap, BookOpen, Briefcase, Database, Code, Globe,
+  Sparkles, ChevronRight, Plus, Pencil
+} from 'lucide-react';
+import {
+  CATEGORIES, BTECH_YEARS, BSMS_YEARS, BPHARMA_YEARS, MBA_YEARS, BTECH_BRANCHES, BTECH_FIRST_YEAR_SUBJECTS,
+  getSubjects, getSemesters,
+  OPEN_ELECTIVE_I_ENGG_SUBJECTS, OPEN_ELECTIVE_I_TECH_SUBJECTS, ALL_OPEN_ELECTIVE_I_SUBJECTS, OPEN_ELECTIVE_II_SUBJECTS,
+  isTechnologyBranch
+} from '@/data/courseStructure';
+import { saveCustomSubject, saveRenamedSubject } from '@/lib/customSubjects';
+import { clearCachePrefix } from '@/lib/cacheUtils';
+import { syncContributorCount } from '@/lib/contributorSync';
+import { MilestoneCelebrationModal } from '@/components/MilestoneCelebrationModal';
+import { isLeagueMilestone, getLeagueUpgradeInfo } from '@/lib/contributorBadgeUtils';
+
+const ICON_MAP: Record<string, React.ReactNode> = {
+  GraduationCap: <GraduationCap className="h-5 w-5" />,
+  Briefcase: <Briefcase className="h-5 w-5" />,
+  Database: <Database className="h-5 w-5" />,
+  Code: <Code className="h-5 w-5" />,
+  Globe: <Globe className="h-5 w-5" />,
+  Sparkles: <Sparkles className="h-5 w-5" />,
+};
+
+interface UploadMaterialFormProps {
+  onUploadSuccess?: () => void;
+}
+
+const UploadMaterialForm = ({ onUploadSuccess }: UploadMaterialFormProps) => {
+  const { user, isOwner } = useAuth();
+  const { toast } = useToast();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Refs for auto-scrolling
+  const yearRef = useRef<HTMLDivElement>(null);
+  const semesterRef = useRef<HTMLDivElement>(null);
+  const branchRef = useRef<HTMLDivElement>(null);
+  const subjectRef = useRef<HTMLDivElement>(null);
+  const detailsRef = useRef<HTMLDivElement>(null);
+
+  const scrollToRef = (ref: React.RefObject<HTMLDivElement>) => {
+    setTimeout(() => {
+      if (ref.current) {
+        ref.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }, 100);
+  };
+
+  // Form state - cascading
+  const [category, setCategory] = useState('');
+  const [branch, setBranch] = useState('');
+  const [branchType, setBranchType] = useState<'engineering' | 'technology' | ''>(''); // 1st year only
+  const [year, setYear] = useState('');
+  const [semester, setSemester] = useState('');
+  const [subject, setSubject] = useState('');
+  const [oeSubject, setOeSubject] = useState('');
+  const [materialType, setMaterialType] = useState<'notes' | 'pyqs' | 'assignments' | 'book' | 'practical_file'>('notes');
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const [file, setFile] = useState<File | null>(null);
+  const [uploading, setUploading] = useState(false);
+  const [dragOver, setDragOver] = useState(false);
+
+  // Active expanded step state (1 to 6)
+  const [activeStep, setActiveStep] = useState<number>(1);
+
+  // Open Elective detection
+  const isOeIISelected = useMemo(() => {
+    if (!subject) return false;
+    const s = subject.trim().toLowerCase();
+    if (
+      s === 'oe-ii' ||
+      s === 'oe2' ||
+      s === 'oe ii' ||
+      s === 'oe-2' ||
+      s === 'open elective-ii' ||
+      s === 'open elective ii' ||
+      s.includes('oe-ii') ||
+      s.includes('oe2') ||
+      s.includes('elective-ii') ||
+      s.includes('elective ii')
+    ) {
+      return true;
+    }
+    if ((semester === '7th Semester' || semester === '8th Semester') && (s.includes('open elective') || s.includes('oe'))) {
+      return true;
+    }
+    return false;
+  }, [subject, semester]);
+
+  const isOeISelected = useMemo(() => {
+    if (!subject || isOeIISelected) return false;
+    const s = subject.trim().toLowerCase();
+    return (
+      s === 'open elective-i' ||
+      s === 'open elective i' ||
+      s === 'open elective' ||
+      s === 'oe-i' ||
+      s === 'oe1' ||
+      s === 'oe i' ||
+      s === 'oe-1' ||
+      s.includes('oe-i') ||
+      s.includes('oe1') ||
+      s.includes('elective-i') ||
+      s.includes('elective i') ||
+      ((semester === '5th Semester' || semester === '6th Semester') && (s.includes('open elective') || s.includes('oe')))
+    );
+  }, [subject, isOeIISelected, semester]);
+
+  const isOeSelected = isOeISelected || isOeIISelected;
+
+  const availableOeSubjects = useMemo(() => {
+    if (isOeIISelected) {
+      return OPEN_ELECTIVE_II_SUBJECTS;
+    }
+    if (isOeISelected) {
+      if (isTechnologyBranch(branch) || semester === '6th Semester') {
+        return OPEN_ELECTIVE_I_TECH_SUBJECTS;
+      }
+      return OPEN_ELECTIVE_I_ENGG_SUBJECTS;
+    }
+    return [];
+  }, [isOeISelected, isOeIISelected, branch, semester]);
+
+  // PYQ Smart Title Builder state
+  const PYQ_EXAM_TYPES = [
+    "Mid Sem-1 PYQ'S",
+    "Mid Sem-2 PYQ'S",
+    "End Sem PYQ'S",
+    "Complete PYQ's",
+    'Other',
+  ];
+  const ACADEMIC_YEARS = [
+    '2021-22',
+    '2022-23',
+    '2023-24',
+    '2024-25',
+    '2025-26',
+    '2026-27',
+    '2027-28',
+    '2028-29',
+    '2029-30',
+    '2030-31',
+    '2031-32',
+    '2032-33',
+    '2033-34',
+    '2034-35',
+    '2035-36',
+  ];
+  const [pyqExamType, setPyqExamType] = useState('');
+  const [pyqAcademicYear, setPyqAcademicYear] = useState('2024-25');
+  const [pyqCustomTitle, setPyqCustomTitle] = useState('');
+
+  // Derived: is current upload a PYQ?
+  const isPyqMode =
+    materialType === 'pyqs' || subject === 'Previous Year Questions' || subject === 'Previous Year Questions (PYQs)';
+
+  // Auto-build title for PYQs with Subject + Exam Type + Academic Year
+  const autoPyqTitle = useMemo(() => {
+    if (!isPyqMode) return title;
+    if (pyqExamType === 'Other') return pyqCustomTitle;
+    const yearPart = pyqAcademicYear ? `(${pyqAcademicYear})` : '';
+    const examPart = pyqExamType || "PYQ's";
+    const displaySubject = isOeSelected && oeSubject ? oeSubject : subject;
+    if (displaySubject && displaySubject !== 'Previous Year Questions' && displaySubject !== 'Previous Year Questions (PYQs)') {
+      return `${displaySubject} ${examPart} ${yearPart}`.trim();
+    }
+    return `${examPart} ${yearPart}`.trim();
+  }, [isPyqMode, pyqExamType, pyqAcademicYear, pyqCustomTitle, subject, isOeSelected, oeSubject, title]);
+
+  // Effective title used for submission
+  const effectiveTitle = isPyqMode ? autoPyqTitle : title;
+
+  // For 1st year: map the actual semester to the correct subject list
+  const isFirstYear = (category === 'btech' || category === 'bsms') && year === '1st';
+  const mappedSemester = isFirstYear && branchType === 'technology' && semester
+    ? (semester === '1st Semester' ? '2nd Semester' : '1st Semester')
+    : semester;
+
+  const [customRefresh, setCustomRefresh] = useState(0);
+
+  // Owner custom subject management states
+  const [isAddingSubject, setIsAddingSubject] = useState(false);
+  const [newSubjectName, setNewSubjectName] = useState('');
+  const [newSubjectFullName, setNewSubjectFullName] = useState('');
+
+  const [isRenamingSubject, setIsRenamingSubject] = useState(false);
+  const [renameValue, setRenameValue] = useState('');
+
+  // Celebration modal state for 1st contribution / league upgrades
+  const [celebrationData, setCelebrationData] = useState<{
+    isOpen: boolean;
+    contributorName: string;
+    coins: number;
+    isFirst: boolean;
+    isPending: boolean;
+    tierName?: string;
+  } | null>(null);
+
+  // Derived data
+  const selectedCategory = CATEGORIES.find(c => c.id === category);
+
+  const categoryYears = useMemo(() => {
+    if (category === 'bsms') return BSMS_YEARS;
+    if (category === 'bpharma') return BPHARMA_YEARS;
+    if (category === 'mba') return MBA_YEARS;
+    return BTECH_YEARS;
+  }, [category]);
+
+  const availableSemesters = category ? getSemesters(category, year) : [];
+  const availableSubjects = isFirstYear
+    ? BTECH_FIRST_YEAR_SUBJECTS
+    : (category && semester
+        ? getSubjects(category, semester, branch)
+        : []);
+
+  const handleCategoryChange = (val: string) => {
+    setCategory(val);
+    setBranch('');
+    setBranchType('');
+    setYear('');
+    setSemester('');
+    setSubject('');
+    setOeSubject('');
+    const targetCat = CATEGORIES.find(c => c.id === val);
+    setActiveStep(targetCat?.hasYears ? 2 : (targetCat?.hasSemesters ? 4 : 6));
+  };
+
+  const handleYearChange = (val: string) => {
+    setYear(val);
+    setOeSubject('');
+    if ((category === 'btech' || category === 'bsms') && val === '1st') {
+      setBranchType('all');
+      setSemester('ALL-First Year (All Subjects)');
+      setSubject('');
+      setBranch('');
+      setActiveStep(6);
+    } else {
+      setBranchType('');
+      setSemester('');
+      setSubject('');
+      setBranch('');
+      setActiveStep(4);
+    }
+  };
+
+  const handleBranchTypeChange = (val: 'engineering' | 'technology') => {
+    setBranchType(val);
+    setSemester('');
+    setSubject('');
+    setOeSubject('');
+    setActiveStep(4);
+  };
+
+  const handleSemesterChange = (val: string) => {
+    setSemester(val);
+    setSubject('');
+    setOeSubject('');
+    if (category === 'btech' && !isFirstYear) {
+      setActiveStep(5);
+    } else {
+      setActiveStep(6);
+    }
+  };
+
+  const handleBranchChange = (val: string) => {
+    setBranch(val);
+    setSubject('');
+    setOeSubject('');
+    setActiveStep(6);
+  };
+
+  const isOeSubjectValue = (val: string) => {
+    if (!val) return false;
+    const s = val.trim().toLowerCase();
+    return (
+      s === 'oe-ii' ||
+      s === 'oe2' ||
+      s === 'oe ii' ||
+      s === 'oe-2' ||
+      s === 'open elective-ii' ||
+      s === 'open elective ii' ||
+      s.includes('oe-ii') ||
+      s.includes('oe2') ||
+      s.includes('elective-ii') ||
+      s.includes('elective ii') ||
+      s === 'open elective-i' ||
+      s === 'open elective i' ||
+      s === 'open elective' ||
+      s === 'oe-i' ||
+      s === 'oe1' ||
+      s === 'oe i' ||
+      s === 'oe-1' ||
+      s.includes('oe-i') ||
+      s.includes('oe1') ||
+      s.includes('elective-i') ||
+      s.includes('elective i') ||
+      ((semester === '7th Semester' || semester === '8th Semester' || semester === '5th Semester' || semester === '6th Semester') &&
+        (s.includes('open elective') || s.includes('oe')))
+    );
+  };
+
+  const handleSubjectChange = (val: string) => {
+    setSubject(val);
+    setOeSubject('');
+    if (isOeSubjectValue(val)) {
+      // Keep on Step 6 so user can pick their specific Open Elective subject from the secondary dropdown
+      setActiveStep(6);
+    } else {
+      // Normal subject selected: proceed to Step 7 (Upload details) and scroll down
+      setActiveStep(7);
+      scrollToRef(detailsRef);
+    }
+  };
+
+  const handleOeSubjectChange = (val: string) => {
+    setOeSubject(val);
+    setActiveStep(7);
+    scrollToRef(detailsRef);
+  };
+
+  const handleSaveNewSubject = async () => {
+    if (!isOwner) return;
+    const trimmed = newSubjectName.trim();
+    if (!trimmed) {
+      toast({ title: "Name required", description: "Please enter a subject name.", variant: "destructive" });
+      return;
+    }
+    await saveCustomSubject(
+      category,
+      semester,
+      isFirstYear ? undefined : branch,
+      {
+        name: trimmed,
+        fullName: newSubjectFullName.trim() || trimmed
+      },
+      user
+    );
+    setSubject(trimmed);
+    setIsAddingSubject(false);
+    setNewSubjectName('');
+    setNewSubjectFullName('');
+    setCustomRefresh(c => c + 1);
+    toast({
+      title: "Subject Created! 🎓",
+      description: `"${trimmed}" is now live on the website! You or admins can now share notes under it.`
+    });
+  };
+
+  const handleSaveRenameSubject = async () => {
+    if (!isOwner) return;
+    const trimmed = renameValue.trim();
+    if (!trimmed) {
+      toast({ title: "Name required", description: "Please enter a new name.", variant: "destructive" });
+      return;
+    }
+    if (trimmed === subject) {
+      setIsRenamingSubject(false);
+      return;
+    }
+    const old = subject;
+    await saveRenamedSubject(old, trimmed);
+    setSubject(trimmed);
+    setIsRenamingSubject(false);
+    setCustomRefresh(c => c + 1);
+    toast({ title: "Subject Renamed! ✏️", description: `Renamed "${old}" to "${trimmed}".` });
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selected = e.target.files?.[0];
+    if (selected) {
+      if (selected.type !== 'application/pdf') {
+        toast({ title: 'Invalid file', description: 'Only PDF files are accepted.', variant: 'destructive' });
+        return;
+      }
+      if (selected.size > 20 * 1024 * 1024) {
+        toast({ title: 'File too large', description: 'Maximum file size is 20MB.', variant: 'destructive' });
+        return;
+      }
+      setFile(selected);
+    }
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setDragOver(false);
+    const droppedFile = e.dataTransfer.files[0];
+    if (droppedFile?.type === 'application/pdf') {
+      if (droppedFile.size > 20 * 1024 * 1024) {
+        toast({ title: 'File too large', description: 'Maximum file size is 20MB.', variant: 'destructive' });
+        return;
+      }
+      setFile(droppedFile);
+    } else {
+      toast({ title: 'Invalid file', description: 'Only PDF files are accepted.', variant: 'destructive' });
+    }
+  };
+
+  const derivedMaterialType = 
+    subject === 'Previous Year Questions' || subject === 'Previous Year Questions (PYQs)' ? 'pyqs' :
+    subject === 'Assignments' || subject === 'Assignments - All Subjects' ? 'assignments' :
+    ['dsa', 'coding', 'webdev', 'placement'].includes(category) ? 'notes' :
+    null;
+
+  const finalMaterialType = derivedMaterialType || materialType;
+
+  // Returns null if valid, or a friendly reason string if not
+  const getValidationError = (): string | null => {
+    if (!user) return 'You are not logged in. Please re-login and try again.';
+    if (!category) return 'Please select a category.';
+    if (selectedCategory?.hasYears && !year) return 'Please select a year.';
+    if (selectedCategory?.hasSemesters && !isFirstYear && !semester) return 'Please select a semester.';
+    if (selectedCategory?.hasBranches && !isFirstYear && !branch) return 'Please select a branch.';
+    if (availableSubjects.length > 0 && !subject) return 'Please select a subject.';
+    if (isOeSelected && !oeSubject) return `Please choose your ${isOeISelected ? 'O.E-I' : 'O.E-II'} subject.`;
+
+    if (isPyqMode) {
+      if (!pyqAcademicYear) return 'Please select PYQ academic year.';
+      if (pyqExamType === 'Other' && !pyqCustomTitle.trim()) return 'Please enter a custom PYQ title.';
+    } else {
+      if (!title.trim()) return 'Please enter a title.';
+    }
+    if (!file) return 'Please choose a PDF file to upload.';
+    return null;
+  };
+
+  const uploadFileWithRetry = async (filePath: string, uploadFile: File, maxRetries = 3) => {
+    let attempt = 0;
+    while (attempt < maxRetries) {
+      attempt++;
+      try {
+        const { data, error } = await supabase.storage
+          .from('study-materials')
+          .upload(filePath, uploadFile, {
+            cacheControl: '31536000',
+            upsert: true,
+            contentType: uploadFile.type || 'application/pdf',
+          });
+
+        if (error) {
+          // If already exists, generate a new path and retry
+          if (error.message?.includes('already exists') || (error as any)?.statusCode === '409') {
+            const fileExt = (uploadFile.name.split('.').pop() || 'pdf').toLowerCase();
+            const newPath = filePath.replace(/\.[^/.]+$/, `-${Date.now()}.${fileExt}`);
+            return uploadFileWithRetry(newPath, uploadFile, maxRetries - 1);
+          }
+          throw error;
+        }
+        return { data, filePath };
+      } catch (err: any) {
+        console.warn(`[UploadMaterial] Attempt ${attempt} failed:`, err);
+        if (attempt >= maxRetries) throw err;
+        // Wait before retrying (exponential backoff)
+        await new Promise(r => setTimeout(r, 1000 * attempt));
+      }
+    }
+    throw new Error('Upload failed after multiple retries. Please check your internet connection.');
+  };
+
+  const handleSubmit = async () => {
+    const validationError = getValidationError();
+    if (validationError) {
+      toast({ title: 'Missing info', description: validationError, variant: 'destructive' });
+      return;
+    }
+    setUploading(true);
+
+    try {
+      // Ensure active session is fresh on mobile devices
+      let currentUser = user;
+      try {
+        const { data: sessionData } = await supabase.auth.getSession();
+        if (sessionData?.session?.user) {
+          currentUser = sessionData.session.user;
+        }
+      } catch {}
+
+      if (!currentUser) {
+        const { data: authData } = await supabase.auth.getUser();
+        currentUser = authData?.user ?? null;
+      }
+
+      const dbSemester = category === 'btech'
+        ? (isFirstYear
+            ? (semester || 'ALL-First Year (All Subjects)')
+            : `${branch}-${semester}`)
+        : (category === 'bsms'
+            ? (isFirstYear
+                ? 'ALL-First Year (All Subjects)'
+                : (semester.startsWith('BSMS-') ? semester : `BSMS-${semester}`))
+            : (category === 'bpharma'
+                ? (semester.startsWith('BPHARMA-') ? semester : `BPHARMA-${semester}`)
+                : (category === 'mba'
+                    ? (semester.startsWith('MBA-') ? semester : `MBA-${semester}`)
+                    : (semester || category))));
+
+      const finalTitle = effectiveTitle.trim();
+
+      const fileExt = (file!.name.split('.').pop() || 'pdf').toLowerCase();
+      const safeCat = category || 'misc';
+      const safeBranch = branch || 'general';
+      const safeSem = semester || 'misc';
+      const rand = Math.random().toString(36).slice(2, 10);
+      const filePath = `${safeCat}/${safeBranch}/${safeSem}/${Date.now()}-${rand}.${fileExt}`;
+
+      const { filePath: uploadedPath } = await uploadFileWithRetry(filePath, file!);
+
+      const { data: urlData } = supabase.storage
+        .from('study-materials')
+        .getPublicUrl(uploadedPath);
+
+      // Check contributor's previous uploads and contributors list to accurately trigger 1st milestone or league upgrade
+      let previousCount = 0;
+      let alreadyInContributorList = false;
+      try {
+        const uId = currentUser?.id;
+        const uEmail = currentUser?.email?.toLowerCase();
+        const uName = (currentUser?.user_metadata?.first_name || currentUser?.email?.split('@')[0] || '').toLowerCase().trim();
+
+        // Check contributors table first
+        const { data: contribList } = await (supabase as any)
+          .from('contributors')
+          .select('id, name, coins');
+
+        if (contribList && Array.isArray(contribList)) {
+          const matched = contribList.find((c: any) => {
+            const cName = (c.name || '').toLowerCase().trim();
+            return cName === uName || (uName && cName.includes(uName)) || (uName && uName.includes(cName));
+          });
+          if (matched) {
+            alreadyInContributorList = true;
+            previousCount = Number(matched.coins) || 0;
+          }
+        }
+
+        // If not in contributors table, check existing notes
+        if (!alreadyInContributorList && (uId || uEmail)) {
+          const { count } = await supabase
+            .from('notes')
+            .select('id', { count: 'exact', head: true })
+            .or(`uploaded_by.eq.${uId},user_email.eq.${uEmail}`);
+          previousCount = count || 0;
+        }
+      } catch (cErr) {
+        console.warn('Could not check contribution count:', cErr);
+      }
+
+      const targetSubject = isOeSelected && oeSubject ? oeSubject : (subject || category);
+      const oeDescription = isOeSelected ? `Open Elective: ${oeSubject} (${isOeISelected ? 'OE-I' : 'OE-II'})` : null;
+      const finalDescription = description.trim()
+        ? (oeDescription ? `${description.trim()} | ${oeDescription}` : description.trim())
+        : oeDescription;
+
+      const { error: insertError } = await supabase
+        .from('notes')
+        .insert({
+          title: finalTitle,
+          subject: targetSubject,
+          semester: dbSemester,
+          material_type: finalMaterialType,
+          year: year || null,
+          description: finalDescription,
+          file_url: urlData.publicUrl,
+          file_name: file!.name,
+          uploaded_by: currentUser?.id || 'admin',
+          user_email: currentUser?.email || 'admin@studyhub.com',
+          user_name: currentUser?.user_metadata?.first_name || currentUser?.email?.split('@')[0] || 'Admin',
+          status: isOwner ? 'approved' : 'pending',
+          approved: isOwner ? true : false,
+          approved_at: isOwner ? new Date().toISOString() : null,
+          approved_by: isOwner ? currentUser?.id : null,
+        });
+
+      if (insertError) {
+        await supabase.storage.from('study-materials').remove([uploadedPath]).catch(() => {});
+        throw insertError;
+      }
+
+      // Contributor coins: Owners are platform owners and not added to contributor list
+      let syncResult = null;
+      // Do not sync contributor coins for owner
+
+
+      clearCachePrefix('notes');
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new Event('studyhub_notes_updated'));
+      }
+
+      if (syncResult) {
+        // Trigger celebration only if new contributor OR tier upgraded
+        if (syncResult.isNew || syncResult.tierUpgraded) {
+          setCelebrationData({
+            isOpen: true,
+            contributorName: syncResult.name || currentUser?.user_metadata?.first_name || 'Contributor',
+            coins: syncResult.coins,
+            isFirst: syncResult.isNew,
+            isPending: false,
+            tierName: syncResult.tierBadge,
+          });
+        }
+      } else {
+        const newTotalCount = previousCount + 1;
+        const prevTier = previousCount > 0 ? getLeagueUpgradeInfo(previousCount).tierName : null;
+        const nextLeague = getLeagueUpgradeInfo(newTotalCount);
+        const isFirstPending = !alreadyInContributorList && previousCount === 0;
+        const tierChanged = !isFirstPending && prevTier !== null && prevTier !== nextLeague.tierName;
+
+        if (isFirstPending || tierChanged) {
+          setCelebrationData({
+            isOpen: true,
+            contributorName: currentUser?.user_metadata?.first_name || currentUser?.email?.split('@')[0] || 'Contributor',
+            coins: newTotalCount,
+            isFirst: isFirstPending,
+            isPending: !isOwner,
+            tierName: nextLeague.badgeLabel,
+          });
+        }
+      }
+
+      const isFirst = syncResult ? syncResult.isNew : (!alreadyInContributorList && previousCount === 0);
+
+      toast({
+        title: isFirst ? '🎉 Congratulations on Your 1st Contribution!' : (isOwner ? '✅ Uploaded Successfully!' : '📤 Submitted for Approval!'),
+        description: isOwner
+          ? 'Your material is approved and live on the website immediately.'
+          : (isFirst 
+              ? 'Congratulations! Your first contribution is submitted for review and will be added to the Wall of Contributors once verified by the owner!' 
+              : 'Your material has been submitted for owner approval. It will appear on the website once approved by the owner.'),
+      });
+
+      // Reset form
+      setTitle('');
+      setDescription('');
+      setFile(null);
+      setPyqExamType('');
+      setPyqAcademicYear('');
+      setPyqCustomTitle('');
+      setActiveStep(1);
+      if (fileInputRef.current) fileInputRef.current.value = '';
+      onUploadSuccess?.();
+    } catch (error: any) {
+      console.error('[UploadMaterial] Failed:', error);
+      let errMsg = error?.message || 'Failed to upload file';
+      if (errMsg === 'Failed to fetch' || errMsg.includes('fetch')) {
+        errMsg = 'Connection glitch or upload timed out. Please check your internet connection, turn off any AdBlocker/Private DNS, and retry.';
+      }
+      toast({ title: 'Upload failed', description: errMsg, variant: 'destructive' });
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  // ── Selection breadcrumb ─────────────────────────────────────
+  const breadcrumb = [
+    selectedCategory?.label,
+    isFirstYear && branchType ? (branchType === 'all' ? '1st Year (Unified)' : branchType === 'engineering' ? 'Engineering Branch' : 'Technology Branch') : undefined,
+    !isFirstYear && branch ? BTECH_BRANCHES.find(b => b.code === branch)?.fullName : undefined,
+    year && (categoryYears.find(y => y.id === year)?.label || `${year} Year`),
+    semester,
+    subject && (isOeSelected && oeSubject ? `${subject} (${oeSubject})` : (availableSubjects.find(s => s.name === subject)?.fullName || subject)),
+  ].filter(Boolean);
+
+  return (
+    <div className="border border-border bg-card shadow-lg sm:shadow-xl rounded-xl sm:rounded-2xl p-3.5 sm:p-6 md:p-8 space-y-4 sm:space-y-6">
+      {/* Form Envelope Header */}
+      <div className="border-b border-border pb-3 sm:pb-4 mb-1 sm:mb-2 flex items-center justify-between flex-wrap gap-2 sm:gap-3">
+        <div>
+          <h2 className="text-base sm:text-xl font-extrabold text-foreground flex items-center gap-2">
+            <Upload className="h-4 w-4 sm:h-5 sm:w-5 text-primary shrink-0" />
+            Upload Study Material
+          </h2>
+          <p className="text-[11px] sm:text-xs text-muted-foreground mt-0.5">
+            Follow the steps below to upload study notes, PYQs, or assignments.
+          </p>
+        </div>
+        <Badge variant="outline" className="border-primary/40 text-primary font-bold text-[10px] sm:text-[11px] px-2.5 py-0.5 sm:px-3 sm:py-1">
+          STEP-BY-STEP UPLOADER
+        </Badge>
+      </div>
+
+      {/* Breadcrumb trail */}
+      {breadcrumb.length > 0 && (
+        <div className="flex items-center gap-1 flex-wrap text-xs sm:text-sm text-foreground bg-muted/60 rounded-lg sm:rounded-xl px-3 py-2 sm:px-4 sm:py-2.5 border border-border shadow-xs">
+          <BookOpen className="h-4 w-4 mr-1.5 text-primary" />
+          {breadcrumb.map((item, i) => (
+            <span key={i} className="flex items-center gap-1">
+              {i > 0 && <ChevronRight className="h-3.5 w-3.5 text-muted-foreground" />}
+              <span className={i === breadcrumb.length - 1 ? 'text-foreground font-bold' : 'text-muted-foreground'}>{item}</span>
+            </span>
+          ))}
+        </div>
+      )}
+
+      {/* Step 1: Category */}
+      <div className="space-y-3">
+        {category && activeStep !== 1 ? (
+          <div
+            onClick={() => setActiveStep(1)}
+            className="flex items-center justify-between p-2.5 sm:p-3.5 rounded-lg sm:rounded-xl border border-emerald-500/30 bg-emerald-500/10 cursor-pointer hover:bg-emerald-500/15 transition-all shadow-xs"
+          >
+            <div className="flex items-center gap-3">
+              <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-emerald-600 text-white flex items-center justify-center text-[10px] sm:text-xs font-bold shrink-0">✓</div>
+              <div>
+                <p className="text-[10px] sm:text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold uppercase tracking-wider">Step 1: Category Selected</p>
+                <p className="text-xs sm:text-sm font-bold text-foreground">{selectedCategory?.label}</p>
+              </div>
+            </div>
+            <span className="text-[11px] sm:text-xs text-emerald-600 dark:text-emerald-400 font-semibold hover:underline">Change</span>
+          </div>
+        ) : (
+          <div className="border border-border/80 rounded-xl p-3.5 sm:p-5 bg-muted/20 space-y-3 sm:space-y-4">
+            <Label className="text-sm sm:text-base font-bold flex items-center gap-2 text-foreground">
+              <span className="w-6 h-6 sm:w-7 sm:h-7 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-[11px] sm:text-xs font-bold shadow-sm shrink-0">1</span>
+              Select Category
+            </Label>
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+              {CATEGORIES.map(cat => (
+                <Card
+                  key={cat.id}
+                  className={`cursor-pointer transition-all duration-200 hover:-translate-y-0.5 border-border bg-card ${
+                    category === cat.id
+                      ? 'ring-2 ring-primary bg-primary/10 border-primary'
+                      : 'hover:border-primary/40 hover:bg-muted/50'
+                  }`}
+                  onClick={() => handleCategoryChange(cat.id)}
+                >
+                  <CardContent className="p-2.5 sm:p-3.5 flex items-center gap-2 sm:gap-3">
+                    <div className={`w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-gradient-to-br ${cat.gradient} flex items-center justify-center text-white shrink-0 shadow-sm text-xs sm:text-base`}>
+                      {ICON_MAP[cat.icon] || <BookOpen className="h-5 w-5" />}
+                    </div>
+                    <span className="text-xs font-bold leading-tight text-foreground">{cat.label}</span>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Step 2: Year */}
+      {selectedCategory?.hasYears && (
+        <div className="space-y-3" ref={yearRef}>
+          {year && activeStep !== 2 ? (
+            <div
+              onClick={() => setActiveStep(2)}
+              className="flex items-center justify-between p-2.5 sm:p-3.5 rounded-lg sm:rounded-xl border border-emerald-500/30 bg-emerald-500/10 cursor-pointer hover:bg-emerald-500/15 transition-all shadow-xs"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-emerald-600 text-white flex items-center justify-center text-[10px] sm:text-xs font-bold shrink-0">✓</div>
+                <div>
+                  <p className="text-[10px] sm:text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold uppercase tracking-wider">Step 2: Academic Year Selected</p>
+                  <p className="text-xs sm:text-sm font-bold text-foreground">{categoryYears.find(y => y.id === year)?.label}</p>
+                </div>
+              </div>
+              <span className="text-[11px] sm:text-xs text-emerald-600 dark:text-emerald-400 font-semibold hover:underline">Change</span>
+            </div>
+          ) : (
+            <div className="border border-border/80 rounded-xl p-3.5 sm:p-5 bg-muted/20 space-y-3 sm:space-y-4">
+              <Label className="text-sm sm:text-base font-bold flex items-center gap-2 text-foreground">
+                <span className="w-6 h-6 sm:w-7 sm:h-7 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-[11px] sm:text-xs font-bold shadow-sm shrink-0">2</span>
+                Select Year
+              </Label>
+              <div className={`grid grid-cols-2 ${categoryYears.length >= 5 ? 'sm:grid-cols-5' : 'sm:grid-cols-4'} gap-3`}>
+                {categoryYears.map(y => (
+                  <Card
+                    key={y.id}
+                    className={`cursor-pointer transition-all duration-200 text-center border-border bg-card ${
+                      year === y.id
+                        ? 'ring-2 ring-primary bg-primary/10 border-primary'
+                        : 'hover:border-primary/40 hover:bg-muted/50'
+                    }`}
+                    onClick={() => handleYearChange(y.id)}
+                  >
+                    <CardContent className="p-2.5 sm:p-3.5">
+                      <div className="text-sm sm:text-base font-extrabold text-primary">{y.label}</div>
+                      <div className="text-[10px] sm:text-xs text-muted-foreground mt-0.5 sm:mt-1">
+                        {y.semesters.filter(s => !s.includes('(All Subjects)')).join(' & ')}
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Step 3 (1st year): Branch Type - Optional Unified or Specific Cycle */}
+      {isFirstYear && category === 'btech' && (
+        <div className="space-y-3" ref={branchRef}>
+          {branchType && activeStep !== 3 ? (
+            <div
+              onClick={() => setActiveStep(3)}
+              className="flex items-center justify-between p-2.5 sm:p-3.5 rounded-lg sm:rounded-xl border border-emerald-500/30 bg-emerald-500/10 cursor-pointer hover:bg-emerald-500/15 transition-all shadow-xs"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-emerald-600 text-white flex items-center justify-center text-[10px] sm:text-xs font-bold shrink-0">✓</div>
+                <div>
+                  <p className="text-[10px] sm:text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold uppercase tracking-wider">Step 3: Branch Cycle Selected</p>
+                  <p className="text-xs sm:text-sm font-bold text-foreground">
+                    {branchType === 'all' ? 'All Branches (Unified 2026 Scheme)' : branchType === 'engineering' ? 'Engineering Cycle' : 'Technology Cycle'}
+                  </p>
+                </div>
+              </div>
+              <span className="text-[11px] sm:text-xs text-emerald-600 dark:text-emerald-400 font-semibold hover:underline">Change</span>
+            </div>
+          ) : (
+            <div className="border border-border/80 rounded-xl p-3.5 sm:p-5 bg-muted/20 space-y-3 sm:space-y-4">
+              <Label className="text-sm sm:text-base font-bold flex items-center gap-2 text-foreground">
+                <span className="w-6 h-6 sm:w-7 sm:h-7 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-[11px] sm:text-xs font-bold shadow-sm shrink-0">3</span>
+                Select 1st Year Branch Cycle
+              </Label>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <Card
+                  className={`cursor-pointer transition-all duration-200 text-center border-border bg-card ${
+                    branchType === 'all' || branchType === ''
+                      ? 'ring-2 ring-primary bg-primary/10 border-primary'
+                      : 'hover:border-primary/40 hover:bg-muted/50'
+                  }`}
+                  onClick={() => handleBranchTypeChange('all' as any)}
+                >
+                  <CardContent className="p-2.5 sm:p-3.5">
+                    <div className="text-xs sm:text-sm font-bold text-primary">All Branches (Unified) ⭐</div>
+                    <div className="text-[11px] text-muted-foreground mt-0.5">Recommended (All Revised Subjects)</div>
+                  </CardContent>
+                </Card>
+                <Card
+                  className={`cursor-pointer transition-all duration-200 text-center border-border bg-card ${
+                    branchType === 'engineering'
+                      ? 'ring-2 ring-primary bg-primary/10 border-primary'
+                      : 'hover:border-primary/40 hover:bg-muted/50'
+                  }`}
+                  onClick={() => handleBranchTypeChange('engineering')}
+                >
+                  <CardContent className="p-2.5 sm:p-3.5">
+                    <div className="text-xs sm:text-sm font-bold text-primary">Engineering Cycle</div>
+                    <div className="text-[11px] text-muted-foreground mt-0.5">CSE, IT, ME, CE, ET, EE</div>
+                  </CardContent>
+                </Card>
+                <Card
+                  className={`cursor-pointer transition-all duration-200 text-center border-border bg-card ${
+                    branchType === 'technology'
+                      ? 'ring-2 ring-primary bg-primary/10 border-primary'
+                      : 'hover:border-primary/40 hover:bg-muted/50'
+                  }`}
+                  onClick={() => handleBranchTypeChange('technology')}
+                >
+                  <CardContent className="p-2.5 sm:p-3.5">
+                    <div className="text-xs sm:text-sm font-bold text-primary">Technology Cycle</div>
+                    <div className="text-[11px] text-muted-foreground mt-0.5">CHE, PT, PL, FT, OT, LFT, BE</div>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Step 3/4: Semester */}
+      {((selectedCategory?.hasYears ? (year && !isFirstYear) : selectedCategory?.hasSemesters) && availableSemesters.length > 0) && (
+        <div className="space-y-3" ref={semesterRef}>
+          {semester && activeStep !== 4 ? (
+            <div
+              onClick={() => setActiveStep(4)}
+              className="flex items-center justify-between p-2.5 sm:p-3.5 rounded-lg sm:rounded-xl border border-emerald-500/30 bg-emerald-500/10 cursor-pointer hover:bg-emerald-500/15 transition-all shadow-xs"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-emerald-600 text-white flex items-center justify-center text-[10px] sm:text-xs font-bold shrink-0">✓</div>
+                <div>
+                  <p className="text-[10px] sm:text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold uppercase tracking-wider">Semester Selected</p>
+                  <p className="text-xs sm:text-sm font-bold text-foreground">{semester}</p>
+                </div>
+              </div>
+              <span className="text-[11px] sm:text-xs text-emerald-600 dark:text-emerald-400 font-semibold hover:underline">Change</span>
+            </div>
+          ) : (
+            <div className="border border-border/80 rounded-xl p-3.5 sm:p-5 bg-muted/20 space-y-3 sm:space-y-4">
+              <Label className="text-sm sm:text-base font-bold flex items-center gap-2 text-foreground">
+                <span className="w-6 h-6 sm:w-7 sm:h-7 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-[11px] sm:text-xs font-bold shadow-sm shrink-0">
+                  {isFirstYear ? '4' : (category === 'btech' ? '3' : '2')}
+                </span>
+                Select Semester
+              </Label>
+              <div className={`grid ${availableSemesters.length >= 3 ? 'grid-cols-1 sm:grid-cols-3' : 'grid-cols-2'} gap-3`}>
+                {availableSemesters.map(sem => (
+                  <Card
+                    key={sem}
+                    className={`cursor-pointer transition-all duration-200 text-center border-border bg-card ${
+                      semester === sem
+                        ? 'ring-2 ring-primary bg-primary/10 border-primary'
+                        : 'hover:border-primary/40 hover:bg-muted/50'
+                    }`}
+                    onClick={() => handleSemesterChange(sem)}
+                  >
+                    <CardContent className="p-2.5 sm:p-3.5">
+                      <div className="text-sm sm:text-base font-bold text-foreground">{sem}</div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Step 4/5: Branch (BTech only, NOT 1st year) */}
+      {category === 'btech' && !isFirstYear && semester && (
+        <div className="space-y-3" ref={branchRef}>
+          {branch && activeStep !== 5 ? (
+            <div
+              onClick={() => setActiveStep(5)}
+              className="flex items-center justify-between p-2.5 sm:p-3.5 rounded-lg sm:rounded-xl border border-emerald-500/30 bg-emerald-500/10 cursor-pointer hover:bg-emerald-500/15 transition-all shadow-xs"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-emerald-600 text-white flex items-center justify-center text-[10px] sm:text-xs font-bold shrink-0">✓</div>
+                <div>
+                  <p className="text-[10px] sm:text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold uppercase tracking-wider">Branch Selected</p>
+                  <p className="text-xs sm:text-sm font-bold text-foreground">{branch} — {BTECH_BRANCHES.find(b => b.code === branch)?.fullName}</p>
+                </div>
+              </div>
+              <span className="text-[11px] sm:text-xs text-emerald-600 dark:text-emerald-400 font-semibold hover:underline">Change</span>
+            </div>
+          ) : (
+            <div className="border border-border/80 rounded-xl p-3.5 sm:p-5 bg-muted/20 space-y-3 sm:space-y-4">
+              <Label className="text-sm sm:text-base font-bold flex items-center gap-2 text-foreground">
+                <span className="w-6 h-6 sm:w-7 sm:h-7 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-[11px] sm:text-xs font-bold shadow-sm shrink-0">4</span>
+                Select Branch
+              </Label>
+              <Select value={branch} onValueChange={handleBranchChange}>
+                <SelectTrigger className="h-10 sm:h-11 bg-background border-border text-foreground text-xs sm:text-sm">
+                  <SelectValue placeholder="Choose engineering branch" />
+                </SelectTrigger>
+                <SelectContent className="bg-card border-border text-foreground">
+                  {BTECH_BRANCHES.map(b => (
+                    <SelectItem key={b.code} value={b.code} className="hover:bg-muted">
+                      <span className="font-bold text-primary">{b.code}</span>
+                      <span className="text-muted-foreground ml-2">— {b.fullName}</span>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Step 5/6: Subject */}
+      {semester && (availableSubjects.length > 0 || isOwner) && (
+        <div className="space-y-3" ref={subjectRef}>
+          {subject && (!isOeSelected || oeSubject) && activeStep !== 6 ? (
+            <div className="flex items-center justify-between p-3.5 rounded-xl border border-emerald-500/30 bg-emerald-500/10 shadow-sm">
+              <div
+                onClick={() => setActiveStep(6)}
+                className="flex items-center gap-3 cursor-pointer hover:opacity-85 transition-all flex-1"
+              >
+                <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-emerald-600 text-white flex items-center justify-center text-[10px] sm:text-xs font-bold shrink-0">✓</div>
+                <div>
+                  <p className="text-[10px] sm:text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold uppercase tracking-wider">Subject Selected</p>
+                  <p className="text-xs sm:text-sm font-bold text-foreground">
+                    {isOeSelected && oeSubject ? `${subject} — ${oeSubject}` : subject}
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                {isOwner && (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setRenameValue(subject);
+                      setIsRenamingSubject(true);
+                      setIsAddingSubject(false);
+                      setActiveStep(6);
+                    }}
+                    className="text-xs h-7 px-2.5 border-amber-500/40 text-amber-600 dark:text-amber-400 hover:bg-amber-500/10"
+                  >
+                    <Pencil className="h-3 w-3 mr-1" />
+                    Rename
+                  </Button>
+                )}
+                <span
+                  onClick={() => setActiveStep(6)}
+                  className="text-xs text-emerald-600 dark:text-emerald-400 font-semibold hover:underline cursor-pointer ml-1"
+                >
+                  Change
+                </span>
+              </div>
+            </div>
+          ) : (
+            <div className="border border-border/80 rounded-xl p-3.5 sm:p-5 bg-muted/20 space-y-3 sm:space-y-4">
+              <div className="flex items-center justify-between flex-wrap gap-2">
+                <Label className="text-sm sm:text-base font-bold flex items-center gap-2 text-foreground">
+                  <span className="w-6 h-6 sm:w-7 sm:h-7 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-[11px] sm:text-xs font-bold shadow-sm shrink-0">
+                    {category === 'btech' ? '5' : '3'}
+                  </span>
+                  Select Subject
+                </Label>
+                {isOwner && (
+                  <div className="flex items-center gap-2">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        setIsAddingSubject(!isAddingSubject);
+                        setIsRenamingSubject(false);
+                      }}
+                      className="text-xs h-8 px-2.5 bg-primary/10 hover:bg-primary/20 border-primary/40 text-primary font-semibold flex items-center gap-1.5 shadow-sm"
+                    >
+                      {isAddingSubject ? (
+                        <>
+                          <X className="h-3.5 w-3.5 mr-1" />
+                          Cancel
+                        </>
+                      ) : (
+                        <>
+                          <Plus className="h-3.5 w-3.5 mr-1" />
+                          Add Subject (Owner)
+                        </>
+                      )}
+                    </Button>
+                    {subject && (
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={() => {
+                          setRenameValue(subject);
+                          setIsRenamingSubject(!isRenamingSubject);
+                          setIsAddingSubject(false);
+                        }}
+                        className="text-xs h-8 px-2.5 border-amber-500/40 text-amber-600 dark:text-amber-400 hover:bg-amber-500/15 font-semibold flex items-center gap-1.5 shadow-sm"
+                      >
+                        <Pencil className="h-3.5 w-3.5 mr-1" />
+                        Rename
+                      </Button>
+                    )}
+                  </div>
+                )}
+              </div>
+
+              {/* Owner: Add Subject Form */}
+              {isOwner && isAddingSubject && (
+                <div className="p-4 rounded-xl border border-primary/30 bg-primary/5 space-y-3.5 animate-in fade-in duration-200">
+                  <div className="flex items-center justify-between">
+                    <p className="text-xs font-bold text-primary flex items-center gap-1.5">
+                      <Sparkles className="h-3.5 w-3.5" /> Add New Subject
+                      <span className="text-muted-foreground font-normal">
+                        ({category?.toUpperCase()} {branch ? `• ${branch}` : ''} • {semester})
+                      </span>
+                    </p>
+                    <Badge variant="outline" className="text-[10px] border-primary/30 text-primary">
+                      Owner Only
+                    </Badge>
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                      <label className="text-[11px] font-semibold text-foreground/80 block mb-1">
+                        Subject Code / Name <span className="text-red-500">*</span>
+                      </label>
+                      <Input
+                        placeholder="e.g. DCS102 or AI Ethics"
+                        value={newSubjectName}
+                        onChange={(e) => setNewSubjectName(e.target.value)}
+                        className="h-9 text-xs bg-background"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-[11px] font-semibold text-foreground/80 block mb-1">
+                        Full Descriptive Name (Optional)
+                      </label>
+                      <Input
+                        placeholder="e.g. Artificial Intelligence & Ethics"
+                        value={newSubjectFullName}
+                        onChange={(e) => setNewSubjectFullName(e.target.value)}
+                        className="h-9 text-xs bg-background"
+                      />
+                    </div>
+                  </div>
+                  <div className="flex justify-end gap-2 pt-1">
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setIsAddingSubject(false)}
+                      className="h-8 text-xs"
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      type="button"
+                      size="sm"
+                      onClick={handleSaveNewSubject}
+                      className="h-8 text-xs bg-primary hover:bg-primary/90 text-primary-foreground font-semibold px-4"
+                    >
+                      Save & Select Subject
+                    </Button>
+                  </div>
+                </div>
+              )}
+
+              {/* Owner: Rename Subject Form */}
+              {isOwner && isRenamingSubject && subject && (
+                <div className="p-4 rounded-xl border border-amber-500/30 bg-amber-500/5 space-y-3 animate-in fade-in duration-200">
+                  <div className="flex items-center justify-between">
+                    <p className="text-xs font-bold text-amber-600 dark:text-amber-400 flex items-center gap-1.5">
+                      <Pencil className="h-3.5 w-3.5" /> Rename Subject: <span className="font-extrabold underline">{subject}</span>
+                    </p>
+                    <Badge variant="outline" className="text-[10px] border-amber-500/40 text-amber-600 dark:text-amber-400">
+                      Owner Only
+                    </Badge>
+                  </div>
+                  <div>
+                    <label className="text-[11px] font-semibold text-foreground/80 block mb-1">
+                      Updated Subject Name <span className="text-red-500">*</span>
+                    </label>
+                    <Input
+                      placeholder="Enter new subject name"
+                      value={renameValue}
+                      onChange={(e) => setRenameValue(e.target.value)}
+                      className="h-9 text-xs bg-background"
+                    />
+                  </div>
+                  <p className="text-[10px] text-muted-foreground">
+                    ⚡ This updates the subject label and synchronizes existing notes in the database.
+                  </p>
+                  <div className="flex justify-end gap-2 pt-1">
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setIsRenamingSubject(false)}
+                      className="h-8 text-xs"
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      type="button"
+                      size="sm"
+                      onClick={handleSaveRenameSubject}
+                      className="h-8 text-xs bg-amber-600 hover:bg-amber-700 text-white font-semibold px-4"
+                    >
+                      Save Rename
+                    </Button>
+                  </div>
+                </div>
+              )}
+
+              <Select value={subject} onValueChange={handleSubjectChange}>
+                <SelectTrigger className="h-10 sm:h-11 bg-background border-border text-foreground text-xs sm:text-sm">
+                  <SelectValue placeholder={availableSubjects.length > 0 ? "Choose subject" : "No subjects yet — click + Add Subject"} />
+                </SelectTrigger>
+                <SelectContent className="bg-card border-border text-foreground max-h-64">
+                  {availableSubjects.map(s => (
+                    <SelectItem key={s.name} value={s.name} className="hover:bg-muted">
+                      <span className="font-semibold text-foreground">{s.name}</span>
+                      {s.name !== s.fullName && (
+                        <span className="text-muted-foreground ml-2">— {s.fullName}</span>
+                      )}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+
+              {/* Secondary dropdown when Open Elective-I or Open Elective-II is selected */}
+              {isOeSelected && (
+                <div className="mt-4 p-4 sm:p-5 rounded-xl border-2 border-primary/40 bg-primary/5 space-y-3 animate-in fade-in slide-in-from-top-2 duration-300">
+                  <div className="flex items-center justify-between flex-wrap gap-2">
+                    <Label className="text-sm font-bold flex items-center gap-2 text-foreground">
+                      <span className="w-6 h-6 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-xs font-bold shadow-xs">
+                        ★
+                      </span>
+                      {isOeIISelected ? 'Choose your O.E-II Subject' : 'Choose your O.E-I Subject'}
+                    </Label>
+                    <Badge variant="outline" className="text-[10px] font-bold uppercase tracking-wider bg-background border-primary/30 text-primary">
+                      {isOeIISelected ? 'Open Elective-II' : 'Open Elective-I'}
+                    </Badge>
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    Select which specific {isOeIISelected ? 'O.E-II' : 'O.E-I'} elective subject you want to upload study notes or PYQs for:
+                  </p>
+                  <Select value={oeSubject} onValueChange={handleOeSubjectChange}>
+                    <SelectTrigger className="h-10 sm:h-11 bg-background border-primary/50 text-foreground font-semibold shadow-xs text-xs sm:text-sm">
+                      <SelectValue placeholder={isOeIISelected ? "Choose your O.E-II Subject (15 Courses)" : "Choose your O.E-I Subject"} />
+                    </SelectTrigger>
+                    <SelectContent className="bg-card border-border text-foreground max-h-64">
+                      {availableOeSubjects.map(oe => (
+                        <SelectItem key={oe.id} value={oe.name} className="hover:bg-muted font-medium">
+                          <span className="font-semibold text-foreground">{oe.name}</span>
+                          {oe.fullName && oe.fullName !== oe.name && (
+                            <span className="text-muted-foreground ml-2">— {oe.fullName}</span>
+                          )}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Step 6 / Final Upload Details Section */}
+      {((!selectedCategory?.hasSemesters && category) || (semester && (availableSubjects.length === 0 || (subject && (!isOeSelected || oeSubject))))) && (
+        <div className="border border-border/80 rounded-xl p-3.5 sm:p-6 bg-muted/20 space-y-4 sm:space-y-6 text-foreground" ref={detailsRef}>
+          <Label className="text-base sm:text-lg font-extrabold flex items-center gap-2.5 sm:gap-3 text-foreground border-b border-border pb-3 sm:pb-4">
+            <span className="w-7 h-7 sm:w-8 sm:h-8 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-xs font-bold shadow-md shrink-0">
+              {category === 'btech' ? (availableSubjects.length > 0 ? '6' : '5') : 
+               selectedCategory?.hasSemesters ? (availableSubjects.length > 0 ? '4' : '3') : '2'}
+            </span>
+            Upload Material Details 📁
+          </Label>
+
+          {/* Material Type Selection */}
+          {!derivedMaterialType && (
+            <div className="space-y-2">
+              <Label className="text-sm font-semibold text-foreground">Select Resource / Material Type</Label>
+              <div className="flex flex-wrap gap-2.5">
+                <Badge
+                  variant={materialType === 'notes' ? 'default' : 'outline'}
+                  className={`cursor-pointer px-2.5 sm:px-3.5 py-1.5 sm:py-2 text-[11px] sm:text-xs font-semibold transition-all ${
+                    materialType === 'notes' 
+                      ? 'bg-blue-600 text-white shadow-sm' 
+                      : 'hover:bg-muted border-border text-foreground'
+                  }`}
+                  onClick={() => setMaterialType('notes')}
+                >
+                  <FileText className="h-4 w-4 mr-1.5" />
+                  Notes
+                </Badge>
+                <Badge
+                  variant={materialType === 'assignments' ? 'default' : 'outline'}
+                  className={`cursor-pointer px-2.5 sm:px-3.5 py-1.5 sm:py-2 text-[11px] sm:text-xs font-semibold transition-all ${
+                    materialType === 'assignments' 
+                      ? 'bg-orange-600 text-white shadow-sm' 
+                      : 'hover:bg-muted border-border text-foreground'
+                  }`}
+                  onClick={() => setMaterialType('assignments')}
+                >
+                  <Briefcase className="h-4 w-4 mr-1.5" />
+                  Assignments
+                </Badge>
+                <Badge
+                  variant={materialType === 'book' ? 'default' : 'outline'}
+                  className={`cursor-pointer px-2.5 sm:px-3.5 py-1.5 sm:py-2 text-[11px] sm:text-xs font-semibold transition-all ${
+                    materialType === 'book' 
+                      ? 'bg-emerald-600 text-white shadow-sm' 
+                      : 'hover:bg-muted border-border text-foreground'
+                  }`}
+                  onClick={() => setMaterialType('book')}
+                >
+                  <BookOpen className="h-4 w-4 mr-1.5" />
+                  Book / Reference
+                </Badge>
+                <Badge
+                  variant={materialType === 'practical_file' ? 'default' : 'outline'}
+                  className={`cursor-pointer px-2.5 sm:px-3.5 py-1.5 sm:py-2 text-[11px] sm:text-xs font-semibold transition-all ${
+                    materialType === 'practical_file' 
+                      ? 'bg-purple-600 text-white shadow-sm' 
+                      : 'hover:bg-muted border-border text-foreground'
+                  }`}
+                  onClick={() => setMaterialType('practical_file')}
+                >
+                  <GraduationCap className="h-4 w-4 mr-1.5" />
+                  Practical File / Lab
+                </Badge>
+                <Badge
+                  variant={materialType === 'pyqs' ? 'default' : 'outline'}
+                  className={`cursor-pointer px-2.5 sm:px-3.5 py-1.5 sm:py-2 text-[11px] sm:text-xs font-semibold transition-all ${
+                    materialType === 'pyqs' 
+                      ? 'bg-red-600 text-white shadow-sm' 
+                      : 'hover:bg-muted border-border text-foreground'
+                  }`}
+                  onClick={() => setMaterialType('pyqs')}
+                >
+                  <Sparkles className="h-4 w-4 mr-1.5" />
+                  Previous Year Questions (PYQs)
+                </Badge>
+              </div>
+            </div>
+          )}
+
+          {/* Title input / builder */}
+          {isPyqMode ? (
+            <div className="space-y-4">
+              <Label className="text-sm font-bold flex items-center gap-2 text-amber-500">
+                <span>📋</span> PYQ Title Builder *
+              </Label>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="space-y-1.5">
+                  <Label htmlFor="pyq-exam-type" className="text-xs text-muted-foreground">Exam Type</Label>
+                  <Select value={pyqExamType} onValueChange={val => { setPyqExamType(val); setPyqCustomTitle(''); }}>
+                    <SelectTrigger id="pyq-exam-type" className="h-10 sm:h-11 bg-background border-border text-foreground text-xs sm:text-sm">
+                      <SelectValue placeholder="Choose exam type..." />
+                    </SelectTrigger>
+                    <SelectContent className="bg-card border-border text-foreground">
+                      {PYQ_EXAM_TYPES.map(et => (
+                        <SelectItem key={et} value={et}>{et}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-1.5">
+                  <Label htmlFor="pyq-year" className="text-xs text-muted-foreground">Academic Year</Label>
+                  <Select value={pyqAcademicYear} onValueChange={setPyqAcademicYear}>
+                    <SelectTrigger id="pyq-year" className="h-10 sm:h-11 bg-background border-border text-foreground text-xs sm:text-sm">
+                      <SelectValue placeholder="Choose year e.g. 2025-26" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-card border-border text-foreground">
+                      {ACADEMIC_YEARS.map(yr => (
+                        <SelectItem key={yr} value={yr}>{yr}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              {pyqExamType === 'Other' && (
+                <div className="space-y-1.5">
+                  <Label htmlFor="pyq-custom" className="text-xs text-muted-foreground">Custom Title *</Label>
+                  <Input
+                    id="pyq-custom"
+                    value={pyqCustomTitle}
+                    onChange={e => setPyqCustomTitle(e.target.value)}
+                    placeholder="e.g., Supplementary PYQ 2025-26"
+                    className="h-10 sm:h-11 bg-background border-border text-foreground text-xs sm:text-sm"
+                  />
+                </div>
+              )}
+
+              {autoPyqTitle && (
+                <div className="flex items-center gap-2 px-3 py-2 sm:px-4 sm:py-2.5 bg-primary/10 border border-primary/30 rounded-lg sm:rounded-xl text-xs sm:text-sm">
+                  <span className="text-xs text-muted-foreground">Title preview:</span>
+                  <span className="text-sm font-bold text-primary">{autoPyqTitle}</span>
+                </div>
+              )}
+            </div>
+          ) : (
+            <div className="space-y-2">
+              <Label htmlFor="upload-title" className="text-sm font-bold text-foreground">Title *</Label>
+              <Input
+                id="upload-title"
+                value={title}
+                onChange={e => setTitle(e.target.value)}
+                placeholder={isOeSelected && oeSubject ? `e.g., ${oeSubject} Unit-1 Complete Notes` : "e.g., Unit-1 Complete Notes, Assignment 2024"}
+                className="h-10 sm:h-11 bg-background border-border text-foreground text-xs sm:text-sm"
+              />
+            </div>
+          )}
+
+          {/* Description */}
+          <div className="space-y-2">
+            <Label htmlFor="upload-desc" className="text-sm font-bold text-foreground">Description (optional)</Label>
+            <Textarea
+              id="upload-desc"
+              value={description}
+              onChange={e => setDescription(e.target.value)}
+              placeholder="Brief description of the content..."
+              rows={3}
+              className="bg-background border-border text-foreground"
+            />
+          </div>
+
+          {/* File Upload Box */}
+          <div className="space-y-2">
+            <Label className="text-sm font-bold text-foreground">PDF File * (max 20MB)</Label>
+            <div
+              className={`border-2 border-dashed rounded-xl p-4 sm:p-6 md:p-8 text-center transition-all duration-200 cursor-pointer ${
+                dragOver
+                  ? 'border-primary bg-primary/10 scale-[1.01]'
+                  : file
+                    ? 'border-emerald-500/60 bg-emerald-500/10'
+                    : 'border-border bg-background hover:border-primary/50'
+              }`}
+              onDragOver={e => { e.preventDefault(); setDragOver(true); }}
+              onDragLeave={() => setDragOver(false)}
+              onDrop={handleDrop}
+              onClick={() => fileInputRef.current?.click()}
+            >
+              {file ? (
+                <div className="flex items-center justify-center gap-3">
+                  <CheckCircle2 className="h-7 w-7 text-emerald-500" />
+                  <div className="text-left">
+                    <p className="font-bold text-sm text-foreground">{file.name}</p>
+                    <p className="text-xs text-muted-foreground">
+                      {(file.size / (1024 * 1024)).toFixed(2)} MB
+                    </p>
+                  </div>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8 ml-3 text-muted-foreground hover:text-foreground"
+                    onClick={e => { e.stopPropagation(); setFile(null); }}
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  <Upload className="h-7 w-7 sm:h-8 sm:w-8 mx-auto text-primary" />
+                  <p className="text-xs sm:text-sm text-foreground">
+                    Drag & drop a PDF or <span className="text-primary font-bold underline">click to browse</span>
+                  </p>
+                </div>
+              )}
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept=".pdf"
+                onChange={handleFileChange}
+                className="hidden"
+                aria-label="Upload PDF file"
+              />
+            </div>
+          </div>
+
+          {/* Submit Button */}
+          <Button
+            onClick={handleSubmit}
+            disabled={uploading}
+            className="w-full h-11 sm:h-12 text-sm sm:text-base font-bold bg-primary text-primary-foreground shadow-md hover:shadow-lg hover:bg-primary/90 transition-all rounded-xl mt-3 sm:mt-4"
+          >
+            {uploading ? (
+              <span className="flex items-center gap-2">
+                <Loader2 className="h-5 w-5 animate-spin" /> Uploading PDF & Submitting...
+              </span>
+            ) : (
+              <span className="flex items-center justify-center gap-2">
+                <Upload className="h-5 w-5" /> Submit Material for Approval
+              </span>
+            )}
+          </Button>
+
+          <div className="flex items-start gap-2 sm:gap-2.5 text-[11px] sm:text-xs text-amber-700 dark:text-amber-300 bg-amber-500/10 border border-amber-500/30 rounded-xl p-2.5 sm:p-3.5">
+            <AlertTriangle className="h-4 w-4 text-amber-400 shrink-0 mt-0.5" />
+            <span>Your upload will be sent to the site owner for approval before appearing live on the notes page.</span>
+          </div>
+        </div>
+      )}
+
+      {/* 1st Contribution & League Upgrade Celebration Modal */}
+      {celebrationData && (
+        <MilestoneCelebrationModal
+          isOpen={celebrationData.isOpen}
+          onClose={() => setCelebrationData(null)}
+          contributorName={celebrationData.contributorName}
+          coins={celebrationData.coins}
+          tierName={celebrationData.tierName}
+          isFirstContribution={celebrationData.isFirst}
+          isPendingApproval={celebrationData.isPending}
+        />
+      )}
+    </div>
+  );
+};
+
+export default UploadMaterialForm;
+// Reviewed: academic catalog & interface consistency check (v2.0.7)
+// Reviewed: academic catalog & interface consistency check (v2.1.282)
