@@ -200,20 +200,20 @@ export const UsefulWebsites: React.FC = () => {
   }, [selectedCategory, searchQuery]);
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col font-sans transition-colors duration-200">
       <Navbar />
 
-      {/* Dark Technical Header Section */}
-      <div className="bg-slate-900/80 border-b border-slate-800 pt-8 pb-8 px-4 sm:px-8">
+      {/* Header Section (Light / Dark Adaptive) */}
+      <div className="bg-white dark:bg-slate-900/80 border-b border-slate-200 dark:border-slate-800 pt-8 pb-8 px-4 sm:px-8">
         <div className="max-w-7xl mx-auto space-y-3">
-          <div className="inline-flex items-center gap-2 text-xs font-bold tracking-widest uppercase text-emerald-400">
-            <Globe className="h-3.5 w-3.5 text-emerald-400" />
+          <div className="inline-flex items-center gap-2 text-xs font-bold tracking-widest uppercase text-emerald-600 dark:text-emerald-400">
+            <Globe className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" />
             <span>DIRECT STUDENT RESOURCES</span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
+          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">
             Useful Websites & Student Portals
           </h1>
-          <p className="text-xs sm:text-sm text-slate-400 max-w-2xl leading-relaxed">
+          <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 max-w-2xl leading-relaxed">
             Direct, verified links to university ERP portals, state and central scholarship schemes, 
             academic utilities, and developer tools curated for students.
           </p>
@@ -236,8 +236,8 @@ export const UsefulWebsites: React.FC = () => {
                   onClick={() => setSelectedCategory(cat)}
                   className={`text-xs font-semibold px-3 py-1.5 rounded-none sm:rounded-[3px] border whitespace-nowrap transition-all duration-150 cursor-pointer ${
                     active
-                      ? 'bg-emerald-600 text-white border-emerald-500 shadow-xs'
-                      : 'bg-slate-900 text-slate-300 border-slate-800 hover:border-emerald-500/50 hover:text-white'
+                      ? 'bg-emerald-600 text-white border-emerald-600 shadow-xs'
+                      : 'bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-800 hover:border-emerald-500/60 hover:text-emerald-600 dark:hover:text-white shadow-xs'
                   }`}
                 >
                   {cat}
@@ -248,26 +248,26 @@ export const UsefulWebsites: React.FC = () => {
 
           {/* Search Box (Square-edged) */}
           <div className="relative w-full md:w-72 shrink-0">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-500" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400 dark:text-slate-500" />
             <input
               type="text"
               placeholder="Search website, portal or tool..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-9 pr-3 py-1.5 text-xs bg-slate-900 border border-slate-800 rounded-none sm:rounded-[3px] text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500/80 transition-colors"
+              className="w-full pl-9 pr-3 py-1.5 text-xs bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-none sm:rounded-[3px] text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-emerald-500 transition-colors shadow-xs"
             />
           </div>
         </div>
 
         {/* Portals Count */}
-        <div className="flex items-center justify-between text-xs text-slate-500 border-b border-slate-800/80 pb-2">
+        <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 border-b border-slate-200 dark:border-slate-800/80 pb-2">
           <span>
-            Showing <strong className="text-slate-200">{filteredPortals.length}</strong> resources
+            Showing <strong className="text-slate-900 dark:text-slate-200">{filteredPortals.length}</strong> resources
           </span>
           {selectedCategory !== 'All' && (
             <button
               onClick={() => setSelectedCategory('All')}
-              className="text-[11px] text-emerald-400 hover:underline cursor-pointer"
+              className="text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold hover:underline cursor-pointer"
             >
               Clear filter
             </button>
@@ -281,34 +281,34 @@ export const UsefulWebsites: React.FC = () => {
             return (
               <div
                 key={portal.id}
-                className="group border border-slate-800 bg-slate-900/90 hover:border-emerald-500/60 transition-all duration-200 p-5 rounded-none sm:rounded-[4px] flex flex-col justify-between hover:shadow-[0_4px_24px_rgba(16,185,129,0.08)] relative"
+                className="group border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/90 hover:border-emerald-500 dark:hover:border-emerald-500/70 transition-all duration-200 p-5 rounded-none sm:rounded-[4px] flex flex-col justify-between hover:shadow-[0_4px_24px_rgba(16,185,129,0.12)] relative shadow-xs"
               >
                 <div className="space-y-3.5">
                   {/* Top Row: Square Icon + Badge */}
                   <div className="flex items-center justify-between gap-3">
-                    <div className="w-9 h-9 rounded-none sm:rounded-[3px] bg-slate-800 border border-slate-700/80 flex items-center justify-center text-slate-300 group-hover:text-emerald-400 group-hover:border-emerald-500/40 transition-colors shrink-0">
+                    <div className="w-9 h-9 rounded-none sm:rounded-[3px] bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700/80 flex items-center justify-center text-slate-700 dark:text-slate-300 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 group-hover:border-emerald-500/40 transition-colors shrink-0">
                       <Icon className="h-4 w-4" />
                     </div>
-                    <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-none sm:rounded-[2px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/25">
+                    <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-none sm:rounded-[2px] bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-500/25">
                       {portal.badge}
                     </span>
                   </div>
 
                   {/* Title & Description */}
                   <div>
-                    <h3 className="text-base font-bold text-white group-hover:text-emerald-400 transition-colors leading-snug">
+                    <h3 className="text-base font-bold text-slate-900 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors leading-snug">
                       {portal.name}
                     </h3>
-                    <p className="text-xs text-slate-400 leading-relaxed mt-1.5">
+                    <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed mt-1.5">
                       {portal.description}
                     </p>
                   </div>
 
                   {/* Feature Highlights */}
-                  <div className="space-y-1 pt-1 border-t border-slate-800/60">
+                  <div className="space-y-1 pt-1 border-t border-slate-100 dark:border-slate-800/60">
                     {portal.highlights.map((item, idx) => (
-                      <div key={idx} className="flex items-center gap-1.5 text-[11px] text-slate-400">
-                        <span className="w-1 h-1 rounded-none bg-emerald-500/70 shrink-0" />
+                      <div key={idx} className="flex items-center gap-1.5 text-[11px] text-slate-600 dark:text-slate-400">
+                        <span className="w-1.5 h-1.5 rounded-none bg-emerald-500/80 shrink-0" />
                         <span className="truncate">{item}</span>
                       </div>
                     ))}
@@ -316,12 +316,12 @@ export const UsefulWebsites: React.FC = () => {
                 </div>
 
                 {/* Direct Action: Direct Square Link Button */}
-                <div className="pt-4 mt-3 border-t border-slate-800">
+                <div className="pt-4 mt-3 border-t border-slate-100 dark:border-slate-800">
                   <a
                     href={portal.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-full inline-flex items-center justify-center gap-2 py-2 px-3 rounded-none sm:rounded-[3px] bg-slate-800 hover:bg-emerald-600 text-slate-200 hover:text-white font-bold text-xs uppercase tracking-wider transition-all duration-150 border border-slate-700/80 hover:border-emerald-500 cursor-pointer shadow-xs"
+                    className="w-full inline-flex items-center justify-center gap-2 py-2 px-3 rounded-none sm:rounded-[3px] bg-slate-900 hover:bg-emerald-600 dark:bg-slate-800 dark:hover:bg-emerald-600 text-white font-bold text-xs uppercase tracking-wider transition-all duration-150 border border-slate-900 dark:border-slate-700/80 hover:border-emerald-600 cursor-pointer shadow-xs"
                   >
                     <span>Open Website</span>
                     <ExternalLink className="h-3.5 w-3.5" />
@@ -333,10 +333,10 @@ export const UsefulWebsites: React.FC = () => {
         </div>
 
         {filteredPortals.length === 0 && (
-          <div className="text-center py-16 border border-slate-800 bg-slate-900/50 rounded-none sm:rounded-[4px] space-y-2">
-            <Globe className="h-8 w-8 text-slate-600 mx-auto" />
-            <p className="text-sm font-semibold text-slate-300">No portals found matching "{searchQuery}"</p>
-            <p className="text-xs text-slate-500">Try searching for university ERP, scholarships, or developer tools.</p>
+          <div className="text-center py-16 border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/50 rounded-none sm:rounded-[4px] space-y-2 shadow-xs">
+            <Globe className="h-8 w-8 text-slate-400 dark:text-slate-600 mx-auto" />
+            <p className="text-sm font-semibold text-slate-800 dark:text-slate-300">No portals found matching "{searchQuery}"</p>
+            <p className="text-xs text-slate-500 dark:text-slate-400">Try searching for university ERP, scholarships, or developer tools.</p>
           </div>
         )}
 

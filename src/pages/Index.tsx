@@ -239,7 +239,7 @@ const Index = () => {
 
   const stats = [
     {
-      end: rawCount || 3096,
+      end: rawCount || 3290,
       suffix: '+',
       title: 'Active Students',
       description: 'Students actively using our platform',

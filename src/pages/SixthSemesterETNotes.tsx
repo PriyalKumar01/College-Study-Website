@@ -15,6 +15,7 @@ import { getUnifiedSubjectNotes } from '@/data/semesterSubjectsCatalog';
 import Footer from '@/components/Footer';
 import { PlaylistModal } from '@/components/PlaylistModal';
 import { smartDownload } from '@/lib/downloadUtils';
+import { RecommendationBadge } from '@/components/RecommendationBadge';
 
 const SixthSemesterETNotes = () => {
   const navigate = useNavigate();
@@ -191,9 +192,7 @@ const SixthSemesterETNotes = () => {
                 <motion.div key={index} initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.05, duration: 0.3 }}>
                   <div className="group relative flex flex-col h-full rounded-xl border border-border bg-card hover:border-foreground/30 transition-all duration-200 p-4 gap-3">
                     <div>
-                      {(note as any).recommended && (
-                        <span className="inline-block text-[10px] font-bold tracking-widest uppercase text-amber-600 dark:text-amber-400 mb-2">★ Recommended</span>
-                      )}
+                      <RecommendationBadge note={note} />
                       {(note as any).isCommunity && (
                         <span className="inline-block text-[10px] font-bold tracking-widest uppercase text-blue-500 dark:text-emerald-400 mb-2 ml-2">Community</span>
                       )}

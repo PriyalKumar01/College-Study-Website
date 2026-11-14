@@ -17,6 +17,7 @@ import Footer from '@/components/Footer';
 import { PlaylistModal } from '@/components/PlaylistModal';
 import { smartDownload } from '@/lib/downloadUtils';
 import { matchesSubject } from '@/utils/subjectMatcher';
+import { RecommendationBadge } from '@/components/RecommendationBadge';
 
 const SixthSemesterCSENotes = () => {
   const navigate = useNavigate();
@@ -327,9 +328,7 @@ const SixthSemesterCSENotes = () => {
                 <motion.div key={index} initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.05, duration: 0.3 }}>
                   <div className="group relative border border-border bg-card hover:border-foreground/30 rounded-xl p-4 transition-all duration-300 hover:shadow-lg h-full flex flex-col justify-between">
                     <div>
-                      {(note as any).recommended && (
-                        <span className="inline-block text-[10px] font-bold tracking-widest uppercase text-amber-600 dark:text-amber-400 mb-2">★ Recommended</span>
-                      )}
+                      <RecommendationBadge note={note} />
                       {(note as any).isCommunity && (
                         <span className="inline-block text-[10px] font-bold tracking-widest uppercase text-blue-500 dark:text-emerald-400 mb-2 ml-2">Community</span>
                       )}

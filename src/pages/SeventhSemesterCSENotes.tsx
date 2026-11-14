@@ -1,3 +1,4 @@
+import { RecommendationBadge } from '@/components/RecommendationBadge';
 // Syllabus: computer science seventh semester core curriculum
 // 7th semester CSE branch notes
 import { useState } from 'react';
@@ -311,6 +312,7 @@ const SeventhSemesterCSENotes = () => {
                   transition={{ delay: index * 0.05, duration: 0.3 }}
                 >
                   <div className="group relative flex flex-col h-full rounded-2xl border border-border bg-card hover:border-emerald-500/40 transition-all duration-200 p-4 gap-3 shadow-xs hover:shadow-md">
+                    <RecommendationBadge note={note} isOwner={isOwner} />
                     <div>
                       {(note as any).isCommunity && (
                         <span className="inline-block text-[10px] font-bold tracking-widest uppercase bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20 px-2 py-0.5 rounded-full mb-2">

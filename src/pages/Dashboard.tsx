@@ -128,7 +128,7 @@ const Dashboard = () => {
           setUserCount(val);
           setCachedData('dash_user_count', val);
         } else {
-          setUserCount('3,000+'); // Fallback estimate if table/rpc missing
+          setUserCount('3,290+'); // Fallback estimate if table/rpc missing
         }
       }
 

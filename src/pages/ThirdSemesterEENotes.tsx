@@ -21,6 +21,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { extractDynamicSubjects, saveCustomSubject, deleteCustomSubject } from '@/lib/customSubjects';
+import { RecommendationBadge } from '@/components/RecommendationBadge';
 
 const ThirdSemesterEENotes = () => {
   const navigate = useNavigate();
@@ -309,6 +310,7 @@ const ThirdSemesterEENotes = () => {
                   transition={{ delay: index * 0.05, duration: 0.3 }}
                 >
                   <div className="group border border-border bg-card hover:border-foreground/30 rounded-xl p-4 transition-all duration-300 hover:shadow-md flex flex-col h-full relative">
+                    <RecommendationBadge note={note} />
                     {note.isCommunity && isOwner && (
                       <button
                         className="absolute top-3 right-3 text-red-500 hover:text-red-700 bg-red-50 dark:bg-red-950/20 p-1.5 rounded-lg transition-colors z-10"

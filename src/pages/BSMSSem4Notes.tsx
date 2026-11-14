@@ -12,6 +12,7 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { PlaylistModal } from '@/components/PlaylistModal';
 import { smartDownload, viewInBrowser } from '@/lib/downloadUtils';
+import { RecommendationBadge } from '@/components/RecommendationBadge';
 
 const BSMSSem4Notes = () => {
   const navigate = useNavigate();
@@ -227,13 +228,7 @@ const BSMSSem4Notes = () => {
                   transition={{ delay: index * 0.05, duration: 0.3 }}
                 >
                   <div className="group border border-border bg-card hover:border-foreground/30 rounded-xl p-4 transition-all duration-300 hover:shadow-md flex flex-col h-full relative">
-                    {note.recommended && (
-                      <div className="absolute top-3 right-3 z-10 pointer-events-none">
-                        <span className="inline-flex items-center gap-1 text-[10px] font-extrabold tracking-wider uppercase bg-amber-500 text-white dark:bg-amber-500/90 shadow-sm px-2.5 py-0.5 rounded-full">
-                          ⭐ Recommended
-                        </span>
-                      </div>
-                    )}
+                    <RecommendationBadge note={note} />
                     {note.isCommunity && isOwner && (
                       <button
                         className={`absolute top-3 ${note.recommended ? 'left-3' : 'right-3'} text-red-500 hover:text-red-700 bg-red-50 dark:bg-red-950/20 p-1.5 rounded-lg transition-colors z-10`}

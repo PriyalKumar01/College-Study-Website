@@ -1,0 +1,13 @@
+-- Sync notes to Cloudflare R2 (14 Nov uploaded notes)
+UPDATE public.notes SET file_url = 'https://pub-a7a8e9cce7e14983a69b9c28a6487e28.r2.dev/study-materials/btech/CSE/7th%20Semester/1794659655192-gq6fzf61.pdf' WHERE id = '7b3e2303-1bce-4f32-9779-74905e58ae10';
+UPDATE public.notes SET file_url = 'https://pub-a7a8e9cce7e14983a69b9c28a6487e28.r2.dev/study-materials/btech/CSE/7th%20Semester/1794659616992-6o14hosm.pdf' WHERE id = '0d75680e-6000-4c1f-b919-8723fb615234';
+UPDATE public.notes SET file_url = 'https://pub-a7a8e9cce7e14983a69b9c28a6487e28.r2.dev/study-materials/btech/CSE/7th%20Semester/1794659559843-8mie6dhv.pdf' WHERE id = '87cbf8fd-01bf-45a4-9205-a719588bd8f5';
+UPDATE public.notes SET file_url = 'https://pub-a7a8e9cce7e14983a69b9c28a6487e28.r2.dev/study-materials/btech/CSE/7th%20Semester/1794659363382-z9hvdibw.pdf' WHERE id = '675a71e0-a4b4-4f24-a814-2df826761a3e';
+UPDATE public.notes SET file_url = 'https://pub-a7a8e9cce7e14983a69b9c28a6487e28.r2.dev/study-materials/btech/CSE/7th%20Semester/1794659200865-bki12wc0.pdf' WHERE id = '25778fb2-d33c-4914-81cf-202912d688f1';
+UPDATE public.notes SET file_url = 'https://pub-a7a8e9cce7e14983a69b9c28a6487e28.r2.dev/study-materials/btech/CSE/7th%20Semester/1794659163362-gbya1b0k.pdf' WHERE id = '994daad0-68b2-4a02-bc1f-48f89d05c124';
+UPDATE public.notes SET file_url = 'https://pub-a7a8e9cce7e14983a69b9c28a6487e28.r2.dev/study-materials/btech/CSE/7th%20Semester/1794659101114-w6dnw1pp.pdf' WHERE id = '892ee064-0403-4ba7-a8fb-c3c2410e1725';
+UPDATE public.notes SET file_url = 'https://pub-a7a8e9cce7e14983a69b9c28a6487e28.r2.dev/study-materials/btech/CSE/5th%20Semester/1794657074712-cp402bx1.pdf' WHERE id = '664af65a-4653-4a61-bfa9-e1f7f343af33';
+UPDATE public.notes SET file_url = 'https://pub-a7a8e9cce7e14983a69b9c28a6487e28.r2.dev/study-materials/btech/CSE/5th%20Semester/1794656405266-zc8khzhg.pdf' WHERE id = '8eed2e1e-ef7d-4465-90a3-90e23a38a507';
+UPDATE public.notes SET file_url = 'https://pub-a7a8e9cce7e14983a69b9c28a6487e28.r2.dev/study-materials/btech/CSE/5th%20Semester/1794656322965-9gd1zd2p.pdf' WHERE id = '84331001-bd9a-416c-b9a6-7a1993c5afc3';
+UPDATE public.notes SET file_url = 'https://pub-a7a8e9cce7e14983a69b9c28a6487e28.r2.dev/study-materials/btech/CSE/5th%20Semester/1794654319314-noh6eyfb.pdf' WHERE id = '0aa9ceea-6ba7-45d4-a578-16d4a56079ec';
+UPDATE public.notes SET file_url = 'https://pub-a7a8e9cce7e14983a69b9c28a6487e28.r2.dev/study-materials/btech/CSE/5th%20Semester/1794653248822-u9x52e12.pdf' WHERE id = '401ebf34-b803-4fef-ba75-45bfeded9e68';

@@ -53,6 +53,7 @@ import { PlaylistModal } from '@/components/PlaylistModal';
 import { SubjectShareButton } from '@/components/SubjectShareButton';
 import { useSubjectAutoScroll } from '@/hooks/useSubjectAutoScroll';
 import { smartDownload, viewInBrowser } from '@/lib/downloadUtils';
+import { RecommendationBadge } from '@/components/RecommendationBadge';
 
 interface NoteItem {
   id?: string;
@@ -1166,13 +1167,7 @@ const FirstYearNotes = () => {
                   transition={{ delay: index * 0.02, duration: 0.25 }}
                 >
                   <div className="group border border-border bg-card hover:border-sky-300/80 hover:bg-sky-50/40 dark:hover:border-sky-800/80 dark:hover:bg-sky-950/20 rounded-xl p-4 transition-all duration-200 hover:shadow-md hover:shadow-sky-500/5 flex flex-col h-full relative">
-                    {note.recommended && (
-                      <div className="absolute top-3 right-3 z-10 pointer-events-none">
-                        <span className="inline-flex items-center gap-1 text-[10px] font-extrabold tracking-wider uppercase bg-amber-500 text-white px-2 py-0.5 rounded-full shadow-sm">
-                          ⭐ Recommended
-                        </span>
-                      </div>
-                    )}
+                    <RecommendationBadge note={note} />
                     {note.isCommunity && isOwner && (
                       <button
                         className={`absolute top-3 ${note.recommended ? 'left-3' : 'right-3'} text-red-500 hover:text-red-700 bg-red-50 dark:bg-red-950/20 p-1.5 rounded-lg transition-colors z-10`}
@@ -1619,13 +1614,7 @@ const FirstYearNotes = () => {
                   transition={{ delay: index * 0.02, duration: 0.25 }}
                 >
                   <div className="border border-border bg-card hover:border-amber-400/80 rounded-xl p-4 transition-all duration-200 hover:shadow-md flex flex-col h-full relative">
-                    {note.recommended && (
-                      <div className="absolute top-3 right-3 z-10 pointer-events-none">
-                        <span className="inline-flex items-center gap-1 text-[10px] font-extrabold tracking-wider uppercase bg-amber-500 text-white px-2 py-0.5 rounded-full shadow-sm">
-                          ⭐ Recommended
-                        </span>
-                      </div>
-                    )}
+                    <RecommendationBadge note={note} />
                     <div className="flex items-center gap-2 mb-3">
                       <div className="w-8 h-8 rounded-lg bg-orange-500 text-white flex items-center justify-center text-xs shadow-sm">
                         <FileText className="h-4 w-4" />
@@ -1743,13 +1732,7 @@ const FirstYearNotes = () => {
                                 transition={{ delay: idx * 0.02, duration: 0.2 }}
                               >
                                 <div className="border border-border bg-card hover:border-indigo-400/80 rounded-xl p-4 transition-all duration-200 hover:shadow-md flex flex-col h-full relative">
-                                  {note.recommended && (
-                                    <div className="absolute top-3 right-3 z-10 pointer-events-none">
-                                      <span className="inline-flex items-center gap-1 text-[10px] font-extrabold tracking-wider uppercase bg-amber-500 text-white px-2 py-0.5 rounded-full shadow-sm">
-                                        ⭐ Recommended
-                                      </span>
-                                    </div>
-                                  )}
+                                  <RecommendationBadge note={note} />
                                   
                                   <div className="flex items-center gap-2 mb-2.5">
                                     <span className="text-[10px] font-bold tracking-wider uppercase bg-red-500/10 text-red-600 dark:text-red-400 px-2 py-0.5 rounded border border-red-500/20">

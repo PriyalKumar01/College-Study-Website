@@ -67,7 +67,7 @@ const AboutStatCounterInline = ({ targetVal, decimals = 0, isK = false }: { targ
 
 const About = () => {
   const { rawCount } = useLiveStudentCount();
-  const studentBaseK = Number((rawCount / 1000).toFixed(2)) || 3.1;
+  const studentBaseK = Number((rawCount / 1000).toFixed(2)) || 3.29;
   const [stackIndex, setStackIndex] = useState(0);
   const [swiping, setSwiping] = useState(false);
 

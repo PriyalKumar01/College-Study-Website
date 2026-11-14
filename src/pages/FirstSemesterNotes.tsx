@@ -13,6 +13,7 @@ import { useSubjectAutoScroll } from '@/hooks/useSubjectAutoScroll';
 import Footer from '@/components/Footer';
 import { PlaylistModal } from '@/components/PlaylistModal';
 import { smartDownload, viewInBrowser } from '@/lib/downloadUtils';
+import { RecommendationBadge } from '@/components/RecommendationBadge';
 
 const FirstSemesterNotes = () => {
   const navigate = useNavigate();
@@ -289,9 +290,10 @@ const FirstSemesterNotes = () => {
                   transition={{ delay: index * 0.05, duration: 0.3 }}
                 >
                   <div className="group border border-border bg-card hover:border-foreground/30 rounded-xl p-4 transition-all duration-300 hover:shadow-md flex flex-col h-full relative">
+                    <RecommendationBadge note={note} isOwner={isOwner} />
                     {note.isCommunity && isOwner && (
                       <button
-                        className="absolute top-3 right-3 text-red-500 hover:text-red-700 bg-red-50 dark:bg-red-950/20 p-1.5 rounded-lg transition-colors z-10"
+                        className="absolute top-3 left-3 text-red-500 hover:text-red-700 bg-red-50 dark:bg-red-950/20 p-1.5 rounded-lg transition-colors z-10"
                         onClick={() => handleDeleteCommunityNote(note.id, note.fileName || '')}
                         title="Delete material"
                       >
@@ -305,9 +307,6 @@ const FirstSemesterNotes = () => {
                       <span className="text-[10px] font-bold tracking-wider uppercase bg-muted text-muted-foreground px-2 py-0.5 rounded">PDF</span>
                       {note.isCommunity && (
                         <span className="text-[10px] font-bold tracking-wider uppercase bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400 px-2 py-0.5 rounded border border-blue-100 dark:border-blue-900/50">Community</span>
-                      )}
-                      {note.recommended && (
-                        <span className="text-[10px] font-bold tracking-wider uppercase bg-yellow-50 dark:bg-yellow-950/40 text-yellow-600 dark:text-yellow-500 px-2 py-0.5 rounded border border-yellow-200 dark:border-yellow-900/50">â­ Best</span>
                       )}
                     </div>
                     <h3 className="font-semibold text-foreground text-sm leading-tight flex-1 mb-4">{note.title}</h3>

@@ -14,6 +14,7 @@ import {
   Sparkles
 } from 'lucide-react';
 import { smartDownload, viewInBrowser } from '@/lib/downloadUtils';
+import { RecommendationBadge } from '@/components/RecommendationBadge';
 
 export interface PyqNoteItem {
   id?: string;
@@ -238,17 +239,11 @@ export function SessionPyqAccordion({
                           transition={{ delay: idx * 0.02, duration: 0.2 }}
                         >
                           <div className="border border-border bg-card hover:border-emerald-500/50 rounded-xl p-4 transition-all duration-200 hover:shadow-md flex flex-col h-full relative">
-                            {note.recommended && (
-                              <div className="absolute top-3 right-3 z-10 pointer-events-none">
-                                <span className="inline-flex items-center gap-1 text-[10px] font-extrabold tracking-wider uppercase bg-amber-500 text-white px-2 py-0.5 rounded-full shadow-xs">
-                                  ⭐ Recommended
-                                </span>
-                              </div>
-                            )}
+                            <RecommendationBadge note={note} isOwner={isOwner} />
 
                             {note.isCommunity && isOwner && onDelete && (
                               <button
-                                className={`absolute top-3 ${note.recommended ? 'left-3' : 'right-3'} text-red-500 hover:text-red-700 bg-red-50 dark:bg-red-950/20 p-1.5 rounded-lg transition-colors z-10`}
+                                className="absolute top-3 left-3 text-red-500 hover:text-red-700 bg-red-50 dark:bg-red-950/20 p-1.5 rounded-lg transition-colors z-10"
                                 onClick={() => onDelete(note.id!)}
                                 title="Delete material"
                               >
