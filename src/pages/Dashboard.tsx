@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { FileText, Briefcase, BookOpen, PlusCircle, Calculator, Bot, Trophy, Sparkles, Calendar, TrendingUp, Lock, Users, ChevronLeft, ChevronRight, GraduationCap, Code, ArrowRight } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import AdminRecruitmentCard from '@/components/AdminRecruitmentCard';
 import { supabase } from '@/integrations/supabase/client';
 import { getCachedData, setCachedData, DEFAULT_CACHE_TTL_MS } from '@/lib/cacheUtils';
 
@@ -566,6 +567,8 @@ const Dashboard = () => {
           </motion.div>
         </div>
 
+        {/* ── Student Admin Recruitment Highlight Section (Between Features & Statistics) ── */}
+        <AdminRecruitmentCard />
 
         {/* Stats and Activity */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8 mb-16">
