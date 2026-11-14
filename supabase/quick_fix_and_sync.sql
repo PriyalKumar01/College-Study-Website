@@ -42,3 +42,49 @@ CREATE POLICY "Public read recommended_notes" ON public.recommended_notes FOR SE
 
 DROP POLICY IF EXISTS "Public write recommended_notes" ON public.recommended_notes;
 CREATE POLICY "Public write recommended_notes" ON public.recommended_notes FOR ALL USING (true);
+
+-- 4. Admin Applications Table for Student Admin Recruitment
+CREATE TABLE IF NOT EXISTS public.admin_applications (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  first_name text NOT NULL,
+  last_name text NOT NULL,
+  email text,
+  phone text,
+  branch text NOT NULL,
+  batch_year text NOT NULL,
+  college text NOT NULL,
+  reason text,
+  status text NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'approved', 'rejected')),
+  created_at timestamptz NOT NULL DEFAULT timezone('utc'::text, now()),
+  updated_at timestamptz NOT NULL DEFAULT timezone('utc'::text, now())
+);
+
+ALTER TABLE public.admin_applications ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Allow public insert on admin_applications" ON public.admin_applications;
+CREATE POLICY "Allow public insert on admin_applications"
+  ON public.admin_applications
+  FOR INSERT
+  TO public, anon, authenticated
+  WITH CHECK (true);
+
+DROP POLICY IF EXISTS "Allow all select on admin_applications" ON public.admin_applications;
+CREATE POLICY "Allow all select on admin_applications"
+  ON public.admin_applications
+  FOR SELECT
+  TO public, anon, authenticated
+  USING (true);
+
+DROP POLICY IF EXISTS "Allow all update on admin_applications" ON public.admin_applications;
+CREATE POLICY "Allow all update on admin_applications"
+  ON public.admin_applications
+  FOR UPDATE
+  TO public, anon, authenticated
+  USING (true);
+
+DROP POLICY IF EXISTS "Allow all delete on admin_applications" ON public.admin_applications;
+CREATE POLICY "Allow all delete on admin_applications"
+  ON public.admin_applications
+  FOR DELETE
+  TO public, anon, authenticated
+  USING (true);

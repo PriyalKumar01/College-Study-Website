@@ -1,7 +1,9 @@
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { Sparkles, ArrowRight, Mail, User } from 'lucide-react';
+import { Sparkles, ArrowRight, Shield, Award, CheckCircle2 } from 'lucide-react';
 import Navbar from '@/components/Navbar';
+import { AdminApplicationModal } from '@/components/AdminApplicationModal';
 
 const noteCategories = [
   {
@@ -107,6 +109,8 @@ const noteCategories = [
 ];
 
 const NotesCategories = () => {
+  const [showAdminModal, setShowAdminModal] = useState(false);
+
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-background transition-colors duration-300 flex flex-col font-sans">
       <Navbar />
@@ -183,45 +187,82 @@ const NotesCategories = () => {
           ))}
         </div>
 
-        {/* ── Contact / Footer Banner ── */}
+        {/* ── Apply for Website Admin Section (Square, Professional Blue-White Tint) ── */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5, duration: 0.5 }}
-          className="rounded-3xl overflow-hidden shadow-lg bg-gradient-to-r from-blue-700 via-indigo-700 to-blue-800 text-white"
+          transition={{ delay: 0.4, duration: 0.4 }}
+          className="border border-sky-200/90 dark:border-slate-800 bg-gradient-to-br from-white via-sky-50/60 to-slate-50 dark:from-slate-900 dark:via-slate-900/95 dark:to-slate-950 rounded-none sm:rounded-[4px] p-6 sm:p-8 shadow-xs hover:shadow-md transition-all duration-200 relative overflow-hidden"
         >
-          <div className="flex flex-col md:flex-row items-center justify-between gap-6 px-8 py-8">
-            <div className="text-center md:text-left">
-              <p className="text-white/70 text-sm font-medium uppercase tracking-widest mb-1">For Any Query</p>
-              <h3 className="text-white text-2xl font-bold">Contact the Founder</h3>
-            </div>
-
-            <div className="flex flex-col sm:flex-row gap-4">
-              <div className="flex items-center gap-3 bg-white/15 backdrop-blur-sm rounded-2xl px-5 py-3 border border-white/20">
-                <div className="w-9 h-9 bg-white/20 rounded-full flex items-center justify-center">
-                  <User className="h-4 w-4 text-white" />
-                </div>
-                <div>
-                  <p className="text-white/60 text-[11px] uppercase tracking-wide">Founder</p>
-                  <p className="text-white font-semibold text-sm">Priyal Kumar</p>
-                </div>
+          <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
+            
+            {/* Left Content Area */}
+            <div className="space-y-4 max-w-3xl">
+              <div className="inline-flex items-center gap-2 text-xs font-bold tracking-widest uppercase text-sky-700 dark:text-sky-400 bg-sky-100/80 dark:bg-sky-950/60 px-2.5 py-1 rounded-none sm:rounded-[2px] border border-sky-300/50 dark:border-sky-800/60">
+                <Shield className="h-3.5 w-3.5 text-sky-600 dark:text-sky-400" />
+                <span>STUDENT LEADERSHIP & VOLUNTEERING</span>
               </div>
 
-              <a
-                href="mailto:collegestudy.support@gmail.com"
-                className="flex items-center gap-3 bg-white rounded-2xl px-5 py-3 shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300"
-              >
-                <div className="w-9 h-9 bg-blue-100 rounded-full flex items-center justify-center">
-                  <Mail className="h-4 w-4 text-blue-600" />
+              <div>
+                <h3 className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+                  Do you want to Apply for Website Admin?
+                </h3>
+                <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mt-1 leading-relaxed">
+                  Become your branch & academic year's official student administrator. Lead academic content quality and help thousands of students study effectively.
+                </p>
+              </div>
+
+              {/* Responsibilities & Perks Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-1">
+                {/* Responsibilities */}
+                <div className="bg-white/80 dark:bg-slate-950/60 border border-slate-200/80 dark:border-slate-800/80 p-3.5 rounded-none sm:rounded-[3px] space-y-2">
+                  <span className="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider flex items-center gap-1.5">
+                    <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500" />
+                    Key Responsibilities
+                  </span>
+                  <ul className="text-[11px] text-slate-600 dark:text-slate-400 space-y-1.5 leading-relaxed">
+                    <li>• Har Mid Sem-1, 2 aur End Sem ke baad apni branch ke official PYQs timely upload karne honge.</li>
+                    <li>• Apni branch me jo kami ya missing subject notes lagein, unhe student welfare ke liye upload karna.</li>
+                    <li>• Notes quality check karna aur best handwritten study material provide karna.</li>
+                  </ul>
                 </div>
-                <div>
-                  <p className="text-gray-400 text-[11px] uppercase tracking-wide">Email</p>
-                  <p className="text-blue-600 font-semibold text-sm">collegestudy.support@gmail.com</p>
+
+                {/* Exclusive Perks */}
+                <div className="bg-white/80 dark:bg-slate-950/60 border border-slate-200/80 dark:border-slate-800/80 p-3.5 rounded-none sm:rounded-[3px] space-y-2">
+                  <span className="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider flex items-center gap-1.5">
+                    <Award className="h-3.5 w-3.5 text-amber-500" />
+                    Admin Perks & Recognition
+                  </span>
+                  <ul className="text-[11px] text-slate-600 dark:text-slate-400 space-y-1.5 leading-relaxed">
+                    <li>• <strong>Admin Recognition</strong>: Website Admins & Contributors Wall of Fame me aapka naam publicly show hoga.</li>
+                    <li>• <strong>Admin Powers</strong>: Direct scholarships add karne aur study materials upload karne ki power.</li>
+                    <li>• <strong>Uploader Credit</strong>: Har contributed PDF par aapka naam publicly showcase hoga.</li>
+                  </ul>
                 </div>
-              </a>
+              </div>
             </div>
+
+            {/* Right Action Box */}
+            <div className="w-full lg:w-auto shrink-0 flex flex-col items-stretch lg:items-end gap-2.5">
+              <button
+                onClick={() => setShowAdminModal(true)}
+                className="inline-flex items-center justify-center gap-2 px-6 py-3.5 text-xs font-bold uppercase tracking-wider text-white bg-slate-900 hover:bg-emerald-600 dark:bg-emerald-600 dark:hover:bg-emerald-700 rounded-none sm:rounded-[3px] transition-all duration-150 shadow-md hover:shadow-lg cursor-pointer text-center"
+              >
+                <span>Apply for Website Admin</span>
+                <ArrowRight className="h-4 w-4" />
+              </button>
+              <p className="text-[10px] text-slate-500 dark:text-slate-400 text-center lg:text-right">
+                1-minute quick application · Reviewed by Founder
+              </p>
+            </div>
+
           </div>
         </motion.div>
+
+        <AdminApplicationModal
+          isOpen={showAdminModal}
+          onClose={() => setShowAdminModal(false)}
+        />
 
       </div>
     </div>

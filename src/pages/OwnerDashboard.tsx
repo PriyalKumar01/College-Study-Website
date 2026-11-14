@@ -20,7 +20,8 @@ import {
 } from '@/components/ui/select';
 import {
   CheckCircle, XCircle, User, Calendar, BookOpen, ShieldAlert,
-  Eye, Trash2, Crown, UserPlus, UserMinus, Search, Loader2, FileText, Download, GraduationCap, ExternalLink, Bell, Send, Pencil, Trophy, Coins, Link, Lock, Sparkles, Clock, RefreshCw, RotateCcw, Code2, AlertTriangle, Database, X
+  Eye, Trash2, Crown, UserPlus, UserMinus, Search, Loader2, FileText, Download, GraduationCap, ExternalLink, Bell, Send, Pencil, Trophy, Coins, Link, Lock, Sparkles, Clock, RefreshCw, RotateCcw, Code2, AlertTriangle, Database, X,
+  UserCheck, MessageSquare, Phone, ShieldCheck
 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
@@ -64,6 +65,21 @@ const BATCH_OPTIONS = Array.from({ length: 2040 - 2021 + 1 }, (_, i) => {
     label: `${fullYear}`,
   };
 });
+
+interface AdminApplication {
+  id: string;
+  first_name: string;
+  last_name: string;
+  email?: string;
+  phone?: string;
+  branch: string;
+  batch_year: string;
+  college: string;
+  reason?: string;
+  status: 'pending' | 'approved' | 'rejected';
+  created_at?: string;
+  updated_at?: string;
+}
 
 interface Material {
   id: string;
@@ -1069,10 +1085,17 @@ const OwnerDashboard = () => {
   const [allSwiping, setAllSwiping] = useState(false);
 
   // Clickable Modal Section view state (default null so no section is expanded on page load)
-  const [activeModalSection, setActiveModalSection] = useState<'pending' | 'scholarships' | 'premium' | 'gate_access' | 'coding_access' | 'notifications' | 'contributors' | 'admins' | 'emails' | 'all' | 'account_approvals' | 'gate_requests' | 'reported_issues' | null>(null);
+  const [activeModalSection, setActiveModalSection] = useState<'pending' | 'scholarships' | 'premium' | 'gate_access' | 'coding_access' | 'notifications' | 'contributors' | 'admins' | 'admin_applications' | 'emails' | 'all' | 'account_approvals' | 'gate_requests' | 'reported_issues' | null>(null);
   const [pendingApprovals, setPendingApprovals] = useState<any[]>([]);
   const [isProcessingApproval, setIsProcessingApproval] = useState<string | null>(null);
   const [contribSearch, setContribSearch] = useState('');
+
+  // Admin Applications recruitment state
+  const [adminApplications, setAdminApplications] = useState<AdminApplication[]>([]);
+  const [loadingApplications, setLoadingApplications] = useState(false);
+  const [applicationSearch, setApplicationSearch] = useState('');
+  const [applicationFilter, setApplicationFilter] = useState<'all' | 'pending' | 'approved' | 'rejected'>('all');
+  const [processingAppId, setProcessingAppId] = useState<string | null>(null);
 
   // Reported Issues support tickets state
   const [reportedIssues, setReportedIssues] = useState<ReportedIssue[]>([]);
@@ -1211,6 +1234,21 @@ const OwnerDashboard = () => {
     return filteredContributors.slice((contribPage - 1) * 50, contribPage * 50);
   }, [filteredContributors, contribPage]);
 
+  const filteredAdminApplications = useMemo(() => {
+    return adminApplications.filter(app => {
+      const matchesFilter = applicationFilter === 'all' || app.status === applicationFilter;
+      const q = applicationSearch.toLowerCase().trim();
+      const matchesSearch = !q ||
+        `${app.first_name || ''} ${app.last_name || ''}`.toLowerCase().includes(q) ||
+        (app.email && app.email.toLowerCase().includes(q)) ||
+        (app.branch && app.branch.toLowerCase().includes(q)) ||
+        (app.college && app.college.toLowerCase().includes(q)) ||
+        (app.phone && app.phone.includes(q)) ||
+        (app.reason && app.reason.toLowerCase().includes(q));
+      return matchesFilter && matchesSearch;
+    });
+  }, [adminApplications, applicationFilter, applicationSearch]);
+
 
   // Group premium purchases by user
   const groupedPremiumUsers = premiumPurchases.reduce((acc: any, purchase: any) => {
@@ -1256,6 +1294,14 @@ const OwnerDashboard = () => {
       fetchNotifications();
     }
   }, [isOwner]);
+
+  useEffect(() => {
+    const handleAppsUpdated = () => {
+      fetchAdminApplications();
+    };
+    window.addEventListener('studyhub_admin_applications_updated', handleAppsUpdated);
+    return () => window.removeEventListener('studyhub_admin_applications_updated', handleAppsUpdated);
+  }, []);
 
   useEffect(() => {
     setPendingStackIndex(0);
@@ -1529,6 +1575,7 @@ const OwnerDashboard = () => {
       fetchPendingMaterials(),
       fetchAllMaterials(),
       fetchAdminRoles(),
+      fetchAdminApplications(),
       fetchScholarships(),
       fetchContributors(),
       fetchPremiumPurchases(),
@@ -1977,6 +2024,153 @@ const OwnerDashboard = () => {
       .order('created_at', { ascending: false });
     if (!error && data) {
       setAdminRoles(data.filter((r: any) => r.role !== 'removed'));
+    }
+  };
+
+  const fetchAdminApplications = async () => {
+    setLoadingApplications(true);
+    try {
+      let remoteApps: AdminApplication[] = [];
+      try {
+        const { data, error } = await (supabase as any)
+          .from('admin_applications')
+          .select('*')
+          .order('created_at', { ascending: false });
+        if (!error && data) {
+          remoteApps = data;
+        }
+      } catch (e) {
+        console.warn('Could not query admin_applications table, using local fallback:', e);
+      }
+
+      let localApps: AdminApplication[] = [];
+      try {
+        const stored = localStorage.getItem('studyhub_admin_applications');
+        if (stored) {
+          localApps = JSON.parse(stored);
+        }
+      } catch (e) {
+        console.error(e);
+      }
+
+      const map = new Map<string, AdminApplication>();
+      remoteApps.forEach(a => map.set(a.id, a));
+      localApps.forEach(a => {
+        if (!map.has(a.id)) {
+          map.set(a.id, a);
+        }
+      });
+
+      const list = Array.from(map.values()).sort(
+        (a, b) => new Date(b.created_at || 0).getTime() - new Date(a.created_at || 0).getTime()
+      );
+      setAdminApplications(list);
+    } catch (err) {
+      console.error('Error fetching admin applications:', err);
+    } finally {
+      setLoadingApplications(false);
+    }
+  };
+
+  const handleApproveApplication = async (app: AdminApplication) => {
+    setProcessingAppId(app.id);
+    try {
+      // 1. Update status in Supabase
+      try {
+        await (supabase as any)
+          .from('admin_applications')
+          .update({ status: 'approved', updated_at: new Date().toISOString() })
+          .eq('id', app.id);
+      } catch (e) {
+        console.warn('Supabase application update notice:', e);
+      }
+
+      // 2. Update status in localStorage
+      try {
+        const stored = localStorage.getItem('studyhub_admin_applications');
+        if (stored) {
+          const list: AdminApplication[] = JSON.parse(stored);
+          const idx = list.findIndex(a => a.id === app.id);
+          if (idx !== -1) {
+            list[idx].status = 'approved';
+            localStorage.setItem('studyhub_admin_applications', JSON.stringify(list));
+          }
+        }
+      } catch (e) {
+        console.error(e);
+      }
+
+      // 3. Promote user to Admin in admin_roles if email present
+      if (app.email) {
+        const email = app.email.trim().toLowerCase();
+        const fullName = `${app.first_name} ${app.last_name}`.trim();
+        try {
+          await supabase
+            .from('admin_roles')
+            .insert({
+              user_email: email,
+              user_name: fullName,
+              role: 'admin',
+              created_by: user?.email || 'owner',
+              from_date: new Date().toISOString().split('T')[0],
+            });
+        } catch (roleErr: any) {
+          console.warn('Admin role promotion notice:', roleErr);
+        }
+      }
+
+      toast({
+        title: 'Candidate Approved & Promoted! 🛡️',
+        description: `${app.first_name} ${app.last_name} has been approved and added to Admins.`
+      });
+
+      await Promise.all([fetchAdminApplications(), fetchAdminRoles()]);
+    } catch (err: any) {
+      toast({ title: 'Error', description: err.message, variant: 'destructive' });
+    } finally {
+      setProcessingAppId(null);
+    }
+  };
+
+  const handleRejectApplication = async (app: AdminApplication) => {
+    if (!confirm(`Are you sure you want to reject the application of ${app.first_name} ${app.last_name}?`)) return;
+    setProcessingAppId(app.id);
+    try {
+      // 1. Update status in Supabase
+      try {
+        await (supabase as any)
+          .from('admin_applications')
+          .update({ status: 'rejected', updated_at: new Date().toISOString() })
+          .eq('id', app.id);
+      } catch (e) {
+        console.warn('Supabase application reject notice:', e);
+      }
+
+      // 2. Update status in localStorage
+      try {
+        const stored = localStorage.getItem('studyhub_admin_applications');
+        if (stored) {
+          const list: AdminApplication[] = JSON.parse(stored);
+          const idx = list.findIndex(a => a.id === app.id);
+          if (idx !== -1) {
+            list[idx].status = 'rejected';
+            localStorage.setItem('studyhub_admin_applications', JSON.stringify(list));
+          }
+        }
+      } catch (e) {
+        console.error(e);
+      }
+
+      toast({
+        title: 'Application Rejected',
+        description: `Marked application of ${app.first_name} as rejected.`
+      });
+
+      await fetchAdminApplications();
+    } catch (err: any) {
+      toast({ title: 'Error', description: err.message, variant: 'destructive' });
+    } finally {
+      setProcessingAppId(null);
     }
   };
 
@@ -2570,6 +2764,31 @@ const OwnerDashboard = () => {
             <div>
               <p className="text-2xl font-bold tracking-tight text-foreground">{adminRoles.length}</p>
               <p className="text-[11px] text-muted-foreground uppercase tracking-wider font-semibold mt-0.5">Admin Team</p>
+            </div>
+          </div>
+
+          {/* 5b. Admin Applications */}
+          <div 
+            onClick={() => setActiveModalSection('admin_applications')}
+            className={`group cursor-pointer rounded-2xl p-4 sm:p-5 flex flex-col justify-between transition-all duration-200 border shadow-xs hover:shadow-md hover:-translate-y-0.5 ${
+              activeModalSection === 'admin_applications'
+                ? 'bg-sky-50 dark:bg-sky-950/40 border-sky-500 ring-2 ring-sky-500/30 text-foreground'
+                : 'bg-card border-border/80 hover:bg-sky-50/50 dark:hover:bg-sky-950/20 hover:border-sky-300 dark:hover:border-sky-700 text-foreground'
+            }`}
+          >
+            <div className="flex items-center justify-between mb-3">
+              <div className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 text-sky-600 dark:text-sky-400 border border-slate-200/80 dark:border-slate-700/80 flex items-center justify-center group-hover:bg-sky-100/70 dark:group-hover:bg-sky-900/40 group-hover:text-sky-600 dark:group-hover:text-sky-400 transition-colors">
+                <ShieldCheck className="h-5 w-5" />
+              </div>
+              {adminApplications.filter(a => a.status === 'pending').length > 0 && (
+                <Badge className="bg-sky-500/10 text-sky-700 dark:text-sky-400 border border-sky-500/30 text-[10px] px-2 py-0.5 font-bold rounded-full animate-pulse">
+                  {adminApplications.filter(a => a.status === 'pending').length} PENDING
+                </Badge>
+              )}
+            </div>
+            <div>
+              <p className="text-2xl font-bold tracking-tight text-foreground">{adminApplications.length}</p>
+              <p className="text-[11px] text-muted-foreground uppercase tracking-wider font-semibold mt-0.5">Admin Applications</p>
             </div>
           </div>
 
@@ -4207,6 +4426,230 @@ const OwnerDashboard = () => {
                           >
                             <Trash2 className="h-3.5 w-3.5 mr-1" /> Delete
                           </Button>
+                        </div>
+                      </div>
+                    </Card>
+                  );
+                })}
+              </div>
+            )}
+          </TabsContent>
+
+          {/* ========================================================
+              ADMIN APPLICATIONS TAB
+             ======================================================== */}
+          <TabsContent value="admin_applications" className="space-y-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-border">
+              <div>
+                <h3 className="text-xl font-bold text-foreground flex items-center gap-2">
+                  <ShieldCheck className="h-5 w-5 text-sky-500" />
+                  Student Admin Applications & Recruitment
+                </h3>
+                <p className="text-sm text-muted-foreground mt-0.5">
+                  Review applications submitted by students via the /notes page. Approve to promote directly to the Admin team, connect via WhatsApp, or decline.
+                </p>
+              </div>
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={fetchAdminApplications}
+                  disabled={loadingApplications}
+                  className="gap-1.5 text-xs font-semibold"
+                >
+                  <RefreshCw className={`h-3.5 w-3.5 ${loadingApplications ? 'animate-spin' : ''}`} />
+                  Refresh
+                </Button>
+              </div>
+            </div>
+
+            {/* Search & Filter Pills */}
+            <div className="flex flex-col md:flex-row gap-3">
+              <div className="relative flex-1">
+                <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+                <Input
+                  placeholder="Search by candidate name, email, branch, college, phone..."
+                  value={applicationSearch}
+                  onChange={(e) => setApplicationSearch(e.target.value)}
+                  className="pl-9 h-9 text-xs"
+                />
+              </div>
+              <div className="flex flex-wrap items-center gap-1.5">
+                {(['all', 'pending', 'approved', 'rejected'] as const).map(f => {
+                  const count = f === 'all'
+                    ? adminApplications.length
+                    : adminApplications.filter(a => a.status === f).length;
+                  return (
+                    <button
+                      key={f}
+                      onClick={() => setApplicationFilter(f)}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all uppercase tracking-wider ${
+                        applicationFilter === f
+                          ? f === 'pending'
+                            ? 'bg-amber-500 text-white shadow-xs'
+                            : f === 'approved'
+                              ? 'bg-emerald-600 text-white shadow-xs'
+                              : f === 'rejected'
+                                ? 'bg-slate-700 text-white shadow-xs'
+                                : 'bg-primary text-primary-foreground shadow-xs'
+                          : 'bg-muted/70 text-muted-foreground hover:bg-muted hover:text-foreground'
+                      }`}
+                    >
+                      {f === 'all' ? 'All' : f} ({count})
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* List */}
+            {loadingApplications ? (
+              <div className="py-16 text-center text-muted-foreground flex flex-col items-center justify-center gap-3">
+                <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                <p className="text-sm">Fetching admin applications...</p>
+              </div>
+            ) : filteredAdminApplications.length === 0 ? (
+              <div className="py-16 text-center border-2 border-dashed border-border/80 rounded-2xl bg-muted/20">
+                <ShieldCheck className="h-10 w-10 text-muted-foreground mx-auto mb-2 opacity-60" />
+                <h4 className="font-bold text-foreground">No Applications Found</h4>
+                <p className="text-xs text-muted-foreground max-w-sm mx-auto mt-1">
+                  {applicationFilter === 'pending'
+                    ? 'All pending admin applications have been processed. Great job!'
+                    : 'No student admin applications recorded in this filter.'}
+                </p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 gap-4">
+                {filteredAdminApplications.map((app) => {
+                  const fullName = `${app.first_name} ${app.last_name}`.trim();
+                  const isPending = app.status === 'pending';
+                  const isApproved = app.status === 'approved';
+                  const isRejected = app.status === 'rejected';
+                  const isProcessing = processingAppId === app.id;
+                  const cleanPhone = (app.phone || '').replace(/\D/g, '');
+                  const waUrl = cleanPhone
+                    ? `https://wa.me/91${cleanPhone}?text=${encodeURIComponent(
+                        `Hi ${app.first_name}, I saw your Admin Application for StudyHub Nexus. Let's discuss!`
+                      )}`
+                    : null;
+
+                  return (
+                    <Card
+                      key={app.id}
+                      className={`border p-4 sm:p-5 rounded-2xl transition-all ${
+                        isPending
+                          ? 'border-amber-500/40 bg-amber-500/[0.02] dark:bg-amber-950/10 shadow-xs'
+                          : isApproved
+                            ? 'border-emerald-500/30 bg-emerald-500/[0.02] dark:bg-emerald-950/10'
+                            : 'border-border/60 bg-muted/20 opacity-80'
+                      }`}
+                    >
+                      <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
+                        <div className="space-y-3 flex-1 min-w-0">
+                          {/* Top Badges & Date */}
+                          <div className="flex flex-wrap items-center gap-2">
+                            <Badge
+                              className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                                isPending
+                                  ? 'bg-amber-500/15 text-amber-700 dark:text-amber-400 border-amber-500/30 animate-pulse'
+                                  : isApproved
+                                    ? 'bg-emerald-500/15 text-emerald-700 dark:text-emerald-400 border-emerald-500/30'
+                                    : 'bg-slate-500/15 text-slate-700 dark:text-slate-400 border-slate-500/30'
+                              }`}
+                            >
+                              {isPending ? '⏳ PENDING REVIEW' : isApproved ? '✅ APPROVED ADMIN' : '❌ REJECTED'}
+                            </Badge>
+                            <Badge variant="outline" className="text-[10px] font-bold text-sky-600 dark:text-sky-400 border-sky-400/40">
+                              🏫 {app.college || 'COLLEGE'}
+                            </Badge>
+                            <Badge variant="secondary" className="text-[10px] font-semibold">
+                              {app.branch || 'Branch'} • Batch '{app.batch_year || '28'}
+                            </Badge>
+                            <span className="text-[11px] text-muted-foreground ml-auto">
+                              {app.created_at ? new Date(app.created_at).toLocaleString('en-IN', {
+                                dateStyle: 'medium',
+                                timeStyle: 'short'
+                              }) : 'Recent'}
+                            </span>
+                          </div>
+
+                          {/* Candidate Identity */}
+                          <div>
+                            <h4 className="text-base font-bold text-foreground">
+                              {fullName}
+                            </h4>
+                            <div className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground mt-1">
+                              {app.email && (
+                                <a
+                                  href={`mailto:${app.email}`}
+                                  className="hover:text-primary hover:underline flex items-center gap-1 font-mono"
+                                >
+                                  ✉️ {app.email}
+                                </a>
+                              )}
+                              {app.phone && (
+                                <span className="flex items-center gap-1 font-mono">
+                                  📞 +91 {app.phone}
+                                </span>
+                              )}
+                            </div>
+                          </div>
+
+                          {/* Notes / Syllabus Available */}
+                          {app.reason && (
+                            <div className="p-3 rounded-xl bg-card border border-border/70 text-xs">
+                              <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground block mb-1">
+                                📚 Notes / Contribution Details:
+                              </span>
+                              <p className="text-foreground leading-relaxed whitespace-pre-wrap">
+                                {app.reason}
+                              </p>
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Action buttons */}
+                        <div className="flex sm:flex-col items-stretch gap-2 shrink-0 md:min-w-[170px]">
+                          {waUrl && (
+                            <a
+                              href={waUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-bold rounded-lg border border-emerald-500/30 text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/40 hover:bg-emerald-600 hover:text-white transition-colors"
+                            >
+                              <MessageSquare className="h-3.5 w-3.5" />
+                              WhatsApp Chat
+                            </a>
+                          )}
+
+                          {!isApproved && (
+                            <Button
+                              size="sm"
+                              onClick={() => handleApproveApplication(app)}
+                              disabled={isProcessing}
+                              className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs h-9 px-3 gap-1.5 shadow-sm"
+                            >
+                              {isProcessing ? (
+                                <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                              ) : (
+                                <Crown className="h-3.5 w-3.5" />
+                              )}
+                              Promote to Admin
+                            </Button>
+                          )}
+
+                          {!isRejected && (
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => handleRejectApplication(app)}
+                              disabled={isProcessing}
+                              className="text-xs text-muted-foreground hover:text-rose-600 border-border hover:border-rose-300 dark:hover:border-rose-800 h-9 px-3 gap-1"
+                            >
+                              <XCircle className="h-3.5 w-3.5" />
+                              Reject
+                            </Button>
+                          )}
                         </div>
                       </div>
                     </Card>
