@@ -194,9 +194,11 @@ export const navItems = [
   { to: "/bpharma-notes", page: <BPharmaNotes /> },
   { to: "/mba-notes", page: <MBANotes /> },
   { to: "/ats-friendly-resume", page: <ATSFriendlyResume /> },
+  { to: "/admin", page: <AdminPortal /> },
   { to: "/admin-portal", page: <AdminPortal /> },
   { to: "/admin/knowledge-base", page: <AdminKnowledgeBase /> },
   { to: "/admin-portal/knowledge-base", page: <AdminKnowledgeBase /> },
+  { to: "/owner", page: <OwnerDashboard /> },
   { to: "/owner-dashboard", page: <OwnerDashboard /> },
   // BS-MS Routes
   { to: "/bsms-notes", page: <BSMSYears /> },
