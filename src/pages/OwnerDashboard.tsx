@@ -2093,7 +2093,18 @@ const OwnerDashboard = () => {
           const idx = list.findIndex(a => a.id === app.id);
           if (idx !== -1) {
             list[idx].status = 'approved';
+            list[idx].updated_at = new Date().toISOString();
             localStorage.setItem('studyhub_admin_applications', JSON.stringify(list));
+          }
+        }
+
+        const myAppRaw = localStorage.getItem('studyhub_my_admin_application');
+        if (myAppRaw) {
+          const myApp = JSON.parse(myAppRaw);
+          if (myApp.id === app.id || (app.email && myApp.email?.toLowerCase() === app.email?.toLowerCase())) {
+            myApp.status = 'approved';
+            myApp.updated_at = new Date().toISOString();
+            localStorage.setItem('studyhub_my_admin_application', JSON.stringify(myApp));
           }
         }
       } catch (e) {
@@ -2117,6 +2128,11 @@ const OwnerDashboard = () => {
         } catch (roleErr: any) {
           console.warn('Admin role promotion notice:', roleErr);
         }
+      }
+
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new CustomEvent('studyhub_admin_applications_updated'));
+        window.dispatchEvent(new CustomEvent('studyhub_admin_roles_updated'));
       }
 
       toast({
@@ -2154,11 +2170,26 @@ const OwnerDashboard = () => {
           const idx = list.findIndex(a => a.id === app.id);
           if (idx !== -1) {
             list[idx].status = 'rejected';
+            list[idx].updated_at = new Date().toISOString();
             localStorage.setItem('studyhub_admin_applications', JSON.stringify(list));
+          }
+        }
+
+        const myAppRaw = localStorage.getItem('studyhub_my_admin_application');
+        if (myAppRaw) {
+          const myApp = JSON.parse(myAppRaw);
+          if (myApp.id === app.id || (app.email && myApp.email?.toLowerCase() === app.email?.toLowerCase())) {
+            myApp.status = 'rejected';
+            myApp.updated_at = new Date().toISOString();
+            localStorage.setItem('studyhub_my_admin_application', JSON.stringify(myApp));
           }
         }
       } catch (e) {
         console.error(e);
+      }
+
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new CustomEvent('studyhub_admin_applications_updated'));
       }
 
       toast({
