@@ -2205,6 +2205,57 @@ const OwnerDashboard = () => {
     }
   };
 
+  const handleDeleteApplication = async (app: AdminApplication) => {
+    if (!confirm(`Are you sure you want to permanently delete the application of ${app.first_name} ${app.last_name}? This cannot be undone.`)) return;
+    setProcessingAppId(app.id);
+    try {
+      // 1. Delete from Supabase
+      try {
+        await (supabase as any)
+          .from('admin_applications')
+          .delete()
+          .eq('id', app.id);
+      } catch (e) {
+        console.warn('Supabase application delete notice:', e);
+      }
+
+      // 2. Delete from localStorage
+      try {
+        const stored = localStorage.getItem('studyhub_admin_applications');
+        if (stored) {
+          const list: AdminApplication[] = JSON.parse(stored);
+          const updated = list.filter(a => a.id !== app.id);
+          localStorage.setItem('studyhub_admin_applications', JSON.stringify(updated));
+        }
+
+        const myAppRaw = localStorage.getItem('studyhub_my_admin_application');
+        if (myAppRaw) {
+          const myApp = JSON.parse(myAppRaw);
+          if (myApp.id === app.id || (app.email && myApp.email?.toLowerCase() === app.email?.toLowerCase())) {
+            localStorage.removeItem('studyhub_my_admin_application');
+          }
+        }
+      } catch (e) {
+        console.error(e);
+      }
+
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new CustomEvent('studyhub_admin_applications_updated'));
+      }
+
+      toast({
+        title: 'Application Deleted 🗑️',
+        description: `Application of ${app.first_name} ${app.last_name} deleted permanently.`
+      });
+
+      await fetchAdminApplications();
+    } catch (err: any) {
+      toast({ title: 'Error', description: err.message, variant: 'destructive' });
+    } finally {
+      setProcessingAppId(null);
+    }
+  };
+
   const handleApproval = async (noteId: string, newStatus: 'approved' | 'rejected') => {
     try {
       const { error } = await supabase
@@ -4679,6 +4730,23 @@ const OwnerDashboard = () => {
                             >
                               <XCircle className="h-3.5 w-3.5" />
                               Reject
+                            </Button>
+                          )}
+
+                          {isRejected && (
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => handleDeleteApplication(app)}
+                              disabled={isProcessing}
+                              className="text-xs text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 border-rose-200 dark:border-rose-900/60 hover:border-rose-400 h-9 px-3 gap-1.5 font-medium"
+                            >
+                              {isProcessing ? (
+                                <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                              ) : (
+                                <Trash2 className="h-3.5 w-3.5" />
+                              )}
+                              Delete Application
                             </Button>
                           )}
                         </div>
