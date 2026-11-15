@@ -2869,8 +2869,8 @@ const OwnerDashboard = () => {
               )}
             </div>
             <div>
-              <p className="text-2xl font-bold tracking-tight text-foreground">{adminApplications.length}</p>
-              <p className="text-[11px] text-muted-foreground uppercase tracking-wider font-semibold mt-0.5">Admin Applications</p>
+              <p className="text-2xl font-bold tracking-tight text-foreground">{adminApplications.filter(a => a.status === 'pending').length}</p>
+              <p className="text-[11px] text-muted-foreground uppercase tracking-wider font-semibold mt-0.5">Pending Admin Applications</p>
             </div>
           </div>
 
