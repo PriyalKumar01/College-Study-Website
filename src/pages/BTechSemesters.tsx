@@ -1,4 +1,3 @@
-import { PdfCardBadge } from '@/components/PdfCardBadge';
 // Navigation: semester selection grid and catalog binding
 // B.Tech semester list portal
 import { useNavigate, useParams } from "react-router-dom";
@@ -307,7 +306,7 @@ const BTechSemesters = () => {
         </div>
       </div>
 
-      <div className="max-w-6xl mx-auto px-4 sm:px-8 py-6 flex-1 w-full space-y-6">
+      <div className="max-w-7xl mx-auto px-4 sm:px-8 py-6 flex-1 w-full space-y-6">
         {/* ══════════ UNIFIED SUBJECT FILTER & SEARCH BAR (EXACT 1ST YEAR STYLE) ══════════ */}
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-card border border-slate-300 dark:border-slate-800 p-3.5 rounded-2xl shadow-xs transition-all">
           {/* Left: My Subjects dropdown filter */}
