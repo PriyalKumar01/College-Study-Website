@@ -538,7 +538,7 @@ const GateStudy = () => {
     return (
       <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col selection:bg-purple-600 selection:text-white dark:selection:bg-purple-500 dark:selection:text-white transition-colors duration-200">
         <Navbar />
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 w-full flex items-center justify-center">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 w-full flex items-center justify-center">
           <div className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 shadow-2xl rounded-2xl flex flex-col md:flex-row h-auto min-h-[460px]">
             {/* Column 1: Disclaimer & Logo Left Sidebar Panel */}
             <div className="w-full md:w-80 bg-slate-50 dark:bg-slate-900 p-6 flex flex-col justify-between border-b md:border-b-0 md:border-r border-slate-200 dark:border-slate-800 shrink-0">
@@ -715,7 +715,7 @@ const GateStudy = () => {
 
       {/* Hero Banner */}
       <div className="bg-slate-100 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 pt-4 pb-4 px-4 sm:px-8 transition-colors duration-200">
-        <div className="max-w-5xl mx-auto flex items-start gap-3 flex-col relative w-full">
+        <div className="max-w-7xl mx-auto flex items-start gap-3 flex-col relative w-full">
           <button
             onClick={() => navigate('/notes')}
             className="inline-flex items-center gap-2 text-xs font-semibold tracking-widest uppercase text-slate-505 dark:text-slate-400 hover:text-slate-955 dark:hover:text-slate-100 transition-colors mb-1"
@@ -869,7 +869,7 @@ const GateStudy = () => {
       </div>
 
       {/* Main content grid - Collapsed state accordion dropdown panels to avoid vertical scrollbar bloat */}
-      <div className="max-w-5xl mx-auto px-4 sm:px-8 py-6 space-y-6 flex-1 w-full mb-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-8 py-6 space-y-6 flex-1 w-full mb-12">
         {/* Accordion Part 1: General Aptitude - Topic-wise Quizzes */}
         <div id="aptitude-section"></div>
         <div className="space-y-3">
@@ -1346,7 +1346,7 @@ const GateStudy = () => {
                 <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-md relative mt-1 space-y-6">
                   <div className="absolute top-0 right-0 w-32 h-32 bg-purple-500/5 rounded-full blur-2xl pointer-events-none" />
                   
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
                     {(GATE_NOTES_DATA[selectedBranch] || []).map((note, index) => (
                       <motion.div
                         key={index}
