@@ -1,3 +1,4 @@
+import { PdfCardBadge } from '@/components/PdfCardBadge';
 // Curriculum: integrated BS-MS science curriculum year navigation
 // BS-MS integrated science years portal
 import { motion } from 'framer-motion';
