@@ -8,6 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Label } from '@/components/ui/label';
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog';
@@ -4051,7 +4052,7 @@ const OwnerDashboard = () => {
                 </CardContent>
               </Card>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 {filteredMaterials.map((material) => (
                   <Card key={material.id} className={`border backdrop-blur-md transition-all duration-300 shadow-md overflow-hidden flex flex-col justify-between h-full group ${
                     isDark 
@@ -4826,7 +4827,7 @@ const OwnerDashboard = () => {
           </div>
           <div>
             <Label className="text-xs font-semibold">Material Type</Label>
-            <Select value={editMatType} onValueChange={setEditMatType}>
+            <Select value={['notes', 'pyqs', 'assignments', 'book', 'practical_file'].includes(editMatType) ? editMatType : (editMatType || 'notes')} onValueChange={setEditMatType}>
               <SelectTrigger className="mt-1 text-xs">
                 <SelectValue placeholder="Type" />
               </SelectTrigger>
@@ -4836,6 +4837,9 @@ const OwnerDashboard = () => {
                 <SelectItem value="assignments">Assignments</SelectItem>
                 <SelectItem value="book">Book</SelectItem>
                 <SelectItem value="practical_file">Practical File</SelectItem>
+                {!['notes', 'pyqs', 'assignments', 'book', 'practical_file'].includes(editMatType) && editMatType && (
+                  <SelectItem value={editMatType}>{editMatType}</SelectItem>
+                )}
               </SelectContent>
             </Select>
           </div>
