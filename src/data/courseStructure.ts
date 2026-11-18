@@ -1,7 +1,7 @@
 // Centralized course structure mapping for the admin upload form
 // Maps exactly to the existing website pages and structure
 
-import { getCustomSubjectsForContext, getRenamedSubjectsMap } from '@/lib/customSubjects';
+import { getCustomSubjectsForContext, getRenamedSubjectsMap, isSubjectDeleted } from '@/lib/customSubjects';
 
 export interface SubjectInfo {
   name: string;
@@ -34,15 +34,15 @@ export interface CategoryInfo {
 
 // ── All note categories on the site ─────────────────────────────
 export const CATEGORIES: CategoryInfo[] = [
-  { id: 'btech', label: 'B.Tech Notes', icon: 'GraduationCap', hasYears: true, hasBranches: true, hasSemesters: true, gradient: 'from-blue-500 to-blue-600' },
-  { id: 'bsms', label: 'BS-MS Notes', icon: 'BookOpen', hasYears: true, hasBranches: false, hasSemesters: true, gradient: 'from-violet-500 to-purple-700' },
-  { id: 'bpharma', label: 'B.Pharma Notes', icon: 'BookOpen', hasYears: true, hasBranches: false, hasSemesters: true, gradient: 'from-emerald-500 to-teal-700' },
-  { id: 'mba', label: 'MBA Notes', icon: 'Briefcase', hasYears: true, hasBranches: false, hasSemesters: true, gradient: 'from-indigo-500 to-indigo-600' },
-  { id: 'bba', label: 'BBA Notes', icon: 'Briefcase', hasYears: false, hasBranches: false, hasSemesters: true, gradient: 'from-pink-500 to-pink-600' },
-  { id: 'dsa', label: 'DSA Notes', icon: 'Database', hasYears: false, hasBranches: false, hasSemesters: false, gradient: 'from-green-500 to-green-600' },
-  { id: 'coding', label: 'Coding Study Material', icon: 'Code', hasYears: false, hasBranches: false, hasSemesters: false, gradient: 'from-purple-500 to-purple-600' },
-  { id: 'webdev', label: 'Web Development', icon: 'Globe', hasYears: false, hasBranches: false, hasSemesters: false, gradient: 'from-orange-500 to-orange-600' },
-  { id: 'placement', label: 'Placement Guide', icon: 'Sparkles', hasYears: false, hasBranches: false, hasSemesters: false, gradient: 'from-green-500 to-blue-500' },
+  { id: 'btech', label: 'B.Tech Notes', icon: 'GraduationCap', hasYears: true, hasBranches: true, hasSemesters: true, gradient: 'from-slate-800 to-slate-950 dark:from-slate-700 dark:to-slate-900' },
+  { id: 'bba', label: 'BBA Notes', icon: 'Briefcase', hasYears: true, hasBranches: false, hasSemesters: true, gradient: 'from-blue-900 to-slate-950 dark:from-blue-950 dark:to-slate-900' },
+  { id: 'mba', label: 'MBA Notes', icon: 'Briefcase', hasYears: true, hasBranches: false, hasSemesters: true, gradient: 'from-indigo-900 to-slate-950 dark:from-indigo-950 dark:to-slate-900' },
+  { id: 'bsms', label: 'BS-MS Notes', icon: 'BookOpen', hasYears: true, hasBranches: false, hasSemesters: true, gradient: 'from-purple-900 to-slate-950 dark:from-purple-950 dark:to-slate-900' },
+  { id: 'bpharma', label: 'B.Pharma Notes', icon: 'BookOpen', hasYears: true, hasBranches: false, hasSemesters: true, gradient: 'from-emerald-900 to-slate-950 dark:from-emerald-950 dark:to-slate-900' },
+  { id: 'dsa', label: 'DSA Notes', icon: 'Database', hasYears: false, hasBranches: false, hasSemesters: false, gradient: 'from-zinc-800 to-slate-900 dark:from-zinc-700 dark:to-slate-800' },
+  { id: 'coding', label: 'Coding Study Material', icon: 'Code', hasYears: false, hasBranches: false, hasSemesters: false, gradient: 'from-slate-800 to-zinc-900 dark:from-slate-700 dark:to-zinc-800' },
+  { id: 'webdev', label: 'Web Development', icon: 'Globe', hasYears: false, hasBranches: false, hasSemesters: false, gradient: 'from-slate-850 to-slate-950 dark:from-slate-750 dark:to-slate-900' },
+  { id: 'placement', label: 'Placement Guide', icon: 'Sparkles', hasYears: false, hasBranches: false, hasSemesters: false, gradient: 'from-amber-900 to-slate-950 dark:from-amber-950 dark:to-slate-900' },
 ];
 
 // ── BTech Year → Semester mapping ────────────────────────────────
@@ -51,6 +51,13 @@ export const BTECH_YEARS = [
   { id: '2nd', label: '2nd Year', semesters: ['3rd Semester', '4th Semester'] },
   { id: '3rd', label: '3rd Year', semesters: ['5th Semester', '6th Semester'] },
   { id: '4th', label: '4th Year', semesters: ['7th Semester', '8th Semester'] },
+];
+
+// ── BBA Year → Semester mapping (HBTU 3-Year Degree) ──────────────
+export const BBA_YEARS = [
+  { id: '1st', label: '1st Year', semesters: ['1st Semester', '2nd Semester'] },
+  { id: '2nd', label: '2nd Year', semesters: ['3rd Semester', '4th Semester'] },
+  { id: '3rd', label: '3rd Year', semesters: ['5th Semester', '6th Semester'] },
 ];
 
 // ── BS-MS Year → Semester mapping ────────────────────────────────
@@ -675,34 +682,41 @@ export const SUBJECTS: Record<string, SubjectInfo[]> = {
   'CHE-7th Semester': [
     { name: 'Petrochemical Engineering', fullName: 'Petrochemical Engineering' },
     { name: 'Transport Phenomena-II', fullName: 'Transport Phenomena-II' },
+    { name: 'Open Elective-II', fullName: 'Open Elective-II (OE-II)' },
   ],
   'BE-7th Semester': [
     { name: 'Downstream Processing', fullName: 'Downstream Processing' },
     { name: 'Biochemical Plant Design', fullName: 'Biochemical Plant Design' },
+    { name: 'Open Elective-II', fullName: 'Open Elective-II (OE-II)' },
   ],
   'LFT-7th Semester': [
     { name: 'Advanced Footwear Design', fullName: 'Advanced Footwear Design' },
     { name: 'Leather Industry Waste Management', fullName: 'Leather Industry Waste Management' },
+    { name: 'Open Elective-II', fullName: 'Open Elective-II (OE-II)' },
   ],
   'PT-7th Semester': [
-    { name: 'Specialty Coatings', fullName: 'Specialty & High Performance Coatings' },
     { name: 'Corrosion Control', fullName: 'Corrosion Science & Engineering' },
+    { name: 'Open Elective-II', fullName: 'Open Elective-II (OE-II)' },
   ],
   'PL-7th Semester': [
     { name: 'Polymer Blends & Alloys', fullName: 'Polymer Blends & Alloys' },
     { name: 'Advanced Polymer Processing', fullName: 'Advanced Polymer Processing' },
+    { name: 'Open Elective-II', fullName: 'Open Elective-II (OE-II)' },
   ],
   'FT-7th Semester': [
     { name: 'Food Biotechnology', fullName: 'Food Biotechnology' },
     { name: 'Food Plant Layout & Design', fullName: 'Food Plant Layout & Design' },
+    { name: 'Open Elective-II', fullName: 'Open Elective-II (OE-II)' },
   ],
   'OT-7th Semester': [
     { name: 'Fat Modification Processes', fullName: 'Fat Modification Processes' },
     { name: 'Quality Assurance in Oil Industry', fullName: 'Quality Assurance in Oil Industry' },
+    { name: 'Open Elective-II', fullName: 'Open Elective-II (OE-II)' },
   ],
   'BT-7th Semester': [
     { name: 'Stem Cell & Tissue Engineering', fullName: 'Stem Cell & Tissue Engineering' },
     { name: 'Metabolic Engineering', fullName: 'Metabolic Engineering' },
+    { name: 'Open Elective-II', fullName: 'Open Elective-II (OE-II)' },
   ],
 
   // ════════════════════════════════════════════════════════════════
@@ -733,45 +747,56 @@ export const SUBJECTS: Record<string, SubjectInfo[]> = {
     { name: 'Open Elective-II', fullName: 'Open Elective-II (OE-II)' },
   ],
 
-
   // ════════════════════════════════════════════════════════════════
-  // BBA Semesters
+  // BBA Semesters (HBTU Kanpur Official Curriculum)
   // ════════════════════════════════════════════════════════════════
   'BBA-1st Semester': [
-    { name: 'Business Organization', fullName: 'Business Organization & Management' },
-    { name: 'Micro Economics', fullName: 'Micro Economics' },
-    { name: 'Financial Accounting', fullName: 'Financial Accounting' },
-    { name: 'Business Mathematics', fullName: 'Business Mathematics' },
+    { name: 'Principles and Practices of Management (BBA 101)', fullName: 'Principles and Practices of Management (BBA 101)' },
+    { name: 'Micro Economics (BBA 103)', fullName: 'Micro Economics (BBA 103)' },
+    { name: 'Business Environment (BBA 105)', fullName: 'Business Environment (BBA 105)' },
+    { name: 'Accounting-I (BBA 107)', fullName: 'Accounting-I (BBA 107)' },
+    { name: 'Computer Applications in Management (BBA 109)', fullName: 'Computer Applications in Management (BBA 109)' },
+    { name: 'Personality Development (BBA 191)', fullName: 'Personality Development (BBA 191)' },
   ],
   'BBA-2nd Semester': [
-    { name: 'Macro Economics', fullName: 'Macro Economics' },
-    { name: 'Cost Accounting', fullName: 'Cost Accounting' },
-    { name: 'Business Communication', fullName: 'Business Communication' },
-    { name: 'Organizational Behavior', fullName: 'Organizational Behavior' },
+    { name: 'Organisational Behaviour (BBA 102)', fullName: 'Organisational Behaviour (BBA 102)' },
+    { name: 'Macro Economics (BBA 104)', fullName: 'Macro Economics (BBA 104)' },
+    { name: 'Business Communication (BBA 106)', fullName: 'Business Communication (BBA 106)' },
+    { name: 'Accounting-II (BBA 108)', fullName: 'Accounting-II (BBA 108)' },
+    { name: 'Quantitative Techniques (BBA 110)', fullName: 'Quantitative Techniques (BBA 110)' },
+    { name: 'Communication Skills-I (BBA 192)', fullName: 'Communication Skills-I (BBA 192)' },
   ],
   'BBA-3rd Semester': [
-    { name: 'Marketing Management', fullName: 'Marketing Management' },
-    { name: 'HRM', fullName: 'Human Resource Management' },
-    { name: 'Financial Management', fullName: 'Financial Management' },
-    { name: 'Business Statistics', fullName: 'Business Statistics' },
+    { name: 'Finance Management (BBA 201)', fullName: 'Finance Management (BBA 201)' },
+    { name: 'Marketing Management (BBA 203)', fullName: 'Marketing Management (BBA 203)' },
+    { name: 'Human Resource Management (BBA 205)', fullName: 'Human Resource Management (BBA 205)' },
+    { name: 'Operations Management (BBA 207)', fullName: 'Operations Management (BBA 207)' },
+    { name: 'IT Applications in Management (BBA 209)', fullName: 'IT Applications in Management (BBA 209)' },
+    { name: 'GD and Public Speaking (BBA 291)', fullName: 'GD and Public Speaking (BBA 291)' },
   ],
   'BBA-4th Semester': [
-    { name: 'Business Law', fullName: 'Business Law' },
-    { name: 'Indian Financial System', fullName: 'Indian Financial System' },
-    { name: 'Production Management', fullName: 'Production & Operations Management' },
-    { name: 'Computer Applications', fullName: 'Computer Applications in Business' },
+    { name: 'Taxation Management (BBA 202)', fullName: 'Taxation Management (BBA 202)' },
+    { name: 'Customer Relationship Management (BBA 204)', fullName: 'Customer Relationship Management (BBA 204)' },
+    { name: 'Industrial Relations (BBA 206)', fullName: 'Industrial Relations (BBA 206)' },
+    { name: 'Logistics and Supply Chain Management (BBA 208)', fullName: 'Logistics and Supply Chain Management (BBA 208)' },
+    { name: 'Business Statistics (BBA 210)', fullName: 'Business Statistics (BBA 210)' },
+    { name: 'Communication Skills-II (BBA 292)', fullName: 'Communication Skills-II (BBA 292)' },
   ],
   'BBA-5th Semester': [
-    { name: 'E-Commerce', fullName: 'E-Commerce' },
-    { name: 'Entrepreneurship', fullName: 'Entrepreneurship Development' },
-    { name: 'International Business', fullName: 'International Business' },
-    { name: 'Tax Planning', fullName: 'Tax Planning & Management' },
+    { name: 'Entrepreneurship and Startup (BBA 301)', fullName: 'Entrepreneurship and Startup (BBA 301)' },
+    { name: 'Business Policy (BBA 303)', fullName: 'Business Policy (BBA 303)' },
+    { name: 'Business Ethics and Corporate Governance (BBA 305)', fullName: 'Business Ethics and Corporate Governance (BBA 305)' },
+    { name: 'Business Laws (BBA 307)', fullName: 'Business Laws (BBA 307)' },
+    { name: 'Elective I (BBA 309/311)', fullName: 'Elective I (BBA 309/311)' },
+    { name: 'Internship / Training (BBA 391)', fullName: 'Internship / Training (BBA 391)' },
   ],
   'BBA-6th Semester': [
-    { name: 'Strategic Management', fullName: 'Strategic Management' },
-    { name: 'Project Management', fullName: 'Project Management' },
-    { name: 'Corporate Governance', fullName: 'Corporate Governance' },
-    { name: 'Business Ethics', fullName: 'Business Ethics & CSR' },
+    { name: 'Family Business Management (BBA 302)', fullName: 'Family Business Management (BBA 302)' },
+    { name: 'Strategic Management (BBA 304)', fullName: 'Strategic Management (BBA 304)' },
+    { name: 'E-Commerce (BBA 306)', fullName: 'E-Commerce (BBA 306)' },
+    { name: 'MIS (BBA 308)', fullName: 'MIS (BBA 308)' },
+    { name: 'Elective II (BBA 310/312)', fullName: 'Elective II (BBA 310/312)' },
+    { name: 'Seminar / Project (BBA 392)', fullName: 'Seminar / Project (BBA 392)' },
   ],
 
   // ── BS-MS Subjects ───────────────────────────────────────────────
@@ -986,9 +1011,14 @@ export function getSubjects(
 
   if (combined.length === 0) return [];
 
+  // Filter out any subjects deleted by Owner
+  const notDeleted = typeof window !== 'undefined'
+    ? combined.filter(sub => !isSubjectDeleted(sub.name, category, semester, branch))
+    : combined;
+
   // Apply renamed subjects map
   const renamedMap = typeof window !== 'undefined' ? getRenamedSubjectsMap() : {};
-  const mapped = combined.map(sub => {
+  const mapped = notDeleted.map(sub => {
     if (renamedMap[sub.name]) {
       return { ...sub, name: renamedMap[sub.name], fullName: renamedMap[sub.name] };
     }
@@ -1013,28 +1043,33 @@ export function getSubjectsOnly(
   semester: string,
   branch?: string
 ): SubjectInfo[] {
+  let list: SubjectInfo[] = [];
   if (category === 'btech') {
     const branchKey = `${branch}-${semester}`;
-    if (SUBJECTS[branchKey]) return SUBJECTS[branchKey];
-    if (branch === 'IT' || branch === 'CSE-AIML') {
+    if (SUBJECTS[branchKey]) list = SUBJECTS[branchKey];
+    else if (branch === 'IT' || branch === 'CSE-AIML') {
       const cseKey = `CSE-${semester}`;
-      if (SUBJECTS[cseKey]) return SUBJECTS[cseKey];
+      if (SUBJECTS[cseKey]) list = SUBJECTS[cseKey];
+    } else {
+      const allKey = `ALL-${semester}`;
+      if (SUBJECTS[allKey]) list = SUBJECTS[allKey];
     }
-    const allKey = `ALL-${semester}`;
-    if (SUBJECTS[allKey]) return SUBJECTS[allKey];
-    return [];
-  }
-  if (category === 'bsms') {
+  } else if (category === 'bsms') {
     const cleanSem = semester.replace(/^BSMS-/, '');
-    return SUBJECTS[`BSMS-${cleanSem}`] || [];
-  }
-  if (category === 'bpharma') {
+    list = SUBJECTS[`BSMS-${cleanSem}`] || [];
+  } else if (category === 'bpharma') {
     const cleanSem = semester.replace(/^BPHARMA-/, '');
-    return SUBJECTS[`BPHARMA-${cleanSem}`] || [];
+    list = SUBJECTS[`BPHARMA-${cleanSem}`] || [];
+  } else {
+    const cleanSem = semester.replace(new RegExp(`^${category.toUpperCase()}-`, 'i'), '');
+    const key = `${category.toUpperCase()}-${cleanSem}`;
+    list = SUBJECTS[key] || SUBJECTS[`${category.toUpperCase()}-${semester}`] || [];
   }
-  const cleanSem = semester.replace(new RegExp(`^${category.toUpperCase()}-`, 'i'), '');
-  const key = `${category.toUpperCase()}-${cleanSem}`;
-  return SUBJECTS[key] || SUBJECTS[`${category.toUpperCase()}-${semester}`] || [];
+
+  if (typeof window !== 'undefined') {
+    return list.filter(sub => !isSubjectDeleted(sub.name, category, semester, branch));
+  }
+  return list;
 }
 
 /** Get semesters for a given category and year */
@@ -1065,6 +1100,10 @@ export function getSemesters(category: string, year?: string): string[] {
     return ['1st Semester', '2nd Semester', '3rd Semester', '4th Semester'];
   }
   if (category === 'bba') {
+    if (year) {
+      const y = BBA_YEARS.find(y => y.id === year);
+      return y ? y.semesters : [];
+    }
     return ['1st Semester', '2nd Semester', '3rd Semester', '4th Semester', '5th Semester', '6th Semester'];
   }
   return [];
