@@ -1,3 +1,4 @@
+import { PdfCardBadge } from '@/components/PdfCardBadge';
 // Syllabus: fifth semester science curriculum subject modules
 // BS-MS 5th semester notes
 import { useState } from 'react';
@@ -225,10 +226,7 @@ const BSMSSem5Notes = () => {
                       </button>
                     )}
                     <div className="flex items-center gap-2 mb-3">
-                      <div className={`w-8 h-8 rounded-full ${subject.color} flex items-center justify-center text-white text-xs`}>
-                        <FileText className="h-4 w-4" />
-                      </div>
-                      <span className="text-[10px] font-bold tracking-wider uppercase bg-muted text-muted-foreground px-2 py-0.5 rounded">PDF</span>
+                      <PdfCardBadge />
                       {note.isCommunity && (
                         <span className="text-[10px] font-bold tracking-wider uppercase bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400 px-2 py-0.5 rounded border border-blue-100 dark:border-blue-900/50">Community</span>
                       )}
