@@ -2,7 +2,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { getCachedData, setCachedData, DEFAULT_CACHE_TTL_MS } from '@/lib/cacheUtils';
-import { normalizeToZeroEgressUrl, isSupabaseStorageUrl } from '@/lib/downloadUtils';
 
 export function useCommunityNotes(category: string, semester?: string | string[]) {
   // Stable serialized key: prevents infinite re-render loops when inline arrays are passed
@@ -63,19 +62,13 @@ export function useCommunityNotes(category: string, semester?: string | string[]
         .limit(100);
 
       if (!error && notes && isMountedRef.current) {
-        // Sanitize: filter out placeholders and ensure all URLs route through zero-egress Cloudflare R2
-        const sanitizedNotes = notes
-          .filter((note) => {
-            if (!note.file_url || note.file_url === '#' || note.file_url.trim() === '') return false;
-            if (note.material_type === 'subject_placeholder') return false;
-            return true;
-          })
-          .map((note) => {
-            if (isSupabaseStorageUrl(note.file_url)) {
-              return { ...note, file_url: normalizeToZeroEgressUrl(note.file_url) };
-            }
-            return note;
-          });
+        // Sanitize: filter out placeholders and invalid links
+        // Preserves original working URLs (R2 for synced notes, Supabase for fresh uploads)
+        const sanitizedNotes = notes.filter((note) => {
+          if (!note.file_url || note.file_url === '#' || note.file_url.trim() === '') return false;
+          if (note.material_type === 'subject_placeholder') return false;
+          return true;
+        });
 
         setCachedData(cacheKey, sanitizedNotes);
         setData(sanitizedNotes);
