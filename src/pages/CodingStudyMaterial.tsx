@@ -1,10 +1,12 @@
+import { PdfCardBadge } from '@/components/PdfCardBadge';
 // Learning: competitive programming roadmap and algorithmic problem sets
 // Coding space study resources
 import { useCommunityNotes } from '@/hooks/useCommunityNotes';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { Download, ArrowLeft, FileText, Laptop, Trash2, ExternalLink } from 'lucide-react';
+import { Download, ArrowLeft, FileText, Laptop, Trash2, ExternalLink, Eye,
+} from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
@@ -73,7 +75,7 @@ const CodingStudyMaterial = () => {
 
       {/* Hero Banner */}
       <div className="bg-foreground dark:bg-card text-background dark:text-foreground pt-16 pb-12 px-4 sm:px-8">
-        <div className="max-w-5xl mx-auto flex items-start gap-4 flex-col">
+        <div className="max-w-7xl mx-auto flex items-start gap-4 flex-col">
           <button
             onClick={() => navigate('/notes')}
             className="inline-flex items-center gap-2 text-xs font-semibold tracking-widest uppercase opacity-50 hover:opacity-100 transition-opacity mb-4"
@@ -98,9 +100,9 @@ const CodingStudyMaterial = () => {
         </div>
       </div>
 
-      <div className="max-w-5xl mx-auto px-4 sm:px-8 py-10 space-y-10 flex-1 w-full mb-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-8 py-10 space-y-10 flex-1 w-full mb-12">
         {/* Notes Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
           {allNotes.map((note, index) => (
             <motion.div
               key={index}
@@ -119,10 +121,7 @@ const CodingStudyMaterial = () => {
                   </button>
                 )}
                 <div className="flex items-center gap-2 mb-3">
-                  <div className="w-8 h-8 rounded-full bg-orange-500 flex items-center justify-center text-white text-xs">
-                    <FileText className="h-4 w-4" />
-                  </div>
-                  <span className="text-[10px] font-bold tracking-wider uppercase bg-muted text-muted-foreground px-2 py-0.5 rounded">PDF</span>
+                  <PdfCardBadge />
                   {note.isCommunity && (
                     <span className="text-[10px] font-bold tracking-wider uppercase bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400 px-2 py-0.5 rounded border border-blue-100 dark:border-blue-900/50">Community</span>
                   )}
@@ -133,20 +132,20 @@ const CodingStudyMaterial = () => {
                 )}
                 <div className="flex gap-2">
                   <button
-                    onClick={() => handleDownload(note.url, note.title)}
-                    className="flex-1 inline-flex items-center justify-center gap-1.5 text-xs font-bold tracking-wider uppercase py-2 px-3 rounded bg-foreground text-background hover:opacity-85 transition-opacity"
-                    disabled={note.url === '#'}
-                  >
-                    <Download className="h-3.5 w-3.5" /> Download
-                  </button>
-                  <button
-                    onClick={() => viewInBrowser(note.url)}
-                    className="inline-flex items-center justify-center p-2 rounded border border-foreground/20 hover:bg-muted transition-colors"
-                    disabled={note.url === '#'}
-                    title="View in Browser"
-                  >
-                    <ExternalLink className="h-3.5 w-3.5 text-foreground" />
-                  </button>
+                            onClick={() => viewInBrowser(note.url)}
+                            className="flex-1 inline-flex items-center justify-center gap-1.5 text-xs font-bold tracking-wider uppercase py-2 px-3 rounded bg-foreground text-background hover:opacity-85 transition-opacity cursor-pointer"
+                            disabled={note.url === '#'}
+                          >
+                            <Eye className="h-3.5 w-3.5" /> View
+                          </button>
+                          <button
+                            onClick={() => handleDownload(note.url, note.title)}
+                            className="inline-flex items-center justify-center p-2 rounded border border-foreground/20 hover:bg-muted transition-colors cursor-pointer"
+                            disabled={note.url === '#'}
+                            title="Download PDF"
+                          >
+                            <Download className="h-3.5 w-3.5 text-foreground" />
+                          </button>
                 </div>
               </div>
             </motion.div>
