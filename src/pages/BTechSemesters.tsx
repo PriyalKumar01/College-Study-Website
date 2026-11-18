@@ -502,7 +502,7 @@ const BTechSemesters = () => {
                 <p className="text-xs mt-1">Try another search keyword or reset to view all semester courses.</p>
               </div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
                 {displayedSubjects.map((sub, idx) => {
                   const hasDetailed = sub.playlists?.detailed && sub.playlists.detailed.length > 0;
                   const hasOneshot = sub.playlists?.oneshot && sub.playlists.oneshot.length > 0;
