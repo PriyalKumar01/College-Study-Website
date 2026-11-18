@@ -1,4 +1,3 @@
-import { PdfCardBadge } from '@/components/PdfCardBadge';
 // Curated: first year physics and chemistry cycle syllabus grouping
 // 1st year foundational engineering notes
 import { useState, useMemo, useRef, useEffect } from 'react';
@@ -45,7 +44,7 @@ import {
   Target,
   PenTool,
   Compass,
-  Award
+  Award, Eye,
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
@@ -55,6 +54,7 @@ import { SubjectShareButton } from '@/components/SubjectShareButton';
 import { useSubjectAutoScroll } from '@/hooks/useSubjectAutoScroll';
 import { smartDownload, viewInBrowser } from '@/lib/downloadUtils';
 import { RecommendationBadge } from '@/components/RecommendationBadge';
+import { PdfCardBadge } from '@/components/PdfCardBadge';
 
 interface NoteItem {
   id?: string;
@@ -1178,11 +1178,8 @@ const FirstYearNotes = () => {
                         <Trash2 className="h-4 w-4" />
                       </button>
                     )}
-                    <div className="flex items-center gap-2 mb-3 flex-wrap">
-                      <div className={`w-8 h-8 rounded-lg ${subject.color} flex items-center justify-center text-white text-xs shadow-sm`}>
-                        <FileText className="h-4 w-4" />
-                      </div>
-                      <span className="text-[10px] font-bold tracking-wider uppercase bg-muted text-muted-foreground px-2 py-0.5 rounded">PDF</span>
+                    <div className="flex items-center gap-2 mb-3 flex-wrap pr-14">
+                      <PdfCardBadge />
                       {note.isCommunity && (
                         <span className="text-[10px] font-bold tracking-wider uppercase bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400 px-2 py-0.5 rounded border border-blue-100 dark:border-blue-900/50">Community</span>
                       )}
@@ -1202,7 +1199,7 @@ const FirstYearNotes = () => {
                         className="flex-1 inline-flex items-center justify-center gap-1.5 text-xs font-bold tracking-wider uppercase py-2 px-3 rounded-lg bg-foreground text-background hover:opacity-85 transition-opacity"
                         disabled={note.url === '#'}
                       >
-                        <Eye className="h-3.5 w-3.5" /> View
+                        <Download className="h-3.5 w-3.5" /> Download
                       </button>
                       <button
                         onClick={() => viewInBrowser(note.url)}
@@ -1231,7 +1228,7 @@ const FirstYearNotes = () => {
 
       {/* ══════════ CLEAN HERO HEADER ══════════ */}
       <div className="bg-slate-900 text-white pt-8 pb-8 px-4 sm:px-8 border-b border-slate-800">
-        <div className="max-w-6xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <button
               onClick={() => navigate("/btech-notes")}
@@ -1296,7 +1293,7 @@ const FirstYearNotes = () => {
         </div>
       </div>
 
-      <div className="max-w-6xl mx-auto px-4 sm:px-8 py-6 flex-1 w-full space-y-6">
+      <div className="max-w-7xl mx-auto px-4 sm:px-8 py-6 flex-1 w-full space-y-6">
 
         {/* ══════════ NAVIGATION TABS ══════════ */}
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 pb-2 border-b border-border">
@@ -1616,10 +1613,8 @@ const FirstYearNotes = () => {
                 >
                   <div className="border border-border bg-card hover:border-amber-400/80 rounded-xl p-4 transition-all duration-200 hover:shadow-md flex flex-col h-full relative">
                     <RecommendationBadge note={note} />
-                    <div className="flex items-center gap-2 mb-3">
-                      <div className="w-8 h-8 rounded-lg bg-orange-500 text-white flex items-center justify-center text-xs shadow-sm">
-                        <FileText className="h-4 w-4" />
-                      </div>
+                    <div className="flex items-center gap-2 mb-3 pr-14">
+                      <PdfCardBadge />
                       <span className="text-[10px] font-bold tracking-wider uppercase bg-muted text-muted-foreground px-2 py-0.5 rounded">
                         Assignment 📝
                       </span>
@@ -1635,7 +1630,7 @@ const FirstYearNotes = () => {
                         className="flex-1 inline-flex items-center justify-center gap-1.5 text-xs font-bold tracking-wider uppercase py-2 px-3 rounded-lg bg-foreground text-background hover:opacity-85 transition-opacity cursor-pointer"
                         disabled={note.url === '#'}
                       >
-                        <Eye className="h-3.5 w-3.5" /> View
+                        <Download className="h-3.5 w-3.5" /> Download
                       </button>
                       <button
                         onClick={() => viewInBrowser(note.url)}
@@ -1724,7 +1719,7 @@ const FirstYearNotes = () => {
                             No question papers match the current search query for this session.
                           </div>
                         ) : (
-                          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3.5 pt-4">
+                          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5 pt-4">
                             {group.items.map((note, idx) => (
                               <motion.div
                                 key={note.id || idx}
@@ -1735,11 +1730,12 @@ const FirstYearNotes = () => {
                                 <div className="border border-border bg-card hover:border-indigo-400/80 rounded-xl p-4 transition-all duration-200 hover:shadow-md flex flex-col h-full relative">
                                   <RecommendationBadge note={note} />
                                   
-                                  <div className="flex items-center gap-2 mb-2.5">
-                                    <span className="text-[10px] font-bold tracking-wider uppercase bg-red-500/10 text-red-600 dark:text-red-400 px-2 py-0.5 rounded border border-red-500/20">
-                                      PYQ Paper ❓
-                                    </span>
-                                  </div>
+                                  <div className="flex items-center gap-2 mb-2.5 pr-14">
+                                      <PdfCardBadge />
+                                      <span className="text-[10px] font-bold tracking-wider uppercase bg-red-500/10 text-red-600 dark:text-red-400 px-2 py-0.5 rounded border border-red-500/20">
+                                        PYQ Paper ❓
+                                      </span>
+                                    </div>
 
                                   <h4 className="font-semibold text-foreground text-sm leading-snug flex-1 mb-3">
                                     {note.title}
@@ -1751,7 +1747,7 @@ const FirstYearNotes = () => {
                                       className="flex-1 inline-flex items-center justify-center gap-1.5 text-xs font-bold tracking-wider uppercase py-2 px-3 rounded-lg bg-foreground text-background hover:opacity-85 transition-opacity cursor-pointer"
                                       disabled={note.url === '#'}
                                     >
-                                      <Eye className="h-3.5 w-3.5" /> View
+                                      <Download className="h-3.5 w-3.5" /> Download
                                     </button>
                                     <button
                                       onClick={() => viewInBrowser(note.url)}
