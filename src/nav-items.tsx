@@ -99,7 +99,8 @@ const FourthSemesterBTNotes = lazy(() => import("./pages/FourthSemesterBTNotes")
 const FourthSemesterPLNotes = lazy(() => import("./pages/FourthSemesterPLNotes"));
 const SeventhSemesterCSENotes = lazy(() => import("./pages/SeventhSemesterCSENotes"));
 const SeventhSemesterOpenElectives = lazy(() => import("./pages/SeventhSemesterOpenElectives"));
-const EighthSemesterCSENotes = lazy(() => import("./pages/EighthSemesterCSENotes"));
+const EighthSemesterCSENotes = lazy(() => import("./pages/EighthSemesterCSENotes"));
+const FinalYearBranchNotes = lazy(() => import("./pages/FinalYearBranchNotes"));
 const RoadmapGuide = lazy(() => import("./pages/RoadmapGuide"));
 const GateStudy = lazy(() => import("./pages/GateStudy"));
 const GateStudyQuiz = lazy(() => import("./pages/GateStudyQuiz"));
@@ -216,7 +217,8 @@ export const navItems = [
   { to: "/fourth-semester-pl", page: <FourthSemesterPLNotes /> },
   { to: "/seventh-semester-cse", page: <SeventhSemesterCSENotes /> },
   { to: "/seventh-semester-open-electives", page: <SeventhSemesterOpenElectives /> },
-  { to: "/eighth-semester-cse", page: <EighthSemesterCSENotes /> },
+  { to: "/eighth-semester-cse", page: <EighthSemesterCSENotes /> },
+  { to: "/final-year-notes", page: <FinalYearBranchNotes /> },
   { to: "/roadmaps/fresher-job-guide", page: <RoadmapGuide /> },
   { to: "*", page: <NotFound /> },
 ];
