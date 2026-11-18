@@ -50,24 +50,41 @@ export const RecommendationBadge: React.FC<RecommendationBadgeProps> = ({
     });
   };
 
-  // For regular students: show static badge only if recommended
+  const handleBadgeClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    e.preventDefault();
+    toast({
+      title: '⭐ Best Material',
+      description: `"${note.title || 'This note'}" is recommended as top quality material by mentors and top scorers.`,
+    });
+  };
+
+  // For regular students: show compact "★ Best" badge only if recommended
   if (!isOwner) {
     if (!recommended) return null;
     return (
-      <div className={`absolute top-3 right-3 z-10 pointer-events-none ${className}`}>
-        <span className="inline-flex items-center gap-1 text-[10px] font-extrabold tracking-wider uppercase bg-amber-500 text-white dark:bg-amber-500/90 shadow-xs px-2.5 py-0.5 rounded-full">
-          ⭐ Recommended
-        </span>
+      <div className={`absolute top-3 right-3 z-10 ${className}`}>
+        <button
+          type="button"
+          onClick={handleBadgeClick}
+          title="★ Best - Recommended by Mentor (Click for info)"
+          className="inline-flex items-center gap-1 text-[10px] font-extrabold tracking-tight bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white shadow-xs px-2 py-0.5 rounded-full transition-all cursor-pointer"
+        >
+          ★ Best
+        </button>
       </div>
     );
   }
 
-  // For Owner: show interactive star toggle + recommended badge
+  // For Owner: show compact "★ Best" badge + interactive star toggle
   return (
-    <div className={`absolute top-3 right-3 z-20 flex items-center gap-1.5 ${className}`}>
+    <div className={`absolute top-3 right-3 z-20 flex items-center gap-1 ${className}`}>
       {recommended && (
-        <span className="inline-flex items-center gap-1 text-[10px] font-extrabold tracking-wider uppercase bg-amber-500 text-white dark:bg-amber-500/90 shadow-xs px-2 py-0.5 rounded-full">
-          ⭐ Recommended
+        <span
+          title="Marked as Best Note for all students"
+          className="inline-flex items-center gap-1 text-[10px] font-extrabold tracking-tight bg-gradient-to-r from-amber-500 to-amber-600 text-white shadow-xs px-2 py-0.5 rounded-full select-none"
+        >
+          ★ Best
         </span>
       )}
       <button
@@ -76,8 +93,8 @@ export const RecommendationBadge: React.FC<RecommendationBadgeProps> = ({
         onDoubleClick={handleDoubleClick}
         title={
           recommended
-            ? 'Recommended (Click to toggle · Double-click to remove)'
-            : 'Click to mark this note as Recommended for all students'
+            ? 'Best Note (Click to toggle · Double-click to remove)'
+            : 'Click to mark as Best for all students'
         }
         className={`p-1 rounded-md transition-all duration-150 cursor-pointer ${
           recommended
