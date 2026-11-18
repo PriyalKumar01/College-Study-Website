@@ -1,3 +1,4 @@
+import { PdfCardBadge } from '@/components/PdfCardBadge';
 // Navigation: semester selection grid and catalog binding
 // B.Tech semester list portal
 import { useNavigate, useParams } from "react-router-dom";
