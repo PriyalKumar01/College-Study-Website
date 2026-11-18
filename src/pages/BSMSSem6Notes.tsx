@@ -1,3 +1,4 @@
+import { PdfCardBadge } from '@/components/PdfCardBadge';
 // Syllabus: sixth semester science curriculum subject modules
 // BS-MS 6th semester notes
 import { useState } from 'react';
