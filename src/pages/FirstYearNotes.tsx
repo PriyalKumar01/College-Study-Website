@@ -1202,7 +1202,7 @@ const FirstYearNotes = () => {
                         className="flex-1 inline-flex items-center justify-center gap-1.5 text-xs font-bold tracking-wider uppercase py-2 px-3 rounded-lg bg-foreground text-background hover:opacity-85 transition-opacity"
                         disabled={note.url === '#'}
                       >
-                        <Download className="h-3.5 w-3.5" /> Download
+                        <Eye className="h-3.5 w-3.5" /> View
                       </button>
                       <button
                         onClick={() => viewInBrowser(note.url)}
@@ -1635,7 +1635,7 @@ const FirstYearNotes = () => {
                         className="flex-1 inline-flex items-center justify-center gap-1.5 text-xs font-bold tracking-wider uppercase py-2 px-3 rounded-lg bg-foreground text-background hover:opacity-85 transition-opacity cursor-pointer"
                         disabled={note.url === '#'}
                       >
-                        <Download className="h-3.5 w-3.5" /> Download
+                        <Eye className="h-3.5 w-3.5" /> View
                       </button>
                       <button
                         onClick={() => viewInBrowser(note.url)}
@@ -1751,7 +1751,7 @@ const FirstYearNotes = () => {
                                       className="flex-1 inline-flex items-center justify-center gap-1.5 text-xs font-bold tracking-wider uppercase py-2 px-3 rounded-lg bg-foreground text-background hover:opacity-85 transition-opacity cursor-pointer"
                                       disabled={note.url === '#'}
                                     >
-                                      <Download className="h-3.5 w-3.5" /> Download
+                                      <Eye className="h-3.5 w-3.5" /> View
                                     </button>
                                     <button
                                       onClick={() => viewInBrowser(note.url)}
