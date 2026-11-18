@@ -1107,7 +1107,7 @@ const FirstYearNotes = () => {
 
         {/* Subject Header */}
         <div className="bg-slate-900 text-white pt-10 pb-8 px-4 sm:px-8 border-b border-slate-800">
-          <div className="max-w-5xl mx-auto">
+          <div className="max-w-7xl mx-auto">
             <button
               onClick={() => setSelectedSubject(null)}
               className="inline-flex items-center gap-2 text-xs font-semibold tracking-wider uppercase text-slate-400 hover:text-white transition-colors mb-4"
@@ -1137,7 +1137,7 @@ const FirstYearNotes = () => {
         </div>
 
         {/* Subject Content */}
-        <div className="max-w-5xl mx-auto px-4 sm:px-8 py-8 flex-1 w-full mb-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-8 py-8 flex-1 w-full mb-16">
           {/* If 0 files: Display clean contribution prompt card */}
           {subject.notes.length === 0 ? (
             <div className="text-center py-14 px-6 border-2 border-dashed border-border rounded-2xl bg-card">
@@ -1158,7 +1158,7 @@ const FirstYearNotes = () => {
               </button>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
               {subject.notes.map((note, index) => (
                 <motion.div
                   key={note.id || index}
@@ -1441,7 +1441,7 @@ const FirstYearNotes = () => {
             </div>
 
             {/* Subjects Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
               {filteredRegularSubjects.map((subject, index) => {
                 const playlists = getSubjectPlaylists(subject.id);
                 const hasDetailed = playlists.detailed && playlists.detailed.length > 0;
@@ -1605,7 +1605,7 @@ const FirstYearNotes = () => {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
               {filteredAssignmentNotes.map((note, index) => (
                 <motion.div
                   key={note.id || index}
@@ -1723,7 +1723,7 @@ const FirstYearNotes = () => {
                             No question papers match the current search query for this session.
                           </div>
                         ) : (
-                          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5 pt-4">
+                          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3.5 pt-4">
                             {group.items.map((note, idx) => (
                               <motion.div
                                 key={note.id || idx}
