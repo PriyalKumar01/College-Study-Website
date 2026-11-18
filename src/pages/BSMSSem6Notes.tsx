@@ -10,7 +10,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Download, ArrowLeft, FileText, Play, ChevronDown, ChevronRight, Trash2 } from 'lucide-react';
+import { Download, ArrowLeft, Eye, FileText, Play, ChevronDown, ChevronRight, Trash2 } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import { PlaylistModal } from '@/components/PlaylistModal';
