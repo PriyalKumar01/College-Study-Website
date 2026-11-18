@@ -55,6 +55,15 @@ const BTechBranches = () => {
 
   // Branch routing mapping
   const getRoute = (branchKey: string) => {
+    // 7th & 8th Semester (Final Year) - All 13 Branches Active
+    if (semester === 'semester-7' || semester === 'semester-8') {
+      const semNum = semester === 'semester-7' ? '7' : '8';
+      if (branchKey === 'CSE/IT') {
+        return semNum === '7' ? '/seventh-semester-cse' : '/eighth-semester-cse';
+      }
+      return `/final-year-notes?branch=${encodeURIComponent(branchKey)}&sem=${semNum}`;
+    }
+
     const routes: Record<string, Record<string, string>> = {
       'CSE/IT': {
         'semester-3': '/third-semester-cse',
@@ -338,7 +347,7 @@ const activeFilteredSubjects = useMemo(() => {
       </div>
 
       {/* ══════════ MAIN CONTENT AREA ══════════ */}
-      <div className="max-w-6xl mx-auto px-4 sm:px-8 py-8 flex-1 w-full mb-12 space-y-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-8 py-8 flex-1 w-full mb-12 space-y-8">
         {/* ══════════ UNIFIED SUBJECT FILTER & SEARCH BAR (EXACT 1ST YEAR STYLE) ══════════ */}
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-card border border-slate-300 dark:border-slate-800 p-3.5 rounded-2xl shadow-xs transition-all">
           {/* Left: My Subjects dropdown filter */}
@@ -536,7 +545,7 @@ const activeFilteredSubjects = useMemo(() => {
                 <p className="text-xs mt-1">Try another keyword or clear search to view all branches.</p>
               </div>
             ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
               {(inlineSearchQuery.trim() ? searchedSubjects : activeFilteredSubjects).map((sub, idx) => {
                 const hasDetailed = sub.playlists.detailed && sub.playlists.detailed.length > 0;
                 const hasOneshot = sub.playlists.oneshot && sub.playlists.oneshot.length > 0;
