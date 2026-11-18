@@ -10,14 +10,14 @@ export interface DownloadCheckResult {
   monthlyRemaining?: number;
 }
 
-const DAILY_LIMIT = 5;
-const MONTHLY_LIMIT = 20;
+const DAILY_LIMIT = 10;
+const MONTHLY_LIMIT = 30;
 
 /**
  * Checks if a user is allowed to download a PDF, and logs the download upon approval.
  * - Enforces authentication & email verification
- * - Max 5 PDFs per day
- * - Max 20 PDFs per month
+ * - Max 10 PDFs per day
+ * - Max 30 PDFs per month
  */
 let isDownloadInProgress = false;
 
