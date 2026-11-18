@@ -11,3 +11,7 @@ UPDATE public.notes SET file_url = 'https://pub-a7a8e9cce7e14983a69b9c28a6487e28
 UPDATE public.notes SET file_url = 'https://pub-a7a8e9cce7e14983a69b9c28a6487e28.r2.dev/study-materials/btech/CSE/5th%20Semester/1794656322965-9gd1zd2p.pdf' WHERE id = '84331001-bd9a-416c-b9a6-7a1993c5afc3';
 UPDATE public.notes SET file_url = 'https://pub-a7a8e9cce7e14983a69b9c28a6487e28.r2.dev/study-materials/btech/CSE/5th%20Semester/1794654319314-noh6eyfb.pdf' WHERE id = '0aa9ceea-6ba7-45d4-a578-16d4a56079ec';
 UPDATE public.notes SET file_url = 'https://pub-a7a8e9cce7e14983a69b9c28a6487e28.r2.dev/study-materials/btech/CSE/5th%20Semester/1794653248822-u9x52e12.pdf' WHERE id = '401ebf34-b803-4fef-ba75-45bfeded9e68';
+
+-- 20 Nov uploaded note
+UPDATE public.notes SET file_url = 'https://pub-a7a8e9cce7e14983a69b9c28a6487e28.r2.dev/study-materials/btech/general/ALL-First%20Year%20(All%20Subjects)/1795193688315-djk2hmok.pdf' WHERE id = 'f40505dd-a013-48cd-853b-fb72f9b7676c';
+
