@@ -6,6 +6,99 @@ import { matchesSubject } from '@/utils/subjectMatcher';
 
 const CUSTOM_SUBJECTS_STORAGE_KEY = 'studyhub_custom_subjects_v1';
 const RENAMED_SUBJECTS_STORAGE_KEY = 'studyhub_renamed_subjects_v1';
+const DELETED_SUBJECTS_STORAGE_KEY = 'studyhub_deleted_subjects_v1';
+
+export function getDeletedSubjects(): string[] {
+  try {
+    const raw = typeof window !== 'undefined' ? localStorage.getItem(DELETED_SUBJECTS_STORAGE_KEY) : null;
+    return raw ? JSON.parse(raw) : [];
+  } catch (e) {
+    return [];
+  }
+}
+
+export function isSubjectDeleted(
+  subjectName: string,
+  category?: string,
+  semester?: string,
+  branch?: string
+): boolean {
+  if (!subjectName) return false;
+  const deleted = getDeletedSubjects();
+  if (deleted.length === 0) return false;
+
+  const nameLower = subjectName.trim().toLowerCase();
+  if (deleted.includes(nameLower)) return true;
+
+  if (category || semester || branch) {
+    const contextualKey = `${category || 'all'}_${branch || 'all'}_${semester || 'all'}_${nameLower}`.toLowerCase();
+    if (deleted.includes(contextualKey)) return true;
+  }
+  return false;
+}
+
+export async function deleteSubject(
+  subjectName: string,
+  category?: string,
+  semester?: string,
+  branch?: string
+): Promise<boolean> {
+  try {
+    const trimmed = subjectName.trim();
+    const nameLower = trimmed.toLowerCase();
+    if (!trimmed) return false;
+
+    // 1. Mark as deleted in localStorage
+    const deleted = getDeletedSubjects();
+    const contextualKey = `${category || 'all'}_${branch || 'all'}_${semester || 'all'}_${nameLower}`.toLowerCase();
+    if (!deleted.includes(nameLower)) deleted.push(nameLower);
+    if (!deleted.includes(contextualKey)) deleted.push(contextualKey);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem(DELETED_SUBJECTS_STORAGE_KEY, JSON.stringify(deleted));
+    }
+
+    // 2. Remove from custom subjects in localStorage
+    const raw = typeof window !== 'undefined' ? localStorage.getItem(CUSTOM_SUBJECTS_STORAGE_KEY) : null;
+    if (raw) {
+      const parsed: Record<string, SubjectInfo[]> = JSON.parse(raw);
+      Object.keys(parsed).forEach(k => {
+        parsed[k] = parsed[k].filter(s => s.name.trim().toLowerCase() !== nameLower);
+      });
+      if (typeof window !== 'undefined') {
+        localStorage.setItem(CUSTOM_SUBJECTS_STORAGE_KEY, JSON.stringify(parsed));
+      }
+    }
+
+    // 3. Delete any subject placeholder rows in Supabase notes table
+    try {
+      let query = supabase
+        .from('notes')
+        .delete()
+        .ilike('subject', trimmed)
+        .eq('material_type', 'subject_placeholder');
+
+      if (semester) {
+        const dbSemester = category === 'btech'
+          ? (branch && semester ? `${branch}-${semester}` : semester)
+          : semester;
+        query = query.eq('semester', dbSemester);
+      }
+      await query;
+    } catch (dbErr) {
+      console.warn('Could not delete placeholder from Supabase notes table:', dbErr);
+    }
+
+    // 4. Invalidate cache and broadcast update
+    clearCachePrefix('notes');
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new Event('studyhub_notes_updated'));
+    }
+    return true;
+  } catch (err) {
+    console.error('Failed to delete subject', err);
+    return false;
+  }
+}
 
 export function getCustomSubjectsForContext(
   category: string,
@@ -97,6 +190,7 @@ export function extractDynamicSubjects(
 
   communityNotes.forEach(cn => {
     if (!cn.subject) return;
+    if (isSubjectDeleted(cn.subject)) return;
     const isAlreadyStatic = staticSubjects.some(sub => matchesSubject(cn.subject, sub.name, sub.id));
     if (!isAlreadyStatic && !customMap.has(cn.subject.toLowerCase())) {
       customMap.set(cn.subject.toLowerCase(), {
@@ -118,37 +212,7 @@ export async function deleteCustomSubject(
   subjectName: string,
   semester?: string
 ): Promise<boolean> {
-  try {
-    const raw = localStorage.getItem(CUSTOM_SUBJECTS_STORAGE_KEY);
-    if (raw) {
-      const parsed: Record<string, SubjectInfo[]> = JSON.parse(raw);
-      Object.keys(parsed).forEach(k => {
-        parsed[k] = parsed[k].filter(s => s.name.toLowerCase() !== subjectName.toLowerCase());
-      });
-      localStorage.setItem(CUSTOM_SUBJECTS_STORAGE_KEY, JSON.stringify(parsed));
-    }
-
-    let query = supabase
-      .from('notes')
-      .delete()
-      .eq('subject', subjectName)
-      .eq('material_type', 'subject_placeholder');
-
-    if (semester) {
-      query = query.eq('semester', semester);
-    }
-
-    await query;
-
-    clearCachePrefix('notes');
-    if (typeof window !== 'undefined') {
-      window.dispatchEvent(new Event('studyhub_notes_updated'));
-    }
-    return true;
-  } catch (err) {
-    console.error('Failed to delete custom subject', err);
-    return false;
-  }
+  return deleteSubject(subjectName, undefined, semester);
 }
 
 export function getRenamedSubjectsMap(): Record<string, string> {
