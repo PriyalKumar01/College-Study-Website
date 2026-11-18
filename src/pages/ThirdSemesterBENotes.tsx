@@ -1,3 +1,4 @@
+import { PdfCardBadge } from '@/components/PdfCardBadge';
 // 3rd semester Biochemical Engineering notes
 import { useState } from 'react';
 import { motion } from 'framer-motion';
