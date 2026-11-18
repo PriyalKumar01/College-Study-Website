@@ -1,4 +1,3 @@
-import { PdfCardBadge } from '@/components/PdfCardBadge';
 // Curriculum: integrated BS-MS science curriculum year navigation
 // BS-MS integrated science years portal
 import { motion } from 'framer-motion';
@@ -101,7 +100,7 @@ const BSMSYears = () => {
         </div>
       </div>
 
-      <div className="max-w-6xl mx-auto px-4 sm:px-8 py-10 flex-1 w-full space-y-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-8 py-10 flex-1 w-full space-y-8">
         {/* Info Banner */}
         <motion.div
           initial={{ opacity: 0, y: 16 }}
