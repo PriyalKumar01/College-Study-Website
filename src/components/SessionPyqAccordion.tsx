@@ -11,10 +11,12 @@ import {
   FileText,
   Trash2,
   Calendar,
-  Sparkles
+  Sparkles,
+  Eye,
 } from 'lucide-react';
 import { smartDownload, viewInBrowser } from '@/lib/downloadUtils';
 import { RecommendationBadge } from '@/components/RecommendationBadge';
+import { PdfCardBadge } from '@/components/PdfCardBadge';
 
 export interface PyqNoteItem {
   id?: string;
@@ -23,284 +25,269 @@ export interface PyqNoteItem {
   recommended?: boolean;
   isCommunity?: boolean;
   fileName?: string;
-  uploadedBy?: string;
   userName?: string;
-  yearSession?: string;
-  [key: string]: any;
+  academicYear?: string;
+  materialType?: string;
 }
 
-interface SessionPyqAccordionProps {
+export interface SessionPyqAccordionProps {
   notes: PyqNoteItem[];
-  title?: string;
-  subtitle?: string;
-  onDelete?: (id: string) => void;
   isOwner?: boolean;
+  onDelete?: (id: string) => void;
+  defaultExpanded?: boolean;
+  className?: string;
 }
 
-export function SessionPyqAccordion({
-  notes,
-  title = 'Previous Year Questions (PYQs)',
-  subtitle = 'Curated session-wise exam question papers sorted descending with fast access.',
-  onDelete,
-  isOwner = false,
-}: SessionPyqAccordionProps) {
-  const [searchQuery, setSearchQuery] = useState('');
-  const [expandedSessions, setExpandedSessions] = useState<string[]>([
-    '2026-27',
-    '2025-26',
-    '2024-25',
-    '2023-24',
-    '2022-23',
-    'other'
-  ]);
+interface YearGroup {
+  year: string;
+  label: string;
+  items: PyqNoteItem[];
+  count: number;
+}
 
-  const toggleSession = (key: string) => {
-    setExpandedSessions(prev =>
-      prev.includes(key) ? prev.filter(k => k !== key) : [...prev, key]
-    );
-  };
+const extractYearFromTitle = (title: string): string => {
+  if (!title) return 'Other';
+  const match = title.match(/\b(20[12]\d)\b/);
+  if (match) return match[1];
+  const academicMatch = title.match(/\b(20\d{2})\s*[-–/]\s*(\d{2,4})\b/);
+  if (academicMatch) return academicMatch[1];
+  return 'General';
+};
+
+export const SessionPyqAccordion: React.FC<SessionPyqAccordionProps> = ({
+  notes,
+  isOwner = false,
+  onDelete,
+  defaultExpanded = true,
+  className = '',
+}) => {
+  const [expandedYears, setExpandedYears] = useState<Record<string, boolean>>({});
+  const [searchQuery, setSearchQuery] = useState('');
 
   const handleDownload = (url: string, noteTitle: string) => {
     smartDownload(url, noteTitle);
   };
 
-  // Group notes descending by academic session
-  const pyqGroups = useMemo(() => {
-    const q = searchQuery.trim().toLowerCase();
-    const filtered = q
-      ? notes.filter(n => (n.title || '').toLowerCase().includes(q) || (n.fileName || '').toLowerCase().includes(q))
-      : notes;
-
-    const groups: Record<
-      string,
-      { key: string; label: string; badge: string; badgeColor: string; items: PyqNoteItem[] }
-    > = {
-      '2026-27': {
-        key: '2026-27',
-        label: '2026–2027 Academic Session (Current Session)',
-        badge: 'Current / Ongoing',
-        badgeColor: 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/30',
-        items: []
-      },
-      '2025-26': {
-        key: '2025-26',
-        label: '2025–2026 Academic Session',
-        badge: 'Recent Past Session',
-        badgeColor: 'bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border-indigo-500/30',
-        items: []
-      },
-      '2024-25': {
-        key: '2024-25',
-        label: '2024–2025 Academic Session',
-        badge: 'Previous Year',
-        badgeColor: 'bg-violet-500/10 text-violet-600 dark:text-violet-400 border-violet-500/30',
-        items: []
-      },
-      '2023-24': {
-        key: '2023-24',
-        label: '2023–2024 Academic Session',
-        badge: 'Past Exam Papers',
-        badgeColor: 'bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-500/30',
-        items: []
-      },
-      '2022-23': {
-        key: '2022-23',
-        label: '2022–2023 & Earlier Archives',
-        badge: 'Archived Collection',
-        badgeColor: 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/30',
-        items: []
-      },
-      'other': {
-        key: 'other',
-        label: 'Additional / Uncategorized Question Papers',
-        badge: 'General Papers',
-        badgeColor: 'bg-slate-500/10 text-slate-600 dark:text-slate-400 border-slate-500/30',
-        items: []
-      }
-    };
-
-    filtered.forEach(note => {
-      const t = (note.title || '').toLowerCase();
-      const fn = (note.fileName || '').toLowerCase();
-      const ys = (note.yearSession || '').toLowerCase();
-      const combined = `${t} ${fn} ${ys}`;
-
-      if (combined.includes('2026-27') || combined.includes('2026-2027') || combined.includes('26-27')) {
-        groups['2026-27'].items.push(note);
-      } else if (combined.includes('2025-26') || combined.includes('2025-2026') || combined.includes('25-26')) {
-        groups['2025-26'].items.push(note);
-      } else if (combined.includes('2024-25') || combined.includes('2024-2025') || combined.includes('24-25')) {
-        groups['2024-25'].items.push(note);
-      } else if (combined.includes('2023-24') || combined.includes('2023-2024') || combined.includes('23-24')) {
-        groups['2023-24'].items.push(note);
-      } else if (
-        combined.includes('2022-23') ||
-        combined.includes('2022-2023') ||
-        combined.includes('22-23') ||
-        combined.includes('2021') ||
-        combined.includes('2020') ||
-        combined.includes('2019') ||
-        combined.includes('2018') ||
-        combined.includes('archive')
-      ) {
-        groups['2022-23'].items.push(note);
-      } else {
-        // Fallback: don't lose ANY note
-        groups['other'].items.push(note);
-      }
-    });
-
-    // Return groups in descending order, omitting empty ones unless search active
-    return Object.values(groups).filter(g => g.items.length > 0);
+  const filteredNotes = useMemo(() => {
+    if (!searchQuery.trim()) return notes;
+    const q = searchQuery.toLowerCase().trim();
+    return notes.filter((n) => n.title.toLowerCase().includes(q));
   }, [notes, searchQuery]);
 
+  const yearGroups: YearGroup[] = useMemo(() => {
+    const groupsMap = new Map<string, PyqNoteItem[]>();
+
+    filteredNotes.forEach((note) => {
+      const year = note.academicYear || extractYearFromTitle(note.title);
+      if (!groupsMap.has(year)) {
+        groupsMap.set(year, []);
+      }
+      groupsMap.get(year)!.push(note);
+    });
+
+    const groups: YearGroup[] = [];
+    groupsMap.forEach((items, year) => {
+      groups.push({
+        year,
+        label: year === 'General' || year === 'Other' ? 'Miscellaneous PYQ Papers' : `Batch / Examination Year ${year}`,
+        items,
+        count: items.length,
+      });
+    });
+
+    groups.sort((a, b) => {
+      const aIsNum = /^\d+$/.test(a.year);
+      const bIsNum = /^\d+$/.test(b.year);
+      if (aIsNum && bIsNum) return Number(b.year) - Number(a.year);
+      if (aIsNum) return -1;
+      if (bIsNum) return 1;
+      return a.year.localeCompare(b.year);
+    });
+
+    return groups;
+  }, [filteredNotes]);
+
+  const isYearOpen = (year: string): boolean => {
+    if (expandedYears[year] !== undefined) return expandedYears[year];
+    return defaultExpanded;
+  };
+
+  const toggleYear = (year: string) => {
+    setExpandedYears((prev) => ({
+      ...prev,
+      [year]: !isYearOpen(year),
+    }));
+  };
+
+  const expandAll = () => {
+    const all: Record<string, boolean> = {};
+    yearGroups.forEach((g) => {
+      all[g.year] = true;
+    });
+    setExpandedYears(all);
+  };
+
+  const collapseAll = () => {
+    const all: Record<string, boolean> = {};
+    yearGroups.forEach((g) => {
+      all[g.year] = false;
+    });
+    setExpandedYears(all);
+  };
+
+  if (!notes || notes.length === 0) {
+    return null;
+  }
+
   return (
-    <div className="space-y-6">
-      {/* Search Header Bar */}
+    <div className={`space-y-4 ${className}`}>
+      {/* Header controls: Search & expand/collapse buttons */}
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-card border border-border p-3.5 rounded-2xl shadow-xs">
         <div className="relative flex-1 max-w-md">
-          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <input
             type="text"
             value={searchQuery}
-            onChange={e => setSearchQuery(e.target.value)}
-            placeholder="Search exam papers (Mid Sem, End Sem, session year)..."
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search question papers by subject, year..."
             className="w-full pl-9 pr-4 py-2 rounded-xl border border-border bg-background text-foreground text-xs placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-emerald-500/40"
           />
         </div>
-        <div className="text-xs text-muted-foreground font-semibold flex items-center gap-2">
-          <GraduationCap className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
-          <span>{notes.length} Total Exam Question Papers</span>
+
+        <div className="flex items-center gap-2 justify-end">
+          <button
+            type="button"
+            onClick={expandAll}
+            className="text-[11px] font-bold uppercase tracking-wider px-3 py-1.5 rounded-lg border border-border hover:bg-muted text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+          >
+            Expand All
+          </button>
+          <button
+            type="button"
+            onClick={collapseAll}
+            className="text-[11px] font-bold uppercase tracking-wider px-3 py-1.5 rounded-lg border border-border hover:bg-muted text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+          >
+            Collapse All
+          </button>
         </div>
       </div>
 
-      {pyqGroups.length === 0 ? (
-        <div className="text-center py-12 border border-dashed rounded-2xl bg-card">
-          <p className="text-muted-foreground text-sm mb-1">No question papers match your query "{searchQuery}".</p>
-          <button
-            onClick={() => setSearchQuery('')}
-            className="text-xs text-emerald-600 font-bold hover:underline mt-2"
-          >
-            Clear Search Filter
-          </button>
-        </div>
-      ) : (
-        <div className="space-y-4">
-          {pyqGroups.map(group => {
-            const isOpen = expandedSessions.includes(group.key);
-            return (
-              <div
-                key={group.key}
-                className="border border-border/80 bg-card rounded-2xl overflow-hidden shadow-xs transition-all"
+      {/* Accordion Panels */}
+      <div className="space-y-3">
+        {yearGroups.map((group) => {
+          const isOpen = isYearOpen(group.year);
+          return (
+            <div
+              key={group.year}
+              className="border border-border/80 rounded-2xl bg-card overflow-hidden shadow-xs transition-colors"
+            >
+              {/* Accordion Trigger Header */}
+              <button
+                type="button"
+                onClick={() => toggleYear(group.year)}
+                className="w-full px-5 py-3.5 flex items-center justify-between gap-4 text-left hover:bg-muted/30 transition-colors cursor-pointer"
               >
-                {/* Collapsible Accordion Header */}
-                <button
-                  onClick={() => toggleSession(group.key)}
-                  className="w-full flex items-center justify-between p-4 sm:p-5 text-left hover:bg-muted/40 transition-colors cursor-pointer select-none"
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-bold shrink-0">
-                      <Calendar className="h-5 w-5" />
-                    </div>
-                    <div>
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <h3 className="font-extrabold text-base sm:text-lg text-foreground tracking-tight">
-                          {group.label}
-                        </h3>
-                        <span className={`text-[10px] font-bold uppercase px-2.5 py-0.5 rounded-full border ${group.badgeColor}`}>
-                          {group.badge}
-                        </span>
-                      </div>
-                      <p className="text-xs text-muted-foreground mt-0.5">
-                        {group.items.length} question paper{group.items.length === 1 ? '' : 's'} available
-                      </p>
-                    </div>
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
+                    <Calendar className="h-4 w-4" />
                   </div>
-
-                  <div className="flex items-center gap-2 text-muted-foreground shrink-0">
-                    <span className="text-xs font-semibold hidden sm:inline">
-                      {isOpen ? 'Collapse' : 'Expand'}
-                    </span>
-                    <div className="w-8 h-8 rounded-lg bg-muted/60 flex items-center justify-center">
-                      {isOpen ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
-                    </div>
+                  <div>
+                    <h3 className="font-bold text-foreground text-sm flex items-center gap-2">
+                      {group.label}
+                      <span className="text-[10px] font-black uppercase tracking-wider bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 px-2 py-0.5 rounded-full border border-emerald-500/20">
+                        {group.count} {group.count === 1 ? 'Paper' : 'Papers'}
+                      </span>
+                    </h3>
                   </div>
-                </button>
+                </div>
 
-                {/* Collapsible Items Grid */}
-                {isOpen && (
-                  <div className="p-4 sm:p-5 pt-0 border-t border-border/50 bg-muted/10">
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5 pt-4">
-                      {group.items.map((note, idx) => (
-                        <motion.div
-                          key={note.id || idx}
-                          initial={{ opacity: 0, y: 8 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{ delay: idx * 0.02, duration: 0.2 }}
-                        >
-                          <div className="border border-border bg-card hover:border-emerald-500/50 rounded-xl p-4 transition-all duration-200 hover:shadow-md flex flex-col h-full relative">
-                            <RecommendationBadge note={note} isOwner={isOwner} />
+                <div className="flex items-center gap-2 text-muted-foreground">
+                  <span className="text-xs font-semibold hidden sm:inline">
+                    {isOpen ? 'Hide papers' : 'View papers'}
+                  </span>
+                  {isOpen ? (
+                    <ChevronUp className="h-4 w-4 transition-transform duration-200" />
+                  ) : (
+                    <ChevronDown className="h-4 w-4 transition-transform duration-200" />
+                  )}
+                </div>
+              </button>
 
-                            {note.isCommunity && isOwner && onDelete && (
-                              <button
-                                className="absolute top-3 left-3 text-red-500 hover:text-red-700 bg-red-50 dark:bg-red-950/20 p-1.5 rounded-lg transition-colors z-10"
-                                onClick={() => onDelete(note.id!)}
-                                title="Delete material"
-                              >
-                                <Trash2 className="h-4 w-4" />
-                              </button>
-                            )}
+              {/* Collapsible Items Grid */}
+              {isOpen && (
+                <div className="p-4 sm:p-5 pt-0 border-t border-border/50 bg-muted/10">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3.5 pt-4">
+                    {group.items.map((note, idx) => (
+                      <motion.div
+                        key={note.id || idx}
+                        initial={{ opacity: 0, y: 8 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: idx * 0.02, duration: 0.2 }}
+                      >
+                        <div className="border border-border bg-card hover:border-emerald-500/50 rounded-xl p-4 transition-all duration-200 hover:shadow-md flex flex-col h-full relative">
+                          <RecommendationBadge note={note} isOwner={isOwner} />
 
-                            <div className="flex items-center gap-2 mb-2.5">
-                              <span className="text-[10px] font-bold tracking-wider uppercase bg-red-500/10 text-red-600 dark:text-red-400 px-2 py-0.5 rounded border border-red-500/20">
-                                PYQ Paper ❓
+                          {note.isCommunity && isOwner && onDelete && (
+                            <button
+                              className="absolute top-3 left-3 text-red-500 hover:text-red-700 bg-red-50 dark:bg-red-950/20 p-1.5 rounded-lg transition-colors z-10"
+                              onClick={() => onDelete(note.id!)}
+                              title="Delete material"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </button>
+                          )}
+
+                          <div className="flex items-center gap-2 mb-2.5 flex-wrap pr-14">
+                            <PdfCardBadge />
+                            <span className="text-[10px] font-bold tracking-wider uppercase bg-red-500/10 text-red-600 dark:text-red-400 px-2 py-0.5 rounded border border-red-500/20">
+                              PYQ Paper ❓
+                            </span>
+                            {note.isCommunity && (
+                              <span className="text-[10px] font-bold tracking-wider uppercase bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 px-2 py-0.5 rounded border border-emerald-500/30">
+                                Community
                               </span>
-                              {note.isCommunity && (
-                                <span className="text-[10px] font-bold tracking-wider uppercase bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 px-2 py-0.5 rounded border border-emerald-500/30">
-                                  Community
-                                </span>
-                              )}
-                            </div>
-
-                            <h4 className="font-semibold text-foreground text-sm leading-snug flex-1 mb-3">
-                              {note.title}
-                            </h4>
-
-                            {note.userName && (
-                              <p className="text-[10px] text-muted-foreground mb-3">
-                                Uploaded by: {note.userName}
-                              </p>
                             )}
-
-                            <div className="flex gap-2 pt-2 border-t border-border/50">
-                              <button
-                                onClick={() => handleDownload(note.url, note.title)}
-                                className="flex-1 inline-flex items-center justify-center gap-1.5 text-xs font-bold tracking-wider uppercase py-2 px-3 rounded-lg bg-foreground text-background hover:opacity-85 transition-opacity cursor-pointer"
-                                disabled={note.url === '#'}
-                              >
-                                <Download className="h-3.5 w-3.5" /> Download
-                              </button>
-                              <button
-                                onClick={() => viewInBrowser(note.url)}
-                                className="inline-flex items-center justify-center p-2 rounded-lg border border-border hover:bg-muted transition-colors cursor-pointer"
-                                disabled={note.url === '#'}
-                                title="View in Browser"
-                              >
-                                <ExternalLink className="h-3.5 w-3.5 text-foreground" />
-                              </button>
-                            </div>
                           </div>
-                        </motion.div>
-                      ))}
-                    </div>
+
+                          <h4 className="font-semibold text-foreground text-sm leading-snug flex-1 mb-3">
+                            {note.title}
+                          </h4>
+
+                          {note.userName && (
+                            <p className="text-[10px] text-muted-foreground mb-3">
+                              Uploaded by: {note.userName}
+                            </p>
+                          )}
+
+                          <div className="flex gap-2 pt-2 border-t border-border/50">
+                            <button
+                              onClick={() => viewInBrowser(note.url)}
+                              className="flex-1 inline-flex items-center justify-center gap-1.5 text-xs font-bold tracking-wider uppercase py-2 px-3 rounded-lg bg-foreground text-background hover:opacity-85 transition-opacity cursor-pointer"
+                              disabled={note.url === '#'}
+                            >
+                              <Eye className="h-3.5 w-3.5" /> View
+                            </button>
+                            <button
+                              onClick={() => handleDownload(note.url, note.title)}
+                              className="inline-flex items-center justify-center p-2 rounded-lg border border-border hover:bg-muted transition-colors cursor-pointer"
+                              disabled={note.url === '#'}
+                              title="Download PDF"
+                            >
+                              <Download className="h-3.5 w-3.5 text-foreground" />
+                            </button>
+                          </div>
+                        </div>
+                      </motion.div>
+                    ))}
                   </div>
-                )}
-              </div>
-            );
-          })}
-        </div>
-      )}
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
-}
-// Reviewed: academic catalog & interface consistency check (v2.0.53)
+};
+
+export default SessionPyqAccordion;
