@@ -1,198 +1,729 @@
 // Curriculum: bachelor of business administration syllabus and notes
-// BBA program notes
-import { useState } from 'react';
-import { motion } from 'framer-motion';
-import { Download, ArrowLeft, FileText, ChevronDown, ChevronRight, ExternalLink } from 'lucide-react';
+// Official HBTU Kanpur BBA Program (3-Year Degree, 6 Semesters)
+import { useState, useMemo } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import {
+  Download, ArrowLeft, FileText, ChevronDown, ChevronRight,
+  ExternalLink, Search, Plus, Pencil, Trash2, X, Eye, BookOpen,
+  Briefcase, Sparkles, Loader2
+} from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import { useAuth } from '@/contexts/AuthContext';
+import { useToast } from '@/hooks/use-toast';
+import { useCommunityNotes } from '@/hooks/useCommunityNotes';
+import { SubjectShareButton } from '@/components/SubjectShareButton';
+import { RecommendationBadge } from '@/components/RecommendationBadge';
+import { smartDownload, viewInBrowser } from '@/lib/downloadUtils';
+import { getSubjectsOnly, SubjectInfo } from '@/data/courseStructure';
+import {
+  extractDynamicSubjects,
+  saveCustomSubject,
+  saveRenamedSubject,
+  deleteSubject
+} from '@/lib/customSubjects';
+import { matchesSubject } from '@/utils/subjectMatcher';
+
+// Static legacy notes curated for HBTU BBA 1st Year subjects
+const LEGACY_BBA_NOTES: Record<string, { title: string; url: string }[]> = {
+  'Principles and Practices of Management (BBA 101)': [
+    { title: 'Concept & Definition of Management', url: 'https://drive.google.com/uc?export=download&id=1ezrP5fk_2rh2NjbweI6qs9JFa3XplZMH' },
+    { title: 'Principles of Management Full Notes', url: 'https://drive.google.com/uc?export=download&id=13YKzgPOmWxlwAlQNT1L3Aez66OmvntSX' },
+  ],
+  'Micro Economics (BBA 103)': [
+    { title: 'Business Economics Reference Book', url: 'https://drive.google.com/file/d/1XD2CnTGa8tpUzqLPlzzDnc1-P60wdAJO/view?usp=drive_link' },
+    { title: 'E&M Unit 1 (Part-1) Notes', url: 'https://drive.google.com/file/d/1UI4YbkhC7bbb7DpMtNgnciPCFV_c7FaL/view?usp=drive_link' },
+    { title: 'E&M Unit 1 (Part 2) Notes', url: 'https://drive.google.com/file/d/1UObid3Prm9I_JVbxPqaPSukSmQ8qyCV6/view?usp=drive_link' },
+    { title: 'Unit 1 (Elasticity Notes)', url: 'https://drive.google.com/file/d/1U8GWR590L9kRgbe5_fZ6t-myuUoXmqn8/view?usp=drive_link' },
+    { title: 'Complete Unit 2 Notes', url: 'https://drive.google.com/file/d/1UOd_TOHZeOayp-W0NeKdmnv2mXr7-or-/view?usp=drive_link' },
+    { title: 'Unit 3 (Part-1) Notes', url: 'https://drive.google.com/file/d/1UPKMYKBS5k96DWeB2xyVy1ix9gUBnF_o/view?usp=drive_link' },
+    { title: 'Unit 3 (Part-2) Notes', url: 'https://drive.google.com/file/d/1U_rmk9aE-Ge6cxrPqIBbNovw9kwXm56M/view?usp=drive_link' },
+    { title: 'Micro Economics Handwritten Notes', url: 'https://drive.google.com/file/d/1XANMyirw8Bb8Ks4m-R9jOtJ-0CncP5mQ/view?usp=drive_link' },
+    { title: 'Last Min. Exam Revision Notes', url: 'https://drive.google.com/file/d/1Tv4l6-DNZygMKa-7AP73LvBki4L3QQcI/view?usp=drive_link' },
+  ],
+  'Business Environment (BBA 105)': [
+    { title: 'Unit-1 Preamble & Business Policy PDF', url: 'https://drive.google.com/uc?export=download&id=1e2zbkhTSLRzaR_WyJrpStQ4yA4DrVqfa' },
+    { title: 'Unit-2 Legal & Economic Environment Notes', url: 'https://drive.google.com/uc?export=download&id=1praW_irxDoN--7CNsG_ZGM2ymgNUCUTt' },
+    { title: 'Unit-4 Socio-Cultural Environment Notes', url: 'https://drive.google.com/uc?export=download&id=1TmjNFBsL4FneJFKpvzDM6jyp12NzPV-A' },
+    { title: 'Keshavanand Bharti Benchmark Case PDF', url: 'https://drive.google.com/uc?export=download&id=1oYSTGRVg5Yr3d40s-JGBG6rBg_YWbbTB' },
+  ],
+  'Accounting-I (BBA 107)': [
+    { title: 'Unit-1 Fundamentals of Accounting Notes', url: 'https://drive.google.com/uc?export=download&id=1EA5gKb4RwXJMqy1M9PmNrqqHefCln6L3' },
+    { title: 'Unit-2 Journal & Ledger Notes', url: 'https://drive.google.com/uc?export=download&id=1DPvXTzFwopVuDBCl3V4vTB-X8QnwOVB-' },
+    { title: 'Normal Distribution & Statistical Accounting Notes', url: 'https://drive.google.com/uc?export=download&id=14JC6zEI5r1laIR0MQZT9w7-bRXac7qCy' },
+  ],
+  'Computer Applications in Management (BBA 109)': [
+    { title: 'Unit-1 IT in Business Full Notes', url: 'https://drive.google.com/uc?export=download&id=1aRcSfppNYSjYH9BwGjqOORSTFrueWxBc' },
+    { title: 'Unit-2 Types of OS & Office Tools Notes', url: 'https://drive.google.com/uc?export=download&id=1OqT3XBqf6P05jgAJSM6hGZZvniIy-9bS' },
+    { title: 'Unit-4 Part-1 DBMS in Management Notes', url: 'https://drive.google.com/uc?export=download&id=17yx1tH3FE2bXp0Aq9-z4wCOyXtCzTMoh' },
+    { title: 'Unit-4 Part-2 Network & Security Notes', url: 'https://drive.google.com/uc?export=download&id=1jsD77T9K75mQ_vZ_WIY7qMs6eBYHoSLJ' },
+    { title: 'MS Office Practical Guide (Word, Excel, Window)', url: 'https://drive.google.com/uc?export=download&id=16OuKsOaN9ZR3q5tNbh_VstT_pJ5FR5Xu' },
+  ],
+  'Business Communication (BBA 106)': [
+    { title: 'Unit-1 Principles of Business Communication Notes', url: 'https://drive.google.com/uc?export=download&id=1WI-eXtUiW-rqj25KXPChkKbjDscNwUtA' },
+    { title: 'Unit-2 Business Letters & Reports Notes', url: 'https://drive.google.com/uc?export=download&id=1oIjxOmyD6jwDTneOaa_sEX7o7M8GqSgO' },
+    { title: 'Unit-2 Sample Professional Business Letter PDF', url: 'https://drive.google.com/uc?export=download&id=1Y4BC0ijoUl9ZyHElbxBOjAydqkeHjKpw' },
+    { title: 'Professional Resume & CV Templates PDF', url: 'https://drive.google.com/uc?export=download&id=1nyL84z6M-l_f-mxhRnmMlUtwRUqWEIag' },
+  ],
+};
+
+const BBA_YEAR_TABS = [
+  { id: '1st', label: '1st Year', semesters: ['1st Semester', '2nd Semester'], title: 'Foundation & Principles' },
+  { id: '2nd', label: '2nd Year', semesters: ['3rd Semester', '4th Semester'], title: 'Functional Management' },
+  { id: '3rd', label: '3rd Year', semesters: ['5th Semester', '6th Semester'], title: 'Strategy & Enterprise' },
+];
 
 const BBANotes = () => {
   const navigate = useNavigate();
-  const [expandedSubjects, setExpandedSubjects] = useState<string[]>([]);
+  const { toast } = useToast();
+  const { user, isOwner } = useAuth();
 
-  const toggleSubjectExpansion = (subjectId: string) => {
-    setExpandedSubjects(prev => 
-      prev.includes(subjectId) 
-        ? prev.filter(id => id !== subjectId)
-        : [...prev, subjectId]
-    );
+  const [selectedYear, setSelectedYear] = useState<'1st' | '2nd' | '3rd'>('1st');
+  const [selectedSemester, setSelectedSemester] = useState<string>('1st Semester');
+  const [selectedSubject, setSelectedSubject] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [refreshKey, setRefreshKey] = useState(0);
+
+  // Owner custom subject management states
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [newSubName, setNewSubName] = useState('');
+  const [newSubFullName, setNewSubFullName] = useState('');
+  const [isSubmittingNew, setIsSubmittingNew] = useState(false);
+
+  const [editingSubject, setEditingSubject] = useState<string | null>(null);
+  const [renameValue, setRenameValue] = useState('');
+  const [isSubmittingRename, setIsSubmittingRename] = useState(false);
+
+  const [deletingSubject, setDeletingSubject] = useState<string | null>(null);
+
+  // Fetch approved community notes for BBA
+  const { communityNotes, loading: notesLoading, refreshNotes } = useCommunityNotes('bba');
+
+  // Handle year tab switch
+  const handleYearSelect = (yearId: '1st' | '2nd' | '3rd') => {
+    setSelectedYear(yearId);
+    const tab = BBA_YEAR_TABS.find(t => t.id === yearId);
+    if (tab && tab.semesters.length > 0) {
+      setSelectedSemester(tab.semesters[0]);
+    }
   };
 
-  const subjects = [
-    {
-      id: 'em',
-      name: 'E&M',
-      fullName: 'Economics & Management',
-      description: 'Business economics and management principles',
-      notes: [
-        { title: 'Business Economics Book', url: 'https://drive.google.com/file/d/1XD2CnTGa8tpUzqLPlzzDnc1-P60wdAJO/view?usp=drive_link' },
-        { title: 'E&M Unit 1 (Part-1) Notes', url: 'https://drive.google.com/file/d/1UI4YbkhC7bbb7DpMtNgnciPCFV_c7FaL/view?usp=drive_link' },
-        { title: 'E&M Unit 1 (Part 2) Notes', url: 'https://drive.google.com/file/d/1UObid3Prm9I_JVbxPqaPSukSmQ8qyCV6/view?usp=drive_link' },
-        { title: 'Unit 1 (Elasticity Notes)', url: 'https://drive.google.com/file/d/1U8GWR590L9kRgbe5_fZ6t-myuUoXmqn8/view?usp=drive_link' },
-        { title: 'Complete Unit 2 Notes', url: 'https://drive.google.com/file/d/1UOd_TOHZeOayp-W0NeKdmnv2mXr7-or-/view?usp=drive_link' },
-        { title: 'Unit 3 (Part-1) Notes', url: 'https://drive.google.com/file/d/1UPKMYKBS5k96DWeB2xyVy1ix9gUBnF_o/view?usp=drive_link' },
-        { title: 'Unit 3 (Part-2) Notes', url: 'https://drive.google.com/file/d/1U_rmk9aE-Ge6cxrPqIBbNovw9kwXm56M/view?usp=drive_link' },
-        { title: 'E&M Handwritten Notes', url: 'https://drive.google.com/file/d/1XANMyirw8Bb8Ks4m-R9jOtJ-0CncP5mQ/view?usp=drive_link' },
-        { title: 'Full Last Min. Revision Notes', url: 'https://drive.google.com/file/d/1Tv4l6-DNZygMKa-7AP73LvBki4L3QQcI/view?usp=drive_link' }
-      ]
-    },
-    {
-      id: 'fa',
-      name: 'Financial Accounting',
-      fullName: 'Financial Accounting',
-      description: 'Principles and practices of accounting',
-      notes: [
-        { title: 'Unit-1 Notes', url: 'https://drive.google.com/uc?export=download&id=1EA5gKb4RwXJMqy1M9PmNrqqHefCln6L3' },
-        { title: 'Unit-2 Notes', url: 'https://drive.google.com/uc?export=download&id=1DPvXTzFwopVuDBCl3V4vTB-X8QnwOVB-' },
-        { title: 'Normal Distribution Notes', url: 'https://drive.google.com/uc?export=download&id=14JC6zEI5r1laIR0MQZT9w7-bRXac7qCy' }
-      ]
-    },
-    {
-      id: 'pom',
-      name: 'Principles of Management',
-      fullName: 'Principles of Management',
-      description: 'Fundamental management concepts and practices',
-      notes: [
-        { title: 'Concept & Definition of Management', url: 'https://drive.google.com/uc?export=download&id=1ezrP5fk_2rh2NjbweI6qs9JFa3XplZMH' },
-        { title: 'Principles of Management', url: 'https://drive.google.com/uc?export=download&id=13YKzgPOmWxlwAlQNT1L3Aez66OmvntSX' }
-      ]
-    },
-    {
-      id: 'itm',
-      name: 'IT in Management',
-      fullName: 'Information Technology in Management',
-      description: 'Application of IT in business management',
-      notes: [
-        { title: 'Unit-1 Full Notes', url: 'https://drive.google.com/uc?export=download&id=1aRcSfppNYSjYH9BwGjqOORSTFrueWxBc' },
-        { title: 'Unit-4 Part-1 Notes', url: 'https://drive.google.com/uc?export=download&id=17yx1tH3FE2bXp0Aq9-z4wCOyXtCzTMoh' },
-        { title: 'Unit-4 Part-2 Notes', url: 'https://drive.google.com/uc?export=download&id=1jsD77T9K75mQ_vZ_WIY7qMs6eBYHoSLJ' },
-        { title: 'Ms Word (File, Folder, Window)', url: 'https://drive.google.com/uc?export=download&id=16OuKsOaN9ZR3q5tNbh_VstT_pJ5FR5Xu' },
-        { title: 'Unit-2 Types of OS Notes', url: 'https://drive.google.com/uc?export=download&id=1OqT3XBqf6P05jgAJSM6hGZZvniIy-9bS' }
-      ]
-    },
-    {
-      id: 'ic',
-      name: 'Indian Constitution',
-      fullName: 'Indian Constitution',
-      description: 'Constitutional framework and governance',
-      notes: [
-        { title: 'Unit-1 Preamble PDF', url: 'https://drive.google.com/uc?export=download&id=1e2zbkhTSLRzaR_WyJrpStQ4yA4DrVqfa' },
-        { title: 'Unit-2 Notes', url: 'https://drive.google.com/uc?export=download&id=1praW_irxDoN--7CNsG_ZGM2ymgNUCUTt' },
-        { title: 'Unit-4 Notes', url: 'https://drive.google.com/uc?export=download&id=1TmjNFBsL4FneJFKpvzDM6jyp12NzPV-A' },
-        { title: 'Keshavanand Bharti Case PDF', url: 'https://drive.google.com/uc?export=download&id=1oYSTGRVg5Yr3d40s-JGBG6rBg_YWbbTB' }
-      ]
-    },
-    {
-      id: 'bc',
-      name: 'Business Communication',
-      fullName: 'Business Communication',
-      description: 'Effective communication skills for business',
-      notes: [
-        { title: 'Unit-2 Sample Business Letter PDF', url: 'https://drive.google.com/uc?export=download&id=1Y4BC0ijoUl9ZyHElbxBOjAydqkeHjKpw' },
-        { title: 'Unit-2 Resume Templates PDF', url: 'https://drive.google.com/uc?export=download&id=1nyL84z6M-l_f-mxhRnmMlUtwRUqWEIag' },
-        { title: 'Unit-1 Notes', url: 'https://drive.google.com/uc?export=download&id=1WI-eXtUiW-rqj25KXPChkKbjDscNwUtA' },
-        { title: 'Unit-2 Notes', url: 'https://drive.google.com/uc?export=download&id=1oIjxOmyD6jwDTneOaa_sEX7o7M8GqSgO' }
-      ]
+  // Get static subjects for the selected semester
+  const staticSubjects = useMemo(() => {
+    const list = getSubjectsOnly('bba', selectedSemester);
+    return list.map(s => ({
+      id: s.name.toLowerCase().replace(/[^a-z0-9]/g, '-'),
+      name: s.name,
+      fullName: s.fullName || s.name,
+      icon: '📊',
+      isCustom: false,
+    }));
+  }, [selectedSemester, refreshKey]);
+
+  // Extract dynamic subjects added by Owner or through community notes
+  const dynamicSubjects = useMemo(() => {
+    return extractDynamicSubjects(communityNotes, staticSubjects);
+  }, [communityNotes, staticSubjects, refreshKey]);
+
+  // Filter notes relevant to this semester
+  const relevantNotes = useMemo(() => {
+    if (!communityNotes) return [];
+    return communityNotes.filter(n => {
+      if (n.material_type === 'subject_placeholder') return false;
+      const sem = (n.semester || '').toLowerCase();
+      const targetSem = selectedSemester.toLowerCase();
+      return sem.includes(targetSem) || sem.includes(selectedSemester.replace(' Semester', '').toLowerCase());
+    });
+  }, [communityNotes, selectedSemester]);
+
+  // Combined subjects with legacy + community notes
+  const allSubjects = useMemo(() => {
+    const map = new Map<string, any>();
+
+    // Add static subjects
+    staticSubjects.forEach(s => map.set(s.name.toLowerCase(), s));
+
+    // Add dynamic subjects
+    dynamicSubjects.forEach(s => {
+      if (!map.has(s.name.toLowerCase())) {
+        map.set(s.name.toLowerCase(), s);
+      }
+    });
+
+    const list = Array.from(map.values());
+
+    return list.map(sub => {
+      // Find legacy notes matching by name or substring
+      let legacy: any[] = [];
+      Object.keys(LEGACY_BBA_NOTES).forEach(key => {
+        if (
+          key.toLowerCase() === sub.name.toLowerCase() ||
+          sub.name.toLowerCase().includes(key.toLowerCase()) ||
+          key.toLowerCase().includes(sub.name.toLowerCase())
+        ) {
+          legacy = [...legacy, ...LEGACY_BBA_NOTES[key]];
+        }
+      });
+
+      // Find community notes matching this subject
+      const community = relevantNotes.filter(n => matchesSubject(n.subject, sub.name, sub.id));
+
+      const mergedNotes = [
+        ...legacy.map((l, i) => ({
+          id: `legacy-${sub.id}-${i}`,
+          title: l.title,
+          file_url: l.url,
+          isLegacy: true,
+          created_at: '2024-01-01',
+        })),
+        ...community,
+      ];
+
+      return {
+        ...sub,
+        notes: mergedNotes,
+      };
+    });
+  }, [staticSubjects, dynamicSubjects, relevantNotes]);
+
+  // Filtered subjects by search query
+  const filteredSubjects = useMemo(() => {
+    if (!searchQuery.trim()) return allSubjects;
+    const q = searchQuery.toLowerCase();
+    return allSubjects.filter(s =>
+      s.name.toLowerCase().includes(q) ||
+      (s.fullName && s.fullName.toLowerCase().includes(q))
+    );
+  }, [allSubjects, searchQuery]);
+
+  // Handle Owner Add Subject
+  const handleAddSubject = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!isOwner) return;
+    const trimmed = newSubName.trim();
+    if (!trimmed) {
+      toast({ title: 'Name required', description: 'Please enter a subject name.', variant: 'destructive' });
+      return;
     }
-  ];
+
+    setIsSubmittingNew(true);
+    try {
+      await saveCustomSubject(
+        'bba',
+        selectedSemester,
+        undefined,
+        {
+          name: trimmed,
+          fullName: newSubFullName.trim() || trimmed,
+        },
+        user
+      );
+      toast({
+        title: 'Subject Created! 🎓',
+        description: `"${trimmed}" is now active in BBA ${selectedSemester}. Notes can now be uploaded for it!`,
+      });
+      setNewSubName('');
+      setNewSubFullName('');
+      setShowAddModal(false);
+      setRefreshKey(k => k + 1);
+      refreshNotes();
+    } catch (err: any) {
+      toast({ title: 'Error', description: err.message, variant: 'destructive' });
+    } finally {
+      setIsSubmittingNew(false);
+    }
+  };
+
+  // Handle Owner Rename Subject
+  const handleRenameSubject = async () => {
+    if (!isOwner || !editingSubject) return;
+    const trimmed = renameValue.trim();
+    if (!trimmed || trimmed === editingSubject) {
+      setEditingSubject(null);
+      return;
+    }
+
+    setIsSubmittingRename(true);
+    try {
+      await saveRenamedSubject(editingSubject, trimmed);
+      toast({
+        title: 'Subject Renamed! ✏️',
+        description: `Renamed "${editingSubject}" to "${trimmed}".`,
+      });
+      setEditingSubject(null);
+      setRenameValue('');
+      setRefreshKey(k => k + 1);
+      refreshNotes();
+    } catch (err: any) {
+      toast({ title: 'Error', description: err.message, variant: 'destructive' });
+    } finally {
+      setIsSubmittingRename(false);
+    }
+  };
+
+  // Handle Owner Delete Subject (Safety check: only if 0 notes)
+  const handleDeleteSubject = async (subName: string, notesCount: number) => {
+    if (!isOwner) return;
+
+    if (notesCount > 0) {
+      toast({
+        title: 'Cannot Delete Subject ⚠️',
+        description: `"${subName}" contains ${notesCount} note(s). Only subjects with 0 notes can be deleted to protect student resources.`,
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    if (!window.confirm(`Are you sure you want to delete "${subName}"? It currently has 0 notes.`)) {
+      return;
+    }
+
+    setDeletingSubject(subName);
+    try {
+      await deleteSubject(subName, 'bba', selectedSemester);
+      toast({
+        title: 'Subject Deleted! 🗑️',
+        description: `"${subName}" has been removed from BBA ${selectedSemester}.`,
+      });
+      setRefreshKey(k => k + 1);
+      refreshNotes();
+      if (selectedSubject === subName) setSelectedSubject(null);
+    } catch (err: any) {
+      toast({ title: 'Error', description: err.message, variant: 'destructive' });
+    } finally {
+      setDeletingSubject(null);
+    }
+  };
+
+  const activeSubjectItem = allSubjects.find(s => s.name === selectedSubject);
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="min-h-screen bg-background flex flex-col font-sans">
       <Navbar />
 
-      {/* Hero Banner */}
-      <div className="bg-foreground dark:bg-card text-background dark:text-foreground pt-16 pb-12 px-4 sm:px-8">
-        <div className="max-w-5xl mx-auto">
+      {/* Hero Header */}
+      <div className="bg-slate-900 text-slate-100 dark:bg-slate-950 pt-14 pb-12 px-4 sm:px-8 border-b border-slate-800">
+        <div className="max-w-6xl mx-auto">
           <button
             onClick={() => navigate('/notes')}
-            className="inline-flex items-center gap-2 text-xs font-semibold tracking-widest uppercase opacity-50 hover:opacity-100 transition-opacity mb-8"
+            className="inline-flex items-center gap-2 text-xs font-semibold tracking-widest uppercase opacity-60 hover:opacity-100 transition-opacity mb-4 cursor-pointer text-slate-300"
           >
             <ArrowLeft className="h-3.5 w-3.5" /> Back to Notes
           </button>
-          <p className="text-xs font-bold tracking-[0.2em] uppercase opacity-50 mb-3">Management Studies</p>
-          <h1 className="text-4xl md:text-5xl font-serif leading-tight mb-3">
-            BBA Notes<br />
-            <span className="opacity-60">Study Resources</span>
+
+          <div className="flex items-center gap-2 mb-2 flex-wrap">
+            <span className="bg-blue-600 text-white font-extrabold text-[10px] uppercase tracking-wider px-3 py-1 rounded-full shadow-xs">
+              OFFICIAL HBTU CURRICULUM
+            </span>
+            <span className="text-xs text-slate-400">Department of Business Administration</span>
+          </div>
+
+          <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight mb-2 text-white">
+            BBA Study Material & Notes
           </h1>
-          <p className="text-sm opacity-50 mb-8">Bachelor of Business Administration — Comprehensive study materials and resources</p>
-          <div className="flex flex-wrap gap-2">
-            <span className="text-xs font-semibold tracking-wider uppercase border border-background/30 px-3 py-1.5 rounded">BBA Department</span>
-            <span className="text-xs font-semibold tracking-wider uppercase border border-background/30 px-3 py-1.5 rounded">{subjects.length} Core Subjects</span>
+          <p className="text-sm text-slate-300 max-w-2xl leading-relaxed">
+            Bachelor of Business Administration — Comprehensive 3-year semester-wise syllabus, curated lecture notes, case studies, and reference books.
+          </p>
+
+          <div className="flex flex-wrap items-center gap-2 mt-5">
+            <a
+              href="https://hbtu.ac.in/wp-content/uploads/2024/11/BBA-Syllbus-HBTU-Kanpur.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 text-xs font-bold px-3.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition-all shadow-xs cursor-pointer"
+            >
+              <ExternalLink className="h-3.5 w-3.5 text-blue-400" />
+              <span>Official HBTU Syllabus (PDF)</span>
+            </a>
+
+            <span className="text-xs font-semibold tracking-wider uppercase border border-slate-700 bg-slate-800/80 px-3 py-1 rounded-md text-slate-300">
+              6 Semesters • 36 Core Subjects
+            </span>
+
+            {isOwner && (
+              <button
+                onClick={() => setShowAddModal(true)}
+                className="ml-auto inline-flex items-center gap-1.5 text-xs font-bold px-3.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white transition-all shadow-sm cursor-pointer"
+              >
+                <Plus className="h-3.5 w-3.5" /> Add BBA Subject (Owner)
+              </button>
+            )}
           </div>
         </div>
       </div>
 
-      <div className="max-w-5xl mx-auto px-4 sm:px-8 py-10 space-y-6 flex-1 w-full mb-12">
-        <p className="text-xs font-bold tracking-[0.15em] uppercase text-muted-foreground mb-4">Core Subjects</p>
-        <div className="grid gap-4">
-          {subjects.map((subject, index) => {
-            const isExpanded = expandedSubjects.includes(subject.id);
+      {/* Main Content Container */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-8 py-8 space-y-6 flex-1 w-full">
+        {/* Year Tabs Selector */}
+        <div className="border border-border bg-card rounded-2xl p-2 sm:p-2.5 shadow-xs">
+          <div className="grid grid-cols-3 gap-2">
+            {BBA_YEAR_TABS.map(tab => {
+              const isSelected = selectedYear === tab.id;
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => handleYearSelect(tab.id as any)}
+                  className={`py-3 px-3 sm:px-5 rounded-xl text-center transition-all duration-200 cursor-pointer ${
+                    isSelected
+                      ? 'bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900 shadow-md font-bold'
+                      : 'hover:bg-muted text-foreground/80 hover:text-foreground font-semibold'
+                  }`}
+                >
+                  <p className="text-xs sm:text-sm font-extrabold">{tab.label}</p>
+                  <p className={`text-[10px] mt-0.5 hidden sm:block ${isSelected ? 'text-slate-300 dark:text-slate-600' : 'text-muted-foreground'}`}>
+                    {tab.title}
+                  </p>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Semester Pills Selector */}
+        <div className="flex items-center justify-between gap-3 flex-wrap border-b border-border pb-4">
+          <div className="flex items-center gap-2">
+            {BBA_YEAR_TABS.find(t => t.id === selectedYear)?.semesters.map(sem => {
+              const isSelected = selectedSemester === sem;
+              return (
+                <button
+                  key={sem}
+                  onClick={() => setSelectedSemester(sem)}
+                  className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                    isSelected
+                      ? 'bg-blue-600 text-white shadow-xs'
+                      : 'bg-muted/70 text-foreground/80 hover:bg-muted hover:text-foreground'
+                  }`}
+                >
+                  {sem}
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Search bar */}
+          <div className="relative w-full sm:w-72">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
+            <input
+              type="text"
+              placeholder="Search BBA subjects..."
+              value={searchQuery}
+              onChange={e => setSearchQuery(e.target.value)}
+              className="w-full pl-9 pr-4 py-2 text-xs rounded-xl border border-border bg-card text-foreground focus:outline-none focus:ring-1 focus:ring-primary"
+            />
+          </div>
+        </div>
+
+        {/* Subjects Grid (Responsive 4 in a row on desktop) */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+          {filteredSubjects.map((subject, index) => {
+            const notesCount = subject.notes?.length || 0;
+
             return (
               <motion.div
-                key={subject.id}
-                initial={{ opacity: 0, y: 15 }}
+                key={subject.id || subject.name}
+                initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.05, duration: 0.3 }}
+                transition={{ delay: index * 0.03, duration: 0.25 }}
+                className="h-full"
               >
-                <div className="group border border-border bg-card rounded-xl p-5 transition-all duration-300 hover:shadow-md">
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-3 mb-2 flex-wrap">
-                        <h3 className="font-semibold text-foreground text-lg leading-snug">{subject.name}</h3>
-                        <span className="text-xs font-bold text-white bg-green-500 px-2 py-0.5 rounded-full">
-                          {subject.notes.length} files
+                <div className="group border border-border bg-card hover:border-primary/50 rounded-xl p-4 transition-all duration-200 hover:shadow-md h-full flex flex-col justify-between">
+                  <div>
+                    {/* Header: Icon + Badges + Owner Controls */}
+                    <div className="flex items-start justify-between gap-2 mb-2.5">
+                      <span className="text-xl p-1.5 rounded-lg bg-muted/60">{subject.icon}</span>
+                      <div className="flex items-center gap-1.5 flex-wrap justify-end">
+                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-600 text-white">
+                          {notesCount} {notesCount === 1 ? 'file' : 'files'}
                         </span>
+
+                        <SubjectShareButton subjectName={subject.name} subjectId={subject.id} />
+
+                        {/* Owner Controls */}
+                        {isOwner && (
+                          <div className="flex items-center gap-1 ml-1">
+                            <button
+                              onClick={() => {
+                                setEditingSubject(subject.name);
+                                setRenameValue(subject.name);
+                              }}
+                              className="p-1 rounded text-muted-foreground hover:text-amber-500 hover:bg-amber-500/10 transition-colors"
+                              title="Rename subject"
+                            >
+                              <Pencil className="h-3.5 w-3.5" />
+                            </button>
+
+                            {notesCount === 0 && (
+                              <button
+                                onClick={() => handleDeleteSubject(subject.name, notesCount)}
+                                disabled={deletingSubject === subject.name}
+                                className="p-1 rounded text-muted-foreground hover:text-red-500 hover:bg-red-500/10 transition-colors"
+                                title="Delete subject (0 notes)"
+                              >
+                                {deletingSubject === subject.name ? (
+                                  <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                                ) : (
+                                  <Trash2 className="h-3.5 w-3.5" />
+                                )}
+                              </button>
+                            )}
+                          </div>
+                        )}
                       </div>
-                      <p className="text-sm font-medium text-foreground opacity-80 mb-1">{subject.fullName}</p>
-                      <p className="text-xs text-muted-foreground">{subject.description}</p>
                     </div>
-                    <button
-                      onClick={() => toggleSubjectExpansion(subject.id)}
-                      className="ml-4 p-1.5 rounded-lg hover:bg-muted text-muted-foreground hover:text-foreground transition-colors"
-                    >
-                      {isExpanded ? (
-                        <ChevronDown className="h-5 w-5" />
-                      ) : (
-                        <ChevronRight className="h-5 w-5" />
-                      )}
-                    </button>
+
+                    {/* Subject Name & Description */}
+                    <h3 className="font-bold text-foreground text-sm leading-snug mb-1 group-hover:text-primary transition-colors">
+                      {subject.name}
+                    </h3>
+                    <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed">
+                      {subject.fullName || subject.name}
+                    </p>
                   </div>
 
-                  {isExpanded && (
-                    <div className="mt-5 pt-5 border-t border-border space-y-4 animate-fade-in">
-                      <h4 className="text-xs font-bold tracking-wider uppercase text-muted-foreground flex items-center gap-1.5">
-                        <FileText className="h-4 w-4 text-primary" /> Study Notes
-                      </h4>
-                      <div className="grid gap-2 sm:grid-cols-2">
-                        {subject.notes.map((note: any, idx: number) => (
-                          <a
-                            key={idx}
-                            href={note.url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="flex items-center justify-between p-3 rounded-lg bg-card hover:bg-muted transition-all duration-200 border border-border group"
-                          >
-                            <span className="text-xs font-medium text-foreground line-clamp-1">{note.title}</span>
-                            <div className="flex items-center gap-1.5 opacity-60 group-hover:opacity-100 transition-opacity flex-shrink-0">
-                              <Download className="h-3.5 w-3.5 text-foreground" />
-                              <ExternalLink className="h-3.5 w-3.5 text-foreground" />
-                            </div>
-                          </a>
-                        ))}
-                      </div>
-                    </div>
-                  )}
+                  {/* Card Action Button */}
+                  <div className="pt-3 border-t border-border mt-3">
+                    <button
+                      onClick={() => setSelectedSubject(subject.name)}
+                      className="w-full text-xs font-bold tracking-wider uppercase py-2 px-3 rounded-lg border border-foreground/20 hover:bg-foreground hover:text-background transition-all cursor-pointer flex items-center justify-center gap-1.5"
+                    >
+                      <FileText className="w-3.5 h-3.5" />
+                      <span>View Notes ({notesCount})</span>
+                    </button>
+                  </div>
                 </div>
               </motion.div>
             );
           })}
         </div>
+
+        {/* Selected Subject Detail Drawer / Modal */}
+        <AnimatePresence>
+          {selectedSubject && activeSubjectItem && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-6"
+            >
+              <motion.div
+                initial={{ scale: 0.95, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.95, opacity: 0 }}
+                className="bg-card border border-border rounded-2xl max-w-4xl w-full max-h-[85vh] flex flex-col shadow-2xl overflow-hidden"
+              >
+                {/* Modal Header */}
+                <div className="p-4 sm:p-5 border-b border-border flex items-center justify-between gap-3 bg-muted/40">
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-2">
+                      <span className="text-lg">{activeSubjectItem.icon}</span>
+                      <h3 className="text-base sm:text-lg font-bold text-foreground truncate">
+                        {activeSubjectItem.name}
+                      </h3>
+                      <span className="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-600 text-white shrink-0">
+                        {activeSubjectItem.notes?.length || 0} files
+                      </span>
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-0.5 truncate">
+                      {activeSubjectItem.fullName} • BBA {selectedSemester}
+                    </p>
+                  </div>
+
+                  <button
+                    onClick={() => setSelectedSubject(null)}
+                    className="p-1.5 rounded-lg hover:bg-muted text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+                  >
+                    <X className="h-5 w-5" />
+                  </button>
+                </div>
+
+                {/* Modal Content: Notes Cards Grid */}
+                <div className="p-4 sm:p-6 overflow-y-auto space-y-4 flex-1">
+                  {activeSubjectItem.notes && activeSubjectItem.notes.length > 0 ? (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-3.5">
+                      {activeSubjectItem.notes.map((note: any, idx: number) => {
+                        const noteUrl = note.file_url || note.url || '#';
+                        const noteTitle = note.title || 'Untitled Document';
+                        return (
+                          <div
+                            key={note.id || idx}
+                            className="border border-border rounded-xl p-3.5 bg-card hover:border-primary/40 transition-all flex flex-col justify-between gap-3"
+                          >
+                            <div className="flex items-start justify-between gap-2">
+                              <div className="flex items-start gap-2.5 min-w-0">
+                                <div className="w-8 h-8 rounded-lg bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900 flex items-center justify-center shrink-0">
+                                  <FileText className="h-4 w-4" />
+                                </div>
+                                <div className="min-w-0">
+                                  <p className="text-xs font-bold text-foreground line-clamp-2 leading-snug">
+                                    {noteTitle}
+                                  </p>
+                                  {note.description && (
+                                    <p className="text-[11px] text-muted-foreground line-clamp-1 mt-0.5">
+                                      {note.description}
+                                    </p>
+                                  )}
+                                  <span className="text-[10px] text-muted-foreground/75 font-mono">
+                                    {note.isLegacy ? 'Verified Department Material' : `Uploaded: ${new Date(note.created_at || Date.now()).toLocaleDateString()}`}
+                                  </span>
+                                </div>
+                              </div>
+                              <RecommendationBadge noteId={note.id || `${activeSubjectItem.id}-${idx}`} />
+                            </div>
+
+                            {/* View & Download Buttons */}
+                            <div className="flex items-center gap-2 pt-2 border-t border-border">
+                              <button
+                                onClick={() => viewInBrowser(noteUrl, noteTitle)}
+                                className="flex-1 py-1.5 px-3 rounded-lg text-xs font-bold bg-slate-900 hover:bg-slate-800 text-white dark:bg-slate-100 dark:hover:bg-slate-200 dark:text-slate-900 transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-xs"
+                              >
+                                <Eye className="h-3.5 w-3.5" />
+                                <span>VIEW</span>
+                              </button>
+                              <button
+                                onClick={() => smartDownload(noteUrl, `${noteTitle}.pdf`)}
+                                className="py-1.5 px-3 rounded-lg text-xs font-semibold border border-border hover:bg-muted text-foreground transition-all flex items-center justify-center gap-1 cursor-pointer"
+                                title="Download PDF"
+                              >
+                                <Download className="h-3.5 w-3.5" />
+                                <span>DOWNLOAD</span>
+                              </button>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  ) : (
+                    <div className="text-center py-12 px-4 border border-dashed border-border rounded-xl">
+                      <Briefcase className="h-10 w-10 text-muted-foreground mx-auto mb-2 opacity-50" />
+                      <p className="text-sm font-bold text-foreground">No notes uploaded for {activeSubjectItem.name} yet</p>
+                      <p className="text-xs text-muted-foreground max-w-md mx-auto mt-1">
+                        Admins and contributors can upload study material for this BBA course from the Admin Dashboard.
+                      </p>
+                      {isOwner && (
+                        <button
+                          onClick={() => {
+                            setSelectedSubject(null);
+                            navigate('/admin?tab=upload');
+                          }}
+                          className="mt-4 inline-flex items-center gap-1.5 text-xs font-bold px-4 py-2 rounded-xl bg-slate-900 text-white hover:bg-slate-800 dark:bg-slate-100 dark:text-slate-900 transition-all cursor-pointer"
+                        >
+                          Upload Material Now
+                        </button>
+                      )}
+                    </div>
+                  )}
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
+
+      {/* Owner: Add Subject Modal */}
+      {isOwner && showAddModal && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-card border border-border rounded-2xl max-w-md w-full p-6 shadow-2xl">
+            <div className="flex items-center justify-between pb-3 border-b border-border mb-4">
+              <h3 className="font-bold text-foreground text-base">Add BBA Subject ({selectedSemester})</h3>
+              <button onClick={() => setShowAddModal(false)} className="text-muted-foreground hover:text-foreground">
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+            <form onSubmit={handleAddSubject} className="space-y-4">
+              <div>
+                <label className="text-xs font-bold text-foreground block mb-1">Subject Name with Code *</label>
+                <input
+                  type="text"
+                  placeholder="e.g. Operations Management (BBA 207)"
+                  value={newSubName}
+                  onChange={e => setNewSubName(e.target.value)}
+                  className="w-full px-3 py-2 rounded-lg border border-border bg-background text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-primary"
+                  required
+                />
+              </div>
+              <div>
+                <label className="text-xs font-bold text-foreground block mb-1">Course Description</label>
+                <input
+                  type="text"
+                  placeholder="e.g. Production planning, scheduling, inventory control"
+                  value={newSubFullName}
+                  onChange={e => setNewSubFullName(e.target.value)}
+                  className="w-full px-3 py-2 rounded-lg border border-border bg-background text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-primary"
+                />
+              </div>
+              <div className="flex items-center justify-end gap-2 pt-2 border-t border-border">
+                <button
+                  type="button"
+                  onClick={() => setShowAddModal(false)}
+                  className="px-4 py-2 rounded-lg border border-border text-xs font-semibold hover:bg-muted"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={isSubmittingNew}
+                  className="px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold flex items-center gap-1.5"
+                >
+                  {isSubmittingNew ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Plus className="h-3.5 w-3.5" />}
+                  Create Subject
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Owner: Rename Subject Modal */}
+      {isOwner && editingSubject && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-card border border-border rounded-2xl max-w-md w-full p-6 shadow-2xl">
+            <div className="flex items-center justify-between pb-3 border-b border-border mb-4">
+              <h3 className="font-bold text-foreground text-base">Rename Subject</h3>
+              <button onClick={() => setEditingSubject(null)} className="text-muted-foreground hover:text-foreground">
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+            <div className="space-y-4">
+              <div>
+                <label className="text-xs font-semibold text-muted-foreground block mb-1">Current Name</label>
+                <p className="text-sm font-bold text-foreground">{editingSubject}</p>
+              </div>
+              <div>
+                <label className="text-xs font-bold text-foreground block mb-1">New Subject Name</label>
+                <input
+                  type="text"
+                  value={renameValue}
+                  onChange={e => setRenameValue(e.target.value)}
+                  className="w-full px-3 py-2 rounded-lg border border-border bg-background text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-primary"
+                />
+              </div>
+              <div className="flex items-center justify-end gap-2 pt-2 border-t border-border">
+                <button
+                  type="button"
+                  onClick={() => setEditingSubject(null)}
+                  className="px-4 py-2 rounded-lg border border-border text-xs font-semibold hover:bg-muted"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  disabled={isSubmittingRename}
+                  onClick={handleRenameSubject}
+                  className="px-4 py-2 rounded-lg bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold flex items-center gap-1.5"
+                >
+                  {isSubmittingRename ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Pencil className="h-3.5 w-3.5" />}
+                  Save New Name
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       <Footer />
     </div>
   );
 };
 
 export default BBANotes;
-// Reviewed: academic catalog & interface consistency check (v2.0.156)
