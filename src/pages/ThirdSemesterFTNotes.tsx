@@ -6,7 +6,8 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useCommunityNotes } from '@/hooks/useCommunityNotes';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { Download, ArrowLeft, Eye, FileText, Play, ChevronDown, ChevronRight, Trash2, ExternalLink } from 'lucide-react';
+import { Download, ArrowLeft, FileText, Play, ChevronDown, ChevronRight, Trash2, ExternalLink, Eye,
+} from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import { SubjectShareButton } from '@/components/SubjectShareButton';
@@ -349,7 +350,7 @@ interface Note {
                         <Trash2 className="h-4 w-4" />
                       </button>
                     )}
-                    <div className="flex items-center gap-2 mb-3">
+                    <div className="flex items-center gap-2 mb-3 flex-wrap pr-14">
                       <PdfCardBadge />
                       {note.isCommunity && (
                         <span className="text-[10px] font-bold tracking-wider uppercase bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 px-2 py-0.5 rounded border border-emerald-100 dark:border-emerald-900/50">Community</span>
@@ -364,29 +365,39 @@ interface Note {
                     )}
                     <div className="flex gap-2">
                       {note.isCommunity ? (
-                        <button
+                        <>
+<button
                           onClick={() => viewInBrowser(note.url)}
-                          className="flex-1 inline-flex items-center justify-center gap-1.5 text-xs font-bold tracking-wider uppercase py-2 px-3 rounded bg-foreground text-background hover:opacity-85 transition-opacity"
+                          className="flex-1 inline-flex items-center justify-center gap-1.5 text-xs font-bold tracking-wider uppercase py-2 px-3 rounded bg-foreground text-background hover:opacity-85 transition-opacity cursor-pointer"
                           disabled={note.url === '#'}
                         >
-                          <ExternalLink className="h-3.5 w-3.5" /> View Notes
+                          <Eye className="h-3.5 w-3.5" /> View
                         </button>
+                        <button
+                          onClick={() => handleDownload(note.url, note.title)}
+                          className="inline-flex items-center justify-center p-2 rounded border border-foreground/20 hover:bg-muted transition-colors cursor-pointer"
+                          disabled={note.url === '#'}
+                          title="Download PDF"
+                        >
+                          <Download className="h-3.5 w-3.5 text-foreground" />
+                        </button>
+</>
                       ) : (
                         <>
                           <button
-                            onClick={() => handleDownload(note.url, note.title)}
-                            className="flex-1 inline-flex items-center justify-center gap-1.5 text-xs font-bold tracking-wider uppercase py-2 px-3 rounded bg-foreground text-background hover:opacity-85 transition-opacity"
+                            onClick={() => viewInBrowser(note.url)}
+                            className="flex-1 inline-flex items-center justify-center gap-1.5 text-xs font-bold tracking-wider uppercase py-2 px-3 rounded bg-foreground text-background hover:opacity-85 transition-opacity cursor-pointer"
                             disabled={note.url === '#'}
                           >
                             <Eye className="h-3.5 w-3.5" /> View
                           </button>
                           <button
-                            onClick={() => viewInBrowser(note.url)}
-                            className="inline-flex items-center justify-center p-2 rounded border border-foreground/20 hover:bg-muted transition-colors"
+                            onClick={() => handleDownload(note.url, note.title)}
+                            className="inline-flex items-center justify-center p-2 rounded border border-foreground/20 hover:bg-muted transition-colors cursor-pointer"
                             disabled={note.url === '#'}
-                            title="View in Browser"
+                            title="Download PDF"
                           >
-                            <ExternalLink className="h-3.5 w-3.5 text-foreground" />
+                            <Download className="h-3.5 w-3.5 text-foreground" />
                           </button>
                         </>
                       )}
@@ -469,7 +480,7 @@ interface Note {
             className="inline-flex items-center gap-2 text-xs font-bold tracking-wider uppercase py-2.5 px-5 rounded-lg bg-foreground text-background hover:opacity-80 transition-opacity"
             disabled={syllabus.url === '#'}
           >
-            <Eye className="h-3.5 w-3.5" /> View Syllabus
+            <Download className="h-3.5 w-3.5" /> Download Syllabus
           </button>
         </motion.div>
 
