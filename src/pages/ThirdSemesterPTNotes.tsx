@@ -330,7 +330,7 @@ const ThirdSemesterPTNotes = () => {
         <Navbar />
         {/* Hero */}
         <div className="bg-foreground dark:bg-card text-background dark:text-foreground pt-16 pb-10 px-4 sm:px-8">
-          <div className="max-w-5xl mx-auto">
+          <div className="max-w-7xl mx-auto">
             <button
               onClick={() => setSelectedSubject(null)}
               className="inline-flex items-center gap-2 text-xs font-semibold tracking-widest uppercase opacity-60 hover:opacity-100 transition-opacity mb-6"
@@ -342,8 +342,8 @@ const ThirdSemesterPTNotes = () => {
           </div>
         </div>
 
-        <div className="max-w-5xl mx-auto px-4 sm:px-8 py-10">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="max-w-7xl mx-auto px-4 sm:px-8 py-10">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
             {subject.notes.map((note, index) => (
               <motion.div
                 key={index}
@@ -400,7 +400,7 @@ const ThirdSemesterPTNotes = () => {
 
       {/* Hero Banner */}
       <div className="bg-foreground dark:bg-card text-background dark:text-foreground pt-16 pb-12 px-4 sm:px-8">
-        <div className="max-w-5xl mx-auto">
+        <div className="max-w-7xl mx-auto">
           <button
             onClick={() => navigate('/btech-notes/second-year/semester-3')}
             className="inline-flex items-center gap-2 text-xs font-semibold tracking-widest uppercase opacity-50 hover:opacity-100 transition-opacity mb-8"
@@ -421,7 +421,7 @@ const ThirdSemesterPTNotes = () => {
         </div>
       </div>
 
-      <div className="max-w-5xl mx-auto px-4 sm:px-8 py-10 space-y-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-8 py-10 space-y-10">
         {/* Instructions */}
         <motion.div
           initial={{ opacity: 0, y: 16 }}
@@ -469,7 +469,7 @@ const ThirdSemesterPTNotes = () => {
         {/* Subjects Grid */}
         <div>
           <p className="text-xs font-bold tracking-[0.15em] uppercase text-muted-foreground mb-5">Study Resources</p>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
             {subjects.map((subject, index) => (
               <motion.div
                 key={subject.id}
