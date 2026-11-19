@@ -6,7 +6,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useCommunityNotes } from '@/hooks/useCommunityNotes';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { Download, ArrowLeft, FileText, Play, ChevronDown, ChevronRight, Trash2, ExternalLink } from 'lucide-react';
+import { Download, ArrowLeft, Eye, FileText, Play, ChevronDown, ChevronRight, Trash2, ExternalLink } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import { SubjectShareButton } from '@/components/SubjectShareButton';
@@ -378,7 +378,7 @@ interface Note {
                             className="flex-1 inline-flex items-center justify-center gap-1.5 text-xs font-bold tracking-wider uppercase py-2 px-3 rounded bg-foreground text-background hover:opacity-85 transition-opacity"
                             disabled={note.url === '#'}
                           >
-                            <Download className="h-3.5 w-3.5" /> Download
+                            <Eye className="h-3.5 w-3.5" /> View
                           </button>
                           <button
                             onClick={() => viewInBrowser(note.url)}
@@ -469,7 +469,7 @@ interface Note {
             className="inline-flex items-center gap-2 text-xs font-bold tracking-wider uppercase py-2.5 px-5 rounded-lg bg-foreground text-background hover:opacity-80 transition-opacity"
             disabled={syllabus.url === '#'}
           >
-            <Download className="h-3.5 w-3.5" /> Download Syllabus
+            <Eye className="h-3.5 w-3.5" /> View Syllabus
           </button>
         </motion.div>
 
