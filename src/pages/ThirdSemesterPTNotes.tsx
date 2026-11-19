@@ -1,3 +1,4 @@
+import { PdfCardBadge } from '@/components/PdfCardBadge';
 // Syllabus: paint technology third semester curriculum
 // 3rd semester Paint Technology notes
 import { useState } from 'react';
