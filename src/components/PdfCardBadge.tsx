@@ -1,3 +1,4 @@
+/** Professional compact badge component for recommended study materials */
 import React from 'react';
 import { FileText } from 'lucide-react';
 
