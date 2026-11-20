@@ -297,7 +297,7 @@ const SixthSemesterCSENotes = () => {
       <div className="min-h-screen bg-background flex flex-col">
         <Navbar />
         <div className="bg-foreground dark:bg-card text-background dark:text-foreground pt-16 pb-10 px-4 sm:px-8">
-          <div className="max-w-5xl mx-auto">
+          <div className="max-w-7xl mx-auto">
             <button onClick={() => setSelectedSubject(null)} className="inline-flex items-center gap-2 text-xs font-semibold tracking-widest uppercase opacity-60 hover:opacity-100 transition-opacity mb-6">
               <ArrowLeft className="h-3.5 w-3.5" /> Back to Subjects
             </button>
@@ -308,7 +308,7 @@ const SixthSemesterCSENotes = () => {
             <p className="opacity-60 text-sm">{subject.notes.length} file{subject.notes.length !== 1 ? 's' : ''} available · 6th Semester B.Tech</p>
           </div>
         </div>
-        <div className="max-w-5xl mx-auto px-4 sm:px-8 py-10 flex-1">
+        <div className="max-w-7xl mx-auto px-4 sm:px-8 py-10 flex-1">
           {subject.id === 'pyqs' || subject.name.toLowerCase().includes('previous year') || subject.name.toLowerCase().includes('pyq') ? (
             <SessionPyqAccordion
               notes={subject.notes}
@@ -365,7 +365,7 @@ const SixthSemesterCSENotes = () => {
     <div className="min-h-screen bg-background">
       <Navbar />
       <div className="bg-foreground dark:bg-card text-background dark:text-foreground pt-16 pb-12 px-4 sm:px-8">
-        <div className="max-w-5xl mx-auto">
+        <div className="max-w-7xl mx-auto">
           <button onClick={() => navigate('/btech-notes/third-year/semester-6')} className="inline-flex items-center gap-2 text-xs font-semibold tracking-widest uppercase opacity-50 hover:opacity-100 transition-opacity mb-8">
             <ArrowLeft className="h-3.5 w-3.5" /> Back to Branches
           </button>
@@ -385,7 +385,7 @@ const SixthSemesterCSENotes = () => {
         </div>
       </div>
 
-      <div className="max-w-5xl mx-auto px-4 sm:px-8 py-10 space-y-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-8 py-10 space-y-10">
         {/* Syllabus Card */}
         <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1, duration: 0.4 }} className="border border-border rounded-xl p-5 bg-card flex items-center justify-between gap-4 flex-wrap">
           <div className="flex items-center gap-3">
@@ -405,7 +405,7 @@ const SixthSemesterCSENotes = () => {
         {/* Subjects Grid */}
         <div>
           <p className="text-xs font-bold tracking-[0.15em] uppercase text-muted-foreground mb-5">Study Resources</p>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
             {subjects.map((subject, index) => (
               <motion.div key={subject.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.06, duration: 0.4 }}>
                 <div className="group border border-border bg-card hover:border-foreground/30 rounded-xl p-5 transition-all duration-300 hover:shadow-lg h-full flex flex-col justify-between" id={`subject-${subject.id}`} data-subject-id={subject.id} data-subject-name={subject.name}>
