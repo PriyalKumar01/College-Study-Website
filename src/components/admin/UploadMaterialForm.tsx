@@ -1,3 +1,4 @@
+/** Enterprise study material submission form with progressive step disclosure */
 // Upload: study material ingest pipeline with zero-egress R2 target mapping
 import { useState, useRef, useMemo } from 'react';
 import { supabase } from '@/integrations/supabase/client';
