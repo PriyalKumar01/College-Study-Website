@@ -331,7 +331,7 @@ const SeventhSemesterOpenElectives = () => {
       <div className="min-h-screen bg-background flex flex-col font-sans">
         <Navbar />
         <div className="bg-foreground dark:bg-card text-background dark:text-foreground pt-16 pb-10 px-4 sm:px-8">
-          <div className="max-w-5xl mx-auto">
+          <div className="max-w-7xl mx-auto">
             <button
               onClick={() => setSelectedSubject(null)}
               className="inline-flex items-center gap-2 text-xs font-semibold tracking-widest uppercase opacity-60 hover:opacity-100 transition-opacity mb-6 cursor-pointer"
@@ -354,7 +354,7 @@ const SeventhSemesterOpenElectives = () => {
           </div>
         </div>
 
-        <div className="max-w-5xl mx-auto px-4 sm:px-8 py-10 flex-1 w-full">
+        <div className="max-w-7xl mx-auto px-4 sm:px-8 py-10 flex-1 w-full">
           {subject.notes.length === 0 ? (
             <div className="text-center py-16 text-muted-foreground border border-dashed border-border rounded-2xl bg-card/50">
               <FileText className="h-12 w-12 mx-auto mb-4 opacity-30 text-emerald-500" />
@@ -464,7 +464,7 @@ const SeventhSemesterOpenElectives = () => {
         </div>
 
         {/* Electives Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
           {filteredSubjects.map((sub, idx) => (
             <motion.div
               key={sub.id}
