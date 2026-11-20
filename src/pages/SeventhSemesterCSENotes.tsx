@@ -1,4 +1,3 @@
-import { PdfCardBadge } from '@/components/PdfCardBadge';
 import { RecommendationBadge } from '@/components/RecommendationBadge';
 // Syllabus: computer science seventh semester core curriculum
 // 7th semester CSE branch notes
@@ -8,7 +7,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useCommunityNotes } from '@/hooks/useCommunityNotes';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { Download, ArrowLeft, Eye, FileText, Play, ChevronDown, ChevronRight, Share2, Trash2, ExternalLink, Sparkles, Search, BookOpen } from 'lucide-react';
+import { Download, ArrowLeft, FileText, Play, ChevronDown, ChevronRight, Share2, Trash2, ExternalLink, Sparkles, Search, BookOpen } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import { SubjectShareButton } from '@/components/SubjectShareButton';
@@ -328,7 +327,7 @@ const SeventhSemesterCSENotes = () => {
                         className="flex-1 inline-flex items-center justify-center gap-1.5 text-xs font-bold py-2 px-3 rounded-xl bg-foreground text-background hover:opacity-85 transition-opacity cursor-pointer"
                         disabled={(note as any).url === '#'}
                       >
-                        <Eye className="h-3.5 w-3.5" /> View
+                        <Download className="h-3.5 w-3.5" /> Download
                       </button>
                       <button
                         onClick={() => viewInBrowser(note.url)}
@@ -397,7 +396,7 @@ const SeventhSemesterCSENotes = () => {
         </div>
       </div>
 
-      <div className="max-w-6xl mx-auto px-4 sm:px-8 py-10 space-y-8 flex-1 w-full">
+      <div className="max-w-7xl mx-auto px-4 sm:px-8 py-10 space-y-8 flex-1 w-full">
         {/* Syllabus Card */}
         <motion.div
           initial={{ opacity: 0, y: 16 }}
@@ -419,7 +418,7 @@ const SeventhSemesterCSENotes = () => {
             className="inline-flex items-center gap-2 text-xs font-bold tracking-wider uppercase py-2.5 px-5 rounded-xl bg-foreground text-background hover:opacity-85 transition-opacity cursor-pointer"
             disabled={syllabus.url === '#'}
           >
-            <Eye className="h-3.5 w-3.5" /> View Syllabus
+            <Download className="h-3.5 w-3.5" /> Download Syllabus
           </button>
         </motion.div>
 
