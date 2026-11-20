@@ -1,3 +1,4 @@
+/** Data structures and algorithms comprehensive study notes view */
 import { PdfCardBadge } from '@/components/PdfCardBadge';
 // Data structures and algorithms comprehensive notes
 import { useCommunityNotes } from '@/hooks/useCommunityNotes';
