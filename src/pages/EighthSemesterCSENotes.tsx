@@ -1,3 +1,4 @@
+import { PdfCardBadge } from '@/components/PdfCardBadge';
 // Syllabus: computer science eighth semester core curriculum
 // 8th semester CSE branch notes
 import { useState } from 'react';
