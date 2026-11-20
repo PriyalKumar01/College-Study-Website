@@ -1,3 +1,4 @@
+/** 4th Semester Biotechnology course notes */
 import { PdfCardBadge } from '@/components/PdfCardBadge';
 // 4th semester Biotechnology notes
 import { useState } from 'react';
