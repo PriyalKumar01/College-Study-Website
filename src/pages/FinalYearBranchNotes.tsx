@@ -1,3 +1,4 @@
+/** Final Year (7th & 8th Semester) specialized engineering branch view */
 import { useState, useMemo } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
