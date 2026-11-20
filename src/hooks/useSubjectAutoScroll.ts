@@ -1,3 +1,4 @@
+/** Hook to automatically scroll and highlight target subject from URL parameters */
 // Navigation: deep-linked subject auto-scroll and highlight coordinator
 // Auto-scroll to specific subject anchor on page load
 import { useEffect, useRef } from 'react';
