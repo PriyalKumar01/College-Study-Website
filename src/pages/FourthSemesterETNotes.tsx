@@ -1,3 +1,4 @@
+/** 4th Semester Electronics Engineering course notes */
 import { PdfCardBadge } from '@/components/PdfCardBadge';
 // Syllabus: electronics technology fourth semester curriculum
 // 4th semester Electronics Engineering notes
