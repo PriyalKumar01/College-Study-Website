@@ -1,3 +1,4 @@
+/** BS-MS 5th Semester scientific curriculum notes */
 import { PdfCardBadge } from '@/components/PdfCardBadge';
 // Syllabus: fifth semester science curriculum subject modules
 // BS-MS 5th semester notes
