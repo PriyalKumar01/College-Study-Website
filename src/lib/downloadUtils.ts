@@ -1,3 +1,4 @@
+/** Download utility with browser preview and daily/monthly quota protection */
 import { checkAndRecordDownload } from './downloadLimits';
 import { User } from '@supabase/supabase-js';
 
