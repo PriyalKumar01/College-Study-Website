@@ -1,3 +1,4 @@
+/** 4th Semester Electrical Engineering course notes */
 import { PdfCardBadge } from '@/components/PdfCardBadge';
 // Syllabus: electrical engineering fourth semester curriculum
 // 4th semester Electrical Engineering notes
