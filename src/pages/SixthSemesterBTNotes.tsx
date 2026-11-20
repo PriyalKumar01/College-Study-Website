@@ -115,7 +115,7 @@ const SixthSemesterBTNotes = () => {
       <div className="min-h-screen bg-background flex flex-col">
         <Navbar />
         <div className="bg-foreground dark:bg-card text-background dark:text-foreground pt-16 pb-10 px-4 sm:px-8">
-          <div className="max-w-5xl mx-auto">
+          <div className="max-w-7xl mx-auto">
             <button onClick={() => setSelectedSubject(null)} className="inline-flex items-center gap-2 text-xs font-semibold tracking-widest uppercase opacity-60 hover:opacity-100 transition-opacity mb-6">
               <ArrowLeft className="h-3.5 w-3.5" /> Back to Subjects
             </button>
@@ -126,7 +126,7 @@ const SixthSemesterBTNotes = () => {
             <p className="opacity-60 text-sm">{subject.notes.length} file{subject.notes.length !== 1 ? 's' : ''} available · 6th Semester B.Tech</p>
           </div>
         </div>
-        <div className="max-w-5xl mx-auto px-4 sm:px-8 py-10 flex-1">
+        <div className="max-w-7xl mx-auto px-4 sm:px-8 py-10 flex-1">
           {subject.id === 'pyqs' || subject.name.toLowerCase().includes('previous year') || subject.name.toLowerCase().includes('pyq') ? (
             <SessionPyqAccordion
               notes={subject.notes}
@@ -174,7 +174,7 @@ const SixthSemesterBTNotes = () => {
     <div className="min-h-screen bg-background">
       <Navbar />
       <div className="bg-foreground dark:bg-card text-background dark:text-foreground pt-16 pb-12 px-4 sm:px-8">
-        <div className="max-w-5xl mx-auto">
+        <div className="max-w-7xl mx-auto">
           <button onClick={() => navigate('/btech-notes/third-year/semester-6')} className="inline-flex items-center gap-2 text-xs font-semibold tracking-widest uppercase opacity-50 hover:opacity-100 transition-opacity mb-8">
             <ArrowLeft className="h-3.5 w-3.5" /> Back to 6th Semester
           </button>
@@ -187,7 +187,7 @@ const SixthSemesterBTNotes = () => {
         </div>
       </div>
 
-      <div className="max-w-5xl mx-auto px-4 sm:px-8 py-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-8 py-10">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {subjects.map((subject, index) => {
             if (subject.isSpecial) {
