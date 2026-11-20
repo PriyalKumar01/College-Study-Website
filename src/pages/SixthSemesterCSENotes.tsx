@@ -1,3 +1,4 @@
+/** 6th Semester Computer Science and Engineering course notes */
 // Syllabus: computer science sixth semester core curriculum
 // 6th semester CSE branch notes
 import { useState } from 'react';
