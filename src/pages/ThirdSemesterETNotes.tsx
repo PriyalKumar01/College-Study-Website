@@ -1,3 +1,4 @@
+/** 3rd Semester Electronics Engineering course notes */
 import { PdfCardBadge } from '@/components/PdfCardBadge';
 // Syllabus: electronics technology third semester curriculum
 // 3rd semester Electronics Engineering notes
