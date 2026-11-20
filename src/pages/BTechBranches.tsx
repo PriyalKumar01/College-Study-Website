@@ -1,3 +1,4 @@
+/** B.Tech engineering branches directory and semester portal routing */
 // Catalog: engineering discipline catalog and curriculum mapping
 // B.Tech branch list portal
 import { useState, useMemo, useRef, useEffect } from "react";
