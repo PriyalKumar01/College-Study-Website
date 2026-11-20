@@ -558,18 +558,18 @@ const BTechSemesters = () => {
                                     <span className="truncate text-foreground font-medium flex-1">{n.title}</span>
                                     <div className="flex items-center gap-1 shrink-0">
                                       <button
-                                        onClick={() => handleDownload(n.url, n.title)}
-                                        className="p-1 text-emerald-600 hover:text-emerald-700 dark:text-emerald-400"
-                                        title="Download Note"
-                                      >
-                                        <Download className="w-3.5 h-3.5" />
-                                      </button>
-                                      <button
                                         onClick={() => viewInBrowser(n.url)}
                                         className="p-1 text-muted-foreground hover:text-foreground"
                                         title="View in Browser"
                                       >
                                         <ExternalLink className="w-3.5 h-3.5" />
+                                      </button>
+                                      <button
+                                        onClick={() => handleDownload(n.url, n.title)}
+                                        className="p-1 text-emerald-600 hover:text-emerald-700 dark:text-emerald-400"
+                                        title="Download PDF"
+                                      >
+                                        <Download className="w-3.5 h-3.5" />
                                       </button>
                                     </div>
                                   </div>

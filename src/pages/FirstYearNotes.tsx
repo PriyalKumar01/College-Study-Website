@@ -1196,19 +1196,19 @@ const FirstYearNotes = () => {
                     )}
                     <div className="flex gap-2">
                       <button
-                        onClick={() => handleDownload(note.url, note.title)}
-                        className="flex-1 inline-flex items-center justify-center gap-1.5 text-xs font-bold tracking-wider uppercase py-2 px-3 rounded-lg bg-foreground text-background hover:opacity-85 transition-opacity"
+                        onClick={() => viewInBrowser(note.url)}
+                        className="flex-1 inline-flex items-center justify-center gap-1.5 text-xs font-bold tracking-wider uppercase py-2 px-3 rounded-lg bg-foreground text-background hover:opacity-85 transition-opacity cursor-pointer"
                         disabled={note.url === '#'}
                       >
-                        <Download className="h-3.5 w-3.5" /> Download
+                        <Eye className="h-3.5 w-3.5" /> View
                       </button>
                       <button
-                        onClick={() => viewInBrowser(note.url)}
-                        className="inline-flex items-center justify-center p-2 rounded-lg border border-border hover:bg-muted transition-colors"
+                        onClick={() => handleDownload(note.url, note.title)}
+                        className="inline-flex items-center justify-center p-2 rounded-lg border border-border hover:bg-muted transition-colors cursor-pointer"
                         disabled={note.url === '#'}
-                        title="View in Browser"
+                        title="Download PDF"
                       >
-                        <ExternalLink className="h-3.5 w-3.5 text-foreground" />
+                        <Download className="h-3.5 w-3.5 text-foreground" />
                       </button>
                     </div>
                   </div>
@@ -1627,19 +1627,19 @@ const FirstYearNotes = () => {
 
                     <div className="flex gap-2 pt-2 border-t border-border/50">
                       <button
-                        onClick={() => handleDownload(note.url, note.title)}
+                        onClick={() => viewInBrowser(note.url)}
                         className="flex-1 inline-flex items-center justify-center gap-1.5 text-xs font-bold tracking-wider uppercase py-2 px-3 rounded-lg bg-foreground text-background hover:opacity-85 transition-opacity cursor-pointer"
                         disabled={note.url === '#'}
                       >
-                        <Download className="h-3.5 w-3.5" /> Download
+                        <Eye className="h-3.5 w-3.5" /> View
                       </button>
                       <button
-                        onClick={() => viewInBrowser(note.url)}
+                        onClick={() => handleDownload(note.url, note.title)}
                         className="inline-flex items-center justify-center p-2 rounded-lg border border-border hover:bg-muted transition-colors cursor-pointer"
                         disabled={note.url === '#'}
-                        title="View in Browser"
+                        title="Download PDF"
                       >
-                        <ExternalLink className="h-3.5 w-3.5 text-foreground" />
+                        <Download className="h-3.5 w-3.5 text-foreground" />
                       </button>
                     </div>
                   </div>
@@ -1744,19 +1744,19 @@ const FirstYearNotes = () => {
 
                                   <div className="flex gap-2 pt-2 border-t border-border/50">
                                     <button
-                                      onClick={() => handleDownload(note.url, note.title)}
+                                      onClick={() => viewInBrowser(note.url)}
                                       className="flex-1 inline-flex items-center justify-center gap-1.5 text-xs font-bold tracking-wider uppercase py-2 px-3 rounded-lg bg-foreground text-background hover:opacity-85 transition-opacity cursor-pointer"
                                       disabled={note.url === '#'}
                                     >
-                                      <Download className="h-3.5 w-3.5" /> Download
+                                      <Eye className="h-3.5 w-3.5" /> View
                                     </button>
                                     <button
-                                      onClick={() => viewInBrowser(note.url)}
+                                      onClick={() => handleDownload(note.url, note.title)}
                                       className="inline-flex items-center justify-center p-2 rounded-lg border border-border hover:bg-muted transition-colors cursor-pointer"
                                       disabled={note.url === '#'}
-                                      title="View in Browser"
+                                      title="Download PDF"
                                     >
-                                      <ExternalLink className="h-3.5 w-3.5 text-foreground" />
+                                      <Download className="h-3.5 w-3.5 text-foreground" />
                                     </button>
                                   </div>
                                 </div>

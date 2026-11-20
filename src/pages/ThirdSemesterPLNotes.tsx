@@ -8,7 +8,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useCommunityNotes } from '@/hooks/useCommunityNotes';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { Download, ArrowLeft, FileText, Play, ChevronDown, ChevronRight, Trash2, ExternalLink } from 'lucide-react';
+import { Download, ArrowLeft, FileText, Play, ChevronDown, ChevronRight, Trash2, ExternalLink, Eye } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import { SubjectShareButton } from '@/components/SubjectShareButton';
@@ -357,22 +357,20 @@ interface Note {
                       <p className="text-[10px] text-muted-foreground mb-3">Uploaded by: {note.userName}</p>
                     )}
                     <div className="flex gap-2">
-                      {isGoogleDriveUrl(note.url) && (
-                        <button
-                          onClick={() => handleDownload(note.url, note.title)}
-                          className="flex-1 inline-flex items-center justify-center gap-1.5 text-xs font-bold tracking-wider uppercase py-2 px-3 rounded bg-foreground text-background hover:opacity-85 transition-opacity"
-                          disabled={note.url === '#'}
-                        >
-                          <Download className="h-3.5 w-3.5" /> Download
-                        </button>
-                      )}
                       <button
                         onClick={() => viewInBrowser(note.url)}
-                        className={`${isGoogleDriveUrl(note.url) ? 'inline-flex items-center justify-center p-2 rounded border border-foreground/20 hover:bg-muted transition-colors' : 'flex-1 inline-flex items-center justify-center gap-1.5 text-xs font-bold tracking-wider uppercase py-2 px-3 rounded bg-foreground text-background hover:opacity-85 transition-opacity'}`}
+                        className="flex-1 inline-flex items-center justify-center gap-1.5 text-xs font-bold tracking-wider uppercase py-2 px-3 rounded-lg bg-foreground text-background hover:opacity-85 transition-opacity cursor-pointer"
                         disabled={note.url === '#'}
-                        title="View in Browser"
                       >
-                        <ExternalLink className="h-3.5 w-3.5" /> {isGoogleDriveUrl(note.url) ? '' : 'View Notes'}
+                        <Eye className="h-3.5 w-3.5" /> View
+                      </button>
+                      <button
+                        onClick={() => handleDownload(note.url, note.title)}
+                        className="inline-flex items-center justify-center p-2 rounded-lg border border-border hover:bg-muted transition-colors cursor-pointer"
+                        disabled={note.url === '#'}
+                        title="Download PDF"
+                      >
+                        <Download className="h-3.5 w-3.5 text-foreground" />
                       </button>
                     </div>
                   </div>

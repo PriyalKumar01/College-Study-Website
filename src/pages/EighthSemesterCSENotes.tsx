@@ -6,7 +6,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useCommunityNotes } from '@/hooks/useCommunityNotes';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { Download, ArrowLeft, FileText, Play, ChevronDown, ChevronRight, Share2, Trash2, ExternalLink } from 'lucide-react';
+import { Download, ArrowLeft, FileText, Play, ChevronDown, ChevronRight, Share2, Trash2, ExternalLink, Eye } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import { SubjectShareButton } from '@/components/SubjectShareButton';
@@ -15,7 +15,7 @@ import { SessionPyqAccordion } from '@/components/SessionPyqAccordion';
 import { getUnifiedSubjectNotes } from '@/data/semesterSubjectsCatalog';
 import Footer from '@/components/Footer';
 import { PlaylistModal } from '@/components/PlaylistModal';
-import { smartDownload } from '@/lib/downloadUtils';
+import { smartDownload, viewInBrowser } from '@/lib/downloadUtils';
 import { RecommendationBadge } from '@/components/RecommendationBadge';
 
 const EighthSemesterCSENotes = () => {
@@ -218,7 +218,7 @@ const EighthSemesterCSENotes = () => {
               <p className="text-sm">Notes for this subject will be added soon.</p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
               {subject.notes.map((note, index) => (
                 <motion.div key={index} initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.05, duration: 0.3 }}>
                   <div className="group relative flex flex-col h-full rounded-xl border border-border bg-card hover:border-foreground/30 transition-all duration-200 p-4 gap-3">
@@ -230,12 +230,12 @@ const EighthSemesterCSENotes = () => {
                       <p className="text-sm font-medium text-foreground leading-snug mt-1 mb-3">{note.title}</p>
                     </div>
                     <div className="flex gap-2 pt-2 border-t border-border mt-auto">
-                      <button onClick={() => handleDownload(note.url, note.title)} className="flex-1 inline-flex items-center justify-center gap-1.5 text-xs font-semibold py-2 px-3 rounded-lg bg-foreground text-background hover:opacity-80 transition-opacity" disabled={(note as any).url === '#'}>
-                        <Download className="h-3.5 w-3.5" /> {(note as any).url === '#' ? 'Coming Soon' : 'Download'}
+                      <button onClick={() => viewInBrowser(note.url)} className="flex-1 inline-flex items-center justify-center gap-1.5 text-xs font-bold tracking-wider uppercase py-2 px-3 rounded-lg bg-foreground text-background hover:opacity-85 transition-opacity cursor-pointer" disabled={(note as any).url === '#'}>
+                        <Eye className="h-3.5 w-3.5" /> {(note as any).url === '#' ? 'Coming Soon' : 'View'}
                       </button>
-                      <a href={note.url} target="_blank" rel="noopener noreferrer" className={`inline-flex items-center justify-center gap-1.5 text-xs font-semibold py-2 px-3 rounded-lg border border-border hover:bg-muted transition-colors ${note.url === '#' ? 'pointer-events-none opacity-50' : ''}`} title="Open in new tab">
-                        <ExternalLink className="h-3.5 w-3.5" />
-                      </a>
+                      <button onClick={() => handleDownload(note.url, note.title)} className="inline-flex items-center justify-center p-2 rounded-lg border border-border hover:bg-muted transition-colors cursor-pointer" disabled={(note as any).url === '#'} title="Download PDF">
+                        <Download className="h-3.5 w-3.5 text-foreground" />
+                      </button>
                       {(note as any).isCommunity && isOwner && (
                         <button onClick={() => handleDeleteCommunityNote((note as any).id, (note as any).fileName)} className="inline-flex items-center justify-center py-2 px-3 rounded-lg border border-red-200 text-red-500 hover:bg-red-50 dark:hover:bg-red-950/20 transition-colors text-xs">
                           <Trash2 className="h-3.5 w-3.5" />

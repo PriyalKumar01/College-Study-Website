@@ -10,11 +10,11 @@ import { useToast } from '@/hooks/use-toast';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Download, ArrowLeft, FileText, Play, ChevronDown, ChevronRight, Trash2 } from 'lucide-react';
+import { Download, ArrowLeft, FileText, Play, ChevronDown, ChevronRight, Trash2, Eye } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import { PlaylistModal } from '@/components/PlaylistModal';
-import { smartDownload } from '@/lib/downloadUtils';
+import { smartDownload, viewInBrowser } from '@/lib/downloadUtils';
 
 const BSMSSem6Notes = () => {
   const navigate = useNavigate();
@@ -186,8 +186,11 @@ const BSMSSem6Notes = () => {
                   </CardHeader>
                   <CardContent>
                     <div className="flex gap-2">
-                      <Button onClick={() => handleDownload(note.url, note.title)} className="flex-1 btn-hero" disabled={(note as any).url === '#'}>
-                        <Download className="h-4 w-4 mr-2" />{(note as any).url === '#' ? 'Coming Soon' : 'Download'}
+                      <Button onClick={() => viewInBrowser(note.url)} className="flex-1 btn-hero text-xs" disabled={(note as any).url === '#'}>
+                        <Eye className="h-4 w-4 mr-1.5" />{(note as any).url === '#' ? 'Coming Soon' : 'View'}
+                      </Button>
+                      <Button variant="outline" size="icon" onClick={() => handleDownload(note.url, note.title)} disabled={(note as any).url === '#'} title="Download PDF">
+                        <Download className="h-4 w-4" />
                       </Button>
                       {(note as any).isCommunity && isOwner && (
                         <Button variant="destructive" size="icon" onClick={() => handleDeleteCommunityNote((note as any).id)} title="Delete"><Trash2 className="h-4 w-4" /></Button>

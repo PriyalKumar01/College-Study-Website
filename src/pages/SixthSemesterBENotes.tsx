@@ -6,7 +6,7 @@ import { useCommunityNotes } from '@/hooks/useCommunityNotes';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
-import { Download, ArrowLeft, ExternalLink, Share2, Trash2, BookOpen, FileText } from 'lucide-react';
+import { Download, ArrowLeft, ExternalLink, Share2, Trash2, BookOpen, FileText, Eye } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import { SubjectShareButton } from '@/components/SubjectShareButton';
@@ -14,7 +14,7 @@ import { useSubjectAutoScroll } from '@/hooks/useSubjectAutoScroll';
 import { SessionPyqAccordion } from '@/components/SessionPyqAccordion';
 import { getUnifiedSubjectNotes } from '@/data/semesterSubjectsCatalog';
 import Footer from '@/components/Footer';
-import { smartDownload } from '@/lib/downloadUtils';
+import { smartDownload, viewInBrowser } from '@/lib/downloadUtils';
 
 const SixthSemesterBENotes = () => {
   const navigate = useNavigate();
@@ -105,7 +105,7 @@ const SixthSemesterBENotes = () => {
               <p className="text-sm">Notes for this subject will be added soon.</p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
               {subject.notes.map((note, index) => (
                 <motion.div key={index} initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.05, duration: 0.3 }}>
                   <div className="group relative flex flex-col h-full rounded-xl border border-border bg-card hover:border-primary/40 hover:shadow-md transition-all duration-200 p-4 gap-3">
@@ -116,11 +116,11 @@ const SixthSemesterBENotes = () => {
                     </div>
                     <p className="text-sm font-medium leading-snug flex-1">{note.title}</p>
                     <div className="flex gap-2 mt-1">
-                      <Button onClick={() => handleDownload(note.url, note.title)} className="flex-1 h-8 text-xs" disabled={(note as any).url === '#'}>
-                        <Download className="h-3.5 w-3.5 mr-1.5" />{(note as any).url === '#' ? 'Coming Soon' : 'Download'}
+                      <Button onClick={() => viewInBrowser(note.url)} className="flex-1 h-8 text-xs bg-foreground text-background hover:opacity-85 cursor-pointer" disabled={(note as any).url === '#'}>
+                        <Eye className="h-3.5 w-3.5 mr-1.5" />{(note as any).url === '#' ? 'Coming Soon' : 'View'}
                       </Button>
-                      <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => window.open(note.url, '_blank')} disabled={(note as any).url === '#'} title="Open in new tab">
-                        <ExternalLink className="h-3.5 w-3.5" />
+                      <Button variant="outline" size="icon" className="h-8 w-8 border border-border hover:bg-muted cursor-pointer" onClick={() => handleDownload(note.url, note.title)} disabled={(note as any).url === '#'} title="Download PDF">
+                        <Download className="h-3.5 w-3.5" />
                       </Button>
                       {(note as any).isCommunity && isOwner && (
                         <Button variant="destructive" size="icon" className="h-8 w-8" onClick={() => handleDeleteCommunityNote((note as any).id, (note as any).fileName)}>

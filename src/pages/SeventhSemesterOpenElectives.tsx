@@ -1,7 +1,7 @@
 // 7th semester open electives notes
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Download, ArrowLeft, FileText, Play, ChevronDown, ChevronRight, ExternalLink, Trash2, Search } from 'lucide-react';
+import { Download, ArrowLeft, FileText, Play, ChevronDown, ChevronRight, ExternalLink, Trash2, Search, Eye } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import { SubjectShareButton } from '@/components/SubjectShareButton';
@@ -364,7 +364,7 @@ const SeventhSemesterOpenElectives = () => {
               </p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
               {subject.notes.map((note, index) => (
                 <motion.div
                   key={index}
@@ -383,18 +383,19 @@ const SeventhSemesterOpenElectives = () => {
                     </div>
                     <div className="flex gap-2 pt-2 border-t border-border mt-auto">
                       <button
-                        onClick={() => handleDownload(note.url, note.title)}
+                        onClick={() => viewInBrowser(note.url)}
                         className="flex-1 inline-flex items-center justify-center gap-1.5 text-xs font-bold py-2 px-3 rounded-xl bg-foreground text-background hover:opacity-85 transition-opacity cursor-pointer"
                         disabled={(note as any).url === '#'}
                       >
-                        <Download className="h-3.5 w-3.5" /> Download
+                        <Eye className="h-3.5 w-3.5" /> View
                       </button>
                       <button
-                        onClick={() => viewInBrowser(note.url)}
-                        className="inline-flex items-center justify-center py-2 px-3 rounded-xl border border-border hover:bg-muted transition-colors cursor-pointer text-foreground"
-                        title="View in Browser"
+                        onClick={() => handleDownload(note.url, note.title)}
+                        className="inline-flex items-center justify-center p-2 rounded-xl border border-border hover:bg-muted transition-colors cursor-pointer text-foreground"
+                        title="Download PDF"
+                        disabled={(note as any).url === '#'}
                       >
-                        <ExternalLink className="h-3.5 w-3.5" />
+                        <Download className="h-3.5 w-3.5" />
                       </button>
                       {(note as any).isCommunity && isOwner && (
                         <button

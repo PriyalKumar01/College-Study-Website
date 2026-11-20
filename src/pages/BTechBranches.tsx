@@ -615,20 +615,20 @@ const activeFilteredSubjects = useMemo(() => {
                                 </span>
                                 <div className="flex items-center gap-1 shrink-0">
                                   <button
-                                    onClick={() => smartDownload(note.url, note.title)}
-                                    className="p-1 rounded text-foreground hover:bg-muted cursor-pointer"
-                                    title="Download Note"
-                                    disabled={note.url === '#'}
-                                  >
-                                    <Download className="h-3.5 w-3.5" />
-                                  </button>
-                                  <button
                                     onClick={() => viewInBrowser(note.url)}
                                     className="p-1 rounded text-foreground hover:bg-muted cursor-pointer"
                                     title="View in Browser"
                                     disabled={note.url === '#'}
                                   >
                                     <ExternalLink className="h-3.5 w-3.5" />
+                                  </button>
+                                  <button
+                                    onClick={() => smartDownload(note.url, note.title)}
+                                    className="p-1 rounded text-foreground hover:bg-muted cursor-pointer"
+                                    title="Download PDF"
+                                    disabled={note.url === '#'}
+                                  >
+                                    <Download className="h-3.5 w-3.5" />
                                   </button>
                                 </div>
                               </div>

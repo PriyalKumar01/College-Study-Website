@@ -569,11 +569,10 @@ const FinalYearBranchNotes = () => {
                               </button>
                               <button
                                 onClick={() => smartDownload(noteUrl, `${noteTitle}.pdf`)}
-                                className="py-1.5 px-3 rounded-lg text-xs font-semibold border border-border hover:bg-muted text-foreground transition-all flex items-center justify-center gap-1 cursor-pointer"
+                                className="inline-flex items-center justify-center p-2 rounded-lg border border-border hover:bg-muted transition-colors cursor-pointer"
                                 title="Download PDF"
                               >
-                                <Download className="h-3.5 w-3.5" />
-                                <span>DOWNLOAD</span>
+                                <Download className="h-3.5 w-3.5 text-foreground" />
                               </button>
                             </div>
                           </div>

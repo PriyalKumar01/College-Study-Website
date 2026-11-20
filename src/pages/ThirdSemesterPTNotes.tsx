@@ -7,7 +7,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useCommunityNotes } from '@/hooks/useCommunityNotes';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { Download, ArrowLeft, FileText, Play, ChevronDown, ChevronRight, Trash2, ExternalLink } from 'lucide-react';
+import { Download, ArrowLeft, FileText, Play, ChevronDown, ChevronRight, Trash2, ExternalLink, Eye } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import { SubjectShareButton } from '@/components/SubjectShareButton';
@@ -16,7 +16,7 @@ import { SessionPyqAccordion } from '@/components/SessionPyqAccordion';
 import { getUnifiedSubjectNotes } from '@/data/semesterSubjectsCatalog';
 import Footer from '@/components/Footer';
 import { PlaylistModal } from '@/components/PlaylistModal';
-import { smartDownload } from '@/lib/downloadUtils';
+import { smartDownload, viewInBrowser } from '@/lib/downloadUtils';
 import { matchesSubject } from '@/utils/subjectMatcher';
 import { RecommendationBadge } from '@/components/RecommendationBadge';
 
@@ -361,20 +361,12 @@ const ThirdSemesterPTNotes = () => {
                     <p className="text-sm font-medium text-foreground leading-snug mt-1 mb-3">{note.title}</p>
                   </div>
                   <div className="flex gap-2 pt-2 border-t border-border">
-                    <button
-                      onClick={() => handleDownload(note.url, note.title)}
-                      className="flex-1 inline-flex items-center justify-center gap-1.5 text-xs font-semibold py-2 px-3 rounded-lg bg-foreground text-background hover:opacity-80 transition-opacity"
-                    >
-                      <Download className="h-3.5 w-3.5" /> Download
+                    <button onClick={() => viewInBrowser(note.url)} className="flex-1 inline-flex items-center justify-center gap-1.5 text-xs font-bold tracking-wider uppercase py-2 px-3 rounded-lg bg-foreground text-background hover:opacity-85 transition-opacity cursor-pointer">
+                      <Eye className="h-3.5 w-3.5" /> View
                     </button>
-                    <a
-                      href={note.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center justify-center gap-1.5 text-xs font-semibold py-2 px-3 rounded-lg border border-border hover:bg-muted transition-colors"
-                    >
-                      <ExternalLink className="h-3.5 w-3.5" />
-                    </a>
+                    <button onClick={() => handleDownload(note.url, note.title)} className="inline-flex items-center justify-center p-2 rounded-lg border border-border hover:bg-muted transition-colors cursor-pointer" title="Download PDF">
+                      <Download className="h-3.5 w-3.5 text-foreground" />
+                    </button>
                     {(note as any).isCommunity && isOwner && (
                       <button
                         onClick={() => handleDeleteCommunityNote((note as any).id)}
