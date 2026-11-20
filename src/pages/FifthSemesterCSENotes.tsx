@@ -1,3 +1,4 @@
+/** 5th Semester Computer Science and Engineering course notes */
 import { PdfCardBadge } from '@/components/PdfCardBadge';
 // Syllabus: computer science fifth semester core curriculum
 // 5th semester CSE branch notes
