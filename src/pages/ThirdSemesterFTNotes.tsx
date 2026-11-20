@@ -1,3 +1,4 @@
+/** 3rd Semester Food Technology course notes */
 import { PdfCardBadge } from '@/components/PdfCardBadge';
 // 3rd semester Food Technology notes
 import { useState } from 'react';
