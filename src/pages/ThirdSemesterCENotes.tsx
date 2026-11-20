@@ -1,3 +1,4 @@
+/** 3rd Semester Civil Engineering course notes */
 import { PdfCardBadge } from '@/components/PdfCardBadge';
 // Syllabus: civil engineering third semester curriculum
 // 3rd semester Civil Engineering notes
