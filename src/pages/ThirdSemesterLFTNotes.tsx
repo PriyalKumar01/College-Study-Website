@@ -1,3 +1,4 @@
+/** 3rd Semester Leather and Footwear Technology course notes */
 import { PdfCardBadge } from '@/components/PdfCardBadge';
 // 3rd semester Leather & Fashion Technology notes
 import { useState } from 'react';
