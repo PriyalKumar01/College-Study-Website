@@ -1,3 +1,4 @@
+import { PdfCardBadge } from '@/components/PdfCardBadge';
 // 6th semester Plastic Technology notes
 import { useState } from 'react';
 import { motion } from 'framer-motion';
