@@ -1,3 +1,4 @@
+/** 3rd Semester Mechanical Engineering course notes */
 import { PdfCardBadge } from '@/components/PdfCardBadge';
 // Syllabus: mechanical engineering third semester curriculum
 // 3rd semester Mechanical Engineering notes
