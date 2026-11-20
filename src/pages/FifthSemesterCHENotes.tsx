@@ -1,3 +1,4 @@
+/** 5th Semester Chemical Engineering course notes */
 import { PdfCardBadge } from '@/components/PdfCardBadge';
 // 5th semester Chemical Engineering notes
 import { useState } from 'react';
