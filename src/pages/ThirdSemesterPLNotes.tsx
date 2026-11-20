@@ -1,3 +1,4 @@
+/** 3rd Semester Plastic Technology course notes */
 import { PdfCardBadge } from '@/components/PdfCardBadge';
 // Syllabus: plastic technology third semester curriculum
 // 3rd semester Plastic Technology notes
