@@ -1,3 +1,4 @@
+/** HBTU BBA 3-year semester course materials and syllabus viewer */
 // Curriculum: bachelor of business administration syllabus and notes
 // Official HBTU Kanpur BBA Program (3-Year Degree, 6 Semesters)
 import { useState, useMemo } from 'react';
