@@ -1,3 +1,4 @@
+/** Curated DSA and competitive programming preparation resources */
 import { PdfCardBadge } from '@/components/PdfCardBadge';
 // Learning: competitive programming roadmap and algorithmic problem sets
 // Coding space study resources
