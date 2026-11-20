@@ -1,3 +1,4 @@
+/** BS-MS dual degree academic year selection directory */
 // Curriculum: integrated BS-MS science curriculum year navigation
 // BS-MS integrated science years portal
 import { motion } from 'framer-motion';
