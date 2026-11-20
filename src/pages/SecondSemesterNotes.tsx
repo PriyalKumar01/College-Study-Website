@@ -1,3 +1,4 @@
+/** 2nd Semester core engineering subjects notes and resources */
 import { PdfCardBadge } from '@/components/PdfCardBadge';
 // 2nd semester subjects notes
 import { useState } from 'react';
