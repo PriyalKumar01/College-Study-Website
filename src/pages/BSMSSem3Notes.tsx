@@ -1,3 +1,4 @@
+/** BS-MS 3rd Semester scientific curriculum notes */
 import { PdfCardBadge } from '@/components/PdfCardBadge';
 // Syllabus: third semester science curriculum subject modules
 // BS-MS 3rd semester notes
