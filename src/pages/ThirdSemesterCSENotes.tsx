@@ -1,3 +1,4 @@
+/** 3rd Semester Computer Science and Engineering course notes */
 import { PdfCardBadge } from '@/components/PdfCardBadge';
 // Syllabus: computer science third semester core curriculum
 // 3rd semester CSE branch notes
