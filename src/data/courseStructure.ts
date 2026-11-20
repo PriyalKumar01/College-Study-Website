@@ -1,3 +1,4 @@
+/** Course curriculum structure and semester course definitions for HBTU B.Tech and BBA */
 // Centralized course structure mapping for the admin upload form
 // Maps exactly to the existing website pages and structure
 
