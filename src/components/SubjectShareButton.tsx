@@ -1,3 +1,4 @@
+/** Social and direct link sharing utility button for academic subjects */
 // DeepLink: subject-targeted permalink builder with clipboard support
 import React from 'react';
 import { Share2 } from 'lucide-react';
