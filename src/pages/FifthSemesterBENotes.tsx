@@ -1,3 +1,4 @@
+/** 5th Semester Biochemical Engineering course notes */
 import { PdfCardBadge } from '@/components/PdfCardBadge';
 // 5th semester Biochemical Engineering notes
 import { useState } from 'react';
