@@ -1,4 +1,3 @@
-import { PdfCardBadge } from '@/components/PdfCardBadge';
 // 6th semester Biotechnology notes
 import { useState } from 'react';
 import { motion } from 'framer-motion';
@@ -6,7 +5,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useCommunityNotes } from '@/hooks/useCommunityNotes';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { Download, ArrowLeft, Eye, FileText, Trash2, ExternalLink } from 'lucide-react';
+import { Download, ArrowLeft, FileText, Trash2, ExternalLink } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import { SubjectShareButton } from '@/components/SubjectShareButton';
