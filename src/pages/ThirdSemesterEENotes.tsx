@@ -1,3 +1,4 @@
+/** 3rd Semester Electrical Engineering course notes */
 import { PdfCardBadge } from '@/components/PdfCardBadge';
 // Syllabus: electrical engineering third semester curriculum
 // 3rd semester Electrical Engineering notes
