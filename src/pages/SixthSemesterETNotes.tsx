@@ -1,3 +1,4 @@
+import { PdfCardBadge } from '@/components/PdfCardBadge';
 // 6th semester Electronics Engineering notes
 import { useState } from 'react';
 import { motion } from 'framer-motion';
