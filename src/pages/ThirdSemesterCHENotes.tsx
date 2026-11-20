@@ -1,3 +1,4 @@
+/** 3rd Semester Chemical Engineering course notes */
 import { PdfCardBadge } from '@/components/PdfCardBadge';
 // Syllabus: chemical engineering third semester curriculum
 // 3rd semester Chemical Engineering notes
