@@ -1,3 +1,4 @@
+/** 4th Semester Plastic Technology course notes */
 import { PdfCardBadge } from '@/components/PdfCardBadge';
 // 4th semester Plastic Technology notes
 import { useState } from 'react';
