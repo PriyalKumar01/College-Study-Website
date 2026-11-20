@@ -1,3 +1,4 @@
+import { PdfCardBadge } from '@/components/PdfCardBadge';
 import { RecommendationBadge } from '@/components/RecommendationBadge';
 // Syllabus: computer science seventh semester core curriculum
 // 7th semester CSE branch notes
