@@ -1,3 +1,4 @@
+/** Educational disclaimer modal triggered once after user authentication */
 // Legal: academic syllabus disclaimer dialog with acknowledgement persistence
 // Study disclaimer modal component - only shows once for authenticated users after profile completion
 import { useState, useEffect, useCallback } from 'react';
