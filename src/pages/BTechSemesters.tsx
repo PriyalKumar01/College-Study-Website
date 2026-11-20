@@ -1,3 +1,4 @@
+/** B.Tech semester selection directory with responsive grid cards */
 // Navigation: semester selection grid and catalog binding
 // B.Tech semester list portal
 import { useNavigate, useParams } from "react-router-dom";
