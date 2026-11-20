@@ -1,3 +1,4 @@
+/** 3rd Semester Biochemical Engineering course notes */
 // 3rd semester Biochemical Engineering notes
 import { useState } from 'react';
 import { motion } from 'framer-motion';
