@@ -1,3 +1,4 @@
+/** Web development full-stack learning notes and cheat sheets */
 import { PdfCardBadge } from '@/components/PdfCardBadge';
 // Syllabus: full stack web development roadmap and project guides
 import { useCommunityNotes } from '@/hooks/useCommunityNotes';
