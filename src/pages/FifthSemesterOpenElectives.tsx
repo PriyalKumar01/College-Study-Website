@@ -1,8 +1,8 @@
-import { PdfCardBadge } from '@/components/PdfCardBadge';
 // 5th semester open electives notes
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Download, ArrowLeft, Eye, FileText, Play, ChevronDown, ChevronRight, ExternalLink } from 'lucide-react';
+import { Download, ArrowLeft, FileText, Play, ChevronDown, ChevronRight, ExternalLink, Eye,
+} from 'lucide-react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import { SubjectShareButton } from '@/components/SubjectShareButton';
@@ -318,20 +318,20 @@ const FifthSemesterOpenElectives = () => {
                       )}
                       <div className="flex gap-2 mt-auto">
                         <button
-                          onClick={() => handleDownload(note.url, note.title)}
-                          className="flex-1 inline-flex items-center justify-center gap-1.5 text-xs font-bold tracking-wider uppercase py-2 px-3 rounded bg-foreground text-background hover:opacity-85 transition-opacity"
-                          disabled={note.url === '#'}
-                        >
-                          <Eye className="h-3.5 w-3.5" /> View
-                        </button>
-                        <button
-                          onClick={() => viewInBrowser(note.url)}
-                          className="inline-flex items-center justify-center p-2 rounded border border-foreground/20 hover:bg-muted transition-colors"
-                          disabled={note.url === '#'}
-                          title="View in Browser"
-                        >
-                          <ExternalLink className="h-3.5 w-3.5 text-foreground" />
-                        </button>
+                            onClick={() => viewInBrowser(note.url)}
+                            className="flex-1 inline-flex items-center justify-center gap-1.5 text-xs font-bold tracking-wider uppercase py-2 px-3 rounded bg-foreground text-background hover:opacity-85 transition-opacity cursor-pointer"
+                            disabled={note.url === '#'}
+                          >
+                            <Eye className="h-3.5 w-3.5" /> View
+                          </button>
+                          <button
+                            onClick={() => handleDownload(note.url, note.title)}
+                            className="inline-flex items-center justify-center p-2 rounded border border-foreground/20 hover:bg-muted transition-colors cursor-pointer"
+                            disabled={note.url === '#'}
+                            title="Download PDF"
+                          >
+                            <Download className="h-3.5 w-3.5 text-foreground" />
+                          </button>
                       </div>
                     </div>
                   </motion.div>
