@@ -1,3 +1,4 @@
+/** 4th Semester Mechanical Engineering course notes */
 import { PdfCardBadge } from '@/components/PdfCardBadge';
 // Syllabus: mechanical engineering fourth semester curriculum
 // 4th semester Mechanical Engineering notes
