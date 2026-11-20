@@ -1,4 +1,3 @@
-import { PdfCardBadge } from '@/components/PdfCardBadge';
 // Syllabus: computer science sixth semester core curriculum
 // 6th semester CSE branch notes
 import { useState } from 'react';
@@ -7,7 +6,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useCommunityNotes } from '@/hooks/useCommunityNotes';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { Download, ArrowLeft, Eye, FileText, Play, ChevronDown, ChevronRight, Share2, Trash2, ExternalLink } from 'lucide-react';
+import { Download, ArrowLeft, FileText, Play, ChevronDown, ChevronRight, Share2, Trash2, ExternalLink } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import { SubjectShareButton } from '@/components/SubjectShareButton';
@@ -399,7 +398,7 @@ const SixthSemesterCSENotes = () => {
             </div>
           </div>
           <button onClick={() => handleDownload(syllabus.url, syllabus.title)} className="inline-flex items-center gap-2 text-xs font-bold tracking-wider uppercase py-2.5 px-5 rounded-lg bg-foreground text-background hover:opacity-80 transition-opacity">
-            <Eye className="h-3.5 w-3.5" /> View Syllabus
+            <Download className="h-3.5 w-3.5" /> Download Syllabus
           </button>
         </motion.div>
 
