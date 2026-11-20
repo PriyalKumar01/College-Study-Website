@@ -1,3 +1,4 @@
+import { PdfCardBadge } from '@/components/PdfCardBadge';
 // 7th semester open electives notes
 import { useState } from 'react';
 import { motion } from 'framer-motion';
