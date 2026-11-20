@@ -2,7 +2,7 @@ import { PdfCardBadge } from '@/components/PdfCardBadge';
 // 7th semester open electives notes
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Download, ArrowLeft, FileText, Play, ChevronDown, ChevronRight, ExternalLink, Trash2, Search } from 'lucide-react';
+import { Download, ArrowLeft, Eye, FileText, Play, ChevronDown, ChevronRight, ExternalLink, Trash2, Search } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import { SubjectShareButton } from '@/components/SubjectShareButton';
@@ -388,7 +388,7 @@ const SeventhSemesterOpenElectives = () => {
                         className="flex-1 inline-flex items-center justify-center gap-1.5 text-xs font-bold py-2 px-3 rounded-xl bg-foreground text-background hover:opacity-85 transition-opacity cursor-pointer"
                         disabled={(note as any).url === '#'}
                       >
-                        <Download className="h-3.5 w-3.5" /> Download
+                        <Eye className="h-3.5 w-3.5" /> View
                       </button>
                       <button
                         onClick={() => viewInBrowser(note.url)}
