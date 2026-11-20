@@ -180,7 +180,7 @@ const SixthSemesterOpenElectives = () => {
         <Navbar />
         {/* Detail Hero */}
         <div className="bg-foreground dark:bg-card text-background dark:text-foreground pt-16 pb-10 px-4 sm:px-8">
-          <div className="max-w-5xl mx-auto">
+          <div className="max-w-7xl mx-auto">
             <button
               onClick={() => setSelectedSubject(null)}
               className="inline-flex items-center gap-2 text-xs font-semibold tracking-widest uppercase opacity-60 hover:opacity-100 transition-opacity mb-6"
@@ -195,7 +195,7 @@ const SixthSemesterOpenElectives = () => {
         </div>
 
         {/* Detail Content */}
-        <div className="max-w-5xl mx-auto px-4 sm:px-8 py-10 flex-1 w-full mb-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-8 py-10 flex-1 w-full mb-12">
           {(() => {
             const staticNotes = (subject.notes || []).filter(n => n.url && n.url !== '#');
             const cleanStr = (s: string) => s.toLowerCase().replace(/[^a-z0-9]/g, '');
@@ -232,7 +232,7 @@ const SixthSemesterOpenElectives = () => {
             }
 
             return (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
                 {allNotes.map((note: any, index: number) => (
                   <motion.div
                     key={index}
@@ -306,7 +306,7 @@ const SixthSemesterOpenElectives = () => {
 
       {/* Hero Banner */}
       <div className="bg-foreground dark:bg-card text-background dark:text-foreground pt-16 pb-12 px-4 sm:px-8">
-        <div className="max-w-5xl mx-auto">
+        <div className="max-w-7xl mx-auto">
           <button
             onClick={() => navigate(`/btech-notes/third-year/semester-6/${source}`)}
             className="inline-flex items-center gap-2 text-xs font-semibold tracking-widest uppercase opacity-50 hover:opacity-100 transition-opacity mb-8"
@@ -327,10 +327,10 @@ const SixthSemesterOpenElectives = () => {
         </div>
       </div>
 
-      <div className="max-w-5xl mx-auto px-4 sm:px-8 py-10 space-y-10 flex-1 w-full mb-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-8 py-10 space-y-10 flex-1 w-full mb-12">
         <div>
           <p className="text-xs font-bold tracking-[0.15em] uppercase text-muted-foreground mb-5">Available Electives</p>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
             {subjects.map((subject, index) => {
               const playlists = getSubjectPlaylists(subject.id);
               const hasPlaylists = (playlists.detailed?.length > 0 && playlists.detailed[0].url !== '#') || (playlists.oneshot?.length > 0);
