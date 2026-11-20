@@ -1,3 +1,4 @@
+/** 6th Semester inter-departmental open electives directory */
 // 6th semester open electives notes
 import { useState } from 'react';
 import { motion } from 'framer-motion';
