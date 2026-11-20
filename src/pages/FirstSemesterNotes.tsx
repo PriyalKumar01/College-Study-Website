@@ -1,3 +1,4 @@
+/** 1st Semester core engineering subjects and common syllabus notes */
 import { PdfCardBadge } from '@/components/PdfCardBadge';
 // 1st semester subjects notes
 import { useState } from 'react';
