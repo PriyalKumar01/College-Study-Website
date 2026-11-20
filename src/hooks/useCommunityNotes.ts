@@ -1,3 +1,4 @@
+/** React Query hook for fetching curated community uploaded materials */
 // Community notes fetching and caching hook (Zero-Egress & Anti-Loop Protected)
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
