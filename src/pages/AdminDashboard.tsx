@@ -1,3 +1,4 @@
+/** Admin portal for reviewing submissions and managing academic content */
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { motion } from 'framer-motion';
