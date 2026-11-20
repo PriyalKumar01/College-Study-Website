@@ -1,3 +1,4 @@
+/** 5th Semester Civil Engineering course notes */
 import { PdfCardBadge } from '@/components/PdfCardBadge';
 // 5th semester Civil Engineering notes
 import { useState } from 'react';
