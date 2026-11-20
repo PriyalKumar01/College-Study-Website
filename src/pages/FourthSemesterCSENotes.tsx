@@ -1,3 +1,4 @@
+/** 4th Semester Computer Science and Engineering course notes */
 import { PdfCardBadge } from '@/components/PdfCardBadge';
 // Syllabus: computer science fourth semester core curriculum
 // 4th semester CSE branch notes
