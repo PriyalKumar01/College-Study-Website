@@ -1,3 +1,4 @@
+/** BS-MS 4th Semester scientific curriculum notes */
 import { PdfCardBadge } from '@/components/PdfCardBadge';
 // Syllabus: fourth semester science curriculum subject modules
 // BS-MS 4th semester notes
