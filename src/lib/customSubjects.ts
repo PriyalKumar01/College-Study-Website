@@ -1,3 +1,4 @@
+/** Custom subjects manager with safe zero-note deletion verification */
 // Curriculum: dynamic open elective and custom subject mapping
 import { SubjectInfo } from '@/data/courseStructure';
 import { supabase } from '@/integrations/supabase/client';
