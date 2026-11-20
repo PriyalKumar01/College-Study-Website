@@ -1,3 +1,4 @@
+/** 4th Semester Paint Technology course notes */
 import { PdfCardBadge } from '@/components/PdfCardBadge';
 // 4th semester Paint Technology notes
 import { useState } from 'react';
