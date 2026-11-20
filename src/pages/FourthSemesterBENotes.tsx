@@ -1,3 +1,4 @@
+/** 4th Semester Biochemical Engineering course notes */
 import { PdfCardBadge } from '@/components/PdfCardBadge';
 // 4th semester Biochemical Engineering notes
 
