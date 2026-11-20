@@ -1,3 +1,4 @@
+/** Accordion component for previous years question papers (PYQs) */
 // Accordion: academic examination year grouping with animated chevron
 import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
