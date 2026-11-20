@@ -1,3 +1,4 @@
+/** 4th Semester Oil Technology course notes */
 import { PdfCardBadge } from '@/components/PdfCardBadge';
 // 4th semester Oil Technology notes
 import { useState } from 'react';
