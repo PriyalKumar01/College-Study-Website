@@ -763,5 +763,140 @@
     "must_contain_citations": true,
     "forbidden_patterns": [],
     "description": "Attendance Link"
+  },
+  {
+    "id": "nav-01",
+    "category": "site_navigation",
+    "query": "Notes contribute kaise karein?",
+    "expected_type": "cache",
+    "must_contain_citations": false,
+    "forbidden_patterns": [],
+    "description": "Contribute Notes"
+  },
+  {
+    "id": "nav-02",
+    "category": "site_navigation",
+    "query": "Where is the CGPA calculator?",
+    "expected_type": "cache",
+    "must_contain_citations": false,
+    "forbidden_patterns": [],
+    "description": "CGPA Calculator"
+  },
+  {
+    "id": "nav-03",
+    "category": "site_navigation",
+    "query": "Admin kaise bane?",
+    "expected_type": "cache",
+    "must_contain_citations": false,
+    "forbidden_patterns": [],
+    "description": "Admin Role"
+  },
+  {
+    "id": "nav-04",
+    "category": "site_navigation",
+    "query": "UP scholarship portal aur criteria batao",
+    "expected_type": "cache",
+    "must_contain_citations": false,
+    "forbidden_patterns": [],
+    "description": "UP Scholarship"
+  },
+  {
+    "id": "nav-05",
+    "category": "site_navigation",
+    "query": "Coding playground ya compiler kahan hai?",
+    "expected_type": "cache",
+    "must_contain_citations": false,
+    "forbidden_patterns": [],
+    "description": "Coding Space"
+  },
+  {
+    "id": "nav-06",
+    "category": "site_navigation",
+    "query": "GATE Study Hub aur mock tests kahan hain?",
+    "expected_type": "cache",
+    "must_contain_citations": false,
+    "forbidden_patterns": [],
+    "description": "GATE Study"
+  },
+  {
+    "id": "nav-07",
+    "category": "site_navigation",
+    "query": "ATS resume builder kahan milega?",
+    "expected_type": "cache",
+    "must_contain_citations": false,
+    "forbidden_patterns": [],
+    "description": "ATS Resume"
+  },
+  {
+    "id": "nav-08",
+    "category": "site_navigation",
+    "query": "Company directory aur HR contacts kahan hain?",
+    "expected_type": "cache",
+    "must_contain_citations": false,
+    "forbidden_patterns": [],
+    "description": "HR Contacts"
+  },
+  {
+    "id": "nav-09",
+    "category": "site_navigation",
+    "query": "Notes contributors Hall of Fame aur StudyCoins kaise earn karein?",
+    "expected_type": "cache",
+    "must_contain_citations": false,
+    "forbidden_patterns": [],
+    "description": "Contributors"
+  },
+  {
+    "id": "nav-10",
+    "category": "site_navigation",
+    "query": "DSA 450 sheet aur Striver A2Z roadmap kahan hai?",
+    "expected_type": "cache",
+    "must_contain_citations": false,
+    "forbidden_patterns": [],
+    "description": "DSA Sheets"
+  },
+  {
+    "id": "nav-11",
+    "category": "site_navigation",
+    "query": "HBTU official website circulars link",
+    "expected_type": "cache",
+    "must_contain_citations": false,
+    "forbidden_patterns": [],
+    "description": "HBTU Website"
+  },
+  {
+    "id": "nav-12",
+    "category": "site_navigation",
+    "query": "ERP portal login link for grade cards and fee receipts",
+    "expected_type": "cache",
+    "must_contain_citations": false,
+    "forbidden_patterns": [],
+    "description": "ERP Portal"
+  },
+  {
+    "id": "nav-13",
+    "category": "site_navigation",
+    "query": "Live attendance portal link",
+    "expected_type": "cache",
+    "must_contain_citations": false,
+    "forbidden_patterns": [],
+    "description": "Attendance Portal"
+  },
+  {
+    "id": "nav-14",
+    "category": "site_navigation",
+    "query": "Digi Shakti free tablet scheme eligibility",
+    "expected_type": "cache",
+    "must_contain_citations": false,
+    "forbidden_patterns": [],
+    "description": "Digi Shakti"
+  },
+  {
+    "id": "nav-15",
+    "category": "site_navigation",
+    "query": "Buddy4Study CSR scholarships for engineering",
+    "expected_type": "cache",
+    "must_contain_citations": false,
+    "forbidden_patterns": [],
+    "description": "Buddy4Study"
   }
 ]
