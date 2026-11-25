@@ -73,5 +73,74 @@ export const AblationStudyChart: React.FC = () => {
         <div className="flex items-center gap-4 text-xs">
           <div className="flex items-center gap-1.5">
             <span className="w-3 h-3 rounded bg-emerald-500" />
-  return <div className="p-4 bg-zinc-950 text-white">Ablation Chart</div>;
+            <span className="text-zinc-300 font-medium">Precision@6</span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <span className="w-3 h-3 rounded bg-teal-500" />
+            <span className="text-zinc-300 font-medium">Recall@6</span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <span className="w-3 h-3 rounded bg-amber-500" />
+            <span className="text-zinc-300 font-medium">MRR</span>
+          </div>
+        </div>
+      </div>
+
+      <div className="h-72 sm:h-80 w-full">
+        <ResponsiveContainer width="100%" height="100%">
+          <BarChart
+            data={chartData}
+            margin={{ top: 20, right: 20, left: -10, bottom: 25 }}
+            barGap={4}
+          >
+            <CartesianGrid strokeDasharray="3 3" stroke="#27272a" vertical={false} />
+            <XAxis
+              dataKey="name"
+              stroke="#a1a1aa"
+              tick={{ fill: "#a1a1aa", fontSize: 11 }}
+              interval={0}
+              angle={-10}
+              textAnchor="end"
+              height={45}
+            />
+            <YAxis
+              domain={[0.5, 1.0]}
+              ticks={[0.5, 0.6, 0.7, 0.8, 0.9, 1.0]}
+              stroke="#a1a1aa"
+              tick={{ fill: "#a1a1aa", fontSize: 11 }}
+              tickFormatter={(v) => v.toFixed(2)}
+            />
+            <Tooltip content={<CustomAblationTooltip />} />
+            <Bar
+              dataKey="Precision@6"
+              fill="#10b981"
+              radius={[3, 3, 0, 0]}
+              maxBarSize={28}
+            />
+            <Bar
+              dataKey="Recall@6"
+              fill="#14b8a6"
+              radius={[3, 3, 0, 0]}
+              maxBarSize={28}
+            />
+            <Bar
+              dataKey="MRR"
+              fill="#f59e0b"
+              radius={[3, 3, 0, 0]}
+              maxBarSize={28}
+            />
+          </BarChart>
+        </ResponsiveContainer>
+      </div>
+
+      <div className="mt-3 pt-3 border-t border-zinc-800/80 flex flex-wrap items-center justify-between text-[11px] text-zinc-400 gap-2">
+        <span className="text-emerald-400 font-semibold">
+          Selected Final Architecture: Hybrid RRF (900 chars / 150 overlap) with k=60
+        </span>
+        <span className="text-zinc-400 font-mono">
+          Highest harmonic mean of Precision@6 (0.81) and Recall@6 (0.88)
+        </span>
+      </div>
+    </div>
+  );
 };
