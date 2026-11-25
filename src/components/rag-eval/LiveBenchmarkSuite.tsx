@@ -418,8 +418,35 @@ EVALUATION SUMMARY:
               </tr>
             </thead>
             <tbody className="divide-y divide-zinc-850">
+              {CATEGORY_BENCHMARKS.map((cat) => (
+                <tr key={cat.id} className="hover:bg-zinc-900/50 transition-colors">
+                  <td className="py-3 px-3 font-semibold text-zinc-200">
+                    {cat.name}
+                  </td>
+                  <td className="py-3 px-3 text-center font-mono font-bold text-zinc-300">
+                    {cat.queryCount}
+                  </td>
+                  <td className="py-3 px-3 text-center">
+                    <Badge className="bg-emerald-500/20 text-emerald-300 border-emerald-500/40 text-[10px] font-mono">
+                      {(cat.passRate * 100).toFixed(0)}% ({cat.passedCount}/{cat.queryCount})
+                    </Badge>
+                  </td>
+                  <td className="py-3 px-3 text-center font-mono text-amber-400 font-semibold">
+                    {cat.avgLatency}
+                  </td>
+                  <td className="py-3 px-3 text-zinc-400 text-[11px] leading-relaxed max-w-md">
+                    {cat.verificationScope}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       </div>
+    </div>
+  );
+};
+
     </div>
   );
 };
