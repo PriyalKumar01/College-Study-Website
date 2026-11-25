@@ -18,6 +18,10 @@ export const TEMP_PROJECT = {
   anonKey: "sb_publishable_XANfm0ZXJ8nc-YOlKHxOJw_oyN2Hlb8"
 };
 
+// Dedicated RAG Vector Store & Edge Functions Project
+// Hosts pgvector extension, rag_documents, rag_chunks (768-dim), and RAG orchestrator functions
+export const RAG_PROJECT = TEMP_PROJECT;
+
 // Active Production Project: axalbmmjqdezbkpffore (Main Project)
 export const USE_TEMP_PROJECT = false;
 
@@ -79,6 +83,40 @@ export const getSupabaseSecondary = () => {
 export const supabaseSecondary = new Proxy({} as any, {
   get(_target, prop) {
     return (getSupabaseSecondary() as any)[prop];
+  },
+});
+
+// Dedicated RAG Supabase client for vector search, embeddings, document catalog, and RAG edge functions
+let _ragClient: any = null;
+export const getRagClient = () => {
+  if (!_ragClient) {
+    _ragClient = createClient<Database>(RAG_PROJECT.url, RAG_PROJECT.anonKey, {
+      auth: {
+        storageKey: 'studyhub_rag_auth_mem',
+        persistSession: false,
+        autoRefreshToken: false,
+        detectSessionInUrl: false,
+        storage: {
+          getItem: () => null,
+          setItem: () => {},
+          removeItem: () => {},
+        },
+        lock: async (_name: string, _acquireTimeout: number, fn: () => any) => await fn(),
+      },
+      global: {
+        headers: {
+          'x-client-info': 'studyhub-rag-pipeline',
+        },
+      },
+    });
+  }
+  return _ragClient;
+};
+
+// Exported proxy for RAG operations
+export const ragClient = new Proxy({} as any, {
+  get(_target, prop) {
+    return (getRagClient() as any)[prop];
   },
 });
 
