@@ -365,31 +365,31 @@ const AdminKnowledgeBase = () => {
   const isDemoMode = !isAdmin && !isOwner;
 
   return (
-    <div className="min-h-screen bg-[#070b14] text-zinc-100 selection:bg-emerald-500 selection:text-zinc-950">
+    <div className="min-h-screen bg-slate-50 dark:bg-[#070b14] text-slate-900 dark:text-zinc-100 font-sans selection:bg-emerald-500 selection:text-white bg-gradient-to-b from-sky-50/70 via-slate-50 to-slate-100/80 dark:from-[#0b0f19] dark:via-[#080c16] dark:to-[#050811]">
       <Navbar />
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-5">
         {/* Academic Presentation Banner */}
-        <div className="p-4 sm:p-5 rounded-2xl border border-emerald-500/30 bg-gradient-to-r from-emerald-950/40 via-zinc-900 to-zinc-950 shadow-xl flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div className="p-4 sm:p-5 rounded-md border border-slate-200/90 dark:border-emerald-500/30 bg-white/95 dark:bg-gradient-to-r dark:from-emerald-950/40 dark:via-zinc-900 dark:to-zinc-950 shadow-sm flex flex-col md:flex-row md:items-center md:justify-between gap-4 transition-all hover:border-emerald-600/40 dark:hover:border-emerald-500/50">
           <div className="flex items-start gap-3.5">
-            <span className="p-2.5 rounded-xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 shrink-0 mt-0.5">
+            <span className="p-2 rounded-md bg-emerald-500/15 dark:bg-emerald-500/20 text-emerald-700 dark:text-emerald-400 border border-emerald-500/30 shrink-0 mt-0.5">
               <GraduationCap className="w-5 h-5" />
             </span>
             <div className="space-y-1">
               <div className="flex flex-wrap items-center gap-2">
-                <span className="text-xs font-black uppercase tracking-wider text-emerald-400">
+                <span className="text-xs font-bold uppercase tracking-wider text-emerald-700 dark:text-emerald-400">
                   HBTU Kanpur · B.Tech CSE Final Project Evaluation Console
                 </span>
-                <Badge className="bg-emerald-500/20 text-emerald-300 border-emerald-500/40 font-mono text-[10px] px-2 py-0">
+                <Badge className="bg-emerald-500/15 dark:bg-emerald-500/20 text-emerald-800 dark:text-emerald-300 border-emerald-500/40 font-mono text-[10px] px-2 py-0 rounded-sm">
                   Examiner Ready · Open Access
                 </Badge>
               </div>
-              <h2 className="text-base sm:text-lg font-bold text-white">
+              <h2 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white">
                 An Intelligent RAG-Based Academic Resource Retrieval and Assistance System
               </h2>
-              <p className="text-xs text-zinc-300 leading-relaxed max-w-4xl">
-                Supervised by <strong className="text-emerald-400">Dr. Bharat Bhusan Sagar</strong> (Associate Professor) ·{" "}
-                Investigators: <span className="font-mono text-zinc-200">Priyal Kumar (230104043), Sudhir Kumar Gupta (230104062), Kush Kumar (230104027), Ramesh Yadav (230104074)</span>
+              <p className="text-xs text-slate-600 dark:text-zinc-300 leading-relaxed max-w-4xl">
+                Supervised by <strong className="text-emerald-700 dark:text-emerald-400 font-semibold">Dr. Bharat Bhusan Sagar</strong> (Associate Professor) ·{" "}
+                Investigators: <span className="font-mono text-slate-700 dark:text-zinc-200">Priyal Kumar (230104043), Sudhir Kumar Gupta (230104062), Kush Kumar (230104027), Ramesh Yadav (230104074)</span>
               </p>
             </div>
           </div>
@@ -402,12 +402,12 @@ const AdminKnowledgeBase = () => {
                 onClick={() => {
                   window.location.href = "/auth";
                 }}
-                className="text-xs border-zinc-700 bg-zinc-900/80 text-zinc-300 hover:text-white hover:border-emerald-500"
+                className="text-xs border-slate-300 dark:border-zinc-700 bg-white dark:bg-zinc-900/80 text-slate-700 dark:text-zinc-300 hover:text-slate-900 dark:hover:text-white hover:border-emerald-500 rounded-md"
               >
                 Sign In as Admin
               </Button>
             )}
-            <Badge className="bg-emerald-500/10 text-emerald-400 border-emerald-500/30 text-xs font-mono py-1">
+            <Badge className="bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-500/30 text-xs font-mono py-1 rounded-sm">
               Live on college-study.netlify.app
             </Badge>
           </div>
@@ -415,45 +415,45 @@ const AdminKnowledgeBase = () => {
 
         {/* Top 4 Production RAG Metric Cards */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
-          <Card className="p-4 border-zinc-800 bg-zinc-900/70 shadow-lg hover:border-emerald-500/40 transition-all">
+          <Card className="p-3.5 sm:p-4 rounded-md border-slate-200/90 dark:border-zinc-800 bg-white/95 dark:bg-[#0e1424] shadow-sm hover:border-emerald-500/50 dark:hover:border-emerald-500/50 transition-all">
             <div className="flex items-center justify-between">
-              <p className="text-[11px] font-semibold text-zinc-400">Curated Documents</p>
-              <BookOpen className="w-4 h-4 text-emerald-400" />
+              <p className="text-[11px] font-semibold text-slate-500 dark:text-zinc-400">Curated Documents</p>
+              <BookOpen className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
             </div>
-            <p className="text-2xl font-black text-white mt-1">{documents.length}</p>
-            <p className="text-[10px] text-emerald-400 font-medium mt-0.5">Sem I–VIII Complete CSE (4,820 Pages)</p>
+            <p className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white mt-1">{documents.length}</p>
+            <p className="text-[10px] text-emerald-700 dark:text-emerald-400 font-medium mt-0.5">Sem I–VIII Complete CSE (4,820 Pages)</p>
           </Card>
 
-          <Card className="p-4 border-zinc-800 bg-zinc-900/70 shadow-lg hover:border-teal-500/40 transition-all">
+          <Card className="p-3.5 sm:p-4 rounded-md border-slate-200/90 dark:border-zinc-800 bg-white/95 dark:bg-[#0e1424] shadow-sm hover:border-teal-500/50 dark:hover:border-teal-500/50 transition-all">
             <div className="flex items-center justify-between">
-              <p className="text-[11px] font-semibold text-zinc-400">Vector Chunks</p>
-              <Layers className="w-4 h-4 text-teal-400" />
+              <p className="text-[11px] font-semibold text-slate-500 dark:text-zinc-400">Vector Chunks</p>
+              <Layers className="w-4 h-4 text-teal-600 dark:text-teal-400" />
             </div>
-            <p className="text-2xl font-black text-white mt-1">{totalCalculatedChunks.toLocaleString()}</p>
-            <p className="text-[10px] text-teal-400 font-medium mt-0.5">900 chars · 150 overlap (Dense X)</p>
+            <p className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white mt-1">{totalCalculatedChunks.toLocaleString()}</p>
+            <p className="text-[10px] text-teal-700 dark:text-teal-400 font-medium mt-0.5">900 chars · 150 overlap (Dense X)</p>
           </Card>
 
-          <Card className="p-4 border-zinc-800 bg-zinc-900/70 shadow-lg hover:border-emerald-500/40 transition-all">
+          <Card className="p-3.5 sm:p-4 rounded-md border-slate-200/90 dark:border-zinc-800 bg-white/95 dark:bg-[#0e1424] shadow-sm hover:border-emerald-500/50 dark:hover:border-emerald-500/50 transition-all">
             <div className="flex items-center justify-between">
-              <p className="text-[11px] font-semibold text-zinc-400">Embedding Vectors</p>
-              <Cpu className="w-4 h-4 text-emerald-400" />
+              <p className="text-[11px] font-semibold text-slate-500 dark:text-zinc-400">Embedding Vectors</p>
+              <Cpu className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
             </div>
-            <p className="text-2xl font-black text-white mt-1">768-D</p>
-            <p className="text-[10px] text-emerald-400 font-medium mt-0.5">gemini-embedding-001 (HNSW)</p>
+            <p className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white mt-1">768-D</p>
+            <p className="text-[10px] text-emerald-700 dark:text-emerald-400 font-medium mt-0.5">gemini-embedding-001 (HNSW)</p>
           </Card>
 
-          <Card className="p-4 border-zinc-800 bg-zinc-900/70 shadow-lg hover:border-amber-500/40 transition-all">
+          <Card className="p-3.5 sm:p-4 rounded-md border-slate-200/90 dark:border-zinc-800 bg-white/95 dark:bg-[#0e1424] shadow-sm hover:border-amber-500/50 dark:hover:border-amber-500/50 transition-all">
             <div className="flex items-center justify-between">
-              <p className="text-[11px] font-semibold text-zinc-400">Hybrid Search</p>
-              <Zap className="w-4 h-4 text-amber-400" />
+              <p className="text-[11px] font-semibold text-slate-500 dark:text-zinc-400">Hybrid Search</p>
+              <Zap className="w-4 h-4 text-amber-600 dark:text-amber-400" />
             </div>
-            <p className="text-2xl font-black text-white mt-1">RRF (k=60)</p>
-            <p className="text-[10px] text-amber-400 font-medium mt-0.5">+14% Recall (SIGIR 2009)</p>
+            <p className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white mt-1">RRF (k=60)</p>
+            <p className="text-[10px] text-amber-700 dark:text-amber-400 font-medium mt-0.5">+14% Recall (SIGIR 2009)</p>
           </Card>
         </div>
 
         {/* 5 Main Navigation Tabs */}
-        <div className="flex flex-wrap items-center gap-1.5 p-1.5 rounded-2xl bg-zinc-900/90 border border-zinc-800 shadow-md">
+        <div className="flex flex-wrap items-center gap-1.5 p-1.5 rounded-md bg-slate-200/70 dark:bg-zinc-900/90 border border-slate-300/80 dark:border-zinc-800 shadow-sm">
           {[
             {
               id: "eval_lab" as ActiveTab,
@@ -492,19 +492,19 @@ const AdminKnowledgeBase = () => {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center gap-2 px-3.5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all ${
+                className={`flex items-center gap-2 px-3 py-2 rounded-md text-xs sm:text-sm font-semibold transition-all ${
                   isActive
-                    ? "bg-emerald-500 text-zinc-950 shadow-md font-bold"
-                    : "text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800/80"
+                    ? "bg-white dark:bg-emerald-500 text-emerald-800 dark:text-zinc-950 shadow-sm font-bold border border-slate-300 dark:border-emerald-400"
+                    : "text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-zinc-100 hover:bg-slate-100 dark:hover:bg-zinc-800/80"
                 }`}
               >
-                <Icon className={`w-4 h-4 ${isActive ? "text-zinc-950" : "text-emerald-400"}`} />
+                <Icon className={`w-4 h-4 ${isActive ? "text-emerald-700 dark:text-zinc-950" : "text-emerald-600 dark:text-emerald-400"}`} />
                 <span>{tab.label}</span>
                 <span
-                  className={`text-[10px] font-mono px-1.5 py-0.5 rounded-full ${
+                  className={`text-[10px] font-mono px-1.5 py-0.5 rounded-sm ${
                     isActive
-                      ? "bg-zinc-950/20 text-zinc-950 font-bold"
-                      : "bg-zinc-800 text-zinc-400"
+                      ? "bg-emerald-50 dark:bg-zinc-950/20 text-emerald-800 dark:text-zinc-950 font-bold"
+                      : "bg-slate-300/80 dark:bg-zinc-800 text-slate-700 dark:text-zinc-400"
                   }`}
                 >
                   {tab.badge}
@@ -530,17 +530,17 @@ const AdminKnowledgeBase = () => {
 
         {/* Tab 3: Ablation Studies */}
         {activeTab === "ablation_studies" && (
-          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.2 }} className="space-y-6">
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.2 }} className="space-y-5">
             <AblationStudyChart />
 
             {/* Detailed Ablation Comparison Table from Chapter 6.4 */}
-            <div className="bg-zinc-950/80 rounded-2xl p-5 sm:p-6 border border-emerald-500/20 shadow-xl space-y-4">
-              <div className="border-b border-zinc-800 pb-3">
-                <h4 className="font-bold text-base text-zinc-100 flex items-center gap-2">
-                  <Scale className="w-5 h-5 text-emerald-400" />
+            <div className="bg-white/95 dark:bg-[#0e1424] rounded-md p-4 sm:p-5 border border-slate-200/90 dark:border-zinc-800 shadow-sm space-y-4 hover:border-emerald-500/40 transition-all">
+              <div className="border-b border-slate-200 dark:border-zinc-800 pb-3">
+                <h4 className="font-bold text-base text-slate-900 dark:text-zinc-100 flex items-center gap-2">
+                  <Scale className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
                   Quantitative Ablation Study Matrix (Table 6.3)
                 </h4>
-                <p className="text-xs text-zinc-400 mt-0.5">
+                <p className="text-xs text-slate-500 dark:text-zinc-400 mt-0.5">
                   Controlled experiments evaluating retrieval modality (Sparse vs Dense vs Hybrid) and chunk boundaries (500 vs 900 vs 1500 chars).
                 </p>
               </div>
@@ -548,7 +548,7 @@ const AdminKnowledgeBase = () => {
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-xs">
                   <thead>
-                    <tr className="border-b border-zinc-800 text-zinc-400 text-[10px] uppercase font-bold tracking-wider">
+                    <tr className="border-b border-slate-200 dark:border-zinc-800 text-slate-500 dark:text-zinc-400 text-[10px] uppercase font-bold tracking-wider bg-slate-50 dark:bg-zinc-900/60">
                       <th className="py-2.5 px-3">System Configuration</th>
                       <th className="py-2.5 px-3 text-center">Precision@6</th>
                       <th className="py-2.5 px-3 text-center">Recall@6</th>
@@ -557,32 +557,32 @@ const AdminKnowledgeBase = () => {
                       <th className="py-2.5 px-3">Empirical Ablation Finding & Research Rationale</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-zinc-850">
+                  <tbody className="divide-y divide-slate-200 dark:divide-zinc-850">
                     {ABLATION_STUDY_CONFIGS.map((c, i) => (
-                      <tr key={i} className={`hover:bg-zinc-900/50 transition-colors ${c.isFinal ? "bg-emerald-950/20" : ""}`}>
-                        <td className="py-3 px-3 font-semibold text-zinc-200">
+                      <tr key={i} className={`hover:bg-slate-50 dark:hover:bg-zinc-900/50 transition-colors ${c.isFinal ? "bg-emerald-50/70 dark:bg-emerald-950/20" : ""}`}>
+                        <td className="py-3 px-3 font-semibold text-slate-800 dark:text-zinc-200">
                           <div className="flex items-center gap-2">
                             <span>{c.name}</span>
                             {c.isFinal && (
-                              <Badge className="bg-emerald-500/20 text-emerald-300 border-emerald-500/40 text-[9px] font-mono">
+                              <Badge className="bg-emerald-500/20 text-emerald-800 dark:text-emerald-300 border-emerald-500/40 text-[9px] font-mono rounded-sm">
                                 Selected Final
                               </Badge>
                             )}
                           </div>
                         </td>
-                        <td className="py-3 px-3 text-center font-mono font-bold text-emerald-400">
+                        <td className="py-3 px-3 text-center font-mono font-bold text-emerald-700 dark:text-emerald-400">
                           {c.precision.toFixed(2)}
                         </td>
-                        <td className="py-3 px-3 text-center font-mono font-bold text-teal-400">
+                        <td className="py-3 px-3 text-center font-mono font-bold text-teal-700 dark:text-teal-400">
                           {c.recall.toFixed(2)}
                         </td>
-                        <td className="py-3 px-3 text-center font-mono font-bold text-amber-400">
+                        <td className="py-3 px-3 text-center font-mono font-bold text-amber-700 dark:text-amber-400">
                           {c.mrr.toFixed(2)}
                         </td>
-                        <td className="py-3 px-3 text-center font-mono text-zinc-300">
+                        <td className="py-3 px-3 text-center font-mono text-slate-700 dark:text-zinc-300">
                           {c.latencySec.toFixed(2)} s
                         </td>
-                        <td className="py-3 px-3 text-zinc-400 text-[11px] leading-relaxed max-w-md">
+                        <td className="py-3 px-3 text-slate-600 dark:text-zinc-400 text-[11px] leading-relaxed max-w-md">
                           {c.empiricalFinding}
                         </td>
                       </tr>
@@ -596,16 +596,16 @@ const AdminKnowledgeBase = () => {
 
         {/* Tab 4: Knowledge Base Corpus Explorer (214 Docs) */}
         {activeTab === "corpus_explorer" && (
-          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.2 }} className="space-y-6">
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.2 }} className="space-y-5">
             {/* Action Bar */}
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-zinc-950/80 p-4 sm:p-5 rounded-2xl border border-zinc-800">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 bg-white/95 dark:bg-[#0e1424] p-4 rounded-md border border-slate-200/90 dark:border-zinc-800 shadow-sm">
               <div className="flex-1 max-w-md relative">
-                <Search className="w-4 h-4 text-zinc-500 absolute left-3.5 top-3" />
+                <Search className="w-4 h-4 text-slate-400 dark:text-zinc-500 absolute left-3.5 top-3" />
                 <Input
                   value={filterQuery}
                   onChange={(e) => setFilterQuery(e.target.value)}
                   placeholder="Filter 214 documents by title, subject, or code..."
-                  className="pl-10 bg-zinc-900 border-zinc-700 text-xs text-zinc-100 placeholder:text-zinc-500 h-10"
+                  className="pl-10 bg-slate-50 dark:bg-zinc-900 border-slate-300 dark:border-zinc-700 text-xs text-slate-900 dark:text-zinc-100 placeholder:text-slate-400 dark:placeholder:text-zinc-500 h-10 rounded-md"
                 />
               </div>
 
@@ -613,7 +613,7 @@ const AdminKnowledgeBase = () => {
                 <select
                   value={filterSemester}
                   onChange={(e) => setFilterSemester(e.target.value)}
-                  className="h-10 px-3 rounded-lg bg-zinc-900 border border-zinc-700 text-xs text-zinc-200 focus:outline-none focus:border-emerald-500"
+                  className="h-10 px-3 rounded-md bg-slate-50 dark:bg-zinc-900 border border-slate-300 dark:border-zinc-700 text-xs text-slate-800 dark:text-zinc-200 focus:outline-none focus:border-emerald-500"
                 >
                   <option value="all">All Semesters (I–VIII)</option>
                   <option value="1st Semester">1st Semester</option>
@@ -629,7 +629,7 @@ const AdminKnowledgeBase = () => {
                 <select
                   value={filterType}
                   onChange={(e) => setFilterType(e.target.value)}
-                  className="h-10 px-3 rounded-lg bg-zinc-900 border border-zinc-700 text-xs text-zinc-200 focus:outline-none focus:border-emerald-500"
+                  className="h-10 px-3 rounded-md bg-slate-50 dark:bg-zinc-900 border border-slate-300 dark:border-zinc-700 text-xs text-slate-800 dark:text-zinc-200 focus:outline-none focus:border-emerald-500"
                 >
                   <option value="all">All Document Types</option>
                   <option value="notes">Lecture Notes</option>
@@ -643,9 +643,9 @@ const AdminKnowledgeBase = () => {
                   onClick={handleIngestSiteKnowledge}
                   disabled={isIngestingSite}
                   variant="outline"
-                  className="h-10 text-xs border-zinc-700 bg-zinc-900 text-zinc-200 hover:text-white"
+                  className="h-10 text-xs border-slate-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-slate-700 dark:text-zinc-200 hover:text-slate-900 dark:hover:text-white rounded-md"
                 >
-                  {isIngestingSite ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <Sparkles className="w-3.5 h-3.5 text-emerald-400 mr-1.5" />}
+                  {isIngestingSite ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <Sparkles className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 mr-1.5" />}
                   Sync Campus Knowledge
                 </Button>
 
@@ -653,7 +653,7 @@ const AdminKnowledgeBase = () => {
                   onClick={fetchDocuments}
                   disabled={isLoadingDocs}
                   variant="outline"
-                  className="h-10 text-xs border-zinc-700 bg-zinc-900 text-zinc-200 hover:text-white"
+                  className="h-10 text-xs border-slate-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-slate-700 dark:text-zinc-200 hover:text-slate-900 dark:hover:text-white rounded-md"
                 >
                   <RefreshCw className={`w-3.5 h-3.5 mr-1.5 ${isLoadingDocs ? "animate-spin" : ""}`} />
                   Refresh
@@ -663,13 +663,13 @@ const AdminKnowledgeBase = () => {
 
             {/* Upload Area for Admins */}
             {(isAdmin || isOwner) && (
-              <Card className="border-emerald-500/30 bg-zinc-950/80 shadow-xl">
+              <Card className="border-slate-200/90 dark:border-emerald-500/30 bg-white/95 dark:bg-[#0e1424] shadow-sm rounded-md">
                 <CardHeader className="pb-3">
-                  <CardTitle className="text-base text-white flex items-center gap-2">
-                    <Upload className="w-4 h-4 text-emerald-400" />
+                  <CardTitle className="text-base text-slate-900 dark:text-white flex items-center gap-2">
+                    <Upload className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
                     Upload & Ingest New Academic Documents into pgvector
                   </CardTitle>
-                  <CardDescription className="text-xs text-zinc-400">
+                  <CardDescription className="text-xs text-slate-500 dark:text-zinc-400">
                     PDF, DOCX, PPTX, TXT up to 25 MB. Automatically runs page extraction, OCR fallback, 900-char chunking, and 768-D gemini-embedding-001 vectorization.
                   </CardDescription>
                 </CardHeader>
@@ -677,7 +677,7 @@ const AdminKnowledgeBase = () => {
                   <form onSubmit={handleUploadAndIngest} className="space-y-4">
                     <div
                       onClick={() => fileInputRef.current?.click()}
-                      className="border-2 border-dashed border-zinc-700 hover:border-emerald-500 rounded-xl p-6 text-center cursor-pointer transition-all bg-zinc-900/40"
+                      className="border-2 border-dashed border-slate-300 dark:border-zinc-700 hover:border-emerald-500 rounded-md p-5 text-center cursor-pointer transition-all bg-slate-50/70 dark:bg-zinc-900/40"
                     >
                       <input
                         ref={fileInputRef}
@@ -687,40 +687,40 @@ const AdminKnowledgeBase = () => {
                         onChange={(e) => handleFileSelect(e.target.files)}
                         className="hidden"
                       />
-                      <Upload className="w-7 h-7 text-emerald-400 mx-auto mb-2" />
-                      <p className="text-xs text-zinc-200 font-semibold">
+                      <Upload className="w-6 h-6 text-emerald-600 dark:text-emerald-400 mx-auto mb-2" />
+                      <p className="text-xs text-slate-700 dark:text-zinc-200 font-semibold">
                         {selectedFiles.length > 0
-                          ? `Selected ${selectedFiles.length} file(s): ${selectedFiles.map((f) => f.name).join(", ")}`
+                           ? `Selected ${selectedFiles.length} file(s): ${selectedFiles.map((f) => f.name).join(", ")}`
                           : "Drag & drop academic PDFs here, or click to browse"}
                       </p>
-                      <p className="text-[10px] text-zinc-500 mt-1">Automatic SHA-256 deduplication and OCR fallback enabled</p>
+                      <p className="text-[10px] text-slate-500 dark:text-zinc-500 mt-1">Automatic SHA-256 deduplication and OCR fallback enabled</p>
                     </div>
 
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                       <div>
-                        <Label className="text-xs text-zinc-300">Document Title</Label>
+                        <Label className="text-xs text-slate-700 dark:text-zinc-300">Document Title</Label>
                         <Input
                           value={title}
                           onChange={(e) => setTitle(e.target.value)}
                           placeholder="e.g. Operating Systems Unit III Deadlock Notes"
-                          className="mt-1 bg-zinc-900 border-zinc-700 text-xs text-zinc-100"
+                          className="mt-1 bg-slate-50 dark:bg-zinc-900 border-slate-300 dark:border-zinc-700 text-xs text-slate-900 dark:text-zinc-100 rounded-md"
                         />
                       </div>
                       <div>
-                        <Label className="text-xs text-zinc-300">Course Subject</Label>
+                        <Label className="text-xs text-slate-700 dark:text-zinc-300">Course Subject</Label>
                         <Input
                           value={subject}
                           onChange={(e) => setSubject(e.target.value)}
                           placeholder="e.g. Operating Systems (BCS-401)"
-                          className="mt-1 bg-zinc-900 border-zinc-700 text-xs text-zinc-100"
+                          className="mt-1 bg-slate-50 dark:bg-zinc-900 border-slate-300 dark:border-zinc-700 text-xs text-slate-900 dark:text-zinc-100 rounded-md"
                         />
                       </div>
                       <div>
-                        <Label className="text-xs text-zinc-300">Semester</Label>
+                        <Label className="text-xs text-slate-700 dark:text-zinc-300">Semester</Label>
                         <select
                           value={semester}
                           onChange={(e) => setSemester(e.target.value)}
-                          className="w-full mt-1 h-9 px-3 rounded-md bg-zinc-900 border border-zinc-700 text-xs text-zinc-200"
+                          className="w-full mt-1 h-9 px-3 rounded-md bg-slate-50 dark:bg-zinc-900 border border-slate-300 dark:border-zinc-700 text-xs text-slate-800 dark:text-zinc-200"
                         >
                           <option value="1st Semester">1st Semester</option>
                           <option value="2nd Semester">2nd Semester</option>
@@ -737,7 +737,7 @@ const AdminKnowledgeBase = () => {
                     <Button
                       type="submit"
                       disabled={isUploading || selectedFiles.length === 0}
-                      className="w-full bg-emerald-500 hover:bg-emerald-600 text-zinc-950 font-bold text-xs h-10"
+                      className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs h-10 rounded-md shadow-sm"
                     >
                       {isUploading ? (
                         <>
@@ -754,18 +754,18 @@ const AdminKnowledgeBase = () => {
             )}
 
             {/* Catalog Table */}
-            <div className="bg-zinc-950/80 rounded-2xl border border-zinc-800 shadow-xl overflow-hidden">
-              <div className="p-4 sm:p-5 border-b border-zinc-800 flex items-center justify-between">
+            <div className="bg-white/95 dark:bg-[#0e1424] rounded-md border border-slate-200/90 dark:border-zinc-800 shadow-sm overflow-hidden">
+              <div className="p-4 sm:p-5 border-b border-slate-200 dark:border-zinc-800 flex items-center justify-between">
                 <div>
-                  <h4 className="font-bold text-sm sm:text-base text-white flex items-center gap-2">
-                    <Database className="w-4 h-4 text-emerald-400" />
+                  <h4 className="font-bold text-sm sm:text-base text-slate-900 dark:text-white flex items-center gap-2">
+                    <Database className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
                     Curated Document Registry ({filteredDocuments.length} Documents)
                   </h4>
-                  <p className="text-xs text-zinc-400 mt-0.5">
+                  <p className="text-xs text-slate-500 dark:text-zinc-400 mt-0.5">
                     Indexed in Supabase PostgreSQL pgvector with 768-D embeddings and tsvector columns.
                   </p>
                 </div>
-                <Badge variant="outline" className="border-emerald-500/40 text-emerald-400 font-mono text-xs">
+                <Badge variant="outline" className="border-emerald-500/40 text-emerald-700 dark:text-emerald-400 font-mono text-xs rounded-sm">
                   {totalCalculatedChunks.toLocaleString()} Total Chunks
                 </Badge>
               </div>
@@ -773,7 +773,7 @@ const AdminKnowledgeBase = () => {
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-xs">
                   <thead>
-                    <tr className="border-b border-zinc-800 text-zinc-400 uppercase text-[10px] tracking-wider bg-zinc-900/60">
+                    <tr className="border-b border-slate-200 dark:border-zinc-800 text-slate-500 dark:text-zinc-400 uppercase text-[10px] tracking-wider bg-slate-50 dark:bg-zinc-900/60">
                       <th className="py-2.5 px-3">Title & Subject</th>
                       <th className="py-2.5 px-3 text-center">Semester</th>
                       <th className="py-2.5 px-3 text-center">Type</th>
@@ -783,29 +783,29 @@ const AdminKnowledgeBase = () => {
                       {(isAdmin || isOwner) && <th className="py-2.5 px-3 text-right">Actions</th>}
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-zinc-850">
+                  <tbody className="divide-y divide-slate-200 dark:divide-zinc-850">
                     {filteredDocuments.slice(0, 50).map((doc) => (
-                      <tr key={doc.id} className="hover:bg-zinc-900/50 transition-colors">
+                      <tr key={doc.id} className="hover:bg-slate-50 dark:hover:bg-zinc-900/50 transition-colors">
                         <td className="py-2.5 px-3">
-                          <p className="font-semibold text-zinc-100">{doc.title}</p>
-                          <p className="text-[10px] text-zinc-500">{doc.subject} · {doc.branch}</p>
+                          <p className="font-semibold text-slate-800 dark:text-zinc-100">{doc.title}</p>
+                          <p className="text-[10px] text-slate-500 dark:text-zinc-500">{doc.subject} · {doc.branch}</p>
                         </td>
-                        <td className="py-2.5 px-3 text-center font-mono text-zinc-300">
+                        <td className="py-2.5 px-3 text-center font-mono text-slate-700 dark:text-zinc-300">
                           {doc.semester}
                         </td>
                         <td className="py-2.5 px-3 text-center">
-                          <Badge variant="outline" className="text-[10px] uppercase font-mono border-zinc-700 text-zinc-400">
+                          <Badge variant="outline" className="text-[10px] uppercase font-mono border-slate-300 dark:border-zinc-700 text-slate-600 dark:text-zinc-400 rounded-sm">
                             {doc.doc_type}
                           </Badge>
                         </td>
-                        <td className="py-2.5 px-3 text-center font-mono text-zinc-300">
+                        <td className="py-2.5 px-3 text-center font-mono text-slate-700 dark:text-zinc-300">
                           {doc.page_count}
                         </td>
-                        <td className="py-2.5 px-3 text-center font-mono font-bold text-emerald-400">
+                        <td className="py-2.5 px-3 text-center font-mono font-bold text-emerald-700 dark:text-emerald-400">
                           {doc.chunk_count}
                         </td>
                         <td className="py-2.5 px-3 text-center">
-                          <Badge className="bg-emerald-500/20 text-emerald-300 border-emerald-500/40 text-[9px] font-mono">
+                          <Badge className="bg-emerald-500/15 text-emerald-800 dark:text-emerald-300 border-emerald-500/40 text-[9px] font-mono rounded-sm">
                             READY (HNSW)
                           </Badge>
                         </td>
@@ -816,7 +816,7 @@ const AdminKnowledgeBase = () => {
                                 size="sm"
                                 variant="ghost"
                                 onClick={() => handleReprocess(doc)}
-                                className="h-7 px-2 text-zinc-400 hover:text-white"
+                                className="h-7 px-2 text-slate-500 hover:text-slate-900 dark:text-zinc-400 dark:hover:text-white"
                               >
                                 <RefreshCw className="w-3 h-3" />
                               </Button>
@@ -824,7 +824,7 @@ const AdminKnowledgeBase = () => {
                                 size="sm"
                                 variant="ghost"
                                 onClick={() => handleDelete(doc)}
-                                className="h-7 px-2 text-rose-400 hover:text-rose-300"
+                                className="h-7 px-2 text-rose-600 hover:text-rose-700 dark:text-rose-400 dark:hover:text-rose-300"
                               >
                                 <Trash2 className="w-3 h-3" />
                               </Button>
@@ -836,6 +836,9 @@ const AdminKnowledgeBase = () => {
                   </tbody>
                 </table>
               </div>
+            </div>
+          </motion.div>
+        )}
             </div>
           </motion.div>
         )}

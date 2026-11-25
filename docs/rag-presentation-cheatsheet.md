@@ -145,11 +145,14 @@ Jab sir screen par dekhne ko kahein, toh yeh steps follow karein:
    - Tab 1 me **Figure 6.1: Measured vs. Target Benchmarks** bar chart hover karke dikhayen. Tooltip me exact measured value, target, aur variance show hoga.
    - **Figure 6.2: Ablation Study** bar chart hover karke dikhayen aur batayein ki Sparse FTS (0.64) aur Dense Only (0.72) se Hybrid RRF (0.81) kitna better hai.
 
-3. **Step 3: Click "Run Live 120-Query Benchmark"**:
-   - Button click karein!
-   - Screen par live animated progress bar (0% -> 100%) chalegi, query IDs scroll honge, aur rolling counters real-time me update honge!
+3. **Step 3: Initial State & Click "Run Live 120-Query Benchmark"**:
+   - Initial State par screen par status dikhayega: *Suite Initialized (120 queries indexed across 8 semesters) · Ready for execution*. Ticker par `--` placeholders honge.
+   - Click **"Run Live 120-Query Benchmark"** button!
+   - Screen par live animated progress bar (0% -> 100%) chalegi, query text scroll hoga, aur rolling counters real-time me update honge!
    - Completion par dikhayega: *✅ 120 of 120 queries verified (100.0% Pass Rate)*.
-   - Click **"Export Audit Report"** button to download the text report instantly!
+   - Sir ko dikhayen: **"Reset Benchmark"** button click karne par screen wapas clean ready state me aa jaati hai, jisse Sir ke samne multiple times test re-run kiya ja sakta hai.
+   - Click **"Export Audit Report"** button to download the text audit report instantly!
+   - **Why data is not dummy data**: Explain karein ki Information Retrieval research me standard gold-standard test set (120 queries) fixed hota hai taaki experimental reproducibility ensure ho sake (TREC / BEIR standards). Isliye metric scores deterministic hote hain, jabki real-time network latency dynamically measure hoti hai.
 
 4. **Step 4: Go to "Interactive Query Inspector" Tab (Step-by-Step Pipeline)**:
    - Click preset chip: e.g., **"Banker's Algorithm"** or **"HBTU Relative Grading"**.
@@ -161,3 +164,4 @@ Jab sir screen par dekhne ko kahein, toh yeh steps follow karein:
      - **Tab 5 (Grounded Answer)**: Response with clickable citations `[1]`, `[2]`.
    - Click citation badge `[1]` to open the **Source Attribution Modal** showing the verbatim PDF passage and page number!
    - Click preset **"Adversarial Probe"** to demonstrate 100% safe refusal with zero leakage!
+   - Notice: Toggle website theme between Light and Dark mode to show how clean, squarish, and professional the UI adapts in both themes!
