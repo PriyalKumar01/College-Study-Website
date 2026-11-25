@@ -449,6 +449,100 @@ const CSE_SUBJECTS_TEMPLATES: SubjectTemplate[] = [
     ]
   },
 
+  // ── Semester 7 (CSE Systems & Electives - 24 Docs)
+  {
+    name: "Distributed Systems",
+    code: "BCS-701",
+    semester: "7th Semester",
+    docCount: 6,
+    avgPages: 94,
+    keySnippets: [
+      "Distributed Synchronization: Lamport logical clocks, vector clocks, Chandy-Lamport distributed snapshot algorithm, Ricart-Agrawala distributed mutual exclusion.",
+      "Consensus & Fault Tolerance: Byzantine Generals Problem, Paxos consensus protocol, Raft consensus algorithm, two-phase commit protocol (2PC), CAP theorem (Consistency, Availability, Partition tolerance)."
+    ]
+  },
+  {
+    name: "Big Data Analytics",
+    code: "BCS-702",
+    semester: "7th Semester",
+    docCount: 5,
+    avgPages: 82,
+    keySnippets: [
+      "Big Data Ecosystem: Hadoop Distributed File System (HDFS) architecture, MapReduce programming paradigm, Apache Spark RDD transformations and actions."
+    ]
+  },
+  {
+    name: "Internet of Things (IoT)",
+    code: "BCS-703",
+    semester: "7th Semester",
+    docCount: 5,
+    avgPages: 74,
+    keySnippets: [
+      "IoT Architecture: Sensor nodes, microcontroller boards (Arduino, Raspberry Pi, ESP32), MQTT lightweight publish-subscribe protocol, CoAP protocol, edge computing."
+    ]
+  },
+  {
+    name: "Natural Language Processing (NLP)",
+    code: "BCS-704",
+    semester: "7th Semester",
+    docCount: 4,
+    avgPages: 80,
+    keySnippets: [
+      "Text Processing & Embeddings: Tokenization, stemming, lemmatization, TF-IDF calculation, Word2Vec (Skip-gram and CBOW), GloVe, Recurrent Neural Networks (LSTM, GRU)."
+    ]
+  },
+  {
+    name: "Mobile Application Development",
+    code: "BCS-705",
+    semester: "7th Semester",
+    docCount: 4,
+    avgPages: 68,
+    keySnippets: [
+      "Mobile Architecture: Android application components (Activity, Service, BroadcastReceiver, ContentProvider), Jetpack Compose UI state management, SQLite integration."
+    ]
+  },
+
+  // ── Semester 8 (CSE Capstone & Advanced - 20 Docs)
+  {
+    name: "Deep Learning & Neural Networks",
+    code: "BCS-801",
+    semester: "8th Semester",
+    docCount: 5,
+    avgPages: 96,
+    keySnippets: [
+      "Neural Networks: Multilayer perceptron forward and backpropagation, activation functions (ReLU, Sigmoid, GELU), loss functions, optimizers (Adam, RMSProp).",
+      "Advanced Architectures: Convolutional Neural Networks (CNN: AlexNet, ResNet skip connections), Transformers (Multi-Head Self-Attention, Positional Encoding, BERT, GPT)."
+    ]
+  },
+  {
+    name: "Blockchain & Cryptography",
+    code: "BCS-802",
+    semester: "8th Semester",
+    docCount: 5,
+    avgPages: 78,
+    keySnippets: [
+      "Decentralized Ledgers: Merkle tree data structure, Proof of Work (PoW) mining difficulty adjustment, Proof of Stake (PoS), Ethereum Virtual Machine (EVM) and Solidity smart contracts."
+    ]
+  },
+  {
+    name: "High Performance Computing",
+    code: "BCS-803",
+    semester: "8th Semester",
+    docCount: 5,
+    avgPages: 74,
+    keySnippets: [
+      "Parallel Computing: Flynn's taxonomy (SIMD, MIMD), OpenMP shared memory multithreading directives, MPI message passing interface, CUDA GPU programming model."
+    ]
+  },
+  {
+    name: "Major Capstone Project Documentation",
+    code: "BCS-804",
+    semester: "8th Semester",
+    docCount: 5,
+    avgPages: 60,
+    keySnippets: [
+      "Final Engineering Thesis: Comprehensive RAG evaluation metrics, test methodology, user acceptance testing (UAT), literature citations and IEEE format."
+    ]
 ];
 export const CANONICAL_RAG_CORPUS: RagCorpusDocument[] = [];
 export function probeRagCorpus() { return []; }
