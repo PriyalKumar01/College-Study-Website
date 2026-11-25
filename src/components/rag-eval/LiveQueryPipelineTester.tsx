@@ -248,6 +248,56 @@ export const LiveQueryPipelineTester: React.FC = () => {
               <div className="p-3.5 rounded-xl bg-zinc-900 border border-zinc-800 space-y-2">
                 <p className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider">Vector Embedding Preview (First 8 Dimensions)</p>
                 <div className="p-2.5 rounded-lg bg-zinc-950 border border-zinc-800 font-mono text-xs text-emerald-400 space-y-0.5 overflow-x-auto">
+                  <p>[ +0.03814, -0.05219, +0.01944, +0.08120, -0.02105, +0.04419, -0.06192, +0.01183, ... (760 more) ]</p>
+                </div>
+                <p className="text-[11px] text-zinc-400">
+                  Cosine distance against document vectors is computed via dot product: <code className="text-emerald-400 font-mono">cos(A, B) = A · B</code>
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Step 2: Dense Semantic Search */}
+        {activeStep === 2 && (
+          <div className="space-y-4">
+            <div className="flex items-center justify-between border-b border-zinc-800 pb-3">
+              <div>
+                <h4 className="font-bold text-base text-zinc-100 flex items-center gap-2">
+                  <span className="p-1.5 rounded-lg bg-emerald-500/20 text-emerald-400 font-mono text-xs">Step 2</span>
+                  PostgreSQL pgvector Dense Cosine Search
+                </h4>
+                <p className="text-xs text-zinc-400 mt-0.5">
+                  Hierarchical Navigable Small World (HNSW) index lookup with <code className="text-emerald-400">m=16, ef_construction=64</code>.
+                </p>
+              </div>
+              <Badge variant="outline" className="border-teal-500/40 text-teal-300 font-mono text-xs">
+                vector_cosine_ops
+              </Badge>
+            </div>
+
+            <div className="space-y-2.5">
+              {results.slice(0, 4).map((r, i) => (
+                <div key={i} className="p-3 rounded-xl bg-zinc-900/80 border border-zinc-800 flex items-start justify-between gap-3">
+                  <div className="space-y-1 flex-1">
+                    <div className="flex items-center gap-2">
+                      <span className="w-5 h-5 rounded-full bg-teal-500/20 text-teal-300 font-mono font-bold text-xs flex items-center justify-center">
+                        #{i + 1}
+                      </span>
+                      <p className="font-semibold text-xs text-zinc-200">{r.document_title}</p>
+                      <Badge variant="outline" className="text-[10px] py-0 border-zinc-700 text-zinc-400">
+                        {r.document_subject} · Page {r.page_start}
+                      </Badge>
+                    </div>
+                    <p className="text-xs text-zinc-400 italic line-clamp-2">"{r.content}"</p>
+                  </div>
+                  <div className="text-right shrink-0">
+                    <p className="text-[10px] text-zinc-500 uppercase">Cosine Sim</p>
+                    <p className="text-sm font-mono font-bold text-teal-400">{r.vector_score.toFixed(3)}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
       </div>
     </div>
   );
