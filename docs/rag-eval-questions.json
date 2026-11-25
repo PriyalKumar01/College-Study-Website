@@ -358,5 +358,230 @@
     "must_contain_citations": true,
     "forbidden_patterns": [],
     "description": "Zener Regulator"
+  },
+  {
+    "id": "syl-01",
+    "category": "syllabus_structure",
+    "query": "CSE 5th sem subjects kya hain?",
+    "expected_type": "rag",
+    "must_contain_citations": true,
+    "forbidden_patterns": [],
+    "description": "CSE 5th Sem"
+  },
+  {
+    "id": "syl-02",
+    "category": "syllabus_structure",
+    "query": "HBTU grading system aur SGPA to percentage formula kya hai?",
+    "expected_type": "rag",
+    "must_contain_citations": true,
+    "forbidden_patterns": [],
+    "description": "HBTU Grading"
+  },
+  {
+    "id": "syl-03",
+    "category": "syllabus_structure",
+    "query": "HBTU minimum attendance criteria kya hai exam baithne ke liye?",
+    "expected_type": "rag",
+    "must_contain_citations": true,
+    "forbidden_patterns": [],
+    "description": "Attendance Criteria"
+  },
+  {
+    "id": "syl-04",
+    "category": "syllabus_structure",
+    "query": "Mechanical Engineering 3rd semester subjects list karo.",
+    "expected_type": "rag",
+    "must_contain_citations": true,
+    "forbidden_patterns": [],
+    "description": "ME 3rd Sem"
+  },
+  {
+    "id": "syl-05",
+    "category": "syllabus_structure",
+    "query": "Chemical Engineering 4th sem syllabus kahan se milega?",
+    "expected_type": "rag",
+    "must_contain_citations": true,
+    "forbidden_patterns": [],
+    "description": "CHE 4th Sem"
+  },
+  {
+    "id": "syl-06",
+    "category": "syllabus_structure",
+    "query": "BTech 1st year common subjects across all 11 branches list karo.",
+    "expected_type": "rag",
+    "must_contain_citations": true,
+    "forbidden_patterns": [],
+    "description": "1st Year Foundation"
+  },
+  {
+    "id": "syl-07",
+    "category": "syllabus_structure",
+    "query": "CSE 3rd sem core subjects and lab practicals list.",
+    "expected_type": "rag",
+    "must_contain_citations": true,
+    "forbidden_patterns": [],
+    "description": "CSE 3rd Sem"
+  },
+  {
+    "id": "syl-08",
+    "category": "syllabus_structure",
+    "query": "CSE 4th sem subjects and credit weightage breakdown.",
+    "expected_type": "rag",
+    "must_contain_citations": true,
+    "forbidden_patterns": [],
+    "description": "CSE 4th Sem"
+  },
+  {
+    "id": "syl-09",
+    "category": "syllabus_structure",
+    "query": "CSE 6th sem machine learning and security electives list.",
+    "expected_type": "rag",
+    "must_contain_citations": true,
+    "forbidden_patterns": [],
+    "description": "CSE 6th Sem"
+  },
+  {
+    "id": "syl-10",
+    "category": "syllabus_structure",
+    "query": "CSE 7th sem distributed systems and big data syllabus.",
+    "expected_type": "rag",
+    "must_contain_citations": true,
+    "forbidden_patterns": [],
+    "description": "CSE 7th Sem"
+  },
+  {
+    "id": "syl-11",
+    "category": "syllabus_structure",
+    "query": "CSE 8th sem capstone project evaluation guidelines.",
+    "expected_type": "rag",
+    "must_contain_citations": true,
+    "forbidden_patterns": [],
+    "description": "CSE 8th Sem"
+  },
+  {
+    "id": "syl-12",
+    "category": "syllabus_structure",
+    "query": "HBTU relative grading scale O, A+, A, B+, B, C, P, F grade points.",
+    "expected_type": "rag",
+    "must_contain_citations": true,
+    "forbidden_patterns": [],
+    "description": "10-point Scale"
+  },
+  {
+    "id": "syl-13",
+    "category": "syllabus_structure",
+    "query": "Mid-sem examination marks weightage and duration rules.",
+    "expected_type": "rag",
+    "must_contain_citations": true,
+    "forbidden_patterns": [],
+    "description": "Mid-Sem Rules"
+  },
+  {
+    "id": "syl-14",
+    "category": "syllabus_structure",
+    "query": "End-sem examination weightage vs continuous assessment breakdown.",
+    "expected_type": "rag",
+    "must_contain_citations": true,
+    "forbidden_patterns": [],
+    "description": "End-Sem Weightage"
+  },
+  {
+    "id": "syl-15",
+    "category": "syllabus_structure",
+    "query": "Open electives available in 5th semester at HBTU.",
+    "expected_type": "rag",
+    "must_contain_citations": true,
+    "forbidden_patterns": [],
+    "description": "5th Sem Open Electives"
+  },
+  {
+    "id": "syl-16",
+    "category": "syllabus_structure",
+    "query": "Open electives available in 6th semester at HBTU.",
+    "expected_type": "rag",
+    "must_contain_citations": true,
+    "forbidden_patterns": [],
+    "description": "6th Sem Open Electives"
+  },
+  {
+    "id": "syl-17",
+    "category": "syllabus_structure",
+    "query": "BTech branch change rules and CGPA cutoff criteria at HBTU.",
+    "expected_type": "rag",
+    "must_contain_citations": true,
+    "forbidden_patterns": [],
+    "description": "Branch Change"
+  },
+  {
+    "id": "syl-18",
+    "category": "syllabus_structure",
+    "query": "Carry-over paper (COP) and back-paper regulations at HBTU.",
+    "expected_type": "rag",
+    "must_contain_citations": true,
+    "forbidden_patterns": [],
+    "description": "COP Regulations"
+  },
+  {
+    "id": "syl-19",
+    "category": "syllabus_structure",
+    "query": "Maximum duration allowed to complete BTech degree at HBTU.",
+    "expected_type": "rag",
+    "must_contain_citations": true,
+    "forbidden_patterns": [],
+    "description": "BTech Max Duration"
+  },
+  {
+    "id": "syl-20",
+    "category": "syllabus_structure",
+    "query": "HBTU East Campus vs West Campus departments distribution.",
+    "expected_type": "rag",
+    "must_contain_citations": true,
+    "forbidden_patterns": [],
+    "description": "Campus Distribution"
+  },
+  {
+    "id": "syl-21",
+    "category": "syllabus_structure",
+    "query": "Central Library book bank facility and card issuance rules.",
+    "expected_type": "rag",
+    "must_contain_citations": true,
+    "forbidden_patterns": [],
+    "description": "Library Book Bank"
+  },
+  {
+    "id": "syl-22",
+    "category": "syllabus_structure",
+    "query": "Incord technical fest and events organized by CSE department.",
+    "expected_type": "rag",
+    "must_contain_citations": true,
+    "forbidden_patterns": [],
+    "description": "Incord Fest"
+  },
+  {
+    "id": "syl-23",
+    "category": "syllabus_structure",
+    "query": "Adhyayan literary fest and Zenith sports meet schedules.",
+    "expected_type": "rag",
+    "must_contain_citations": true,
+    "forbidden_patterns": [],
+    "description": "Campus Fests"
+  },
+  {
+    "id": "syl-24",
+    "category": "syllabus_structure",
+    "query": "E-Cell and IEEE Student Branch activities at HBTU.",
+    "expected_type": "rag",
+    "must_contain_citations": true,
+    "forbidden_patterns": [],
+    "description": "Clubs & Societies"
+  },
+  {
+    "id": "syl-25",
+    "category": "syllabus_structure",
+    "query": "Final year major project report formatting and IEEE citation guidelines.",
+    "expected_type": "rag",
+    "must_contain_citations": true,
+    "forbidden_patterns": [],
+    "description": "Major Project"
   }
 ]
