@@ -3,7 +3,7 @@
 **Institution**: Department of Computer Science & Engineering, Harcourt Butler Technical University, Kanpur  
 **Project**: An Intelligent RAG-Based Academic Resource Retrieval and Assistance System  
 **Supervisor**: Dr. Bharat Bhusan Sagar (Associate Professor)  
-**Authors**: Priyal Kumar (230104043), Sudhir Kumar Gupta (230104062), Kush Kumar (230104027), Ramesh Yadav (230104074)  
+**Authors**: Priyal Kumar (230104043), Kush Kumar (230104027), Ramesh Yadav (230104074), Sudhir Kumar Gupta (230104062)  
 **Evaluation Date**: 25 November 2026 (Final Evaluation 3)  
 **Dataset Scale**: 120 Multi-Disciplinary Labelled HBTU Queries across All 8 CSE Semesters  
 
