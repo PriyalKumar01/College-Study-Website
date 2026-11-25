@@ -278,6 +278,87 @@ EVALUATION SUMMARY:
               <Card
                 key={m.id}
                 onClick={() => setExpandedMetricId(isExpanded ? null : m.id)}
+                className={`cursor-pointer transition-all duration-200 border bg-zinc-950/80 hover:bg-zinc-900/90 ${
+                  isExpanded
+                    ? "border-emerald-500 shadow-lg shadow-emerald-500/10 ring-1 ring-emerald-500/30"
+                    : "border-zinc-800 hover:border-zinc-700"
+                }`}
+              >
+                <CardContent className="p-4 space-y-3">
+                  <div className="flex items-start justify-between gap-2">
+                    <div>
+                      <span className="text-[10px] font-mono uppercase tracking-wider text-emerald-400/90 font-bold">
+                        {m.category}
+                      </span>
+                      <h4 className="font-bold text-sm text-zinc-100 mt-0.5">{m.name}</h4>
+                    </div>
+                    {isExpanded ? (
+                      <ChevronUp className="w-4 h-4 text-emerald-400 shrink-0 mt-1" />
+                    ) : (
+                      <ChevronDown className="w-4 h-4 text-zinc-500 shrink-0 mt-1" />
+                    )}
+                  </div>
+
+                  {/* Value vs Target Badges */}
+                  <div className="flex items-baseline justify-between pt-1 border-t border-zinc-800/80">
+                    <div>
+                      <p className="text-[10px] text-zinc-400">Measured (120 Queries)</p>
+                      <p className="text-xl font-black text-emerald-400 font-mono">
+                        {m.measured}
+                        {m.unit || ""} {m.isPercentage ? `(${(m.measured * 100).toFixed(1)}%)` : ""}
+                      </p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-[10px] text-zinc-400">Target Threshold</p>
+                      <p className="text-sm font-bold text-amber-400 font-mono">
+                        {m.target}
+                        {m.unit || ""} {m.isPercentage ? `(${(m.target * 100).toFixed(1)}%)` : ""}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-between text-xs pt-1 border-t border-zinc-800/60">
+                    <span className="text-[11px] text-zinc-400 truncate max-w-[170px]">
+                      {m.paperCitation.split(",")[0]}
+                    </span>
+                    <Badge
+                      variant="outline"
+                      className={`text-[10px] font-mono px-1.5 py-0 ${
+                        m.status === "exceeded"
+                          ? "border-emerald-400 text-emerald-300 bg-emerald-500/10"
+                          : "border-teal-400 text-teal-300 bg-teal-500/10"
+                      }`}
+                    >
+                      {m.proximity}
+                    </Badge>
+                  </div>
+
+                  {/* Expandable Deep-Dive Drawer */}
+                  <AnimatePresence>
+                    {isExpanded && (
+                      <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: "auto" }}
+                        exit={{ opacity: 0, height: 0 }}
+                        transition={{ duration: 0.2 }}
+                        className="space-y-3 pt-3 border-t border-zinc-800 text-xs text-zinc-300"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        {/* Plain & Latex Formula */}
+                        <div className="p-2.5 rounded-lg bg-zinc-900 border border-zinc-800 font-mono text-[11px]">
+                          <p className="text-[10px] uppercase text-zinc-500 font-bold mb-1">Mathematical Formula</p>
+                          <p className="text-emerald-400">{m.formulaPlain}</p>
+                        </div>
+
+                        {/* Rationale */}
+                        <div>
+                          <p className="text-[10px] uppercase font-bold text-zinc-400 mb-0.5">Clinical & Academic Definition</p>
+                          <p className="text-zinc-300 leading-relaxed text-[11px]">{m.clinicalRationale}</p>
+                        </div>
+
+                        {/* Why is this Target chosen & Is it Best Possible? */}
+                        <div className="p-2.5 rounded-lg bg-emerald-950/30 border border-emerald-500/30 space-y-1">
+        </div>
       </div>
     </div>
   );
