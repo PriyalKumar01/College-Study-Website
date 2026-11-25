@@ -298,6 +298,56 @@ export const LiveQueryPipelineTester: React.FC = () => {
                 </div>
               ))}
             </div>
+          </div>
+        )}
+
+        {/* Step 3: Sparse Lexical Search */}
+        {activeStep === 3 && (
+          <div className="space-y-4">
+            <div className="flex items-center justify-between border-b border-zinc-800 pb-3">
+              <div>
+                <h4 className="font-bold text-base text-zinc-100 flex items-center gap-2">
+                  <span className="p-1.5 rounded-lg bg-emerald-500/20 text-emerald-400 font-mono text-xs">Step 3</span>
+                  PostgreSQL Full-Text Search (tsvector + GIN Index)
+                </h4>
+                <p className="text-xs text-zinc-400 mt-0.5">
+                  Exact lexical matching with cover-density ranking using <code className="text-amber-400 font-mono">ts_rank_cd(fts_vector, plainto_tsquery('english', query))</code>.
+                </p>
+              </div>
+              <Badge variant="outline" className="border-amber-500/40 text-amber-300 font-mono text-xs">
+                Lexical BM25 Equiv
+              </Badge>
+            </div>
+
+            <div className="space-y-2.5">
+              {results.slice(0, 4).map((r, i) => (
+                <div key={i} className="p-3 rounded-xl bg-zinc-900/80 border border-zinc-800 flex items-start justify-between gap-3">
+                  <div className="space-y-1 flex-1">
+                    <div className="flex items-center gap-2">
+                      <span className="w-5 h-5 rounded-full bg-amber-500/20 text-amber-300 font-mono font-bold text-xs flex items-center justify-center">
+                        #{i + 1}
+                      </span>
+                      <p className="font-semibold text-xs text-zinc-200">{r.document_title}</p>
+                      <Badge variant="outline" className="text-[10px] py-0 border-zinc-700 text-zinc-400">
+                        Page {r.page_start}
+                      </Badge>
+                    </div>
+                    <p className="text-xs text-zinc-400 italic line-clamp-2">"{r.content}"</p>
+                  </div>
+                  <div className="text-right shrink-0">
+                    <p className="text-[10px] text-zinc-500 uppercase">ts_rank_cd</p>
+                    <p className="text-sm font-mono font-bold text-amber-400">{r.fts_score.toFixed(3)}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Step 4: Reciprocal Rank Fusion (k=60) Mathematical Consensus Table */}
+        {activeStep === 4 && (
+          <div className="space-y-4">
+            <div className="flex items-center justify-between border-b border-zinc-800 pb-3">
       </div>
     </div>
   );
