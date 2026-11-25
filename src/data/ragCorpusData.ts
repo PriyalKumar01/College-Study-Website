@@ -191,6 +191,144 @@ const CSE_SUBJECTS_TEMPLATES: SubjectTemplate[] = [
     ]
   },
 
+  // ── Semester 3 (CSE Core - 28 Docs)
+  {
+    name: "Data Structures & Algorithms",
+    code: "BCS-301",
+    semester: "3rd Semester",
+    docCount: 6,
+    avgPages: 96,
+    keySnippets: [
+      "Linear Data Structures: Arrays, singly and doubly linked lists, stack operations and applications (infix to postfix conversion), circular queue, priority queue.",
+      "Non-linear Structures: Binary search trees (BST), tree traversals (inorder, preorder, postorder), AVL trees with rotations (LL, RR, LR, RL), B-trees.",
+      "Graphs: BFS and DFS traversal algorithms, minimum spanning tree (Kruskal's and Prim's), single source shortest path (Dijkstra algorithm).",
+      "Sorting & Searching: Time complexity comparison of Quicksort, Mergesort, Heapsort, Radixsort; average and worst-case recurrence relations using Master Theorem."
+    ]
+  },
+  {
+    name: "Digital Electronics",
+    code: "BET-301",
+    semester: "3rd Semester",
+    docCount: 5,
+    avgPages: 78,
+    keySnippets: [
+      "Combinational Logic: Boolean algebra theorems, Karnaugh maps up to 5 variables, Quine-McCluskey method, multiplexers, demultiplexers, priority encoders.",
+      "Sequential Circuits: RS, JK, D, and T flip-flops, master-slave flip-flop, race-around condition, synchronous and ripple counters, shift registers."
+    ]
+  },
+  {
+    name: "Discrete Mathematics",
+    code: "BMA-302",
+    semester: "3rd Semester",
+    docCount: 5,
+    avgPages: 84,
+    keySnippets: [
+      "Set Theory & Logic: Propositional logic, predicate calculus, equivalence relations, partial order relations, Hasse diagrams, lattices and Boolean algebras.",
+      "Combinatorics & Graph Theory: Pigeonhole principle, recurrence relations, generating functions, Euler graphs, Hamiltonian paths, planar graphs, graph coloring."
+    ]
+  },
+  {
+    name: "Object-Oriented Programming (Java/C++)",
+    code: "BCS-302",
+    semester: "3rd Semester",
+    docCount: 5,
+    avgPages: 80,
+    keySnippets: [
+      "OOP Principles: Encapsulation, abstraction, inheritance (single, multilevel, hierarchical), polymorphism (method overloading and overriding).",
+      "Java Core Features: Interfaces and abstract classes, exception handling try-catch-finally, multithreading lifecycle, synchronization, collections framework."
+    ]
+  },
+  {
+    name: "Analog Electronics",
+    code: "BET-302",
+    semester: "3rd Semester",
+    docCount: 4,
+    avgPages: 66,
+    keySnippets: [
+      "Operational Amplifiers: Ideal op-amp characteristics, inverting and non-inverting configurations, summing amplifier, integrator, differentiator, Schmitt trigger."
+    ]
+  },
+  {
+    name: "Engineering Mathematics-III",
+    code: "BMA-301",
+    semester: "3rd Semester",
+    docCount: 3,
+    avgPages: 72,
+    keySnippets: [
+      "Complex Analysis & Transforms: Analytic functions, Cauchy-Riemann equations, Cauchy integral theorem, residue theorem, Fourier transform and inverse."
+    ]
+  },
+
+  // ── Semester 4 (CSE Core - 32 Docs)
+  {
+    name: "Operating Systems (OS)",
+    code: "BCS-401",
+    semester: "4th Semester",
+    docCount: 6,
+    avgPages: 104,
+    keySnippets: [
+      "Processes & Threads: Process state transitions, PCB structure, context switching, CPU scheduling algorithms (FCFS, SJF, Round Robin, Multi-level Feedback Queue).",
+      "Process Synchronization: Critical section problem, Peterson's algorithm, hardware atomic instructions, counting and binary semaphores, classic problems (Dining Philosophers, Producer-Consumer).",
+      "Deadlocks: Four necessary conditions (mutual exclusion, hold & wait, no preemption, circular wait), resource allocation graph, Banker's algorithm safety and resource request algorithms, deadlock detection and recovery via process termination or preemption.",
+      "Memory Management: Paging hardware, TLB translation lookaside buffer, segmentation, demand paging, page replacement algorithms (FIFO, Optimal, LRU, Clock algorithm), thrashing and working set model."
+    ]
+  },
+  {
+    name: "Database Management Systems (DBMS)",
+    code: "BCS-402",
+    semester: "4th Semester",
+    docCount: 6,
+    avgPages: 98,
+    keySnippets: [
+      "Relational Model: ER diagrams to schema mapping, relational algebra operations (selection, projection, Cartesian product, natural join), SQL queries and subqueries.",
+      "Normalization: Functional dependencies, Armstrong axioms, normal forms: 1NF, 2NF, 3NF, BCNF, lossless join decomposition and dependency preservation.",
+      "Transactions & Concurrency: ACID properties, conflict serializability, precedence graphs, two-phase locking protocol (2PL: strict, rigorous), deadlock handling in DBMS, write-ahead logging (WAL) recovery."
+    ]
+  },
+  {
+    name: "Computer Organization & Architecture (COA)",
+    code: "BCS-403",
+    semester: "4th Semester",
+    docCount: 5,
+    avgPages: 86,
+    keySnippets: [
+      "Instruction Set & Arithmetic: Addressing modes, instruction cycle, Booth's multiplication algorithm, non-restoring division, IEEE 754 floating point standard.",
+      "Pipelining & Memory: Pipeline stages, structural, data, and control hazards, branch prediction, memory hierarchy, direct, associative, and set-associative cache mapping, Amdahl's law for system speedup."
+    ]
+  },
+  {
+    name: "Theory of Computation (TOC)",
+    code: "BCS-404",
+    semester: "4th Semester",
+    docCount: 5,
+    avgPages: 82,
+    keySnippets: [
+      "Automata: Deterministic and Non-deterministic finite automata (DFA, NFA), equivalence and subset construction, regular expressions, pumping lemma for regular languages.",
+      "Grammars & Turing Machines: Context-free grammars (CFG), Chomsky Normal Form (CNF), pushdown automata (PDA), Turing machine definition, Church-Turing thesis, halting problem undecidability."
+    ]
+  },
+  {
+    name: "Software Engineering",
+    code: "BCS-405",
+    semester: "4th Semester",
+    docCount: 5,
+    avgPages: 70,
+    keySnippets: [
+      "Software Processes: Waterfall model, Agile methodology, Scrum ceremonies, requirement engineering, function point analysis, COCOMO estimation model.",
+      "Design & Testing: UML structural and behavioral diagrams, cyclomatic complexity, white-box and black-box testing techniques, unit and regression testing."
+    ]
+  },
+  {
+    name: "Mathematics-IV (Probability & Statistics)",
+    code: "BMA-401",
+    semester: "4th Semester",
+    docCount: 5,
+    avgPages: 76,
+    keySnippets: [
+      "Probability Distributions: Binomial, Poisson, and Normal distributions, expectation and variance, central limit theorem, hypothesis testing (t-test, z-test, Chi-square)."
+    ]
+  },
+
 ];
 export const CANONICAL_RAG_CORPUS: RagCorpusDocument[] = [];
 export function probeRagCorpus() { return []; }
