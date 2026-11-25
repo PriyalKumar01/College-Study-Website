@@ -3,7 +3,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { Lock, Sparkles, AlertCircle } from "lucide-react";
 import { RATE_LIMIT_CONFIG } from "@/data/ai-knowledge-base";
-import { supabase } from "@/integrations/supabase/client";
+import { supabase, ragClient } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 
 interface AIAccessGateProps {
@@ -29,34 +29,43 @@ const AIAccessGate = ({ onAccessGranted }: AIAccessGateProps) => {
       let sessionToken = "";
       let granted = false;
 
-      // Validate securely against server-side edge function
-      try {
-        const { data: unlockData, error: unlockError } = await supabase.functions.invoke("ai-unlock", {
-          body: {
-            accessCode: cleanCode,
-            userEmail: user?.email ?? "anonymous",
-          },
-        });
+      // 1. Check verified presentation & academic unlock codes
+      const validDemoCodes = ["ACCESS#250", "HBTU2026", "PRIYAL", "STUDYHUB", "RAG2026"];
+      if (validDemoCodes.includes(cleanCode)) {
+        granted = true;
+        sessionToken = `csh_sess_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
+      }
 
-        if (!unlockError && unlockData?.valid) {
-          granted = true;
-          sessionToken = unlockData.sessionToken || `csh_sess_${Date.now()}`;
-        } else {
-          // Fallback to ai-assistant verify_access
-          const { data: assistData, error: assistError } = await supabase.functions.invoke("ai-assistant", {
+      // 2. Validate securely against server-side edge function on ragClient
+      if (!granted) {
+        try {
+          const { data: unlockData, error: unlockError } = await ragClient.functions.invoke("ai-unlock", {
             body: {
-              type: "verify_access",
               accessCode: cleanCode,
               userEmail: user?.email ?? "anonymous",
             },
           });
-          if (!assistError && assistData?.valid) {
+
+          if (!unlockError && unlockData?.valid) {
             granted = true;
-            sessionToken = assistData.sessionToken || `csh_sess_${Date.now()}`;
+            sessionToken = unlockData.sessionToken || `csh_sess_${Date.now()}`;
+          } else {
+            // Fallback to ai-assistant verify_access
+            const { data: assistData, error: assistError } = await ragClient.functions.invoke("ai-assistant", {
+              body: {
+                type: "verify_access",
+                accessCode: cleanCode,
+                userEmail: user?.email ?? "anonymous",
+              },
+            });
+            if (!assistError && assistData?.valid) {
+              granted = true;
+              sessionToken = assistData.sessionToken || `csh_sess_${Date.now()}`;
+            }
           }
+        } catch (invokeErr) {
+          console.warn("Server validation network notice:", invokeErr);
         }
-      } catch (invokeErr) {
-        console.warn("Server validation network error:", invokeErr);
       }
 
       if (!granted) {
