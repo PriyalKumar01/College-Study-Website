@@ -329,6 +329,126 @@ const CSE_SUBJECTS_TEMPLATES: SubjectTemplate[] = [
     ]
   },
 
+  // ── Semester 5 (CSE Core - 32 Docs)
+  {
+    name: "Computer Networks (CN)",
+    code: "BCS-501",
+    semester: "5th Semester",
+    docCount: 6,
+    avgPages: 110,
+    keySnippets: [
+      "Layer Architecture: OSI 7-layer model vs TCP/IP protocol suite, framing techniques, error detection (CRC cyclic redundancy check, checksum), sliding window protocols (Stop-and-Wait, Go-Back-N, Selective Repeat).",
+      "Network Layer: IPv4 and IPv6 addressing, CIDR subnetting, distance vector routing (Bellman-Ford), link state routing (Dijkstra), Border Gateway Protocol (BGP).",
+      "Transport Layer: UDP vs TCP header structures, three-way handshaking connection establishment, TCP congestion control algorithms (Slow Start, Congestion Avoidance, Fast Retransmit, Fast Recovery)."
+    ]
+  },
+  {
+    name: "Compiler Design",
+    code: "BCS-502",
+    semester: "5th Semester",
+    docCount: 6,
+    avgPages: 92,
+    keySnippets: [
+      "Lexical & Syntax Analysis: Lexical tokens, Lex tool specifications, LL(1) predictive parsing table construction (FIRST and FOLLOW sets), shift-reduce conflicts in LR parsers (SLR, CLR, LALR).",
+      "Intermediate Code & Optimization: Syntax-directed translation (SDT), three-address code (TAC) representations, basic blocks, control flow graphs, loop invariant code motion, common subexpression elimination."
+    ]
+  },
+  {
+    name: "Artificial Intelligence (AI)",
+    code: "BCS-503",
+    semester: "5th Semester",
+    docCount: 5,
+    avgPages: 84,
+    keySnippets: [
+      "Search Algorithms: Uninformed search (BFS, DFS, Uniform Cost Search), informed heuristic search (A* search algorithm, optimality conditions, Hill climbing).",
+      "Knowledge Representation: First-order predicate logic, unification algorithm, resolution principle, forward and backward chaining, alpha-beta pruning in adversarial game trees."
+    ]
+  },
+  {
+    name: "Web Technologies",
+    code: "BCS-504",
+    semester: "5th Semester",
+    docCount: 5,
+    avgPages: 78,
+    keySnippets: [
+      "Frontend & Backend: HTML5 semantic tags, CSS Flexbox and Grid, JavaScript ES6+ asynchronous programming (Promises, async/await), Node.js runtime, RESTful API design principles."
+    ]
+  },
+  {
+    name: "Microprocessors & Interfaces",
+    code: "BET-501",
+    semester: "5th Semester",
+    docCount: 5,
+    avgPages: 80,
+    keySnippets: [
+      "8085/8086 Architecture: Internal bus architecture, register organization, segmented memory in 8086, pin functions, interrupt structure (TRAP, RST, INTR), interfacing 8255 PPI."
+    ]
+  },
+  {
+    name: "5th Semester Open Electives",
+    code: "BOE-501",
+    semester: "5th Semester",
+    docCount: 5,
+    avgPages: 64,
+    keySnippets: [
+      "Interdisciplinary Curriculum: Operations research linear programming simplex method, industrial management principles, technical entrepreneurship fundamentals."
+    ]
+  },
+
+  // ── Semester 6 (CSE Specialization - 28 Docs)
+  {
+    name: "Machine Learning (ML)",
+    code: "BCS-601",
+    semester: "6th Semester",
+    docCount: 6,
+    avgPages: 102,
+    keySnippets: [
+      "Supervised Learning: Linear regression cost function, gradient descent optimization, logistic regression for classification, decision trees (ID3, Gini index, entropy), support vector machines (SVM with kernel trick).",
+      "Unsupervised Learning & Evaluation: K-means clustering algorithm, hierarchical clustering, Principal Component Analysis (PCA) dimensionality reduction, confusion matrix, precision, recall, F1-score, ROC-AUC curve."
+    ]
+  },
+  {
+    name: "Information & Network Security",
+    code: "BCS-602",
+    semester: "6th Semester",
+    docCount: 6,
+    avgPages: 88,
+    keySnippets: [
+      "Cryptography: Symmetric key encryption (DES, AES block ciphers), asymmetric key cryptography (RSA algorithm, mathematical foundations of modular exponentiation).",
+      "Authentication & Integrity: Diffie-Hellman key exchange, SHA-256 and SHA-3 hash algorithms, digital signatures, PKI certificate authorities, SSL/TLS handshake protocol."
+    ]
+  },
+  {
+    name: "Cloud Computing",
+    code: "BCS-603",
+    semester: "6th Semester",
+    docCount: 5,
+    avgPages: 76,
+    keySnippets: [
+      "Cloud Architectures: IaaS, PaaS, SaaS delivery models, public, private, hybrid deployment, hypervisor virtualization (Type 1 and Type 2), containerization with Docker and Kubernetes cluster orchestration."
+    ]
+  },
+  {
+    name: "Software Testing & Quality Assurance",
+    code: "BCS-604",
+    semester: "6th Semester",
+    docCount: 5,
+    avgPages: 72,
+    keySnippets: [
+      "Testing Methodologies: Equivalence partitioning, boundary value analysis, control flow testing, data flow testing, automated Selenium testing frameworks."
+    ]
+  },
+  {
+    name: "6th Semester Open Electives",
+    code: "BOE-601",
+    semester: "6th Semester",
+    docCount: 6,
+    avgPages: 66,
+    keySnippets: [
+      "Advanced Open Electives: Disaster management protocols, intellectual property rights (IPR, patents, copyrights), engineering ethics and human values."
+    ]
+  },
+
 ];
 export const CANONICAL_RAG_CORPUS: RagCorpusDocument[] = [];
 export function probeRagCorpus() { return []; }
