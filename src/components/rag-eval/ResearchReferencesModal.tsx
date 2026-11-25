@@ -79,14 +79,14 @@ export const ResearchReferencesView: React.FC = () => {
         {filteredPapers.map((p) => (
           <div
             key={p.id}
-            className="p-3.5 rounded-md bg-white/95 dark:bg-[#0e1424] border border-slate-200/90 dark:border-zinc-800 hover:border-emerald-500/50 shadow-sm transition-all space-y-2 flex flex-col justify-between"
+            className="p-3.5 rounded-sm bg-white dark:bg-[#0f172a] border border-slate-300 dark:border-slate-800 hover:border-emerald-500 hover:shadow-md transition-all space-y-2 flex flex-col justify-between"
           >
             <div className="space-y-1.5">
               <div className="flex items-center justify-between gap-2">
-                <Badge variant="outline" className="border-slate-300 dark:border-zinc-700 text-slate-600 dark:text-zinc-400 font-mono text-[10px] rounded-sm">
+                <Badge variant="outline" className="border-slate-300 dark:border-zinc-700 text-slate-700 dark:text-zinc-400 font-mono text-[10px] rounded-sm">
                   [{p.id}] {p.year}
                 </Badge>
-                <Badge className="bg-emerald-500/15 text-emerald-800 dark:text-emerald-400 border-emerald-500/30 text-[10px] rounded-sm">
+                <Badge className="bg-emerald-50 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800/60 text-[10px] rounded-sm">
                   {p.theme}
                 </Badge>
               </div>
@@ -104,7 +104,7 @@ export const ResearchReferencesView: React.FC = () => {
               </p>
             </div>
 
-            <div className="pt-2 border-t border-slate-100 dark:border-zinc-850 text-[11px] text-slate-700 dark:text-zinc-300/90 bg-slate-50 dark:bg-zinc-900/60 p-2.5 rounded-md mt-1 space-y-0.5">
+            <div className="pt-2 border-t border-slate-200 dark:border-slate-800 text-[11px] text-slate-700 dark:text-zinc-300 bg-[#f8fafc] dark:bg-slate-900 border border-slate-200 dark:border-slate-800/80 p-2.5 rounded-sm mt-1 space-y-0.5">
               <span className="font-bold text-emerald-700 dark:text-emerald-400 uppercase text-[9px] block tracking-wider">
                 Direct Architectural Impact:
               </span>

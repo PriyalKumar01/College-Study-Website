@@ -16,12 +16,9 @@ import {
   Sliders,
   ExternalLink,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import { probeRagCorpus, RagProbeResult } from "@/data/ragCorpusData";
-import { ragClient } from "@/integrations/supabase/client";
 
 interface Presets {
   label: string;
@@ -106,29 +103,29 @@ export const LiveQueryPipelineTester: React.FC = () => {
   };
 
   return (
-    <div className="space-y-5 text-slate-900 dark:text-zinc-100 font-sans">
+    <div className="space-y-5 text-slate-900 dark:text-slate-100 font-sans">
       {/* Search Input Box */}
-      <div className="bg-white/95 dark:bg-[#0e1424] rounded-md p-4 sm:p-5 border border-slate-200/90 dark:border-emerald-500/25 shadow-sm space-y-3.5 hover:border-emerald-500/40 transition-all">
+      <div className="bg-white dark:bg-[#0f172a] rounded-lg p-5 border border-slate-300 dark:border-slate-800 shadow-sm space-y-3.5 hover:border-emerald-500 transition-all duration-200">
         <div>
           <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
-            <Cpu className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
+            <Cpu className="w-5 h-5 text-emerald-600" />
             Live Hybrid Retrieval & Synthesis Pipeline Inspector
           </h3>
-          <p className="text-xs text-slate-500 dark:text-zinc-400 mt-0.5">
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
             Demonstrate each discrete stage of the RAG pipeline to examiners: Asymmetric Embedding → Dense Cosine → Sparse tsvector → RRF (k=60) Fusion → Top-6 Context → Grounded Citation Generation.
           </p>
         </div>
 
         {/* Preset Chips */}
         <div className="flex flex-wrap items-center gap-1.5 pt-1">
-          <span className="text-[11px] text-slate-500 dark:text-zinc-400 uppercase font-bold tracking-wider mr-1">
+          <span className="text-[11px] text-slate-500 dark:text-slate-400 uppercase font-bold tracking-wider mr-1">
             Examiner Presets:
           </span>
           {PRESET_QUERIES.map((p, idx) => (
             <button
               key={idx}
               onClick={() => handleSelectPreset(p)}
-              className="px-2.5 py-1 rounded-md text-xs font-medium bg-slate-100 dark:bg-zinc-900 hover:bg-slate-200 dark:hover:bg-zinc-800 border border-slate-300 dark:border-zinc-700/80 hover:border-emerald-500/50 text-slate-700 dark:text-zinc-300 hover:text-slate-900 dark:hover:text-white transition-all flex items-center gap-1.5"
+              className="px-2.5 py-1 rounded-md text-xs font-medium bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-300 dark:border-slate-700 hover:border-emerald-500 text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-all flex items-center gap-1.5 cursor-pointer"
             >
               <span
                 className={`w-1.5 h-1.5 rounded-full ${
@@ -147,32 +144,32 @@ export const LiveQueryPipelineTester: React.FC = () => {
         {/* Input Form */}
         <div className="flex flex-col sm:flex-row gap-2.5 pt-1">
           <div className="relative flex-1">
-            <Search className="w-4 h-4 text-slate-400 dark:text-zinc-500 absolute left-3.5 top-3" />
+            <Search className="w-4 h-4 text-slate-400 dark:text-slate-500 absolute left-3.5 top-3" />
             <Input
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && executePipelineTest(query)}
               placeholder="Enter any academic, syllabus, Hinglish, or adversarial query to inspect..."
-              className="pl-10 bg-slate-50 dark:bg-zinc-900/90 border-slate-300 dark:border-zinc-700 focus:border-emerald-500 text-slate-900 dark:text-zinc-100 placeholder:text-slate-400 dark:placeholder:text-zinc-500 h-10 text-xs sm:text-sm rounded-md"
+              className="pl-10 bg-[#f8fafc] dark:bg-slate-900 border-slate-300 dark:border-slate-700 focus:border-emerald-500 text-slate-900 dark:text-white placeholder:text-slate-400 h-10 text-xs sm:text-sm rounded-md"
             />
           </div>
-          <Button
+          <button
             onClick={() => executePipelineTest(query)}
             disabled={isEvaluating}
-            className="h-10 px-5 bg-emerald-600 hover:bg-emerald-700 dark:bg-emerald-500 dark:hover:bg-emerald-600 text-white dark:text-zinc-950 font-bold shrink-0 gap-2 shadow-sm rounded-md"
+            className="h-10 px-5 bg-slate-900 hover:bg-black text-white dark:bg-emerald-600 dark:hover:bg-emerald-500 font-bold shrink-0 gap-2 shadow-sm rounded-md inline-flex items-center justify-center cursor-pointer transition-all"
           >
             {isEvaluating ? (
               <>
-                <Zap className="w-4 h-4 animate-spin" />
+                <Zap className="w-4 h-4 animate-spin text-emerald-400" />
                 Executing Pipeline...
               </>
             ) : (
               <>
-                <Sparkles className="w-4 h-4 fill-current" />
+                <Sparkles className="w-4 h-4 fill-current text-emerald-400" />
                 Evaluate Query Live
               </>
             )}
-          </Button>
+          </button>
         </div>
       </div>
 
@@ -188,58 +185,60 @@ export const LiveQueryPipelineTester: React.FC = () => {
           <button
             key={s.step}
             onClick={() => setActiveStep(s.step)}
-            className={`p-2.5 rounded-md border text-left transition-all ${
+            className={`p-2.5 rounded-lg border text-left transition-all cursor-pointer ${
               activeStep === s.step
-                ? "bg-emerald-50 dark:bg-emerald-950/40 border-emerald-500 text-emerald-800 dark:text-emerald-300 shadow-sm font-bold"
-                : "bg-white/90 dark:bg-zinc-950/60 border-slate-200 dark:border-zinc-800 text-slate-600 dark:text-zinc-400 hover:bg-slate-50 dark:hover:bg-zinc-900 hover:text-slate-900 dark:hover:text-zinc-200"
+                ? "bg-slate-900 text-white dark:bg-emerald-600 dark:text-white border-slate-900 dark:border-emerald-600 shadow-sm font-bold"
+                : "bg-white dark:bg-[#0f172a] border-slate-300 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:border-emerald-500 hover:bg-slate-50 dark:hover:bg-slate-800"
             }`}
           >
             <p className="font-bold text-xs">{s.label}</p>
-            <p className="text-[10px] text-slate-500 dark:text-zinc-500 font-mono mt-0.5 truncate">{s.desc}</p>
+            <p className={`text-[10px] font-mono mt-0.5 truncate ${activeStep === s.step ? "text-slate-300 dark:text-emerald-100" : "text-slate-500 dark:text-slate-400"}`}>
+              {s.desc}
+            </p>
           </button>
         ))}
       </div>
 
       {/* Step Details Panels */}
-      <div className="bg-white/95 dark:bg-[#0e1424] rounded-md p-4 sm:p-5 border border-slate-200/90 dark:border-emerald-500/20 shadow-sm space-y-4 hover:border-emerald-500/40 transition-all">
+      <div className="bg-white dark:bg-[#0f172a] rounded-lg p-5 border border-slate-300 dark:border-slate-800 shadow-sm space-y-4 hover:border-emerald-500 transition-all duration-200">
         {/* Step 1: Query Preprocessing & Asymmetric Vector */}
         {activeStep === 1 && (
           <div className="space-y-4">
-            <div className="flex items-center justify-between border-b border-slate-200 dark:border-zinc-800 pb-3">
+            <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
               <div>
-                <h4 className="font-bold text-base text-slate-900 dark:text-zinc-100 flex items-center gap-2">
-                  <span className="p-1 rounded-md bg-emerald-500/20 text-emerald-700 dark:text-emerald-400 font-mono text-xs">Step 1</span>
+                <h4 className="font-bold text-base text-slate-900 dark:text-white flex items-center gap-2">
+                  <span className="p-1 rounded bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400 font-mono text-xs border border-emerald-200">Step 1</span>
                   Asymmetric Query Encoding (RETRIEVAL_QUERY)
                 </h4>
-                <p className="text-xs text-slate-500 dark:text-zinc-400 mt-0.5">
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
                   Distinguishing student query vectors from document passages using task-specific prefixing.
                 </p>
               </div>
-              <Badge variant="outline" className="border-emerald-500/40 text-emerald-700 dark:text-emerald-300 font-mono text-xs rounded-sm">
+              <Badge variant="outline" className="border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-mono text-xs rounded">
                 768 Float32 Dimensions
               </Badge>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="p-3.5 rounded-md bg-slate-50 dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 space-y-2">
-                <p className="text-[11px] font-bold text-slate-500 dark:text-zinc-400 uppercase tracking-wider">Sanitized Query Input</p>
-                <p className="text-xs text-slate-800 dark:text-zinc-200 font-mono bg-white dark:bg-zinc-950 p-2.5 rounded-md border border-slate-200 dark:border-zinc-800">
+              <div className="p-3.5 rounded-md bg-[#f8fafc] dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 space-y-2">
+                <p className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Sanitized Query Input</p>
+                <p className="text-xs text-slate-800 dark:text-slate-200 font-mono bg-white dark:bg-slate-950 p-2.5 rounded border border-slate-200 dark:border-slate-800">
                   {query}
                 </p>
-                <div className="text-[11px] text-slate-600 dark:text-zinc-400 space-y-1 pt-1">
-                  <p>• Model: <span className="font-mono text-emerald-700 dark:text-emerald-400">Google gemini-embedding-001</span></p>
-                  <p>• Task Mode: <span className="font-mono text-teal-700 dark:text-teal-400">taskType: RETRIEVAL_QUERY</span></p>
-                  <p>• L2 Normalization: <span className="font-mono text-slate-700 dark:text-zinc-300">||v|| = 1.0 (Unit Sphere)</span></p>
+                <div className="text-[11px] text-slate-600 dark:text-slate-400 space-y-1 pt-1">
+                  <p>• Model: <span className="font-mono text-slate-900 dark:text-emerald-400 font-bold">Google gemini-embedding-001</span></p>
+                  <p>• Task Mode: <span className="font-mono text-slate-900 dark:text-teal-400 font-bold">taskType: RETRIEVAL_QUERY</span></p>
+                  <p>• L2 Normalization: <span className="font-mono text-slate-700 dark:text-slate-300">||v|| = 1.0 (Unit Sphere)</span></p>
                 </div>
               </div>
 
-              <div className="p-3.5 rounded-md bg-slate-50 dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 space-y-2">
-                <p className="text-[11px] font-bold text-slate-500 dark:text-zinc-400 uppercase tracking-wider">Vector Embedding Preview (First 8 Dimensions)</p>
-                <div className="p-2.5 rounded-md bg-white dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 font-mono text-xs text-emerald-700 dark:text-emerald-400 space-y-0.5 overflow-x-auto">
+              <div className="p-3.5 rounded-md bg-[#f8fafc] dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 space-y-2">
+                <p className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Vector Embedding Preview (First 8 Dimensions)</p>
+                <div className="p-2.5 rounded bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 font-mono text-xs text-slate-900 dark:text-emerald-400 space-y-0.5 overflow-x-auto">
                   <p>[ +0.03814, -0.05219, +0.01944, +0.08120, -0.02105, +0.04419, -0.06192, +0.01183, ... (760 more) ]</p>
                 </div>
-                <p className="text-[11px] text-slate-500 dark:text-zinc-400">
-                  Cosine distance against document vectors is computed via dot product: <code className="text-emerald-700 dark:text-emerald-400 font-mono">cos(A, B) = A · B</code>
+                <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                  Cosine distance against document vectors is computed via dot product: <code className="text-slate-900 dark:text-emerald-400 font-mono font-bold">cos(A, B) = A · B</code>
                 </p>
               </div>
             </div>
@@ -249,39 +248,39 @@ export const LiveQueryPipelineTester: React.FC = () => {
         {/* Step 2: Dense Semantic Search */}
         {activeStep === 2 && (
           <div className="space-y-4">
-            <div className="flex items-center justify-between border-b border-slate-200 dark:border-zinc-800 pb-3">
+            <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
               <div>
-                <h4 className="font-bold text-base text-slate-900 dark:text-zinc-100 flex items-center gap-2">
-                  <span className="p-1 rounded-md bg-emerald-500/20 text-emerald-700 dark:text-emerald-400 font-mono text-xs">Step 2</span>
+                <h4 className="font-bold text-base text-slate-900 dark:text-white flex items-center gap-2">
+                  <span className="p-1 rounded bg-teal-50 text-teal-700 dark:bg-teal-950/40 dark:text-teal-400 font-mono text-xs border border-teal-200">Step 2</span>
                   PostgreSQL pgvector Dense Cosine Search
                 </h4>
-                <p className="text-xs text-slate-500 dark:text-zinc-400 mt-0.5">
-                  Hierarchical Navigable Small World (HNSW) index lookup with <code className="text-emerald-700 dark:text-emerald-400">m=16, ef_construction=64</code>.
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                  Hierarchical Navigable Small World (HNSW) index lookup with <code className="text-slate-900 dark:text-emerald-400 font-mono font-bold">m=16, ef_construction=64</code>.
                 </p>
               </div>
-              <Badge variant="outline" className="border-teal-500/40 text-teal-700 dark:text-teal-300 font-mono text-xs rounded-sm">
+              <Badge variant="outline" className="border-teal-300 dark:border-teal-800 text-teal-700 dark:text-teal-300 font-mono text-xs rounded">
                 vector_cosine_ops
               </Badge>
             </div>
 
             <div className="space-y-2">
               {results.slice(0, 4).map((r, i) => (
-                <div key={i} className="p-3 rounded-md bg-slate-50 dark:bg-zinc-900/80 border border-slate-200 dark:border-zinc-800 flex items-start justify-between gap-3">
+                <div key={i} className="p-3 rounded-md bg-[#f8fafc] dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 flex items-start justify-between gap-3">
                   <div className="space-y-1 flex-1">
                     <div className="flex items-center gap-2">
-                      <span className="w-5 h-5 rounded-full bg-teal-500/20 text-teal-700 dark:text-teal-300 font-mono font-bold text-xs flex items-center justify-center">
+                      <span className="w-5 h-5 rounded-full bg-slate-900 text-white dark:bg-teal-600 font-mono font-bold text-xs flex items-center justify-center">
                         #{i + 1}
                       </span>
-                      <p className="font-semibold text-xs text-slate-800 dark:text-zinc-200">{r.document_title}</p>
-                      <Badge variant="outline" className="text-[10px] py-0 border-slate-300 dark:border-zinc-700 text-slate-600 dark:text-zinc-400 rounded-sm">
+                      <p className="font-semibold text-xs text-slate-800 dark:text-slate-200">{r.document_title}</p>
+                      <Badge variant="outline" className="text-[10px] py-0 border-slate-300 dark:border-slate-700 text-slate-600 dark:text-slate-400 rounded">
                         {r.document_subject} · Page {r.page_start}
                       </Badge>
                     </div>
-                    <p className="text-xs text-slate-600 dark:text-zinc-400 italic line-clamp-2">"{r.content}"</p>
+                    <p className="text-xs text-slate-600 dark:text-slate-400 italic line-clamp-2">"{r.content}"</p>
                   </div>
                   <div className="text-right shrink-0">
                     <p className="text-[10px] text-slate-500 uppercase">Cosine Sim</p>
-                    <p className="text-sm font-mono font-bold text-teal-700 dark:text-teal-400">{r.vector_score.toFixed(3)}</p>
+                    <p className="text-sm font-mono font-bold text-slate-900 dark:text-teal-400">{r.vector_score.toFixed(3)}</p>
                   </div>
                 </div>
               ))}
@@ -292,39 +291,39 @@ export const LiveQueryPipelineTester: React.FC = () => {
         {/* Step 3: Sparse Lexical Search */}
         {activeStep === 3 && (
           <div className="space-y-4">
-            <div className="flex items-center justify-between border-b border-slate-200 dark:border-zinc-800 pb-3">
+            <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
               <div>
-                <h4 className="font-bold text-base text-slate-900 dark:text-zinc-100 flex items-center gap-2">
-                  <span className="p-1 rounded-md bg-emerald-500/20 text-emerald-700 dark:text-emerald-400 font-mono text-xs">Step 3</span>
+                <h4 className="font-bold text-base text-slate-900 dark:text-white flex items-center gap-2">
+                  <span className="p-1 rounded bg-amber-50 text-amber-700 dark:bg-amber-950/40 dark:text-amber-400 font-mono text-xs border border-amber-200">Step 3</span>
                   PostgreSQL Full-Text Search (tsvector + GIN Index)
                 </h4>
-                <p className="text-xs text-slate-500 dark:text-zinc-400 mt-0.5">
-                  Exact lexical matching with cover-density ranking using <code className="text-amber-700 dark:text-amber-400 font-mono">ts_rank_cd(fts_vector, plainto_tsquery('english', query))</code>.
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                  Exact lexical matching with cover-density ranking using <code className="text-slate-900 dark:text-amber-400 font-mono font-bold">ts_rank_cd(fts_vector, plainto_tsquery('english', query))</code>.
                 </p>
               </div>
-              <Badge variant="outline" className="border-amber-500/40 text-amber-700 dark:text-amber-300 font-mono text-xs rounded-sm">
+              <Badge variant="outline" className="border-amber-300 dark:border-amber-800 text-amber-700 dark:text-amber-300 font-mono text-xs rounded">
                 Lexical BM25 Equiv
               </Badge>
             </div>
 
             <div className="space-y-2">
               {results.slice(0, 4).map((r, i) => (
-                <div key={i} className="p-3 rounded-md bg-slate-50 dark:bg-zinc-900/80 border border-slate-200 dark:border-zinc-800 flex items-start justify-between gap-3">
+                <div key={i} className="p-3 rounded-md bg-[#f8fafc] dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 flex items-start justify-between gap-3">
                   <div className="space-y-1 flex-1">
                     <div className="flex items-center gap-2">
-                      <span className="w-5 h-5 rounded-full bg-amber-500/20 text-amber-700 dark:text-amber-300 font-mono font-bold text-xs flex items-center justify-center">
+                      <span className="w-5 h-5 rounded-full bg-slate-900 text-white dark:bg-amber-600 font-mono font-bold text-xs flex items-center justify-center">
                         #{i + 1}
                       </span>
-                      <p className="font-semibold text-xs text-slate-800 dark:text-zinc-200">{r.document_title}</p>
-                      <Badge variant="outline" className="text-[10px] py-0 border-slate-300 dark:border-zinc-700 text-slate-600 dark:text-zinc-400 rounded-sm">
+                      <p className="font-semibold text-xs text-slate-800 dark:text-slate-200">{r.document_title}</p>
+                      <Badge variant="outline" className="text-[10px] py-0 border-slate-300 dark:border-slate-700 text-slate-600 dark:text-slate-400 rounded">
                         Page {r.page_start}
                       </Badge>
                     </div>
-                    <p className="text-xs text-slate-600 dark:text-zinc-400 italic line-clamp-2">"{r.content}"</p>
+                    <p className="text-xs text-slate-600 dark:text-slate-400 italic line-clamp-2">"{r.content}"</p>
                   </div>
                   <div className="text-right shrink-0">
                     <p className="text-[10px] text-slate-500 uppercase">ts_rank_cd</p>
-                    <p className="text-sm font-mono font-bold text-amber-700 dark:text-amber-400">{r.fts_score.toFixed(3)}</p>
+                    <p className="text-sm font-mono font-bold text-slate-900 dark:text-amber-400">{r.fts_score.toFixed(3)}</p>
                   </div>
                 </div>
               ))}
@@ -335,17 +334,17 @@ export const LiveQueryPipelineTester: React.FC = () => {
         {/* Step 4: Reciprocal Rank Fusion (k=60) Mathematical Consensus Table */}
         {activeStep === 4 && (
           <div className="space-y-4">
-            <div className="flex items-center justify-between border-b border-slate-200 dark:border-zinc-800 pb-3">
+            <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
               <div>
-                <h4 className="font-bold text-base text-slate-900 dark:text-zinc-100 flex items-center gap-2">
-                  <span className="p-1 rounded-md bg-emerald-500/20 text-emerald-700 dark:text-emerald-400 font-mono text-xs">Step 4</span>
+                <h4 className="font-bold text-base text-slate-900 dark:text-white flex items-center gap-2">
+                  <span className="p-1 rounded bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400 font-mono text-xs border border-emerald-200">Step 4</span>
                   Reciprocal Rank Fusion (RRF, k=60) Consensus Table
                 </h4>
-                <p className="text-xs text-slate-500 dark:text-zinc-400 mt-0.5">
-                  Formula: <code className="text-emerald-700 dark:text-emerald-400 font-mono">RRF(d) = 1/(60 + rank_dense) + 1/(60 + rank_sparse)</code> (Cormack et al., SIGIR 2009).
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                  Formula: <code className="text-slate-900 dark:text-emerald-400 font-mono font-bold">RRF(d) = 1/(60 + rank_dense) + 1/(60 + rank_sparse)</code> (Cormack et al., SIGIR 2009).
                 </p>
               </div>
-              <Badge variant="outline" className="border-emerald-500/40 text-emerald-700 dark:text-emerald-300 font-mono text-xs rounded-sm">
+              <Badge variant="outline" className="border-emerald-300 dark:border-emerald-800 text-emerald-700 dark:text-emerald-300 font-mono text-xs rounded">
                 RRF Consensus
               </Badge>
             </div>
@@ -353,7 +352,7 @@ export const LiveQueryPipelineTester: React.FC = () => {
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs">
                 <thead>
-                  <tr className="border-b border-slate-200 dark:border-zinc-800 text-slate-500 dark:text-zinc-400 text-[10px] uppercase font-bold tracking-wider bg-slate-50 dark:bg-zinc-900/60">
+                  <tr className="border-b border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400 text-[10px] uppercase font-bold tracking-wider bg-[#f8fafc] dark:bg-slate-900/60">
                     <th className="py-2.5 px-3 text-center">Final Rank</th>
                     <th className="py-2.5 px-3">Candidate Passage & Subject</th>
                     <th className="py-2.5 px-3 text-center">Dense Rank (Cosine)</th>
@@ -362,28 +361,28 @@ export const LiveQueryPipelineTester: React.FC = () => {
                     <th className="py-2.5 px-3 text-right">Final RRF Score</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-200 dark:divide-zinc-850">
+                <tbody className="divide-y divide-slate-200 dark:divide-slate-800">
                   {results.slice(0, 6).map((r, i) => {
                     const denseR = i + 1;
                     const sparseR = i === 0 ? 2 : i === 1 ? 1 : i + 1;
                     const scoreD = (1 / (60 + denseR)).toFixed(5);
                     const scoreS = (1 / (60 + sparseR)).toFixed(5);
                     return (
-                      <tr key={i} className="hover:bg-slate-50 dark:hover:bg-zinc-900/60 transition-colors">
-                        <td className="py-2.5 px-3 text-center font-mono font-bold text-emerald-700 dark:text-emerald-400">
+                      <tr key={i} className="hover:bg-slate-50 dark:hover:bg-slate-900/60 transition-colors">
+                        <td className="py-2.5 px-3 text-center font-mono font-bold text-slate-900 dark:text-emerald-400">
                           #{i + 1}
                         </td>
                         <td className="py-2.5 px-3">
-                          <p className="font-semibold text-slate-800 dark:text-zinc-200">{r.document_title}</p>
-                          <p className="text-[10px] text-slate-500 dark:text-zinc-500">{r.document_subject} · Page {r.page_start}</p>
+                          <p className="font-semibold text-slate-800 dark:text-slate-200">{r.document_title}</p>
+                          <p className="text-[10px] text-slate-500">{r.document_subject} · Page {r.page_start}</p>
                         </td>
-                        <td className="py-2.5 px-3 text-center font-mono text-teal-700 dark:text-teal-400">
+                        <td className="py-2.5 px-3 text-center font-mono text-slate-800 dark:text-teal-400 font-semibold">
                           #{denseR} ({r.vector_score.toFixed(2)})
                         </td>
-                        <td className="py-2.5 px-3 text-center font-mono text-amber-700 dark:text-amber-400">
+                        <td className="py-2.5 px-3 text-center font-mono text-slate-800 dark:text-amber-400 font-semibold">
                           #{sparseR} ({r.fts_score.toFixed(2)})
                         </td>
-                        <td className="py-2.5 px-3 text-center font-mono text-[10px] text-slate-500 dark:text-zinc-400">
+                        <td className="py-2.5 px-3 text-center font-mono text-[10px] text-slate-500">
                           1/({60 + denseR}) + 1/({60 + sparseR}) = {scoreD} + {scoreS}
                         </td>
                         <td className="py-2.5 px-3 text-right font-mono font-bold text-emerald-700 dark:text-emerald-400">
@@ -396,11 +395,11 @@ export const LiveQueryPipelineTester: React.FC = () => {
               </table>
             </div>
 
-            <div className="p-3 rounded-md bg-slate-50 dark:bg-zinc-900/80 border border-slate-200 dark:border-zinc-800 text-[11px] text-slate-600 dark:text-zinc-400 flex items-center justify-between">
+            <div className="p-3 rounded-md bg-[#f8fafc] dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 text-[11px] text-slate-600 dark:text-slate-400 flex items-center justify-between">
               <span>
                 Consensus promotion eliminates isolated ranking outliers without fragile parameter tuning.
               </span>
-              <span className="text-emerald-700 dark:text-emerald-400 font-mono font-semibold">+14% Recall Boost</span>
+              <span className="text-slate-900 dark:text-emerald-400 font-mono font-bold">+14% Recall Boost</span>
             </div>
           </div>
         )}
@@ -408,39 +407,39 @@ export const LiveQueryPipelineTester: React.FC = () => {
         {/* Step 5: Grounded Answer Synthesis with Inline Clickable Citations */}
         {activeStep === 5 && (
           <div className="space-y-4">
-            <div className="flex items-center justify-between border-b border-slate-200 dark:border-zinc-800 pb-3">
+            <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
               <div>
-                <h4 className="font-bold text-base text-slate-900 dark:text-zinc-100 flex items-center gap-2">
-                  <span className="p-1 rounded-md bg-emerald-500/20 text-emerald-700 dark:text-emerald-400 font-mono text-xs">Step 5</span>
+                <h4 className="font-bold text-base text-slate-900 dark:text-white flex items-center gap-2">
+                  <span className="p-1 rounded bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400 font-mono text-xs border border-emerald-200">Step 5</span>
                   Grounded LLM Response & Inline Citation Verification
                 </h4>
-                <p className="text-xs text-slate-500 dark:text-zinc-400 mt-0.5">
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
                   Generated via Google Gemini 3.5 Flash streaming with clickable source citation badges.
                 </p>
               </div>
-              <Badge variant="outline" className="border-emerald-500/40 text-emerald-700 dark:text-emerald-300 font-mono text-xs rounded-sm">
+              <Badge variant="outline" className="border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-mono text-xs rounded">
                 RAGAS: 0.94 | ALCE: 0.91
               </Badge>
             </div>
 
             {/* Simulated Chat Answer Box */}
-            <div className="p-4 rounded-md bg-slate-50 dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 space-y-3">
-              <div className="flex items-center justify-between text-xs border-b border-slate-200 dark:border-zinc-800 pb-2">
-                <span className="font-semibold text-slate-800 dark:text-zinc-300 flex items-center gap-1.5">
-                  <Sparkles className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
+            <div className="p-4 rounded-md bg-[#f8fafc] dark:bg-slate-900/80 border border-slate-300 dark:border-slate-800 space-y-3">
+              <div className="flex items-center justify-between text-xs border-b border-slate-200 dark:border-slate-800 pb-2">
+                <span className="font-semibold text-slate-800 dark:text-slate-300 flex items-center gap-1.5">
+                  <Sparkles className="w-3.5 h-3.5 text-emerald-600" />
                   College Study Assistant Response
                 </span>
-                <span className="text-[10px] text-slate-500 dark:text-zinc-500 font-mono">Dual-LLM Failover Engine</span>
+                <span className="text-[10px] text-slate-500 font-mono">Dual-LLM Failover Engine</span>
               </div>
 
-              <div className="text-xs sm:text-sm text-slate-800 dark:text-zinc-200 leading-relaxed whitespace-pre-line">
+              <div className="text-xs sm:text-sm text-slate-800 dark:text-slate-200 leading-relaxed whitespace-pre-line">
                 {synthesizedAnswer}
               </div>
 
               {/* Clickable Citation Badges */}
               {!isAdversarial && results.length > 0 && (
-                <div className="pt-3 border-t border-slate-200 dark:border-zinc-800/80 space-y-2">
-                  <p className="text-[10px] text-slate-500 dark:text-zinc-400 uppercase font-bold tracking-wider">
+                <div className="pt-3 border-t border-slate-200 dark:border-slate-800 space-y-2">
+                  <p className="text-[10px] text-slate-500 uppercase font-bold tracking-wider">
                     Click to Verify Source Passages:
                   </p>
                   <div className="flex flex-wrap gap-2">
@@ -448,11 +447,11 @@ export const LiveQueryPipelineTester: React.FC = () => {
                       <button
                         key={i}
                         onClick={() => setActiveCitationModal(r)}
-                        className="px-3 py-1.5 rounded-md bg-white dark:bg-zinc-950 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 border border-slate-300 dark:border-zinc-700 hover:border-emerald-500 text-xs text-slate-700 dark:text-zinc-300 hover:text-emerald-800 dark:hover:text-emerald-300 transition-all flex items-center gap-2 group"
+                        className="px-3 py-1.5 rounded-md bg-white dark:bg-slate-950 hover:border-emerald-500 border border-slate-300 dark:border-slate-700 text-xs text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-all flex items-center gap-2 cursor-pointer shadow-sm"
                       >
-                        <span className="font-mono font-bold text-emerald-700 dark:text-emerald-400">[{i + 1}]</span>
+                        <span className="font-mono font-bold text-emerald-600 dark:text-emerald-400">[{i + 1}]</span>
                         <span className="truncate max-w-[200px]">{r.document_title}</span>
-                        <Badge variant="outline" className="text-[9px] py-0 px-1 border-slate-300 dark:border-zinc-700 text-slate-600 dark:text-zinc-400 rounded-sm">
+                        <Badge variant="outline" className="text-[9px] py-0 px-1 border-slate-300 dark:border-slate-700 text-slate-600 dark:text-slate-400 rounded">
                           p. {r.page_start}
                         </Badge>
                       </button>
@@ -463,28 +462,28 @@ export const LiveQueryPipelineTester: React.FC = () => {
             </div>
 
             {/* Real-Time Query Audit Card */}
-            <div className="p-3.5 rounded-md bg-white dark:bg-zinc-900/60 border border-emerald-500/30 grid grid-cols-2 sm:grid-cols-4 gap-3 text-center text-xs">
+            <div className="p-3.5 rounded-md bg-white dark:bg-slate-900/60 border border-slate-300 dark:border-slate-800 grid grid-cols-2 sm:grid-cols-4 gap-3 text-center text-xs shadow-sm">
               <div>
-                <p className="text-[10px] text-slate-500 dark:text-zinc-400">Query Precision@6</p>
-                <p className="text-base font-black text-emerald-700 dark:text-emerald-400 font-mono mt-0.5">
+                <p className="text-[10px] text-slate-500 dark:text-slate-400">Query Precision@6</p>
+                <p className="text-base font-black text-slate-900 dark:text-emerald-400 font-mono mt-0.5">
                   {isAdversarial ? "1.00 (Refused)" : "0.83 (5/6)"}
                 </p>
               </div>
               <div>
-                <p className="text-[10px] text-slate-500 dark:text-zinc-400">Query Recall@6</p>
-                <p className="text-base font-black text-teal-700 dark:text-teal-400 font-mono mt-0.5">
+                <p className="text-[10px] text-slate-500 dark:text-slate-400">Query Recall@6</p>
+                <p className="text-base font-black text-slate-900 dark:text-teal-400 font-mono mt-0.5">
                   {isAdversarial ? "1.00" : "1.00 (Captured)"}
                 </p>
               </div>
               <div>
-                <p className="text-[10px] text-slate-500 dark:text-zinc-400">NLI Faithfulness</p>
-                <p className="text-base font-black text-emerald-700 dark:text-emerald-400 font-mono mt-0.5">
+                <p className="text-[10px] text-slate-500 dark:text-slate-400">NLI Faithfulness</p>
+                <p className="text-base font-black text-slate-900 dark:text-emerald-400 font-mono mt-0.5">
                   {isAdversarial ? "1.00" : "0.96 (Entailed)"}
                 </p>
               </div>
               <div>
-                <p className="text-[10px] text-slate-500 dark:text-zinc-400">Citation Accuracy</p>
-                <p className="text-base font-black text-amber-700 dark:text-amber-400 font-mono mt-0.5">
+                <p className="text-[10px] text-slate-500 dark:text-slate-400">Citation Accuracy</p>
+                <p className="text-base font-black text-slate-900 dark:text-amber-400 font-mono mt-0.5">
                   {isAdversarial ? "N/A" : "1.00 (Verified)"}
                 </p>
               </div>
@@ -504,55 +503,55 @@ export const LiveQueryPipelineTester: React.FC = () => {
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              className="bg-white dark:bg-zinc-950 border border-emerald-500/50 p-5 rounded-md max-w-lg w-full shadow-2xl space-y-3.5 text-slate-900 dark:text-zinc-100"
+              className="bg-white dark:bg-slate-950 border border-slate-300 dark:border-emerald-500/50 p-5 rounded-lg max-w-lg w-full shadow-2xl space-y-3.5 text-slate-900 dark:text-slate-100"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="flex items-start justify-between border-b border-slate-200 dark:border-zinc-800 pb-3">
+              <div className="flex items-start justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
                 <div>
-                  <Badge className="bg-emerald-500/15 text-emerald-800 dark:text-emerald-300 border-emerald-500/40 text-[10px] font-mono mb-1 rounded-sm">
+                  <Badge className="bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800 text-[10px] font-mono mb-1 rounded">
                     Verifiable Source Attribution
                   </Badge>
                   <h4 className="font-bold text-base text-slate-900 dark:text-white">{activeCitationModal.document_title}</h4>
-                  <p className="text-xs text-slate-500 dark:text-zinc-400">
+                  <p className="text-xs text-slate-500 dark:text-slate-400">
                     {activeCitationModal.document_subject} · Page {activeCitationModal.page_start} to {activeCitationModal.page_end}
                   </p>
                 </div>
                 <button
                   onClick={() => setActiveCitationModal(null)}
-                  className="text-slate-400 hover:text-slate-900 dark:hover:text-white text-base font-bold p-1"
+                  className="text-slate-400 hover:text-slate-900 dark:hover:text-white text-base font-bold p-1 cursor-pointer"
                 >
                   ✕
                 </button>
               </div>
 
               <div className="space-y-1">
-                <p className="text-[10px] text-slate-500 dark:text-zinc-400 uppercase font-bold tracking-wider">Verbatim Chunk Passage:</p>
-                <div className="p-3 rounded-md bg-slate-50 dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 text-xs text-slate-700 dark:text-zinc-200 leading-relaxed font-serif max-h-56 overflow-y-auto">
+                <p className="text-[10px] text-slate-500 uppercase font-bold tracking-wider">Verbatim Chunk Passage:</p>
+                <div className="p-3 rounded-md bg-[#f8fafc] dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs text-slate-800 dark:text-slate-200 leading-relaxed font-serif max-h-56 overflow-y-auto">
                   "{activeCitationModal.content}"
                 </div>
               </div>
 
-              <div className="grid grid-cols-3 gap-2 text-center text-[11px] pt-1 border-t border-slate-200 dark:border-zinc-800">
-                <div className="p-2 rounded-md bg-slate-50 dark:bg-zinc-900/60 border border-slate-200 dark:border-zinc-800">
-                  <p className="text-[10px] text-slate-500 dark:text-zinc-500">RRF Score</p>
-                  <p className="font-mono font-bold text-emerald-700 dark:text-emerald-400">{activeCitationModal.rrf_score.toFixed(5)}</p>
+              <div className="grid grid-cols-3 gap-2 text-center text-[11px] pt-1 border-t border-slate-200 dark:border-slate-800">
+                <div className="p-2 rounded bg-[#f8fafc] dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800">
+                  <p className="text-[10px] text-slate-500">RRF Score</p>
+                  <p className="font-mono font-bold text-slate-900 dark:text-emerald-400">{activeCitationModal.rrf_score.toFixed(5)}</p>
                 </div>
-                <div className="p-2 rounded-md bg-slate-50 dark:bg-zinc-900/60 border border-slate-200 dark:border-zinc-800">
-                  <p className="text-[10px] text-slate-500 dark:text-zinc-500">Cosine Sim</p>
-                  <p className="font-mono font-bold text-teal-700 dark:text-teal-400">{activeCitationModal.vector_score.toFixed(3)}</p>
+                <div className="p-2 rounded bg-[#f8fafc] dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800">
+                  <p className="text-[10px] text-slate-500">Cosine Sim</p>
+                  <p className="font-mono font-bold text-slate-900 dark:text-teal-400">{activeCitationModal.vector_score.toFixed(3)}</p>
                 </div>
-                <div className="p-2 rounded-md bg-slate-50 dark:bg-zinc-900/60 border border-slate-200 dark:border-zinc-800">
-                  <p className="text-[10px] text-slate-500 dark:text-zinc-500">tsvector Rank</p>
-                  <p className="font-mono font-bold text-amber-700 dark:text-amber-400">{activeCitationModal.fts_score.toFixed(3)}</p>
+                <div className="p-2 rounded bg-[#f8fafc] dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800">
+                  <p className="text-[10px] text-slate-500">tsvector Rank</p>
+                  <p className="font-mono font-bold text-slate-900 dark:text-amber-400">{activeCitationModal.fts_score.toFixed(3)}</p>
                 </div>
               </div>
 
-              <Button
+              <button
                 onClick={() => setActiveCitationModal(null)}
-                className="w-full bg-emerald-600 hover:bg-emerald-700 dark:bg-emerald-500 dark:hover:bg-emerald-600 text-white dark:text-zinc-950 font-bold text-xs rounded-md"
+                className="w-full bg-slate-900 hover:bg-black text-white dark:bg-emerald-600 dark:hover:bg-emerald-500 font-bold text-xs py-2.5 rounded-md cursor-pointer transition-all"
               >
                 Close Verification Snippet
-              </Button>
+              </button>
             </motion.div>
           </div>
         )}
