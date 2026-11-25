@@ -446,7 +446,3 @@ EVALUATION SUMMARY:
     </div>
   );
 };
-
-    </div>
-  );
-};
