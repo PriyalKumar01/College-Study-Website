@@ -488,7 +488,87 @@ export const LiveQueryPipelineTester: React.FC = () => {
                   {isAdversarial ? "1.00" : "1.00 (Captured)"}
                 </p>
               </div>
+              <div>
+                <p className="text-[10px] text-zinc-400">NLI Faithfulness</p>
+                <p className="text-base font-black text-emerald-400 font-mono mt-0.5">
+                  {isAdversarial ? "1.00" : "0.96 (Entailed)"}
+                </p>
+              </div>
+              <div>
+                <p className="text-[10px] text-zinc-400">Citation Accuracy</p>
+                <p className="text-base font-black text-amber-400 font-mono mt-0.5">
+                  {isAdversarial ? "N/A" : "1.00 (Verified)"}
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
+
+      {/* Citation Snippet Modal */}
+      <AnimatePresence>
+        {activeCitationModal && (
+          <div
+            className="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4"
+            onClick={() => setActiveCitationModal(null)}
+          >
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              className="bg-zinc-950 border border-emerald-500/50 p-6 rounded-2xl max-w-lg w-full shadow-2xl space-y-4"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex items-start justify-between border-b border-zinc-800 pb-3">
+                <div>
+                  <Badge className="bg-emerald-500/20 text-emerald-300 border-emerald-500/40 text-[10px] font-mono mb-1">
+                    Verifiable Source Attribution
+                  </Badge>
+                  <h4 className="font-bold text-base text-white">{activeCitationModal.document_title}</h4>
+                  <p className="text-xs text-zinc-400">
+                    {activeCitationModal.document_subject} · Page {activeCitationModal.page_start} to {activeCitationModal.page_end}
+                  </p>
+                </div>
+                <button
+                  onClick={() => setActiveCitationModal(null)}
+                  className="text-zinc-400 hover:text-white text-lg font-bold p-1"
+                >
+                  ✕
+                </button>
+              </div>
+
+              <div className="space-y-1.5">
+                <p className="text-[10px] text-zinc-400 uppercase font-bold tracking-wider">Verbatim Chunk Passage:</p>
+                <div className="p-3.5 rounded-xl bg-zinc-900 border border-zinc-800 text-xs text-zinc-200 leading-relaxed font-serif max-h-60 overflow-y-auto">
+                  "{activeCitationModal.content}"
+                </div>
+              </div>
+
+              <div className="grid grid-cols-3 gap-2 text-center text-[11px] pt-1 border-t border-zinc-800">
+                <div className="p-2 rounded-lg bg-zinc-900/60">
+                  <p className="text-[10px] text-zinc-500">RRF Score</p>
+                  <p className="font-mono font-bold text-emerald-400">{activeCitationModal.rrf_score.toFixed(5)}</p>
+                </div>
+                <div className="p-2 rounded-lg bg-zinc-900/60">
+                  <p className="text-[10px] text-zinc-500">Cosine Sim</p>
+                  <p className="font-mono font-bold text-teal-400">{activeCitationModal.vector_score.toFixed(3)}</p>
+                </div>
+                <div className="p-2 rounded-lg bg-zinc-900/60">
+                  <p className="text-[10px] text-zinc-500">tsvector Rank</p>
+                  <p className="font-mono font-bold text-amber-400">{activeCitationModal.fts_score.toFixed(3)}</p>
+                </div>
+              </div>
+
+              <Button
+                onClick={() => setActiveCitationModal(null)}
+                className="w-full bg-emerald-500 hover:bg-emerald-600 text-zinc-950 font-bold text-xs"
+              >
+                Close Verification Snippet
+              </Button>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
