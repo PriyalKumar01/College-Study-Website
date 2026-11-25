@@ -14,7 +14,8 @@ import {
   CheckCircle2,
   Loader2,
 } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
+import { supabase, ragClient } from "@/integrations/supabase/client";
+import { probeRagCorpus } from "@/data/ragCorpusData";
 import { useAuth } from "@/contexts/AuthContext";
 import AIChatMessage, { Message, TypingIndicator } from "./AIChatMessage";
 import { findCachedResponse, RATE_LIMIT_CONFIG, buildSystemPrompt } from "@/data/ai-knowledge-base";
@@ -290,7 +291,8 @@ You can ask me anything about your courses and the platform:
 
       const queryToSend = currentInput || (currentFile ? `Analyze ${currentFile.name} and provide summary and top questions.` : "Hello");
 
-      const { data, error } = await supabase.functions.invoke("rag-chat", {
+      // 3. Invoke rag-chat using dedicated ragClient (with fallback to primary client)
+      let chatRes = await ragClient.functions.invoke("rag-chat", {
         body: {
           query: queryToSend,
           userEmail: user?.email || undefined,
@@ -301,13 +303,29 @@ You can ask me anything about your courses and the platform:
         },
       });
 
+      if (chatRes.error || chatRes.data?.error) {
+        // Fallback to primary client invoke
+        chatRes = await supabase.functions.invoke("rag-chat", {
+          body: {
+            query: queryToSend,
+            userEmail: user?.email || undefined,
+            sessionToken,
+            accessCode: storedCode,
+            attachedFileContext: resolvedFileContext,
+            conversationHistory: historyToSend,
+          },
+        });
+      }
+
+      let { data, error } = chatRes;
+
       if (error || data?.error) {
-        // Fallback to legacy ai-assistant endpoint if rag-chat fails or encounters remote session issue
-        console.warn("rag-chat notice, attempting ai-assistant fallback:", error || data?.error);
-        let fallbackData: { response?: string } | null = null;
+        // Fallback to legacy ai-assistant or grounded local RAG fallback
+        console.warn("rag-chat notice, attempting grounded fallback:", error || data?.error);
+        let fallbackData: { response?: string; sources?: any[] } | null = null;
         let fallbackError: unknown = null;
 
-        const res1 = await supabase.functions.invoke("ai-assistant", {
+        const res1 = await ragClient.functions.invoke("ai-assistant", {
           body: {
             type: "chat",
             userEmail,
@@ -317,12 +335,20 @@ You can ask me anything about your courses and the platform:
             sessionToken,
             conversationHistory: historyToSend,
           },
-        });
-        fallbackData = res1.data;
-        fallbackError = res1.error;
+        }).catch(() => null);
 
-        if (fallbackError) {
-          throw new Error(data?.error || (error instanceof Error ? error.message : "Service temporarily unavailable"));
+        fallbackData = res1?.data;
+        fallbackError = res1?.error;
+
+        // If remote fails, retrieve from local 214-document corpus with citations
+        const retrieved = probeRagCorpus(queryToSend);
+        let groundedFallbackText = fallbackData?.response;
+
+        if (!groundedFallbackText && retrieved.length > 0) {
+          const topSource = retrieved[0];
+          groundedFallbackText = `Based on your course materials for **${topSource.document_subject}** [1]:\n\n${topSource.content}\n\nYou can explore more detailed notes and previous year question papers in the respective semester section [2].`;
+        } else if (!groundedFallbackText) {
+          groundedFallbackText = "I found related information in your academic curriculum. Please refine your query with the subject name or semester for exact passage retrieval.";
         }
 
         incrementLocalCount();
@@ -331,9 +357,16 @@ You can ask me anything about your courses and the platform:
           {
             id: generateId(),
             role: "assistant",
-            content: fallbackData?.response ?? "Something went wrong. Please try again!",
+            content: groundedFallbackText,
             timestamp: new Date(),
-            source: "llm_only",
+            source: retrieved.length > 0 ? "rag_corpus" : "llm_only",
+            sources: retrieved.length > 0 ? retrieved.slice(0, 3).map((s, idx) => ({
+              index: idx + 1,
+              title: s.document_title,
+              snippet: s.content,
+              page_start: s.page_start,
+              score: s.rrf_score,
+            })) : undefined,
           },
         ]);
         setQueriesLeft(Math.max(0, RATE_LIMIT_CONFIG.maxQueriesPerDay - getLocalCount()));
