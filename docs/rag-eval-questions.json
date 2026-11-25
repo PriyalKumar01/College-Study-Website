@@ -583,5 +583,185 @@
     "must_contain_citations": true,
     "forbidden_patterns": [],
     "description": "Major Project"
+  },
+  {
+    "id": "hin-01",
+    "category": "hinglish",
+    "query": "Bhai OS ke deadlock recovery methods batao detail me",
+    "expected_type": "rag",
+    "must_contain_citations": true,
+    "forbidden_patterns": [],
+    "description": "Deadlock Recovery"
+  },
+  {
+    "id": "hin-02",
+    "category": "hinglish",
+    "query": "Compiler design me LL(1) parsing table kaise banate hain?",
+    "expected_type": "rag",
+    "must_contain_citations": true,
+    "forbidden_patterns": [],
+    "description": "LL(1) Parsing"
+  },
+  {
+    "id": "hin-03",
+    "category": "hinglish",
+    "query": "DBMS me ACID properties ka real life example do",
+    "expected_type": "rag",
+    "must_contain_citations": true,
+    "forbidden_patterns": [],
+    "description": "ACID Properties"
+  },
+  {
+    "id": "hin-04",
+    "category": "hinglish",
+    "query": "Computer network me 3-way handshaking process samjhao",
+    "expected_type": "rag",
+    "must_contain_citations": true,
+    "forbidden_patterns": [],
+    "description": "3-Way Handshake"
+  },
+  {
+    "id": "hin-05",
+    "category": "hinglish",
+    "query": "Bhai DSA me quicksort vs mergesort ka difference bata do exam ke liye",
+    "expected_type": "rag",
+    "must_contain_citations": true,
+    "forbidden_patterns": [],
+    "description": "Quicksort vs Mergesort"
+  },
+  {
+    "id": "hin-06",
+    "category": "hinglish",
+    "query": "1st year physics ke important topics batao mid sem ke liye",
+    "expected_type": "rag",
+    "must_contain_citations": true,
+    "forbidden_patterns": [],
+    "description": "1st Year Physics"
+  },
+  {
+    "id": "hin-07",
+    "category": "hinglish",
+    "query": "Important question for mid sem 2 of M2",
+    "expected_type": "rag",
+    "must_contain_citations": true,
+    "forbidden_patterns": [],
+    "description": "M2 Mid Sem 2"
+  },
+  {
+    "id": "hin-08",
+    "category": "hinglish",
+    "query": "TOC me DFA kaise design karte hain even number of zeros ke liye?",
+    "expected_type": "rag",
+    "must_contain_citations": true,
+    "forbidden_patterns": [],
+    "description": "DFA Design"
+  },
+  {
+    "id": "hin-09",
+    "category": "hinglish",
+    "query": "Bhai COA me cache memory mapping ke numericals kaise solve karein?",
+    "expected_type": "rag",
+    "must_contain_citations": true,
+    "forbidden_patterns": [],
+    "description": "Cache Mapping"
+  },
+  {
+    "id": "hin-10",
+    "category": "hinglish",
+    "query": "Software engineering me Agile vs Waterfall model ka comparison bata do",
+    "expected_type": "rag",
+    "must_contain_citations": true,
+    "forbidden_patterns": [],
+    "description": "Agile vs Waterfall"
+  },
+  {
+    "id": "hin-11",
+    "category": "hinglish",
+    "query": "AI me A* algorithm ka heuristic admissible kab hota hai?",
+    "expected_type": "rag",
+    "must_contain_citations": true,
+    "forbidden_patterns": [],
+    "description": "A* Heuristic"
+  },
+  {
+    "id": "hin-12",
+    "category": "hinglish",
+    "query": "Machine learning me overfitting ko reduce karne ke methods kya hain?",
+    "expected_type": "rag",
+    "must_contain_citations": true,
+    "forbidden_patterns": [],
+    "description": "Overfitting Reduction"
+  },
+  {
+    "id": "hin-13",
+    "category": "hinglish",
+    "query": "Cryptography me RSA algorithm ka step by step numerical solve karo",
+    "expected_type": "rag",
+    "must_contain_citations": true,
+    "forbidden_patterns": [],
+    "description": "RSA Numerical"
+  },
+  {
+    "id": "hin-14",
+    "category": "hinglish",
+    "query": "Distributed systems me Lamport clock kaise kaam karta hai?",
+    "expected_type": "rag",
+    "must_contain_citations": true,
+    "forbidden_patterns": [],
+    "description": "Lamport Clock"
+  },
+  {
+    "id": "hin-15",
+    "category": "hinglish",
+    "query": "Deep learning me backpropagation ka chain rule hindi me samjhao",
+    "expected_type": "rag",
+    "must_contain_citations": true,
+    "forbidden_patterns": [],
+    "description": "Backpropagation"
+  },
+  {
+    "id": "hin-16",
+    "category": "hinglish",
+    "query": "CN me subnet mask aur CIDR notation kaise nikalte hain?",
+    "expected_type": "rag",
+    "must_contain_citations": true,
+    "forbidden_patterns": [],
+    "description": "Subnetting"
+  },
+  {
+    "id": "hin-17",
+    "category": "hinglish",
+    "query": "Operating system me paging vs segmentation ka difference kya hai?",
+    "expected_type": "rag",
+    "must_contain_citations": true,
+    "forbidden_patterns": [],
+    "description": "Paging vs Segmentation"
+  },
+  {
+    "id": "hin-18",
+    "category": "hinglish",
+    "query": "Java me interface aur abstract class me kya farak hota hai?",
+    "expected_type": "rag",
+    "must_contain_citations": true,
+    "forbidden_patterns": [],
+    "description": "Java Interfaces"
+  },
+  {
+    "id": "hin-19",
+    "category": "hinglish",
+    "query": "BEE me Thevenin theorem se current kaise nikalte hain?",
+    "expected_type": "rag",
+    "must_contain_citations": true,
+    "forbidden_patterns": [],
+    "description": "Thevenin Theorem"
+  },
+  {
+    "id": "hin-20",
+    "category": "hinglish",
+    "query": "Bhai college portal pe attendance dekhne ka direct link kya hai?",
+    "expected_type": "rag",
+    "must_contain_citations": true,
+    "forbidden_patterns": [],
+    "description": "Attendance Link"
   }
 ]
