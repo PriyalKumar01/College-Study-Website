@@ -662,5 +662,102 @@ export const RAG_METRICS = {
 
 // ── Search & Probe Simulation Helper ─────────────────────────────────────────
 // Calculates realistic vector cosine similarity, BM25 keyword rank, and RRF score (k=60)
+export function probeRagCorpus(
+  query: string,
+  filterBranch?: string,
+  filterSemester?: string
+): RagProbeResult[] {
+  const cleanQ = query.trim().toLowerCase();
+  const queryTokens = cleanQ.split(/\s+/).filter((t) => t.length > 2);
 
-export function probeRagCorpus() { return []; }
+  if (queryTokens.length === 0) return [];
+
+  // Scored candidates
+  interface ScoredCandidate {
+    doc: RagCorpusItem;
+    snippet: string;
+    vectorSim: number;
+    textRank: number;
+  }
+
+  const candidates: ScoredCandidate[] = [];
+
+  for (const doc of CANONICAL_RAG_CORPUS) {
+    if (filterBranch && filterBranch !== "all" && doc.branch !== "All" && doc.branch !== filterBranch) {
+      continue;
+    }
+    if (filterSemester && filterSemester !== "all" && doc.semester !== "All Semesters" && doc.semester !== filterSemester) {
+      continue;
+    }
+
+    const titleLower = doc.title.toLowerCase();
+    const subjectLower = doc.subject.toLowerCase();
+
+    // Match relevant key snippets from templates
+    let bestSnippet = `Passage from ${doc.title} covering fundamental principles, problem sets, and syllabus concepts.`;
+    let snippetScore = 0;
+
+    const matchingTemplate = CSE_SUBJECTS_TEMPLATES.find((t) =>
+      doc.subject.toLowerCase().includes(t.name.toLowerCase())
+    );
+
+    if (matchingTemplate) {
+      for (const snip of matchingTemplate.keySnippets) {
+        const snipLower = snip.toLowerCase();
+        let snipHits = 0;
+        for (const tok of queryTokens) {
+          if (snipLower.includes(tok)) snipHits++;
+        }
+        if (snipHits > snippetScore) {
+          snippetScore = snipHits;
+          bestSnippet = snip;
+        }
+      }
+    }
+
+    // Keyword match score (BM25 proxy)
+    let keywordHits = 0;
+    for (const tok of queryTokens) {
+      if (titleLower.includes(tok)) keywordHits += 3;
+      if (subjectLower.includes(tok)) keywordHits += 4;
+      if (bestSnippet.toLowerCase().includes(tok)) keywordHits += 2;
+    }
+
+    if (keywordHits > 0 || snippetScore > 0) {
+      // Simulate dense embedding vector cosine similarity
+      // Strong semantic overlap ranges between 0.76 and 0.93
+      const baseCosine = Math.min(0.93, 0.68 + (keywordHits * 0.05) + (snippetScore * 0.08));
+      candidates.push({
+        doc,
+        snippet: bestSnippet,
+        vectorSim: Number(baseCosine.toFixed(3)),
+        textRank: keywordHits,
+      });
+    }
+  }
+
+  // Sort by vector similarity descending
+  candidates.sort((a, b) => b.vectorSim - a.vectorSim);
+
+  // Take top 6 and calculate RRF score with k = 60
+  const k = 60.0;
+  return candidates.slice(0, 6).map((c, idx) => {
+    const vectorRank = idx + 1;
+    const textRank = Math.max(1, idx + (idx % 2 === 0 ? 0 : 1));
+    const rrf = 1.0 / (k + vectorRank) + 1.0 / (k + textRank);
+
+    return {
+      id: c.doc.id,
+      document_title: c.doc.title,
+      document_subject: c.doc.subject,
+      document_branch: c.doc.branch,
+      document_semester: c.doc.semester,
+      content: c.snippet,
+      rrf_score: Number(rrf.toFixed(4)),
+      vector_score: c.vectorSim,
+      fts_score: Number((c.textRank / 10).toFixed(2)),
+      page_start: Math.max(1, Math.round(c.doc.page_count * 0.2)),
+      page_end: Math.max(2, Math.round(c.doc.page_count * 0.2) + 4),
+    };
+  });
+}
