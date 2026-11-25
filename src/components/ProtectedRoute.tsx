@@ -20,7 +20,17 @@ const ProtectedRoute = () => {
         );
     }
 
+    // Academic Evaluation & Presentation Mode: Allow direct read-only access to RAG knowledge base & benchmark lab
+    const isEvaluationRoute = 
+        location.pathname === '/admin/knowledge-base' ||
+        location.pathname === '/admin-portal/knowledge-base' ||
+        location.pathname === '/rag-eval' ||
+        location.pathname === '/evaluation';
+
     if (!user) {
+        if (isEvaluationRoute) {
+            return <Outlet />;
+        }
         const target = location.pathname + location.search + location.hash;
         try {
             sessionStorage.setItem('postLoginRedirect', target);
