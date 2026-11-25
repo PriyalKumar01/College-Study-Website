@@ -178,6 +178,77 @@ export const LiveQueryPipelineTester: React.FC = () => {
                 <Zap className="w-4 h-4 animate-spin" />
                 Executing Pipeline...
               </>
+            ) : (
+              <>
+                <Sparkles className="w-4 h-4 fill-current" />
+                Evaluate Query Live
+              </>
+            )}
+          </Button>
+        </div>
+      </div>
+
+      {/* 5-Step Pipeline Navigation Header */}
+      <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 text-xs font-medium">
+        {[
+          { step: 1, label: "1. 768-D Vector", desc: "gemini-embedding-001" },
+          { step: 2, label: "2. Dense Search", desc: "pgvector HNSW" },
+          { step: 3, label: "3. Sparse Lexical", desc: "PostgreSQL tsvector" },
+          { step: 4, label: "4. RRF (k=60) Table", desc: "Reciprocal Rank Fusion" },
+          { step: 5, label: "5. Grounded Answer", desc: "Inline Citations [1][2]" },
+        ].map((s) => (
+          <button
+            key={s.step}
+            onClick={() => setActiveStep(s.step)}
+            className={`p-3 rounded-xl border text-left transition-all ${
+              activeStep === s.step
+                ? "bg-emerald-950/40 border-emerald-500 text-emerald-300 shadow-md shadow-emerald-500/10"
+                : "bg-zinc-950/60 border-zinc-800 text-zinc-400 hover:bg-zinc-900 hover:text-zinc-200"
+            }`}
+          >
+            <p className="font-bold text-xs">{s.label}</p>
+            <p className="text-[10px] text-zinc-500 font-mono mt-0.5 truncate">{s.desc}</p>
+          </button>
+        ))}
+      </div>
+
+      {/* Step Details Panels */}
+      <div className="bg-zinc-950/90 rounded-2xl p-5 sm:p-6 border border-emerald-500/20 shadow-xl space-y-4">
+        {/* Step 1: Query Preprocessing & Asymmetric Vector */}
+        {activeStep === 1 && (
+          <div className="space-y-4">
+            <div className="flex items-center justify-between border-b border-zinc-800 pb-3">
+              <div>
+                <h4 className="font-bold text-base text-zinc-100 flex items-center gap-2">
+                  <span className="p-1.5 rounded-lg bg-emerald-500/20 text-emerald-400 font-mono text-xs">Step 1</span>
+                  Asymmetric Query Encoding (RETRIEVAL_QUERY)
+                </h4>
+                <p className="text-xs text-zinc-400 mt-0.5">
+                  Distinguishing student query vectors from document passages using task-specific prefixing.
+                </p>
+              </div>
+              <Badge variant="outline" className="border-emerald-500/40 text-emerald-300 font-mono text-xs">
+                768 Float32 Dimensions
+              </Badge>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="p-3.5 rounded-xl bg-zinc-900 border border-zinc-800 space-y-2">
+                <p className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider">Sanitized Query Input</p>
+                <p className="text-xs text-zinc-200 font-mono bg-zinc-950 p-2.5 rounded-lg border border-zinc-800">
+                  {query}
+                </p>
+                <div className="text-[11px] text-zinc-400 space-y-1 pt-1">
+                  <p>• Model: <span className="font-mono text-emerald-400">Google gemini-embedding-001</span></p>
+                  <p>• Task Mode: <span className="font-mono text-teal-400">taskType: RETRIEVAL_QUERY</span></p>
+                  <p>• L2 Normalization: <span className="font-mono text-zinc-300">||v|| = 1.0 (Unit Sphere)</span></p>
+                </div>
+              </div>
+
+              <div className="p-3.5 rounded-xl bg-zinc-900 border border-zinc-800 space-y-2">
+                <p className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider">Vector Embedding Preview (First 8 Dimensions)</p>
+                <div className="p-2.5 rounded-lg bg-zinc-950 border border-zinc-800 font-mono text-xs text-emerald-400 space-y-0.5 overflow-x-auto">
+      </div>
     </div>
   );
 };
