@@ -31,10 +31,10 @@
 > **Institution**: Department of Computer Science & Engineering, Harcourt Butler Technical University (HBTU Kanpur)  
 > **Supervisor**: **Dr. Bharat Bhusan Sagar** (Professor & Head / Project Supervisor)  
 > **Project Team**:  
-> • **Priyal Kumar** (Roll No. `220104085`) — Full-Stack Lead & RAG Pipeline Architecture  
-> • **Kush Kumar** (Roll No. `220104068`) — Evaluation Framework & Benchmark Curation  
-> • **Ramesh Yadav** (Roll No. `220104090`) — Vector Database & Chunk Ingestion Pipeline  
-> • **Sudhir Kumar Gupta** (Roll No. `220104118`) — UI/UX & Responsive Client Engineering  
+> • **Priyal Kumar** (Roll No. `230104043`) — Full-Stack Lead & RAG Pipeline Architecture  
+> • **Sudhir Kumar Gupta** (Roll No. `230104062`) — UI/UX & Responsive Client Engineering  
+> • **Kush Kumar** (Roll No. `230104027`) — Evaluation Framework & Benchmark Curation  
+> • **Ramesh Yadav** (Roll No. `230104074`) — Vector Database & Chunk Ingestion Pipeline  
 > **Final Evaluation**: November 2026 | **Live Deployment**: [college-study.netlify.app](https://college-study.netlify.app/)
 
 **College Study Hub** is a production-grade, full-stack academic ecosystem engineered specifically for students of **Harcourt Butler Technical University (HBTU Kanpur)**. Serving over 2,500 active students, the platform acts as a unified digital hub for engineering lecture notes, past-year question papers (PYQs), career roadmaps, real-time scholarship listings, campus placement prep, GATE preparation, and verified HR contacts.
