@@ -358,6 +358,66 @@ EVALUATION SUMMARY:
 
                         {/* Why is this Target chosen & Is it Best Possible? */}
                         <div className="p-2.5 rounded-lg bg-emerald-950/30 border border-emerald-500/30 space-y-1">
+                          <p className="text-[10px] uppercase font-bold text-emerald-400 flex items-center gap-1">
+                            <ShieldCheck className="w-3 h-3" />
+                            Research Baseline Justification (Why is this optimal?)
+                          </p>
+                          <p className="text-[11px] text-emerald-200/90 leading-relaxed">
+                            {m.whyTargetValue}
+                          </p>
+                        </div>
+
+                        {/* Literature Citation */}
+                        <div>
+                          <p className="text-[10px] uppercase font-bold text-zinc-400 mb-0.5">Peer-Reviewed Paper Citation</p>
+                          <p className="text-teal-300 font-serif italic text-[11px]">{m.paperCitation}</p>
+                        </div>
+
+                        {/* Optimization Roadmap */}
+                        <div className="text-[11px] text-zinc-400 pt-1 border-t border-zinc-800/60">
+                          <span className="text-zinc-300 font-semibold">Continuous Optimization:</span>{" "}
+                          {m.optimizationRoadmap}
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </CardContent>
+              </Card>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* 6-Category Performance Breakdown Table */}
+      <div className="bg-zinc-950/80 rounded-2xl p-5 sm:p-6 border border-emerald-500/20 shadow-xl space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-3 border-b border-zinc-800">
+          <div>
+            <h4 className="text-base sm:text-lg font-bold text-zinc-100 flex items-center gap-2">
+              <CheckCircle2 className="w-5 h-5 text-emerald-400" />
+              Category-Wise 120-Query Benchmark Results (Table 6.2)
+            </h4>
+            <p className="text-xs text-zinc-400 mt-0.5">
+              Breakdown across all 6 query distributions tested during the final minor project evaluation.
+            </p>
+          </div>
+          <div className="flex items-center gap-2 text-xs">
+            <span className="text-zinc-400">Total Queries:</span>
+            <span className="font-mono font-bold text-emerald-400 text-sm">120 Labelled Probes</span>
+          </div>
+        </div>
+
+        <div className="overflow-x-auto">
+          <table className="w-full text-left text-xs">
+            <thead>
+              <tr className="border-b border-zinc-800 text-zinc-400 uppercase text-[10px] tracking-wider">
+                <th className="py-2.5 px-3">Query Category</th>
+                <th className="py-2.5 px-3 text-center">Query Count</th>
+                <th className="py-2.5 px-3 text-center">Pass Rate</th>
+                <th className="py-2.5 px-3 text-center">Mean Latency</th>
+                <th className="py-2.5 px-3">Representative Scope & Topics</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-zinc-850">
         </div>
       </div>
     </div>
