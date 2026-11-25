@@ -219,4 +219,72 @@ export const BENCHMARK_METRICS: BenchmarkMetric[] = [
 export interface AblationConfig {
   name: string;
   shortName: string;
+  precision: number;
+  recall: number;
+  mrr: number;
+  latencySec: number;
+  isFinal: boolean;
+  color: string;
+  empiricalFinding: string;
+}
+
+export const ABLATION_STUDY_CONFIGS: AblationConfig[] = [
+  {
+    name: "Sparse Keyword Only (PostgreSQL FTS)",
+    shortName: "Sparse FTS",
+    precision: 0.64,
+    recall: 0.69,
+    mrr: 0.68,
+    latencySec: 0.22,
+    isFinal: false,
+    color: "#64748b",
+    empiricalFinding: "High accuracy on exact course codes (e.g., BCS-401, OHS-403), but severely fails on paraphrased conceptual questions, synonyms, and Hinglish queries.",
+  },
+  {
+    name: "Dense Vector Only (gemini-embedding-001)",
+    shortName: "Dense Only",
+    precision: 0.72,
+    recall: 0.77,
+    mrr: 0.76,
+    latencySec: 0.74,
+    isFinal: false,
+    color: "#0284c7",
+    empiricalFinding: "Captures conceptual intent and synonyms well, but occasionally misses exact equations, specific theorem names, and course codes.",
+  },
+  {
+    name: "Hybrid RRF (Chunk = 500 chars, 100 overlap)",
+    shortName: "RRF 500ch",
+    precision: 0.78,
+    recall: 0.82,
+    mrr: 0.83,
+    latencySec: 1.48,
+    isFinal: false,
+    color: "#8b5cf6",
+    empiricalFinding: "Fine granularity yields clean passage snippets, but frequently severs multi-step mathematical derivations and proofs across chunk boundaries.",
+  },
+  {
+    name: "Hybrid RRF (Chunk = 1,500 chars, 200 overlap)",
+    shortName: "RRF 1500ch",
+    precision: 0.75,
+    recall: 0.85,
+    mrr: 0.81,
+    latencySec: 1.94,
+    isFinal: false,
+    color: "#f59e0b",
+    empiricalFinding: "Broad context captures full derivations, but dilutes dense vector specificity with extraneous topics, adding noise into top-6 prompt context.",
+  },
+  {
+    name: "Hybrid RRF (Chunk = 900 chars, 150 overlap) [Final Production]",
+    shortName: "Hybrid Final",
+    precision: 0.81,
+    recall: 0.88,
+    mrr: 0.86,
+    latencySec: 1.62,
+    isFinal: true,
+    color: "#10b981",
+    empiricalFinding: "Achieves optimal balance across Precision@6, Recall@6, and MRR. Guided by Dense X Retrieval (Chen et al., EMNLP 2024), 900 chars preserves semantic continuity without context dilution.",
+  },
 ];
+
+export interface CategoryBenchmark {
+  id: string;
