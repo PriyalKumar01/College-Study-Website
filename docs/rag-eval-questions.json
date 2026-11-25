@@ -1024,5 +1024,77 @@
     "must_contain_citations": false,
     "forbidden_patterns": [],
     "description": "Cryptocurrency Out of Scope"
+  },
+  {
+    "id": "edge-01",
+    "category": "edge_cases",
+    "query": "hi",
+    "expected_type": "cache",
+    "must_contain_citations": false,
+    "forbidden_patterns": [],
+    "description": "Single greeting word"
+  },
+  {
+    "id": "edge-02",
+    "category": "edge_cases",
+    "query": "notes",
+    "expected_type": "rag",
+    "must_contain_citations": false,
+    "forbidden_patterns": [],
+    "description": "Single keyword notes"
+  },
+  {
+    "id": "edge-03",
+    "category": "edge_cases",
+    "query": "hbtu exam shedule and syllbus for cse branch",
+    "expected_type": "rag",
+    "must_contain_citations": true,
+    "forbidden_patterns": [],
+    "description": "Typo schedule and syllabus"
+  },
+  {
+    "id": "edge-04",
+    "category": "edge_cases",
+    "query": "Namaste! Main HBTU 1st year student hoon aur mujhe Engineering Chemistry ke complete notes chahiye aur previous year questions papers bhi dekhne hain.",
+    "expected_type": "rag",
+    "must_contain_citations": true,
+    "forbidden_patterns": [],
+    "description": "Long conversational query"
+  },
+  {
+    "id": "edge-05",
+    "category": "edge_cases",
+    "query": "CN",
+    "expected_type": "rag",
+    "must_contain_citations": true,
+    "forbidden_patterns": [],
+    "description": "Short acronym Computer Networks"
+  },
+  {
+    "id": "edge-06",
+    "category": "edge_cases",
+    "query": "OS",
+    "expected_type": "rag",
+    "must_contain_citations": true,
+    "forbidden_patterns": [],
+    "description": "Short acronym Operating Systems"
+  },
+  {
+    "id": "edge-07",
+    "category": "edge_cases",
+    "query": "M-II",
+    "expected_type": "rag",
+    "must_contain_citations": true,
+    "forbidden_patterns": [],
+    "description": "Short subject acronym Math 2"
+  },
+  {
+    "id": "edge-08",
+    "category": "edge_cases",
+    "query": "quicksort",
+    "expected_type": "rag",
+    "must_contain_citations": true,
+    "forbidden_patterns": [],
+    "description": "Single algorithm keyword"
   }
 ]
