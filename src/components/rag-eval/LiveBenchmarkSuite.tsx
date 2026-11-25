@@ -238,7 +238,46 @@ EVALUATION SUMMARY:
                 {liveFaithfulness.toFixed(2)} <span className="text-xs text-zinc-400 font-normal">/ 0.95</span>
               </p>
             </div>
+            <div className="p-2.5 rounded-xl bg-zinc-900/80 border border-zinc-800 text-center col-span-2 sm:col-span-1">
+              <p className="text-[10px] text-zinc-400 uppercase tracking-wider font-semibold">Avg Latency</p>
+              <p className="text-lg font-black text-amber-400 font-mono mt-0.5">
+                {liveAvgLatency.toFixed(2)} s <span className="text-xs text-zinc-400 font-normal">(e2e)</span>
+              </p>
+            </div>
+          </div>
         </div>
+      </div>
+
+      {/* Main Charts Row: Figure 6.1 & Figure 6.2 side-by-side or stacked */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <MetricsComparisonChart />
+        <AblationStudyChart />
+      </div>
+
+      {/* Comprehensive Metric Cards with Deep-Dive Justification & Literature Citations */}
+      <div className="space-y-3">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+          <div>
+            <h3 className="text-lg sm:text-xl font-bold text-white flex items-center gap-2">
+              <BookOpen className="w-5 h-5 text-emerald-400" />
+              Metric Deep Dive & Google Scholar Literature Justifications
+            </h3>
+            <p className="text-xs text-zinc-400 mt-0.5">
+              Click any metric card below to expand mathematical formulas, target justifications, and empirical research citations.
+            </p>
+          </div>
+          <Badge variant="outline" className="border-emerald-500/40 text-emerald-400 text-xs self-start sm:self-auto font-mono">
+            Verified Academic Standards
+          </Badge>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5">
+          {BENCHMARK_METRICS.map((m) => {
+            const isExpanded = expandedMetricId === m.id;
+            return (
+              <Card
+                key={m.id}
+                onClick={() => setExpandedMetricId(isExpanded ? null : m.id)}
       </div>
     </div>
   );
