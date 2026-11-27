@@ -1,3 +1,4 @@
+// Navigation: global top navbar with student dashboard and study shortcuts
 // Main navigation bar component
 import { useState, useRef, useEffect } from 'react';
 import { 
