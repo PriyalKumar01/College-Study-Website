@@ -1,3 +1,4 @@
+// Pending: user approval queue holding screen with signout action
 // Pending approval notice screen
 import React, { useState } from 'react';
 import { Clock, CheckCircle2, LogOut, RefreshCw, ShieldAlert, Home, Info, Lock, BookOpen, GraduationCap, ArrowRight } from 'lucide-react';
