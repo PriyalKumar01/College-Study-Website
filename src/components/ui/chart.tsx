@@ -1,3 +1,4 @@
+// UI Primitive: charting utility wrappers for Recharts with dark palette
 import * as React from "react"
 import * as RechartsPrimitive from "recharts"
 
