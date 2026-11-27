@@ -1,3 +1,4 @@
+// Legal: fair-use academic note sharing notice and copyright statement
 /** Educational disclaimer modal triggered once after user authentication */
 // Legal: academic syllabus disclaimer dialog with acknowledgement persistence
 // Study disclaimer modal component - only shows once for authenticated users after profile completion
