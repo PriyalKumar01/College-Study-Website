@@ -1,3 +1,4 @@
+// Showcase: verified student reviews and alumni placement highlights
 // SocialProof: placement success stories ticker with animated counter
 // Student testimonials and placement success stories
 
