@@ -1,3 +1,4 @@
+// UI Primitive: button component styled with class-variance-authority
 // Button component with variance authority
 import * as React from "react"
 import { Slot } from "@radix-ui/react-slot"
