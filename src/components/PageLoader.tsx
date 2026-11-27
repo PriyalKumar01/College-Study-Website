@@ -1,3 +1,4 @@
+// Transition: full-page loader displayed during lazy route resolution
 // Full page suspense loading skeleton
 export const PageLoader = () => {
   return (
