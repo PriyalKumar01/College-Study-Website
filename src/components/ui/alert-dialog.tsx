@@ -1,3 +1,4 @@
+// UI Primitive: Radix UI alert dialog for destructive action verification
 // Alert dialog component for critical confirmations
 import * as React from "react"
 import * as AlertDialogPrimitive from "@radix-ui/react-alert-dialog"
