@@ -1,3 +1,4 @@
+// Assistant: floating trigger icon button with glow animation
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Bot } from "lucide-react";
