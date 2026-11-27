@@ -1,3 +1,4 @@
+// Profile: post-authentication academic profile completion wizard
 // Onboarding: mandatory academic branch and year verification dialog
 import { useState, useEffect, useRef } from "react";
 import { useAuth } from "@/contexts/AuthContext";
