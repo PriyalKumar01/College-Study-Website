@@ -1,3 +1,4 @@
+// UI Badge: visual badge indicating PDF file page count and verification
 /** Professional compact badge component for recommended study materials */
 import React from 'react';
 import { FileText } from 'lucide-react';
