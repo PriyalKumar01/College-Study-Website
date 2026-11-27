@@ -1,3 +1,4 @@
+// UI Primitive: Radix UI aspect ratio wrapper for responsive media
 // Fixed aspect ratio container component
 import * as AspectRatioPrimitive from "@radix-ui/react-aspect-ratio"
 
