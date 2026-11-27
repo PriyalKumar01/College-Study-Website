@@ -20,9 +20,9 @@ export interface UsefulPortal {
 
 export const USEFUL_PORTALS_DATA: UsefulPortal[] = [
   {
-    id: 'ai-chat-to-pdf',
-    name: 'AI Chat to PDF',
-    url: 'https://www.ai-chat2pdf.live/',
+    id: 'qwiksave',
+    name: 'QwikSave',
+    url: 'https://qwiksave.vercel.app/',
     category: 'AI & Student Tools',
     description: 'Convert shared ChatGPT, Claude, DeepSeek & Gemini conversations into clean, private PDF documents in one click without watermarks.',
     badge: 'Student AI Tool',
