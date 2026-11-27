@@ -1,3 +1,4 @@
+// Coding: SVG logos for LeetCode, Codeforces, CodeChef, and HackerRank
 import React from 'react';
 import leetcodeOfficialLogo from '@/assets/leetcode-official-avatar.png';
 import githubOfficialLogo from '@/assets/github-official-logo.png';
