@@ -1,3 +1,4 @@
+// Evaluation: end-to-end benchmark execution console for QA accuracy
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
