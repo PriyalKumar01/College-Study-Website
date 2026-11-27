@@ -1,3 +1,4 @@
+// UI Primitive: Radix UI accordion component with smooth collapse animation
 // Accordion collapsible list component
 import * as React from "react"
 import * as AccordionPrimitive from "@radix-ui/react-accordion"
