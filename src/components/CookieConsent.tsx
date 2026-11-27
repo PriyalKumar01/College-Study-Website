@@ -1,3 +1,4 @@
+// Compliance: privacy cookie consent banner with local preference storage
 // Cookie consent banner component
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
