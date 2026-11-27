@@ -1,3 +1,4 @@
+// Admin: scholarship details modification dialog and deadline updater
 // Admin: scholarship catalog editing dialog with form state sync
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
