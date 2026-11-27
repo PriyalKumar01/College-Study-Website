@@ -1,3 +1,4 @@
+// UI Primitive: status alert box with title and description layout
 import * as React from "react"
 import { cva, type VariantProps } from "class-variance-authority"
 
