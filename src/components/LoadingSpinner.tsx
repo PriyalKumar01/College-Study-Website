@@ -1,3 +1,4 @@
+// Visual: centered rotating spinner indicator for pending operations
 import { motion } from 'framer-motion';
 
 const LoadingSpinner = () => {
