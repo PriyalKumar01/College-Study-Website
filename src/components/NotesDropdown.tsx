@@ -1,3 +1,4 @@
+// Dropdown: subject selector popover menu with syllabus mapping
 // Notes navigation dropdown menu
 import React, { useState } from 'react';
 import { ChevronDown, ArrowRight } from 'lucide-react';
