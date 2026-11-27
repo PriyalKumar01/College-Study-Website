@@ -1,3 +1,4 @@
+// Onboarding: developer profile questionnaire for personalized coding tracks
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
