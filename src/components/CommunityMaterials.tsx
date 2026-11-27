@@ -1,3 +1,4 @@
+// Community: crowdsourced semester study notes feed with peer upvoting
 /** Community contributed study notes and peer uploads gallery */
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
