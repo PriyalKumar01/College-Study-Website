@@ -1,3 +1,4 @@
+// Navigation: study hub explore mega menu with shortcut links
 import React, { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
