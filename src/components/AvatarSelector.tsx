@@ -1,3 +1,4 @@
+// Profile: user avatar picker grid with academic illustration icons
 import { useState } from 'react';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
