@@ -1,3 +1,4 @@
+// Contests: competitive programming contest schedule with reminder buttons
 import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Badge } from '@/components/ui/badge';
