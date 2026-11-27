@@ -1,3 +1,4 @@
+// Visual: ambient background graphics and decorative study illustrations
 // Visuals: subtle blueprint grid with radial glow lighting effect
 import { motion } from 'framer-motion';
 import { BookOpen, Code, Atom, Calculator, Lightbulb, PenTool } from 'lucide-react';
