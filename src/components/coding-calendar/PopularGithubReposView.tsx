@@ -1,3 +1,4 @@
+// OpenSource: curated repository recommendations for student portfolios
 import React, { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { Badge } from '@/components/ui/badge';
