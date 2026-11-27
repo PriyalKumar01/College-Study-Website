@@ -1,3 +1,4 @@
+// Security: study note access verification gate checking download balance
 // Access: membership gate overlay with inline authentication trigger
 import { useAuth } from '@/contexts/AuthContext';
 import { ReactNode } from 'react';
