@@ -1,3 +1,4 @@
+// UI Primitive: responsive carousel slider powered by Embla Carousel
 import * as React from "react"
 import useEmblaCarousel, {
   type UseEmblaCarouselType,
