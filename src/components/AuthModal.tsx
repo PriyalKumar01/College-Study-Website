@@ -201,9 +201,23 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'signin' }: AuthModalProps) 
   }, [password, newPassword, mode]);
 
   const getEmailError = (emailValue: string, isTouched: boolean): string | null => {
-    if (!isTouched) return null;
-    if (!emailValue.trim()) return 'Email address is required';
-    if (!isValidEmail(emailValue)) return 'Please enter a valid email address';
+    const trimmed = emailValue.trim().toLowerCase();
+    if (!trimmed) {
+      return isTouched ? 'Email address is required' : null;
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(trimmed)) {
+      return isTouched ? 'Please enter a valid email address' : null;
+    }
+
+    const domain = trimmed.split('@')[1]?.toLowerCase();
+    if (domain && (BLOCKED_DOMAINS.some(d => domain.includes(d)) || isDisposableDomain(domain))) {
+      return 'Temporary or disposable email addresses are strictly prohibited. Please use Gmail, Outlook, or your college email.';
+    }
+
+    if (!isValidEmail(trimmed)) {
+      return isTouched ? 'Please enter a valid email address' : null;
+    }
     return null;
   };
 
@@ -267,6 +281,29 @@ Simply click one of the buttons below to log in or sign up immediately.`,
       // Block temporary emails for both sign-up and sign-in to prevent exploit where
       // signing in with a new/non-existent email auto-registers the account.
       if (mode === 'signup' || mode === 'signin') {
+        const domain = email.split('@')[1]?.toLowerCase();
+        if (domain && (BLOCKED_DOMAINS.some(d => domain.includes(d)) || isDisposableDomain(domain))) {
+          try {
+            await supabase.from('signup_attempts').insert({
+              email: email.trim().toLowerCase(),
+              full_name: firstName || lastName ? `${firstName} ${lastName}`.trim() : null,
+              status: 'failed',
+              error_reason: 'Disposable email blocked'
+            });
+          } catch (logErr) {
+            console.warn('Could not log failed signup attempt:', logErr);
+          }
+
+          setEmailAlert({
+            title: "Temporary Email Prohibited",
+            message: "Accounts using temporary or disposable email addresses are strictly prohibited on College Study Hub. Please log in or sign up with a valid permanent personal or college email address.",
+            type: 'disposable'
+          });
+          setIsSendingOtp(false);
+          setIsLoading(false);
+          return;
+        }
+
         const validationResult = await validateEmail(email);
         if (!validationResult.isValid) {
           // Log failed attempt to database (non-blocking)
@@ -703,6 +740,16 @@ Simply click one of the buttons below to log in or sign up immediately.`,
       return;
     }
 
+    const domain = email.split('@')[1]?.toLowerCase();
+    if (domain && (BLOCKED_DOMAINS.some(d => domain.includes(d)) || isDisposableDomain(domain))) {
+      setEmailAlert({
+        title: "Temporary Email Prohibited",
+        message: "Accounts using temporary or disposable email addresses are strictly prohibited on College Study Hub. Please log in with a valid permanent personal or college email address.",
+        type: 'disposable'
+      });
+      return;
+    }
+
     if (resendTimer > 0) {
       toast({ title: "Please Wait", description: `You can request another code in ${resendTimer} seconds.`, variant: "destructive" });
       return;
@@ -1008,12 +1055,19 @@ Simply click one of the buttons below to log in or sign up immediately.`,
           <Label className="dark:text-gray-300">Email Address<RequiredIndicator /></Label>
           <Input
             value={email}
-            onChange={e => setEmail(e.target.value.toLowerCase())}
+            onChange={e => {
+              const val = e.target.value.toLowerCase();
+              setEmail(val);
+              if (val.includes('@')) {
+                setTouched(prev => ({ ...prev, email: true }));
+              }
+            }}
+            onBlur={() => setTouched(prev => ({ ...prev, email: true }))}
             disabled={isSendingOtp}
             placeholder="e.g. name@gmail.com or name@hbtu.ac.in"
             className="mt-1 dark:bg-slate-950 dark:border-slate-800 dark:text-white"
           />
-          {getEmailError(email, touched.email || false) && (
+          {getEmailError(email, true) && (
             <InlineError message={getEmailError(email, true) || ''} />
           )}
         </div>
@@ -1022,7 +1076,7 @@ Simply click one of the buttons below to log in or sign up immediately.`,
 
         <Button
           onClick={() => handleVerifyEmailStart(false)}
-          disabled={isSendingOtp || !email}
+          disabled={isSendingOtp || !email || !isEmailValid || isDisposableDomain(email.split('@')[1] || '')}
           className="w-full bg-gray-900 dark:bg-slate-50 dark:text-slate-900 dark:hover:bg-slate-200 text-white"
         >
           {isSendingOtp ? <Loader2 className="animate-spin mr-2 h-4 w-4" /> : 'Verify & Create Account'}
@@ -1305,6 +1359,9 @@ Simply click one of the buttons below to log in or sign up immediately.`,
                         placeholder="e.g. student@college.edu"
                         className="h-10 border-slate-200 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:bg-slate-950 dark:border-slate-800 dark:text-white"
                       />
+                      {isDisposableDomain(email.split('@')[1] || '') && (
+                        <InlineError message="Temporary or disposable email addresses are not permitted." />
+                      )}
                     </div>
                     <div>
                       <Label className="dark:text-gray-300">Password</Label>
