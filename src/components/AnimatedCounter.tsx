@@ -1,3 +1,4 @@
+// Animation: smooth numerical counter component for engagement metrics
 // Animation: RAF-driven numeric counter with cubic bezier ease-out curve
 // Smooth animated counter component
 import { useEffect, useState } from 'react';
