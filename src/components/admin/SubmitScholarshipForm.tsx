@@ -1,3 +1,4 @@
+// Admin: scholarship opportunity ingest form with eligibility criteria
 // Admin: new scholarship submission form with deadline validation
 import { useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
