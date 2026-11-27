@@ -1,3 +1,4 @@
+// Gating: premium content blur overlay with unlock instructions modal
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Lock, Crown } from 'lucide-react';
