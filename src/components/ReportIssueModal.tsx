@@ -1,3 +1,4 @@
+// Feedback: user bug report form with screenshot upload and error details
 // Feedback: student issue submission modal with category tags and validation
 // Modal for reporting notes or platform issues
 import React, { useState, useEffect } from 'react';
