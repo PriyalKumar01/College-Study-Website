@@ -1,3 +1,4 @@
+// UI Primitive: Radix UI avatar wrapper with fallback initials
 // Avatar image and fallback component
 import * as React from "react"
 import * as AvatarPrimitive from "@radix-ui/react-avatar"
