@@ -1,3 +1,4 @@
+// User: top right avatar menu with profile navigation and dark mode toggle
 // Account: authenticated profile menu with role badge and sign-out action
 import { User, LogOut, Crown, Shield } from 'lucide-react';
 import {
