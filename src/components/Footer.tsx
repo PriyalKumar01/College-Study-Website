@@ -1,3 +1,4 @@
+// Footer: platform footer containing quick links, policies, and acknowledgments
 import { useNavigate } from 'react-router-dom';
 import { Mail, Heart, Phone, BookOpen, ExternalLink, HelpCircle } from 'lucide-react';
 
