@@ -1,3 +1,4 @@
+// Benchmark: bar chart comparing dense, sparse, and hybrid retrieval MRR
 import React from "react";
 import {
   ResponsiveContainer,
