@@ -1,3 +1,4 @@
+// Recruitment: student administrator application form with experience details
 // Professional Student Admin Application Modal
 import React, { useState } from 'react';
 import { X, ShieldCheck, Sparkles, Send, CheckCircle2, GraduationCap, Building2 } from 'lucide-react';
