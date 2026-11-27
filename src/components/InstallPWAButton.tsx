@@ -1,3 +1,4 @@
+// PWA: browser beforeinstallprompt hook listener and install button
 import React, { useState, useEffect } from 'react';
 import { Download, Smartphone, Check, X, Share2, PlusSquare } from 'lucide-react';
 import {
