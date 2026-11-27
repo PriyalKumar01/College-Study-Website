@@ -1,3 +1,4 @@
+// Recruitment: community leader and content moderator invitation card
 // Professional Student Admin Recruitment Card with Multi-State Logic & Highlighted Theme
 import React, { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
