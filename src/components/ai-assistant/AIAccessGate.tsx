@@ -1,3 +1,4 @@
+// Entitlement: AI assistant access verification and token balance inspection
 // AI: assistant feature gating with token balance verification
 import { useState } from "react";
 import { motion } from "framer-motion";
