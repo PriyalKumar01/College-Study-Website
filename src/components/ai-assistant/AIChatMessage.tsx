@@ -1,3 +1,4 @@
+// Assistant: formatted assistant message bubble with code copy support
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
