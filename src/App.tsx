@@ -1,3 +1,4 @@
+// Architecture: top-level application router and global state provider hierarchy
 /**
  * StudyHub Application Root Component
  * Handles client routing, authentication boundaries, and global UI providers.
