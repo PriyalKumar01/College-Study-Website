@@ -1,3 +1,4 @@
+// Navigation: responsive slide-out navigation sidebar with route categories
 // Navigation: collapsible navigation drawer with active route highlighting
 // Responsive collapsible app sidebar navigation
 import { useState, useEffect } from 'react';
