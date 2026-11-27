@@ -1,3 +1,4 @@
+// Trust: security shield verifying Cloudflare R2 virus-free scan status
 // Security: verified SSL & Cloudflare protection badge presentation
 // Security shield banner component
 import { useEffect } from 'react';
