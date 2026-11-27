@@ -1,3 +1,4 @@
+// Research: bibliographic reference modal linking published RAG papers
 import React, { useState } from "react";
 import { BookOpen, ExternalLink, Search, Bookmark, Layers, CheckCircle2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
