@@ -1,3 +1,4 @@
+// UI Primitive: status badge component with variant color themes
 // Badge tag component
 import * as React from "react"
 import { cva, type VariantProps } from "class-variance-authority"
