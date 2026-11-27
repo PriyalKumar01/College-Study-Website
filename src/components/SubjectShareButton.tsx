@@ -1,3 +1,4 @@
+// Sharing: subject deep link generation button for student study groups
 /** Social and direct link sharing utility button for academic subjects */
 // DeepLink: subject-targeted permalink builder with clipboard support
 import React from 'react';
