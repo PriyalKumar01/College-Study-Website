@@ -1,3 +1,4 @@
+// Notice: high-priority semester examination schedule alert ribbon
 import React, { useState, useEffect } from 'react';
 import { AlertTriangle, X, DownloadCloud } from 'lucide-react';
 
