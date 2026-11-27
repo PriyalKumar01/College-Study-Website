@@ -1,3 +1,4 @@
+// Assistant: embedded study companion chat interface with topic pills
 import { useState, useRef, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
