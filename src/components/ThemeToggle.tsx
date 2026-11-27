@@ -1,3 +1,4 @@
+// Theme: theme switch button toggling dark and light mode classes
 // Theme: light and dark mode toggle button with soundless state transition
 import { Moon, Sun } from 'lucide-react';
 import { Button } from '@/components/ui/button';
