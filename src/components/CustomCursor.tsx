@@ -1,3 +1,4 @@
+// Interaction: custom animated pointer circle with element magnetic pull
 // Custom fluid cursor component
 const CustomCursor = () => {
   return null; // Cursor effect removed as requested
