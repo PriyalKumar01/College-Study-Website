@@ -1,3 +1,4 @@
+// Practice: popular problem sheets (Striver, Love Babbar, NeetCode) hub
 import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
