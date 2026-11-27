@@ -1,3 +1,4 @@
+// UI Primitive: card wrapper with header, content, and footer sections
 // Container card component
 import * as React from "react"
 
