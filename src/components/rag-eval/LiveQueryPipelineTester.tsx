@@ -1,3 +1,4 @@
+// Inspector: multi-stage RAG query inspector displaying retrieval scores
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
