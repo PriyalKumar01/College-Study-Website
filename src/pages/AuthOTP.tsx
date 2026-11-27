@@ -9,7 +9,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Mail, Phone, User, BookOpen, ArrowLeft, Loader2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { StudyBackground } from '@/components/StudyBackground';
-import { validateEmail } from '@/utils/emailValidation';
+import { validateEmail, isDisposableDomain } from '@/utils/emailValidation';
 
 interface FormData {
   fullName: string;
@@ -158,11 +158,22 @@ const AuthOTP = () => {
     setIsLoading(true);
     try {
       if (authMode === 'email') {
-        const validationResult = await validateEmail(formData.email);
-        if (!validationResult.isValid) {
+        const domain = formData.email.split('@')[1]?.toLowerCase();
+        if (domain && isDisposableDomain(domain)) {
           toast({
             title: "Invalid Email Provider",
             description: "Temporary or disposable email accounts are not permitted on our platform to prevent abuse.",
+            variant: "destructive",
+          });
+          setIsLoading(false);
+          return;
+        }
+
+        const validationResult = await validateEmail(formData.email);
+        if (!validationResult.isValid || validationResult.isDisposable) {
+          toast({
+            title: "Invalid Email Provider",
+            description: validationResult.reason || "Temporary or disposable email accounts are not permitted on our platform to prevent abuse.",
             variant: "destructive",
           });
           setIsLoading(false);
