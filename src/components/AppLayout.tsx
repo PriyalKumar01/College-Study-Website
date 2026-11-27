@@ -1,3 +1,4 @@
+// Layout: application root shell with dynamic page headers and notifications
 // Layout: top-level shell layout with fixed header and custom scroll container
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
