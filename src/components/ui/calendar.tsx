@@ -1,3 +1,4 @@
+// UI Primitive: accessible calendar date picker styled for dark theme
 // Date picker calendar component
 import * as React from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
