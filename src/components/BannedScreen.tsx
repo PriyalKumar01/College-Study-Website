@@ -1,3 +1,4 @@
+// Security: suspended account notice banner with support contact mailto
 // Suspended user security notice screen
 import React from 'react';
 import { ShieldAlert, AlertTriangle, LogOut } from 'lucide-react';
