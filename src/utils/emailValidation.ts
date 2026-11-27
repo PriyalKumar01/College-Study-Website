@@ -2,27 +2,13 @@
 /**
  * Utility for verifying email addresses and detecting disposable/temporary/fake emails.
  */
+import disposableDomainsList from './disposableDomainsList.json';
+import { supabase } from '@/integrations/supabase/client';
 
-// A blacklist of common temporary / disposable email domains
-const DISPOSABLE_DOMAINS_BLACKLIST = new Set([
-  'fpklm.com', 'mail.fpklm.com',
-  'atomicmail.io', 'atomicmail.com', 'atomicmail.org', 'atomic-mail.com', 'atomicmail.co',
-  'yopmail.com', 'mailinator.com', 'tempmail.com', '10minutemail.com',
-  'guerrillamail.com', 'dispostable.com', 'getairmail.com', 'sharklasers.com',
-  'maildrop.cc', 'throwawaymail.com', 'tempmailaddress.com', 'boun.cr',
-  'doefy.com', 'mailnesia.com', 'mailcatch.com', 'trashmail.com',
-  'generator.email', 'disposable.com', 'duck.com', 'mozmail.com',
-  'protonmail.ch', 'temp-mail.org', 'tempmail.dev', 'fakeinbox.com',
-  'crazymailing.com', 'mintemail.com', 'jetable.org', 'safetymail.info',
-  'mailnull.com', 'discard.email', 'mailinater.com', 'suremail.info',
-  'buloan.com', 'fxzig.com', 'fxmail.org', 'fxspost.com', 'fxtemp.com',
-  'fxpost.org', 'fxzig.org', 'fxmail.net', 'fxspost.org', 'inboxkitten.com',
-  'temp-mail.io', '1secmail.com', '1secmail.net', '1secmail.org', 'burnermail.io',
-  'internalmail.net', 'mohmal.com', 'nada.ltd', 'mailsac.com', 'guerrillamailblock.com',
-  'fakemailgenerator.com', 'mytemp.email', 'emailfake.com', 'trashmail.net',
-  'dropmail.me', 'emlhub.com', 'mimimail.me', 'spymail.one', 'dynv6.net',
-  'blobapps.com', 'blobapps.net', 'blobapps.org'
-]);
+// Comprehensive set of over 17,700 known temporary / disposable email domains
+const DISPOSABLE_DOMAINS_SET = new Set<string>(
+  (disposableDomainsList as string[]).map(d => d.toLowerCase().trim())
+);
 
 // Common patterns in disposable email domains
 const DISPOSABLE_DOMAIN_PATTERNS = [
@@ -41,6 +27,7 @@ const DISPOSABLE_DOMAIN_PATTERNS = [
   /mailinator/i,
   /guerrilla/i,
   /10minute/i,
+  /minute.*mail/i,
   /trashmail/i,
   /sharklaser/i,
   /fake.*mail/i,
@@ -51,8 +38,47 @@ const DISPOSABLE_DOMAIN_PATTERNS = [
   /mohmal/i,
   /yopmail/i,
   /getnada/i,
-  /internalmail/i
+  /internalmail/i,
+  /inboxbear/i,
+  /grr\.la/i,
+  /pokemail/i,
+  /spam4\.me/i,
+  /moakt/i,
+  /cuvox/i,
+  /dayrep/i,
+  /armyspy/i,
+  /teleworm/i,
+  /zillamail/i,
+  /chacuo/i,
+  /tmail/i,
+  /tempm/i,
+  /tempail/i,
+  /buloan/i,
+  /fxzig/i,
+  /fxmail/i,
+  /fxspost/i,
+  /fxtemp/i,
+  /clipmail/i,
+  /generator.*email/i,
+  /fakemail/i,
+  /dispostable/i,
+  /mytemp/i,
+  /jetable/i,
+  /safetymail/i,
+  /discard/i,
+  /suremail/i,
+  /nada\.ltd/i,
+  /mailsac/i,
+  /boun\.cr/i,
+  /doefy/i,
+  /mailnesia/i,
+  /mailcatch/i,
+  /mintemail/i,
+  /crazymailing/i
 ];
+
+// Suspicious burner TLDs commonly used by free temporary mail services
+const SUSPICIOUS_BURNER_TLDS = /\.(tk|ml|ga|cf|gq|rest|buzz|icu|party|link|stream|loan|trade|men|racing)$/i;
 
 // Major directly allowed educational and trusted personal mail providers (instant access, 0ms)
 export const DIRECT_ALLOWED_DOMAINS = new Set([
@@ -105,12 +131,15 @@ export function isDirectlyAllowedDomain(domain: string): boolean {
   return isAcademicCredential(clean);
 }
 
-/** Synchronous check to see if a domain matches known disposable patterns or blacklist */
+/** Synchronous check to see if a domain matches known disposable patterns or blocklist */
 export function isDisposableDomain(domain: string): boolean {
   if (!domain) return false;
   const clean = domain.trim().toLowerCase();
-  if (DISPOSABLE_DOMAINS_BLACKLIST.has(clean)) return true;
-  return DISPOSABLE_DOMAIN_PATTERNS.some(re => re.test(clean));
+  if (isDirectlyAllowedDomain(clean)) return false;
+  if (DISPOSABLE_DOMAINS_SET.has(clean)) return true;
+  if (DISPOSABLE_DOMAIN_PATTERNS.some(re => re.test(clean))) return true;
+  if (SUSPICIOUS_BURNER_TLDS.test(clean) && !isAcademicCredential(clean)) return true;
+  return false;
 }
 
 interface EmailValidationResult {
@@ -191,6 +220,25 @@ export async function validateEmail(email: string): Promise<EmailValidationResul
     };
   }
 
+  // 2b. Check database-backed blocklist from Supabase
+  try {
+    const { data: dbBlocked } = await supabase
+      .from('blocked_email_domains')
+      .select('domain')
+      .eq('domain', domain)
+      .maybeSingle();
+
+    if (dbBlocked?.domain) {
+      return {
+        isValid: false,
+        isDisposable: true,
+        reason: 'Temporary or disposable email addresses are strictly prohibited on College Study Hub.'
+      };
+    }
+  } catch (err) {
+    // Non-blocking fallback
+  }
+
   // If from a known, trusted legitimate provider (Gmail, Outlook, Yahoo, HBTU, .ac.in, .edu, etc.), allow immediately
   if (isDirectlyAllowedDomain(domain)) {
     return {
@@ -204,7 +252,8 @@ export async function validateEmail(email: string): Promise<EmailValidationResul
   const KNOWN_LEGITIMATE_NON_ACADEMIC = new Set([
     'proton.me', 'protonmail.com', 'pm.me',
     'zoho.com', 'zoho.in', 'rediffmail.com',
-    'aol.com', 'mail.com', 'gmx.com', 'gmx.net', 'yandex.com'
+    'aol.com', 'mail.com', 'gmx.com', 'gmx.net', 'yandex.com',
+    'fastmail.com', 'tutanota.com', 'tuta.com', 'hey.com'
   ]);
   if (KNOWN_LEGITIMATE_NON_ACADEMIC.has(domain)) {
     return {
