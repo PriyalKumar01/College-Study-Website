@@ -1,3 +1,4 @@
+// Visual: ambient geometric particle graphics for authentication view
 // Visuals: ambient background gradient mesh with subtle geometric accents
 // Animated background canvas for auth pages
 import { motion } from 'framer-motion';
