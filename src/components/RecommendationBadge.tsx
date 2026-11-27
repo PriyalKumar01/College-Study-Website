@@ -1,3 +1,4 @@
+// UI Chip: golden star badge highlighting community-recommended notes
 // Recommendation Badge & Owner Star Toggle Component
 import React from 'react';
 import { Star } from 'lucide-react';
